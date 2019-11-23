@@ -3,23 +3,33 @@
 open System
 
 module Syntax =
+    open FParsec
+
     // The main AST Node type
     type AstNode =
         | Atom of string
-        | Number of int
+        | Number of int64
         | Str of string
         | Boolean of bool
 
+    let parseNum =
+        pint64 |>> Number
+
     /// Parse the given string into a syntax tree
     let parse input =
-        Str input
+        run parseNum input
 
     /// Read a single line of user input and parse it into a
-    /// syntax tree.
-    let public read (): AstNode =
+    /// syntax tree. If the input can't be parsed then read
+    /// again.
+    let rec public read (): AstNode =
         Console.Write "§> "
         Console.Out.Flush()
-        parse(Console.ReadLine())
+        match parse(Console.ReadLine()) with
+        | Success(node, _, _) -> node
+        | Failure(message, _, _) -> 
+            (printfn "Failure: %s" message)
+            read()
 
 open Syntax
 
@@ -29,7 +39,7 @@ open Syntax
 /// in the interpreter.
 type SchemeValue =
     | Nil
-    | Number of int
+    | Number of int64
     | Str of string
     | Boolean of bool
 
