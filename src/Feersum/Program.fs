@@ -4,26 +4,39 @@ open System
 
 // The main AST Node type
 type AstNode =
-    | Atom of String
+    | Atom of string
     | Number of int
-    | Str of String
+    | Str of string
     | Boolean of bool
 
 /// Read a single line of user input and parse it into a
 /// syntax tree.
-let read () =
+let read (): AstNode =
     Console.Write "§> "
     Console.Out.Flush()
-    Console.ReadLine()
+    AstNode.Str(Console.ReadLine())
+
+/// Shceme value
+///
+/// Represents the different types that a given value can have
+/// in the interpreter.
+type SchemeValue =
+    | Nil
+    | Number of int
+    | Str of string
+    | Boolean of bool
 
 /// Take a syntax tree and evaluate it producing a value.
-let execute input =
-    input
+let execute (input: AstNode) =
+    match input with
+    | AstNode.Number n  -> SchemeValue.Number n
+    | AstNode.Str s -> SchemeValue.Str s
+    | AstNode.Boolean b -> SchemeValue.Boolean b
+    | _ -> SchemeValue.Nil
 
 /// Print a value out to the console
 let print value =
     value |> printfn "]= %A"
-
 
 /// Read, Execute, Print Loop
 ///
