@@ -7,17 +7,72 @@ module Syntax =
 
     // The main AST Node type
     type AstNode =
-        | Atom of string
+        | Ident of string
         | Number of int64
         | Str of string
         | Boolean of bool
+        | Form of AstNode list
+        | Seq of AstNode list
 
     let parseNum =
         pint64 |>> Number
+    
+    let unescapedChar =
+        noneOf "\"\\"
+    
+    let escapedChar =
+        let inline unescape ch =
+            match ch with
+            | 'n' -> '\n'
+            | 't' -> '\t'
+            | c -> c
+        pchar '\\' >>. anyChar |>> unescape
+          
+    let parseStr =
+        let lit = between (pchar '"') (pchar '"')
+                    (manyChars (unescapedChar <|> escapedChar))
+        lit |>> Str
+
+    let parseBool =
+        stringReturn "#t" (Boolean true) <|>
+        stringReturn "#f" (Boolean false)
+    
+    let parseIdent =
+        let isNumChar = isAnyOf "+-."
+        let inline isAsciiExtended c =
+            isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~" c
+        let isAsciiIdContinue c =
+            isNumChar c || isAsciiExtended c
+        (choice [
+            identifier(IdentifierOptions(isAsciiIdContinue = isAsciiIdContinue,
+                                         isAsciiIdStart = isAsciiExtended))
+            pstring "-"
+            pstring "+" 
+        ]) |>> Ident
+
+    let parseAtom =
+        choice [
+            parseStr
+            parseNum
+            parseBool
+            parseIdent
+        ]
+
+    let parseForm, parseFormRef = createParserForwardedToRef()
+
+    let parseApplication =
+        between (pchar '(') (pchar ')')
+            ((many parseForm) |>> Form)
+           
+    do parseFormRef :=
+        between spaces spaces (choice [
+            parseApplication
+            parseAtom
+        ])
 
     /// Parse the given string into a syntax tree
-    let parse input =
-        run parseNum input
+    let parse =
+        (many parseForm) |>> Seq
 
     /// Read a single line of user input and parse it into a
     /// syntax tree. If the input can't be parsed then read
@@ -25,13 +80,18 @@ module Syntax =
     let rec public read (): AstNode =
         Console.Write "§> "
         Console.Out.Flush()
-        match parse(Console.ReadLine()) with
+        let line = Console.ReadLine()
+        match (run parse line) with
         | Success(node, _, _) -> node
         | Failure(message, _, _) -> 
             (printfn "Failure: %s" message)
             read()
 
 open Syntax
+
+let printTree tree =
+    printfn "%A" tree
+    tree
 
 /// Shceme value
 ///
@@ -44,11 +104,12 @@ type SchemeValue =
     | Boolean of bool
 
 /// Take a syntax tree and evaluate it producing a value.
-let execute (input: AstNode) =
+let rec execute (input: AstNode) =
     match input with
     | AstNode.Number n  -> SchemeValue.Number n
     | AstNode.Str s -> SchemeValue.Str s
     | AstNode.Boolean b -> SchemeValue.Boolean b
+    | AstNode.Seq exprs -> exprs |> List.map execute |> List.tryLast |> Option.defaultValue SchemeValue.Nil
     | _ -> SchemeValue.Nil
 
 /// Print a value out to the console
@@ -60,7 +121,8 @@ let print value =
 /// Repeatedly reads input and prints output
 let rec repl () =
     (read()
-    // |> execute
+    |> printTree
+    |> execute
     |> print)
     repl()
 
