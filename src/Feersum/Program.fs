@@ -103,6 +103,7 @@ type SchemeValue =
     | Str of string
     | Boolean of bool
     | Func of ((SchemeValue list) -> SchemeValue)
+    | Quoted of AstNode
 
 let apply value args =
     match value with
@@ -116,6 +117,11 @@ let rec execute (input: AstNode): SchemeValue =
     | AstNode.Str s -> SchemeValue.Str s
     | AstNode.Boolean b -> SchemeValue.Boolean b
     | AstNode.Seq exprs -> exprs |> List.map execute |> List.tryLast |> Option.defaultValue SchemeValue.Nil
+    | AstNode.Form([AstNode.Ident "quote"; e]) -> SchemeValue.Quoted e
+    | AstNode.Form([AstNode.Ident "if"; cond; ifTrue; ifFalse]) ->
+        match (execute cond) with
+        | SchemeValue.Boolean false -> execute ifFalse
+        | _ -> execute ifTrue
     | AstNode.Form(head::rest) -> apply (execute head) (List.map execute rest)
     | _ -> SchemeValue.Nil
 
