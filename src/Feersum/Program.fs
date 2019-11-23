@@ -102,14 +102,21 @@ type SchemeValue =
     | Number of int64
     | Str of string
     | Boolean of bool
+    | Func of ((SchemeValue list) -> SchemeValue)
+
+let apply value args =
+    match value with
+    | Func f -> f(args)
+    | _ -> Nil
 
 /// Take a syntax tree and evaluate it producing a value.
-let rec execute (input: AstNode) =
+let rec execute (input: AstNode): SchemeValue =
     match input with
     | AstNode.Number n  -> SchemeValue.Number n
     | AstNode.Str s -> SchemeValue.Str s
     | AstNode.Boolean b -> SchemeValue.Boolean b
     | AstNode.Seq exprs -> exprs |> List.map execute |> List.tryLast |> Option.defaultValue SchemeValue.Nil
+    | AstNode.Form(head::rest) -> apply (execute head) (List.map execute rest)
     | _ -> SchemeValue.Nil
 
 /// Print a value out to the console
