@@ -2,19 +2,26 @@
 
 open System
 
-// The main AST Node type
-type AstNode =
-    | Atom of string
-    | Number of int
-    | Str of string
-    | Boolean of bool
+module Syntax =
+    // The main AST Node type
+    type AstNode =
+        | Atom of string
+        | Number of int
+        | Str of string
+        | Boolean of bool
 
-/// Read a single line of user input and parse it into a
-/// syntax tree.
-let read (): AstNode =
-    Console.Write "§> "
-    Console.Out.Flush()
-    AstNode.Str(Console.ReadLine())
+    /// Parse the given string into a syntax tree
+    let parse input =
+        Str input
+
+    /// Read a single line of user input and parse it into a
+    /// syntax tree.
+    let public read (): AstNode =
+        Console.Write "§> "
+        Console.Out.Flush()
+        parse(Console.ReadLine())
+
+open Syntax
 
 /// Shceme value
 ///
@@ -42,7 +49,9 @@ let print value =
 ///
 /// Repeatedly reads input and prints output
 let rec repl () =
-    (read() |> execute |> print)
+    (read()
+    // |> execute
+    |> print)
     repl()
 
 [<EntryPoint>]
