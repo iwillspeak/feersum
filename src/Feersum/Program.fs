@@ -102,7 +102,7 @@ type SchemeValue =
     | Number of int64
     | Str of string
     | Boolean of bool
-    | Func of ((SchemeValue list) -> SchemeValue)
+    | Func of (SchemeValue list -> SchemeValue)
     | Quoted of AstNode
 
 let apply value args =
