@@ -89,10 +89,6 @@ module Syntax =
 
 open Syntax
 
-let printTree tree =
-    printfn "%A" tree
-    tree
-
 /// Shceme value
 ///
 /// Represents the different types that a given value can have
@@ -125,16 +121,27 @@ let rec execute (input: AstNode): SchemeValue =
     | AstNode.Form(head::rest) -> apply (execute head) (List.map execute rest)
     | _ -> SchemeValue.Nil
 
+
+/// Take a Scheme Value and convert it to the
+/// 'external representation' as a string
+let externalRepr value =
+    match value with
+    | Nil -> "NIL"
+    | Number n -> n.ToString("d")
+    | Str s -> sprintf "%A" s
+    | Boolean b -> if b then "#t" else "#f"
+    | Func f -> "#[procedure]"
+    | Quoted q -> sprintf "%A" q
+
 /// Print a value out to the console
 let print value =
-    value |> printfn "]= %A"
+    value |> externalRepr |> printfn "]= %s"
 
 /// Read, Execute, Print Loop
 ///
 /// Repeatedly reads input and prints output
 let rec repl () =
     (read()
-    |> printTree
     |> execute
     |> print)
     repl()
