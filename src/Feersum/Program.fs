@@ -74,6 +74,12 @@ module Syntax =
     let parse =
         (many parseForm) |>> Seq
 
+    /// Read expressions from the input text
+    let readExpr line: Result<AstNode,string> =
+        match (run parse line) with
+        | Success(node, _, _) -> Result.Ok node
+        | Failure(message, _, _) -> Result.Error message
+    
     /// Read a single line of user input and parse it into a
     /// syntax tree. If the input can't be parsed then read
     /// again.
@@ -81,10 +87,10 @@ module Syntax =
         Console.Write "§> "
         Console.Out.Flush()
         let line = Console.ReadLine()
-        match (run parse line) with
-        | Success(node, _, _) -> node
-        | Failure(message, _, _) -> 
-            (printfn "Failure: %s" message)
+        match readExpr line with
+        | Result.Ok node -> node
+        | Result.Error message -> 
+            (eprintfn "Failure: %s" message)
             read()
 
 open Syntax
@@ -98,12 +104,12 @@ type SchemeValue =
     | Number of int64
     | Str of string
     | Boolean of bool
-    | Func of (SchemeValue list -> SchemeValue)
+    | Builtin of (SchemeValue list -> SchemeValue)
     | Quoted of AstNode
 
 let apply value args =
     match value with
-    | Func f -> f(args)
+    | Builtin f -> f(args)
     | _ -> Nil
 
 /// Take a syntax tree and evaluate it producing a value.
@@ -130,7 +136,7 @@ let externalRepr value =
     | Number n -> n.ToString("d")
     | Str s -> sprintf "%A" s
     | Boolean b -> if b then "#t" else "#f"
-    | Func f -> "#[procedure]"
+    | Builtin f -> "#[procedure]"
     | Quoted q -> sprintf "%A" q
 
 /// Print a value out to the console

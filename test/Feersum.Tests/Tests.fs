@@ -2,10 +2,12 @@ module Tests
 
 open Xunit
 open Program
+open Syntax
 
 [<Fact>]
 let ``Evaluate atoms`` () =
-    Assert.Equal(SchemeValue.Boolean true, execute(Syntax.AstNode.Boolean true))
-    Assert.Equal(SchemeValue.Boolean false, execute(Syntax.AstNode.Boolean false))
-    Assert.Equal(SchemeValue.Str "hello", execute(Syntax.AstNode.Str "hello"))
-    Assert.Equal(SchemeValue.Number 1337L, execute(Syntax.AstNode.Number 1234L))
+    Assert.Equal("#t", execute(Boolean true) |> externalRepr)
+    Assert.Equal("#f", execute(Boolean false) |> externalRepr)
+    Assert.Equal(@"""hello""", execute(Str "hello") |> externalRepr)
+    Assert.Equal("1337", execute(Number 1337L) |> externalRepr)
+
