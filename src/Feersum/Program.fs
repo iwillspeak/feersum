@@ -1,6 +1,7 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open System
+open System.IO
 
 module Syntax =
     open FParsec
@@ -127,6 +128,55 @@ let rec execute (input: AstNode): SchemeValue =
     | AstNode.Form(head::rest) -> apply (execute head) (List.map execute rest)
     | _ -> SchemeValue.Nil
 
+let parseFile path =
+    File.ReadAllText path |> readExpr
+
+module Compile =
+
+    type Symbol = int32
+
+    type BoundExpr =
+        | Boolean of bool
+        | Number of int64
+        | Str of string
+        | Form of BoundExpr list
+        | Nil
+
+    let bindIdent scope id =
+        failwithf "Unimplemented"
+
+    let rec bind scope node =
+        match node with
+        | AstNode.Number n -> BoundExpr.Number n
+        | AstNode.Str s -> BoundExpr.Str s
+        | AstNode.Boolean b -> BoundExpr.Boolean b
+        | AstNode.Form f -> bindForm scope f
+        | AstNode.Ident id -> bindIdent scope id
+        | AstNode.Seq s -> bindSequence scope s
+    and bindSequence scope exprs =
+        List.map (fun f -> bind scope f) exprs |> List.tryLast |> Option.defaultValue BoundExpr.Nil
+    and bindForm scope form =
+        let boundForm = List.map (fun f -> bind scope f) form
+        BoundExpr.Form boundForm
+    
+    /// Compile a single AST node into an assembly
+    ///
+    /// The plan for this is we make multiple passes over the syntax tree. First
+    /// pass will be to `bind` theh tree. Resulting in a `BoundExpr`. This will
+    /// attach any type information that _can_ be computed to each node, and
+    /// resolve variable references to the symbols that they refer to.
+    /// 
+    /// Once the expression is bound we will then `lower` the expression to
+    /// flatten it out into a list of blocks. Once we have all the blocks
+    /// they can be written out to an `Assembly` with `emit`.
+    let compile (node: AstNode) =
+        let bound = bind Map.empty node
+        bound
+
+    let compileFile (path) =
+        match parseFile path with
+        | Ok ast -> compile ast
+        | Error e -> failwithf "error: %s" e
 
 /// Take a Scheme Value and convert it to the
 /// 'external representation' as a string
@@ -154,5 +204,7 @@ let rec repl () =
 
 [<EntryPoint>]
 let main argv =
-    repl()
+    match argv with
+    | [| |] -> repl()
+    | _ -> Seq.map Compile.compileFile argv |> ignore
     0 // return an integer exit code
