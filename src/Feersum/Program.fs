@@ -94,42 +94,62 @@ module Syntax =
             (eprintfn "Failure: %s" message)
             read()
 
+    let parseFile path =
+        File.ReadAllText path |> readExpr
+
 open Syntax
 
-/// Shceme value
-///
-/// Represents the different types that a given value can have
-/// in the interpreter.
-type SchemeValue =
-    | Nil
-    | Number of int64
-    | Str of string
-    | Boolean of bool
-    | Builtin of (SchemeValue list -> SchemeValue)
-    | Quoted of AstNode
+module SchemeRuntime =
 
-let apply value args =
-    match value with
-    | Builtin f -> f(args)
-    | _ -> Nil
+    /// Shceme value
+    ///
+    /// Represents the different types that a given value can have
+    /// in the interpreter.
+    type SchemeValue =
+        | Nil
+        | Number of int64
+        | Str of string
+        | Boolean of bool
+        | Builtin of (SchemeValue list -> SchemeValue)
+        | Quoted of AstNode
 
-/// Take a syntax tree and evaluate it producing a value.
-let rec execute (input: AstNode): SchemeValue =
-    match input with
-    | AstNode.Number n  -> SchemeValue.Number n
-    | AstNode.Str s -> SchemeValue.Str s
-    | AstNode.Boolean b -> SchemeValue.Boolean b
-    | AstNode.Seq exprs -> exprs |> List.map execute |> List.tryLast |> Option.defaultValue SchemeValue.Nil
-    | AstNode.Form([AstNode.Ident "quote"; e]) -> SchemeValue.Quoted e
-    | AstNode.Form([AstNode.Ident "if"; cond; ifTrue; ifFalse]) ->
-        match (execute cond) with
-        | SchemeValue.Boolean false -> execute ifFalse
-        | _ -> execute ifTrue
-    | AstNode.Form(head::rest) -> apply (execute head) (List.map execute rest)
-    | _ -> SchemeValue.Nil
+    let numberBinop op =
+        fun values ->
+            values |> List.reduce (fun a b ->
+                match (a, b) with
+                | (Number n, Number m) -> Number (op n m)
+                | _ -> Nil)
 
-let parseFile path =
-    File.ReadAllText path |> readExpr
+    let apply value args =
+        match value with
+        | Builtin f -> f(args)
+        | _ -> Nil
+     
+    let lookup ident =
+        match ident with
+        | "+" -> Builtin (numberBinop(+))
+        | "-" -> Builtin (numberBinop(-))
+        | "*" -> Builtin (numberBinop(*))
+        | "/" -> Builtin (numberBinop(/))
+        | _ -> Nil
+
+    /// Take a syntax tree and evaluate it producing a value.
+    let rec execute (input: AstNode): SchemeValue =
+        match input with
+        | AstNode.Number n  -> SchemeValue.Number n
+        | AstNode.Str s -> SchemeValue.Str s
+        | AstNode.Boolean b -> SchemeValue.Boolean b
+        | AstNode.Seq exprs -> exprs |> List.map execute |> List.tryLast |> Option.defaultValue SchemeValue.Nil
+        | AstNode.Form([AstNode.Ident "quote"; e]) -> SchemeValue.Quoted e
+        | AstNode.Form([AstNode.Ident "if"; cond; ifTrue; ifFalse]) ->
+            match (execute cond) with
+            | SchemeValue.Boolean false -> execute ifFalse
+            | _ -> execute ifTrue
+        | AstNode.Form(head::rest) -> apply (execute head) (List.map execute rest)
+        | AstNode.Form([]) -> SchemeValue.Nil
+        | AstNode.Ident i -> lookup i
+
+open SchemeRuntime
 
 module Compile =
 
