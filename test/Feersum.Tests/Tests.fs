@@ -2,7 +2,7 @@ module Tests
 
 open Xunit
 open Program
-open SchemeRuntime
+open Interpret
 open Syntax
 
 [<Fact>]
