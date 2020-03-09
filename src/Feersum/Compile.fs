@@ -2,7 +2,16 @@ module Compile
 
 open Syntax
 
-type Symbol = int32
+/// Locals are indices into the local variable table
+type Local = int
+
+/// Storage Reference
+///
+/// Reference to a given storage location. Used to express reads and writes
+/// of values to storage locations.
+type StorageRef =
+    | Local of Local
+    | Global of string
 
 /// Bound Expression Type
 ///
@@ -12,25 +21,55 @@ type BoundExpr =
     | Boolean of bool
     | Number of int64
     | Str of string
-    | Form of BoundExpr list
-    | Nil
+    | Load of StorageRef
+    | Application of BoundExpr * BoundExpr list
+    | Seq of BoundExpr list
+    | Null
 
+/// Create a New Root Scope
+/// 
+/// The root scope contains the global functions available to the program.
+let createRootScope =
+    Map.empty
+
+/// Bind an Identifier Reference
+/// 
+/// Lookup the identifier in the given scope 
 let bindIdent scope id =
-    failwithf "Unimplemented"
+    match Map.tryFind id scope with
+    | Some storage -> BoundExpr.Load storage
+    | None -> failwithf "Reference to undefined symbol"
 
+/// Bind a Syntax Node
+///
+/// Walks the syntax node building up a bound representation. This bound
+/// node no longer has direct references to identifiers and instead
+/// references storage locations.
 let rec bind scope node =
     match node with
     | AstNode.Number n -> BoundExpr.Number n
     | AstNode.Str s -> BoundExpr.Str s
     | AstNode.Boolean b -> BoundExpr.Boolean b
+    | AstNode.Seq s -> bindSequence scope s
     | AstNode.Form f -> bindForm scope f
     | AstNode.Ident id -> bindIdent scope id
-    | AstNode.Seq s -> bindSequence scope s
 and bindSequence scope exprs =
-    List.map (bind scope) exprs |> List.tryLast |> Option.defaultValue BoundExpr.Nil
+    List.map (bind scope) exprs
+    |> BoundExpr.Seq
+and bindApplication scope head rest =
+    BoundExpr.Application(bind scope head, List.map (bind scope) rest)
 and bindForm scope form =
-    let boundForm = List.map (fun f -> bind scope f) form
-    BoundExpr.Form boundForm
+    match form with
+    | head::rest -> bindApplication scope head rest
+    | [] -> BoundExpr.Null
+
+/// Lower a Bound Expression to .NET
+/// 
+/// Creates an assembly and writes out the .NET interpretation of the
+/// given bound tree.
+let lower bound =
+    match bound with
+    | _ -> ()
 
 /// Compile a single AST node into an assembly
 ///
@@ -43,8 +82,9 @@ and bindForm scope form =
 /// flatten it out into a list of blocks. Once we have all the blocks
 /// they can be written out to an `Assembly` with `emit`.
 let compile (node: AstNode) =
-    let bound = bind Map.empty node
-    bound
+    let scope = createRootScope
+    bind scope node
+    |> lower
 
 /// Read a File and Compile
 /// 

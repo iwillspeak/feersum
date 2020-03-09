@@ -24,5 +24,5 @@ let rec repl () =
 let main argv =
     match argv with
     | [| |] -> repl()
-    | _ -> Seq.map Compile.compileFile argv |> ignore
+    | _ -> Array.map Compile.compileFile argv |> ignore
     0 // return an integer exit code
