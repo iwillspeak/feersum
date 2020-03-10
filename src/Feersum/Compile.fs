@@ -1,6 +1,10 @@
 module Compile
 
 open Syntax
+open System.IO
+open System
+open Mono.Cecil
+open Mono.Cecil.Cil
 
 /// Locals are indices into the local variable table
 type Local = int
@@ -63,13 +67,51 @@ and bindForm scope form =
     | head::rest -> bindApplication scope head rest
     | [] -> BoundExpr.Null
 
+/// Compile a Single Bound Expression
+/// 
+/// Emits the code for a single function into the given assembly.
+let rec compileExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundExpr) =
+    match expr with
+    | BoundExpr.Number n -> il.Emit(OpCodes.Ldc_I8, n)
+    | BoundExpr.Str s -> il.Emit(OpCodes.Ldstr, s)
+    | BoundExpr.Seq s -> (List.map (fun e -> compileExpression(assm, il, e)) s) |> List.last
+    | _ -> ()
+
 /// Lower a Bound Expression to .NET
 /// 
 /// Creates an assembly and writes out the .NET interpretation of the
 /// given bound tree.
-let lower bound =
-    match bound with
-    | _ -> ()
+let lower path bound =
+    let stem = Path.GetFileNameWithoutExtension((string)path);
+
+    // Create an assembly with a nominal version to hold our code    
+    let name = AssemblyNameDefinition(stem, Version(0, 1, 0))
+    let assm = AssemblyDefinition.CreateAssembly(name, path, ModuleKind.Console)
+
+    // Genreate a nominal type and main method        
+    let progTy = TypeDefinition(stem, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
+    assm.MainModule.Types.Add progTy
+    let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Void)
+    let il = mainMethod.Body.GetILProcessor()
+    progTy.Methods.Add mainMethod
+
+    compileExpression(assm, il, bound)
+
+    il.Emit(OpCodes.Ret)
+    assm.EntryPoint <- mainMethod
+
+    assm.Write path
+    File.WriteAllText(Path.Combine(Path.GetDirectoryName(path), stem + ".runtimeconfig.json"), """
+    {
+      "runtimeOptions": {
+        "tfm": "netcoreapp3.0",
+        "framework": {
+          "name": "Microsoft.NETCore.App",
+          "version": "3.0.0"
+        }
+      }
+    }
+    """)
 
 /// Compile a single AST node into an assembly
 ///
@@ -81,15 +123,16 @@ let lower bound =
 /// Once the expression is bound we will then `lower` the expression to
 /// flatten it out into a list of blocks. Once we have all the blocks
 /// they can be written out to an `Assembly` with `emit`.
-let compile (node: AstNode) =
+let compile node output =
     let scope = createRootScope
     bind scope node
-    |> lower
+    |> lower output
 
 /// Read a File and Compile
 /// 
 /// Takes the `path` to an input to read and compile.
-let compileFile (path) =
+let compileFile(path: string) =
+    let output = Path.GetFileNameWithoutExtension(path) + ".exe"
     match parseFile path with
-    | Ok ast -> compile ast
+    | Ok ast -> compile ast output
     | Error e -> failwithf "error: %s" e
