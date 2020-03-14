@@ -67,14 +67,23 @@ and bindForm scope form =
     | head::rest -> bindApplication scope head rest
     | [] -> BoundExpr.Null
 
-/// Compile a Single Bound Expression
+/// Lower a Single Bound Expression
 /// 
 /// Emits the code for a single function into the given assembly.
-let rec compileExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundExpr) =
+let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundExpr) =
     match expr with
-    | BoundExpr.Number n -> il.Emit(OpCodes.Ldc_I8, n)
+    | BoundExpr.Number n ->
+        il.Emit(OpCodes.Ldc_I8, n)
+        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Int64)
     | BoundExpr.Str s -> il.Emit(OpCodes.Ldstr, s)
-    | BoundExpr.Seq s -> (List.map (fun e -> compileExpression(assm, il, e)) s) |> List.last
+    | BoundExpr.Boolean b ->
+        il.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
+        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
+    | BoundExpr.Seq s ->
+        (List.map (fun e ->
+            lowerExpression(assm, il, e)
+            il.Emit(OpCodes.Stloc_0)) s) |> ignore
+        il.Emit(OpCodes.Ldloc_0)
     | _ -> ()
 
 /// Lower a Bound Expression to .NET
@@ -91,12 +100,16 @@ let lower path bound =
     // Genreate a nominal type and main method        
     let progTy = TypeDefinition(stem, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
-    let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Void)
+    let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Int32)
+    mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
+    mainMethod.Body.Variables.Add(VariableDefinition(assm.MainModule.TypeSystem.Object))
     let il = mainMethod.Body.GetILProcessor()
     progTy.Methods.Add mainMethod
 
-    compileExpression(assm, il, bound)
+    lowerExpression(assm, il, bound)
 
+    il.Emit(OpCodes.Unbox, assm.MainModule.TypeSystem.Int64)
+    il.Emit(OpCodes.Conv_I4)
     il.Emit(OpCodes.Ret)
     assm.EntryPoint <- mainMethod
 
