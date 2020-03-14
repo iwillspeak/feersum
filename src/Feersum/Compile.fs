@@ -100,6 +100,14 @@ let lower path bound =
     // Genreate a nominal type and main method        
     let progTy = TypeDefinition(stem, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
+    let ctor = MethodDefinition(".ctor", MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName, assm.MainModule.TypeSystem.Void)
+    let objConstructor = assm.MainModule.ImportReference((typeof<obj>).GetConstructor(Array.empty))
+    let il = ctor.Body.GetILProcessor()
+    il.Emit(OpCodes.Ldarg_0)
+    il.Emit(OpCodes.Call, objConstructor)
+    il.Emit(OpCodes.Ret)
+    progTy.Methods.Add ctor
+
     let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Int32)
     mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
     mainMethod.Body.Variables.Add(VariableDefinition(assm.MainModule.TypeSystem.Object))
