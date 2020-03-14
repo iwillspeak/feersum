@@ -117,6 +117,7 @@ let lower path bound =
     lowerExpression(assm, il, bound)
 
     il.Emit(OpCodes.Unbox, assm.MainModule.TypeSystem.Int64)
+    il.Emit(OpCodes.Ldind_I4)
     il.Emit(OpCodes.Conv_I4)
     il.Emit(OpCodes.Ret)
     assm.EntryPoint <- mainMethod
