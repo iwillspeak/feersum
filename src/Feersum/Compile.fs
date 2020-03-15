@@ -37,7 +37,7 @@ let createRootScope =
     Map.empty
 
 /// Bind an Identifier Reference
-/// 
+///
 /// Lookup the identifier in the given scope 
 let bindIdent scope id =
     match Map.tryFind id scope with
@@ -129,7 +129,7 @@ let lower path bound =
 
     il.Emit(OpCodes.Dup)
     il.Emit(OpCodes.Isinst, assm.MainModule.TypeSystem.Int64)
-    let notInt = il.Create(OpCodes.Pop)
+    let notInt = il.Create(OpCodes.Dup)
     il.Emit(OpCodes.Brfalse, notInt)
 
     il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Int64)
@@ -137,7 +137,17 @@ let lower path bound =
     il.Emit(OpCodes.Ret)
 
     il.Append(notInt)
-    il.Emit(OpCodes.Ldc_I4_0)
+    let notBool = il.Create(OpCodes.Pop)
+    il.Emit(OpCodes.Isinst, assm.MainModule.TypeSystem.Boolean)
+    il.Emit(OpCodes.Brfalse, notBool)
+    il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Boolean)
+    let load0 = il.Create(OpCodes.Ldc_I4_0)
+    il.Emit(OpCodes.Brtrue, load0)
+    il.Emit(OpCodes.Ldc_I4_M1)
+    il.Emit(OpCodes.Ret)
+
+    il.Append(notBool)
+    il.Append(load0)
     il.Emit(OpCodes.Ret)
 
     assm.EntryPoint <- mainMethod
