@@ -28,7 +28,8 @@
             "args": [
                 "test",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary",
+                "-v=n"
             ],
             "group": {
                 "kind": "test",
