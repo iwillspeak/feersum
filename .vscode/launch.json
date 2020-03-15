@@ -5,6 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Test Example",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/${dllToDebug}",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
             "name": "Fastness",
             "type": "coreclr",
             "request": "launch",
@@ -28,6 +38,13 @@
             "console": "integratedTerminal",
             "externalConsole": false,
             "stopAtEntry": false
+        }
+    ],
+    "inputs": [
+        {
+            "type": "promptString",
+            "description": "DLL to debug",
+            "id": "dllToDebug"
         }
     ]
 }
