@@ -8,7 +8,7 @@
             "name": "Test Example",
             "type": "coreclr",
             "request": "launch",
-            "program": "${workspaceFolder}/${dllToDebug}",
+            "program": "${workspaceFolder}/${input:dllToDebug}",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
@@ -32,7 +32,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/src/Feersum/bin/Debug/netcoreapp3.0/Feersum.dll",
             "args": [
-                "${workspaceRoot}/spec/literals.scm"
+                "${workspaceRoot}/spec/comment.scm"
             ],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",

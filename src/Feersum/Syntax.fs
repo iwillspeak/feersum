@@ -13,6 +13,11 @@ type AstNode =
     | Form of AstNode list
     | Seq of AstNode list
 
+let comment = 
+    pchar ';' >>. skipRestOfLine true
+
+let ws = skipMany (comment <|> unicodeSpaces1)
+
 let parseNum =
     pint64 |>> Number
 
@@ -64,7 +69,7 @@ let parseApplication =
         ((many parseForm) |>> Form)
        
 do parseFormRef :=
-    between spaces spaces (choice [
+    between ws ws (choice [
         parseApplication
         parseAtom
     ])
