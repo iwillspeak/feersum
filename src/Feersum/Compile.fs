@@ -82,15 +82,21 @@ let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundEx
         il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
     | BoundExpr.Seq s ->
         lowerSequence assm il s
+    | BoundExpr.Application(ap, args) -> lowerApplication assm il ap args
+    | BoundExpr.Load l ->
+        match l with
+        | StorageRef.Global id -> failwith "globals not implemented"
+        | StorageRef.Local idx -> il.Emit(OpCodes.Ldloc, idx)
+and lowerSequence assm il seq =
+    lowerExpression(assm, il, List.head seq)
+    List.tail seq
+    |>  List.map (fun e ->
+        il.Emit(OpCodes.Pop)
+        lowerExpression(assm, il, e))
+    |> ignore
+and lowerApplication assm il ap args =
+    match ap with
     | _ -> ()
- and lowerSequence assm il seq =
-    match seq with
-    | head::rest ->
-        lowerExpression(assm, il, head)
-        (List.map (fun e ->
-            il.Emit(OpCodes.Pop)
-            lowerExpression(assm, il, e)) rest) |> ignore
-    | [] -> ()
 
 /// Lower a Bound Expression to .NET
 /// 
