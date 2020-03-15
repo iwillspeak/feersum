@@ -80,11 +80,16 @@ let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundEx
         il.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
         il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
     | BoundExpr.Seq s ->
-        (List.map (fun e ->
-            lowerExpression(assm, il, e)
-            il.Emit(OpCodes.Stloc_0)) s) |> ignore
-        il.Emit(OpCodes.Ldloc_0)
+        lowerSequence assm il s
     | _ -> ()
+ and lowerSequence assm il seq =
+    match seq with
+    | head::rest ->
+        lowerExpression(assm, il, head)
+        (List.map (fun e ->
+            il.Emit(OpCodes.Pop)
+            lowerExpression(assm, il, e)) rest) |> ignore
+    | [] -> ()
 
 /// Lower a Bound Expression to .NET
 /// 
@@ -110,7 +115,6 @@ let lower path bound =
 
     let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Int32)
     mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
-    mainMethod.Body.Variables.Add(VariableDefinition(assm.MainModule.TypeSystem.Object))
     let il = mainMethod.Body.GetILProcessor()
     progTy.Methods.Add mainMethod
 
