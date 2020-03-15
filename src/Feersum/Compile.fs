@@ -72,6 +72,7 @@ and bindForm scope form =
 /// Emits the code for a single function into the given assembly.
 let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundExpr) =
     match expr with
+    | BoundExpr.Null -> il.Emit(OpCodes.Ldnull)
     | BoundExpr.Number n ->
         il.Emit(OpCodes.Ldc_I8, n)
         il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Int64)
