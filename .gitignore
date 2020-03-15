@@ -1,4 +1,9 @@
+# artifacts from the big boy compiler
 obj/
 bin/
+
+# artifacts from our compilations
 *.runtimeconfig.json
+*.runtimeconfig.dev.json
+*.dll
 *.exe
