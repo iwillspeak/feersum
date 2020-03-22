@@ -88,12 +88,12 @@ let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundEx
         | StorageRef.Global id -> failwith "globals not implemented"
         | StorageRef.Local idx -> il.Emit(OpCodes.Ldloc, idx)
 and lowerSequence assm il seq =
+    let popAndLower x =
+        il.Emit(OpCodes.Pop)
+        lowerExpression(assm, il, x)
     lowerExpression(assm, il, List.head seq)
     List.tail seq
-    |>  List.map (fun e ->
-        il.Emit(OpCodes.Pop)
-        lowerExpression(assm, il, e))
-    |> ignore
+    |>  Seq.iter popAndLower
 and lowerApplication assm il ap args =
     match ap with
     | _ -> ()
@@ -102,6 +102,10 @@ and lowerApplication assm il ap args =
 /// 
 /// Creates an assembly and writes out the .NET interpretation of the
 /// given bound tree.
+/// 
+/// TODO: this method is a huge mess. The creation of the types, methods and other
+/// supporting work nees extracting and abstracting to make thigs simpler. We will
+/// need some of this to be shared when lowering methods and closures too.
 let lower path bound =
     let stem = Path.GetFileNameWithoutExtension((string)path);
 
@@ -152,6 +156,10 @@ let lower path bound =
 
     assm.EntryPoint <- mainMethod
 
+    // TOOD: The way the file gets written, and the metadata to write with it, nees to be
+    //       abstracted to deal with different target framework's prefrences. For now the
+    //       `.exe` we generate is compatible with .NET Core and Mono. It would be nice
+    //       to make this explicit somewhere in future.    
     assm.Write path
     File.WriteAllText(Path.Combine(Path.GetDirectoryName(path), stem + ".runtimeconfig.json"), """
     {
