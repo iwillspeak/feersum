@@ -27,6 +27,7 @@ type BoundExpr =
     | Str of string
     | Load of StorageRef
     | Application of BoundExpr * BoundExpr list
+    | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
     | Null
 
@@ -42,7 +43,7 @@ let createRootScope =
 let bindIdent scope id =
     match Map.tryFind id scope with
     | Some storage -> BoundExpr.Load storage
-    | None -> failwithf "Reference to undefined symbol"
+    | None -> failwithf "Reference to undefined symbol `%s`" id
 
 /// Bind a Syntax Node
 ///
@@ -64,6 +65,12 @@ and bindApplication scope head rest =
     BoundExpr.Application(bind scope head, List.map (bind scope) rest)
 and bindForm scope form =
     match form with
+    | AstNode.Ident("if")::body ->
+        let b = bind scope
+        match body with
+        | [cond;ifTrue;ifFalse] -> BoundExpr.If((b cond), (b ifTrue), Some(b ifFalse))
+        | [cond;ifTrue] -> BoundExpr.If((b cond), (b ifTrue), None)
+        | _ -> failwith "Ill-formed 'if' special form"
     | head::rest -> bindApplication scope head rest
     | [] -> BoundExpr.Null
 
@@ -87,6 +94,18 @@ let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundEx
         match l with
         | StorageRef.Global id -> failwith "globals not implemented"
         | StorageRef.Local idx -> il.Emit(OpCodes.Ldloc, idx)
+    | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
+        lowerExpression(assm, il, cond)
+        let lblFalse = il.Create(OpCodes.Nop)
+        let lblEnd = il.Create(OpCodes.Nop)
+        il.Emit(OpCodes.Brfalse_S, lblFalse)
+        lowerExpression(assm, il, ifTrue)
+        il.Emit(OpCodes.Br_S, lblEnd)
+        il.Append(lblFalse)
+        match maybeIfFalse with
+        | Some ifFalse -> lowerExpression(assm, il, ifFalse)
+        | None -> il.Emit(OpCodes.Ldnull)
+        il.Append(lblEnd)
 and lowerSequence assm il seq =
     let popAndLower x =
         il.Emit(OpCodes.Pop)
