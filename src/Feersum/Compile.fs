@@ -23,7 +23,7 @@ type StorageRef =
 /// references resolved to the correct storage.
 type BoundExpr =
     | Boolean of bool
-    | Number of int64
+    | Number of double
     | Str of string
     | Load of StorageRef
     | Application of BoundExpr * BoundExpr list
@@ -74,8 +74,8 @@ let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundEx
     match expr with
     | BoundExpr.Null -> il.Emit(OpCodes.Ldnull)
     | BoundExpr.Number n ->
-        il.Emit(OpCodes.Ldc_I8, n)
-        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Int64)
+        il.Emit(OpCodes.Ldc_R8, n)
+        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Double)
     | BoundExpr.Str s -> il.Emit(OpCodes.Ldstr, s)
     | BoundExpr.Boolean b ->
         il.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
@@ -132,11 +132,11 @@ let lower path bound =
     lowerExpression(assm, il, bound)
 
     il.Emit(OpCodes.Dup)
-    il.Emit(OpCodes.Isinst, assm.MainModule.TypeSystem.Int64)
+    il.Emit(OpCodes.Isinst, assm.MainModule.TypeSystem.Double)
     let notInt = il.Create(OpCodes.Dup)
     il.Emit(OpCodes.Brfalse, notInt)
 
-    il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Int64)
+    il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
     il.Emit(OpCodes.Conv_I4)
     il.Emit(OpCodes.Ret)
 

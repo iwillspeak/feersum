@@ -7,7 +7,7 @@ open FParsec
 // The main AST Node type
 type AstNode =
     | Ident of string
-    | Number of int64
+    | Number of float
     | Str of string
     | Boolean of bool
     | Form of AstNode list
@@ -19,7 +19,7 @@ let comment =
 let ws = skipMany (comment <|> unicodeSpaces1)
 
 let parseNum =
-    pint64 |>> Number
+    pfloat |>> Number
 
 let unescapedChar =
     noneOf "\"\\"

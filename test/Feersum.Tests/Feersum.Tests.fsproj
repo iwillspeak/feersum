@@ -6,8 +6,9 @@
     <ProjectReference Include="..\..\src\Feersum\Feersum.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tests.fs" />
+    <Compile Include="EvalTests.fs" />
     <Compile Include="SpecTests.fs" />
+    <Compile Include="SyntaxTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />

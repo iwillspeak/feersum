@@ -8,7 +8,7 @@ open Syntax
 /// in the interpreter.
 type SchemeValue =
     | Nil
-    | Number of int64
+    | Number of double
     | Str of string
     | Boolean of bool
     | Builtin of (SchemeValue list -> SchemeValue)
@@ -67,7 +67,7 @@ let rec execute (input: AstNode): SchemeValue =
 let externalRepr value =
     match value with
     | Nil -> "NIL"
-    | Number n -> n.ToString("d")
+    | Number n -> n.ToString("g")
     | Str s -> sprintf "%A" s
     | Boolean b -> if b then "#t" else "#f"
     | Builtin f -> "#[procedure]"
