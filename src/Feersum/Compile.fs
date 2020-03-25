@@ -212,6 +212,6 @@ let compile node output =
 /// Takes the `path` to an input to read and compile.
 let compileFile(path: string) =
     let output = Path.GetFileNameWithoutExtension(path) + ".exe"
-    match parseFile path with
-    | Ok ast -> compile ast output
-    | Error e -> failwithf "error: %s" e
+    parseFile path
+    |> Result.map (fun ast -> compile ast output)
+

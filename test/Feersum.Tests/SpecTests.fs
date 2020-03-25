@@ -13,4 +13,6 @@ let listSpecs =
 [<Theory>]
 [<MemberDataAttribute("listSpecs")>]
 let ``spec tests compile`` s =
-    compileFile (Path.Join(specDir, s))
+    match compileFile (Path.Join(specDir, s)) with
+    | Ok _ -> ()
+    | Error e -> failwithf "Compilation error: %A" e
