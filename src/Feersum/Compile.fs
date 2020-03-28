@@ -71,6 +71,8 @@ and bindForm scope form =
         | [cond;ifTrue;ifFalse] -> BoundExpr.If((b cond), (b ifTrue), Some(b ifFalse))
         | [cond;ifTrue] -> BoundExpr.If((b cond), (b ifTrue), None)
         | _ -> failwith "Ill-formed 'if' special form"
+    | AstNode.Ident("begin")::body ->
+        List.map (bind scope) body |> BoundExpr.Seq
     | head::rest -> bindApplication scope head rest
     | [] -> BoundExpr.Null
 
