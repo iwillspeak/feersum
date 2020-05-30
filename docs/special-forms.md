@@ -15,7 +15,9 @@ Returns an anonymous procedure which binds its arguments to
 environment.
 
 Formals can be either a single identifier to bind the parameter list
-to, or a list which the parameters should be matched against. If the list contains `.` then following paramete
+to, or a list which the parameters should be matched against. If the
+list contains `.` then following parameters are bound to a list to
+following argument.
 
 e.g.:
 
@@ -24,6 +26,15 @@ arguments and binds the list to `a` in the lambda's environment.
 
 The expression `(lambda (b) (+ 1 2))` defines a procedure that takes a
 single argument and binds that to `b` in the lambda's environment.
+
+The expression `(labmda (c . d) (+ 1 2))` defines a procedure that takes
+a single argument and an optional number of following arguments. The
+first argument is bound to `c` in the lambda's environment and all
+remaining arguments are bound to a list `d` in the lambda's environment.
+
+### Implementation status
+
+Lambdas are not yet implemented
 
 ## Lexical Bindings
 
@@ -42,6 +53,9 @@ initialised with some placeholder value before the intialiser
 expressions are evaluated in the child environment allowing full
 mutual recursion.
 
+### Implementation status
+
+Lexical bindings are not yet implemented
 
 ## Definitions
 
@@ -58,6 +72,10 @@ within a `lambda`, but only up to the first non-definition expression.
 Procedure definitions are just lambdas bound to the name that occurs
 as the first element of the `<formals>` definition.
 
+### Implementation status
+
+Definitions are not yet implemented
+
 ## Assignments
 
 ```scheme
@@ -67,6 +85,10 @@ as the first element of the `<formals>` definition.
 Set expressions assign the result of `<expression>` to the location
 that `<variable>` is currently bound to. If `<variable>` is unbound
 then the expression raises an error.
+
+### Implementation status
+
+Assignments are not yet implemented
 
 ## Quoting
 
@@ -79,6 +101,10 @@ Quote expressions evaluate to the external representation of the
 expression rather than evaluating the expression directly. For
 literals there is no difference. For lists this skips application and
 allows creation of lists directly.
+
+### Implementation status
+
+Quoring is only impelmented in the interpreter so far.
 
 ## Conditionals
 
@@ -117,7 +143,12 @@ and then evaluates the body of whichever `<case>` contains the
 resulting value in `<value>`s. The final case may use `else` in place
 of the value list to provide a default.
 
-# Sequence
+### Implementation status
+
+The `if` conditional special form is implemnted. The remaining forms
+could be implemneted either directly or wait for macros.
+
+## Sequence
 
 ```scheme
 (begin <expression>+)
@@ -125,5 +156,9 @@ of the value list to provide a default.
 
 The `begin` expression evaluates each inner `expression` in sequence
 and returns the result of the final expression.
+
+### Implementation status
+
+The begin special form is implemented.
 
  [mit-specials]: https://www.gnu.org/software/mit-scheme/documentation/mit-scheme-ref/Special-Forms.html
