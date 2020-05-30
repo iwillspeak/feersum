@@ -48,11 +48,14 @@ let lookup ident =
 
 /// Take a syntax tree and evaluate it producing a value.
 let rec execute (input: AstNode): SchemeValue =
+    let execSeq seq =
+        seq |> List.map execute |> List.tryLast |> Option.defaultValue SchemeValue.Nil
     match input with
     | AstNode.Number n  -> SchemeValue.Number n
     | AstNode.Str s -> SchemeValue.Str s
     | AstNode.Boolean b -> SchemeValue.Boolean b
-    | AstNode.Seq exprs -> exprs |> List.map execute |> List.tryLast |> Option.defaultValue SchemeValue.Nil
+    | AstNode.Seq exprs -> exprs |> execSeq
+    | AstNode.Form(AstNode.Ident "begin"::b) -> b |> execSeq
     | AstNode.Form([AstNode.Ident "quote"; e]) -> SchemeValue.Quoted e
     | AstNode.Form([AstNode.Ident "if"; cond; ifTrue; ifFalse]) ->
         match (execute cond) with
