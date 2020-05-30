@@ -7,10 +7,10 @@ open System
 open Mono.Cecil
 open Mono.Cecil.Cil
 
-/// Lower a Single Bound Expression
+/// Emit a Single Bound Expression
 /// 
 /// Emits the code for a single function into the given assembly.
-let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundExpr) =
+let rec emitExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundExpr) =
     match expr with
     | BoundExpr.Null -> il.Emit(OpCodes.Ldnull)
     | BoundExpr.Number n ->
@@ -21,44 +21,44 @@ let rec lowerExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundEx
         il.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
         il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
     | BoundExpr.Seq s ->
-        lowerSequence assm il s
-    | BoundExpr.Application(ap, args) -> lowerApplication assm il ap args
+        emitSequence assm il s
+    | BoundExpr.Application(ap, args) -> emitApplication assm il ap args
     | BoundExpr.Load l ->
         match l with
         | StorageRef.Global id -> failwith "globals not implemented"
         | StorageRef.Local idx -> il.Emit(OpCodes.Ldloc, idx)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
-        lowerExpression(assm, il, cond)
+        emitExpression(assm, il, cond)
         let lblFalse = il.Create(OpCodes.Nop)
         let lblEnd = il.Create(OpCodes.Nop)
         il.Emit(OpCodes.Brfalse_S, lblFalse)
-        lowerExpression(assm, il, ifTrue)
+        emitExpression(assm, il, ifTrue)
         il.Emit(OpCodes.Br_S, lblEnd)
         il.Append(lblFalse)
         match maybeIfFalse with
-        | Some ifFalse -> lowerExpression(assm, il, ifFalse)
+        | Some ifFalse -> emitExpression(assm, il, ifFalse)
         | None -> il.Emit(OpCodes.Ldnull)
         il.Append(lblEnd)
-and lowerSequence assm il seq =
-    let popAndLower x =
+and emitSequence assm il seq =
+    let popAndEmit x =
         il.Emit(OpCodes.Pop)
-        lowerExpression(assm, il, x)
-    lowerExpression(assm, il, List.head seq)
+        emitExpression(assm, il, x)
+    emitExpression(assm, il, List.head seq)
     List.tail seq
-    |>  Seq.iter popAndLower
-and lowerApplication assm il ap args =
+    |>  Seq.iter popAndEmit
+and emitApplication assm il ap args =
     match ap with
     | _ -> ()
 
-/// Lower a Bound Expression to .NET
+/// Emit a Bound Expression to .NET
 /// 
 /// Creates an assembly and writes out the .NET interpretation of the
 /// given bound tree.
 /// 
 /// TODO: this method is a huge mess. The creation of the types, methods and other
 /// supporting work nees extracting and abstracting to make thigs simpler. We will
-/// need some of this to be shared when lowering methods and closures too.
-let lower path bound =
+/// need some of this to be shared when emiting methods and closures too.
+let emit path bound =
     let stem = Path.GetFileNameWithoutExtension((string)path);
 
     // Create an assembly with a nominal version to hold our code    
@@ -81,7 +81,7 @@ let lower path bound =
     let il = mainMethod.Body.GetILProcessor()
     progTy.Methods.Add mainMethod
 
-    lowerExpression(assm, il, bound)
+    emitExpression(assm, il, bound)
 
     il.Emit(OpCodes.Dup)
     il.Emit(OpCodes.Isinst, assm.MainModule.TypeSystem.Double)
@@ -132,13 +132,13 @@ let lower path bound =
 /// attach any type information that _can_ be computed to each node, and
 /// resolve variable references to the symbols that they refer to.
 /// 
-/// Once the expression is bound we will then `lower` the expression to
-/// flatten it out into a list of blocks. Once we have all the blocks
-/// they can be written out to an `Assembly` with `emit`.
+/// Once the expression is bound we will then `emit` the expression this walks
+/// the expression and writes out the corresponding .NET IL to an `Assembly`
+/// at `output`.
 let compile node output =
     let scope = createRootScope
     bind scope node
-    |> lower output
+    |> emit output
 
 /// Read a File and Compile
 /// 
@@ -147,4 +147,3 @@ let compileFile(path: string) =
     let output = Path.GetFileNameWithoutExtension(path) + ".exe"
     parseFile path
     |> Result.map (fun ast -> compile ast output)
-
