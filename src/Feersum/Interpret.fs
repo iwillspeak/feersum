@@ -1,7 +1,7 @@
 module Interpret
 
 open Syntax
-open Compile
+open Bind
 
 /// Shceme value
 ///
