@@ -15,7 +15,7 @@ let ``Evaluate atoms`` () =
 [<Fact>]
 let ``Evaluate lists`` () =
     Assert.Equal("132", execute(Seq [ Boolean false; Number 132.0 ]) |> externalRepr)
-    Assert.Equal("NIL", execute(Seq [ ]) |> externalRepr)
+    Assert.Equal("; unspecified value", execute(Seq [ ]) |> externalRepr)
     Assert.Equal("#t", execute(Seq [ Boolean true ]) |> externalRepr)
 
 [<Fact>]

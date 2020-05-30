@@ -15,3 +15,6 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Proper support for different target frameworks
  * [ ] Debugging support
  * [ ] Implement [all special forms](docs/special-forms.md)
+ * [ ] Remove interpreter + perform on-demand compilation instead.
+ * [ ] Standard library.
+ * [ ] Interop with other .NET assemblies.
