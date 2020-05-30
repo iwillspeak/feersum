@@ -16,6 +16,15 @@ type SchemeValue =
     | Builtin of (SchemeValue list -> SchemeValue)
     | Quoted of AstNode
 
+module SchemeValue =
+
+    /// Convenience method to convert an optional value
+    ///
+    /// If the value is `None` then map to `Undefined`, otherwise
+    /// unwrap the inner value.
+    let fromOption maybeValue =
+        Option.defaultValue SchemeValue.Undefined maybeValue
+
 /// Number Binary Operation
 ///
 /// Create a builtin scheme value which reduces numeric parameters
@@ -49,6 +58,7 @@ let builtins =
     ] |> Map.ofList
 
 let rec executeBound (expr: BoundExpr) =
+    let recurse = executeBound
     match expr with
     | BoundExpr.Null -> SchemeValue.Nil
     | BoundExpr.Number n -> SchemeValue.Number n
@@ -56,11 +66,11 @@ let rec executeBound (expr: BoundExpr) =
     | BoundExpr.Boolean b ->  SchemeValue.Boolean b
     | BoundExpr.Seq s ->
         s
-        |> List.map executeBound
+        |> List.map recurse
         |> List.tryLast
-        |> Option.defaultValue SchemeValue.Undefined
+        |> SchemeValue.fromOption
     | BoundExpr.Application(ap, args) ->
-        apply (executeBound ap) (List.map executeBound args)
+        apply (recurse ap) (List.map recurse args)
     | BoundExpr.Load l ->
         match l with
         | StorageRef.Global id ->  Map.tryFind id builtins |> Option.get
@@ -68,17 +78,18 @@ let rec executeBound (expr: BoundExpr) =
             // TODO: implement local and global loads
             failwith "local loads not implemented in the interpreter"
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
-        match (executeBound cond) with
+        match (recurse cond) with
         | SchemeValue.Boolean false ->
             maybeIfFalse
-            |> Option.map executeBound
-            |> Option.defaultValue SchemeValue.Undefined
-        | _ -> executeBound ifTrue
+            |> Option.map recurse
+            |> SchemeValue.fromOption
+        | _ -> recurse ifTrue
 
 /// Take a syntax tree and evaluate it producing a value.
 let execute (input: AstNode): SchemeValue =
+    let globals = builtins
     let scope: Map<string, StorageRef> =
-        Map.fold (fun s id _ -> s.Add(id, StorageRef.Global id)) createRootScope builtins
+        Map.fold (fun s id _ -> s.Add(id, StorageRef.Global id)) createRootScope globals
     bind scope input |> executeBound
 
 /// Take a Scheme Value and convert it to the
