@@ -10,7 +10,8 @@ open Mono.Cecil.Cil
 /// Emit a Single Bound Expression
 /// 
 /// Emits the code for a single function into the given assembly.
-let rec emitExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundExpr) =
+let rec emitExpression (assm: AssemblyDefinition) (il: ILProcessor) (expr: BoundExpr) =
+    let recurse = emitExpression assm il
     match expr with
     | BoundExpr.Null -> il.Emit(OpCodes.Ldnull)
     | BoundExpr.Number n ->
@@ -28,22 +29,22 @@ let rec emitExpression(assm: AssemblyDefinition, il: ILProcessor, expr: BoundExp
         | StorageRef.Global id -> failwith "globals not implemented"
         | StorageRef.Local idx -> il.Emit(OpCodes.Ldloc, idx)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
-        emitExpression(assm, il, cond)
+        recurse cond
         let lblFalse = il.Create(OpCodes.Nop)
         let lblEnd = il.Create(OpCodes.Nop)
         il.Emit(OpCodes.Brfalse_S, lblFalse)
-        emitExpression(assm, il, ifTrue)
+        recurse ifTrue
         il.Emit(OpCodes.Br_S, lblEnd)
         il.Append(lblFalse)
         match maybeIfFalse with
-        | Some ifFalse -> emitExpression(assm, il, ifFalse)
+        | Some ifFalse -> emitExpression assm  il ifFalse
         | None -> il.Emit(OpCodes.Ldnull)
         il.Append(lblEnd)
 and emitSequence assm il seq =
     let popAndEmit x =
         il.Emit(OpCodes.Pop)
-        emitExpression(assm, il, x)
-    emitExpression(assm, il, List.head seq)
+        emitExpression assm il x
+    emitExpression assm il (List.head seq)
     List.tail seq
     |>  Seq.iter popAndEmit
 and emitApplication assm il ap args =
@@ -81,7 +82,7 @@ let emit path bound =
     let il = mainMethod.Body.GetILProcessor()
     progTy.Methods.Add mainMethod
 
-    emitExpression(assm, il, bound)
+    emitExpression assm il bound
 
     il.Emit(OpCodes.Dup)
     il.Emit(OpCodes.Isinst, assm.MainModule.TypeSystem.Double)
