@@ -36,7 +36,7 @@ let createRootScope =
 /// Bind an Identifier Reference
 ///
 /// Lookup the identifier in the given scope 
-let bindIdent scope id =
+let private bindIdent scope id =
     match Map.tryFind id scope with
     | Some storage -> BoundExpr.Load storage
     | None -> failwithf "Reference to undefined symbol `%s`" id

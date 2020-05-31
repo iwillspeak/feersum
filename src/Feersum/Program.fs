@@ -1,8 +1,22 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open Syntax
+open System
 open Interpret
 open Compile
+
+/// Read a single line of user input and parse it into a
+/// syntax tree. If the input can't be parsed then read
+/// again.
+let rec read (): AstNode =
+    Console.Write "§> "
+    Console.Out.Flush()
+    let line = Console.ReadLine()
+    match readExpr line with
+    | Result.Ok node -> node
+    | Result.Error message -> 
+        (eprintfn "Failure: %s" message)
+        read()
 
 /// Print a value out to the console
 let print value =
