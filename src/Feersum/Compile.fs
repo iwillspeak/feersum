@@ -24,8 +24,16 @@ let rec emitExpression (assm: AssemblyDefinition) (il: ILProcessor) (expr: Bound
     | BoundExpr.Seq s ->
         emitSequence assm il s
     | BoundExpr.Application(ap, args) -> emitApplication assm il ap args
-    | BoundExpr.Load l ->
-        match l with
+    | BoundExpr.Definition(id, storage, maybeVal) ->
+        match storage with
+        | StorageRef.Global id -> failwith "globals not implemented"
+        | StorageRef.Local idx -> 
+            match maybeVal with
+            | Some(expr) -> recurse expr
+            | None -> il.Emit(OpCodes.Ldnull) // TODO: default values?
+            il.Emit(OpCodes.Stloc, idx)
+    | BoundExpr.Load storage ->
+        match storage with
         | StorageRef.Global id -> failwith "globals not implemented"
         | StorageRef.Local idx -> il.Emit(OpCodes.Ldloc, idx)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->

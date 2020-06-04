@@ -2,6 +2,7 @@ module Interpret
 
 open Syntax
 open Bind
+open System.Collections.Generic
 
 /// Shceme value
 ///
@@ -57,13 +58,22 @@ let builtins =
     ; "/",  numberBinop(/)         
     ] |> Map.ofList
 
-let rec executeBound (expr: BoundExpr) =
-    let recurse = executeBound
+let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
+    let recurse = executeBound env
     match expr with
     | BoundExpr.Null -> SchemeValue.Nil
     | BoundExpr.Number n -> SchemeValue.Number n
     | BoundExpr.Str s -> SchemeValue.Str s
     | BoundExpr.Boolean b ->  SchemeValue.Boolean b
+    | BoundExpr.Definition(def, store, maybeInit) ->
+        let init = Option.map recurse maybeInit |> SchemeValue.fromOption
+        match store with
+        | StorageRef.Global id -> env.Add(id, init)
+        | StorageRef.Local idx -> failwith "Set local not implemented"
+        // actually using this value is difficult in Scheme so i'm  not sure it
+        // matters _too_ much _what_ it is. It's definitely _not_ the init value
+        // fo the new variable binding though.
+        SchemeValue.Quoted (AstNode.Ident def)
     | BoundExpr.Seq s ->
         s
         |> List.map recurse
@@ -90,7 +100,8 @@ let execute (input: AstNode): SchemeValue =
     let globals = builtins
     let scope: Map<string, StorageRef> =
         Map.fold (fun s id _ -> s.Add(id, StorageRef.Global id)) createRootScope globals
-    bind scope input |> executeBound
+    let initlalEnv = Map.toSeq globals |> dict
+    bind scope input |> executeBound initlalEnv
 
 /// Take a Scheme Value and convert it to the
 /// 'external representation' as a string

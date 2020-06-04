@@ -22,6 +22,7 @@ type BoundExpr =
     | Number of double
     | Str of string
     | Load of StorageRef
+    | Definition of string * StorageRef * BoundExpr option
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
@@ -69,5 +70,20 @@ and bindForm scope form =
         | _ -> failwith "Ill-formed 'if' special form"
     | AstNode.Ident("begin")::body ->
         List.map (bind scope) body |> BoundExpr.Seq
+    | AstNode.Ident("define")::body ->
+        // TODO: Storage scopes. The storage ref shouldn't be fabricated here
+        //       instead we should ask the scope for the value. The root scope
+        //       will generaate a global storage ref for the given name, the
+        //       local scope will just bump the locals index.
+        match body with
+        | [AstNode.Ident id] -> BoundExpr.Definition(id, StorageRef.Global(id), None)        
+        | [AstNode.Ident id;value] -> BoundExpr.Definition(id, StorageRef.Global(id), Some(bind scope value))
+        | AstNode.Ident id::((AstNode.Form formals)::body) ->
+            // TODO: lambda definitions. We need to add the formas to a new scope
+            //       level and bind the body in _that_ scope. The definition body
+            //       is then the bound lambda rather than `None`.
+            let boudnBody = bindSequence scope body
+            BoundExpr.Definition(id, StorageRef.Global(id), None)        
+        | _ -> failwith "Ill-formed 'define' special form"
     | head::rest -> bindApplication scope head rest
     | [] -> BoundExpr.Null
