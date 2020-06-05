@@ -59,39 +59,13 @@ and emitApplication assm il ap args =
     match ap with
     | _ -> ()
 
-/// Emit a Bound Expression to .NET
+/// Emit the `Main` Method Epilogue
 /// 
-/// Creates an assembly and writes out the .NET interpretation of the
-/// given bound tree.
-/// 
-/// TODO: this method is a huge mess. The creation of the types, methods and other
-/// supporting work nees extracting and abstracting to make thigs simpler. We will
-/// need some of this to be shared when emiting methods and closures too.
-let emit path bound =
-    let stem = Path.GetFileNameWithoutExtension((string)path);
-
-    // Create an assembly with a nominal version to hold our code    
-    let name = AssemblyNameDefinition(stem, Version(0, 1, 0))
-    let assm = AssemblyDefinition.CreateAssembly(name, path, ModuleKind.Console)
-
-    // Genreate a nominal type and main method        
-    let progTy = TypeDefinition(stem, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
-    assm.MainModule.Types.Add progTy
-    let ctor = MethodDefinition(".ctor", MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName, assm.MainModule.TypeSystem.Void)
-    let objConstructor = assm.MainModule.ImportReference((typeof<obj>).GetConstructor(Array.empty))
-    let il = ctor.Body.GetILProcessor()
-    il.Emit(OpCodes.Ldarg_0)
-    il.Emit(OpCodes.Call, objConstructor)
-    il.Emit(OpCodes.Ret)
-    progTy.Methods.Add ctor
-
-    let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Int32)
-    mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
-    let il = mainMethod.Body.GetILProcessor()
-    progTy.Methods.Add mainMethod
-
-    emitExpression assm il bound
-
+/// This sequence of instructions is added at the end of the main method to
+/// coerce the result type into a return value for the application. Once we have
+/// some form of runtime library linked into the final executable it might be
+/// best to include this in there rather than emitting it manually each time.
+let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
     il.Emit(OpCodes.Dup)
     il.Emit(OpCodes.Isinst, assm.MainModule.TypeSystem.Double)
     let notInt = il.Create(OpCodes.Dup)
@@ -114,25 +88,42 @@ let emit path bound =
     il.Append(notBool)
     il.Append(load0)
     il.Emit(OpCodes.Ret)
+ 
+/// Emit a Bound Expression to .NET
+/// 
+/// Creates an assembly and writes out the .NET interpretation of the
+/// given bound tree.
+/// 
+/// TODO: this method is a huge mess. The creation of the types, methods and other
+/// supporting work nees extracting and abstracting to make thigs simpler. We will
+/// need some of this to be shared when emiting methods and closures too.
+let emit (outputStream: Stream) outputName bound =
+    // Create an assembly with a nominal version to hold our code    
+    let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
+    let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
+
+    // Genreate a nominal type and main method        
+    let progTy = TypeDefinition(outputName, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
+    assm.MainModule.Types.Add progTy
+    let ctor = MethodDefinition(".ctor", MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName, assm.MainModule.TypeSystem.Void)
+    let objConstructor = assm.MainModule.ImportReference((typeof<obj>).GetConstructor(Array.empty))
+    let il = ctor.Body.GetILProcessor()
+    il.Emit(OpCodes.Ldarg_0)
+    il.Emit(OpCodes.Call, objConstructor)
+    il.Emit(OpCodes.Ret)
+    progTy.Methods.Add ctor
+
+    let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Int32)
+    mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
+    let il = mainMethod.Body.GetILProcessor()
+    progTy.Methods.Add mainMethod
+
+    emitExpression assm il bound
+    emitMainEpilogue assm il
 
     assm.EntryPoint <- mainMethod
 
-    // TOOD: The way the file gets written, and the metadata to write with it, nees to be
-    //       abstracted to deal with different target framework's prefrences. For now the
-    //       `.exe` we generate is compatible with .NET Core and Mono. It would be nice
-    //       to make this explicit somewhere in future.    
-    assm.Write path
-    File.WriteAllText(Path.Combine(Path.GetDirectoryName(path), stem + ".runtimeconfig.json"), """
-    {
-      "runtimeOptions": {
-        "tfm": "netcoreapp3.0",
-        "framework": {
-          "name": "Microsoft.NETCore.App",
-          "version": "3.0.0"
-        }
-      }
-    }
-    """)
+    assm.Write outputStream
 
 /// Compile a single AST node into an assembly
 ///
@@ -143,16 +134,33 @@ let emit path bound =
 /// 
 /// Once the expression is bound we will then `emit` the expression this walks
 /// the expression and writes out the corresponding .NET IL to an `Assembly`
-/// at `output`.
-let compile node output =
+/// at `outputStream`. The `outputName` controls the root namespace and assembly
+/// name of the output.
+let compile outputStream outputName node =
     let scope = createRootScope
-    bind scope node
-    |> emit output
+    bind scope node |> emit outputStream outputName
 
 /// Read a File and Compile
 /// 
 /// Takes the `path` to an input to read and compile.
-let compileFile(path: string) =
+let compileFile (path: string) =
     let output = Path.GetFileNameWithoutExtension(path) + ".exe"
+    let stem = Path.GetFileNameWithoutExtension(path);
     parseFile path
-    |> Result.map (fun ast -> compile ast output)
+    |> Result.map (fun ast ->
+        compile (File.OpenWrite output) stem ast
+        // TOOD: This metadata needs to be abstracted to deal with different
+        //       target framework's prefrences. For now the `.exe` we generate
+        //       is compatible with .NET Core and Mono. It would be nice to make
+        //       this explicit somewhere in future.    
+        File.WriteAllText(Path.Combine(Path.GetDirectoryName(path), stem + ".runtimeconfig.json"), """
+        {
+          "runtimeOptions": {
+            "tfm": "netcoreapp3.0",
+            "framework": {
+              "name": "Microsoft.NETCore.App",
+              "version": "3.0.0"
+            }
+          }
+        }
+        """))
