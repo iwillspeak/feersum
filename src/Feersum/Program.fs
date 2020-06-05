@@ -3,6 +3,7 @@
 open Syntax
 open System
 open Interpret
+open Eval
 open Compile
 
 /// Read a single line of user input and parse it into a
@@ -22,14 +23,17 @@ let rec read (): AstNode =
 let print value =
     value |> externalRepr |> printfn "]= %s"
 
+/// Print an object out to the console. Used to serialise the external
+/// representation form an eval
+let printObj value =
+    value |> printfn "}= %A"
+
 /// Read, Execute, Print Loop
 ///
 /// Repeatedly reads input and prints output
-let rec repl () =
-    (read()
-    |> execute
-    |> print)
-    repl()
+let rec repl evaluator =
+    (read() |> evaluator)
+    repl evaluator
 
 /// Compile a single file printing an error if
 /// there is one.
@@ -41,6 +45,7 @@ let compileSingle path =
 [<EntryPoint>]
 let main argv =
     match argv with
-    | [| |] -> repl()
+    | [| |] -> repl (eval >> printObj)
+    | [|  "--interpret" |] -> repl (execute >> print)
     | _ -> Seq.iter compileSingle argv
     0 // return an integer exit code
