@@ -2,6 +2,9 @@
 obj/
 bin/
 
+# Unit test results
+**/TestResults/*.trx
+
 # artifacts from our compilations
 *.runtimeconfig.json
 *.runtimeconfig.dev.json

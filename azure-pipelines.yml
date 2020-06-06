@@ -4,4 +4,8 @@ pool:
 steps:
   - script: |
       dotnet build
-      dotnet test --no-build
+      dotnet test --no-build --logger 'trx' --logger 'console;verbosity=normal'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/TestResults/*.trx' 
