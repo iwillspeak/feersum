@@ -16,5 +16,11 @@ let eval ast =
     compile memStream "evalCtx" ast
     let assm = Assembly.Load(memStream.ToArray())
     let progTy = assm.GetType("evalCtx.LispProgram")
-    let mainMethod = progTy.GetMethod("Main")
-    mainMethod.Invoke(null, [| Array.empty<String> |])
+    // TODO: Instead of calling `$ScriptBody` here should we bind a custom
+    //       function definition and call that instead? e.g.: 
+    //       
+    //       ```scheme
+    ///      (define (evalEntry) <ast>)
+    ///      ```
+    let mainMethod = progTy.GetMethod("$ScriptBody")
+    mainMethod.Invoke(null, Array.empty)

@@ -102,7 +102,7 @@ let emit (outputStream: Stream) outputName bound =
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
 
-    // Genreate a nominal type and main method        
+    // Genreate a nominal type to contain the methods for this program.        
     let progTy = TypeDefinition(outputName, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
     let ctor = MethodDefinition(".ctor", MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName, assm.MainModule.TypeSystem.Void)
@@ -113,16 +113,26 @@ let emit (outputStream: Stream) outputName bound =
     il.Emit(OpCodes.Ret)
     progTy.Methods.Add ctor
 
+    // Emit the body of the script to a separate method so that the `Eval`
+    // module can call it directly
+    let bodyMethod = MethodDefinition("$ScriptBody", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Object)
+    progTy.Methods.Add bodyMethod
+    let il = bodyMethod.Body.GetILProcessor()    
+    emitExpression assm il bound
+    il.Emit(OpCodes.Ret)
+
+    // The `Main` method is the entry point of the program. It calls
+    // `$ScriptBody` and coerces the return value to an exit code.
     let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Int32)
     mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
-    let il = mainMethod.Body.GetILProcessor()
     progTy.Methods.Add mainMethod
+    assm.EntryPoint <- mainMethod
+    let il = mainMethod.Body.GetILProcessor()
 
-    emitExpression assm il bound
+    il.Emit(OpCodes.Call, bodyMethod)
     emitMainEpilogue assm il
 
-    assm.EntryPoint <- mainMethod
-
+    // Write our `Assembly` to the output stream now we are done.
     assm.Write outputStream
 
 /// Compile a single AST node into an assembly
