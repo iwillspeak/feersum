@@ -8,6 +8,11 @@ open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 
+/// Emit an instance of the unspecified value
+let private emitUnspecified (il: ILProcessor) =
+    // TODO: What should we do about empty sequences? This falls back to '()
+    il.Emit(OpCodes.Ldnull)
+
 /// Emit a Single Bound Expression
 /// 
 /// Emits the code for a single function into the given assembly.
@@ -22,6 +27,7 @@ let rec emitExpression (assm: AssemblyDefinition) (il: ILProcessor) (expr: Bound
     | BoundExpr.Boolean b ->
         il.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
         il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
+    | BoundExpr.Seq [] -> emitUnspecified il
     | BoundExpr.Seq s ->
         emitSequence assm il s
     | BoundExpr.Application(ap, args) -> emitApplication assm il ap args

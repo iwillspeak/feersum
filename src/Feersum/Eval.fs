@@ -13,6 +13,7 @@ open System
 let cilExternalRepr (object: Object) =
     match object with
     | :? Boolean as b -> if b then "#t" else "#f"
+    | :? Double as d -> sprintf "%g" d
     | null -> "()"
     | other -> sprintf "%A" other
     
