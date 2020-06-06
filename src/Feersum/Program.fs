@@ -26,7 +26,7 @@ let print value =
 /// Print an object out to the console. Used to serialise the external
 /// representation form an eval
 let printObj value =
-    value |> printfn "}= %A"
+    value |> cilExternalRepr |> printfn "}= %s"
 
 /// Read, Execute, Print Loop
 ///

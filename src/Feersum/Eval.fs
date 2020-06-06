@@ -7,6 +7,16 @@ open System.IO
 open System.Reflection
 open System
 
+/// Raw External Representation
+///
+/// Returns the external representation for a CIL type.
+let cilExternalRepr (object: Object) =
+    match object with
+    | :? Boolean as b -> if b then "#t" else "#f"
+    | null -> "()"
+    | other -> sprintf "%A" other
+    
+
 /// Take a syntax tree and evaluate it in-process
 ///
 /// This first compiles the tree to an in-memory assembly and then calls the
