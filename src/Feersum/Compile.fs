@@ -5,6 +5,7 @@ open Syntax
 open System.IO
 open System
 open Mono.Cecil
+open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 
 /// Emit a Single Bound Expression
@@ -120,6 +121,7 @@ let emit (outputStream: Stream) outputName bound =
     let il = bodyMethod.Body.GetILProcessor()    
     emitExpression assm il bound
     il.Emit(OpCodes.Ret)
+    bodyMethod.Body.Optimize()
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.
