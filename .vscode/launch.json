@@ -31,9 +31,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/src/Feersum/bin/Debug/netcoreapp3.0/Feersum.dll",
-            "args": [
-                "${workspaceRoot}/spec/comment.scm"
-            ],
+            "args": [],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
             "externalConsole": false,
