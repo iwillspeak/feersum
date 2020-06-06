@@ -9,6 +9,18 @@ let readSingle input =
     | Ok(expr) -> expr
     | o -> failwithf "Expected single expression but got: %A" o
 
+let readMany input =
+    match readExpr input with
+    | Ok(read) -> read
+    | Error(e) -> failwithf "Expected one or more expressions but got: %A" e
+
+[<Fact>]
+let ``parse seqs`` () =
+    Assert.Equal(Seq [ Number 1.0; Number 23.0], readMany "1 23")
+    Assert.Equal(Seq [ Boolean true ], readMany "#t")
+    Assert.Equal(Seq [ ], readMany "")
+    Assert.Equal(Seq [ Form [ Ident "+"; Number 12.0; Number 34.0 ]; Boolean false], readMany "(+ 12 34) #f")
+
 [<Fact>]
 let ``parse atoms`` () =
     Assert.Equal(Number 123.559, readSingle "123.559")
@@ -20,6 +32,13 @@ let ``parse atoms`` () =
     Assert.Equal(Boolean false, readSingle "#f")
 
 [<Theory>]
+[<InlineData("?")>]
+[<InlineData("+")>]
+[<InlineData("*")>]
+[<InlineData("/")>]
+[<InlineData("-")>]
+[<InlineData("a")>]
+[<InlineData("test")>]
 [<InlineData("test?")>]
 [<InlineData("celsius->farenhiet")>]
 [<InlineData("things")>]
