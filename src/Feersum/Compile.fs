@@ -144,7 +144,7 @@ let compile outputStream outputName node =
 /// 
 /// Takes the `path` to an input to read and compile.
 let compileFile (path: string) =
-    let output = Path.GetFileNameWithoutExtension(path) + ".exe"
+    let output = Path.ChangeExtension(path, "exe")
     let stem = Path.GetFileNameWithoutExtension(path);
     parseFile path
     |> Result.map (fun ast ->
