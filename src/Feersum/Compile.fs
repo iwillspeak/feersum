@@ -8,6 +8,9 @@ open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 
+// Type to Hold Context While Emitting IL
+type EmitCtx = { Assm: AssemblyDefinition; IL: ILProcessor }
+
 /// Emit an instance of the unspecified value
 let private emitUnspecified (il: ILProcessor) =
     // TODO: What should we do about empty sequences? This falls back to '()
@@ -16,55 +19,54 @@ let private emitUnspecified (il: ILProcessor) =
 /// Emit a Single Bound Expression
 /// 
 /// Emits the code for a single function into the given assembly.
-let rec emitExpression (assm: AssemblyDefinition) (il: ILProcessor) (expr: BoundExpr) =
-    let recurse = emitExpression assm il
+let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
+    let recurse = emitExpression ctx
     match expr with
-    | BoundExpr.Null -> il.Emit(OpCodes.Ldnull)
+    | BoundExpr.Null -> ctx.IL.Emit(OpCodes.Ldnull)
     | BoundExpr.Number n ->
-        il.Emit(OpCodes.Ldc_R8, n)
-        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Double)
-    | BoundExpr.Str s -> il.Emit(OpCodes.Ldstr, s)
+        ctx.IL.Emit(OpCodes.Ldc_R8, n)
+        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Double)
+    | BoundExpr.Str s -> ctx.IL.Emit(OpCodes.Ldstr, s)
     | BoundExpr.Boolean b ->
-        il.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
-        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
-    | BoundExpr.Seq [] -> emitUnspecified il
-    | BoundExpr.Seq s ->
-        emitSequence assm il s
-    | BoundExpr.Application(ap, args) -> emitApplication assm il ap args
+        ctx.IL.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
+        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Boolean)
+    | BoundExpr.Seq [] -> emitUnspecified ctx.IL
+    | BoundExpr.Seq s -> emitSequence ctx s
+    | BoundExpr.Application(ap, args) -> emitApplication ctx ap args
     | BoundExpr.Definition(id, storage, maybeVal) ->
         match storage with
         | StorageRef.Global id -> failwith "globals not implemented"
         | StorageRef.Local idx -> 
             match maybeVal with
             | Some(expr) -> recurse expr
-            | None -> il.Emit(OpCodes.Ldnull) // TODO: default values?
-            il.Emit(OpCodes.Stloc, idx)
+            | None -> ctx.IL.Emit(OpCodes.Ldnull) // TODO: default values?
+            ctx.IL.Emit(OpCodes.Stloc, idx)
     | BoundExpr.Load storage ->
         match storage with
         | StorageRef.Global id -> failwith "globals not implemented"
-        | StorageRef.Local idx -> il.Emit(OpCodes.Ldloc, idx)
+        | StorageRef.Local idx -> ctx.IL.Emit(OpCodes.Ldloc, idx)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
         recurse cond
-        let lblFalse = il.Create(OpCodes.Nop)
-        let lblEnd = il.Create(OpCodes.Nop)
-        il.Emit(OpCodes.Brfalse_S, lblFalse)
+        let lblFalse = ctx.IL.Create(OpCodes.Nop)
+        let lblEnd = ctx.IL.Create(OpCodes.Nop)
+        ctx.IL.Emit(OpCodes.Brfalse_S, lblFalse)
         recurse ifTrue
-        il.Emit(OpCodes.Br_S, lblEnd)
-        il.Append(lblFalse)
+        ctx.IL.Emit(OpCodes.Br_S, lblEnd)
+        ctx.IL.Append(lblFalse)
         match maybeIfFalse with
-        | Some ifFalse -> emitExpression assm  il ifFalse
-        | None -> il.Emit(OpCodes.Ldnull)
-        il.Append(lblEnd)
-and emitSequence assm il seq =
+        | Some ifFalse -> recurse ifFalse
+        | None -> ctx.IL.Emit(OpCodes.Ldnull)
+        ctx.IL.Append(lblEnd)
+and emitSequence ctx seq =
     let popAndEmit x =
-        il.Emit(OpCodes.Pop)
-        emitExpression assm il x
-    emitExpression assm il (List.head seq)
+        ctx.IL.Emit(OpCodes.Pop)
+        emitExpression ctx x
+    emitExpression ctx (List.head seq)
     List.tail seq
     |>  Seq.iter popAndEmit
-and emitApplication assm il ap args =
+and emitApplication ctx ap args =
     match ap with
-    | _ -> ()
+    | _ -> failwith "application not implemented"
 
 /// Emit the `Main` Method Epilogue
 /// 
@@ -95,7 +97,19 @@ let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
     il.Append(notBool)
     il.Append(load0)
     il.Emit(OpCodes.Ret)
- 
+
+/// Create an Empty Object Constructor
+///
+/// Creates a constructor method deifnition that just calls the parent constructor
+let private createEmptyCtor (assm: AssemblyDefinition) =
+    let ctor = MethodDefinition(".ctor", MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName, assm.MainModule.TypeSystem.Void)
+    let objConstructor = assm.MainModule.ImportReference((typeof<obj>).GetConstructor(Array.empty))
+    let il = ctor.Body.GetILProcessor()
+    il.Emit(OpCodes.Ldarg_0)
+    il.Emit(OpCodes.Call, objConstructor)
+    il.Emit(OpCodes.Ret)
+    ctor
+
 /// Emit a Bound Expression to .NET
 /// 
 /// Creates an assembly and writes out the .NET interpretation of the
@@ -112,21 +126,15 @@ let emit (outputStream: Stream) outputName bound =
     // Genreate a nominal type to contain the methods for this program.        
     let progTy = TypeDefinition(outputName, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
-    let ctor = MethodDefinition(".ctor", MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName, assm.MainModule.TypeSystem.Void)
-    let objConstructor = assm.MainModule.ImportReference((typeof<obj>).GetConstructor(Array.empty))
-    let il = ctor.Body.GetILProcessor()
-    il.Emit(OpCodes.Ldarg_0)
-    il.Emit(OpCodes.Call, objConstructor)
-    il.Emit(OpCodes.Ret)
-    progTy.Methods.Add ctor
+    progTy.Methods.Add <| createEmptyCtor assm
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
     let bodyMethod = MethodDefinition("$ScriptBody", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Object)
     progTy.Methods.Add bodyMethod
-    let il = bodyMethod.Body.GetILProcessor()    
-    emitExpression assm il bound
-    il.Emit(OpCodes.Ret)
+    let ctx = { Assm = assm; IL = bodyMethod.Body.GetILProcessor() }
+    emitExpression ctx bound
+    ctx.IL.Emit(OpCodes.Ret)
     bodyMethod.Body.Optimize()
 
     // The `Main` method is the entry point of the program. It calls
