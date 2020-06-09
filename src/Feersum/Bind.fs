@@ -3,7 +3,7 @@ module Bind
 open Syntax
 
 /// Locals are indices into the local variable table
-type Local = int
+type Local = Local of int
 
 /// Storage Reference
 ///
@@ -28,17 +28,24 @@ type BoundExpr =
     | Seq of BoundExpr list
     | Null
 
-/// Create a New Root Scope
-/// 
-/// The root scope contains the global functions available to the program.
-let createRootScope =
-    Map.empty
+/// Binder Context Type
+///
+/// Used to pass the state around during the bind. Holds on to scope information
+/// and other transient information about the current `bind` call.
+type private BinderCtx = { Scope: Map<string, StorageRef> }
+
+/// Methods for manipulating the bind context
+module private BinderCtx =
+
+    /// Create a new binder context for the given root scope
+    let createForScope scope =
+        { Scope = scope }
 
 /// Bind an Identifier Reference
 ///
 /// Lookup the identifier in the given scope 
-let private bindIdent scope id =
-    match Map.tryFind id scope with
+let private bindIdent ctx id =
+    match Map.tryFind id ctx.Scope with
     | Some storage -> BoundExpr.Load storage
     | None -> failwithf "Reference to undefined symbol `%s`" id
 
@@ -47,29 +54,29 @@ let private bindIdent scope id =
 /// Walks the syntax node building up a bound representation. This bound
 /// node no longer has direct references to identifiers and instead
 /// references storage locations.
-let rec bind scope node =
+let rec private bindInContext ctx node =
     match node with
     | AstNode.Number n -> BoundExpr.Number n
     | AstNode.Str s -> BoundExpr.Str s
     | AstNode.Boolean b -> BoundExpr.Boolean b
-    | AstNode.Seq s -> bindSequence scope s
-    | AstNode.Form f -> bindForm scope f
-    | AstNode.Ident id -> bindIdent scope id
-and bindSequence scope exprs =
-    List.map (bind scope) exprs
+    | AstNode.Seq s -> bindSequence ctx s
+    | AstNode.Form f -> bindForm ctx f
+    | AstNode.Ident id -> bindIdent ctx id
+and private bindSequence ctx exprs =
+    List.map (bindInContext ctx) exprs
     |> BoundExpr.Seq
-and bindApplication scope head rest =
-    BoundExpr.Application(bind scope head, List.map (bind scope) rest)
-and bindForm scope form =
+and private bindApplication ctx head rest =
+    BoundExpr.Application(bindInContext ctx head, List.map (bindInContext ctx) rest)
+and private bindForm ctx form =
     match form with
     | AstNode.Ident("if")::body ->
-        let b = bind scope
+        let b = bindInContext ctx
         match body with
         | [cond;ifTrue;ifFalse] -> BoundExpr.If((b cond), (b ifTrue), Some(b ifFalse))
         | [cond;ifTrue] -> BoundExpr.If((b cond), (b ifTrue), None)
         | _ -> failwith "Ill-formed 'if' special form"
     | AstNode.Ident("begin")::body ->
-        List.map (bind scope) body |> BoundExpr.Seq
+        List.map (bindInContext ctx) body |> BoundExpr.Seq
     | AstNode.Ident("define")::body ->
         // TODO: Storage scopes. The storage ref shouldn't be fabricated here
         //       instead we should ask the scope for the value. The root scope
@@ -77,13 +84,35 @@ and bindForm scope form =
         //       local scope will just bump the locals index.
         match body with
         | [AstNode.Ident id] -> BoundExpr.Definition(id, StorageRef.Global(id), None)        
-        | [AstNode.Ident id;value] -> BoundExpr.Definition(id, StorageRef.Global(id), Some(bind scope value))
+        | [AstNode.Ident id;value] ->
+            BoundExpr.Definition(id, StorageRef.Global(id), Some(bindInContext ctx value))
         | AstNode.Ident id::((AstNode.Form formals)::body) ->
             // TODO: lambda definitions. We need to add the formas to a new scope
             //       level and bind the body in _that_ scope. The definition body
             //       is then the bound lambda rather than `None`.
-            let boudnBody = bindSequence scope body
+            let boudnBody = bindSequence ctx body
             BoundExpr.Definition(id, StorageRef.Global(id), None)        
         | _ -> failwith "Ill-formed 'define' special form"
-    | head::rest -> bindApplication scope head rest
+    | head::rest -> bindApplication ctx head rest
     | [] -> BoundExpr.Null
+
+// ------------------------------ Public Binder API --------------------------
+
+/// Create a New Root Scope
+/// 
+/// The root scope contains the global functions available to the program.
+let createRootScope =
+    Map.empty
+
+/// Bind a syntax node in a given scope
+/// 
+/// Walks the parse tree and computes semantic information. The result of this
+/// call can be passed to the `Compile` or `Emit` API to be lowered to IL.
+/// 
+/// TODO: This should probably return some kind of `BoundSyntaxTree` containing
+///       the tree of bound nodes and a bag of diagnostics generated during the
+///       bind. Currently we use `failwith` to raise an error. Ideally more than
+///       one diagnostic could be reported.
+let bind scope node =
+    let ctx = BinderCtx.createForScope scope
+    bindInContext ctx node

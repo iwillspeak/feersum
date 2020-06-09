@@ -36,7 +36,7 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     | BoundExpr.Definition(id, storage, maybeVal) ->
         match storage with
         | StorageRef.Global id -> failwith "globals not implemented"
-        | StorageRef.Local idx -> 
+        | StorageRef.Local(Local.Local idx) -> 
             match maybeVal with
             | Some(expr) -> recurse expr
             | None -> ctx.IL.Emit(OpCodes.Ldnull) // TODO: default values?
@@ -44,7 +44,7 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     | BoundExpr.Load storage ->
         match storage with
         | StorageRef.Global id -> failwith "globals not implemented"
-        | StorageRef.Local idx -> ctx.IL.Emit(OpCodes.Ldloc, idx)
+        | StorageRef.Local(Local.Local idx) -> ctx.IL.Emit(OpCodes.Ldloc, idx)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
         recurse cond
         let lblFalse = ctx.IL.Create(OpCodes.Nop)
