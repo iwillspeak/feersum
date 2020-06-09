@@ -2,6 +2,7 @@ module Syntax
 
 open System.IO
 open FParsec
+open System.Text
 
 // The main AST Node type
 type AstNode =
@@ -77,12 +78,19 @@ do parseFormRef :=
 let private parse =
     (many parseForm) |>> Seq
 
-/// Read expressions from the input text
-let readExpr line: Result<AstNode,string> =
-    match (run parse line) with
+/// Unpack a `ParseResult` into a Plain `Result`
+let private unpack = function
     | Success(node, _, _) -> Result.Ok node
     | Failure(message, _, _) -> Result.Error message
 
+/// Read expressions from the input text
+let readExpr line: Result<AstNode,string> =
+    (run parse line) |> unpack
+
 /// Read an expression from source code on disk
 let parseFile path =
-    File.ReadAllText path |> readExpr
+    runParserOnFile parse () path Encoding.UTF8 |> unpack
+
+/// Read an expression from a stream of source code
+let parseStream name stream =
+    runParserOnStream parse () name stream Encoding.UTF8 |> unpack
