@@ -1,6 +1,7 @@
 module Bind
 
 open Syntax
+open System.Collections.Generic
 
 /// Locals are indices into the local variable table
 type Local = Local of int
@@ -32,20 +33,38 @@ type BoundExpr =
 ///
 /// Used to pass the state around during the bind. Holds on to scope information
 /// and other transient information about the current `bind` call.
-type private BinderCtx = { Scope: Map<string, StorageRef> }
+type private BinderCtx =
+    { Scope: IDictionary<string, StorageRef> }
 
 /// Methods for manipulating the bind context
 module private BinderCtx =
 
     /// Create a new binder context for the given root scope
     let createForScope scope =
-        { Scope = scope }
+        { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict) }
+
+    /// Lookup a given ID in the binder scope
+    let tryFindBinding ctx id =
+        // TODO: Handle more than one scope.
+        match ctx.Scope.TryGetValue(id) with
+        | (true, value) -> Some(value)
+        | _ -> None
+
+    /// Add a new entry to the current scope
+    let addBinding ctx id =
+        // TODO: Storage scopes. The storage ref shouldn't be fabricated here
+        //       instead we should ask the scope for the value. The root scope
+        //       will generaate a global storage ref for the given name, the
+        //       local scope will just bump the locals index.
+        let storage = StorageRef.Global(id)
+        ctx.Scope.[id] <- storage
+        storage
 
 /// Bind an Identifier Reference
 ///
 /// Lookup the identifier in the given scope 
 let private bindIdent ctx id =
-    match Map.tryFind id ctx.Scope with
+    match BinderCtx.tryFindBinding ctx id with
     | Some storage -> BoundExpr.Load storage
     | None -> failwithf "Reference to undefined symbol `%s`" id
 
@@ -78,20 +97,23 @@ and private bindForm ctx form =
     | AstNode.Ident("begin")::body ->
         List.map (bindInContext ctx) body |> BoundExpr.Seq
     | AstNode.Ident("define")::body ->
-        // TODO: Storage scopes. The storage ref shouldn't be fabricated here
-        //       instead we should ask the scope for the value. The root scope
-        //       will generaate a global storage ref for the given name, the
-        //       local scope will just bump the locals index.
         match body with
-        | [AstNode.Ident id] -> BoundExpr.Definition(id, StorageRef.Global(id), None)        
+        | [AstNode.Ident id] ->
+            let storage = BinderCtx.addBinding ctx id
+            BoundExpr.Definition(id, storage, None)        
         | [AstNode.Ident id;value] ->
-            BoundExpr.Definition(id, StorageRef.Global(id), Some(bindInContext ctx value))
+            let value = bindInContext ctx value
+            let storage = BinderCtx.addBinding ctx id
+            BoundExpr.Definition(id, storage, Some(value))
         | AstNode.Ident id::((AstNode.Form formals)::body) ->
+            // Add the binding for this lambda to the scope _before_ lowering
+            // the body. This makes recursive calls possible.
+            let storage = BinderCtx.addBinding ctx id
             // TODO: lambda definitions. We need to add the formas to a new scope
             //       level and bind the body in _that_ scope. The definition body
             //       is then the bound lambda rather than `None`.
             let boudnBody = bindSequence ctx body
-            BoundExpr.Definition(id, StorageRef.Global(id), None)        
+            BoundExpr.Definition(id, storage, None)        
         | _ -> failwith "Ill-formed 'define' special form"
     | head::rest -> bindApplication ctx head rest
     | [] -> BoundExpr.Null

@@ -1,0 +1,74 @@
+{
+  "Case": "Ok",
+  "Fields": [
+    {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "foo"
+                  ]
+                },
+                {
+                  "Case": "Number",
+                  "Fields": [
+                    100.0
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "bar"
+                  ]
+                },
+                {
+                  "Case": "Str",
+                  "Fields": [
+                    "hello"
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            "Case": "Ident",
+            "Fields": [
+              "foo"
+            ]
+          },
+          {
+            "Case": "Ident",
+            "Fields": [
+              "bar"
+            ]
+          }
+        ]
+      ]
+    }
+  ]
+}

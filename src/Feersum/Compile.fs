@@ -9,12 +9,26 @@ open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 
 // Type to Hold Context While Emitting IL
-type EmitCtx = { Assm: AssemblyDefinition; IL: ILProcessor }
+type EmitCtx =
+    { Assm: AssemblyDefinition;
+      IL: ILProcessor;
+      ProgramTy: TypeDefinition }
 
 /// Emit an instance of the unspecified value
 let private emitUnspecified (il: ILProcessor) =
     // TODO: What should we do about empty sequences? This falls back to '()
     il.Emit(OpCodes.Ldnull)
+
+/// Ensure a field exists on the program type to be used as a global variable
+let private ensureField ctx id =
+    let pred (field: FieldDefinition) =
+        field.Name = id
+    match Seq.tryFind pred ctx.ProgramTy.Fields with
+    | Some(found) -> found
+    | None ->
+        let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
+        ctx.ProgramTy.Fields.Add(newField)
+        newField
 
 /// Emit a Single Bound Expression
 /// 
@@ -34,16 +48,24 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     | BoundExpr.Seq s -> emitSequence ctx s
     | BoundExpr.Application(ap, args) -> emitApplication ctx ap args
     | BoundExpr.Definition(id, storage, maybeVal) ->
+        // TODO: could we just elide the whole definition if there is no value.
+        //       do we need to start considering expressions and statements
+        //       as disjoint things?
+        match maybeVal with
+        | Some(expr) -> recurse expr
+        | None -> ctx.IL.Emit(OpCodes.Ldnull)
+        ctx.IL.Emit(OpCodes.Dup)
         match storage with
-        | StorageRef.Global id -> failwith "globals not implemented"
+        | StorageRef.Global id ->
+            let field = ensureField ctx id
+            ctx.IL.Emit(OpCodes.Stsfld, field)
         | StorageRef.Local(Local.Local idx) -> 
-            match maybeVal with
-            | Some(expr) -> recurse expr
-            | None -> ctx.IL.Emit(OpCodes.Ldnull) // TODO: default values?
             ctx.IL.Emit(OpCodes.Stloc, idx)
     | BoundExpr.Load storage ->
         match storage with
-        | StorageRef.Global id -> failwith "globals not implemented"
+        | StorageRef.Global id ->
+            let field = ensureField ctx id
+            ctx.IL.Emit(OpCodes.Ldsfld, field)
         | StorageRef.Local(Local.Local idx) -> ctx.IL.Emit(OpCodes.Ldloc, idx)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
         recurse cond
@@ -132,7 +154,7 @@ let emit (outputStream: Stream) outputName bound =
     // module can call it directly
     let bodyMethod = MethodDefinition("$ScriptBody", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Object)
     progTy.Methods.Add bodyMethod
-    let ctx = { Assm = assm; IL = bodyMethod.Body.GetILProcessor() }
+    let ctx = { Assm = assm; IL = bodyMethod.Body.GetILProcessor(); ProgramTy = progTy }
     emitExpression ctx bound
     ctx.IL.Emit(OpCodes.Ret)
     bodyMethod.Body.Optimize()

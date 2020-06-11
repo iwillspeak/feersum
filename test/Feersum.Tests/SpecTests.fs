@@ -8,6 +8,9 @@ open Snapper
 open Snapper.Attributes
 open System.Diagnostics
 
+// [<assembly: UpdateSnapshots>]
+// ()
+
 let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
 let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
 
