@@ -74,7 +74,8 @@ as the first element of the `<formals>` definition.
 
 ### Implementation status
 
-Definitions are not yet implemented
+Variable definitions are bound and lowered. Function definitions are not bound
+correctly yet, and are not lowered.
 
 ## Assignments
 

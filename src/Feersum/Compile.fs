@@ -31,7 +31,7 @@ let private ensureField ctx id =
         newField
 
 /// Emit a Single Bound Expression
-/// 
+///
 /// Emits the code for a single function into the given assembly.
 let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     let recurse = emitExpression ctx
@@ -59,7 +59,7 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         | StorageRef.Global id ->
             let field = ensureField ctx id
             ctx.IL.Emit(OpCodes.Stsfld, field)
-        | StorageRef.Local(Local.Local idx) -> 
+        | StorageRef.Local(Local.Local idx) ->
             ctx.IL.Emit(OpCodes.Stloc, idx)
     | BoundExpr.Load storage ->
         match storage with
@@ -91,7 +91,7 @@ and emitApplication ctx ap args =
     | _ -> failwith "application not implemented"
 
 /// Emit the `Main` Method Epilogue
-/// 
+///
 /// This sequence of instructions is added at the end of the main method to
 /// coerce the result type into a return value for the application. Once we have
 /// some form of runtime library linked into the final executable it might be
@@ -133,19 +133,19 @@ let private createEmptyCtor (assm: AssemblyDefinition) =
     ctor
 
 /// Emit a Bound Expression to .NET
-/// 
+///
 /// Creates an assembly and writes out the .NET interpretation of the
 /// given bound tree.
-/// 
+///
 /// TODO: this method is a huge mess. The creation of the types, methods and other
 /// supporting work nees extracting and abstracting to make thigs simpler. We will
 /// need some of this to be shared when emiting methods and closures too.
 let emit (outputStream: Stream) outputName bound =
-    // Create an assembly with a nominal version to hold our code    
+    // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
 
-    // Genreate a nominal type to contain the methods for this program.        
+    // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
@@ -179,7 +179,7 @@ let emit (outputStream: Stream) outputName bound =
 /// pass will be to `bind` theh tree. Resulting in a `BoundExpr`. This will
 /// attach any type information that _can_ be computed to each node, and
 /// resolve variable references to the symbols that they refer to.
-/// 
+///
 /// Once the expression is bound we will then `emit` the expression this walks
 /// the expression and writes out the corresponding .NET IL to an `Assembly`
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
@@ -189,7 +189,7 @@ let compile outputStream outputName node =
     bind scope node |> emit outputStream outputName
 
 /// Read a File and Compile
-/// 
+///
 /// Takes the `path` to an input to read and compile.
 let compileFile (path: string) =
     let output = Path.ChangeExtension(path, "exe")
@@ -200,7 +200,7 @@ let compileFile (path: string) =
         // TOOD: This metadata needs to be abstracted to deal with different
         //       target framework's prefrences. For now the `.exe` we generate
         //       is compatible with .NET Core and Mono. It would be nice to make
-        //       this explicit somewhere in future.    
+        //       this explicit somewhere in future.
         File.WriteAllText(Path.Combine(Path.GetDirectoryName(path), stem + ".runtimeconfig.json"), """
         {
           "runtimeOptions": {

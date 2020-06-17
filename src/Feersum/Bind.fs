@@ -105,14 +105,14 @@ and private bindForm ctx form =
             let value = bindInContext ctx value
             let storage = BinderCtx.addBinding ctx id
             BoundExpr.Definition(id, storage, Some(value))
-        | AstNode.Ident id::((AstNode.Form formals)::body) ->
+        | (AstNode.Form (AstNode.Ident id::formals))::body ->
             // Add the binding for this lambda to the scope _before_ lowering
             // the body. This makes recursive calls possible.
             let storage = BinderCtx.addBinding ctx id
             // TODO: lambda definitions. We need to add the formas to a new scope
             //       level and bind the body in _that_ scope. The definition body
             //       is then the bound lambda rather than `None`.
-            let boudnBody = bindSequence ctx body
+            let boundBody = bindSequence ctx body
             BoundExpr.Definition(id, storage, None)        
         | _ -> failwith "Ill-formed 'define' special form"
     | head::rest -> bindApplication ctx head rest
