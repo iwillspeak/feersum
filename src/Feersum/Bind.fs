@@ -115,6 +115,26 @@ and private bindForm ctx form =
             let boundBody = bindSequence ctx body
             BoundExpr.Definition(id, storage, None)        
         | _ -> failwith "Ill-formed 'define' special form"
+    | AstNode.Ident("lambda")::body ->
+        failwith "Lambda special form not yet implemented"
+    | AstNode.Ident("let")::body ->
+        failwith "Let bindings not yet implemented"
+    | AstNode.Ident("let*")::body ->
+        failwith "Let* bindings not yet implemented"
+    | AstNode.Ident("letrec")::body ->
+        failwith "Letrec bindings nto yet implemented"
+    | AstNode.Ident("set!")::body ->
+        failwith "Assignment expressions not yet implemented"
+    | AstNode.Ident("quote")::body ->
+        failwith "Quote expressions not yet implemented"
+    | AstNode.Ident("and")::body ->
+        failwith "And expressions not yet implemented"
+    | AstNode.Ident("or")::body ->
+        failwith "Or expressions not yet implemented"
+    | AstNode.Ident("cond")::body ->
+        failwith "Condition expressions not yet implemented"
+    | AstNode.Ident("case")::body ->
+        failwith "Case expressions not yet implemented"
     | head::rest -> bindApplication ctx head rest
     | [] -> BoundExpr.Null
 
