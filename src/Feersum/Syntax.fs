@@ -76,7 +76,7 @@ do parseFormRef :=
 
 /// Parse the given string into a syntax tree
 let private parse =
-    (many parseForm) |>> Seq
+    (many parseForm) .>> eof |>> Seq
 
 /// Unpack a `ParseResult` into a Plain `Result`
 let private unpack = function

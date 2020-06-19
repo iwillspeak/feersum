@@ -9,4 +9,4 @@
     "hello world"
     (if (begin #f #t #f #t)
         (begin 1 2 3 45)
-        (begin -2 -3 -9)))   # ~> 45
+        (begin -2 -3 -9)))   ; ~> 45
