@@ -3,6 +3,7 @@ module Syntax
 open System.IO
 open FParsec
 open System.Text
+open System.Globalization
 
 // The main AST Node type
 type AstNode =
@@ -24,17 +25,31 @@ let private parseNum =
 let private unescapedChar =
     noneOf "\"\\"
 
+let private hexEscape =
+    let hexUnescape x =
+        System.Int32.Parse(x, NumberStyles.HexNumber)
+        |> System.Char.ConvertFromUtf32
+        |> System.Char.Parse
+            
+    between (pstring "\\x") (pchar ';') (manyChars hex)
+    |>> hexUnescape
+
 let private escapedChar =
     let inline unescape ch =
         match ch with
-        | 'n' -> '\n'
+        | 'a' -> '\a'
+        | 'b' -> '\b'
         | 't' -> '\t'
+        | 'n' -> '\n'
+        | 'v' -> '\v'
+        | 'f' -> '\f'
+        | 'r' -> '\r'
         | c -> c
-    pchar '\\' >>. anyChar |>> unescape
+    pchar '\\' >>. (noneOf "x") |>> unescape
       
 let private parseStr =
     let lit = between (pchar '"') (pchar '"')
-                (manyChars (unescapedChar <|> escapedChar))
+                (manyChars (unescapedChar <|> hexEscape <|> escapedChar))
     lit |>> Str
 
 let private parseBool =

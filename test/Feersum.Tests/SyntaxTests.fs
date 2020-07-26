@@ -44,3 +44,19 @@ let ``parse atoms`` () =
 [<InlineData("things")>]
 let ``parse identifiers`` ident =
     Assert.Equal(Ident ident, readSingle ident)
+
+[<Theory>]
+[<InlineData("\\a", '\a')>]
+[<InlineData("\\b", '\b')>]
+[<InlineData("\\t", '\t')>]
+[<InlineData("\\n", '\n')>]
+[<InlineData("\\v", '\v')>]
+[<InlineData("\\f", '\f')>]
+[<InlineData("\\r", '\r')>]
+[<InlineData("\\\\", '\\')>]
+[<InlineData("\\\"", '"')>]
+[<InlineData("\\x0000A;", '\n')>]
+[<InlineData("\\x41;", 'A')>]
+[<InlineData("\\x1234;", '\u1234')>]
+let ``parse escaped characters`` escaped char =
+    Assert.Equal(Str (char |> string), readSingle (sprintf "\"%s\"" escaped))
