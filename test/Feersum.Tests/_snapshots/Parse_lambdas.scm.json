@@ -1,0 +1,182 @@
+{
+  "Case": "Ok",
+  "Fields": [
+    {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "x"
+                  ]
+                },
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "lambda"
+                        ]
+                      },
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "y"
+                        ]
+                      },
+                      {
+                        "Case": "Form",
+                        "Fields": [
+                          [
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "lambda"
+                              ]
+                            },
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "z"
+                              ]
+                            },
+                            {
+                              "Case": "Number",
+                              "Fields": [
+                                100.0
+                              ]
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "y"
+                  ]
+                },
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "lambda"
+                        ]
+                      },
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "y"
+                        ]
+                      },
+                      {
+                        "Case": "Form",
+                        "Fields": [
+                          [
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "lambda"
+                              ]
+                            },
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "z"
+                              ]
+                            },
+                            {
+                              "Case": "Number",
+                              "Fields": [
+                                23123.0
+                              ]
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "z"
+                  ]
+                },
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "lambda"
+                        ]
+                      },
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "y"
+                        ]
+                      },
+                      {
+                        "Case": "Number",
+                        "Fields": [
+                          123.0
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  ]
+}

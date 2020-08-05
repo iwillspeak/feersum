@@ -34,7 +34,15 @@ remaining arguments are bound to a list `d` in the lambda's environment.
 
 ### Implementation status
 
-Lambdas are not yet implemented
+Lambdas are in the process of being implemented. I'm live-streaming
+implementation work so head on over to http://twitch.tv/iwillspeak
+to follow along.
+
+So far:
+
+ * Parse support for the first expression form
+ * Lower support for parameterless lambdas
+ * Unique names for lambdas
 
 ## Lexical Bindings
 

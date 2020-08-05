@@ -94,6 +94,7 @@ let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
             |> Option.map recurse
             |> SchemeValue.fromOption
         | _ -> recurse ifTrue
+    | b -> failwithf "%A is not supported" b
 
 /// Take a syntax tree and evaluate it producing a value.
 let execute (input: AstNode): SchemeValue =

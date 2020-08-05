@@ -14,6 +14,11 @@ type StorageRef =
     | Local of Local
     | Global of string
 
+/// Bound Formal Argument
+///
+/// Formal arguments are just the ID that the parameter should be bound to
+type BoundFormal = string
+
 /// Bound Expression Type
 ///
 /// Bound expressions represent the syntax of a program with all identifier
@@ -27,6 +32,7 @@ type BoundExpr =
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
+    | Lambda of BoundFormal list * BoundExpr
     | Null
 
 /// Binder Context Type
@@ -34,14 +40,21 @@ type BoundExpr =
 /// Used to pass the state around during the bind. Holds on to scope information
 /// and other transient information about the current `bind` call.
 type private BinderCtx =
-    { Scope: IDictionary<string, StorageRef> }
+    { Scope: IDictionary<string, StorageRef>
+    ; Parent: BinderCtx option }
 
 /// Methods for manipulating the bind context
 module private BinderCtx =
 
     /// Create a new binder context for the given root scope
     let createForScope scope =
-        { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict) }
+        { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict)
+        ; Parent = None }
+    
+    /// Create a new binder context for a child scope
+    let createWithParent parent =
+        { Scope = new Dictionary<string, StorageRef>()
+        ; Parent = Some(parent) }
 
     /// Lookup a given ID in the binder scope
     let tryFindBinding ctx id =
@@ -67,6 +80,15 @@ let private bindIdent ctx id =
     match BinderCtx.tryFindBinding ctx id with
     | Some storage -> BoundExpr.Load storage
     | None -> failwithf "Reference to undefined symbol `%s`" id
+
+/// Bind a Lambda's Formal Arguments
+/// 
+/// Parses the argument list for a lambda form and returns the
+/// list of boudn formal arguments.
+let private bindFormals formals =
+    match formals with
+    | AstNode.Ident(id) -> [ id ]
+    |  _ -> failwith "TODO: multi-arg lambdas" 
 
 /// Bind a Syntax Node
 ///
@@ -116,7 +138,14 @@ and private bindForm ctx form =
             BoundExpr.Definition(id, storage, None)        
         | _ -> failwith "Ill-formed 'define' special form"
     | AstNode.Ident("lambda")::body ->
-        failwith "Lambda special form not yet implemented"
+        match body with
+        | [formals;body] ->
+            let boundFormals = bindFormals formals
+            let lambdaCtx = BinderCtx.createWithParent ctx
+            // TODO: add formals to the new scope
+            let boundBody = bindInContext lambdaCtx body
+            BoundExpr.Lambda(boundFormals, boundBody)
+        | _ -> failwith "Ill-formed 'lambda' special form"
     | AstNode.Ident("let")::body ->
         failwith "Let bindings not yet implemented"
     | AstNode.Ident("let*")::body ->

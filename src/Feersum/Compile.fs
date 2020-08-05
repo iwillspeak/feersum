@@ -12,6 +12,8 @@ open Mono.Cecil.Cil
 type EmitCtx =
     { Assm: AssemblyDefinition;
       IL: ILProcessor;
+      mutable NextLambda: int;
+      ScopePrefix: string;
       ProgramTy: TypeDefinition }
 
 /// Emit an instance of the unspecified value
@@ -79,6 +81,8 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         | Some ifFalse -> recurse ifFalse
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
         ctx.IL.Append(lblEnd)
+    | BoundExpr.Lambda(formals, body) ->
+        emitLambda ctx formals body
 and emitSequence ctx seq =
     let popAndEmit x =
         ctx.IL.Emit(OpCodes.Pop)
@@ -89,6 +93,26 @@ and emitSequence ctx seq =
 and emitApplication ctx ap args =
     match ap with
     | _ -> failwith "application not implemented"
+and emitLambda ctx formals body =
+    // Emit a declaration for the lambda's implementation
+    let lambdaId = ctx.NextLambda
+    ctx.NextLambda <- lambdaId + 1
+    let method = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
+    // TODO: Return a reference to the method
+    ctx.IL.Emit(OpCodes.Ldnull)
+and emitNamedLambda (ctx: EmitCtx) name formals body =
+    let methodDecl = MethodDefinition(name, MethodAttributes.Public ||| MethodAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
+    ctx.ProgramTy.Methods.Add methodDecl
+
+    let ctx = { IL = methodDecl.Body.GetILProcessor()
+              ; ProgramTy = ctx.ProgramTy
+              ; NextLambda = 0
+              ; ScopePrefix = name
+              ; Assm = ctx.Assm }
+    emitExpression ctx body
+    ctx.IL.Emit(OpCodes.Ret)
+    methodDecl.Body.Optimize()
+    methodDecl
 
 /// Emit the `Main` Method Epilogue
 ///
@@ -152,12 +176,12 @@ let emit (outputStream: Stream) outputName bound =
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
-    let bodyMethod = MethodDefinition("$ScriptBody", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Object)
-    progTy.Methods.Add bodyMethod
-    let ctx = { Assm = assm; IL = bodyMethod.Body.GetILProcessor(); ProgramTy = progTy }
-    emitExpression ctx bound
-    ctx.IL.Emit(OpCodes.Ret)
-    bodyMethod.Body.Optimize()
+    let rootEmitCtx = { IL = null
+                      ; ProgramTy = progTy
+                      ; NextLambda = 0
+                      ; ScopePrefix = "$ROOT"
+                      ; Assm = assm }
+    let bodyMethod = emitNamedLambda rootEmitCtx "$ScriptBody" [] bound
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.
