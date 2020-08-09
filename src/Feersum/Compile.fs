@@ -101,7 +101,10 @@ and emitLambda ctx formals body =
     // TODO: Return a reference to the method
     ctx.IL.Emit(OpCodes.Ldnull)
 and emitNamedLambda (ctx: EmitCtx) name formals body =
-    let methodDecl = MethodDefinition(name, MethodAttributes.Public ||| MethodAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
+    // TODO: Use the formals to emit the parameters for our method definition
+    let methodDecl = MethodDefinition(name,
+                                      MethodAttributes.Public ||| MethodAttributes.Static,
+                                      ctx.Assm.MainModule.TypeSystem.Object)
     ctx.ProgramTy.Methods.Add methodDecl
 
     let ctx = { IL = methodDecl.Body.GetILProcessor()
@@ -148,8 +151,10 @@ let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
 ///
 /// Creates a constructor method deifnition that just calls the parent constructor
 let private createEmptyCtor (assm: AssemblyDefinition) =
-    let ctor = MethodDefinition(".ctor", MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName, assm.MainModule.TypeSystem.Void)
-    let objConstructor = assm.MainModule.ImportReference((typeof<obj>).GetConstructor(Array.empty))
+    let ctor = MethodDefinition(".ctor",
+                                MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName,
+                                assm.MainModule.TypeSystem.Void)
+    let objConstructor = assm.MainModule.ImportReference(typeof<obj>.GetConstructor(Array.empty))
     let il = ctor.Body.GetILProcessor()
     il.Emit(OpCodes.Ldarg_0)
     il.Emit(OpCodes.Call, objConstructor)
@@ -159,18 +164,19 @@ let private createEmptyCtor (assm: AssemblyDefinition) =
 /// Emit a Bound Expression to .NET
 ///
 /// Creates an assembly and writes out the .NET interpretation of the
-/// given bound tree.
-///
-/// TODO: this method is a huge mess. The creation of the types, methods and other
-/// supporting work nees extracting and abstracting to make thigs simpler. We will
-/// need some of this to be shared when emiting methods and closures too.
+/// given bound tree. This method is responsible for creating the root
+/// `LispProgram` type and preparting the emit context. The main work of
+/// lowering is done by `emitNamedLambda`.
 let emit (outputStream: Stream) outputName bound =
     // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
 
     // Genreate a nominal type to contain the methods for this program.
-    let progTy = TypeDefinition(outputName, "LispProgram", TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass, assm.MainModule.TypeSystem.Object)
+    let progTy = TypeDefinition(outputName,
+                                "LispProgram",
+                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                                assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
 
@@ -185,7 +191,9 @@ let emit (outputStream: Stream) outputName bound =
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.
-    let mainMethod = MethodDefinition("Main", MethodAttributes.Public ||| MethodAttributes.Static, assm.MainModule.TypeSystem.Int32)
+    let mainMethod = MethodDefinition("Main",
+                                      MethodAttributes.Public ||| MethodAttributes.Static,
+                                      assm.MainModule.TypeSystem.Int32)
     mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
     progTy.Methods.Add mainMethod
     assm.EntryPoint <- mainMethod
@@ -225,6 +233,8 @@ let compileFile (path: string) =
         //       target framework's prefrences. For now the `.exe` we generate
         //       is compatible with .NET Core and Mono. It would be nice to make
         //       this explicit somewhere in future.
+        //       It would be nice to register ourselves as a proper SDK so that
+        //       this metadata is generated for us by `dotnet`.
         File.WriteAllText(Path.Combine(Path.GetDirectoryName(path), stem + ".runtimeconfig.json"), """
         {
           "runtimeOptions": {
