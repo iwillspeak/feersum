@@ -14,18 +14,13 @@ type StorageRef =
     | Local of Local
     | Global of string
 
-/// Bound Formal Argument
-///
-/// Formal arguments are just the ID that the parameter should be bound to
-type BoundFormal = BoundFormal of string
-
 /// Collection of Bound Formal Parameters
 /// 
 /// Different types of formal parameters accepted by lambda definitions.
 type BoundFormals =
-    | Simple of BoundFormal
-    | List of BoundFormal list
-    | DottedList of BoundFormal list * BoundFormal
+    | Simple of string
+    | List of string list
+    | DottedList of string list * string
 
 /// Bound Expression Type
 ///
@@ -90,33 +85,35 @@ let private bindIdent ctx id =
     | None -> failwithf "Reference to undefined symbol `%s`" id
 
 
-
 /// Bind a Lambda's Formal Arguments
 /// 
 /// Parses the argument list for a lambda form and returns the
 /// list of boudn formal arguments.
 let private bindFormals formals =
-    let bindFormalsList (acc: BoundFormal list * bool * Option<BoundFormal>) formal =
+    let bindFormalsList (acc: string list * bool * Option<string>) formal =
         let (formals, seenDot, afterDot) = acc
         if seenDot then
             if afterDot.IsSome then
                 failwith "Only expect single ID after dot"
             match formal with
-            | AstNode.Ident(id) -> (formals, true, Some(BoundFormal(id)))
+            | AstNode.Ident(id) -> (formals, true, Some(id))
             | _ -> failwith "Expected ID after dot"
         else
             match formal with
             | AstNode.Dot -> (formals, true, None)
-            | AstNode.Ident(id) -> (BoundFormal(id)::formals, false, None)
+            | AstNode.Ident(id) -> (id::formals, false, None)
             | _ -> failwith "Expected ID or dot in formals"
       
     match formals with
-    | AstNode.Ident(id) -> BoundFormals.Simple(BoundFormal(id))
+    | AstNode.Ident(id) -> BoundFormals.Simple(id)
     | AstNode.Form(formals) ->
-        let bound = List.fold bindFormalsList ([], false, None) formals
-        // TODO: return our list if we have it, or dotted if
-        //       we saw a dot.
-        BoundFormals.List([])
+        let (fmls, sawDot, dotted) = List.fold bindFormalsList ([], false, None) formals
+        if sawDot then
+            match dotted with
+            | Some(d) -> BoundFormals.DottedList(fmls, d)
+            | None -> failwith "Saw dot but no ID in formals"
+        else
+            BoundFormals.List(fmls)
     |  _ -> failwith "Unrecognised formal parameter list. Must be an ID or list pattern"
 
 /// Bind a Syntax Node
@@ -172,7 +169,16 @@ and private bindForm ctx form =
         | [formals;body] ->
             let boundFormals = bindFormals formals
             let lambdaCtx = BinderCtx.createWithParent ctx
-            // TODO: add formals to the new scope
+            match boundFormals with
+            | BoundFormals.Simple(id) ->
+                BinderCtx.addBinding lambdaCtx id |> ignore
+            | BoundFormals.List(fmls) ->
+                for f in fmls do
+                    BinderCtx.addBinding lambdaCtx f |> ignore
+            | BoundFormals.DottedList(fmls, dotted) ->
+                for f in fmls do
+                    BinderCtx.addBinding lambdaCtx f |> ignore
+                BinderCtx.addBinding lambdaCtx dotted |> ignore
             let boundBody = bindInContext lambdaCtx body
             BoundExpr.Lambda(boundFormals, boundBody)
         | _ -> failwith "Ill-formed 'lambda' special form"
