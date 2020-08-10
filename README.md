@@ -1,6 +1,6 @@
 # Feersum
 
-[![Build Status](https://dev.azure.com/iwillspeak/GitHub/_apis/build/status/iwillspeak.feersum?branchName=master)](https://dev.azure.com/iwillspeak/GitHub/_build/latest?definitionId=4&branchName=master)
+[![Build Status](https://dev.azure.com/iwillspeak/GitHub/_apis/build/status/iwillspeak.feersum?branchName=main)](https://dev.azure.com/iwillspeak/GitHub/_build/latest?definitionId=4&branchName=main)
 
 > Wots in that thare box yoor holdin?
 
