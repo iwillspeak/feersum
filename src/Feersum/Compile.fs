@@ -187,7 +187,8 @@ let emit (outputStream: Stream) outputName bound =
                       ; NextLambda = 0
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
-    let bodyMethod = emitNamedLambda rootEmitCtx "$ScriptBody" [] bound
+    let bodyParams = BoundFormals.List([])
+    let bodyMethod = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.

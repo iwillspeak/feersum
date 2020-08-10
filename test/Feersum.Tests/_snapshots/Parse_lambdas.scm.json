@@ -174,6 +174,135 @@
                 }
               ]
             ]
+          },
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "a"
+                  ]
+                },
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "lambda"
+                        ]
+                      },
+                      {
+                        "Case": "Form",
+                        "Fields": [
+                          [
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "a"
+                              ]
+                            },
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "b"
+                              ]
+                            },
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "c"
+                              ]
+                            }
+                          ]
+                        ]
+                      },
+                      {
+                        "Case": "Number",
+                        "Fields": [
+                          20.0
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "b"
+                  ]
+                },
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "lambda"
+                        ]
+                      },
+                      {
+                        "Case": "Form",
+                        "Fields": [
+                          [
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "a"
+                              ]
+                            },
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "b"
+                              ]
+                            },
+                            {
+                              "Case": "Dot"
+                            },
+                            {
+                              "Case": "Ident",
+                              "Fields": [
+                                "c"
+                              ]
+                            }
+                          ]
+                        ]
+                      },
+                      {
+                        "Case": "Number",
+                        "Fields": [
+                          1234.0
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
           }
         ]
       ]

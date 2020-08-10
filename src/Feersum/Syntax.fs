@@ -11,6 +11,7 @@ type AstNode =
     | Number of float
     | Str of string
     | Boolean of bool
+    | Dot
     | Form of AstNode list
     | Seq of AstNode list
 
@@ -68,6 +69,9 @@ let private parseIdent =
         pstring "-"
         pstring "+" 
     ]) |>> Ident
+ 
+let private parseDot =
+    (pchar '.') >>% Dot 
 
 let private parseAtom =
     choice [
@@ -75,6 +79,7 @@ let private parseAtom =
         parseNum
         parseBool
         parseIdent
+        parseDot
     ]
 
 let private parseForm, parseFormRef = createParserForwardedToRef()
