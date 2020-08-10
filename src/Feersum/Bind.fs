@@ -84,13 +84,17 @@ let private bindIdent ctx id =
     | Some storage -> BoundExpr.Load storage
     | None -> failwithf "Reference to undefined symbol `%s`" id
 
-
-/// Bind a Lambda's Formal Arguments
-/// 
-/// Parses the argument list for a lambda form and returns the
-/// list of boudn formal arguments.
-let private bindFormals formals =
-    let bindFormalsList (acc: string list * bool * Option<string>) formal =
+/// Bind a Formals List Pattern
+///
+/// This binds the formals list pattern as supported by `(define .. )` forms,
+/// or `(lambda)` forms. Its job is to walk the list of nodes from a form and
+/// return either a plain or dotted list pattern. The following
+/// types of formals patterns are suppoted:
+///   * `(<id>, .. )` - to bind each parameter to a unique identifier
+///   * `(<id>, .. '.', <id>)` - to bind a fixed set of parameters with an
+///     optional list of extra parameters.
+let private bindFormalsList formals =
+    let f (acc: string list * bool * Option<string>) formal =
         let (formals, seenDot, afterDot) = acc
         if seenDot then
             if afterDot.IsSome then
@@ -103,17 +107,26 @@ let private bindFormals formals =
             | AstNode.Dot -> (formals, true, None)
             | AstNode.Ident(id) -> (id::formals, false, None)
             | _ -> failwith "Expected ID or dot in formals"
+    
+    let (fmls, sawDot, dotted) = List.fold f ([], false, None) formals
+    if sawDot then
+        match dotted with
+        | Some(d) -> BoundFormals.DottedList(fmls, d)
+        | None -> failwith "Saw dot but no ID in formals"
+    else
+        BoundFormals.List(fmls)
       
+/// Bind a Lambda's Formal Arguments
+/// 
+/// Parses the argument list for a lambda form and returns a `BoundFormals`
+/// instance describing the formal parameter pattern. The following
+/// types of formals patterns are suppoted:
+///   * `<id>` - to bind the whole list to the given identifier
+///   * Any of the list patterns supported by `bindFormalsList`
+let private bindFormals formals =
     match formals with
     | AstNode.Ident(id) -> BoundFormals.Simple(id)
-    | AstNode.Form(formals) ->
-        let (fmls, sawDot, dotted) = List.fold bindFormalsList ([], false, None) formals
-        if sawDot then
-            match dotted with
-            | Some(d) -> BoundFormals.DottedList(fmls, d)
-            | None -> failwith "Saw dot but no ID in formals"
-        else
-            BoundFormals.List(fmls)
+    | AstNode.Form(formals) -> bindFormalsList formals
     |  _ -> failwith "Unrecognised formal parameter list. Must be an ID or list pattern"
 
 /// Bind a Syntax Node
@@ -135,6 +148,19 @@ and private bindSequence ctx exprs =
     |> BoundExpr.Seq
 and private bindApplication ctx head rest =
     BoundExpr.Application(bindInContext ctx head, List.map (bindInContext ctx) rest)
+and private bindLambdaBody ctx formals body =
+    let lambdaCtx = BinderCtx.createWithParent ctx
+    let addFormal = BinderCtx.addBinding lambdaCtx
+    match formals with
+    | BoundFormals.Simple(id) ->
+        addFormal id |> ignore
+    | BoundFormals.List(fmls) ->
+        (List.map addFormal fmls) |> ignore
+    | BoundFormals.DottedList(fmls, dotted) ->
+        (List.map addFormal fmls) |> ignore
+        addFormal dotted |> ignore
+    let boundBody = bindSequence lambdaCtx body
+    BoundExpr.Lambda(formals, boundBody)
 and private bindForm ctx form =
     match form with
     | AstNode.Ident("if")::body ->
@@ -158,29 +184,14 @@ and private bindForm ctx form =
             // Add the binding for this lambda to the scope _before_ lowering
             // the body. This makes recursive calls possible.
             let storage = BinderCtx.addBinding ctx id
-            // TODO: lambda definitions. We need to add the formas to a new scope
-            //       level and bind the body in _that_ scope. The definition body
-            //       is then the bound lambda rather than `None`.
-            let boundBody = bindSequence ctx body
-            BoundExpr.Definition(id, storage, None)        
+            let lambda = bindLambdaBody ctx (bindFormalsList formals) body
+            BoundExpr.Definition(id, storage, Some(lambda))        
         | _ -> failwith "Ill-formed 'define' special form"
     | AstNode.Ident("lambda")::body ->
         match body with
-        | [formals;body] ->
+        | formals::body ->
             let boundFormals = bindFormals formals
-            let lambdaCtx = BinderCtx.createWithParent ctx
-            match boundFormals with
-            | BoundFormals.Simple(id) ->
-                BinderCtx.addBinding lambdaCtx id |> ignore
-            | BoundFormals.List(fmls) ->
-                for f in fmls do
-                    BinderCtx.addBinding lambdaCtx f |> ignore
-            | BoundFormals.DottedList(fmls, dotted) ->
-                for f in fmls do
-                    BinderCtx.addBinding lambdaCtx f |> ignore
-                BinderCtx.addBinding lambdaCtx dotted |> ignore
-            let boundBody = bindInContext lambdaCtx body
-            BoundExpr.Lambda(boundFormals, boundBody)
+            bindLambdaBody ctx boundFormals body
         | _ -> failwith "Ill-formed 'lambda' special form"
     | AstNode.Ident("let")::body ->
         failwith "Let bindings not yet implemented"
