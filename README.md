@@ -4,7 +4,7 @@
 
 > Wots in that thare box yoor holdin?
 
-A programming lanugage experiment in F#.
+A programming lanugage experiment in F#. Progress [livestreamed on Twitch][twitch], [catchup on YouTube][yt]
 
 # Planned Features
 
@@ -18,3 +18,6 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Remove interpreter + perform on-demand compilation instead.
  * [ ] Standard library.
  * [ ] Interop with other .NET assemblies.
+ 
+  [twitch]: https://twitch.tv/iwillspeak
+  [yt]: https://www.youtube.com/playlist?list=PLCum1jXOlhoRCBewbQD8ELE7B_7EWnWaO
