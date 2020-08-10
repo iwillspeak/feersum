@@ -40,9 +40,10 @@ to follow along.
 
 So far:
 
- * Parse support for the first expression form
+ * Parse support for all expression forms
  * Lower support for parameterless lambdas
  * Unique names for lambdas
+ * Formal parameters are bound in the lambda's body environment
 
 ## Lexical Bindings
 
@@ -82,8 +83,8 @@ as the first element of the `<formals>` definition.
 
 ### Implementation status
 
-Variable definitions are bound and lowered. Function definitions are not bound
-correctly yet, and are not lowered.
+Variable definitions are bound and lowered. Function definitions are bound
+as definitions of lambdas and rely on `lambda` support for lowering.
 
 ## Assignments
 
