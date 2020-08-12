@@ -98,8 +98,12 @@ and emitLambda ctx formals body =
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
     let method = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
-    // TODO: Return a reference to the method
+    let paramTypes = [|typeof<obj>; typeof<System.IntPtr>|]
+    let funcObjCtor = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj>>.GetConstructor(paramTypes))
     ctx.IL.Emit(OpCodes.Ldnull)
+    ctx.IL.Emit(OpCodes.Ldftn, method :> MethodReference)
+    ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
+
 and emitNamedLambda (ctx: EmitCtx) name formals body =
     // TODO: Use the formals to emit the parameters for our method definition
     let methodDecl = MethodDefinition(name,
