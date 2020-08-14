@@ -35,4 +35,4 @@ let eval ast =
     ///      (define (evalEntry) <ast>)
     ///      ```
     let mainMethod = progTy.GetMethod("$ScriptBody")
-    mainMethod.Invoke(null, [| null |])
+    mainMethod.Invoke(null, Array.empty<obj>)

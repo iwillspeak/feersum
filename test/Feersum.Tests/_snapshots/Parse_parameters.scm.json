@@ -1,0 +1,156 @@
+{
+  "Case": "Ok",
+  "Fields": [
+    {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "foo"
+                        ]
+                      },
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "a"
+                        ]
+                      },
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "b"
+                        ]
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "b"
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "define"
+                  ]
+                },
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "bar"
+                        ]
+                      },
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "a"
+                        ]
+                      },
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "b"
+                        ]
+                      },
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "c"
+                        ]
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "a"
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            "Case": "Form",
+            "Fields": [
+              [
+                {
+                  "Case": "Ident",
+                  "Fields": [
+                    "bar"
+                  ]
+                },
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "Ident",
+                        "Fields": [
+                          "foo"
+                        ]
+                      },
+                      {
+                        "Case": "Number",
+                        "Fields": [
+                          123.0
+                        ]
+                      },
+                      {
+                        "Case": "Number",
+                        "Fields": [
+                          456.0
+                        ]
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Case": "Number",
+                  "Fields": [
+                    78.0
+                  ]
+                },
+                {
+                  "Case": "Number",
+                  "Fields": [
+                    90.0
+                  ]
+                }
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  ]
+}

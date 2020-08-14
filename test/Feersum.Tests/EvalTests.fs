@@ -35,6 +35,12 @@ let ``Evaluate empty program`` () =
     Assert.Equal("; unspecified value", interpret(Seq [ ]))
     Assert.Equal("()", feeri(Seq [ ]))
 
+[<Fact>]
+let ``Evaluate lambdas returns`` () =
+    Assert.Equal("123", feeri(Form [
+        Form [ Ident "lambda"; Form [ Ident "x" ]; Ident "x"];
+        Number 123.0]))
+
 // TODO: Number builtins are only implemented in the interpreter right now.
 [<Fact>]
 let ``Evaluate builtins`` () =

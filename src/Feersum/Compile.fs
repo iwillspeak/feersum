@@ -61,14 +61,19 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         | StorageRef.Global id ->
             let field = ensureField ctx id
             ctx.IL.Emit(OpCodes.Stsfld, field)
-        | StorageRef.Local(Local.Local idx) ->
+        | StorageRef.Local(idx) ->
             ctx.IL.Emit(OpCodes.Stloc, idx)
+        | StorageRef.Arg(idx) ->
+            ctx.IL.Emit(OpCodes.Starg, idx)
     | BoundExpr.Load storage ->
         match storage with
         | StorageRef.Global id ->
             let field = ensureField ctx id
             ctx.IL.Emit(OpCodes.Ldsfld, field)
-        | StorageRef.Local(Local.Local idx) -> ctx.IL.Emit(OpCodes.Ldloc, idx)
+        | StorageRef.Local(idx) ->
+            ctx.IL.Emit(OpCodes.Ldloc, idx)
+        | StorageRef.Arg(idx) ->
+            ctx.IL.Emit(OpCodes.Ldarg, idx)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
         recurse cond
         let lblFalse = ctx.IL.Create(OpCodes.Nop)
@@ -95,32 +100,43 @@ and emitApplication ctx ap args =
 
     // Emit the arguments array
     ctx.IL.Emit(OpCodes.Ldc_I4, List.length args)
-    ctx.IL.Emit(OpCodes.Newarr, ArrayType(ctx.Assm.MainModule.TypeSystem.Object))
+    ctx.IL.Emit(OpCodes.Newarr, ctx.Assm.MainModule.TypeSystem.Object)
     List.fold (fun (idx: int) e -> 
         ctx.IL.Emit(OpCodes.Dup)
         ctx.IL.Emit(OpCodes.Ldc_I4, idx)
         emitExpression ctx e
-        ctx.IL.Emit(OpCodes.Stelem_I4)
-        idx) 0 args |> ignore
-    let funcInvoke = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj[],obj>>.GetMethod("Invoke", [| typeof<obj[]> |]))
+        ctx.IL.Emit(OpCodes.Stelem_Ref)
+        idx + 1) 0 args |> ignore
+       
+    let funcInvoke = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj[], obj>>.GetMethod("Invoke", [| typeof<obj[]> |]))
     ctx.IL.Emit(OpCodes.Callvirt, funcInvoke)
 and emitLambda ctx formals body =
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
-    let method = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
+    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
     let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
     let funcObjCtor = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj[], obj>>.GetConstructor(paramTypes))
     ctx.IL.Emit(OpCodes.Ldnull)
-    ctx.IL.Emit(OpCodes.Ldftn, method :> MethodReference)
+    ctx.IL.Emit(OpCodes.Ldftn, thunk :> MethodReference)
     ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
 and emitNamedLambda (ctx: EmitCtx) name formals body =
-    // TODO: Use the formals to emit the parameters for our method definition
     let methodDecl = MethodDefinition(name,
                                       MethodAttributes.Public ||| MethodAttributes.Static,
                                       ctx.Assm.MainModule.TypeSystem.Object)
-    methodDecl.Parameters.Add(ParameterDefinition(ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
     ctx.ProgramTy.Methods.Add methodDecl
+
+    let addParam id =
+        methodDecl.Parameters.Add(ParameterDefinition(id, ParameterAttributes.None, ctx.Assm.MainModule.TypeSystem.Object))
+
+    // Add formals as parameter definitions
+    match formals with
+    | Simple id -> addParam id
+    | List fmls ->
+        List.map addParam fmls |> ignore
+    | DottedList(fmls, dotted) ->
+        List.map addParam fmls |> ignore
+        addParam dotted
 
     let ctx = { IL = methodDecl.Body.GetILProcessor()
               ; ProgramTy = ctx.ProgramTy
@@ -130,7 +146,38 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
     emitExpression ctx body
     ctx.IL.Emit(OpCodes.Ret)
     methodDecl.Body.Optimize()
-    methodDecl
+
+    // Emit a thunk that unpacks the arguments to our method
+    // This allows us to provide a uniform calling convention for
+    // lambda instances
+    let thunkDecl = MethodDefinition((sprintf "%s:thunk" name),
+                                      MethodAttributes.Public ||| MethodAttributes.Static,
+                                      ctx.Assm.MainModule.TypeSystem.Object)
+    thunkDecl.Parameters.Add(ParameterDefinition(ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
+    ctx.ProgramTy.Methods.Add thunkDecl
+    let thunkIl = thunkDecl.Body.GetILProcessor()
+
+    let unpackArg (idx: int) id =
+        thunkIl.Emit(OpCodes.Ldarg_0)
+        thunkIl.Emit(OpCodes.Ldc_I4, idx)
+        thunkIl.Emit(OpCodes.Ldelem_Ref)
+        idx + 1
+
+    match formals with
+    | Simple id ->
+        // FIXME: Unpack into a list
+        unpackArg 0 id |> ignore
+    | List fmls ->
+        List.fold unpackArg 0 fmls |> ignore
+    | DottedList(fmls, dotted) ->
+        let lastIdx = List.fold unpackArg 0 fmls
+        // FIXME: Unpack into a list
+        unpackArg lastIdx dotted |> ignore
+    thunkIl.Emit(OpCodes.Call, methodDecl)
+    thunkIl.Emit(OpCodes.Ret)
+    thunkDecl.Body.Optimize()
+
+    methodDecl, thunkDecl
 
 /// Emit the `Main` Method Epilogue
 ///
@@ -203,7 +250,7 @@ let emit (outputStream: Stream) outputName bound =
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
     let bodyParams = BoundFormals.List([])
-    let bodyMethod = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound
+    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.
@@ -215,7 +262,6 @@ let emit (outputStream: Stream) outputName bound =
     assm.EntryPoint <- mainMethod
     let il = mainMethod.Body.GetILProcessor()
 
-    il.Emit(OpCodes.Ldnull)
     il.Emit(OpCodes.Call, bodyMethod)
     emitMainEpilogue assm il
 

@@ -3,16 +3,14 @@ module Bind
 open Syntax
 open System.Collections.Generic
 
-/// Locals are indices into the local variable table
-type Local = Local of int
-
 /// Storage Reference
 ///
 /// Reference to a given storage location. Used to express reads and writes
 /// of values to storage locations.
 type StorageRef =
-    | Local of Local
+    | Local of int
     | Global of string
+    | Arg of int
 
 /// Collection of Bound Formal Parameters
 /// 
@@ -65,6 +63,10 @@ module private BinderCtx =
         match ctx.Scope.TryGetValue(id) with
         | (true, value) -> Some(value)
         | _ -> None
+    
+    /// Introduce a binding for the given formal argument
+    let addArgumentBinding ctx id idx =
+        ctx.Scope.[id] <- StorageRef.Arg idx
 
     /// Add a new entry to the current scope
     let addBinding ctx id =
@@ -109,6 +111,7 @@ let private bindFormalsList formals =
             | _ -> failwith "Expected ID or dot in formals"
     
     let (fmls, sawDot, dotted) = List.fold f ([], false, None) formals
+    let fmls = List.rev fmls
     if sawDot then
         match dotted with
         | Some(d) -> BoundFormals.DottedList(fmls, d)
@@ -150,15 +153,18 @@ and private bindApplication ctx head rest =
     BoundExpr.Application(bindInContext ctx head, List.map (bindInContext ctx) rest)
 and private bindLambdaBody ctx formals body =
     let lambdaCtx = BinderCtx.createWithParent ctx
-    let addFormal = BinderCtx.addBinding lambdaCtx
+    let addFormal idx id =
+        BinderCtx.addArgumentBinding lambdaCtx id idx
+        idx + 1
+
     match formals with
     | BoundFormals.Simple(id) ->
-        addFormal id |> ignore
+        addFormal 0 id |> ignore
     | BoundFormals.List(fmls) ->
-        (List.map addFormal fmls) |> ignore
+        (List.fold addFormal 0 fmls)|> ignore
     | BoundFormals.DottedList(fmls, dotted) ->
-        (List.map addFormal fmls) |> ignore
-        addFormal dotted |> ignore
+        let nextFormal = (List.fold addFormal 0 fmls)
+        addFormal nextFormal dotted |> ignore
     let boundBody = bindSequence lambdaCtx body
     BoundExpr.Lambda(formals, boundBody)
 and private bindForm ctx form =
