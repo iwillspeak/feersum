@@ -92,24 +92,34 @@ and emitSequence ctx seq =
     |>  Seq.iter popAndEmit
 and emitApplication ctx ap args =
     emitExpression ctx ap
-    let funcInvoke = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj>>.GetMethod("Invoke", Type.EmptyTypes))
+
+    // Emit the arguments array
+    ctx.IL.Emit(OpCodes.Ldc_I4, List.length args)
+    ctx.IL.Emit(OpCodes.Newarr, ArrayType(ctx.Assm.MainModule.TypeSystem.Object))
+    List.fold (fun (idx: int) e -> 
+        ctx.IL.Emit(OpCodes.Dup)
+        ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+        emitExpression ctx e
+        ctx.IL.Emit(OpCodes.Stelem_I4)
+        idx) 0 args |> ignore
+    let funcInvoke = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj[],obj>>.GetMethod("Invoke", [| typeof<obj[]> |]))
     ctx.IL.Emit(OpCodes.Callvirt, funcInvoke)
 and emitLambda ctx formals body =
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
     let method = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
-    let paramTypes = [|typeof<obj>; typeof<System.IntPtr>|]
-    let funcObjCtor = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj>>.GetConstructor(paramTypes))
+    let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
+    let funcObjCtor = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj[], obj>>.GetConstructor(paramTypes))
     ctx.IL.Emit(OpCodes.Ldnull)
     ctx.IL.Emit(OpCodes.Ldftn, method :> MethodReference)
     ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
-
 and emitNamedLambda (ctx: EmitCtx) name formals body =
     // TODO: Use the formals to emit the parameters for our method definition
     let methodDecl = MethodDefinition(name,
                                       MethodAttributes.Public ||| MethodAttributes.Static,
                                       ctx.Assm.MainModule.TypeSystem.Object)
+    methodDecl.Parameters.Add(ParameterDefinition(ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
     ctx.ProgramTy.Methods.Add methodDecl
 
     let ctx = { IL = methodDecl.Body.GetILProcessor()
@@ -205,6 +215,7 @@ let emit (outputStream: Stream) outputName bound =
     assm.EntryPoint <- mainMethod
     let il = mainMethod.Body.GetILProcessor()
 
+    il.Emit(OpCodes.Ldnull)
     il.Emit(OpCodes.Call, bodyMethod)
     emitMainEpilogue assm il
 
