@@ -34,7 +34,8 @@ let private ensureField ctx id =
 
 /// Emit a Single Bound Expression
 ///
-/// Emits the code for a single function into the given assembly.
+/// Emits the code for a single function into the given assembly. For some more
+/// complex expression types it delegates to the mutually-recursive `emit*`s
 let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     let recurse = emitExpression ctx
     match expr with
@@ -50,9 +51,10 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     | BoundExpr.Seq s -> emitSequence ctx s
     | BoundExpr.Application(ap, args) -> emitApplication ctx ap args
     | BoundExpr.Definition(id, storage, maybeVal) ->
-        // TODO: could we just elide the whole definition if there is no value.
-        //       do we need to start considering expressions and statements
-        //       as disjoint things?
+        // TODO: Could we just elide the whole definition if there is no value.
+        //       If we have nothing to store it would save a lot of code. In the
+        //       case we are storing to a field we _might_ need to call
+        //       `emitField` still.
         match maybeVal with
         | Some(expr) -> recurse expr
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
@@ -88,6 +90,11 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, body) ->
         emitLambda ctx formals body
+
+    /// Emit a Sequence of Expressions
+    ///
+    /// Emits each expression in the sequence, and pops any intermediate values
+    /// from the stack.
 and emitSequence ctx seq =
     let popAndEmit x =
         ctx.IL.Emit(OpCodes.Pop)
@@ -95,6 +102,16 @@ and emitSequence ctx seq =
     emitExpression ctx (List.head seq)
     List.tail seq
     |>  Seq.iter popAndEmit
+
+    /// Emit a Function application
+    /// 
+    /// Emits the code to build an arguments array and then call the 'applicant'
+    /// value. This is responsible for 'packing' the arguments up for a call to
+    /// match the 'unified calling convention' we have decided on for this
+    /// Scheme compiler.
+    /// 
+    /// Arguments are passed to a callable instnace as an array. This means that
+    /// all callable values are `Func<obj[],obj>`.
 and emitApplication ctx ap args =
     emitExpression ctx ap
 
@@ -107,19 +124,42 @@ and emitApplication ctx ap args =
         emitExpression ctx e
         ctx.IL.Emit(OpCodes.Stelem_Ref)
         idx + 1) 0 args |> ignore
-       
-    let funcInvoke = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj[], obj>>.GetMethod("Invoke", [| typeof<obj[]> |]))
+    
+    let funcInvoke = typeof<Func<obj[], obj>>.GetMethod("Invoke",
+                                                        [| typeof<obj[]> |])
+    let funcInvoke = ctx.Assm.MainModule.ImportReference(funcInvoke)
     ctx.IL.Emit(OpCodes.Callvirt, funcInvoke)
+
+    /// Emit a Lambda Reference
+    /// 
+    /// Performs the marshalling required to create a callable `Func` instance
+    /// on the stack. This first defers to `emitNamedLambda` to write out the
+    /// lambda's body and then creates a new `Func<obj[],obj>` instance that
+    /// wraps a call to the lambda using the lambda's 'thunk'.
 and emitLambda ctx formals body =
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
     let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
     let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
-    let funcObjCtor = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj[], obj>>.GetConstructor(paramTypes))
+    let funcObjCtor = typeof<Func<obj[], obj>>.GetConstructor(paramTypes)
+    let funcObjCtor = ctx.Assm.MainModule.ImportReference(funcObjCtor)
     ctx.IL.Emit(OpCodes.Ldnull)
     ctx.IL.Emit(OpCodes.Ldftn, thunk :> MethodReference)
     ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
+
+    /// Emit a Named Lambda Body
+    /// 
+    /// Creates a pair of methods. The first contains the implementation of the
+    /// given `body` as a true .NET method. The second method is a 'thunk'
+    /// which 'unpacks' the arguments to the function and performs runtime
+    /// checks as required to ensure that we match the 'unified' calling
+    /// convention used by this Scheme impementation.
+    /// 
+    /// The thunk is rquired in this case as we can't usually know the type of
+    /// the function we are calling. A future optimisation may be to transform
+    /// the bound tree and lower some calls in the case we _can_ be sure of the
+    /// parameters. 
 and emitNamedLambda (ctx: EmitCtx) name formals body =
     let methodDecl = MethodDefinition(name,
                                       MethodAttributes.Public ||| MethodAttributes.Static,
@@ -127,7 +167,10 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
     ctx.ProgramTy.Methods.Add methodDecl
 
     let addParam id =
-        methodDecl.Parameters.Add(ParameterDefinition(id, ParameterAttributes.None, ctx.Assm.MainModule.TypeSystem.Object))
+        let param = ParameterDefinition(id,
+                                        ParameterAttributes.None,
+                                        ctx.Assm.MainModule.TypeSystem.Object)
+        methodDecl.Parameters.Add(param)
 
     // Add formals as parameter definitions
     match formals with
@@ -138,6 +181,8 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
         List.map addParam fmls |> ignore
         addParam dotted
 
+    // Create a new emit context for the new method, and lower the body in that
+    // new context.
     let ctx = { IL = methodDecl.Body.GetILProcessor()
               ; ProgramTy = ctx.ProgramTy
               ; NextLambda = 0
@@ -147,9 +192,9 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
     ctx.IL.Emit(OpCodes.Ret)
     methodDecl.Body.Optimize()
 
-    // Emit a thunk that unpacks the arguments to our method
+    // Emit a 'thunk' that unpacks the arguments to our method
     // This allows us to provide a uniform calling convention for
-    // lambda instances
+    // lambda instances.
     let thunkDecl = MethodDefinition((sprintf "%s:thunk" name),
                                       MethodAttributes.Public ||| MethodAttributes.Static,
                                       ctx.Assm.MainModule.TypeSystem.Object)
@@ -214,7 +259,10 @@ let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
 /// Creates a constructor method deifnition that just calls the parent constructor
 let private createEmptyCtor (assm: AssemblyDefinition) =
     let ctor = MethodDefinition(".ctor",
-                                MethodAttributes.Public ||| MethodAttributes.HideBySig ||| MethodAttributes.SpecialName ||| MethodAttributes.RTSpecialName,
+                                MethodAttributes.Public |||
+                                MethodAttributes.HideBySig |||
+                                MethodAttributes.SpecialName |||
+                                MethodAttributes.RTSpecialName,
                                 assm.MainModule.TypeSystem.Void)
     let objConstructor = assm.MainModule.ImportReference(typeof<obj>.GetConstructor(Array.empty))
     let il = ctor.Body.GetILProcessor()
