@@ -91,8 +91,9 @@ and emitSequence ctx seq =
     List.tail seq
     |>  Seq.iter popAndEmit
 and emitApplication ctx ap args =
-    match ap with
-    | _ -> failwith "application not implemented"
+    emitExpression ctx ap
+    let funcInvoke = ctx.Assm.MainModule.ImportReference(typeof<System.Func<obj>>.GetMethod("Invoke", Type.EmptyTypes))
+    ctx.IL.Emit(OpCodes.Callvirt, funcInvoke)
 and emitLambda ctx formals body =
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda

@@ -5,4 +5,4 @@
 (define z (lambda y 123))
 (define a (lambda (a b c) 20))
 (define b (lambda (a b . c) 1234))
-;(x) ; -> 100
+((x)) ; -> 100
