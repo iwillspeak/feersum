@@ -15,7 +15,7 @@ let cilExternalRepr (object: Object) =
     | :? Boolean as b -> if b then "#t" else "#f"
     | :? Double as d -> sprintf "%g" d
     | null -> "()"
-    | :? Func<obj> as f -> sprintf "#<compiledProcedure %A>" f
+    | :? Func<obj[], obj> as f -> sprintf "#<compiledProcedure %A>" f.Method
     | other -> sprintf "%A" other
     
 
