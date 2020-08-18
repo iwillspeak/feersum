@@ -57,29 +57,25 @@ let private parseBool =
     stringReturn "#t" (Boolean true) <|>
     stringReturn "#f" (Boolean false)
 
+let inline private isIdentifierChar c =
+    isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~+-." c
+
 let private parseIdent =
-    let isNumChar = isAnyOf "+-."
-    let inline isAsciiExtended c =
-        isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~" c
-    let isAsciiIdContinue c =
-        isNumChar c || isAsciiExtended c
-    (choice [
-        identifier(IdentifierOptions(isAsciiIdContinue = isAsciiIdContinue,
-                                     isAsciiIdStart = isAsciiExtended))
-        pstring "-"
-        pstring "+" 
-    ]) |>> Ident
+    many1SatisfyL isIdentifierChar "identifier"
+    |>> Ident
  
 let private parseDot =
-    (pchar '.') >>% Dot 
+    (pchar '.' >>? notFollowedBy (satisfy isIdentifierChar)) >>% Dot 
 
 let private parseAtom =
+    // The order is important here. Numbers have higher priority than
+    // symbols / identifiers. The `.` token must come before identifier.
     choice [
         parseStr
         parseNum
         parseBool
-        parseIdent
         parseDot
+        parseIdent
     ]
 
 let private parseForm, parseFormRef = createParserForwardedToRef()

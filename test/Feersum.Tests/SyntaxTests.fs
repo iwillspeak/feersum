@@ -47,6 +47,42 @@ let ``parse identifiers`` ident =
     Assert.Equal(Ident ident, readSingle ident)
 
 [<Theory>]
+[<InlineData("!")>]
+[<InlineData("$")>]
+[<InlineData("%")>]
+[<InlineData("&")>]
+[<InlineData("*")>]
+[<InlineData("+")>]
+[<InlineData("-")>]
+[<InlineData("/")>]
+[<InlineData(":")>]
+[<InlineData("<")>]
+[<InlineData("=")>]
+[<InlineData(">")>]
+[<InlineData("?")>]
+[<InlineData("@")>]
+[<InlineData("^")>]
+[<InlineData("_")>]
+[<InlineData("~")>]
+[<InlineData("..")>]
+[<InlineData("extended.")>]
+[<InlineData("extended.identifier")>]
+[<InlineData("...")>]
+[<InlineData("+soup+")>]
+[<InlineData("<=?")>]
+[<InlineData("->string")>]
+[<InlineData("a34kTMNs")>]
+[<InlineData("lambda")>]
+[<InlineData("list->vector")>]
+[<InlineData("q")>]
+[<InlineData("V17a")>]
+[<InlineData("the-word-recursion-has-many-meanings")>]
+// |two words|
+// |two\x20;words|
+let ``extended identifier characters`` ident =
+    Assert.Equal(Ident ident, readSingle ident)
+
+[<Theory>]
 [<InlineData("\\a", '\a')>]
 [<InlineData("\\b", '\b')>]
 [<InlineData("\\t", '\t')>]
