@@ -208,16 +208,19 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
         thunkIl.Emit(OpCodes.Ldelem_Ref)
         idx + 1
 
+    let unpackRemainder (idx: int) =
+        // FIXME: This needs to unpack the remainder of the array into a Scheme
+        //        list to pass as the argument. Itt is OK if this list is empty.
+        thunkIl.Emit(OpCodes.Ldnull)
+        ()
+
     match formals with
-    | Simple id ->
-        // FIXME: Unpack into a list
-        unpackArg 0 id |> ignore
+    | Simple id -> unpackRemainder 0
     | List fmls ->
         List.fold unpackArg 0 fmls |> ignore
     | DottedList(fmls, dotted) ->
         let lastIdx = List.fold unpackArg 0 fmls
-        // FIXME: Unpack into a list
-        unpackArg lastIdx dotted |> ignore
+        unpackRemainder lastIdx
     thunkIl.Emit(OpCodes.Call, methodDecl)
     thunkIl.Emit(OpCodes.Ret)
     thunkDecl.Body.Optimize()
