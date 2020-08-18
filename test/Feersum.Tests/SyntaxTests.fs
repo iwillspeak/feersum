@@ -30,6 +30,8 @@ let ``parse atoms`` () =
     Assert.Equal(Ident "nil", readSingle "nil")
     Assert.Equal(Boolean true, readSingle "#t")
     Assert.Equal(Boolean false, readSingle "#f")
+    Assert.Equal(Boolean true, readSingle "#true")
+    Assert.Equal(Boolean false, readSingle "#false")
     Assert.Equal(Dot, readSingle ".")
 
 [<Theory>]

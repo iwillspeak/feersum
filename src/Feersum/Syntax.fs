@@ -54,8 +54,10 @@ let private parseStr =
     lit |>> Str
 
 let private parseBool =
-    stringReturn "#t" (Boolean true) <|>
-    stringReturn "#f" (Boolean false)
+    stringReturn "#true"  (Boolean true) <|>
+    stringReturn "#t"     (Boolean true) <|>
+    stringReturn "#false" (Boolean false) <|>
+    stringReturn "#f"     (Boolean false)
 
 let inline private isIdentifierChar c =
     isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~+-." c
