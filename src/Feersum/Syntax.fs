@@ -16,7 +16,7 @@ type AstNode =
     | Seq of AstNode list
 
 let private comment = 
-    pchar ';' >>. skipRestOfLine true
+    skipChar ';' >>. skipRestOfLine true
 
 let private ws = skipMany (comment <|> unicodeSpaces1)
 
@@ -32,7 +32,7 @@ let private hexEscape =
         |> System.Char.ConvertFromUtf32
         |> System.Char.Parse
             
-    between (pstring "\\x") (pchar ';') (manyChars hex)
+    between (skipString "\\x") (skipChar ';') (manyChars hex)
     |>> hexUnescape
 
 let private escapedChar =
@@ -46,10 +46,10 @@ let private escapedChar =
         | 'f' -> '\f'
         | 'r' -> '\r'
         | c -> c
-    pchar '\\' >>. (noneOf "x") |>> unescape
+    skipChar '\\' >>. (noneOf "x") |>> unescape
       
 let private parseStr =
-    let lit = between (pchar '"') (pchar '"')
+    let lit = between (skipChar '"') (skipChar '"')
                 (manyChars (unescapedChar <|> hexEscape <|> escapedChar))
     lit |>> Str
 
@@ -65,11 +65,11 @@ let inline private isIdentifierChar c =
 let private parseIdent =
     let simpleIdent = many1SatisfyL isIdentifierChar "identifier"
     let identLiteralChar = (manyChars ((noneOf "\\|") <|> hexEscape <|> escapedChar))
-    let identLiteral = between (pchar '|') (pchar '|') identLiteralChar
+    let identLiteral = between (skipChar '|') (skipChar '|') identLiteralChar
     simpleIdent <|> identLiteral |>> Ident
  
 let private parseDot =
-    (pchar '.' >>? notFollowedBy (satisfy isIdentifierChar)) >>% Dot 
+    (skipChar '.' >>? notFollowedBy (satisfy isIdentifierChar)) >>% Dot 
 
 let private parseAtom =
     // The order is important here. Numbers have higher priority than
@@ -85,7 +85,7 @@ let private parseAtom =
 let private parseForm, parseFormRef = createParserForwardedToRef()
 
 let private parseApplication =
-    between (pchar '(') (pchar ')')
+    between (skipChar '(') (skipChar ')')
         ((many parseForm) |>> Form)
        
 do parseFormRef :=
