@@ -61,8 +61,10 @@ let inline private isIdentifierChar c =
     isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~+-." c
 
 let private parseIdent =
-    many1SatisfyL isIdentifierChar "identifier"
-    |>> Ident
+    let simpleIdent = many1SatisfyL isIdentifierChar "identifier"
+    let identLiteralChar = (manyChars ((noneOf "\\|") <|> hexEscape <|> escapedChar))
+    let identLiteral = between (pchar '|') (pchar '|') identLiteralChar
+    simpleIdent <|> identLiteral |>> Ident
  
 let private parseDot =
     (pchar '.' >>? notFollowedBy (satisfy isIdentifierChar)) >>% Dot 

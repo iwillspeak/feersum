@@ -77,10 +77,18 @@ let ``parse identifiers`` ident =
 [<InlineData("q")>]
 [<InlineData("V17a")>]
 [<InlineData("the-word-recursion-has-many-meanings")>]
-// |two words|
-// |two\x20;words|
 let ``extended identifier characters`` ident =
     Assert.Equal(Ident ident, readSingle ident)
+
+[<Theory>]
+[<InlineData("|two words|", "two words")>]
+[<InlineData(@"|two\x20;words|", "two words")>]
+[<InlineData(@"|\t\t|", "\t\t")>]
+[<InlineData(@"|\x9;\x9;|", "\t\t")>]
+[<InlineData(@"|H\x65;llo|", "Hello")>]
+[<InlineData(@"|\x3BB;|", "λ")>]
+let ``identifier literals`` raw cooked =
+    Assert.Equal(Ident cooked, readSingle raw)
 
 [<Theory>]
 [<InlineData("\\a", '\a')>]
