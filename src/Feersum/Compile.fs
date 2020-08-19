@@ -10,11 +10,12 @@ open Mono.Cecil.Cil
 
 // Type to Hold Context While Emitting IL
 type EmitCtx =
-    { Assm: AssemblyDefinition;
-      IL: ILProcessor;
-      mutable NextLambda: int;
-      ScopePrefix: string;
-      ProgramTy: TypeDefinition }
+    { Assm: AssemblyDefinition
+    ; IL: ILProcessor
+    ; mutable NextLambda: int
+    ; ScopePrefix: string
+    ; ProgramTy: TypeDefinition
+    ; ConsTy: TypeDefinition }
 
 /// Emit an instance of the unspecified value
 let private emitUnspecified (il: ILProcessor) =
@@ -183,11 +184,9 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
 
     // Create a new emit context for the new method, and lower the body in that
     // new context.
-    let ctx = { IL = methodDecl.Body.GetILProcessor()
-              ; ProgramTy = ctx.ProgramTy
-              ; NextLambda = 0
-              ; ScopePrefix = name
-              ; Assm = ctx.Assm }
+    let ctx = { ctx with NextLambda = 0;
+                         IL = methodDecl.Body.GetILProcessor();
+                         ScopePrefix = name }
     emitExpression ctx body
     ctx.IL.Emit(OpCodes.Ret)
     methodDecl.Body.Optimize()
@@ -209,20 +208,66 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
         idx + 1
 
     let unpackRemainder (idx: int) =
-        // FIXME: This needs to unpack the remainder of the array into a Scheme
-        //        list to pass as the argument. Itt is OK if this list is empty.
+        let i = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Int32)
+        thunkDecl.Body.Variables.Add(i)
+        let consCtor = ctx.ConsTy.GetConstructors() |> Seq.head
+
+        // * get length of array
+        thunkIl.Emit(OpCodes.Ldarg_0)
+        thunkIl.Emit(OpCodes.Ldlen)
+
+        // * store as local <i>
+        thunkIl.Emit(OpCodes.Stloc, i)
+        
+        // * load null
         thunkIl.Emit(OpCodes.Ldnull)
+
+        // * load from the array at <--i> and make cons pair
+        let loop = thunkIl.Create(OpCodes.Ldarg_0)
+        thunkIl.Append(loop)
+        thunkIl.Emit(OpCodes.Ldloc, i)
+        thunkIl.Emit(OpCodes.Ldc_I4_1)
+        thunkIl.Emit(OpCodes.Sub)
+        thunkIl.Emit(OpCodes.Dup)
+        thunkIl.Emit(OpCodes.Stloc, i)
+        thunkIl.Emit(OpCodes.Ldelem_Ref)
+        thunkIl.Emit(OpCodes.Newobj, consCtor)
+
+        // * check if <i> gt idx then loop
+        thunkIl.Emit(OpCodes.Ldloc, i)
+        thunkIl.Emit(OpCodes.Ldc_I4, idx)
+        thunkIl.Emit(OpCodes.Bgt, loop)
+
         ()
+    
+    let error = thunkIl.Create(OpCodes.Nop)
 
     match formals with
     | Simple id -> unpackRemainder 0
     | List fmls ->
+        let expectedArgCount = List.length fmls
+        thunkIl.Emit(OpCodes.Ldarg_0)
+        thunkIl.Emit(OpCodes.Ldlen)
+        thunkIl.Emit(OpCodes.Ldc_I4, expectedArgCount)
+        thunkIl.Emit(OpCodes.Bne_Un, error)
         List.fold unpackArg 0 fmls |> ignore
     | DottedList(fmls, dotted) ->
+        let expectedArgCount = List.length fmls
+        thunkIl.Emit(OpCodes.Ldarg_0)
+        thunkIl.Emit(OpCodes.Ldlen)
+        thunkIl.Emit(OpCodes.Ldc_I4, expectedArgCount)
+        thunkIl.Emit(OpCodes.Blt_Un, error)
         let lastIdx = List.fold unpackArg 0 fmls
         unpackRemainder lastIdx
     thunkIl.Emit(OpCodes.Call, methodDecl)
     thunkIl.Emit(OpCodes.Ret)
+
+    thunkIl.Append(error)
+    thunkIl.Emit(OpCodes.Ldstr, sprintf "Argument count mis-match")
+    thunkIl.Emit(OpCodes.Newobj, ctx.Assm.MainModule.ImportReference(typeof<Exception>.GetConstructor([| typeof<string> |])))
+    thunkIl.Emit(OpCodes.Throw)
+    thunkIl.Emit(OpCodes.Ret)
+
     thunkDecl.Body.Optimize()
 
     methodDecl, thunkDecl
@@ -274,6 +319,51 @@ let private createEmptyCtor (assm: AssemblyDefinition) =
     il.Emit(OpCodes.Ret)
     ctor
 
+/// Adds the ConsPair Type
+///
+/// Creates supporting types used for represnting scheme values that the
+/// compiler depends on for emitted code.
+let private addCoreDecls (assm: AssemblyDefinition) =
+    let compilerServicesNs = "Feersum.CompilerServices"
+    let consTy = TypeDefinition(compilerServicesNs,
+                                "ConsPair",
+                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                                assm.MainModule.TypeSystem.Object)
+    let car = FieldDefinition("car", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
+    let cdr = FieldDefinition("cdr", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
+
+    let ctor = MethodDefinition(".ctor",
+                                MethodAttributes.Public |||
+                                MethodAttributes.HideBySig |||
+                                MethodAttributes.SpecialName |||
+                                MethodAttributes.RTSpecialName,
+                                assm.MainModule.TypeSystem.Void)
+    ctor.Parameters.Add <| ParameterDefinition(assm.MainModule.TypeSystem.Object)
+    ctor.Parameters.Add <| ParameterDefinition(assm.MainModule.TypeSystem.Object)
+
+    let objConstructor = assm.MainModule.ImportReference(typeof<obj>.GetConstructor(Array.empty))
+    let ctorIl = ctor.Body.GetILProcessor()
+    ctorIl.Emit(OpCodes.Ldarg_0)
+    ctorIl.Emit(OpCodes.Call, objConstructor)
+    
+    ctorIl.Emit(OpCodes.Ldarg_0)
+    ctorIl.Emit(OpCodes.Ldarg_1)
+    ctorIl.Emit(OpCodes.Stfld, cdr)
+
+    ctorIl.Emit(OpCodes.Ldarg_0)
+    ctorIl.Emit(OpCodes.Ldarg_2)
+    ctorIl.Emit(OpCodes.Stfld, car)
+
+    ctorIl.Emit(OpCodes.Ret)
+        
+    consTy.Methods.Add ctor
+
+    consTy.Fields.Add(car)
+    consTy.Fields.Add(cdr)
+
+    assm.MainModule.Types.Add consTy
+    consTy
+
 /// Emit a Bound Expression to .NET
 ///
 /// Creates an assembly and writes out the .NET interpretation of the
@@ -284,6 +374,8 @@ let emit (outputStream: Stream) outputName bound =
     // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
+
+    let consTy = addCoreDecls assm
 
     // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName,
@@ -297,6 +389,7 @@ let emit (outputStream: Stream) outputName bound =
     // module can call it directly
     let rootEmitCtx = { IL = null
                       ; ProgramTy = progTy
+                      ; ConsTy = consTy
                       ; NextLambda = 0
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
