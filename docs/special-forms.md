@@ -4,7 +4,9 @@ In Scheme some forms are not handled as plain function
 application. This document lists the planned special forms for the
 language, along with their implementation status.
 
-The set of forms are derived from those in [MIT-Scheme][mit-specials].
+The set of forms are derived from those in [R7RS][r7rs-spec].
+
+[TOC]
 
 ## Lambda Expressions
 
@@ -171,4 +173,4 @@ and returns the result of the final expression.
 
 The begin special form is implemented.
 
- [mit-specials]: https://www.gnu.org/software/mit-scheme/documentation/mit-scheme-ref/Special-Forms.html
+ [r7rs-spec]: https://small.r7rs.org/
