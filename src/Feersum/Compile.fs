@@ -237,35 +237,36 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
         thunkIl.Emit(OpCodes.Ldloc, i)
         thunkIl.Emit(OpCodes.Ldc_I4, idx)
         thunkIl.Emit(OpCodes.Bgt, loop)
-
-        ()
     
-    let error = thunkIl.Create(OpCodes.Nop)
+    let raiseArgCountMismatch (count: int) opCode (err: string) =
+        let ok = thunkIl.Create(OpCodes.Nop)
+
+        thunkIl.Emit(OpCodes.Ldarg_0)
+        thunkIl.Emit(OpCodes.Ldlen)
+        thunkIl.Emit(OpCodes.Ldc_I4, count)
+        thunkIl.Emit(opCode, ok)
+
+        thunkIl.Emit(OpCodes.Ldstr, err)
+        thunkIl.Emit(OpCodes.Newobj, ctx.Assm.MainModule.ImportReference(typeof<Exception>.GetConstructor([| typeof<string> |])))
+        thunkIl.Emit(OpCodes.Throw)
+
+        thunkIl.Append(ok)
 
     match formals with
     | Simple id -> unpackRemainder 0
     | List fmls ->
         let expectedArgCount = List.length fmls
-        thunkIl.Emit(OpCodes.Ldarg_0)
-        thunkIl.Emit(OpCodes.Ldlen)
-        thunkIl.Emit(OpCodes.Ldc_I4, expectedArgCount)
-        thunkIl.Emit(OpCodes.Bne_Un, error)
+        raiseArgCountMismatch expectedArgCount OpCodes.Beq (sprintf "Expected exactly %d arguments" expectedArgCount)
         List.fold unpackArg 0 fmls |> ignore
     | DottedList(fmls, dotted) ->
         let expectedArgCount = List.length fmls
-        thunkIl.Emit(OpCodes.Ldarg_0)
-        thunkIl.Emit(OpCodes.Ldlen)
-        thunkIl.Emit(OpCodes.Ldc_I4, expectedArgCount)
-        thunkIl.Emit(OpCodes.Blt_Un, error)
+        raiseArgCountMismatch expectedArgCount OpCodes.Bge (sprintf "Expected at least %d arguments" expectedArgCount)
         let lastIdx = List.fold unpackArg 0 fmls
         unpackRemainder lastIdx
-    thunkIl.Emit(OpCodes.Call, methodDecl)
-    thunkIl.Emit(OpCodes.Ret)
 
-    thunkIl.Append(error)
-    thunkIl.Emit(OpCodes.Ldstr, sprintf "Argument count mis-match")
-    thunkIl.Emit(OpCodes.Newobj, ctx.Assm.MainModule.ImportReference(typeof<Exception>.GetConstructor([| typeof<string> |])))
-    thunkIl.Emit(OpCodes.Throw)
+    // Call the real method as a tail call
+    thunkIl.Emit(OpCodes.Tail)
+    thunkIl.Emit(OpCodes.Call, methodDecl)
     thunkIl.Emit(OpCodes.Ret)
 
     thunkDecl.Body.Optimize()
