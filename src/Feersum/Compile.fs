@@ -201,12 +201,14 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
     ctx.ProgramTy.Methods.Add thunkDecl
     let thunkIl = thunkDecl.Body.GetILProcessor()
 
+    /// Unpack a single argument from the arguments array onto the stack
     let unpackArg (idx: int) id =
         thunkIl.Emit(OpCodes.Ldarg_0)
         thunkIl.Emit(OpCodes.Ldc_I4, idx)
         thunkIl.Emit(OpCodes.Ldelem_Ref)
         idx + 1
 
+    /// Unpack all remaining arguments from `idx` onwards into a Scheme list
     let unpackRemainder (idx: int) =
         let i = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Int32)
         thunkDecl.Body.Variables.Add(i)
@@ -222,22 +224,27 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
         // * load null
         thunkIl.Emit(OpCodes.Ldnull)
 
-        // * load from the array at <--i> and make cons pair
+        // * First check the loop condition
+        let loopCond = thunkIl.Create(OpCodes.Ldloc, i)
+        thunkIl.Emit(OpCodes.Br_S, loopCond)
+        
+        //   * load from the array at <i> and make cons pair
         let loop = thunkIl.Create(OpCodes.Ldarg_0)
         thunkIl.Append(loop)
         thunkIl.Emit(OpCodes.Ldloc, i)
+        thunkIl.Emit(OpCodes.Ldelem_Ref)
+        thunkIl.Emit(OpCodes.Newobj, consCtor)
+
+        //   * check if <i> gt idx then loop
+        thunkIl.Append(loopCond)
         thunkIl.Emit(OpCodes.Ldc_I4_1)
         thunkIl.Emit(OpCodes.Sub)
         thunkIl.Emit(OpCodes.Dup)
         thunkIl.Emit(OpCodes.Stloc, i)
-        thunkIl.Emit(OpCodes.Ldelem_Ref)
-        thunkIl.Emit(OpCodes.Newobj, consCtor)
-
-        // * check if <i> gt idx then loop
-        thunkIl.Emit(OpCodes.Ldloc, i)
         thunkIl.Emit(OpCodes.Ldc_I4, idx)
-        thunkIl.Emit(OpCodes.Bgt, loop)
+        thunkIl.Emit(OpCodes.Bge, loop)
     
+    /// check the argument count using `opCode` and raise if it fails
     let raiseArgCountMismatch (count: int) opCode (err: string) =
         let ok = thunkIl.Create(OpCodes.Nop)
 
