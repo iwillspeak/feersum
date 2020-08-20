@@ -6,6 +6,7 @@ open Compile
 open System.IO
 open System.Reflection
 open System
+open System.Runtime.ExceptionServices
 
 /// Raw External Representation
 ///
@@ -17,7 +18,6 @@ let cilExternalRepr (object: Object) =
     | null -> "()"
     | :? Func<obj[], obj> as f -> sprintf "#<compiledProcedure %A>" f.Method
     | other -> sprintf "%A" other
-    
 
 /// Take a syntax tree and evaluate it in-process
 ///
@@ -28,11 +28,11 @@ let eval ast =
     compile memStream "evalCtx" ast
     let assm = Assembly.Load(memStream.ToArray())
     let progTy = assm.GetType("evalCtx.LispProgram")
-    // TODO: Instead of calling `$ScriptBody` here should we bind a custom
-    //       function definition and call that instead? e.g.: 
-    //       
-    //       ```scheme
-    ///      (define (evalEntry) <ast>)
-    ///      ```
     let mainMethod = progTy.GetMethod("$ScriptBody")
-    mainMethod.Invoke(null, Array.empty<obj>)
+    try
+        mainMethod.Invoke(null, Array.empty<obj>)
+    with
+    | :? TargetInvocationException as ex  ->
+        // Unwrap target invocation exceptions a little to make the REPL a
+        // bit of a nicer experience
+        ExceptionDispatchInfo.Capture(ex.InnerException).Throw(); null

@@ -32,7 +32,10 @@ let printObj value =
 ///
 /// Repeatedly reads input and prints output
 let rec repl evaluator =
-    (read() |> evaluator)
+    try
+        (read() |> evaluator)
+    with
+    | ex -> eprintfn "Exception: %A" ex
     repl evaluator
 
 /// Compile a single file printing an error if
