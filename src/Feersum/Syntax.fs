@@ -15,8 +15,12 @@ type AstNode =
     | Form of AstNode list
     | Seq of AstNode list
 
-let private comment = 
-    skipChar ';' >>. skipRestOfLine true
+let private parseForm, parseFormRef = createParserForwardedToRef()
+
+let private comment =
+    let singleLine = skipChar ';' >>. skipRestOfLine true
+    let datum = skipString "#;" .>> parseForm
+    singleLine <|> datum
 
 let private ws = skipMany (comment <|> unicodeSpaces1)
 
@@ -82,17 +86,12 @@ let private parseAtom =
         parseIdent
     ]
 
-let private parseForm, parseFormRef = createParserForwardedToRef()
-
 let private parseApplication =
     between (skipChar '(') (skipChar ')')
         ((many parseForm) |>> Form)
        
 do parseFormRef :=
-    between ws ws (choice [
-        parseApplication
-        parseAtom
-    ])
+    between ws ws (parseApplication <|> parseAtom)
 
 /// Parse the given string into a syntax tree
 let private parse =

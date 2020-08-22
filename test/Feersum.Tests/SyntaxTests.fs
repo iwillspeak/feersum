@@ -107,3 +107,10 @@ let ``identifier literals`` raw cooked =
 [<InlineData("\\x1234;", '\u1234')>]
 let ``parse escaped characters`` escaped char =
     Assert.Equal(Str (char |> string), readSingle (sprintf "\"%s\"" escaped))
+
+[<Fact>]
+let ``parse datum comment`` () =
+    Assert.Equal(Number 1.0, readSingle "#;(= n 1)
+            1        ;Base case: return 1")
+    Assert.Equal(Number 123.0, readSingle "#;(= n 1)123")
+    Assert.Equal(Number 456.0, readSingle "#;123 456")
