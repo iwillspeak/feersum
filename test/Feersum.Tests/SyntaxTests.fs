@@ -114,3 +114,9 @@ let ``parse datum comment`` () =
             1        ;Base case: return 1")
     Assert.Equal(Number 123.0, readSingle "#;(= n 1)123")
     Assert.Equal(Number 456.0, readSingle "#;123 456")
+
+[<Fact>]
+let ``parse block comments`` () =
+    Assert.Equal(Number 1.0, readSingle "#| this is a comment |#1")
+    Assert.Equal(Number 1.0, readSingle "1#| this is a comment |#")
+    Assert.Equal(Number 1.0, readSingle "#| this #| is a |# comment |#1")

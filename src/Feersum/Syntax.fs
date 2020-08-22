@@ -20,7 +20,15 @@ let private parseForm, parseFormRef = createParserForwardedToRef()
 let private comment =
     let singleLine = skipChar ';' >>. skipRestOfLine true
     let datum = skipString "#;" .>> parseForm
-    singleLine <|> datum
+    let block, blockRef = createParserForwardedToRef()
+    let blockBody = choice [
+        block
+        skipMany1 (skipNoneOf "|#")
+        attempt (skipChar '|' >>. skipNoneOf "#")
+        skipChar '#'
+    ]
+    blockRef := between (skipString "#|") (skipString "|#") (skipMany blockBody)
+    singleLine <|> datum <|> block
 
 let private ws = skipMany (comment <|> unicodeSpaces1)
 
