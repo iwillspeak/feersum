@@ -36,16 +36,9 @@ remaining arguments are bound to a list `d` in the lambda's environment.
 
 ### Implementation status
 
-Lambdas are in the process of being implemented. I'm live-streaming
-implementation work so head on over to http://twitch.tv/iwillspeak
-to follow along.
-
-So far:
-
- * Parse support for all expression forms
- * Lower support for parameterless lambdas
- * Unique names for lambdas
- * Formal parameters are bound in the lambda's body environment
+All forms are lambdas are bound and lowered. Lambdas are implemnted as instances
+of `Func<object[],object>`. Implementation was live-streamed. Checkout [YouTube]
+for the stream archive.
 
 ## Lexical Bindings
 
@@ -174,3 +167,4 @@ and returns the result of the final expression.
 The begin special form is implemented.
 
  [r7rs-spec]: https://small.r7rs.org/
+ [YouTube]: https://www.youtube.com/playlist?list=PLCum1jXOlhoRCBewbQD8ELE7B_7EWnWaO
