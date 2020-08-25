@@ -31,11 +31,10 @@ module SchemeValue =
 /// Create a builtin scheme value which reduces numeric parameters
 /// using `op`
 let numberBinop op =
-    let builtin = fun values ->
-        values |> List.reduce (fun a b ->
-            match (a, b) with
-            | (Number n, Number m) -> Number (op n m)
-            | _ -> Nil)
+    let builtin = List.reduce (fun a b ->
+        match (a, b) with
+        | (Number n, Number m) -> Number (op n m)
+        | _ -> Nil)
     Builtin builtin
 
 /// Apply a Value to Arguments

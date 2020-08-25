@@ -11,6 +11,7 @@ type AstNode =
     | Number of float
     | Str of string
     | Boolean of bool
+    | Character of char
     | Dot
     | Form of AstNode list
     | Seq of AstNode list
@@ -71,6 +72,21 @@ let private parseBool =
     stringReturn "#false" (Boolean false) <|>
     stringReturn "#f"     (Boolean false)
 
+let private parseChar =
+    let namedChar = choice [
+        stringReturn "alarm" '\u0007'
+        stringReturn "backspace" '\u0008'
+        stringReturn "delete" '\u007F'
+        stringReturn "escape" '\u001B'
+        stringReturn "newline" '\u000A'
+        stringReturn "null" '\u0000'
+        stringReturn "return" '\u000D'
+        stringReturn "space" ' '
+        stringReturn "tab" '\u0009'
+    ]
+    // TODO: hex charater literals (\x0123)
+    skipString @"#\" >>. (namedChar <|> anyChar) |>> Character
+
 let inline private isIdentifierChar c =
     isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~+-." c
 
@@ -88,6 +104,7 @@ let private parseAtom =
     // symbols / identifiers. The `.` token must come before identifier.
     choice [
         parseStr
+        parseChar
         parseNum
         parseBool
         parseDot

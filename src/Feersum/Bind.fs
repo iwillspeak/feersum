@@ -26,6 +26,7 @@ type BoundFormals =
 /// references resolved to the correct storage.
 type BoundExpr =
     | Boolean of bool
+    | Character of char
     | Number of double
     | Str of string
     | Load of StorageRef
@@ -142,6 +143,7 @@ let rec private bindInContext ctx node =
     | AstNode.Number n -> BoundExpr.Number n
     | AstNode.Str s -> BoundExpr.Str s
     | AstNode.Boolean b -> BoundExpr.Boolean b
+    | AstNode.Character c -> BoundExpr.Character c
     | AstNode.Dot -> failwith "Unexpected dot"
     | AstNode.Seq s -> bindSequence ctx s
     | AstNode.Form f -> bindForm ctx f

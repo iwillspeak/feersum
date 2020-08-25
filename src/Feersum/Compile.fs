@@ -48,6 +48,9 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     | BoundExpr.Boolean b ->
         ctx.IL.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
         ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Boolean)
+    | BoundExpr.Character c ->
+        ctx.IL.Emit(OpCodes.Ldc_I4, int c)
+        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Char)
     | BoundExpr.Seq [] -> emitUnspecified ctx.IL
     | BoundExpr.Seq s -> emitSequence ctx s
     | BoundExpr.Application(ap, args) -> emitApplication ctx ap args

@@ -120,3 +120,34 @@ let ``parse block comments`` () =
     Assert.Equal(Number 1.0, readSingle "#| this is a comment |#1")
     Assert.Equal(Number 1.0, readSingle "1#| this is a comment |#")
     Assert.Equal(Number 1.0, readSingle "#| this #| is a |# comment |#1")
+
+[<Theory>]
+[<InlineData('a')>]
+[<InlineData('b')>]
+[<InlineData('A')>]
+[<InlineData(' ')>]
+[<InlineData('#')>]
+[<InlineData('\\')>]
+[<InlineData('+')>]
+[<InlineData('.')>]
+[<InlineData('(')>]
+[<InlineData('?')>]
+[<InlineData('€')>]
+[<InlineData('§')>]
+[<InlineData('±')>]
+let ``parse simple character literals`` char =
+    Assert.Equal(Character char, readSingle (@"#\" + string char))
+
+[<Theory>]
+[<InlineData("alarm", '\u0007')>]
+[<InlineData("backspace", '\u0008')>]
+[<InlineData("delete", '\u007F')>]
+[<InlineData("escape", '\u001B')>]
+[<InlineData("newline", '\u000A')>]
+[<InlineData("null", '\u0000')>]
+[<InlineData("return", '\u000D')>]
+[<InlineData("space", ' ')>]
+[<InlineData("tab", '\u0009')>]
+let ``parse named characters`` name char =
+    Assert.Equal(Character char, readSingle (@"#\" + name))
+
