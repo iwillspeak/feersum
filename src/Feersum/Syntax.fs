@@ -39,14 +39,15 @@ let private parseNum =
 let private unescapedChar =
     noneOf "\"\\"
 
-let private hexEscape =
+let private hexScalarValue =
     let hexUnescape x =
         System.Int32.Parse(x, NumberStyles.HexNumber)
         |> System.Char.ConvertFromUtf32
         |> System.Char.Parse
-            
-    between (skipString "\\x") (skipChar ';') (manyChars hex)
-    |>> hexUnescape
+    many1Chars hex |>> hexUnescape
+
+let private hexEscape =
+    between (skipString "\\x") (skipChar ';') hexScalarValue
 
 let private escapedChar =
     let inline unescape ch =
@@ -84,8 +85,8 @@ let private parseChar =
         stringReturn "space" ' '
         stringReturn "tab" '\u0009'
     ]
-    // TODO: hex charater literals (\x0123)
-    skipString @"#\" >>. (namedChar <|> anyChar) |>> Character
+    let hexChar = attempt (skipChar 'x' >>. hexScalarValue)
+    skipString @"#\" >>. (namedChar <|> hexChar <|> anyChar) |>> Character
 
 let inline private isIdentifierChar c =
     isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~+-." c

@@ -14,6 +14,9 @@ let readMany input =
     | Ok(read) -> read
     | Error(e) -> failwithf "Expected one or more expressions but got: %A" e
 
+// TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
+//       invalid hex escapes, bad identifiers and so on.
+
 [<Fact>]
 let ``parse seqs`` () =
     Assert.Equal(Seq [ Number 1.0; Number 23.0], readMany "1 23")
@@ -151,3 +154,9 @@ let ``parse simple character literals`` char =
 let ``parse named characters`` name char =
     Assert.Equal(Character char, readSingle (@"#\" + name))
 
+[<Theory>]
+[<InlineData(@"#\x03BB", 'λ')>]
+[<InlineData(@"#\x03bb", 'λ')>]
+[<InlineData(@"#\x20", ' ')>]
+let ``parse hex characters`` hex char =
+    Assert.Equal(Character char, readSingle hex)
