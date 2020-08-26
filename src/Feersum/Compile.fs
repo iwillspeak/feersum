@@ -15,6 +15,7 @@ type EmitCtx =
     ; mutable NextLambda: int
     ; ScopePrefix: string
     ; ProgramTy: TypeDefinition
+    ; Builtins: Map<string,MethodDefinition>
     ; ConsTy: TypeDefinition }
 
 /// Emit an instance of the unspecified value
@@ -32,6 +33,16 @@ let private ensureField ctx id =
         let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
         ctx.ProgramTy.Fields.Add(newField)
         newField
+
+/// Emit a sequence of instructions to convert a method reference
+/// into a `Func<obj[],obj>`
+let private emitMethodToFunc ctx (method: MethodReference) =
+    let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
+    let funcObjCtor = typeof<Func<obj[], obj>>.GetConstructor(paramTypes)
+    let funcObjCtor = ctx.Assm.MainModule.ImportReference(funcObjCtor)
+    ctx.IL.Emit(OpCodes.Ldnull)
+    ctx.IL.Emit(OpCodes.Ldftn, method)
+    ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
 
 /// Emit a Single Bound Expression
 ///
@@ -64,6 +75,8 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
         ctx.IL.Emit(OpCodes.Dup)
         match storage with
+        | StorageRef.Builtin id ->
+            failwithf "Can't re-define builtin %s" id
         | StorageRef.Global id ->
             let field = ensureField ctx id
             ctx.IL.Emit(OpCodes.Stsfld, field)
@@ -73,6 +86,9 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
             ctx.IL.Emit(OpCodes.Starg, idx)
     | BoundExpr.Load storage ->
         match storage with
+        | StorageRef.Builtin id ->
+            let meth = ctx.Builtins.[id]
+            emitMethodToFunc ctx meth
         | StorageRef.Global id ->
             let field = ensureField ctx id
             ctx.IL.Emit(OpCodes.Ldsfld, field)
@@ -145,12 +161,9 @@ and emitLambda ctx formals body =
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
     let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
-    let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
-    let funcObjCtor = typeof<Func<obj[], obj>>.GetConstructor(paramTypes)
-    let funcObjCtor = ctx.Assm.MainModule.ImportReference(funcObjCtor)
-    ctx.IL.Emit(OpCodes.Ldnull)
-    ctx.IL.Emit(OpCodes.Ldftn, thunk :> MethodReference)
-    ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
+    let method = thunk :> MethodReference
+    
+    emitMethodToFunc ctx method
 
     /// Emit a Named Lambda Body
     /// 
@@ -375,6 +388,75 @@ let private addCoreDecls (assm: AssemblyDefinition) =
     assm.MainModule.Types.Add consTy
     consTy
 
+let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
+    let createArithBuiltin name opcode (def: double) = 
+        let meth = MethodDefinition(name,
+                                MethodAttributes.Public ||| MethodAttributes.Static,
+                                assm.MainModule.TypeSystem.Object)
+        let args = ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.Object))
+        meth.Parameters.Add(args)
+        ty.Methods.Add meth
+
+        let i = VariableDefinition(assm.MainModule.TypeSystem.Int32)
+        meth.Body.Variables.Add(i)
+
+        let il = meth.Body.GetILProcessor()
+
+        let setup = il.Create(OpCodes.Nop)
+        let cond = il.Create(OpCodes.Nop)
+
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldlen)
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Ble, setup)
+
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldc_I4_0)
+        il.Emit(OpCodes.Ldelem_Ref)
+        il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Stloc, i)
+        il.Emit(OpCodes.Br, cond)
+
+        il.Append(setup)
+
+        il.Emit(OpCodes.Ldc_R8, def)
+        il.Emit(OpCodes.Ldc_I4_0)
+        il.Emit(OpCodes.Stloc, i)
+        il.Emit(OpCodes.Br, cond)
+
+        let loop = il.Create(OpCodes.Nop)
+        il.Append(loop)
+
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldloc, i)
+        il.Emit(OpCodes.Ldelem_Ref)
+
+        il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
+        il.Emit(opcode)
+
+        il.Emit(OpCodes.Ldloc, i)
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Add)
+        il.Emit(OpCodes.Stloc, i)
+
+        il.Append(cond)
+        il.Emit(OpCodes.Ldloc, i)
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldlen)
+        il.Emit(OpCodes.Blt, loop)
+
+        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Double)
+        il.Emit(OpCodes.Ret)
+
+        meth
+
+    [ ("+", createArithBuiltin "+" OpCodes.Add 0.0)
+    ; ("-", createArithBuiltin "-" OpCodes.Sub 0.0)
+    ; ("/", createArithBuiltin "/" OpCodes.Div 1.0)
+    ; ("*", createArithBuiltin "*" OpCodes.Mul 1.0) ]
+    |> Map.ofSeq
+
 /// Emit a Bound Expression to .NET
 ///
 /// Creates an assembly and writes out the .NET interpretation of the
@@ -401,6 +483,7 @@ let emit (outputStream: Stream) outputName bound =
     let rootEmitCtx = { IL = null
                       ; ProgramTy = progTy
                       ; ConsTy = consTy
+                      ; Builtins = createBuiltins assm progTy
                       ; NextLambda = 0
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }

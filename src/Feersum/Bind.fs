@@ -8,6 +8,7 @@ open System.Collections.Generic
 /// Reference to a given storage location. Used to express reads and writes
 /// of values to storage locations.
 type StorageRef =
+    | Builtin of string
     | Local of int
     | Global of string
     | Arg of int
@@ -228,7 +229,9 @@ and private bindForm ctx form =
 /// 
 /// The root scope contains the global functions available to the program.
 let createRootScope =
-    Map.empty
+    [ "+"; "-"; "*"; "/" ]
+    |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
+    |> Map.ofSeq
 
 /// Bind a syntax node in a given scope
 /// 

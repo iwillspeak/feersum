@@ -70,6 +70,7 @@ let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
         | StorageRef.Global id -> env.Add(id, init)
         | StorageRef.Local idx -> failwith "Set local not implemented"
         | StorageRef.Arg idx -> failwith "Set argument not implemented"
+        | StorageRef.Builtin idx -> failwith "builtins not implemented"
         // actually using this value is difficult in Scheme so i'm  not sure it
         // matters _too_ much _what_ it is. It's definitely _not_ the init value
         // fo the new variable binding though.
@@ -89,6 +90,7 @@ let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
         | StorageRef.Local idx -> 
             // TODO: implement local and global loads
             failwith "local loads not implemented in the interpreter"
+        | StorageRef.Builtin idx -> failwith "builtins not implemented"
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
         match (recurse cond) with
         | SchemeValue.Boolean false ->
