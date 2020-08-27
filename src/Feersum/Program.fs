@@ -10,9 +10,7 @@ open Compile
 /// syntax tree. If the input can't be parsed then read
 /// again.
 let rec read (): AstNode =
-    Console.Write "§> "
-    Console.Out.Flush()
-    let line = Console.ReadLine()
+    let line = ReadLine.Read("§> ")
     match readExpr line with
     | Result.Ok node -> node
     | Result.Error message -> 
@@ -47,6 +45,7 @@ let compileSingle path =
 
 [<EntryPoint>]
 let main argv =
+    ReadLine.HistoryEnabled <- true
     match argv with
     | [| |] -> repl (eval >> printObj)
     | [|  "--interpret" |] -> repl (execute >> print)
