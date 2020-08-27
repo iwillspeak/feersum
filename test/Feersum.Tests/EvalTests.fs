@@ -79,3 +79,28 @@ let ``evaluate artithemtic ops`` expr result =
         | Ok o -> o
         | Error e -> failwithf "parse error %s" e
     Assert.Equal(result, feeri(expr))
+
+
+[<Theory>]
+[<InlineData("=")>]
+[<InlineData(">")>]
+[<InlineData("<")>]
+[<InlineData(">=")>]
+[<InlineData("<=")>]
+let ``comp ops return true for simple cases`` op =
+    Assert.Equal("#t", feeri(Form [ Ident op ]))
+    Assert.Equal("#t", feeri(Form [ Ident op; Number 123.456 ]))
+
+[<Theory>]
+[<InlineData("(= 23 4234 234)", "#f")>]
+[<InlineData("(< 1 2 3)", "#t")>]
+[<InlineData("(< 1 2 4 8)", "#t")>]
+[<InlineData("(< 1 2 1)", "#f")>]
+[<InlineData("(> 5 4 2 1)", "#t")>]
+[<InlineData("(>= 5 5 5 4 4 3 3 3 3 1 )", "#t")>]
+let ``evaluate comparision ops`` expr result =
+    let expr =
+        match readExpr expr with
+        | Ok o -> o
+        | Error e -> failwithf "parse error %s" e
+    Assert.Equal(result, feeri(expr))

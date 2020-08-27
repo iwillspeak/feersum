@@ -389,18 +389,22 @@ let private addCoreDecls (assm: AssemblyDefinition) =
     consTy
 
 let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
-    let createArithBuiltin name opcode (def: double) = 
+    let declareBuiltinMethod name =
         let meth = MethodDefinition(name,
                                 MethodAttributes.Public ||| MethodAttributes.Static,
                                 assm.MainModule.TypeSystem.Object)
         let args = ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.Object))
         meth.Parameters.Add(args)
         ty.Methods.Add meth
+        let il = meth.Body.GetILProcessor()
+        (meth, il)
+
+    let createArithBuiltin name opcode (def: double) = 
+        let meth, il = declareBuiltinMethod name
 
         let i = VariableDefinition(assm.MainModule.TypeSystem.Int32)
         meth.Body.Variables.Add(i)
 
-        let il = meth.Body.GetILProcessor()
 
         let setup = il.Create(OpCodes.Nop)
         let cond = il.Create(OpCodes.Nop)
@@ -450,11 +454,88 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
         il.Emit(OpCodes.Ret)
 
         meth
+    
+    let createCompBuiltin name op =
+        let meth, il = declareBuiltinMethod name
+
+        let last = VariableDefinition(assm.MainModule.TypeSystem.Double)
+        meth.Body.Variables.Add(last)
+        let i = VariableDefinition(assm.MainModule.TypeSystem.Int32)
+        meth.Body.Variables.Add(i)
+
+        let main = il.Create(OpCodes.Nop)
+
+        // If we have only 0 or 1 arguments just return true
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldlen)
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Bgt, main)
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
+        il.Emit(OpCodes.Ret)
+
+        il.Append(main)
+
+        // Load the first element and store it as `last` then begin the loop
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldc_I4_0)
+        il.Emit(OpCodes.Ldelem_Ref)
+        il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
+        il.Emit(OpCodes.Stloc, last)
+
+        // start at index i
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Stloc, i)
+        
+        let loop = il.Create(OpCodes.Nop)
+        il.Append(loop)
+
+        // Get the last + current from the array
+        il.Emit(OpCodes.Ldloc, last)
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldloc, i)
+        il.Emit(OpCodes.Ldelem_Ref)
+        il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
+        il.Emit(OpCodes.Dup)
+        il.Emit(OpCodes.Stloc, last)
+
+        let cond = il.Create(OpCodes.Nop)
+        
+        il.Emit(op, cond)
+
+        // Check failed, so return `#f`
+        il.Emit(OpCodes.Ldc_I4_0)
+        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
+        il.Emit(OpCodes.Ret)
+
+        il.Append(cond)
+
+        // check if i works for rest of loop
+        il.Emit(OpCodes.Ldloc, i)
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Add)
+        il.Emit(OpCodes.Dup)
+        il.Emit(OpCodes.Stloc, i)
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldlen)
+        il.Emit(OpCodes.Blt, loop)
+
+        // Ran out of things to check, return `#t`
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
+        il.Emit(OpCodes.Ret)
+
+        meth
 
     [ ("+", createArithBuiltin "+" OpCodes.Add 0.0)
     ; ("-", createArithBuiltin "-" OpCodes.Sub 0.0)
     ; ("/", createArithBuiltin "/" OpCodes.Div 1.0)
-    ; ("*", createArithBuiltin "*" OpCodes.Mul 1.0) ]
+    ; ("*", createArithBuiltin "*" OpCodes.Mul 1.0)
+    ; ("=", createCompBuiltin "aritheq" OpCodes.Beq)
+    ; (">", createCompBuiltin "arithgt" OpCodes.Bgt)
+    ; ("<", createCompBuiltin "arithlt" OpCodes.Blt)
+    ; (">=", createCompBuiltin "arithgte" OpCodes.Bge)
+    ; ("<=", createCompBuiltin "arithlte" OpCodes.Ble) ]
     |> Map.ofSeq
 
 /// Emit a Bound Expression to .NET

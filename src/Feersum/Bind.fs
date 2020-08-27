@@ -229,7 +229,8 @@ and private bindForm ctx form =
 /// 
 /// The root scope contains the global functions available to the program.
 let createRootScope =
-    [ "+"; "-"; "*"; "/" ]
+    [ "+"; "-"; "*"; "/"
+    ; "="; "<"; ">"; "<="; ">=" ]
     |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
     |> Map.ofSeq
 
