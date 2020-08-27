@@ -51,3 +51,31 @@ let ``Evaluate builtins`` () =
     Assert.Equal("901", evaluator(Form [ Ident "+"; Form [ Ident "*"; Number 100.0; Number 9.0 ]; Number 1.0]))
     Assert.Equal("1", evaluator(Form [ Ident "-"; Number 10.0; Number 9.0 ]))
     Assert.Equal("2", evaluator(Form [ Ident "/"; Number 16.0; Number 8.0 ]))
+
+[<Theory>]
+[<InlineData("(+ 3 4)", "7")>]
+[<InlineData("(+ 3)", "3")>]
+[<InlineData("(+)", "0")>]
+[<InlineData("(* 4)", "4")>]
+[<InlineData("(*)", "1")>]
+[<InlineData("(- 3 4)", "-1")>]
+[<InlineData("(- 3 4 5)", "-6")>]
+[<InlineData("(- 3)", "-3")>]
+// The following two aren't _quite_ right, but
+//  ┏┓
+//  ┃┃╱╲ In this
+//  ┃╱╱╲╲ house
+//  ╱╱╭╮╲╲ we only
+//  ▔▏┗┛▕▔ perform
+//  ╱▔▔▔▔▔▔▔▔▔▔╲
+//  inexact maths
+//  ╱╱┏┳┓╭╮┏┳┓ ╲╲
+//  ▔▏┗┻┛┃┃┗┻┛▕▔
+[<InlineData("(/ 3 4 5)", "0.15")>]
+[<InlineData("(/ 3)", "0.333333")>]
+let ``evaluate artithemtic ops`` expr result =
+    let expr =
+        match readExpr expr with
+        | Ok o -> o
+        | Error e -> failwithf "parse error %s" e
+    Assert.Equal(result, feeri(expr))
