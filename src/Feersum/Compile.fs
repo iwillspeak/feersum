@@ -2,8 +2,9 @@ module Compile
 
 open Bind
 open Syntax
-open System.IO
 open System
+open System.IO
+open System.Reflection
 open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
@@ -43,6 +44,14 @@ let private emitMethodToFunc ctx (method: MethodReference) =
     ctx.IL.Emit(OpCodes.Ldnull)
     ctx.IL.Emit(OpCodes.Ldftn, method)
     ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
+
+/// Emit a sequence of instructions to throw an exception
+let private emitThrow (il: ILProcessor) (assm: AssemblyDefinition) (err: string) =
+    il.Emit(OpCodes.Ldstr, err)
+    let exCtor = typeof<Exception>.GetConstructor([| typeof<string> |])
+    let exCtor = assm.MainModule.ImportReference(exCtor)
+    il.Emit(OpCodes.Newobj, exCtor)
+    il.Emit(OpCodes.Throw)
 
 /// Emit a Single Bound Expression
 ///
@@ -269,9 +278,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
         thunkIl.Emit(OpCodes.Ldc_I4, count)
         thunkIl.Emit(opCode, ok)
 
-        thunkIl.Emit(OpCodes.Ldstr, err)
-        thunkIl.Emit(OpCodes.Newobj, ctx.Assm.MainModule.ImportReference(typeof<Exception>.GetConstructor([| typeof<string> |])))
-        thunkIl.Emit(OpCodes.Throw)
+        emitThrow thunkIl ctx.Assm err
 
         thunkIl.Append(ok)
 
@@ -388,6 +395,10 @@ let private addCoreDecls (assm: AssemblyDefinition) =
     assm.MainModule.Types.Add consTy
     consTy
 
+/// Create all builtin methods
+/// 
+/// Returns a map containing all of the builtin methods supported by the
+/// implementation. 
 let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
     let declareBuiltinMethod name =
         let meth = MethodDefinition(name,
@@ -399,6 +410,10 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
         let il = meth.Body.GetILProcessor()
         (meth, il)
 
+    /// Arithmetic builtin. Combines all elements in the arguments array with
+    /// the given `opcode`. If only 1 element is provided then `def` is used to
+    /// compute some form of inverse. If no arguments are provided then `def` is
+    /// returned.
     let createArithBuiltin name opcode (def: double) = 
         let meth, il = declareBuiltinMethod name
 
@@ -455,6 +470,9 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
 
         meth
     
+    /// Comparator Builtin. Builds a method which uses the given `op` to compare
+    /// all arguments and returns a boolean result. If 0 or 1 elements are
+    /// given the method will always return `#t`.
     let createCompBuiltin name op =
         let meth, il = declareBuiltinMethod name
 
@@ -527,6 +545,39 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
 
         meth
 
+    /// Display builtin. This is intended for user-readable output rather than
+    /// any machine readable round tripping. Printing out strings & chars should
+    /// display their raw form. All other objects is up to the implementation.
+    /// 
+    /// This implementation calls `ToString` on the underlying .NET object and
+    /// uses that directly.
+    let displayBuiltin =
+        let meth, il = declareBuiltinMethod "display"
+        let fail = il.Create(OpCodes.Nop)
+
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldlen)
+        il.Emit(OpCodes.Ldc_I4_1)
+        il.Emit(OpCodes.Bne_Un, fail)
+
+        let toStr = typeof<obj>.GetMethod("ToString", BindingFlags.Public ||| BindingFlags.Instance)
+        let toStr = assm.MainModule.ImportReference toStr
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldc_I4_0)
+        il.Emit(OpCodes.Ldelem_Ref)
+        il.Emit(OpCodes.Callvirt, toStr)
+        il.Emit(OpCodes.Dup)
+
+        let write = typeof<Console>.GetMethod("WriteLine", [| typeof<string> |])
+        let write = assm.MainModule.ImportReference write
+        il.Emit(OpCodes.Call, write)
+        il.Emit(OpCodes.Ret)
+
+        il.Append(fail)
+        emitThrow il assm "`dsiplay` expects a single argument"
+
+        meth
+
     [ ("+", createArithBuiltin "+" OpCodes.Add 0.0)
     ; ("-", createArithBuiltin "-" OpCodes.Sub 0.0)
     ; ("/", createArithBuiltin "/" OpCodes.Div 1.0)
@@ -535,7 +586,8 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
     ; (">", createCompBuiltin "arithgt" OpCodes.Bgt)
     ; ("<", createCompBuiltin "arithlt" OpCodes.Blt)
     ; (">=", createCompBuiltin "arithgte" OpCodes.Bge)
-    ; ("<=", createCompBuiltin "arithlte" OpCodes.Ble) ]
+    ; ("<=", createCompBuiltin "arithlte" OpCodes.Ble)
+    ; ("display", displayBuiltin) ]
     |> Map.ofSeq
 
 /// Emit a Bound Expression to .NET
