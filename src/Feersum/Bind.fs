@@ -60,11 +60,10 @@ module private BinderCtx =
         ; Parent = Some(parent) }
 
     /// Lookup a given ID in the binder scope
-    let tryFindBinding ctx id =
-        // TODO: Handle more than one scope.
+    let rec tryFindBinding ctx id =
         match ctx.Scope.TryGetValue(id) with
         | (true, value) -> Some(value)
-        | _ -> None
+        | _ -> Option.bind (fun p -> tryFindBinding p id) ctx.Parent
     
     /// Introduce a binding for the given formal argument
     let addArgumentBinding ctx id idx =
