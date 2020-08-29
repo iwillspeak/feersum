@@ -129,8 +129,8 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         recurse ifTrue
 
         ctx.IL.Append(lblEnd)
-    | BoundExpr.Lambda(formals, body) ->
-        emitLambda ctx formals body
+    | BoundExpr.Lambda(formals, locals, body) ->
+        emitLambda ctx formals locals body
 
     /// Emit a Sequence of Expressions
     ///
@@ -177,11 +177,11 @@ and emitApplication ctx ap args =
     /// on the stack. This first defers to `emitNamedLambda` to write out the
     /// lambda's body and then creates a new `Func<obj[],obj>` instance that
     /// wraps a call to the lambda using the lambda's 'thunk'.
-and emitLambda ctx formals body =
+and emitLambda ctx formals locals body =
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
-    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
+    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals locals body
     let method = thunk :> MethodReference
     
     emitMethodToFunc ctx method
@@ -198,7 +198,7 @@ and emitLambda ctx formals body =
     /// the function we are calling. A future optimisation may be to transform
     /// the bound tree and lower some calls in the case we _can_ be sure of the
     /// parameters. 
-and emitNamedLambda (ctx: EmitCtx) name formals body =
+and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
     let methodDecl = MethodDefinition(name,
                                       MethodAttributes.Public ||| MethodAttributes.Static,
                                       ctx.Assm.MainModule.TypeSystem.Object)
@@ -218,6 +218,10 @@ and emitNamedLambda (ctx: EmitCtx) name formals body =
     | DottedList(fmls, dotted) ->
         List.map addParam fmls |> ignore
         addParam dotted
+    
+    for _ = 1 to localCount do
+        let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+        methodDecl.Body.Variables.Add(local)
 
     // Create a new emit context for the new method, and lower the body in that
     // new context.
@@ -633,7 +637,7 @@ let emit (outputStream: Stream) outputName bound =
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound
+    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams 0 bound
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.

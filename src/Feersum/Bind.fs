@@ -35,7 +35,7 @@ type BoundExpr =
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
-    | Lambda of BoundFormals * BoundExpr
+    | Lambda of BoundFormals * int * BoundExpr
     | Null
 
 /// Binder Context Type
@@ -44,19 +44,22 @@ type BoundExpr =
 /// and other transient information about the current `bind` call.
 type private BinderCtx =
     { Scope: IDictionary<string, StorageRef>
+    ; Storage: string -> StorageRef
     ; Parent: BinderCtx option }
 
 /// Methods for manipulating the bind context
 module private BinderCtx =
 
     /// Create a new binder context for the given root scope
-    let createForScope scope =
+    let createForGlobalScope scope =
         { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict)
+        ; Storage = StorageRef.Global
         ; Parent = None }
     
     /// Create a new binder context for a child scope
-    let createWithParent parent =
+    let createWithParent parent storageFact =
         { Scope = new Dictionary<string, StorageRef>()
+        ; Storage = storageFact
         ; Parent = Some(parent) }
 
     /// Lookup a given ID in the binder scope
@@ -71,11 +74,7 @@ module private BinderCtx =
 
     /// Add a new entry to the current scope
     let addBinding ctx id =
-        // TODO: Storage scopes. The storage ref shouldn't be fabricated here
-        //       instead we should ask the scope for the value. The root scope
-        //       will generaate a global storage ref for the given name, the
-        //       local scope will just bump the locals index.
-        let storage = StorageRef.Global(id)
+        let storage = ctx.Storage(id)
         ctx.Scope.[id] <- storage
         storage
 
@@ -154,7 +153,12 @@ and private bindSequence ctx exprs =
 and private bindApplication ctx head rest =
     BoundExpr.Application(bindInContext ctx head, List.map (bindInContext ctx) rest)
 and private bindLambdaBody ctx formals body =
-    let lambdaCtx = BinderCtx.createWithParent ctx
+    let mutable nextLocal = 0
+    let createLocal x =
+        let local = nextLocal
+        nextLocal <- nextLocal + 1
+        StorageRef.Local(local)
+    let lambdaCtx = BinderCtx.createWithParent ctx createLocal
     let addFormal idx id =
         BinderCtx.addArgumentBinding lambdaCtx id idx
         idx + 1
@@ -168,7 +172,7 @@ and private bindLambdaBody ctx formals body =
         let nextFormal = (List.fold addFormal 0 fmls)
         addFormal nextFormal dotted |> ignore
     let boundBody = bindSequence lambdaCtx body
-    BoundExpr.Lambda(formals, boundBody)
+    BoundExpr.Lambda(formals, nextLocal, boundBody)
 and private bindForm ctx form =
     match form with
     | AstNode.Ident("if")::body ->
@@ -244,5 +248,5 @@ let createRootScope =
 ///       bind. Currently we use `failwith` to raise an error. Ideally more than
 ///       one diagnostic could be reported.
 let bind scope node =
-    let ctx = BinderCtx.createForScope scope
+    let ctx = BinderCtx.createForGlobalScope scope
     bindInContext ctx node
