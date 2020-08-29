@@ -106,16 +106,28 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         | StorageRef.Arg(idx) ->
             ctx.IL.Emit(OpCodes.Ldarg, idx)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
-        recurse cond
-        let lblFalse = ctx.IL.Create(OpCodes.Nop)
+        let lblTrue = ctx.IL.Create(OpCodes.Nop)
+        let lblNotBool = ctx.IL.Create(OpCodes.Pop)
         let lblEnd = ctx.IL.Create(OpCodes.Nop)
-        ctx.IL.Emit(OpCodes.Brfalse_S, lblFalse)
-        recurse ifTrue
-        ctx.IL.Emit(OpCodes.Br_S, lblEnd)
-        ctx.IL.Append(lblFalse)
+
+        recurse cond
+
+        ctx.IL.Emit(OpCodes.Dup)
+        ctx.IL.Emit(OpCodes.Isinst, ctx.Assm.MainModule.TypeSystem.Boolean)
+        ctx.IL.Emit(OpCodes.Brfalse_S, lblNotBool)
+
+        ctx.IL.Emit(OpCodes.Unbox_Any, ctx.Assm.MainModule.TypeSystem.Boolean)
+        ctx.IL.Emit(OpCodes.Brtrue, lblTrue)
+
         match maybeIfFalse with
         | Some ifFalse -> recurse ifFalse
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
+        ctx.IL.Emit(OpCodes.Br_S, lblEnd)
+
+        ctx.IL.Append(lblNotBool)
+        ctx.IL.Append(lblTrue)
+        recurse ifTrue
+
         ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, body) ->
         emitLambda ctx formals body
