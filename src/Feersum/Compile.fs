@@ -570,19 +570,34 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
     let displayBuiltin =
         let meth, il = declareBuiltinMethod "display"
         let fail = il.Create(OpCodes.Nop)
+        let hasValue = il.Create(OpCodes.Nop)
+        let print = il.Create(OpCodes.Dup)
 
         il.Emit(OpCodes.Ldarg_0)
         il.Emit(OpCodes.Ldlen)
         il.Emit(OpCodes.Ldc_I4_1)
         il.Emit(OpCodes.Bne_Un, fail)
 
+        // null check
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldc_I4_0)
+        il.Emit(OpCodes.Ldelem_Ref)
+        il.Emit(OpCodes.Brtrue_S, hasValue)
+
+        // If null use empty string
+        il.Emit(OpCodes.Ldstr, "")
+        il.Emit(OpCodes.Br, print)
+
+        // convert to string
+        il.Append(hasValue)
         let toStr = typeof<obj>.GetMethod("ToString", BindingFlags.Public ||| BindingFlags.Instance)
         let toStr = assm.MainModule.ImportReference toStr
         il.Emit(OpCodes.Ldarg_0)
         il.Emit(OpCodes.Ldc_I4_0)
         il.Emit(OpCodes.Ldelem_Ref)
         il.Emit(OpCodes.Callvirt, toStr)
-        il.Emit(OpCodes.Dup)
+
+        il.Append(print)
 
         let write = typeof<Console>.GetMethod("WriteLine", [| typeof<string> |])
         let write = assm.MainModule.ImportReference write
