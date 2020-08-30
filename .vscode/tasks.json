@@ -41,6 +41,27 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "update-snapshots",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "test",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "-v=n"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile",
+            "options": {
+                "env": {
+                    "UpdateSnapshots": "true"
+                }
+            }
+        },
+        {
             "label": "pack",
             "command": "dotnet",
             "type": "shell",
