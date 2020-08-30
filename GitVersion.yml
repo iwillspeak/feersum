@@ -1,0 +1,12 @@
+next-version: 0.1.0
+mode: ContinuousDelivery
+branches:
+  master:
+    regex: ^main$
+    increment: none
+  feature:
+    regex: feature[/-]
+    increment: none
+ignore:
+  sha: []
+merge-message-formats: {}
