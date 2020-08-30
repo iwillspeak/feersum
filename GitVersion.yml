@@ -3,8 +3,10 @@ mode: ContinuousDelivery
 branches:
   master:
     regex: ^main$
+    tag: beta
     increment: none
   feature:
+    mode: ContinuousDeployment
     regex: feature[/-]
     increment: none
 ignore:
