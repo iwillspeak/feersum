@@ -20,6 +20,6 @@ steps:
     artifact: NuGet
   - script: |
       dotnet nuget push --api-key $API_KEY --source "NuGetOrg" $(Build.ArtifactStagingDirectory)/*.nupkg
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
     env:
       API_KEY: $(NuGetOrgApiKey)
