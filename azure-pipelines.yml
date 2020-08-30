@@ -20,4 +20,4 @@ steps:
     inputs:
       nuGetServiceConnections: NugetOrg
   - script: |
-      dotnet nuget push --api-key AzureArtifacts --source "nuget.org"  $(Build.ArtifactStagingDirectory)/*.nupkg
+      dotnet nuget push --api-key AzureArtifacts --source "NuGetOrg"  $(Build.ArtifactStagingDirectory)/*.nupkg
