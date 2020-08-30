@@ -39,6 +39,21 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "pack",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "pack",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
 }
