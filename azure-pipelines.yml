@@ -16,3 +16,8 @@ steps:
       testResultsFiles: '**/TestResults/*.trx'
   - publish: $(Build.ArtifactStagingDirectory)
     artifact: NuGet
+  - task: NuGetAuthenticate@0
+    inputs:
+      nuGetServiceConnections: NugetOrg
+  - script: |
+      dotnet nuget push --api-key AzureArtifacts --source "nuget.org"  $(Build.ArtifactStagingDirectory)/*.nupkg
