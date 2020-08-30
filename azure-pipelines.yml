@@ -1,5 +1,7 @@
 variables:
-  configuration: Release
+- group: ApiKeys
+- name: configuration
+  value: Release
 
 pool:
   vmImage: ubuntu-latest
@@ -16,8 +18,7 @@ steps:
       testResultsFiles: '**/TestResults/*.trx'
   - publish: $(Build.ArtifactStagingDirectory)
     artifact: NuGet
-  - task: NuGetAuthenticate@0
-    inputs:
-      nuGetServiceConnections: NugetOrg
   - script: |
-      dotnet nuget push --api-key AzureArtifacts --source "NuGetOrg"  $(Build.ArtifactStagingDirectory)/*.nupkg
+      dotnet nuget push --api-key $API_KEY --source "NuGetOrg" $(Build.ArtifactStagingDirectory)/*.nupkg
+    env:
+      API_KEY: NuGetOrgApiKey
