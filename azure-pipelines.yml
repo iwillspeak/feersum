@@ -21,4 +21,4 @@ steps:
   - script: |
       dotnet nuget push --api-key $API_KEY --source "NuGetOrg" $(Build.ArtifactStagingDirectory)/*.nupkg
     env:
-      API_KEY: NuGetOrgApiKey
+      API_KEY: $(NuGetOrgApiKey)
