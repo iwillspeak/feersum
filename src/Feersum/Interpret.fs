@@ -64,7 +64,7 @@ let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
     | BoundExpr.Number n -> SchemeValue.Number n
     | BoundExpr.Str s -> SchemeValue.Str s
     | BoundExpr.Boolean b ->  SchemeValue.Boolean b
-    | BoundExpr.Definition(def, store, maybeInit) ->
+    | BoundExpr.Store(store, maybeInit) ->
         let init = Option.map recurse maybeInit |> SchemeValue.fromOption
         match store with
         | StorageRef.Global id -> env.Add(id, init)
@@ -74,7 +74,7 @@ let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
         // actually using this value is difficult in Scheme so i'm  not sure it
         // matters _too_ much _what_ it is. It's definitely _not_ the init value
         // fo the new variable binding though.
-        SchemeValue.Quoted (AstNode.Ident def)
+        SchemeValue.Undefined
     | BoundExpr.Seq s ->
         s
         |> List.map recurse

@@ -31,7 +31,7 @@ type BoundExpr =
     | Number of double
     | Str of string
     | Load of StorageRef
-    | Definition of string * StorageRef * BoundExpr option
+    | Store of StorageRef * BoundExpr option
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
@@ -78,12 +78,13 @@ module private BinderCtx =
         ctx.Scope.[id] <- storage
         storage
 
-/// Bind an Identifier Reference
+/// Bind an Reference to a Symbol
 ///
-/// Lookup the identifier in the given scope 
+/// Lookup the identifier in the given scope and return the storage that it is
+/// currently bound to. 
 let private bindIdent ctx id =
     match BinderCtx.tryFindBinding ctx id with
-    | Some storage -> BoundExpr.Load storage
+    | Some storage -> storage
     | None -> failwithf "Reference to undefined symbol `%s`" id
 
 /// Bind a Formals List Pattern
@@ -146,7 +147,7 @@ let rec private bindInContext ctx node =
     | AstNode.Dot -> failwith "Unexpected dot"
     | AstNode.Seq s -> bindSequence ctx s
     | AstNode.Form f -> bindForm ctx f
-    | AstNode.Ident id -> bindIdent ctx id
+    | AstNode.Ident id -> bindIdent ctx id |> BoundExpr.Load
 and private bindSequence ctx exprs =
     List.map (bindInContext ctx) exprs
     |> BoundExpr.Seq
@@ -187,17 +188,17 @@ and private bindForm ctx form =
         match body with
         | [AstNode.Ident id] ->
             let storage = BinderCtx.addBinding ctx id
-            BoundExpr.Definition(id, storage, None)        
+            BoundExpr.Store(storage, None)        
         | [AstNode.Ident id;value] ->
             let value = bindInContext ctx value
             let storage = BinderCtx.addBinding ctx id
-            BoundExpr.Definition(id, storage, Some(value))
+            BoundExpr.Store(storage, Some(value))
         | (AstNode.Form (AstNode.Ident id::formals))::body ->
             // Add the binding for this lambda to the scope _before_ lowering
             // the body. This makes recursive calls possible.
             let storage = BinderCtx.addBinding ctx id
             let lambda = bindLambdaBody ctx (bindFormalsList formals) body
-            BoundExpr.Definition(id, storage, Some(lambda))        
+            BoundExpr.Store(storage, Some(lambda))
         | _ -> failwith "Ill-formed 'define' special form"
     | AstNode.Ident("lambda")::body ->
         match body with
@@ -212,7 +213,12 @@ and private bindForm ctx form =
     | AstNode.Ident("letrec")::body ->
         failwith "Letrec bindings nto yet implemented"
     | AstNode.Ident("set!")::body ->
-        failwith "Assignment expressions not yet implemented"
+        match body with
+        | [AstNode.Ident(id);value] ->
+            let value = bindInContext ctx value
+            let storage = bindIdent ctx id
+            BoundExpr.Store(storage, Some(value))
+        | _ -> failwith "Ill-formed 'set!' special form"
     | AstNode.Ident("quote")::body ->
         failwith "Quote expressions not yet implemented"
     | AstNode.Ident("and")::body ->

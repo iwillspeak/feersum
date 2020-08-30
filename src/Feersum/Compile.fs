@@ -74,7 +74,7 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     | BoundExpr.Seq [] -> emitUnspecified ctx.IL
     | BoundExpr.Seq s -> emitSequence ctx s
     | BoundExpr.Application(ap, args) -> emitApplication ctx ap args
-    | BoundExpr.Definition(id, storage, maybeVal) ->
+    | BoundExpr.Store(storage, maybeVal) ->
         // TODO: Could we just elide the whole definition if there is no value.
         //       If we have nothing to store it would save a lot of code. In the
         //       case we are storing to a field we _might_ need to call

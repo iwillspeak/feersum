@@ -84,7 +84,7 @@ as definitions of lambdas and rely on `lambda` support for lowering.
 ## Assignments
 
 ```scheme
-(set! <variable> <expression>?)
+(set! <variable> <expression>)
 ```
 
 Set expressions assign the result of `<expression>` to the location
@@ -93,7 +93,7 @@ then the expression raises an error.
 
 ### Implementation status
 
-Assignments are not yet implemented
+Assignments are bound and lowered.
 
 ## Quoting
 
