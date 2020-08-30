@@ -2,6 +2,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <PackAsTool>True</PackAsTool>
+    <ToolCommandName>feersum-scheme</ToolCommandName>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Syntax.fs" />
