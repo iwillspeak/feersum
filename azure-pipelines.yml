@@ -1,12 +1,15 @@
+variables:
+  configuration: Release
+
 pool:
   vmImage: ubuntu-latest
 
 steps:
   - bash: |
       set -euxo pipefail
-      dotnet build
-      dotnet test --no-build --logger 'trx' --logger 'console;verbosity=normal'
-      dotnet pack --no-build --output=$(Build.ArtifactStagingDirectory)
+      dotnet build --configuration $(configuration)
+      dotnet test --no-build --configuration $(configuration) --logger 'trx' --logger 'console;verbosity=normal'
+      dotnet pack --no-build --configuration $(configuration) --output=$(Build.ArtifactStagingDirectory)
   - task: PublishTestResults@2
     inputs:
       testResultsFormat: 'VSTest'
