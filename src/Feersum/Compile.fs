@@ -687,11 +687,14 @@ let compile outputStream outputName node =
 
 /// Read a File and Compile
 ///
-/// Takes the `path` to an input to read and compile.
-let compileFile (path: string) =
-    let output = Path.ChangeExtension(path, "exe")
-    let stem = Path.GetFileNameWithoutExtension(path);
-    parseFile path
+/// Takes the `source` to an input to read and compile. Compilation results
+/// are written to `output`.
+let compileFile (output: string) (source: string) =
+    let outDir = Path.GetDirectoryName(output)
+    // ensure the output directory exists, no need to check it is missing first
+    Directory.CreateDirectory(outDir) |> ignore
+    let stem = Path.GetFileNameWithoutExtension(output);
+    parseFile source
     |> Result.map (fun ast ->
         compile (File.OpenWrite output) stem ast
         // TOOD: This metadata needs to be abstracted to deal with different
@@ -700,7 +703,7 @@ let compileFile (path: string) =
         //       this explicit somewhere in future.
         //       It would be nice to register ourselves as a proper SDK so that
         //       this metadata is generated for us by `dotnet`.
-        File.WriteAllText(Path.Combine(Path.GetDirectoryName(path), stem + ".runtimeconfig.json"), """
+        File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), """
         {
           "runtimeOptions": {
             "tfm": "netcoreapp3.0",

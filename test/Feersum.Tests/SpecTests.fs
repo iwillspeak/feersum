@@ -12,6 +12,7 @@ open System.Diagnostics
 // ()
 
 let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
+let specBin = Path.Join(specDir, "bin")
 let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
 
 let listSpecs =
@@ -22,9 +23,9 @@ let listSpecs =
 [<MemberDataAttribute("listSpecs")>]
 let ``spec tests compile and run`` s =
     let sourcePath = Path.Join(specDir, s)
-    match compileFile (sourcePath) with
+    let exePath = Path.ChangeExtension(Path.Join(specBin, s), "exe")
+    match compileFile exePath sourcePath with
     | Ok _ ->
-        let exePath = Path.ChangeExtension(sourcePath, "exe")
         let p = Process.Start("dotnet", exePath)
         p.WaitForExit()
         p.ExitCode.ShouldMatchChildSnapshot(s)

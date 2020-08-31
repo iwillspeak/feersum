@@ -8,12 +8,14 @@ open Compile
 open Argu.ArguAttributes
 open Argu
 open System.Reflection
+open System.IO
 
 /// Command line arguments type. Encompasses the options that the compiler
 /// supports.
 type CliArguments =
     | Version
     | Interpret
+    | [<AltCommandLine("-o")>] Output of string
     | [<MainCommand; Last>] Sources of source_file:string list
 
     interface IArgParserTemplate with
@@ -22,6 +24,7 @@ type CliArguments =
             | Version -> "Print the program version and exit."
             | Interpret -> "Use the legacy interpreter in the REPL."
             | Sources _ -> "Scheme source files for compilation."
+            | Output _ -> "The output path to write compilation results to."
 
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
@@ -55,8 +58,12 @@ let rec repl evaluator =
 
 /// Compile a single file printing an error if
 /// there is one.
-let private compileSingle path =
-    match compileFile path with
+let private compileSingle output sourcePath =
+    let outputPath =
+        match output with
+        | Some(path) -> path
+        | None -> Path.ChangeExtension(sourcePath, "exe")
+    match compileFile outputPath sourcePath with
     | Ok _ -> ()
     | Error e -> failwithf "error: %s" e
 
@@ -92,6 +99,6 @@ let main argv =
 
     match args.GetResult(Sources, defaultValue = []) with
     | [] -> runRepl (args.Contains Interpret)
-    | files -> Seq.iter compileSingle files
+    | files -> Seq.iter (compileSingle (args.TryGetResult Output)) files
 
     0 // return an integer exit code
