@@ -5,6 +5,23 @@ open System
 open Interpret
 open Eval
 open Compile
+open Argu.ArguAttributes
+open Argu
+open System.Reflection
+
+/// Command line arguments type. Encompasses the options that the compiler
+/// supports.
+type CliArguments =
+    | Version
+    | Interpret
+    | [<MainCommand; Last>] Sources of source_file:string list
+
+    interface IArgParserTemplate with
+        member s.Usage =
+            match s with
+            | Version -> "Print the program version and exit."
+            | Interpret -> "Use the legacy interpreter in the REPL."
+            | Sources _ -> "Scheme source files for compilation."
 
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
@@ -38,16 +55,43 @@ let rec repl evaluator =
 
 /// Compile a single file printing an error if
 /// there is one.
-let compileSingle path =
+let private compileSingle path =
     match compileFile path with
     | Ok _ -> ()
     | Error e -> failwithf "error: %s" e
 
+/// Run the REPL, using either the reflection-based evaluator, or the tree
+/// walk interpreter.
+let private runRepl interpret =
+    ReadLine.HistoryEnabled <- true
+    if interpret then
+        execute >> print
+    else
+        eval >> printObj
+    |> repl
+
+/// Get the version string for the compiler.
+let private versionString =
+    let assm = Assembly.GetExecutingAssembly()
+    let simpleVersion = assm.GetName().Version
+    let infoVersinoAttr = 
+        Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+    match infoVersinoAttr with
+    | null -> simpleVersion.ToString()
+    | attr -> attr.InformationalVersion
+
 [<EntryPoint>]
 let main argv =
-    ReadLine.HistoryEnabled <- true
-    match argv with
-    | [| |] -> repl (eval >> printObj)
-    | [|  "--interpret" |] -> repl (execute >> print)
-    | _ -> Seq.iter compileSingle argv
+    let errorHandler = ProcessExiter(colorizer = function ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)
+    let parser = ArgumentParser.Create<CliArguments>(programName = "feersum-scheme", errorHandler = errorHandler)
+    let args = parser.Parse(argv)
+    
+    if args.Contains Version then
+        printfn "Feersum Scheme Compiler - %s" versionString
+        exit 0
+
+    match args.GetResult(Sources, defaultValue = []) with
+    | [] -> runRepl (args.Contains Interpret)
+    | files -> Seq.iter compileSingle files
+
     0 // return an integer exit code
