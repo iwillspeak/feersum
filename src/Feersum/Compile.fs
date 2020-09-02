@@ -93,6 +93,12 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
             ctx.IL.Emit(OpCodes.Stloc, idx)
         | StorageRef.Arg(idx) ->
             ctx.IL.Emit(OpCodes.Starg, idx)
+        | StorageRef.Environment(idx, _) ->
+            // FIXME: need to store into the captured environment
+            ctx.IL.Emit(OpCodes.Nop)
+        | StorageRef.Captured(from) ->
+            // FIXME: need to store into the captured environment
+            ctx.IL.Emit(OpCodes.Nop)
     | BoundExpr.Load storage ->
         match storage with
         | StorageRef.Builtin id ->
@@ -105,6 +111,12 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
             ctx.IL.Emit(OpCodes.Ldloc, idx)
         | StorageRef.Arg(idx) ->
             ctx.IL.Emit(OpCodes.Ldarg, idx)
+        | StorageRef.Environment(idx, _) ->
+            // FIXME: need to load from the captured environment
+            ctx.IL.Emit(OpCodes.Ldnull)
+        | StorageRef.Captured(from) ->
+            // FIXME: need to load from the captured environment
+            ctx.IL.Emit(OpCodes.Ldnull)
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
         let lblTrue = ctx.IL.Create(OpCodes.Nop)
         let lblNotBool = ctx.IL.Create(OpCodes.Pop)
@@ -129,7 +141,7 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         recurse ifTrue
 
         ctx.IL.Append(lblEnd)
-    | BoundExpr.Lambda(formals, locals, body) ->
+    | BoundExpr.Lambda(formals, locals, captured, body) ->
         emitLambda ctx formals locals body
 
     /// Emit a Sequence of Expressions
@@ -184,6 +196,8 @@ and emitLambda ctx formals locals body =
     let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals locals body
     let method = thunk :> MethodReference
     
+    // TODO: Move all values into the captures environment if not already there
+
     emitMethodToFunc ctx method
 
     /// Emit a Named Lambda Body

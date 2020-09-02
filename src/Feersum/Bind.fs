@@ -12,6 +12,8 @@ type StorageRef =
     | Local of int
     | Global of string
     | Arg of int
+    | Environment of int * StorageRef
+    | Captured of StorageRef
 
 /// Collection of Bound Formal Parameters
 /// 
@@ -35,7 +37,7 @@ type BoundExpr =
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
-    | Lambda of BoundFormals * int * BoundExpr
+    | Lambda of BoundFormals * int * StorageRef list * BoundExpr
     | Null
 
 /// Binder Context Type
@@ -44,6 +46,8 @@ type BoundExpr =
 /// and other transient information about the current `bind` call.
 type private BinderCtx =
     { Scope: IDictionary<string, StorageRef>
+    ; mutable NextEnvSlot: int
+    ; mutable Captures: StorageRef list
     ; Storage: string -> StorageRef
     ; Parent: BinderCtx option }
 
@@ -53,20 +57,56 @@ module private BinderCtx =
     /// Create a new binder context for the given root scope
     let createForGlobalScope scope =
         { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict)
+        ; NextEnvSlot = 0
+        ; Captures = []
         ; Storage = StorageRef.Global
         ; Parent = None }
     
     /// Create a new binder context for a child scope
     let createWithParent parent storageFact =
         { Scope = new Dictionary<string, StorageRef>()
+        ; NextEnvSlot = 0
+        ; Captures = []
         ; Storage = storageFact
         ; Parent = Some(parent) }
+    
+    let private getNextEnvSlot ctx =
+        let next = ctx.NextEnvSlot
+        ctx.NextEnvSlot <- next + 1
+        next
+
+    let rec private parentLookup ctx id =
+        match ctx.Parent with
+        | Some(parent) ->
+            match lookupAndCapture parent id with
+            | Some(outer) -> 
+                match outer with
+                | Captured(_)
+                | Environment(_) -> 
+                    ctx.Captures <- outer::ctx.Captures
+                    Some(StorageRef.Captured(outer))
+                | _ -> Some(outer)
+            | None -> None
+        | None -> None
+    and private lookupAndCapture ctx id =
+        match ctx.Scope.TryGetValue(id) with
+        | (true, value) ->
+            match value with
+            | Local(_)
+            | Arg(_) ->  
+                let envSlot = getNextEnvSlot ctx
+                let captured = StorageRef.Environment(envSlot, value)
+                ctx.Scope.[id] <- captured
+                Some(captured)
+            | _ -> Some(value)
+        | _ -> parentLookup ctx id
+    
 
     /// Lookup a given ID in the binder scope
     let rec tryFindBinding ctx id =
         match ctx.Scope.TryGetValue(id) with
         | (true, value) -> Some(value)
-        | _ -> Option.bind (fun p -> tryFindBinding p id) ctx.Parent
+        | _ -> parentLookup ctx id
     
     /// Introduce a binding for the given formal argument
     let addArgumentBinding ctx id idx =
@@ -173,7 +213,7 @@ and private bindLambdaBody ctx formals body =
         let nextFormal = (List.fold addFormal 0 fmls)
         addFormal nextFormal dotted |> ignore
     let boundBody = bindSequence lambdaCtx body
-    BoundExpr.Lambda(formals, nextLocal, boundBody)
+    BoundExpr.Lambda(formals, nextLocal, lambdaCtx.Captures, boundBody)
 and private bindForm ctx form =
     match form with
     | AstNode.Ident("if")::body ->
