@@ -14,6 +14,7 @@ type EmitCtx =
     { Assm: AssemblyDefinition
     ; IL: ILProcessor
     ; mutable NextLambda: int
+    ; mutable Hoisted: int list
     ; ScopePrefix: string
     ; ProgramTy: TypeDefinition
     ; Builtins: Map<string,MethodDefinition>
@@ -83,40 +84,8 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         | Some(expr) -> recurse expr
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
         ctx.IL.Emit(OpCodes.Dup)
-        match storage with
-        | StorageRef.Builtin id ->
-            failwithf "Can't re-define builtin %s" id
-        | StorageRef.Global id ->
-            let field = ensureField ctx id
-            ctx.IL.Emit(OpCodes.Stsfld, field)
-        | StorageRef.Local(idx) ->
-            ctx.IL.Emit(OpCodes.Stloc, idx)
-        | StorageRef.Arg(idx) ->
-            ctx.IL.Emit(OpCodes.Starg, idx)
-        | StorageRef.Environment(idx, _) ->
-            // FIXME: need to store into the captured environment
-            ctx.IL.Emit(OpCodes.Nop)
-        | StorageRef.Captured(from) ->
-            // FIXME: need to store into the captured environment
-            ctx.IL.Emit(OpCodes.Nop)
-    | BoundExpr.Load storage ->
-        match storage with
-        | StorageRef.Builtin id ->
-            let meth = ctx.Builtins.[id]
-            emitMethodToFunc ctx meth
-        | StorageRef.Global id ->
-            let field = ensureField ctx id
-            ctx.IL.Emit(OpCodes.Ldsfld, field)
-        | StorageRef.Local(idx) ->
-            ctx.IL.Emit(OpCodes.Ldloc, idx)
-        | StorageRef.Arg(idx) ->
-            ctx.IL.Emit(OpCodes.Ldarg, idx)
-        | StorageRef.Environment(idx, _) ->
-            // FIXME: need to load from the captured environment
-            ctx.IL.Emit(OpCodes.Ldnull)
-        | StorageRef.Captured(from) ->
-            // FIXME: need to load from the captured environment
-            ctx.IL.Emit(OpCodes.Ldnull)
+        writeTo ctx storage
+    | BoundExpr.Load storage -> readFrom ctx storage
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
         let lblTrue = ctx.IL.Create(OpCodes.Nop)
         let lblNotBool = ctx.IL.Create(OpCodes.Pop)
@@ -142,7 +111,46 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
 
         ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, locals, captured, body) ->
-        emitLambda ctx formals locals body
+        emitLambda ctx formals locals captured body
+
+    /// Emit a write to a given storage location
+and writeTo ctx storage =
+    match storage with
+    | StorageRef.Builtin id ->
+        failwithf "Can't re-define builtin %s" id
+    | StorageRef.Global id ->
+        let field = ensureField ctx id
+        ctx.IL.Emit(OpCodes.Stsfld, field)
+    | StorageRef.Local(idx) ->
+        ctx.IL.Emit(OpCodes.Stloc, idx)
+    | StorageRef.Arg(idx) ->
+        ctx.IL.Emit(OpCodes.Starg, idx)
+    | StorageRef.Environment(idx, _) ->
+        // FIXME: need to store into the captured environment
+        ctx.IL.Emit(OpCodes.Nop)
+    | StorageRef.Captured(from) ->
+        // FIXME: need to store into the captured environment
+        ctx.IL.Emit(OpCodes.Nop)
+        
+    /// Emit a load from the given storage location
+and readFrom ctx storage =
+    match storage with
+    | StorageRef.Builtin id ->
+        let meth = ctx.Builtins.[id]
+        emitMethodToFunc ctx meth
+    | StorageRef.Global id ->
+        let field = ensureField ctx id
+        ctx.IL.Emit(OpCodes.Ldsfld, field)
+    | StorageRef.Local(idx) ->
+        ctx.IL.Emit(OpCodes.Ldloc, idx)
+    | StorageRef.Arg(idx) ->
+        ctx.IL.Emit(OpCodes.Ldarg, idx)
+    | StorageRef.Environment(idx, _) ->
+        // FIXME: need to load from the captured environment
+        ctx.IL.Emit(OpCodes.Ldnull)
+    | StorageRef.Captured(from) ->
+        // FIXME: need to load from the captured environment
+        ctx.IL.Emit(OpCodes.Ldnull)
 
     /// Emit a Sequence of Expressions
     ///
@@ -189,14 +197,25 @@ and emitApplication ctx ap args =
     /// on the stack. This first defers to `emitNamedLambda` to write out the
     /// lambda's body and then creates a new `Func<obj[],obj>` instance that
     /// wraps a call to the lambda using the lambda's 'thunk'.
-and emitLambda ctx formals locals body =
+and emitLambda ctx formals locals captured body =
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
     let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals locals body
     let method = thunk :> MethodReference
     
-    // TODO: Move all values into the captures environment if not already there
+    // Move all values into the captures environment if not already there
+    let maybeHoistValue hoisted capture =
+        match capture with
+        | Environment(idx, location) ->
+            if List.contains idx hoisted then
+                hoisted
+            else
+                readFrom ctx location
+                writeTo ctx capture
+                idx::hoisted
+        | _ -> hoisted
+    ctx.Hoisted <- List.fold maybeHoistValue ctx.Hoisted captured
 
     emitMethodToFunc ctx method
 
@@ -240,6 +259,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
     // Create a new emit context for the new method, and lower the body in that
     // new context.
     let ctx = { ctx with NextLambda = 0;
+                         Hoisted = [];
                          IL = methodDecl.Body.GetILProcessor();
                          ScopePrefix = name }
     emitExpression ctx body
@@ -663,6 +683,7 @@ let emit (outputStream: Stream) outputName bound =
                       ; ConsTy = consTy
                       ; Builtins = createBuiltins assm progTy
                       ; NextLambda = 0
+                      ; Hoisted = []
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
     let bodyParams = BoundFormals.List([])
