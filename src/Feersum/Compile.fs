@@ -385,6 +385,11 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
 
         thunkIl.Append(ok)
 
+    // If we are calling an instance method we need to push `this` on the stack
+    // as the first argument before we unpack any others.
+    if envSize.IsSome then
+        thunkIl.Emit(OpCodes.Ldarg_0)
+    
     match formals with
     | Simple id -> unpackRemainder 0
     | List fmls ->
@@ -397,10 +402,8 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
         let lastIdx = List.fold unpackArg 0 fmls
         unpackRemainder lastIdx
 
-    // // Call the real method as a tail call
-    // thunkIl.Emit(OpCodes.Tail)
-    if envSize.IsSome then
-        thunkIl.Emit(OpCodes.Ldarg_0)
+    // Call the real method as a tail call
+    thunkIl.Emit(OpCodes.Tail)
     thunkIl.Emit(OpCodes.Call, methodDecl)
     thunkIl.Emit(OpCodes.Ret)
 
