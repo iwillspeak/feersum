@@ -569,8 +569,9 @@ let compile outputStream outputName node =
 /// are written to `output`.
 let compileFile (output: string) (source: string) =
     let outDir = Path.GetDirectoryName(output)
-    // ensure the output directory exists, no need to check it is missing first
-    Directory.CreateDirectory(outDir) |> ignore
+    if not (String.IsNullOrWhiteSpace outDir) then
+        // ensure the output directory exists, no need to check it is missing first
+        Directory.CreateDirectory(outDir) |> ignore
     let stem = Path.GetFileNameWithoutExtension(output);
     parseFile source
     |> Result.map (fun ast ->
