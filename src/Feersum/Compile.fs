@@ -66,6 +66,8 @@ let private emitMethodToFunc ctx (method: MethodReference) =
     ctx.IL.Emit(OpCodes.Ldnull)
     emitMethodToInstanceFunc ctx method
 
+/// Create a new environment instance with `size` slots available. The new
+/// environment instnace has the current `ctx`'s environment as a parent.
 let private createEnvironment ctx (size: int) =
     if ctx.EnvSize.IsSome then
         ctx.IL.Emit(OpCodes.Ldarg_0)
@@ -74,6 +76,29 @@ let private createEnvironment ctx (size: int) =
     ctx.IL.Emit(OpCodes.Ldc_I4, size)
     let ctor = Seq.head <| ctx.Core.EnvTy.GetConstructors()
     ctx.IL.Emit(OpCodes.Newobj, ctor)
+
+/// Walk the chain of captures starting at `from` in the parent, and then call
+/// `f` with the environment index that the capture chain ends at. This is used
+/// to read and write values from a captured environment.
+let rec private walkCaptureChain ctx from f =
+    ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[0])
+    match from with
+    | StorageRef.Captured(from) -> walkCaptureChain ctx from f
+    | StorageRef.Environment(idx, _) -> f idx
+    | _ -> failwithf "Unexpected storage in capture chain %A" from
+
+/// Given an environment at the top of the stack emit a load of the slot `idx`
+let private readFromEnv ctx (idx: int) =
+    ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
+    ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+    ctx.IL.Emit(OpCodes.Ldelem_Ref)
+
+/// Given an environment at the top of the stack emit a store to the slot `idx`
+let private writeToEnv ctx (temp: VariableDefinition) (idx: int) =
+    ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
+    ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+    ctx.IL.Emit(OpCodes.Ldloc, temp)
+    ctx.IL.Emit(OpCodes.Stelem_Ref)
 
 /// Emit a Single Bound Expression
 ///
@@ -152,14 +177,14 @@ and writeTo ctx storage =
         ctx.IL.Emit(OpCodes.Stloc, temp)
         
         ctx.IL.Emit(OpCodes.Ldarg_0)
-        ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
-        ctx.IL.Emit(OpCodes.Ldc_I4, idx)
-        ctx.IL.Emit(OpCodes.Ldloc, temp)
-
-        ctx.IL.Emit(OpCodes.Stelem_Ref)
+        writeToEnv ctx temp idx
     | StorageRef.Captured(from) ->
-        // FIXME: need to store into the captured environment
-        ctx.IL.Emit(OpCodes.Pop)
+        let temp = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+        ctx.IL.Body.Variables.Add <| temp
+        ctx.IL.Emit(OpCodes.Stloc, temp)
+
+        ctx.IL.Emit(OpCodes.Ldarg_0)
+        walkCaptureChain ctx from (writeToEnv ctx temp)
         
     /// Emit a load from the given storage location
 and readFrom ctx storage =
@@ -176,12 +201,10 @@ and readFrom ctx storage =
         ctx.IL.Emit(OpCodes.Ldarg, argIndex ctx idx)
     | StorageRef.Environment(idx, _) ->
         ctx.IL.Emit(OpCodes.Ldarg_0)
-        ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
-        ctx.IL.Emit(OpCodes.Ldc_I4, idx)
-        ctx.IL.Emit(OpCodes.Ldelem_Ref)
+        readFromEnv ctx idx
     | StorageRef.Captured(from) ->
-        // FIXME: need to load from the captured environment
-        ctx.IL.Emit(OpCodes.Ldnull)
+        ctx.IL.Emit(OpCodes.Ldarg_0)
+        walkCaptureChain ctx from (readFromEnv ctx)
 
     /// Emit a Sequence of Expressions
     ///
@@ -279,11 +302,6 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
                                       attrs,
                                       ctx.Assm.MainModule.TypeSystem.Object)
 
-    if envSize.IsSome then
-        ctx.Core.EnvTy.Methods.Add methodDecl
-    else
-        ctx.ProgramTy.Methods.Add methodDecl
-
     let addParam id =
         let param = ParameterDefinition(id,
                                         ParameterAttributes.None,
@@ -321,11 +339,6 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
                                       attrs,
                                       ctx.Assm.MainModule.TypeSystem.Object)
     thunkDecl.Parameters.Add(ParameterDefinition(ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
-
-    if envSize.IsSome then
-        ctx.Core.EnvTy.Methods.Add thunkDecl
-    else
-        ctx.ProgramTy.Methods.Add thunkDecl
 
     let thunkIl = thunkDecl.Body.GetILProcessor()
 
@@ -408,6 +421,16 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
     thunkIl.Emit(OpCodes.Ret)
 
     thunkDecl.Body.Optimize()
+
+    /// If this is method has a captures environment then add it as an instance
+    /// mmethod to the environmen type. If not then add it as a plain static
+    /// method to the program type.
+    if envSize.IsSome then
+        ctx.Core.EnvTy.Methods.Add methodDecl
+        ctx.Core.EnvTy.Methods.Add thunkDecl
+    else
+        ctx.ProgramTy.Methods.Add methodDecl
+        ctx.ProgramTy.Methods.Add thunkDecl
 
     methodDecl, thunkDecl
 

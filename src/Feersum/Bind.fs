@@ -251,8 +251,12 @@ and private bindForm ctx form =
         | (AstNode.Form (AstNode.Ident id::formals))::body ->
             // Add the binding for this lambda to the scope _before_ lowering
             // the body. This makes recursive calls possible.
-            let storage = BinderCtx.addBinding ctx id
+            BinderCtx.addBinding ctx id |> ignore
             let lambda = bindLambdaBody ctx (bindFormalsList formals) body
+            // Look the storage back up. This is key as the lambda, or one of
+            // the lambdas nested inside it, could have captured the lambda
+            // and moved it to the environment.
+            let storage = (BinderCtx.tryFindBinding ctx id).Value
             BoundExpr.Store(storage, Some(lambda))
         | _ -> failwith "Ill-formed 'define' special form"
     | AstNode.Ident("lambda")::body ->
