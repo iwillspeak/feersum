@@ -1,2 +1,7 @@
 (display (((lambda a (lambda () a)) 123)))
 (display ((lambda () (define a 100) (define (b) a) a)))
+(((lambda (a)
+    (lambda (b) 
+        (= a b)))
+  (* 2 123))
+ 246)
