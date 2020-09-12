@@ -66,11 +66,12 @@ let private emitMethodToFunc ctx (method: MethodReference) =
     ctx.IL.Emit(OpCodes.Ldnull)
     emitMethodToInstanceFunc ctx method
 
-let private createEnvironment ctx size =
+let private createEnvironment ctx (size: int) =
     if ctx.EnvSize.IsSome then
         ctx.IL.Emit(OpCodes.Ldarg_0)
     else
         ctx.IL.Emit(OpCodes.Ldnull)
+    ctx.IL.Emit(OpCodes.Ldc_I4, size)
     let ctor = Seq.head <| ctx.Core.EnvTy.GetConstructors()
     ctx.IL.Emit(OpCodes.Newobj, ctor)
 
@@ -146,8 +147,16 @@ and writeTo ctx storage =
     | StorageRef.Arg(idx) ->
         ctx.IL.Emit(OpCodes.Starg, argIndex ctx idx)
     | StorageRef.Environment(idx, _) ->
-        // FIXME: need to store into the captured environment
-        ctx.IL.Emit(OpCodes.Pop)
+        let temp = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+        ctx.IL.Body.Variables.Add <| temp
+        ctx.IL.Emit(OpCodes.Stloc, temp)
+        
+        ctx.IL.Emit(OpCodes.Ldarg_0)
+        ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
+        ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+        ctx.IL.Emit(OpCodes.Ldloc, temp)
+
+        ctx.IL.Emit(OpCodes.Stelem_Ref)
     | StorageRef.Captured(from) ->
         // FIXME: need to store into the captured environment
         ctx.IL.Emit(OpCodes.Pop)
@@ -166,8 +175,10 @@ and readFrom ctx storage =
     | StorageRef.Arg(idx) ->
         ctx.IL.Emit(OpCodes.Ldarg, argIndex ctx idx)
     | StorageRef.Environment(idx, _) ->
-        // FIXME: need to load from the captured environment
-        ctx.IL.Emit(OpCodes.Ldnull)
+        ctx.IL.Emit(OpCodes.Ldarg_0)
+        ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
+        ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+        ctx.IL.Emit(OpCodes.Ldelem_Ref)
     | StorageRef.Captured(from) ->
         // FIXME: need to load from the captured environment
         ctx.IL.Emit(OpCodes.Ldnull)
@@ -468,10 +479,16 @@ let private addCoreDecls (assm: AssemblyDefinition) =
 
     envTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
         ctor.Parameters.Add <| ParameterDefinition(envTy)
+        ctor.Parameters.Add <| ParameterDefinition(assm.MainModule.TypeSystem.Int32)
 
         ctorIl.Emit(OpCodes.Ldarg_0)
         ctorIl.Emit(OpCodes.Ldarg_1)
-        ctorIl.Emit(OpCodes.Stfld, parent))
+        ctorIl.Emit(OpCodes.Stfld, parent)
+
+        ctorIl.Emit(OpCodes.Ldarg_0)
+        ctorIl.Emit(OpCodes.Ldarg_2)
+        ctorIl.Emit(OpCodes.Newarr, assm.MainModule.TypeSystem.Object)
+        ctorIl.Emit(OpCodes.Stfld, slots))
     
     assm.MainModule.Types.Add envTy
 
