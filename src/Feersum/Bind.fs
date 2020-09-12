@@ -103,7 +103,7 @@ module private BinderCtx =
     
 
     /// Lookup a given ID in the binder scope
-    let rec tryFindBinding ctx id =
+    let tryFindBinding ctx id =
         match ctx.Scope.TryGetValue(id) with
         | (true, value) -> Some(value)
         | _ -> parentLookup ctx id

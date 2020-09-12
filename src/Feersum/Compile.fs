@@ -9,7 +9,12 @@ open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 
-// Type to Hold Context While Emitting IL
+/// Core Types Used by the Compiler at Runtime
+type CoreTypes =
+    { ConsTy: TypeDefinition
+    ; EnvTy: TypeDefinition }
+
+/// Type to Hold Context While Emitting IL
 type EmitCtx =
     { Assm: AssemblyDefinition
     ; IL: ILProcessor
@@ -18,7 +23,7 @@ type EmitCtx =
     ; ScopePrefix: string
     ; ProgramTy: TypeDefinition
     ; Builtins: Map<string,MethodDefinition>
-    ; ConsTy: TypeDefinition }
+    ; Core: CoreTypes }
 
 /// Emit an instance of the unspecified value
 let private emitUnspecified (il: ILProcessor) =
@@ -279,7 +284,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
     let unpackRemainder (idx: int) =
         let i = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Int32)
         thunkDecl.Body.Variables.Add(i)
-        let consCtor = ctx.ConsTy.GetConstructors() |> Seq.head
+        let consCtor = ctx.Core.ConsTy.GetConstructors() |> Seq.head
 
         // * get length of array
         thunkIl.Emit(OpCodes.Ldarg_0)
@@ -404,7 +409,24 @@ let private addCoreDecls (assm: AssemblyDefinition) =
     consTy.Fields.Add(cdr)
 
     assm.MainModule.Types.Add consTy
-    consTy
+
+    let envTy = TypeDefinition(compilerServicesNs,
+                               "Environment",
+                               TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                               assm.MainModule.TypeSystem.Object)
+    let parent = FieldDefinition("parent", FieldAttributes.Public, envTy)
+    envTy.Fields.Add(parent)
+    let slots = FieldDefinition("slots", FieldAttributes.Public, ArrayType(assm.MainModule.TypeSystem.Object))
+    envTy.Fields.Add(slots)
+
+    envTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
+        ctor.Parameters.Add <| ParameterDefinition(envTy)
+
+        ctorIl.Emit(OpCodes.Ldarg_0)
+        ctorIl.Emit(OpCodes.Ldarg_1)
+        ctorIl.Emit(OpCodes.Stfld, parent))
+
+    { ConsTy = consTy; EnvTy = envTy }
 
 /// Emit a Bound Expression to .NET
 ///
@@ -417,7 +439,7 @@ let emit (outputStream: Stream) outputName bound =
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
 
-    let consTy = addCoreDecls assm
+    let coreTypes = addCoreDecls assm
 
     // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName,
@@ -431,7 +453,7 @@ let emit (outputStream: Stream) outputName bound =
     // module can call it directly
     let rootEmitCtx = { IL = null
                       ; ProgramTy = progTy
-                      ; ConsTy = consTy
+                      ; Core = coreTypes
                       ; Builtins = Builtins.createBuiltins assm progTy
                       ; NextLambda = 0
                       ; Hoisted = []
