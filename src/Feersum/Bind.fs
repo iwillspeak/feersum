@@ -37,7 +37,7 @@ type BoundExpr =
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
-    | Lambda of BoundFormals * int * StorageRef list * BoundExpr
+    | Lambda of BoundFormals * int * StorageRef list * int option * BoundExpr
     | Null
 
 /// Binder Context Type
@@ -48,8 +48,19 @@ type private BinderCtx =
     { Scope: IDictionary<string, StorageRef>
     ; mutable NextEnvSlot: int
     ; mutable Captures: StorageRef list
+    ; mutable EnvSize: int option
     ; Storage: string -> StorageRef
     ; Parent: BinderCtx option }
+
+/// Add another element into our environment.
+let private incEnvSize = function
+    | None -> Some(1)
+    | Some(size) -> Some(size + 1)
+
+/// Mark the environment as used, even if nothing is stored in it.
+let private markEnvUsed = function
+    | None -> Some(0)
+    | o -> o
 
 /// Methods for manipulating the bind context
 module private BinderCtx =
@@ -59,6 +70,7 @@ module private BinderCtx =
         { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict)
         ; NextEnvSlot = 0
         ; Captures = []
+        ; EnvSize = None
         ; Storage = StorageRef.Global
         ; Parent = None }
     
@@ -67,6 +79,7 @@ module private BinderCtx =
         { Scope = new Dictionary<string, StorageRef>()
         ; NextEnvSlot = 0
         ; Captures = []
+        ; EnvSize = None
         ; Storage = storageFact
         ; Parent = Some(parent) }
     
@@ -84,6 +97,7 @@ module private BinderCtx =
                 | Captured(_)
                 | Environment(_) -> 
                     ctx.Captures <- outer::ctx.Captures
+                    ctx.EnvSize <- markEnvUsed ctx.EnvSize
                     Some(StorageRef.Captured(outer))
                 | _ -> Some(outer)
             | None -> None
@@ -97,6 +111,7 @@ module private BinderCtx =
                 let envSlot = getNextEnvSlot ctx
                 let captured = StorageRef.Environment(envSlot, value)
                 ctx.Scope.[id] <- captured
+                ctx.EnvSize <- incEnvSize ctx.EnvSize
                 Some(captured)
             | _ -> Some(value)
         | _ -> parentLookup ctx id
@@ -213,7 +228,7 @@ and private bindLambdaBody ctx formals body =
         let nextFormal = (List.fold addFormal 0 fmls)
         addFormal nextFormal dotted |> ignore
     let boundBody = bindSequence lambdaCtx body
-    BoundExpr.Lambda(formals, nextLocal, lambdaCtx.Captures, boundBody)
+    BoundExpr.Lambda(formals, nextLocal, lambdaCtx.Captures, lambdaCtx.EnvSize, boundBody)
 and private bindForm ctx form =
     match form with
     | AstNode.Ident("if")::body ->

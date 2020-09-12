@@ -21,6 +21,7 @@ type EmitCtx =
     ; mutable NextLambda: int
     ; mutable Hoisted: int list
     ; ScopePrefix: string
+    ; EnvSize: int option
     ; ProgramTy: TypeDefinition
     ; Builtins: Map<string,MethodDefinition>
     ; Core: CoreTypes }
@@ -41,15 +42,37 @@ let private ensureField ctx id =
         ctx.ProgramTy.Fields.Add(newField)
         newField
 
+/// Convert an argument index into an index for `Ldarg` given the current
+/// environment size. This adds an offset if we are working with an instnace
+/// method.
+let private argIndex ctx idx =
+    if ctx.EnvSize.IsSome then
+        idx + 1
+    else
+        idx
+
 /// Emit a sequence of instructions to convert a method reference
-/// into a `Func<obj[],obj>`
-let private emitMethodToFunc ctx (method: MethodReference) =
+/// into a `Func<obj[],obj>` with the context as the current top of stack.
+let private emitMethodToInstanceFunc ctx (method: MethodReference) =
     let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
     let funcObjCtor = typeof<Func<obj[], obj>>.GetConstructor(paramTypes)
     let funcObjCtor = ctx.Assm.MainModule.ImportReference(funcObjCtor)
-    ctx.IL.Emit(OpCodes.Ldnull)
     ctx.IL.Emit(OpCodes.Ldftn, method)
     ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
+
+/// Emit a sequence of instructions to convert a method reference
+/// into a `Func<obj[],obj>`
+let private emitMethodToFunc ctx (method: MethodReference) =
+    ctx.IL.Emit(OpCodes.Ldnull)
+    emitMethodToInstanceFunc ctx method
+
+let private createEnvironment ctx size =
+    if ctx.EnvSize.IsSome then
+        ctx.IL.Emit(OpCodes.Ldarg_0)
+    else
+        ctx.IL.Emit(OpCodes.Ldnull)
+    let ctor = Seq.head <| ctx.Core.EnvTy.GetConstructors()
+    ctx.IL.Emit(OpCodes.Newobj, ctor)
 
 /// Emit a Single Bound Expression
 ///
@@ -107,8 +130,8 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         recurse ifTrue
 
         ctx.IL.Append(lblEnd)
-    | BoundExpr.Lambda(formals, locals, captured, body) ->
-        emitLambda ctx formals locals captured body
+    | BoundExpr.Lambda(formals, locals, captured, envSize, body) ->
+        emitLambda ctx formals locals captured envSize body
 
     /// Emit a write to a given storage location
 and writeTo ctx storage =
@@ -121,13 +144,13 @@ and writeTo ctx storage =
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Stloc, idx)
     | StorageRef.Arg(idx) ->
-        ctx.IL.Emit(OpCodes.Starg, idx)
+        ctx.IL.Emit(OpCodes.Starg, argIndex ctx idx)
     | StorageRef.Environment(idx, _) ->
         // FIXME: need to store into the captured environment
-        ctx.IL.Emit(OpCodes.Nop)
+        ctx.IL.Emit(OpCodes.Pop)
     | StorageRef.Captured(from) ->
         // FIXME: need to store into the captured environment
-        ctx.IL.Emit(OpCodes.Nop)
+        ctx.IL.Emit(OpCodes.Pop)
         
     /// Emit a load from the given storage location
 and readFrom ctx storage =
@@ -141,7 +164,7 @@ and readFrom ctx storage =
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Ldloc, idx)
     | StorageRef.Arg(idx) ->
-        ctx.IL.Emit(OpCodes.Ldarg, idx)
+        ctx.IL.Emit(OpCodes.Ldarg, argIndex ctx idx)
     | StorageRef.Environment(idx, _) ->
         // FIXME: need to load from the captured environment
         ctx.IL.Emit(OpCodes.Ldnull)
@@ -194,13 +217,14 @@ and emitApplication ctx ap args =
     /// on the stack. This first defers to `emitNamedLambda` to write out the
     /// lambda's body and then creates a new `Func<obj[],obj>` instance that
     /// wraps a call to the lambda using the lambda's 'thunk'.
-and emitLambda ctx formals locals captured body =
+and emitLambda ctx formals locals captured envSize body =
+
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
-    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals locals body
+    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals locals envSize body
     let method = thunk :> MethodReference
-    
+
     // Move all values into the captures environment if not already there
     let maybeHoistValue hoisted capture =
         match capture with
@@ -214,7 +238,11 @@ and emitLambda ctx formals locals captured body =
         | _ -> hoisted
     ctx.Hoisted <- List.fold maybeHoistValue ctx.Hoisted captured
 
-    emitMethodToFunc ctx method
+    match envSize with
+        | Some(size) ->
+            createEnvironment ctx size
+            emitMethodToInstanceFunc ctx method
+        | None -> emitMethodToFunc ctx method
 
     /// Emit a Named Lambda Body
     /// 
@@ -228,11 +256,22 @@ and emitLambda ctx formals locals captured body =
     /// the function we are calling. A future optimisation may be to transform
     /// the bound tree and lower some calls in the case we _can_ be sure of the
     /// parameters. 
-and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
+and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
+
+    let attrs = 
+        if envSize.IsSome then
+            MethodAttributes.Public
+        else
+            MethodAttributes.Public ||| MethodAttributes.Static
+
     let methodDecl = MethodDefinition(name,
-                                      MethodAttributes.Public ||| MethodAttributes.Static,
+                                      attrs,
                                       ctx.Assm.MainModule.TypeSystem.Object)
-    ctx.ProgramTy.Methods.Add methodDecl
+
+    if envSize.IsSome then
+        ctx.Core.EnvTy.Methods.Add methodDecl
+    else
+        ctx.ProgramTy.Methods.Add methodDecl
 
     let addParam id =
         let param = ParameterDefinition(id,
@@ -257,6 +296,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
     // new context.
     let ctx = { ctx with NextLambda = 0;
                          Hoisted = [];
+                         EnvSize = envSize
                          IL = methodDecl.Body.GetILProcessor();
                          ScopePrefix = name }
     emitExpression ctx body
@@ -267,15 +307,20 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
     // This allows us to provide a uniform calling convention for
     // lambda instances.
     let thunkDecl = MethodDefinition((sprintf "%s:thunk" name),
-                                      MethodAttributes.Public ||| MethodAttributes.Static,
+                                      attrs,
                                       ctx.Assm.MainModule.TypeSystem.Object)
     thunkDecl.Parameters.Add(ParameterDefinition(ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
-    ctx.ProgramTy.Methods.Add thunkDecl
+
+    if envSize.IsSome then
+        ctx.Core.EnvTy.Methods.Add thunkDecl
+    else
+        ctx.ProgramTy.Methods.Add thunkDecl
+
     let thunkIl = thunkDecl.Body.GetILProcessor()
 
     /// Unpack a single argument from the arguments array onto the stack
     let unpackArg (idx: int) id =
-        thunkIl.Emit(OpCodes.Ldarg_0)
+        thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters.[0])
         thunkIl.Emit(OpCodes.Ldc_I4, idx)
         thunkIl.Emit(OpCodes.Ldelem_Ref)
         idx + 1
@@ -287,7 +332,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
         let consCtor = ctx.Core.ConsTy.GetConstructors() |> Seq.head
 
         // * get length of array
-        thunkIl.Emit(OpCodes.Ldarg_0)
+        thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters.[0])
         thunkIl.Emit(OpCodes.Ldlen)
 
         // * store as local <i>
@@ -301,7 +346,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
         thunkIl.Emit(OpCodes.Br_S, loopCond)
         
         //   * load from the array at <i> and make cons pair
-        let loop = thunkIl.Create(OpCodes.Ldarg_0)
+        let loop = thunkIl.Create(OpCodes.Ldarg, thunkDecl.Parameters.[0])
         thunkIl.Append(loop)
         thunkIl.Emit(OpCodes.Ldloc, i)
         thunkIl.Emit(OpCodes.Ldelem_Ref)
@@ -320,7 +365,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
     let raiseArgCountMismatch (count: int) opCode (err: string) =
         let ok = thunkIl.Create(OpCodes.Nop)
 
-        thunkIl.Emit(OpCodes.Ldarg_0)
+        thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters.[0])
         thunkIl.Emit(OpCodes.Ldlen)
         thunkIl.Emit(OpCodes.Ldc_I4, count)
         thunkIl.Emit(opCode, ok)
@@ -341,8 +386,10 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount body =
         let lastIdx = List.fold unpackArg 0 fmls
         unpackRemainder lastIdx
 
-    // Call the real method as a tail call
-    thunkIl.Emit(OpCodes.Tail)
+    // // Call the real method as a tail call
+    // thunkIl.Emit(OpCodes.Tail)
+    if envSize.IsSome then
+        thunkIl.Emit(OpCodes.Ldarg_0)
     thunkIl.Emit(OpCodes.Call, methodDecl)
     thunkIl.Emit(OpCodes.Ret)
 
@@ -425,6 +472,8 @@ let private addCoreDecls (assm: AssemblyDefinition) =
         ctorIl.Emit(OpCodes.Ldarg_0)
         ctorIl.Emit(OpCodes.Ldarg_1)
         ctorIl.Emit(OpCodes.Stfld, parent))
+    
+    assm.MainModule.Types.Add envTy
 
     { ConsTy = consTy; EnvTy = envTy }
 
@@ -457,10 +506,11 @@ let emit (outputStream: Stream) outputName bound =
                       ; Builtins = Builtins.createBuiltins assm progTy
                       ; NextLambda = 0
                       ; Hoisted = []
+                      ; EnvSize = None
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams 0 bound
+    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams 0 None bound
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.
