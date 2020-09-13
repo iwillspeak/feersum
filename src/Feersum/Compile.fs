@@ -620,10 +620,10 @@ let compileFile (output: string) (source: string) =
         File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), """
         {
           "runtimeOptions": {
-            "tfm": "netcoreapp3.0",
+            "tfm": "netcoreapp3.1",
             "framework": {
               "name": "Microsoft.NETCore.App",
-              "version": "3.0.0"
+              "version": "3.1.0"
             }
           }
         }
