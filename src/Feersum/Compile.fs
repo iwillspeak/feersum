@@ -591,11 +591,23 @@ let compile outputStream outputName node =
 /// Takes the `source` to an input to read and compile. Compilation results
 /// are written to `output`.
 let compileFile (output: string) (source: string) =
+
+    // Ensure the output path exists
     let outDir = Path.GetDirectoryName(output)
     if not (String.IsNullOrWhiteSpace outDir) then
         // ensure the output directory exists, no need to check it is missing first
         Directory.CreateDirectory(outDir) |> ignore
-    let stem = Path.GetFileNameWithoutExtension(output);
+    
+    // Normalise the stem and output path. This ensures the output is a file
+    // not a directory.
+    let stem = Path.GetFileNameWithoutExtension(output)
+    let stem, output =
+        if String.IsNullOrWhiteSpace(stem) then
+            let stem = Path.GetFileNameWithoutExtension(source)
+            stem, Path.Join(outDir, stem + ".exe")
+        else
+            stem, output
+    
     parseFile source
     |> Result.map (fun ast ->
         compile (File.OpenWrite output) stem ast

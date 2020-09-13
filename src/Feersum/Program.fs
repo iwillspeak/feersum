@@ -16,7 +16,7 @@ type CliArguments =
     | Version
     | Interpret
     | [<AltCommandLine("-o")>] Output of string
-    | [<MainCommand; Last>] Sources of source_file:string list
+    | [<MainCommand>] Sources of source_file:string list
 
     interface IArgParserTemplate with
         member s.Usage =
