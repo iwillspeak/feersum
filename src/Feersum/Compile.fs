@@ -312,9 +312,9 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
     match formals with
     | Simple id -> addParam id
     | List fmls ->
-        List.map addParam fmls |> ignore
+        Seq.iter addParam fmls
     | DottedList(fmls, dotted) ->
-        List.map addParam fmls |> ignore
+        Seq.iter addParam fmls
         addParam dotted
     
     for _ = 1 to localCount do
