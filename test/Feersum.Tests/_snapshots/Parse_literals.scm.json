@@ -1,42 +1,40 @@
 {
-  "Case": "Ok",
-  "Fields": [
-    {
-      "Case": "Seq",
-      "Fields": [
-        [
-          {
-            "Case": "Number",
-            "Fields": [
-              1.0
-            ]
-          },
-          {
-            "Case": "Str",
-            "Fields": [
-              "hello world"
-            ]
-          },
-          {
-            "Case": "Boolean",
-            "Fields": [
-              true
-            ]
-          },
-          {
-            "Case": "Boolean",
-            "Fields": [
-              false
-            ]
-          },
-          {
-            "Case": "Number",
-            "Fields": [
-              123.0
-            ]
-          }
-        ]
+  "Item1": {
+    "Case": "Seq",
+    "Fields": [
+      [
+        {
+          "Case": "Number",
+          "Fields": [
+            1.0
+          ]
+        },
+        {
+          "Case": "Str",
+          "Fields": [
+            "hello world"
+          ]
+        },
+        {
+          "Case": "Boolean",
+          "Fields": [
+            true
+          ]
+        },
+        {
+          "Case": "Boolean",
+          "Fields": [
+            false
+          ]
+        },
+        {
+          "Case": "Number",
+          "Fields": [
+            123.0
+          ]
+        }
       ]
-    }
-  ]
+    ]
+  },
+  "Item2": []
 }

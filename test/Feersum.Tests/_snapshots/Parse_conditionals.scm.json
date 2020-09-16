@@ -1,74 +1,72 @@
 {
-  "Case": "Ok",
-  "Fields": [
-    {
-      "Case": "Seq",
-      "Fields": [
-        [
-          {
-            "Case": "Form",
-            "Fields": [
-              [
-                {
-                  "Case": "Ident",
-                  "Fields": [
-                    "if"
-                  ]
-                },
-                {
-                  "Case": "Boolean",
-                  "Fields": [
-                    true
-                  ]
-                },
-                {
-                  "Case": "Number",
-                  "Fields": [
-                    255.0
-                  ]
-                },
-                {
-                  "Case": "Number",
-                  "Fields": [
-                    -123.0
-                  ]
-                }
-              ]
+  "Item1": {
+    "Case": "Seq",
+    "Fields": [
+      [
+        {
+          "Case": "Form",
+          "Fields": [
+            [
+              {
+                "Case": "Ident",
+                "Fields": [
+                  "if"
+                ]
+              },
+              {
+                "Case": "Boolean",
+                "Fields": [
+                  true
+                ]
+              },
+              {
+                "Case": "Number",
+                "Fields": [
+                  255.0
+                ]
+              },
+              {
+                "Case": "Number",
+                "Fields": [
+                  -123.0
+                ]
+              }
             ]
-          },
-          {
-            "Case": "Form",
-            "Fields": [
-              [
-                {
-                  "Case": "Ident",
-                  "Fields": [
-                    "if"
-                  ]
-                },
-                {
-                  "Case": "Str",
-                  "Fields": [
-                    "hello"
-                  ]
-                },
-                {
-                  "Case": "Str",
-                  "Fields": [
-                    "world"
-                  ]
-                },
-                {
-                  "Case": "Number",
-                  "Fields": [
-                    -2.0
-                  ]
-                }
-              ]
+          ]
+        },
+        {
+          "Case": "Form",
+          "Fields": [
+            [
+              {
+                "Case": "Ident",
+                "Fields": [
+                  "if"
+                ]
+              },
+              {
+                "Case": "Str",
+                "Fields": [
+                  "hello"
+                ]
+              },
+              {
+                "Case": "Str",
+                "Fields": [
+                  "world"
+                ]
+              },
+              {
+                "Case": "Number",
+                "Fields": [
+                  -2.0
+                ]
+              }
             ]
-          }
-        ]
+          ]
+        }
       ]
-    }
-  ]
+    ]
+  },
+  "Item2": []
 }
