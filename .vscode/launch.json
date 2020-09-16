@@ -15,22 +15,11 @@
             "console": "internalConsole"
         },
         {
-            "name": "Fastness",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Fastness/bin/Debug/netcoreapp3.0/Fastness.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "stopAtEntry": false,
-            "console": "internalConsole"
-        },
-        {
             "name": "Feersum",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/Feersum/bin/Debug/netcoreapp3.0/Feersum.dll",
+            "program": "${workspaceRoot}/src/Feersum/bin/Debug/netcoreapp3.1/Feersum.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
