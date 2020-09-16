@@ -13,6 +13,11 @@ let evaluators = [|
         [| feeri |]
     |]
 
+let private tryReadSingle expr =
+    match readExpr expr with
+    | (o, []) -> o
+    | (_, diagnostics) -> failwithf "parse error %A" diagnostics
+
 [<Theory>]
 [<MemberData("evaluators")>]
 let ``Evaluate atoms`` evaluator =
@@ -74,10 +79,7 @@ let ``Evaluate builtins`` () =
 [<InlineData("(/ 3 4 5)", "0.15")>]
 [<InlineData("(/ 3)", "0.333333")>]
 let ``evaluate artithemtic ops`` expr result =
-    let expr =
-        match readExpr expr with
-        | Ok o -> o
-        | Error e -> failwithf "parse error %s" e
+    let expr = tryReadSingle expr
     Assert.Equal(result, feeri(expr))
 
 
@@ -99,8 +101,5 @@ let ``comp ops return true for simple cases`` op =
 [<InlineData("(> 5 4 2 1)", "#t")>]
 [<InlineData("(>= 5 5 5 4 4 3 3 3 3 1 )", "#t")>]
 let ``evaluate comparision ops`` expr result =
-    let expr =
-        match readExpr expr with
-        | Ok o -> o
-        | Error e -> failwithf "parse error %s" e
+    let expr = tryReadSingle expr
     Assert.Equal(result, feeri(expr))

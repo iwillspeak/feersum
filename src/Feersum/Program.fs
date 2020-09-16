@@ -32,9 +32,10 @@ type CliArguments =
 let rec read (): AstNode =
     let line = ReadLine.Read("§> ")
     match readExpr line with
-    | Result.Ok node -> node
-    | Result.Error message -> 
-        (eprintfn "Failure: %s" message)
+    | (node, []) -> node
+    | (_, diagnostics) ->
+        diagnostics
+        |> Seq.iter (fun x -> eprintfn "Error: %s" (x.ToString()))
         read()
 
 /// Print a value out to the console
@@ -64,8 +65,8 @@ let private compileSingle output sourcePath =
         | Some(path) -> path
         | None -> Path.ChangeExtension(sourcePath, "exe")
     match compileFile outputPath sourcePath with
-    | Ok _ -> ()
-    | Error e -> failwithf "error: %s" e
+    | [] -> ()
+    | diagnostics -> failwithf "error: %A" diagnostics
 
 /// Run the REPL, using either the reflection-based evaluator, or the tree
 /// walk interpreter.

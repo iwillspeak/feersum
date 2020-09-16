@@ -25,11 +25,11 @@ let ``spec tests compile and run`` s =
     let sourcePath = Path.Join(specDir, s)
     let exePath = Path.ChangeExtension(Path.Join(specBin, s), "exe")
     match compileFile exePath sourcePath with
-    | Ok _ ->
+    | [] ->
         let p = Process.Start("dotnet", exePath)
         p.WaitForExit()
         p.ExitCode.ShouldMatchChildSnapshot(s)
-    | Error e -> failwithf "Compilation error: %A" e
+    | diags -> failwithf "Compilation error: %A" diags
 
 [<Theory>]
 [<MemberDataAttribute("listSpecs")>]

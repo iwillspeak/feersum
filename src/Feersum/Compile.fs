@@ -397,12 +397,12 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
         emitThrow thunkIl ctx.Assm err
 
         thunkIl.Append(ok)
-
+    
     // If we are calling an instance method we need to push `this` on the stack
     // as the first argument before we unpack any others.
     if envSize.IsSome then
         thunkIl.Emit(OpCodes.Ldarg_0)
-    
+
     match formals with
     | Simple id -> unpackRemainder 0
     | List fmls ->
@@ -608,8 +608,11 @@ let compileFile (output: string) (source: string) =
         else
             stem, output
     
-    parseFile source
-    |> Result.map (fun ast ->
+    let ast, diagnostics = parseFile source
+    
+    if not diagnostics.IsEmpty then
+        diagnostics
+    else
         compile (File.OpenWrite output) stem ast
         // TOOD: This metadata needs to be abstracted to deal with different
         //       target framework's prefrences. For now the `.exe` we generate
@@ -627,4 +630,6 @@ let compileFile (output: string) (source: string) =
             }
           }
         }
-        """))
+        """)
+        // TODO: when compiler returns diagnostics return those here.
+        [ ]

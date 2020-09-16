@@ -195,6 +195,7 @@ let private bindFormals formals =
 /// references storage locations.
 let rec private bindInContext ctx node =
     match node with
+    | AstNode.Error -> failwithf "Internal compiler error: Unpexected error node!"
     | AstNode.Number n -> BoundExpr.Number n
     | AstNode.Str s -> BoundExpr.Str s
     | AstNode.Boolean b -> BoundExpr.Boolean b

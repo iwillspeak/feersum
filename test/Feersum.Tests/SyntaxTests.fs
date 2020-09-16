@@ -5,14 +5,14 @@ open Syntax
 
 let readSingle input =
     match readExpr input with
-    | Ok(Seq exprs) -> List.exactlyOne exprs
-    | Ok(expr) -> expr
-    | o -> failwithf "Expected single expression but got: %A" o
+    | (Seq exprs, []) -> List.exactlyOne exprs
+    | (expr, []) -> expr
+    | (_, diag) -> failwithf "Expected single expression but got: %A" diag
 
 let readMany input =
     match readExpr input with
-    | Ok(read) -> read
-    | Error(e) -> failwithf "Expected one or more expressions but got: %A" e
+    | (read, []) -> read
+    | (_, diag) -> failwithf "Expected one or more expressions but got: %A" diag
 
 // TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
 //       invalid hex escapes, bad identifiers and so on.

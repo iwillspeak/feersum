@@ -5,7 +5,15 @@ open FParsec
 open System.Text
 open System.Globalization
 
-// The main AST Node type
+/// Diagnostics indicate problems with our source code at a given position.
+type Diagnostic = Diagnostic of Position * string
+with
+    override d.ToString() =
+        match d with
+        | Diagnostic(pos, message) ->
+            sprintf "%s:%d:%d: %s" pos.StreamName pos.Line pos.Column message
+
+/// The main AST Node type
 type AstNode =
     | Ident of string
     | Number of float
@@ -15,6 +23,7 @@ type AstNode =
     | Dot
     | Form of AstNode list
     | Seq of AstNode list
+    | Error
 
 let private parseForm, parseFormRef = createParserForwardedToRef()
 
@@ -125,17 +134,17 @@ let private parse =
 
 /// Unpack a `ParseResult` into a Plain `Result`
 let private unpack = function
-    | Success(node, _, _) -> Result.Ok node
-    | Failure(message, _, _) -> Result.Error message
+    | Success(node, _, _) -> (node, [])
+    | Failure(mess, err, _) -> (AstNode.Error, [ Diagnostic(err.Position, mess) ])
 
 /// Read expressions from the input text
-let readExpr line: Result<AstNode,string> =
-    (run parse line) |> unpack
+let readExpr line: (AstNode * Diagnostic list) =
+    runParserOnString parse () "repl" line |> unpack
 
 /// Read an expression from source code on disk
-let parseFile path =
+let parseFile path: (AstNode * Diagnostic list)=
     runParserOnFile parse () path Encoding.UTF8 |> unpack
 
 /// Read an expression from a stream of source code
-let parseStream name stream =
+let parseStream name stream: (AstNode * Diagnostic list) =
     runParserOnStream parse () name stream Encoding.UTF8 |> unpack
