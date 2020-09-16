@@ -160,3 +160,9 @@ let ``parse named characters`` name char =
 [<InlineData(@"#\x20", ' ')>]
 let ``parse hex characters`` hex char =
     Assert.Equal(Character char, readSingle hex)
+
+[<Fact>]
+let ``multiple diagnostics on error`` () =
+    let source = "(- 1 § (display \"foo\")"
+    let (parsed, diagnostics) = readExpr source
+    Assert.True(List.length diagnostics > 1)

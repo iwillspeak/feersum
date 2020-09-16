@@ -25,6 +25,36 @@ type AstNode =
     | Seq of AstNode list
     | Error
 
+/// The parser state. Used to collect diagnostics
+type State = { mutable Diagnostics: Diagnostic list }
+with
+    member s.Emit pos message =
+        let d = Diagnostic(pos, message)
+        s.Diagnostics <- d::s.Diagnostics
+
+    static member Empty =
+        { Diagnostics = [] }
+
+let expect (parser: Parser<'t, State>) message: Parser<'t option, State> =
+    fun stream ->
+        let reply = parser stream
+        match reply.Status with
+        | ReplyStatus.Error ->
+            stream.UserState.Emit stream.Position message
+            Reply(None)
+        | _ ->
+            Reply(reply.Status, Some(reply.Result), reply.Error)
+
+let skipUnrecognised problem: Parser<unit, State> =
+    fun stream ->
+        let pos = stream.Position
+        let skipped = stream.ReadCharOrNewline()
+        if skipped = EOS then
+            Reply(ReplyStatus.Error, expected "at end of string")
+        else
+            stream.UserState.Emit pos (problem skipped)
+            Reply(())
+
 let private parseForm, parseFormRef = createParserForwardedToRef()
 
 let private comment =
@@ -122,7 +152,7 @@ let private parseAtom =
     ]
 
 let private parseApplication =
-    between (skipChar '(') (skipChar ')')
+    between (skipChar '(') (expect (skipChar ')') "Missing closing ')'")
         ((many parseForm) |>> Form)
        
 do parseFormRef :=
@@ -130,21 +160,23 @@ do parseFormRef :=
 
 /// Parse the given string into a syntax tree
 let private parse =
-    (many parseForm) .>> eof |>> Seq
+    let problem =
+        sprintf "unrecognised character %c"
+    (many (parseForm <|> ((skipUnrecognised problem) >>% AstNode.Error))) .>> eof |>> Seq
 
 /// Unpack a `ParseResult` into a Plain `Result`
 let private unpack = function
-    | Success(node, _, _) -> (node, [])
-    | Failure(mess, err, _) -> (AstNode.Error, [ Diagnostic(err.Position, mess) ])
+    | Success(node, s, _) -> (node, s.Diagnostics)
+    | Failure(mess, err, s) -> (AstNode.Error, Diagnostic(err.Position, mess)::s.Diagnostics)
 
 /// Read expressions from the input text
 let readExpr line: (AstNode * Diagnostic list) =
-    runParserOnString parse () "repl" line |> unpack
+    runParserOnString parse State.Empty "repl" line |> unpack
 
 /// Read an expression from source code on disk
 let parseFile path: (AstNode * Diagnostic list)=
-    runParserOnFile parse () path Encoding.UTF8 |> unpack
+    runParserOnFile parse State.Empty path Encoding.UTF8 |> unpack
 
 /// Read an expression from a stream of source code
 let parseStream name stream: (AstNode * Diagnostic list) =
-    runParserOnStream parse () name stream Encoding.UTF8 |> unpack
+    runParserOnStream parse State.Empty name stream Encoding.UTF8 |> unpack
