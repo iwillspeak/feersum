@@ -35,6 +35,7 @@ let rec read (): AstNode =
     | (node, []) -> node
     | (_, diagnostics) ->
         diagnostics
+        |> List.rev
         |> Seq.iter (fun x -> eprintfn "Error: %s" (x.ToString()))
         read()
 

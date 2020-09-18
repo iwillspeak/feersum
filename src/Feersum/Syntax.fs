@@ -161,7 +161,7 @@ do parseFormRef :=
 /// Parse the given string into a syntax tree
 let private parse =
     let problem =
-        sprintf "unrecognised character %c"
+        sprintf "unexpected character %c"
     (many (parseForm <|> ((skipUnrecognised problem) >>% AstNode.Error))) .>> eof |>> Seq
 
 /// Unpack a `ParseResult` into a Plain `Result`
