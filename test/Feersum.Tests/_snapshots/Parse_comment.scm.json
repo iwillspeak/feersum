@@ -1,16 +1,54 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Number",
+              "Fields": [
+                0.0
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 76,
+                  "Line": 7,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/comment.scm"
+                },
+                {
+                  "Index": 77,
+                  "Line": 7,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/comment.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
         {
-          "Case": "Number",
-          "Fields": [
-            0.0
-          ]
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/comment.scm"
+        },
+        {
+          "Index": 163,
+          "Line": 9,
+          "Column": 16,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/comment.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }

@@ -1,16 +1,54 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Boolean",
+              "Fields": [
+                false
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/false.scm"
+                },
+                {
+                  "Index": 2,
+                  "Line": 1,
+                  "Column": 3,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/false.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
         {
-          "Case": "Boolean",
-          "Fields": [
-            false
-          ]
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/false.scm"
+        },
+        {
+          "Index": 2,
+          "Line": 1,
+          "Column": 3,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/false.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }

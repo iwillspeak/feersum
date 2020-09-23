@@ -1,213 +1,840 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        },
+                        {
+                          "Index": 7,
+                          "Line": 1,
+                          "Column": 8,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "fact"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                },
+                                {
+                                  "Index": 13,
+                                  "Line": 1,
+                                  "Column": 14,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "n"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 14,
+                                  "Line": 1,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 9,
+                          "Line": 1,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        },
+                        {
+                          "Index": 15,
+                          "Line": 1,
+                          "Column": 16,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "if"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 22,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                },
+                                {
+                                  "Index": 24,
+                                  "Line": 2,
+                                  "Column": 8,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "="
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 26,
+                                          "Line": 2,
+                                          "Column": 10,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        },
+                                        {
+                                          "Index": 27,
+                                          "Line": 2,
+                                          "Column": 11,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "n"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 28,
+                                          "Line": 2,
+                                          "Column": 12,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        },
+                                        {
+                                          "Index": 29,
+                                          "Line": 2,
+                                          "Column": 13,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Number",
+                                      "Fields": [
+                                        0.0
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 30,
+                                          "Line": 2,
+                                          "Column": 14,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        },
+                                        {
+                                          "Index": 31,
+                                          "Line": 2,
+                                          "Column": 15,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 26,
+                                  "Line": 2,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                },
+                                {
+                                  "Index": 31,
+                                  "Line": 2,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                1.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 41,
+                                  "Line": 3,
+                                  "Column": 9,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                },
+                                {
+                                  "Index": 42,
+                                  "Line": 3,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "begin"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 52,
+                                          "Line": 4,
+                                          "Column": 10,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        },
+                                        {
+                                          "Index": 57,
+                                          "Line": 4,
+                                          "Column": 15,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "define"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 71,
+                                                  "Line": 5,
+                                                  "Column": 14,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                },
+                                                {
+                                                  "Index": 77,
+                                                  "Line": 5,
+                                                  "Column": 20,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "m"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 78,
+                                                  "Line": 5,
+                                                  "Column": 21,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                },
+                                                {
+                                                  "Index": 79,
+                                                  "Line": 5,
+                                                  "Column": 22,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "-"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 81,
+                                                          "Line": 5,
+                                                          "Column": 24,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        },
+                                                        {
+                                                          "Index": 82,
+                                                          "Line": 5,
+                                                          "Column": 25,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "n"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 83,
+                                                          "Line": 5,
+                                                          "Column": 26,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        },
+                                                        {
+                                                          "Index": 84,
+                                                          "Line": 5,
+                                                          "Column": 27,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Number",
+                                                      "Fields": [
+                                                        1.0
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 85,
+                                                          "Line": 5,
+                                                          "Column": 28,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        },
+                                                        {
+                                                          "Index": 86,
+                                                          "Line": 5,
+                                                          "Column": 29,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 81,
+                                                  "Line": 5,
+                                                  "Column": 24,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                },
+                                                {
+                                                  "Index": 86,
+                                                  "Line": 5,
+                                                  "Column": 29,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 71,
+                                          "Line": 5,
+                                          "Column": 14,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        },
+                                        {
+                                          "Index": 87,
+                                          "Line": 5,
+                                          "Column": 30,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "*"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 102,
+                                                  "Line": 6,
+                                                  "Column": 14,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                },
+                                                {
+                                                  "Index": 103,
+                                                  "Line": 6,
+                                                  "Column": 15,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "n"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 104,
+                                                  "Line": 6,
+                                                  "Column": 16,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                },
+                                                {
+                                                  "Index": 105,
+                                                  "Line": 6,
+                                                  "Column": 17,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "fact"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 107,
+                                                          "Line": 6,
+                                                          "Column": 19,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        },
+                                                        {
+                                                          "Index": 111,
+                                                          "Line": 6,
+                                                          "Column": 23,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "m"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 112,
+                                                          "Line": 6,
+                                                          "Column": 24,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        },
+                                                        {
+                                                          "Index": 113,
+                                                          "Line": 6,
+                                                          "Column": 25,
+                                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 107,
+                                                  "Line": 6,
+                                                  "Column": 19,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                },
+                                                {
+                                                  "Index": 113,
+                                                  "Line": 6,
+                                                  "Column": 25,
+                                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 102,
+                                          "Line": 6,
+                                          "Column": 14,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        },
+                                        {
+                                          "Index": 114,
+                                          "Line": 6,
+                                          "Column": 26,
+                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 52,
+                                  "Line": 4,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                },
+                                {
+                                  "Index": 115,
+                                  "Line": 6,
+                                  "Column": 27,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 22,
+                          "Line": 2,
+                          "Column": 6,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        },
+                        {
+                          "Index": 116,
+                          "Line": 6,
+                          "Column": 28,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1,
+                  "Line": 1,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                },
+                {
+                  "Index": 117,
+                  "Line": 6,
+                  "Column": 29,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 121,
+                          "Line": 8,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        },
+                        {
+                          "Index": 128,
+                          "Line": 8,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "fact"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 130,
+                                  "Line": 8,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                },
+                                {
+                                  "Index": 134,
+                                  "Line": 8,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                5.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 135,
+                                  "Line": 8,
+                                  "Column": 16,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                },
+                                {
+                                  "Index": 136,
+                                  "Line": 8,
+                                  "Column": 17,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 130,
+                          "Line": 8,
+                          "Column": 11,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        },
+                        {
+                          "Index": 136,
+                          "Line": 8,
+                          "Column": 17,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 121,
+                  "Line": 8,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                },
+                {
+                  "Index": 137,
+                  "Line": 8,
+                  "Column": 18,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
         {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "define"
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
-                      "Fields": [
-                        "fact"
-                      ]
-                    },
-                    {
-                      "Case": "Ident",
-                      "Fields": [
-                        "n"
-                      ]
-                    }
-                  ]
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
-                      "Fields": [
-                        "if"
-                      ]
-                    },
-                    {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Case": "Ident",
-                            "Fields": [
-                              "="
-                            ]
-                          },
-                          {
-                            "Case": "Ident",
-                            "Fields": [
-                              "n"
-                            ]
-                          },
-                          {
-                            "Case": "Number",
-                            "Fields": [
-                              0.0
-                            ]
-                          }
-                        ]
-                      ]
-                    },
-                    {
-                      "Case": "Number",
-                      "Fields": [
-                        1.0
-                      ]
-                    },
-                    {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Case": "Ident",
-                            "Fields": [
-                              "begin"
-                            ]
-                          },
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "Ident",
-                                  "Fields": [
-                                    "define"
-                                  ]
-                                },
-                                {
-                                  "Case": "Ident",
-                                  "Fields": [
-                                    "m"
-                                  ]
-                                },
-                                {
-                                  "Case": "Form",
-                                  "Fields": [
-                                    [
-                                      {
-                                        "Case": "Ident",
-                                        "Fields": [
-                                          "-"
-                                        ]
-                                      },
-                                      {
-                                        "Case": "Ident",
-                                        "Fields": [
-                                          "n"
-                                        ]
-                                      },
-                                      {
-                                        "Case": "Number",
-                                        "Fields": [
-                                          1.0
-                                        ]
-                                      }
-                                    ]
-                                  ]
-                                }
-                              ]
-                            ]
-                          },
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "Ident",
-                                  "Fields": [
-                                    "*"
-                                  ]
-                                },
-                                {
-                                  "Case": "Ident",
-                                  "Fields": [
-                                    "n"
-                                  ]
-                                },
-                                {
-                                  "Case": "Form",
-                                  "Fields": [
-                                    [
-                                      {
-                                        "Case": "Ident",
-                                        "Fields": [
-                                          "fact"
-                                        ]
-                                      },
-                                      {
-                                        "Case": "Ident",
-                                        "Fields": [
-                                          "m"
-                                        ]
-                                      }
-                                    ]
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      ]
-                    }
-                  ]
-                ]
-              }
-            ]
-          ]
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
         },
         {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "display"
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
-                      "Fields": [
-                        "fact"
-                      ]
-                    },
-                    {
-                      "Case": "Number",
-                      "Fields": [
-                        5.0
-                      ]
-                    }
-                  ]
-                ]
-              }
-            ]
-          ]
+          "Index": 139,
+          "Line": 8,
+          "Column": 20,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/locals.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }

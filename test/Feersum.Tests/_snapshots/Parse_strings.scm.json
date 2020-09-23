@@ -1,22 +1,79 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Str",
+              "Fields": [
+                "hello world"
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/strings.scm"
+                },
+                {
+                  "Index": 13,
+                  "Line": 1,
+                  "Column": 14,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/strings.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Str",
+              "Fields": [
+                "stuff and things"
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 14,
+                  "Line": 2,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/strings.scm"
+                },
+                {
+                  "Index": 32,
+                  "Line": 2,
+                  "Column": 19,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/strings.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
         {
-          "Case": "Str",
-          "Fields": [
-            "hello world"
-          ]
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/strings.scm"
         },
         {
-          "Case": "Str",
-          "Fields": [
-            "stuff and things"
-          ]
+          "Index": 33,
+          "Line": 3,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/strings.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }

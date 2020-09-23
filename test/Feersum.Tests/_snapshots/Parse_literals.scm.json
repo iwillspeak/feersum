@@ -1,40 +1,154 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Number",
+              "Fields": [
+                1.0
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                },
+                {
+                  "Index": 1,
+                  "Line": 1,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Str",
+              "Fields": [
+                "hello world"
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 2,
+                  "Line": 2,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                },
+                {
+                  "Index": 15,
+                  "Line": 2,
+                  "Column": 14,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Boolean",
+              "Fields": [
+                true
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 16,
+                  "Line": 3,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                },
+                {
+                  "Index": 18,
+                  "Line": 3,
+                  "Column": 3,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Boolean",
+              "Fields": [
+                false
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 19,
+                  "Line": 4,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                },
+                {
+                  "Index": 21,
+                  "Line": 4,
+                  "Column": 3,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Number",
+              "Fields": [
+                123.0
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 22,
+                  "Line": 5,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                },
+                {
+                  "Index": 25,
+                  "Line": 5,
+                  "Column": 4,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
         {
-          "Case": "Number",
-          "Fields": [
-            1.0
-          ]
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
         },
         {
-          "Case": "Str",
-          "Fields": [
-            "hello world"
-          ]
-        },
-        {
-          "Case": "Boolean",
-          "Fields": [
-            true
-          ]
-        },
-        {
-          "Case": "Boolean",
-          "Fields": [
-            false
-          ]
-        },
-        {
-          "Case": "Number",
-          "Fields": [
-            123.0
-          ]
+          "Index": 25,
+          "Line": 5,
+          "Column": 4,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/literals.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }

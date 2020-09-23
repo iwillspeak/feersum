@@ -1,72 +1,281 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "if"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        },
+                        {
+                          "Index": 3,
+                          "Line": 1,
+                          "Column": 4,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Boolean",
+                      "Fields": [
+                        true
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 4,
+                          "Line": 1,
+                          "Column": 5,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        },
+                        {
+                          "Index": 6,
+                          "Line": 1,
+                          "Column": 7,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        255.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 11,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        },
+                        {
+                          "Index": 14,
+                          "Line": 2,
+                          "Column": 8,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        -123.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 19,
+                          "Line": 3,
+                          "Column": 5,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        },
+                        {
+                          "Index": 23,
+                          "Line": 3,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1,
+                  "Line": 1,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                },
+                {
+                  "Index": 23,
+                  "Line": 3,
+                  "Column": 9,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "if"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 81,
+                          "Line": 6,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        },
+                        {
+                          "Index": 83,
+                          "Line": 6,
+                          "Column": 4,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Str",
+                      "Fields": [
+                        "hello"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 84,
+                          "Line": 6,
+                          "Column": 5,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        },
+                        {
+                          "Index": 91,
+                          "Line": 6,
+                          "Column": 12,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Str",
+                      "Fields": [
+                        "world"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 96,
+                          "Line": 7,
+                          "Column": 5,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        },
+                        {
+                          "Index": 103,
+                          "Line": 7,
+                          "Column": 12,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        -2.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 108,
+                          "Line": 8,
+                          "Column": 5,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        },
+                        {
+                          "Index": 110,
+                          "Line": 8,
+                          "Column": 7,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 81,
+                  "Line": 6,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                },
+                {
+                  "Index": 110,
+                  "Line": 8,
+                  "Column": 7,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
         {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "if"
-                ]
-              },
-              {
-                "Case": "Boolean",
-                "Fields": [
-                  true
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  255.0
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  -123.0
-                ]
-              }
-            ]
-          ]
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
         },
         {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "if"
-                ]
-              },
-              {
-                "Case": "Str",
-                "Fields": [
-                  "hello"
-                ]
-              },
-              {
-                "Case": "Str",
-                "Fields": [
-                  "world"
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  -2.0
-                ]
-              }
-            ]
-          ]
+          "Index": 111,
+          "Line": 8,
+          "Column": 8,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/conditionals.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }

@@ -1,72 +1,281 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        },
+                        {
+                          "Index": 7,
+                          "Line": 1,
+                          "Column": 8,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "foo"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 8,
+                          "Line": 1,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        },
+                        {
+                          "Index": 11,
+                          "Line": 1,
+                          "Column": 12,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        100.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 12,
+                          "Line": 1,
+                          "Column": 13,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        },
+                        {
+                          "Index": 15,
+                          "Line": 1,
+                          "Column": 16,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1,
+                  "Line": 1,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                },
+                {
+                  "Index": 15,
+                  "Line": 1,
+                  "Column": 16,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 18,
+                          "Line": 2,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        },
+                        {
+                          "Index": 24,
+                          "Line": 2,
+                          "Column": 8,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "bar"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 25,
+                          "Line": 2,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        },
+                        {
+                          "Index": 28,
+                          "Line": 2,
+                          "Column": 12,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Str",
+                      "Fields": [
+                        "hello"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 29,
+                          "Line": 2,
+                          "Column": 13,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        },
+                        {
+                          "Index": 36,
+                          "Line": 2,
+                          "Column": 20,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 18,
+                  "Line": 2,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                },
+                {
+                  "Index": 36,
+                  "Line": 2,
+                  "Column": 20,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Ident",
+              "Fields": [
+                "foo"
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 38,
+                  "Line": 3,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                },
+                {
+                  "Index": 41,
+                  "Line": 3,
+                  "Column": 4,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Ident",
+              "Fields": [
+                "bar"
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 42,
+                  "Line": 4,
+                  "Column": 1,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                },
+                {
+                  "Index": 45,
+                  "Line": 4,
+                  "Column": 4,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
         {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "define"
-                ]
-              },
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "foo"
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  100.0
-                ]
-              }
-            ]
-          ]
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
         },
         {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "define"
-                ]
-              },
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "bar"
-                ]
-              },
-              {
-                "Case": "Str",
-                "Fields": [
-                  "hello"
-                ]
-              }
-            ]
-          ]
-        },
-        {
-          "Case": "Ident",
-          "Fields": [
-            "foo"
-          ]
-        },
-        {
-          "Case": "Ident",
-          "Fields": [
-            "bar"
-          ]
+          "Index": 46,
+          "Line": 5,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/load_and_store.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }

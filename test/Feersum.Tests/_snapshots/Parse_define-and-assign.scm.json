@@ -1,136 +1,535 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "define"
-                ]
-              },
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "x"
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  2.0
-                ]
-              }
-            ]
-          ]
-        },
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "display"
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "+"
+                        "define"
                       ]
                     },
-                    {
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 7,
+                          "Line": 1,
+                          "Column": 8,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
                       "Case": "Ident",
                       "Fields": [
                         "x"
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        1.0
+                        {
+                          "Index": 8,
+                          "Line": 1,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 9,
+                          "Line": 1,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
                       ]
                     }
-                  ]
-                ]
-              }
-            ]
-          ]
-        },
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "set!"
-                ]
-              },
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "x"
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  4.0
-                ]
-              }
-            ]
-          ]
-        },
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "display"
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
                       "Fields": [
-                        "+"
+                        2.0
                       ]
                     },
-                    {
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 10,
+                          "Line": 1,
+                          "Column": 11,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 11,
+                          "Line": 1,
+                          "Column": 12,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1,
+                  "Line": 1,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                },
+                {
+                  "Index": 11,
+                  "Line": 1,
+                  "Column": 12,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 14,
+                          "Line": 2,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 21,
+                          "Line": 2,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "+"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 23,
+                                  "Line": 2,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                },
+                                {
+                                  "Index": 24,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "x"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 25,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                },
+                                {
+                                  "Index": 26,
+                                  "Line": 2,
+                                  "Column": 14,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                1.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                },
+                                {
+                                  "Index": 28,
+                                  "Line": 2,
+                                  "Column": 16,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 23,
+                          "Line": 2,
+                          "Column": 11,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 28,
+                          "Line": 2,
+                          "Column": 16,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 14,
+                  "Line": 2,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                },
+                {
+                  "Index": 29,
+                  "Line": 2,
+                  "Column": 17,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "set!"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 39,
+                          "Line": 3,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 43,
+                          "Line": 3,
+                          "Column": 6,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
                       "Case": "Ident",
                       "Fields": [
                         "x"
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        1.0
+                        {
+                          "Index": 44,
+                          "Line": 3,
+                          "Column": 7,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 45,
+                          "Line": 3,
+                          "Column": 8,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
                       ]
                     }
-                  ]
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        4.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 46,
+                          "Line": 3,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 47,
+                          "Line": 3,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
+                      ]
+                    }
+                  }
                 ]
-              }
-            ]
-          ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 39,
+                  "Line": 3,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                },
+                {
+                  "Index": 47,
+                  "Line": 3,
+                  "Column": 10,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 50,
+                          "Line": 4,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 57,
+                          "Line": 4,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "+"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 59,
+                                  "Line": 4,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                },
+                                {
+                                  "Index": 60,
+                                  "Line": 4,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "x"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 61,
+                                  "Line": 4,
+                                  "Column": 13,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                },
+                                {
+                                  "Index": 62,
+                                  "Line": 4,
+                                  "Column": 14,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                1.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 63,
+                                  "Line": 4,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                },
+                                {
+                                  "Index": 64,
+                                  "Line": 4,
+                                  "Column": 16,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 59,
+                          "Line": 4,
+                          "Column": 11,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        },
+                        {
+                          "Index": 64,
+                          "Line": 4,
+                          "Column": 16,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 50,
+                  "Line": 4,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                },
+                {
+                  "Index": 65,
+                  "Line": 4,
+                  "Column": 17,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
+        {
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
+        },
+        {
+          "Index": 73,
+          "Line": 4,
+          "Column": 25,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/define-and-assign.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }

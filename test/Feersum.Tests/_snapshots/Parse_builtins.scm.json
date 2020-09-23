@@ -1,293 +1,1167 @@
 {
   "Item1": {
-    "Case": "Seq",
-    "Fields": [
-      [
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "="
-                ]
-              }
-            ]
-          ]
-        },
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  ">"
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  5.0
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  4.0
-                ]
-              }
-            ]
-          ]
-        },
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "<"
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  5.0
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  4.0
-                ]
-              }
-            ]
-          ]
-        },
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  ">="
-                ]
-              },
-              {
-                "Case": "Number",
-                "Fields": [
-                  1.0
-                ]
-              }
-            ]
-          ]
-        },
-        {
-          "Case": "Form",
-          "Fields": [
-            [
-              {
-                "Case": "Ident",
-                "Fields": [
-                  "+"
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "+"
+                        "="
                       ]
                     },
-                    {
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 2,
+                          "Line": 1,
+                          "Column": 3,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1,
+                  "Line": 1,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                },
+                {
+                  "Index": 2,
+                  "Line": 1,
+                  "Column": 3,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        ">"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 14,
+                          "Line": 2,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 15,
+                          "Line": 2,
+                          "Column": 3,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        5.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 16,
+                          "Line": 2,
+                          "Column": 4,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 17,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        4.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 18,
+                          "Line": 2,
+                          "Column": 6,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 19,
+                          "Line": 2,
+                          "Column": 7,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 14,
+                  "Line": 2,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                },
+                {
+                  "Index": 19,
+                  "Line": 2,
+                  "Column": 7,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "<"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 30,
+                          "Line": 3,
+                          "Column": 2,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 31,
+                          "Line": 3,
+                          "Column": 3,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        5.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32,
+                          "Line": 3,
+                          "Column": 4,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 33,
+                          "Line": 3,
+                          "Column": 5,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        4.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 34,
+                          "Line": 3,
+                          "Column": 6,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 35,
+                          "Line": 3,
+                          "Column": 7,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 30,
+                  "Line": 3,
+                  "Column": 2,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                },
+                {
+                  "Index": 35,
+                  "Line": 3,
+                  "Column": 7,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        ">="
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 125,
+                          "Line": 6,
+                          "Column": 6,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 127,
+                          "Line": 6,
+                          "Column": 8,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
                       "Case": "Number",
                       "Fields": [
                         1.0
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        2.0
-                      ]
-                    },
-                    {
-                      "Case": "Number",
-                      "Fields": [
-                        4.0
-                      ]
-                    },
-                    {
-                      "Case": "Number",
-                      "Fields": [
-                        88.0
+                        {
+                          "Index": 128,
+                          "Line": 6,
+                          "Column": 9,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 129,
+                          "Line": 6,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
                       ]
                     }
-                  ]
+                  }
                 ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 125,
+                  "Line": 6,
+                  "Column": 6,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                },
+                {
+                  "Index": 129,
+                  "Line": 6,
+                  "Column": 10,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "-"
+                        "+"
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        3.0
-                      ]
-                    },
-                    {
-                      "Case": "Number",
-                      "Fields": [
-                        4.0
-                      ]
-                    },
-                    {
-                      "Case": "Number",
-                      "Fields": [
-                        5.0
+                        {
+                          "Index": 144,
+                          "Line": 7,
+                          "Column": 6,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 145,
+                          "Line": 7,
+                          "Column": 7,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
                       ]
                     }
-                  ]
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
                       "Fields": [
-                        "-"
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "+"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 155,
+                                  "Line": 8,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 156,
+                                  "Line": 8,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                1.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 157,
+                                  "Line": 8,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 158,
+                                  "Line": 8,
+                                  "Column": 13,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                2.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 159,
+                                  "Line": 8,
+                                  "Column": 14,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 160,
+                                  "Line": 8,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                4.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 161,
+                                  "Line": 8,
+                                  "Column": 16,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 162,
+                                  "Line": 8,
+                                  "Column": 17,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                88.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 163,
+                                  "Line": 8,
+                                  "Column": 18,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 165,
+                                  "Line": 8,
+                                  "Column": 20,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        9.0
+                        {
+                          "Index": 155,
+                          "Line": 8,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 165,
+                          "Line": 8,
+                          "Column": 20,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
                       ]
                     }
-                  ]
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
                       "Fields": [
-                        "/"
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "-"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 184,
+                                  "Line": 9,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 185,
+                                  "Line": 9,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                3.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 186,
+                                  "Line": 9,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 187,
+                                  "Line": 9,
+                                  "Column": 13,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                4.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 188,
+                                  "Line": 9,
+                                  "Column": 14,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 189,
+                                  "Line": 9,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                5.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 190,
+                                  "Line": 9,
+                                  "Column": 16,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 191,
+                                  "Line": 9,
+                                  "Column": 17,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 184,
+                          "Line": 9,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 191,
+                          "Line": 9,
+                          "Column": 17,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
                       ]
                     }
-                  ]
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
                       "Fields": [
-                        "/"
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "-"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 210,
+                                  "Line": 10,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 211,
+                                  "Line": 10,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                9.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 212,
+                                  "Line": 10,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 213,
+                                  "Line": 10,
+                                  "Column": 13,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        2.0
+                        {
+                          "Index": 210,
+                          "Line": 10,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 213,
+                          "Line": 10,
+                          "Column": 13,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
                       ]
                     }
-                  ]
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
                       "Fields": [
-                        "/"
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "/"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 232,
+                                  "Line": 11,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 233,
+                                  "Line": 11,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        5.0
-                      ]
-                    },
-                    {
-                      "Case": "Number",
-                      "Fields": [
-                        2.0
+                        {
+                          "Index": 232,
+                          "Line": 11,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 233,
+                          "Line": 11,
+                          "Column": 11,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
                       ]
                     }
-                  ]
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
                       "Fields": [
-                        "*"
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "/"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 251,
+                                  "Line": 12,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 252,
+                                  "Line": 12,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                2.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 253,
+                                  "Line": 12,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 254,
+                                  "Line": 12,
+                                  "Column": 13,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        8.0
-                      ]
-                    },
-                    {
-                      "Case": "Number",
-                      "Fields": [
-                        5.0
+                        {
+                          "Index": 251,
+                          "Line": 12,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 254,
+                          "Line": 12,
+                          "Column": 13,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
                       ]
                     }
-                  ]
-                ]
-              },
-              {
-                "Case": "Form",
-                "Fields": [
-                  [
-                    {
-                      "Case": "Ident",
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
                       "Fields": [
-                        "*"
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "/"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 274,
+                                  "Line": 13,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 275,
+                                  "Line": 13,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                5.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 276,
+                                  "Line": 13,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 277,
+                                  "Line": 13,
+                                  "Column": 13,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                2.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 278,
+                                  "Line": 13,
+                                  "Column": 14,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 279,
+                                  "Line": 13,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       ]
                     },
-                    {
-                      "Case": "Number",
+                    "Location": {
+                      "Case": "Span",
                       "Fields": [
-                        76.0
+                        {
+                          "Index": 274,
+                          "Line": 13,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 279,
+                          "Line": 13,
+                          "Column": 15,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
                       ]
                     }
-                  ]
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "*"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 299,
+                                  "Line": 14,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 300,
+                                  "Line": 14,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                8.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 301,
+                                  "Line": 14,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 302,
+                                  "Line": 14,
+                                  "Column": 13,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                5.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 303,
+                                  "Line": 14,
+                                  "Column": 14,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 304,
+                                  "Line": 14,
+                                  "Column": 15,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 299,
+                          "Line": 14,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 304,
+                          "Line": 14,
+                          "Column": 15,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "*"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 323,
+                                  "Line": 15,
+                                  "Column": 10,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 324,
+                                  "Line": 15,
+                                  "Column": 11,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                76.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 325,
+                                  "Line": 15,
+                                  "Column": 12,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                },
+                                {
+                                  "Index": 327,
+                                  "Line": 15,
+                                  "Column": 14,
+                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 323,
+                          "Line": 15,
+                          "Column": 10,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        },
+                        {
+                          "Index": 327,
+                          "Line": 15,
+                          "Column": 14,
+                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                        }
+                      ]
+                    }
+                  }
                 ]
-              }
-            ]
-          ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 144,
+                  "Line": 7,
+                  "Column": 6,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                },
+                {
+                  "Index": 341,
+                  "Line": 16,
+                  "Column": 5,
+                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
+        {
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
+        },
+        {
+          "Index": 365,
+          "Line": 17,
+          "Column": 14,
+          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/builtins.scm"
         }
       ]
-    ]
+    }
   },
   "Item2": []
 }
