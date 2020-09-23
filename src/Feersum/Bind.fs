@@ -157,13 +157,13 @@ let private bindFormalsList formals =
         if seenDot then
             if afterDot.IsSome then
                 failwith "Only expect single ID after dot"
-            match formal with
-            | AstNode.Ident(id) -> (formals, true, Some(id))
+            match formal.Kind with
+            | AstNodeKind.Ident(id) -> (formals, true, Some(id))
             | _ -> failwith "Expected ID after dot"
         else
-            match formal with
-            | AstNode.Dot -> (formals, true, None)
-            | AstNode.Ident(id) -> (id::formals, false, None)
+            match formal.Kind with
+            | AstNodeKind.Dot -> (formals, true, None)
+            | AstNodeKind.Ident(id) -> (id::formals, false, None)
             | _ -> failwith "Expected ID or dot in formals"
     
     let (fmls, sawDot, dotted) = List.fold f ([], false, None) formals
@@ -183,9 +183,9 @@ let private bindFormalsList formals =
 ///   * `<id>` - to bind the whole list to the given identifier
 ///   * Any of the list patterns supported by `bindFormalsList`
 let private bindFormals formals =
-    match formals with
-    | AstNode.Ident(id) -> BoundFormals.Simple(id)
-    | AstNode.Form(formals) -> bindFormalsList formals
+    match formals.Kind with
+    | AstNodeKind.Ident(id) -> BoundFormals.Simple(id)
+    | AstNodeKind.Form(formals) -> bindFormalsList formals
     |  _ -> failwith "Unrecognised formal parameter list. Must be an ID or list pattern"
 
 /// Bind a Syntax Node
@@ -194,16 +194,16 @@ let private bindFormals formals =
 /// node no longer has direct references to identifiers and instead
 /// references storage locations.
 let rec private bindInContext ctx node =
-    match node with
-    | AstNode.Error -> failwithf "Internal compiler error: Unpexected error node!"
-    | AstNode.Number n -> BoundExpr.Number n
-    | AstNode.Str s -> BoundExpr.Str s
-    | AstNode.Boolean b -> BoundExpr.Boolean b
-    | AstNode.Character c -> BoundExpr.Character c
-    | AstNode.Dot -> failwith "Unexpected dot"
-    | AstNode.Seq s -> bindSequence ctx s
-    | AstNode.Form f -> bindForm ctx f
-    | AstNode.Ident id -> bindIdent ctx id |> BoundExpr.Load
+    match node.Kind with
+    | AstNodeKind.Error -> failwithf "Internal compiler error: Unpexected error node!"
+    | AstNodeKind.Number n -> BoundExpr.Number n
+    | AstNodeKind.Str s -> BoundExpr.Str s
+    | AstNodeKind.Boolean b -> BoundExpr.Boolean b
+    | AstNodeKind.Character c -> BoundExpr.Character c
+    | AstNodeKind.Dot -> failwith "Unexpected dot"
+    | AstNodeKind.Seq s -> bindSequence ctx s
+    | AstNodeKind.Form f -> bindForm ctx f
+    | AstNodeKind.Ident id -> bindIdent ctx id |> BoundExpr.Load
 and private bindSequence ctx exprs =
     List.map (bindInContext ctx) exprs
     |> BoundExpr.Seq
@@ -230,26 +230,26 @@ and private bindLambdaBody ctx formals body =
         addFormal nextFormal dotted |> ignore
     let boundBody = bindSequence lambdaCtx body
     BoundExpr.Lambda(formals, nextLocal, lambdaCtx.Captures, lambdaCtx.EnvSize, boundBody)
-and private bindForm ctx form =
+and private bindForm ctx (form: AstNode list) =
     match form with
-    | AstNode.Ident("if")::body ->
+    | { Kind = AstNodeKind.Ident("if") }::body ->
         let b = bindInContext ctx
         match body with
         | [cond;ifTrue;ifFalse] -> BoundExpr.If((b cond), (b ifTrue), Some(b ifFalse))
         | [cond;ifTrue] -> BoundExpr.If((b cond), (b ifTrue), None)
         | _ -> failwith "Ill-formed 'if' special form"
-    | AstNode.Ident("begin")::body ->
+    | { Kind = AstNodeKind.Ident("begin") }::body ->
         List.map (bindInContext ctx) body |> BoundExpr.Seq
-    | AstNode.Ident("define")::body ->
+    | { Kind = AstNodeKind.Ident("define") }::body ->
         match body with
-        | [AstNode.Ident id] ->
+        | [{ Kind = AstNodeKind.Ident id }] ->
             let storage = BinderCtx.addBinding ctx id
             BoundExpr.Store(storage, None)        
-        | [AstNode.Ident id;value] ->
+        | [{ Kind = AstNodeKind.Ident id };value] ->
             let value = bindInContext ctx value
             let storage = BinderCtx.addBinding ctx id
             BoundExpr.Store(storage, Some(value))
-        | (AstNode.Form (AstNode.Ident id::formals))::body ->
+        | ({ Kind = AstNodeKind.Form ({ Kind = AstNodeKind.Ident id}::formals) })::body ->
             // Add the binding for this lambda to the scope _before_ lowering
             // the body. This makes recursive calls possible.
             BinderCtx.addBinding ctx id |> ignore
@@ -260,34 +260,34 @@ and private bindForm ctx form =
             let storage = (BinderCtx.tryFindBinding ctx id).Value
             BoundExpr.Store(storage, Some(lambda))
         | _ -> failwith "Ill-formed 'define' special form"
-    | AstNode.Ident("lambda")::body ->
+    | { Kind = AstNodeKind.Ident("lambda") }::body ->
         match body with
         | formals::body ->
             let boundFormals = bindFormals formals
             bindLambdaBody ctx boundFormals body
         | _ -> failwith "Ill-formed 'lambda' special form"
-    | AstNode.Ident("let")::body ->
+    | { Kind = AstNodeKind.Ident("let") }::body ->
         failwith "Let bindings not yet implemented"
-    | AstNode.Ident("let*")::body ->
+    | { Kind = AstNodeKind.Ident("let*") }::body ->
         failwith "Let* bindings not yet implemented"
-    | AstNode.Ident("letrec")::body ->
+    | { Kind = AstNodeKind.Ident("letrec") }::body ->
         failwith "Letrec bindings nto yet implemented"
-    | AstNode.Ident("set!")::body ->
+    | { Kind = AstNodeKind.Ident("set!") }::body ->
         match body with
-        | [AstNode.Ident(id);value] ->
+        | [{ Kind = AstNodeKind.Ident(id) };value] ->
             let value = bindInContext ctx value
             let storage = bindIdent ctx id
             BoundExpr.Store(storage, Some(value))
         | _ -> failwith "Ill-formed 'set!' special form"
-    | AstNode.Ident("quote")::body ->
+    | { Kind = AstNodeKind.Ident("quote") }::body ->
         failwith "Quote expressions not yet implemented"
-    | AstNode.Ident("and")::body ->
+    | { Kind = AstNodeKind.Ident("and") }::body ->
         failwith "And expressions not yet implemented"
-    | AstNode.Ident("or")::body ->
+    | { Kind = AstNodeKind.Ident("or") }::body ->
         failwith "Or expressions not yet implemented"
-    | AstNode.Ident("cond")::body ->
+    | { Kind = AstNodeKind.Ident("cond") }::body ->
         failwith "Condition expressions not yet implemented"
-    | AstNode.Ident("case")::body ->
+    | { Kind = AstNodeKind.Ident("case") }::body ->
         failwith "Case expressions not yet implemented"
     | head::rest -> bindApplication ctx head rest
     | [] -> BoundExpr.Null

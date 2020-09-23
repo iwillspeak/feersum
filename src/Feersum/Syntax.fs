@@ -5,16 +5,34 @@ open FParsec
 open System.Text
 open System.Globalization
 
+/// A point in the source text
+type TextLocation =
+    | Span of Position * Position
+    | Point of Position
+with
+    member x.Start =
+        match x with
+        | Span(s, _) -> s
+        | Point p -> p
+
+    member x.End =
+        match x with
+        | Span(_, e) -> e
+        | Point p -> p
+
 /// Diagnostics indicate problems with our source code at a given position.
-type Diagnostic = Diagnostic of Position * string
+type Diagnostic = Diagnostic of TextLocation * string
 with
     override d.ToString() =
         match d with
-        | Diagnostic(pos, message) ->
+        | Diagnostic(loc, message) ->
+            let pos = loc.Start
             sprintf "%s:%d:%d: %s" pos.StreamName pos.Line pos.Column message
 
-/// The main AST Node type
-type AstNode =
+/// A node in our syntax tree.
+type AstNode = { Kind: AstNodeKind
+               ; Location: TextLocation }
+and AstNodeKind =
     | Ident of string
     | Number of float
     | Str of string
@@ -29,11 +47,13 @@ type AstNode =
 type State = { mutable Diagnostics: Diagnostic list }
 with
     member s.Emit pos message =
-        let d = Diagnostic(pos, message)
+        let d = Diagnostic(TextLocation.Point(pos), message)
         s.Diagnostics <- d::s.Diagnostics
 
     static member Empty =
         { Diagnostics = [] }
+
+let errorNode = { Kind = AstNodeKind.Error; Location = Point(Position("error", 0L, 0L, 0L))}
 
 let expect (parser: Parser<'t, State>) message: Parser<'t option, State> =
     fun stream ->
@@ -57,6 +77,13 @@ let skipUnrecognised problem: Parser<unit, State> =
 
 let private parseForm, parseFormRef = createParserForwardedToRef()
 
+let private spannedNode nodeCons nodeParser =
+    getPosition .>>. nodeParser .>>. getPosition
+    |>> (fun ((s, i), e) -> { Kind = nodeCons(i); Location = Span(s, e) })
+
+let private spannedNodeOfKind atomKind =
+    spannedNode (fun _ -> atomKind)
+
 let private comment =
     let singleLine = skipChar ';' >>. skipRestOfLine true
     let datum = skipString "#;" .>> parseForm
@@ -73,7 +100,7 @@ let private comment =
 let private ws = skipMany (comment <|> unicodeSpaces1)
 
 let private parseNum =
-    pfloat |>> Number
+    spannedNode Number pfloat
 
 let private unescapedChar =
     noneOf "\"\\"
@@ -102,15 +129,16 @@ let private escapedChar =
     skipChar '\\' >>. (noneOf "x") |>> unescape
       
 let private parseStr =
-    let lit = between (skipChar '"') (skipChar '"')
+    between (skipChar '"') (skipChar '"')
                 (manyChars (unescapedChar <|> hexEscape <|> escapedChar))
-    lit |>> Str
+    |> spannedNode Str
 
 let private parseBool =
-    stringReturn "#true"  (Boolean true) <|>
-    stringReturn "#t"     (Boolean true) <|>
-    stringReturn "#false" (Boolean false) <|>
-    stringReturn "#f"     (Boolean false)
+    stringReturn "#true"  true <|>
+    stringReturn "#t"     true <|>
+    stringReturn "#false" false <|>
+    stringReturn "#f"     false
+    |> spannedNode Boolean
 
 let private parseChar =
     let namedChar = choice [
@@ -125,7 +153,7 @@ let private parseChar =
         stringReturn "tab" '\u0009'
     ]
     let hexChar = attempt (skipChar 'x' >>. hexScalarValue)
-    skipString @"#\" >>. (namedChar <|> hexChar <|> anyChar) |>> Character
+    spannedNode Character (skipString @"#\" >>. (namedChar <|> hexChar <|> anyChar))
 
 let inline private isIdentifierChar c =
     isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~+-." c
@@ -134,10 +162,12 @@ let private parseIdent =
     let simpleIdent = many1SatisfyL isIdentifierChar "identifier"
     let identLiteralChar = (manyChars ((noneOf "\\|") <|> hexEscape <|> escapedChar))
     let identLiteral = between (skipChar '|') (skipChar '|') identLiteralChar
-    simpleIdent <|> identLiteral |>> Ident
+
+    spannedNode Ident (simpleIdent <|> identLiteral)
  
 let private parseDot =
-    (skipChar '.' >>? notFollowedBy (satisfy isIdentifierChar)) >>% Dot 
+    (skipChar '.' >>? notFollowedBy (satisfy isIdentifierChar))
+    |> spannedNodeOfKind Dot
 
 let private parseAtom =
     // The order is important here. Numbers have higher priority than
@@ -153,21 +183,22 @@ let private parseAtom =
 
 let private parseApplication =
     between (skipChar '(') (expect (skipChar ')') "Missing closing ')'")
-        ((many parseForm) |>> Form)
+        ((many parseForm) |> spannedNode Form)
        
 do parseFormRef :=
     between ws ws (parseApplication <|> parseAtom)
 
 /// Parse the given string into a syntax tree
-let private parse =
+let private parse: Parser<AstNode, State> =
     let problem =
         sprintf "unexpected character %c"
-    (many (parseForm <|> ((skipUnrecognised problem) >>% AstNode.Error))) .>> eof |>> Seq
+    (many (parseForm <|> ((skipUnrecognised problem) >>% errorNode))) .>> eof
+    |> spannedNode Seq
 
 /// Unpack a `ParseResult` into a Plain `Result`
 let private unpack = function
     | Success(node, s, _) -> (node, s.Diagnostics)
-    | Failure(mess, err, s) -> (AstNode.Error, Diagnostic(err.Position, mess)::s.Diagnostics)
+    | Failure(mess, err, s) -> (errorNode, Diagnostic(Point(err.Position), mess)::s.Diagnostics)
 
 /// Read expressions from the input text
 let readExpr line: (AstNode * Diagnostic list) =
