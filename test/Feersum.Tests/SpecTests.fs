@@ -7,6 +7,7 @@ open System.IO
 open Snapper
 open Snapper.Attributes
 open System.Diagnostics
+open SyntaxUtils
 
 // [<assembly: UpdateSnapshots>]
 // ()
@@ -34,5 +35,6 @@ let ``spec tests compile and run`` s =
 [<Theory>]
 [<MemberDataAttribute("listSpecs")>]
 let ``spect tests parse result`` s =
-    let tree = parseFile (Path.Join(specDir, s))
+    let node, diagnostics = parseFile (Path.Join(specDir, s))
+    let tree = (node |> stripPosition, diagnostics)
     tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s))

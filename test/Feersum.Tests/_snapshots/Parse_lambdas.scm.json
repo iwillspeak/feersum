@@ -1,1317 +1,589 @@
 {
   "Item1": {
-    "Kind": {
-      "Case": "Seq",
-      "Fields": [
-        [
-          {
-            "Kind": {
-              "Case": "Form",
+    "Case": "A",
+    "Fields": [
+      {
+        "Case": "Seq",
+        "Fields": [
+          [
+            {
+              "Case": "A",
               "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "define"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 1,
-                          "Line": 1,
-                          "Column": 2,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 7,
-                          "Line": 1,
-                          "Column": 8,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "x"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 8,
-                          "Line": 1,
-                          "Column": 9,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 9,
-                          "Line": 1,
-                          "Column": 10,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "B",
+                        "Fields": [
                           {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "lambda"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 11,
-                                  "Line": 1,
-                                  "Column": 12,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 17,
-                                  "Line": 1,
-                                  "Column": 18,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
+                            "Case": "Ident",
+                            "Fields": [
+                              "define"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
                           {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "y"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 18,
-                                  "Line": 1,
-                                  "Column": 19,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 19,
-                                  "Line": 1,
-                                  "Column": 20,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
+                            "Case": "Ident",
+                            "Fields": [
+                              "x"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "A",
+                        "Fields": [
                           {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
                                       "Case": "Ident",
                                       "Fields": [
                                         "lambda"
                                       ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 25,
-                                          "Line": 2,
-                                          "Column": 6,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 31,
-                                          "Line": 2,
-                                          "Column": 12,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
                                     }
-                                  },
-                                  {
-                                    "Kind": {
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
                                       "Case": "Ident",
                                       "Fields": [
-                                        "z"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 32,
-                                          "Line": 2,
-                                          "Column": 13,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 33,
-                                          "Line": 2,
-                                          "Column": 14,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
+                                        "y"
                                       ]
                                     }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        100.0
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 34,
-                                          "Line": 2,
-                                          "Column": 15,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 37,
-                                          "Line": 2,
-                                          "Column": 18,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 25,
-                                  "Line": 2,
-                                  "Column": 6,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
+                                  ]
                                 },
                                 {
-                                  "Index": 37,
-                                  "Line": 2,
-                                  "Column": 18,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
+                                  "Case": "A",
+                                  "Fields": [
+                                    {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "lambda"
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "z"
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Number",
+                                                "Fields": [
+                                                  100.0
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
                                 }
                               ]
-                            }
+                            ]
                           }
                         ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 11,
-                          "Line": 1,
-                          "Column": 12,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 38,
-                          "Line": 2,
-                          "Column": 19,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 1,
-                  "Line": 1,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                },
-                {
-                  "Index": 39,
-                  "Line": 2,
-                  "Column": 20,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
+                      }
+                    ]
+                  ]
                 }
               ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
+            },
+            {
+              "Case": "A",
               "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "define"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 42,
-                          "Line": 3,
-                          "Column": 2,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 48,
-                          "Line": 3,
-                          "Column": 8,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "y"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 49,
-                          "Line": 3,
-                          "Column": 9,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 50,
-                          "Line": 3,
-                          "Column": 10,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "B",
+                        "Fields": [
                           {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "lambda"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 52,
-                                  "Line": 3,
-                                  "Column": 12,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 58,
-                                  "Line": 3,
-                                  "Column": 18,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
+                            "Case": "Ident",
+                            "Fields": [
+                              "define"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
                           {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "y"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 59,
-                                  "Line": 3,
-                                  "Column": 19,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 60,
-                                  "Line": 3,
-                                  "Column": 20,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
+                            "Case": "Ident",
+                            "Fields": [
+                              "y"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "A",
+                        "Fields": [
                           {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
                                       "Case": "Ident",
                                       "Fields": [
                                         "lambda"
                                       ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 66,
-                                          "Line": 4,
-                                          "Column": 6,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 72,
-                                          "Line": 4,
-                                          "Column": 12,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
                                     }
-                                  },
-                                  {
-                                    "Kind": {
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
                                       "Case": "Ident",
                                       "Fields": [
-                                        "z"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 73,
-                                          "Line": 4,
-                                          "Column": 13,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 74,
-                                          "Line": 4,
-                                          "Column": 14,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
+                                        "y"
                                       ]
                                     }
-                                  },
-                                  {
-                                    "Kind": {
+                                  ]
+                                },
+                                {
+                                  "Case": "A",
+                                  "Fields": [
+                                    {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "lambda"
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "z"
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Number",
+                                                "Fields": [
+                                                  23123.0
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Case": "A",
+              "Fields": [
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "define"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "z"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "A",
+                        "Fields": [
+                          {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "y"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
                                       "Case": "Number",
                                       "Fields": [
-                                        23123.0
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 75,
-                                          "Line": 4,
-                                          "Column": 15,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 80,
-                                          "Line": 4,
-                                          "Column": 20,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
+                                        123.0
                                       ]
                                     }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 66,
-                                  "Line": 4,
-                                  "Column": 6,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 80,
-                                  "Line": 4,
-                                  "Column": 20,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
+                                  ]
                                 }
                               ]
-                            }
+                            ]
                           }
                         ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 52,
-                          "Line": 3,
-                          "Column": 12,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 81,
-                          "Line": 4,
-                          "Column": 21,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
+                      }
+                    ]
+                  ]
+                }
               ]
             },
-            "Location": {
-              "Case": "Span",
+            {
+              "Case": "A",
               "Fields": [
                 {
-                  "Index": 42,
-                  "Line": 3,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                },
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "define"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "a"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "A",
+                        "Fields": [
+                          {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "A",
+                                  "Fields": [
+                                    {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "a"
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "b"
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "c"
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Number",
+                                      "Fields": [
+                                        20.0
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Case": "A",
+              "Fields": [
                 {
-                  "Index": 82,
-                  "Line": 4,
-                  "Column": 22,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "define"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "b"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "A",
+                        "Fields": [
+                          {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "A",
+                                  "Fields": [
+                                    {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "a"
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "b"
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Dot"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "Case": "B",
+                                            "Fields": [
+                                              {
+                                                "Case": "Ident",
+                                                "Fields": [
+                                                  "c"
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Number",
+                                      "Fields": [
+                                        1234.0
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Case": "A",
+              "Fields": [
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "A",
+                        "Fields": [
+                          {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "x"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
                 }
               ]
             }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "define"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 85,
-                          "Line": 5,
-                          "Column": 2,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 91,
-                          "Line": 5,
-                          "Column": 8,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "z"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 92,
-                          "Line": 5,
-                          "Column": 9,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 93,
-                          "Line": 5,
-                          "Column": 10,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "lambda"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 95,
-                                  "Line": 5,
-                                  "Column": 12,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 101,
-                                  "Line": 5,
-                                  "Column": 18,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "y"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 102,
-                                  "Line": 5,
-                                  "Column": 19,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 103,
-                                  "Line": 5,
-                                  "Column": 20,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Number",
-                              "Fields": [
-                                123.0
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 104,
-                                  "Line": 5,
-                                  "Column": 21,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 107,
-                                  "Line": 5,
-                                  "Column": 24,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 95,
-                          "Line": 5,
-                          "Column": 12,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 107,
-                          "Line": 5,
-                          "Column": 24,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 85,
-                  "Line": 5,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                },
-                {
-                  "Index": 108,
-                  "Line": 5,
-                  "Column": 25,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "define"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 111,
-                          "Line": 6,
-                          "Column": 2,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 117,
-                          "Line": 6,
-                          "Column": 8,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "a"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 118,
-                          "Line": 6,
-                          "Column": 9,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 119,
-                          "Line": 6,
-                          "Column": 10,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "lambda"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 121,
-                                  "Line": 6,
-                                  "Column": 12,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 127,
-                                  "Line": 6,
-                                  "Column": 18,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "a"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 129,
-                                          "Line": 6,
-                                          "Column": 20,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 130,
-                                          "Line": 6,
-                                          "Column": 21,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "b"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 131,
-                                          "Line": 6,
-                                          "Column": 22,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 132,
-                                          "Line": 6,
-                                          "Column": 23,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "c"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 133,
-                                          "Line": 6,
-                                          "Column": 24,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 134,
-                                          "Line": 6,
-                                          "Column": 25,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 129,
-                                  "Line": 6,
-                                  "Column": 20,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 134,
-                                  "Line": 6,
-                                  "Column": 25,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Number",
-                              "Fields": [
-                                20.0
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 136,
-                                  "Line": 6,
-                                  "Column": 27,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 138,
-                                  "Line": 6,
-                                  "Column": 29,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 121,
-                          "Line": 6,
-                          "Column": 12,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 138,
-                          "Line": 6,
-                          "Column": 29,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 111,
-                  "Line": 6,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                },
-                {
-                  "Index": 139,
-                  "Line": 6,
-                  "Column": 30,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "define"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 142,
-                          "Line": 7,
-                          "Column": 2,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 148,
-                          "Line": 7,
-                          "Column": 8,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "b"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 149,
-                          "Line": 7,
-                          "Column": 9,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 150,
-                          "Line": 7,
-                          "Column": 10,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "lambda"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 152,
-                                  "Line": 7,
-                                  "Column": 12,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 158,
-                                  "Line": 7,
-                                  "Column": 18,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "a"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 160,
-                                          "Line": 7,
-                                          "Column": 20,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 161,
-                                          "Line": 7,
-                                          "Column": 21,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "b"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 162,
-                                          "Line": 7,
-                                          "Column": 22,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 163,
-                                          "Line": 7,
-                                          "Column": 23,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Dot"
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 164,
-                                          "Line": 7,
-                                          "Column": 24,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 165,
-                                          "Line": 7,
-                                          "Column": 25,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "c"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 166,
-                                          "Line": 7,
-                                          "Column": 26,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        },
-                                        {
-                                          "Index": 167,
-                                          "Line": 7,
-                                          "Column": 27,
-                                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 160,
-                                  "Line": 7,
-                                  "Column": 20,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 167,
-                                  "Line": 7,
-                                  "Column": 27,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Number",
-                              "Fields": [
-                                1234.0
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 169,
-                                  "Line": 7,
-                                  "Column": 29,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 173,
-                                  "Line": 7,
-                                  "Column": 33,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 152,
-                          "Line": 7,
-                          "Column": 12,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 173,
-                          "Line": 7,
-                          "Column": 33,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 142,
-                  "Line": 7,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                },
-                {
-                  "Index": 174,
-                  "Line": 7,
-                  "Column": 34,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "x"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 178,
-                                  "Line": 8,
-                                  "Column": 3,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                },
-                                {
-                                  "Index": 179,
-                                  "Line": 8,
-                                  "Column": 4,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 178,
-                          "Line": 8,
-                          "Column": 3,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        },
-                        {
-                          "Index": 179,
-                          "Line": 8,
-                          "Column": 4,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 177,
-                  "Line": 8,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                },
-                {
-                  "Index": 180,
-                  "Line": 8,
-                  "Column": 5,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-                }
-              ]
-            }
-          }
+          ]
         ]
-      ]
-    },
-    "Location": {
-      "Case": "Span",
-      "Fields": [
-        {
-          "Index": 0,
-          "Line": 1,
-          "Column": 1,
-          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-        },
-        {
-          "Index": 190,
-          "Line": 8,
-          "Column": 15,
-          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/lambdas.scm"
-        }
-      ]
-    }
+      }
+    ]
   },
   "Item2": []
 }

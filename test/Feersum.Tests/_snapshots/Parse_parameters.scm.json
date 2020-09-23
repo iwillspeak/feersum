@@ -1,610 +1,274 @@
 {
   "Item1": {
-    "Kind": {
-      "Case": "Seq",
-      "Fields": [
-        [
-          {
-            "Kind": {
-              "Case": "Form",
+    "Case": "A",
+    "Fields": [
+      {
+        "Case": "Seq",
+        "Fields": [
+          [
+            {
+              "Case": "A",
               "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "define"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 1,
-                          "Line": 1,
-                          "Column": 2,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 7,
-                          "Line": 1,
-                          "Column": 8,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
+                {
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "B",
+                        "Fields": [
                           {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "foo"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 9,
-                                  "Line": 1,
-                                  "Column": 10,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 12,
-                                  "Line": 1,
-                                  "Column": 13,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "a"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 13,
-                                  "Line": 1,
-                                  "Column": 14,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 14,
-                                  "Line": 1,
-                                  "Column": 15,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "b"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 15,
-                                  "Line": 1,
-                                  "Column": 16,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 16,
-                                  "Line": 1,
-                                  "Column": 17,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
+                            "Case": "Ident",
+                            "Fields": [
+                              "define"
+                            ]
                           }
                         ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 9,
-                          "Line": 1,
-                          "Column": 10,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 16,
-                          "Line": 1,
-                          "Column": 17,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "b"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 22,
-                          "Line": 2,
-                          "Column": 5,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 23,
-                          "Line": 2,
-                          "Column": 6,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
+                      },
+                      {
+                        "Case": "A",
+                        "Fields": [
+                          {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "foo"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "a"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "b"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "b"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
               ]
             },
-            "Location": {
-              "Case": "Span",
+            {
+              "Case": "A",
               "Fields": [
                 {
-                  "Index": 1,
-                  "Line": 1,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                },
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "define"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "A",
+                        "Fields": [
+                          {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "bar"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "a"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "b"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "c"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "a"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Case": "A",
+              "Fields": [
                 {
-                  "Index": 23,
-                  "Line": 2,
-                  "Column": 6,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
+                  "Case": "Form",
+                  "Fields": [
+                    [
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Ident",
+                            "Fields": [
+                              "bar"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "A",
+                        "Fields": [
+                          {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "foo"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Number",
+                                      "Fields": [
+                                        123.0
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Case": "B",
+                                  "Fields": [
+                                    {
+                                      "Case": "Number",
+                                      "Fields": [
+                                        456.0
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Number",
+                            "Fields": [
+                              78.0
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Case": "B",
+                        "Fields": [
+                          {
+                            "Case": "Number",
+                            "Fields": [
+                              90.0
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
                 }
               ]
             }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "define"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 26,
-                          "Line": 3,
-                          "Column": 2,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 32,
-                          "Line": 3,
-                          "Column": 8,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "bar"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 34,
-                                  "Line": 3,
-                                  "Column": 10,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 37,
-                                  "Line": 3,
-                                  "Column": 13,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "a"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 38,
-                                  "Line": 3,
-                                  "Column": 14,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 39,
-                                  "Line": 3,
-                                  "Column": 15,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "b"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 40,
-                                  "Line": 3,
-                                  "Column": 16,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 41,
-                                  "Line": 3,
-                                  "Column": 17,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "c"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 42,
-                                  "Line": 3,
-                                  "Column": 18,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 43,
-                                  "Line": 3,
-                                  "Column": 19,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 34,
-                          "Line": 3,
-                          "Column": 10,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 43,
-                          "Line": 3,
-                          "Column": 19,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "a"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 49,
-                          "Line": 4,
-                          "Column": 5,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 50,
-                          "Line": 4,
-                          "Column": 6,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 26,
-                  "Line": 3,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                },
-                {
-                  "Index": 50,
-                  "Line": 4,
-                  "Column": 6,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "bar"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 53,
-                          "Line": 5,
-                          "Column": 2,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 56,
-                          "Line": 5,
-                          "Column": 5,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "foo"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 58,
-                                  "Line": 5,
-                                  "Column": 7,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 61,
-                                  "Line": 5,
-                                  "Column": 10,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Number",
-                              "Fields": [
-                                123.0
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 62,
-                                  "Line": 5,
-                                  "Column": 11,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 65,
-                                  "Line": 5,
-                                  "Column": 14,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Number",
-                              "Fields": [
-                                456.0
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 66,
-                                  "Line": 5,
-                                  "Column": 15,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                },
-                                {
-                                  "Index": 69,
-                                  "Line": 5,
-                                  "Column": 18,
-                                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 58,
-                          "Line": 5,
-                          "Column": 7,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 69,
-                          "Line": 5,
-                          "Column": 18,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Number",
-                      "Fields": [
-                        78.0
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 71,
-                          "Line": 5,
-                          "Column": 20,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 73,
-                          "Line": 5,
-                          "Column": 22,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Number",
-                      "Fields": [
-                        90.0
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 74,
-                          "Line": 5,
-                          "Column": 23,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        },
-                        {
-                          "Index": 76,
-                          "Line": 5,
-                          "Column": 25,
-                          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 53,
-                  "Line": 5,
-                  "Column": 2,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                },
-                {
-                  "Index": 76,
-                  "Line": 5,
-                  "Column": 25,
-                  "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-                }
-              ]
-            }
-          }
+          ]
         ]
-      ]
-    },
-    "Location": {
-      "Case": "Span",
-      "Fields": [
-        {
-          "Index": 0,
-          "Line": 1,
-          "Column": 1,
-          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-        },
-        {
-          "Index": 77,
-          "Line": 5,
-          "Column": 26,
-          "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/parameters.scm"
-        }
-      ]
-    }
+      }
+    ]
   },
   "Item2": []
 }
