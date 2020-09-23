@@ -3,6 +3,16 @@ module SyntaxTests
 open Xunit
 open Syntax
 
+type NodeNoPosition =
+    | A of AstNodeKind<NodeNoPosition>
+    | B of AstNodeKind<AstNode>
+
+let rec private stripPosition node =
+    match node.Kind with
+    | Form f -> List.map (stripPosition) f |> Form |> A
+    | Seq s -> List.map (stripPosition) s |> Seq |> A
+    | _ -> B(node.Kind)
+
 let readSingle input =
     match readExpr input with
     | ({ Kind = Seq exprs }, []) -> (List.exactlyOne exprs).Kind
@@ -11,19 +21,18 @@ let readSingle input =
 
 let readMany input =
     match readExpr input with
-    | (read, []) -> read
+    | (read, []) -> read  |> stripPosition
     | (_, diag) -> failwithf "Expected one or more expressions but got: %A" diag
 
 // TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
 //       invalid hex escapes, bad identifiers and so on.
 
-// FIXME: parser position in the tests
-// [<Fact>]
-// let ``parse seqs`` () =
-//     Assert.Equal(Seq [ Number 1.0; Number 23.0], readMany "1 23")
-//     Assert.Equal(Seq [ Boolean true ], readMany "#t")
-//     Assert.Equal(Seq [ ], readMany "")
-//     Assert.Equal(Seq [ Form [ Ident "+"; Number 12.0; Number 34.0 ]; Boolean false], readMany "(+ 12 34) #f")
+[<Fact>]
+let ``parse seqs`` () =
+    Assert.Equal(Seq [ Number 1.0 |> B; Number 23.0 |> B] |> A, readMany "1 23")
+    Assert.Equal(Seq [ Boolean true |> B] |> A, readMany "#t")
+    Assert.Equal(Seq [ ] |> A, readMany "")
+    Assert.Equal(Seq [ Form [ Ident "+" |> B; Number 12.0 |> B; Number 34.0 |> B ] |> A; Boolean false |> B] |> A, readMany "(+ 12 34) #f")
 
 [<Fact>]
 let ``parse atoms`` () =

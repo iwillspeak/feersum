@@ -29,19 +29,21 @@ with
             let pos = loc.Start
             sprintf "%s:%d:%d: %s" pos.StreamName pos.Line pos.Column message
 
-/// A node in our syntax tree.
-type AstNode = { Kind: AstNodeKind
-               ; Location: TextLocation }
-and AstNodeKind =
+/// Type of nodes in our syntax tree
+type AstNodeKind<'t> =
     | Ident of string
     | Number of float
     | Str of string
     | Boolean of bool
     | Character of char
     | Dot
-    | Form of AstNode list
-    | Seq of AstNode list
+    | Form of 't list
+    | Seq of 't list
     | Error
+
+/// A node in our syntax tree.
+type AstNode = { Kind: AstNodeKind<AstNode>
+               ; Location: TextLocation }
 
 /// The parser state. Used to collect diagnostics
 type State = { mutable Diagnostics: Diagnostic list }
