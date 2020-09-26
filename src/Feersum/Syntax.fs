@@ -185,8 +185,8 @@ let private parseAtom =
 
 let private parseApplication =
     between (skipChar '(') (expect (skipChar ')') "Missing closing ')'")
-        ((many parseForm) |> spannedNode Form)
-       
+        (many parseForm)
+    |> spannedNode Form
 do parseFormRef :=
     between ws ws (parseApplication <|> parseAtom)
 
