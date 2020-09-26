@@ -39,6 +39,7 @@ type BoundExpr =
     | Seq of BoundExpr list
     | Lambda of BoundFormals * int * StorageRef list * int option * BoundExpr
     | Null
+    | Error
 
 /// Binder Context Type
 ///
@@ -136,14 +137,10 @@ module private BinderCtx =
         ctx.Scope.[id] <- storage
         storage
 
-/// Bind an Reference to a Symbol
-///
-/// Lookup the identifier in the given scope and return the storage that it is
-/// currently bound to. 
-let private bindIdent ctx id =
-    match BinderCtx.tryFindBinding ctx id with
-    | Some storage -> storage
-    | None -> failwithf "Reference to undefined symbol `%s`" id
+    /// Emit a Diagnostic
+    let emit ctx pos message =
+        let diagnostic = Diagnostic(pos, message)
+        ctx.Diagnostics <- diagnostic::ctx.Diagnostics
 
 /// Bind a Formals List Pattern
 ///
@@ -206,7 +203,14 @@ let rec private bindInContext ctx node =
     | AstNodeKind.Dot -> failwith "Unexpected dot"
     | AstNodeKind.Seq s -> bindSequence ctx s
     | AstNodeKind.Form f -> bindForm ctx f
-    | AstNodeKind.Ident id -> bindIdent ctx id |> BoundExpr.Load
+    | AstNodeKind.Ident id ->
+        match BinderCtx.tryFindBinding ctx id with
+        | Some s -> BoundExpr.Load(s)
+        | None ->
+            sprintf "reference to undefined symbol %s" id
+            |> BinderCtx.emit ctx node.Location
+            BoundExpr.Error
+
 and private bindSequence ctx exprs =
     List.map (bindInContext ctx) exprs
     |> BoundExpr.Seq
@@ -275,12 +279,16 @@ and private bindForm ctx (form: AstNode list) =
         failwith "Let* bindings not yet implemented"
     | { Kind = AstNodeKind.Ident("letrec") }::body ->
         failwith "Letrec bindings nto yet implemented"
-    | { Kind = AstNodeKind.Ident("set!") }::body ->
+    | { Kind = AstNodeKind.Ident("set!"); Location = l }::body ->
         match body with
         | [{ Kind = AstNodeKind.Ident(id) };value] ->
             let value = bindInContext ctx value
-            let storage = bindIdent ctx id
-            BoundExpr.Store(storage, Some(value))
+            match BinderCtx.tryFindBinding ctx id with
+            | Some s -> BoundExpr.Store(s, Some(value))
+            | None ->
+                sprintf "Attempt to set `%s` that was not yet defined" id
+                |> BinderCtx.emit ctx l
+                BoundExpr.Error
         | _ -> failwith "Ill-formed 'set!' special form"
     | { Kind = AstNodeKind.Ident("quote") }::body ->
         failwith "Quote expressions not yet implemented"
