@@ -4,16 +4,17 @@ open Xunit
 open Syntax
 
 open SyntaxUtils
+open SyntaxFactory
 
 // TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
 //       invalid hex escapes, bad identifiers and so on.
 
 [<Fact>]
 let ``parse seqs`` () =
-    Assert.Equal(Seq [ Number 1.0 |> B; Number 23.0 |> B] |> A, readMany "1 23")
-    Assert.Equal(Seq [ Boolean true |> B] |> A, readMany "#t")
-    Assert.Equal(Seq [ ] |> A, readMany "")
-    Assert.Equal(Seq [ Form [ Ident "+" |> B; Number 12.0 |> B; Number 34.0 |> B ] |> A; Boolean false |> B] |> A, readMany "(+ 12 34) #f")
+    Assert.Equal(Seq [ Number 1.0 |> node; Number 23.0 |> node] |> node, readMany "1 23" |> sanitise)
+    Assert.Equal(Seq [ Boolean true |> node] |> node, readMany "#t" |> sanitise)
+    Assert.Equal(Seq [ ] |> node, readMany "" |> sanitise)
+    Assert.Equal(Seq [ Form [ Ident "+" |> node; Number 12.0 |> node; Number 34.0 |> node ] |> node; Boolean false |> node] |> node, readMany "(+ 12 34) #f" |> sanitise)
 
 [<Fact>]
 let ``parse atoms`` () =

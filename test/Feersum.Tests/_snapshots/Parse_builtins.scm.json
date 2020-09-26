@@ -1,523 +1,891 @@
 {
   "Item1": {
-    "Case": "A",
-    "Fields": [
-      {
-        "Case": "Seq",
-        "Fields": [
-          [
-            {
-              "Case": "A",
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
               "Fields": [
-                {
-                  "Case": "Form",
-                  "Fields": [
-                    [
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Ident",
-                            "Fields": [
-                              "="
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  ]
-                }
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "="
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
               ]
             },
-            {
-              "Case": "A",
+            "Location": {
+              "Case": "Point",
               "Fields": [
                 {
-                  "Case": "Form",
-                  "Fields": [
-                    [
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Ident",
-                            "Fields": [
-                              ">"
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Number",
-                            "Fields": [
-                              5.0
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Number",
-                            "Fields": [
-                              4.0
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Case": "A",
-              "Fields": [
-                {
-                  "Case": "Form",
-                  "Fields": [
-                    [
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Ident",
-                            "Fields": [
-                              "<"
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Number",
-                            "Fields": [
-                              5.0
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Number",
-                            "Fields": [
-                              4.0
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Case": "A",
-              "Fields": [
-                {
-                  "Case": "Form",
-                  "Fields": [
-                    [
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Ident",
-                            "Fields": [
-                              ">="
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Number",
-                            "Fields": [
-                              1.0
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Case": "A",
-              "Fields": [
-                {
-                  "Case": "Form",
-                  "Fields": [
-                    [
-                      {
-                        "Case": "B",
-                        "Fields": [
-                          {
-                            "Case": "Ident",
-                            "Fields": [
-                              "+"
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "A",
-                        "Fields": [
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "+"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        1.0
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        2.0
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        4.0
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        88.0
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "A",
-                        "Fields": [
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "-"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        3.0
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        4.0
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        5.0
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "A",
-                        "Fields": [
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "-"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        9.0
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "A",
-                        "Fields": [
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "/"
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "A",
-                        "Fields": [
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "/"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        2.0
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "A",
-                        "Fields": [
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "/"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        5.0
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        2.0
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "A",
-                        "Fields": [
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "*"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        8.0
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        5.0
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "Case": "A",
-                        "Fields": [
-                          {
-                            "Case": "Form",
-                            "Fields": [
-                              [
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "*"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Case": "B",
-                                  "Fields": [
-                                    {
-                                      "Case": "Number",
-                                      "Fields": [
-                                        76.0
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  ]
+                  "Index": -1,
+                  "Line": -1,
+                  "Column": -1,
+                  "StreamName": "dummy"
                 }
               ]
             }
-          ]
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        ">"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        5.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        4.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Point",
+              "Fields": [
+                {
+                  "Index": -1,
+                  "Line": -1,
+                  "Column": -1,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "<"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        5.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        4.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Point",
+              "Fields": [
+                {
+                  "Index": -1,
+                  "Line": -1,
+                  "Column": -1,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        ">="
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Number",
+                      "Fields": [
+                        1.0
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Point",
+              "Fields": [
+                {
+                  "Index": -1,
+                  "Line": -1,
+                  "Column": -1,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "+"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "+"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                1.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                2.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                4.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                88.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "-"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                3.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                4.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                5.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "-"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                9.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "/"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "/"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                2.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "/"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                5.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                2.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "*"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                8.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                5.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "*"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Number",
+                              "Fields": [
+                                76.0
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Point",
+                              "Fields": [
+                                {
+                                  "Index": -1,
+                                  "Line": -1,
+                                  "Column": -1,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Point",
+                      "Fields": [
+                        {
+                          "Index": -1,
+                          "Line": -1,
+                          "Column": -1,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Point",
+              "Fields": [
+                {
+                  "Index": -1,
+                  "Line": -1,
+                  "Column": -1,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          }
         ]
-      }
-    ]
+      ]
+    },
+    "Location": {
+      "Case": "Point",
+      "Fields": [
+        {
+          "Index": -1,
+          "Line": -1,
+          "Column": -1,
+          "StreamName": "dummy"
+        }
+      ]
+    }
   },
   "Item2": []
 }

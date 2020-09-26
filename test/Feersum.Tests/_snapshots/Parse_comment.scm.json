@@ -1,26 +1,42 @@
 {
   "Item1": {
-    "Case": "A",
-    "Fields": [
-      {
-        "Case": "Seq",
-        "Fields": [
-          [
-            {
-              "Case": "B",
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Number",
+              "Fields": [
+                0.0
+              ]
+            },
+            "Location": {
+              "Case": "Point",
               "Fields": [
                 {
-                  "Case": "Number",
-                  "Fields": [
-                    0.0
-                  ]
+                  "Index": -1,
+                  "Line": -1,
+                  "Column": -1,
+                  "StreamName": "dummy"
                 }
               ]
             }
-          ]
+          }
         ]
-      }
-    ]
+      ]
+    },
+    "Location": {
+      "Case": "Point",
+      "Fields": [
+        {
+          "Index": -1,
+          "Line": -1,
+          "Column": -1,
+          "StreamName": "dummy"
+        }
+      ]
+    }
   },
   "Item2": []
 }

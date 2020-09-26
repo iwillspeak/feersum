@@ -2,15 +2,24 @@ module SyntaxUtils
 
 open Syntax
 
-type NodeNoPosition =
-    | A of AstNodeKind<NodeNoPosition>
-    | B of AstNodeKind<AstNode>
+module SyntaxFactory =
 
-let rec stripPosition node =
-    match node.Kind with
-    | Form f -> List.map (stripPosition) f |> Form |> A
-    | Seq s -> List.map (stripPosition) s |> Seq |> A
-    | _ -> B(node.Kind)
+    /// a fabricated location
+    let dummyLocation =
+        TextLocation.Point(FParsec.Position("dummy", -1L, -1L, -1L))
+
+    /// Build a node with a fabricated position
+    let node kind =
+        { Kind = kind; Location = dummyLocation }
+
+open SyntaxFactory
+
+let rec sanitise node =
+    { Kind = node.Kind |> sanitiseKind; Location = dummyLocation }
+and sanitiseKind = function
+    | Form(f) -> List.map (sanitise) f |> Form
+    | Seq(s) -> List.map (sanitise) s |> Seq
+    | other -> other
 
 let readSingle input =
     match readExpr input with
@@ -20,5 +29,5 @@ let readSingle input =
 
 let readMany input =
     match readExpr input with
-    | (read, []) -> read  |> stripPosition
+    | (read, []) -> read
     | (_, diag) -> failwithf "Expected one or more expressions but got: %A" diag

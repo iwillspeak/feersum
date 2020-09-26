@@ -36,5 +36,5 @@ let ``spec tests compile and run`` s =
 [<MemberDataAttribute("listSpecs")>]
 let ``spect tests parse result`` s =
     let node, diagnostics = parseFile (Path.Join(specDir, s))
-    let tree = (node |> stripPosition, diagnostics)
+    let tree = (node |> sanitise, diagnostics)
     tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s))
