@@ -94,12 +94,16 @@ let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
     | b -> failwithf "%A is not supported" b
 
 /// Take a syntax tree and evaluate it producing a value.
-let execute (input: AstNode): SchemeValue =
+let execute (input: AstNode): Result<SchemeValue, Diagnostic list> =
     let globals = builtins
     let scope: Map<string, StorageRef> =
         Map.fold (fun s id _ -> s.Add(id, StorageRef.Global id)) createRootScope globals
     let initlalEnv = Map.toSeq globals |> dict
-    bind scope input |> executeBound initlalEnv
+    let bound, diags = bind scope input
+    if diags.IsEmpty then
+        Ok(executeBound initlalEnv bound)
+    else
+        Result.Error(diags)
 
 /// Take a Scheme Value and convert it to the
 /// 'external representation' as a string

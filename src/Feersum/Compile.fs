@@ -584,7 +584,12 @@ let emit (outputStream: Stream) outputName bound =
 /// name of the output.
 let compile outputStream outputName node =
     let scope = createRootScope
-    bind scope node |> emit outputStream outputName
+    let bound, diags = bind scope node
+    if diags.IsEmpty then
+        emit outputStream outputName bound
+        []
+    else
+        diags
 
 /// Read a File and Compile
 ///
@@ -613,23 +618,23 @@ let compileFile (output: string) (source: string) =
     if not diagnostics.IsEmpty then
         diagnostics
     else
-        compile (File.OpenWrite output) stem ast
-        // TOOD: This metadata needs to be abstracted to deal with different
-        //       target framework's prefrences. For now the `.exe` we generate
-        //       is compatible with .NET Core and Mono. It would be nice to make
-        //       this explicit somewhere in future.
-        //       It would be nice to register ourselves as a proper SDK so that
-        //       this metadata is generated for us by `dotnet`.
-        File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), """
-        {
-          "runtimeOptions": {
-            "tfm": "netcoreapp3.1",
-            "framework": {
-              "name": "Microsoft.NETCore.App",
-              "version": "3.1.0"
+        let diags = compile (File.OpenWrite output) stem ast
+        if diags.IsEmpty then
+            // TOOD: This metadata needs to be abstracted to deal with different
+            //       target framework's prefrences. For now the `.exe` we generate
+            //       is compatible with .NET Core and Mono. It would be nice to make
+            //       this explicit somewhere in future.
+            //       It would be nice to register ourselves as a proper SDK so that
+            //       this metadata is generated for us by `dotnet`.
+            File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), """
+            {
+              "runtimeOptions": {
+                "tfm": "netcoreapp3.1",
+                "framework": {
+                  "name": "Microsoft.NETCore.App",
+                  "version": "3.1.0"
+                }
+              }
             }
-          }
-        }
-        """)
-        // TODO: when compiler returns diagnostics return those here.
-        [ ]
+            """)
+        diags

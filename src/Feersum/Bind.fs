@@ -49,6 +49,7 @@ type private BinderCtx =
     ; mutable NextEnvSlot: int
     ; mutable Captures: StorageRef list
     ; mutable EnvSize: int option
+    ; mutable Diagnostics: Diagnostic list
     ; Storage: string -> StorageRef
     ; Parent: BinderCtx option }
 
@@ -70,6 +71,7 @@ module private BinderCtx =
         { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict)
         ; NextEnvSlot = 0
         ; Captures = []
+        ; Diagnostics = []
         ; EnvSize = None
         ; Storage = StorageRef.Global
         ; Parent = None }
@@ -79,6 +81,7 @@ module private BinderCtx =
         { Scope = new Dictionary<string, StorageRef>()
         ; NextEnvSlot = 0
         ; Captures = []
+        ; Diagnostics = []
         ; EnvSize = None
         ; Storage = storageFact
         ; Parent = Some(parent) }
@@ -315,4 +318,4 @@ let createRootScope =
 ///       one diagnostic could be reported.
 let bind scope node =
     let ctx = BinderCtx.createForGlobalScope scope
-    bindInContext ctx node
+    (bindInContext ctx node, ctx.Diagnostics)

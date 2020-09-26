@@ -26,14 +26,18 @@ let cilExternalRepr (object: Object) =
 /// main method on that.
 let eval ast =
     let memStream = new MemoryStream()
-    compile memStream "evalCtx" ast
-    let assm = Assembly.Load(memStream.ToArray())
-    let progTy = assm.GetType("evalCtx.LispProgram")
-    let mainMethod = progTy.GetMethod("$ScriptBody")
-    try
-        mainMethod.Invoke(null, Array.empty<obj>)
-    with
-    | :? TargetInvocationException as ex  ->
-        // Unwrap target invocation exceptions a little to make the REPL a
-        // bit of a nicer experience
-        ExceptionDispatchInfo.Capture(ex.InnerException).Throw(); null
+    let diags = compile memStream "evalCtx" ast
+    if not diags.IsEmpty then
+        Result.Error(diags)
+    else
+        let assm = Assembly.Load(memStream.ToArray())
+        let progTy = assm.GetType("evalCtx.LispProgram")
+        let mainMethod = progTy.GetMethod("$ScriptBody")
+        try
+            Ok(mainMethod.Invoke(null, Array.empty<obj>))
+        with
+        | :? TargetInvocationException as ex  ->
+            // Unwrap target invocation exceptions a little to make the REPL a
+            // bit of a nicer experience
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            Result.Error([])

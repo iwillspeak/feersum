@@ -5,8 +5,12 @@ open Interpret
 open Eval
 open Syntax
 
-let interpret = execute >> externalRepr
-let feeri = eval >> cilExternalRepr
+let private expectOk = function
+    | Ok o -> o
+    | e -> failwithf "Expected OK, but got %A" e
+
+let interpret = execute >> expectOk >> externalRepr
+let feeri = eval >> expectOk >> cilExternalRepr
 
 let private dummyLocation = Point(FParsec.Position("dummy", 0L, 0L, 0L))
 

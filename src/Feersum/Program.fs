@@ -26,6 +26,12 @@ type CliArguments =
             | Sources _ -> "Scheme source files for compilation."
             | Output _ -> "The output path to write compilation results to."
 
+/// Write the diagnostics to the standard error
+let private dumpDiagnostics diags =
+    diags
+    |> List.rev
+    |> Seq.iter (fun x -> eprintfn "Error: %s" (x.ToString()))
+
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
@@ -34,9 +40,7 @@ let rec read (): AstNode =
     match readExpr line with
     | (node, []) -> node
     | (_, diagnostics) ->
-        diagnostics
-        |> List.rev
-        |> Seq.iter (fun x -> eprintfn "Error: %s" (x.ToString()))
+        diagnostics |> dumpDiagnostics
         read()
 
 /// Print a value out to the console
@@ -53,7 +57,9 @@ let printObj value =
 /// Repeatedly reads input and prints output
 let rec repl evaluator =
     try
-        (read() |> evaluator)
+        match (read >> evaluator)() with
+        | Result.Ok _ -> ()
+        | Result.Error diags -> dumpDiagnostics(diags)
     with
     | ex -> eprintfn "Exception: %A" ex
     repl evaluator
@@ -74,9 +80,9 @@ let private compileSingle output sourcePath =
 let private runRepl interpret =
     ReadLine.HistoryEnabled <- true
     if interpret then
-        execute >> print
+        execute >> Result.map print
     else
-        eval >> printObj
+        eval >> Result.map printObj
     |> repl
 
 /// Get the version string for the compiler.
