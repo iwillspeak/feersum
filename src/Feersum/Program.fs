@@ -73,7 +73,7 @@ let private compileSingle output sourcePath =
         | None -> Path.ChangeExtension(sourcePath, "exe")
     match compileFile outputPath sourcePath with
     | [] -> ()
-    | diagnostics -> failwithf "error: %A" diagnostics
+    | diagnostics -> dumpDiagnostics(diagnostics)
 
 /// Run the REPL, using either the reflection-based evaluator, or the tree
 /// walk interpreter.

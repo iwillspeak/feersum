@@ -107,7 +107,7 @@ let private writeToEnv ctx (temp: VariableDefinition) (idx: int) =
 let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     let recurse = emitExpression ctx
     match expr with
-    | BoundExpr.Error -> failwith "ICE: Attempt to lower an error expressino"
+    | BoundExpr.Error -> failwith "ICE: Attempt to lower an error expression"
     | BoundExpr.Null -> ctx.IL.Emit(OpCodes.Ldnull)
     | BoundExpr.Number n ->
         ctx.IL.Emit(OpCodes.Ldc_R8, n)
