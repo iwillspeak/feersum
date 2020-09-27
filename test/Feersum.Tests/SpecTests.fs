@@ -36,7 +36,7 @@ let ``spec tests compile and run`` s =
     | diags ->
         if not shouldFail then
             failwithf "Compilation error: %A" diags
-        diags.ShouldMatchChildSnapshot(s)
+        (diags |> sanitiseDiagnostics specDir).ShouldMatchChildSnapshot(s)
 
 [<Theory>]
 [<MemberDataAttribute("listSpecs")>]
