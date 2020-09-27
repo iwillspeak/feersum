@@ -1,8 +1,10 @@
 module Interpret
 
-open Syntax
-open Bind
 open System.Collections.Generic
+
+open Bind
+open Diagnostics
+open Syntax
 
 /// Shceme value
 ///

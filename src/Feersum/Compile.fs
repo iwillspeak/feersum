@@ -586,11 +586,11 @@ let emit (outputStream: Stream) outputName bound =
 let compile outputStream outputName node =
     let scope = createRootScope
     let bound, diags = bind scope node
-    if diags.IsEmpty then
+    if Diagnostics.hasErrors diags then
+        diags
+    else
         emit outputStream outputName bound
         []
-    else
-        diags
 
 /// Read a File and Compile
 ///
@@ -616,7 +616,7 @@ let compileFile (output: string) (source: string) =
     
     let ast, diagnostics = parseFile source
     
-    if not diagnostics.IsEmpty then
+    if Diagnostics.hasErrors diagnostics then
         diagnostics
     else
         let diags = compile (File.OpenWrite output) stem ast

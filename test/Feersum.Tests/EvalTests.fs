@@ -1,9 +1,11 @@
 module EvalTests
 
 open Xunit
+
 open Interpret
 open Eval
 open Syntax
+open Diagnostics
 
 let private expectOk = function
     | Ok o -> o

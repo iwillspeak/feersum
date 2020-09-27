@@ -1,33 +1,10 @@
 module Syntax
 
-open System.IO
 open FParsec
-open System.Text
 open System.Globalization
+open System.Text
 
-/// A point in the source text
-type TextLocation =
-    | Span of Position * Position
-    | Point of Position
-with
-    member x.Start =
-        match x with
-        | Span(s, _) -> s
-        | Point p -> p
-
-    member x.End =
-        match x with
-        | Span(_, e) -> e
-        | Point p -> p
-
-/// Diagnostics indicate problems with our source code at a given position.
-type Diagnostic = Diagnostic of TextLocation * string
-with
-    override d.ToString() =
-        match d with
-        | Diagnostic(loc, message) ->
-            let pos = loc.Start
-            sprintf "%s:%d:%d: %s" pos.StreamName pos.Line pos.Column message
+open Diagnostics
 
 /// Type of nodes in our syntax tree
 type AstNodeKind<'t> =
@@ -46,14 +23,13 @@ type AstNode = { Kind: AstNodeKind<AstNode>
                ; Location: TextLocation }
 
 /// The parser state. Used to collect diagnostics
-type State = { mutable Diagnostics: Diagnostic list }
+type State = { Diagnostics: DiagnosticBag }
 with
     member s.Emit pos message =
-        let d = Diagnostic(TextLocation.Point(pos), message)
-        s.Diagnostics <- d::s.Diagnostics
+        s.Diagnostics.Emit (TextLocation.Point(pos)) message
 
     static member Empty =
-        { Diagnostics = [] }
+        { Diagnostics = DiagnosticBag.Empty }
 
 let errorNode = { Kind = AstNodeKind.Error; Location = Point(Position("error", 0L, 0L, 0L))}
 
@@ -199,8 +175,10 @@ let private parse: Parser<AstNode, State> =
 
 /// Unpack a `ParseResult` into a Plain `Result`
 let private unpack = function
-    | Success(node, s, _) -> (node, s.Diagnostics)
-    | Failure(mess, err, s) -> (errorNode, Diagnostic(Point(err.Position), mess)::s.Diagnostics)
+    | Success(node, s, _) -> (node, s.Diagnostics.Take)
+    | Failure(mess, err, s) ->
+        s.Diagnostics.Emit (Point(err.Position)) mess
+        (errorNode, s.Diagnostics.Take)
 
 /// Read expressions from the input text
 let readExpr line: (AstNode * Diagnostic list) =

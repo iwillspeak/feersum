@@ -1,7 +1,9 @@
 module Bind
 
-open Syntax
 open System.Collections.Generic
+
+open Diagnostics
+open Syntax
 
 /// Storage Reference
 ///
@@ -50,7 +52,7 @@ type private BinderCtx =
     ; mutable NextEnvSlot: int
     ; mutable Captures: StorageRef list
     ; mutable EnvSize: int option
-    ; mutable Diagnostics: Diagnostic list
+    ; Diagnostics: DiagnosticBag
     ; Storage: string -> StorageRef
     ; Parent: BinderCtx option }
 
@@ -72,7 +74,7 @@ module private BinderCtx =
         { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict)
         ; NextEnvSlot = 0
         ; Captures = []
-        ; Diagnostics = []
+        ; Diagnostics = DiagnosticBag.Empty
         ; EnvSize = None
         ; Storage = StorageRef.Global
         ; Parent = None }
@@ -82,7 +84,7 @@ module private BinderCtx =
         { Scope = new Dictionary<string, StorageRef>()
         ; NextEnvSlot = 0
         ; Captures = []
-        ; Diagnostics = []
+        ; Diagnostics = parent.Diagnostics
         ; EnvSize = None
         ; Storage = storageFact
         ; Parent = Some(parent) }
@@ -137,11 +139,6 @@ module private BinderCtx =
         ctx.Scope.[id] <- storage
         storage
 
-    /// Emit a Diagnostic
-    let emit ctx pos message =
-        let diagnostic = Diagnostic(pos, message)
-        ctx.Diagnostics <- diagnostic::ctx.Diagnostics
-
 /// Bind a Formals List Pattern
 ///
 /// This binds the formals list pattern as supported by `(define .. )` forms,
@@ -156,18 +153,18 @@ let private bindFormalsList ctx formals =
         let (formals, seenDot, afterDot) = acc
         if seenDot then
             if afterDot.IsSome then
-                BinderCtx.emit ctx formal.Location "Only expect single ID after dot"
+                ctx.Diagnostics.Emit formal.Location "Only expect single ID after dot"
             match formal.Kind with
             | AstNodeKind.Ident(id) -> (formals, true, Some(id))
             | _ -> 
-                BinderCtx.emit ctx formal.Location "Expected ID after dot"
+                ctx.Diagnostics.Emit formal.Location "Expected ID after dot"
                 acc
         else
             match formal.Kind with
             | AstNodeKind.Dot -> (formals, true, None)
             | AstNodeKind.Ident(id) -> (id::formals, false, None)
             | _ ->
-                BinderCtx.emit ctx formal.Location "Expected ID or dot in formals"
+                ctx.Diagnostics.Emit formal.Location "Expected ID or dot in formals"
                 acc
     
     let (fmls, sawDot, dotted) = List.fold f ([], false, None) formals
@@ -176,7 +173,7 @@ let private bindFormalsList ctx formals =
         match dotted with
         | Some(d) -> BoundFormals.DottedList(fmls, d)
         | None -> 
-            BinderCtx.emit ctx (List.last formals).Location "Saw dot but no ID in formals"
+            ctx.Diagnostics.Emit (List.last formals).Location "Saw dot but no ID in formals"
             BoundFormals.List(fmls)
     else
         BoundFormals.List(fmls)
@@ -194,7 +191,7 @@ let private bindFormals ctx formals =
     | AstNodeKind.Form(formals) -> bindFormalsList ctx formals
     |  _ -> 
         "Unrecognised formal parameter list. Must be an ID or list pattern"
-        |> BinderCtx.emit ctx formals.Location
+        |> ctx.Diagnostics.Emit formals.Location
         BoundFormals.List([])
 
 /// Bind a Syntax Node
@@ -210,7 +207,7 @@ let rec private bindInContext ctx node =
     | AstNodeKind.Boolean b -> BoundExpr.Boolean b
     | AstNodeKind.Character c -> BoundExpr.Character c
     | AstNodeKind.Dot ->
-        BinderCtx.emit ctx node.Location "Unexpected dot"
+        ctx.Diagnostics.Emit node.Location "Unexpected dot"
         BoundExpr.Error
     | AstNodeKind.Seq s -> bindSequence ctx s
     | AstNodeKind.Form f -> bindForm ctx f node.Location
@@ -219,7 +216,7 @@ let rec private bindInContext ctx node =
         | Some s -> BoundExpr.Load(s)
         | None ->
             sprintf "reference to undefined symbol %s" id
-            |> BinderCtx.emit ctx node.Location
+            |> ctx.Diagnostics.Emit node.Location
             BoundExpr.Error
 
 and private bindSequence ctx exprs =
@@ -252,7 +249,7 @@ and private bindForm ctx (form: AstNode list) location =
     let illFormed formName =
         formName
         |> sprintf "Ill-formed '%s' special form"
-        |> BinderCtx.emit ctx location
+        |> ctx.Diagnostics.Emit location
         BoundExpr.Error
     match form with
     | { Kind = AstNodeKind.Ident("if") }::body ->
@@ -303,7 +300,7 @@ and private bindForm ctx (form: AstNode list) location =
             | Some s -> BoundExpr.Store(s, Some(value))
             | None ->
                 sprintf "Attempt to set `%s` that was not yet defined" id
-                |> BinderCtx.emit ctx l
+                |> ctx.Diagnostics.Emit l
                 BoundExpr.Error
         | _ -> illFormed "set!"
     | { Kind = AstNodeKind.Ident("quote") }::body ->
@@ -338,8 +335,7 @@ let createRootScope =
 /// 
 /// TODO: This should probably return some kind of `BoundSyntaxTree` containing
 ///       the tree of bound nodes and a bag of diagnostics generated during the
-///       bind. Currently we use `failwith` to raise an error. Ideally more than
-///       one diagnostic could be reported.
-let bind scope node =
+///       bind.
+let bind scope node: BoundExpr * Diagnostic list =
     let ctx = BinderCtx.createForGlobalScope scope
-    (bindInContext ctx node, ctx.Diagnostics)
+    (bindInContext ctx node, ctx.Diagnostics.Take)

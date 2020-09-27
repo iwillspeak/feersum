@@ -1,6 +1,7 @@
 module SyntaxUtils
 
 open Syntax
+open Diagnostics
 
 module SyntaxFactory =
 
