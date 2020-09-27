@@ -19,10 +19,10 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Standard library & builtins from a separate assembly.
  * [ ] Interop with other .NET assemblies.
  * [ ] Multi-statement support in the REPL.
- * [ ] Diagnostics with position
-    * [ ] Expose position information in parser.
-    * [ ] Handle multiple parser errors.
-    * [ ] Turn errors in `bind` into diagnotics too.
+ * [x] Diagnostics with position
+    * [x] Expose position information in parser.
+    * [x] Handle multiple parser errors.
+    * [x] Turn errors in `bind` into diagnotics too.
  * [ ] Debugging support - needs position information in bound tree.
  * [ ] MSBUILD SDK support so `.scmproj` can be defined.
  * [x] Perform on-demand compilation & emit to in-memory assembly for REPL.
