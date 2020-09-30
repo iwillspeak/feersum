@@ -2,4 +2,5 @@
     b)
 (define (bar a b c)
     a)
-(bar (foo 123 456) 78 90)
+; should return 101
+(bar (foo 123 101) 78 90)

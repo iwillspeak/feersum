@@ -18,6 +18,8 @@ type CoreTypes =
 type EmitCtx =
     { Assm: AssemblyDefinition
     ; IL: ILProcessor
+    ; Locals: VariableDefinition list
+    ; Parameters: ParameterDefinition list
     ; mutable NextLambda: int
     ; mutable Hoisted: int list
     ; ScopePrefix: string
@@ -42,14 +44,15 @@ let private ensureField ctx id =
         ctx.ProgramTy.Fields.Add(newField)
         newField
 
-/// Convert an argument index into an index for `Ldarg` given the current
-/// environment size. This adds an offset if we are working with an instnace
-/// method.
-let private argIndex ctx idx =
-    if ctx.EnvSize.IsSome then
-        idx + 1
-    else
-        idx
+/// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
+/// current context. This indexes into the context's `Parameters` list.
+let private argToParam ctx idx =
+    ctx.Parameters.[idx]
+
+/// Convert a local index into a `VariableDefinition`. Variable definitions can
+/// then be used with `Ldloc` and `Stloc`.
+let private localToVariable ctx idx =
+    ctx.Locals.[idx]
 
 /// Emit a sequence of instructions to convert a method reference
 /// into a `Func<obj[],obj>` with the context as the current top of stack.
@@ -169,9 +172,9 @@ and writeTo ctx storage =
         let field = ensureField ctx id
         ctx.IL.Emit(OpCodes.Stsfld, field)
     | StorageRef.Local(idx) ->
-        ctx.IL.Emit(OpCodes.Stloc, idx)
+        ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
     | StorageRef.Arg(idx) ->
-        ctx.IL.Emit(OpCodes.Starg, argIndex ctx idx)
+        ctx.IL.Emit(OpCodes.Starg, idx |> argToParam ctx)
     | StorageRef.Environment(idx, _) ->
         let temp = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
         ctx.IL.Body.Variables.Add <| temp
@@ -197,9 +200,9 @@ and readFrom ctx storage =
         let field = ensureField ctx id
         ctx.IL.Emit(OpCodes.Ldsfld, field)
     | StorageRef.Local(idx) ->
-        ctx.IL.Emit(OpCodes.Ldloc, idx)
+        ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)
     | StorageRef.Arg(idx) ->
-        ctx.IL.Emit(OpCodes.Ldarg, argIndex ctx idx)
+        ctx.IL.Emit(OpCodes.Ldarg, idx |> argToParam ctx)
     | StorageRef.Environment(idx, _) ->
         ctx.IL.Emit(OpCodes.Ldarg_0)
         readFromEnv ctx idx
@@ -303,11 +306,13 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
                                       attrs,
                                       ctx.Assm.MainModule.TypeSystem.Object)
 
+    let mutable parameters = []
     let addParam id =
         let param = ParameterDefinition(id,
                                         ParameterAttributes.None,
                                         ctx.Assm.MainModule.TypeSystem.Object)
         methodDecl.Parameters.Add(param)
+        parameters <- param::parameters
 
     // Add formals as parameter definitions
     match formals with
@@ -318,13 +323,17 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
         Seq.iter addParam fmls
         addParam dotted
     
+    let mutable locals = []
     for _ = 1 to localCount do
         let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
         methodDecl.Body.Variables.Add(local)
+        locals <- local::locals
 
     // Create a new emit context for the new method, and lower the body in that
     // new context.
     let ctx = { ctx with NextLambda = 0;
+                         Locals = locals;
+                         Parameters = List.rev parameters;
                          Hoisted = [];
                          EnvSize = envSize
                          IL = methodDecl.Body.GetILProcessor();
@@ -550,6 +559,8 @@ let emit (outputStream: Stream) outputName bound =
                       ; Builtins = Builtins.createBuiltins assm progTy
                       ; NextLambda = 0
                       ; Hoisted = []
+                      ; Locals = []
+                      ; Parameters = []
                       ; EnvSize = None
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
