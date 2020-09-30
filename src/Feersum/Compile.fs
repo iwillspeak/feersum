@@ -30,6 +30,12 @@ type EmitCtx =
     ; Builtins: Map<string,MethodDefinition>
     ; Core: CoreTypes }
 
+/// Create a `ParameterDefinition` with the given `name` and `ty`.
+let private namedParam name ty =
+    ParameterDefinition(name,
+                        ParameterAttributes.None,
+                        ty)
+
 /// Emit an instance of the unspecified value
 let private emitUnspecified (il: ILProcessor) =
     // TODO: What should we do about empty sequences? This falls back to '()
@@ -327,9 +333,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
 
     let mutable parameters = []
     let addParam id =
-        let param = ParameterDefinition(id,
-                                        ParameterAttributes.None,
-                                        ctx.Assm.MainModule.TypeSystem.Object)
+        let param = namedParam id ctx.Assm.MainModule.TypeSystem.Object
         methodDecl.Parameters.Add(param)
         parameters <- param::parameters
 
@@ -369,7 +373,8 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
     let thunkDecl = MethodDefinition((sprintf "%s:thunk" name),
                                       attrs,
                                       ctx.Assm.MainModule.TypeSystem.Object)
-    thunkDecl.Parameters.Add(ParameterDefinition(ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
+    thunkDecl.Parameters.Add(namedParam "args"
+                                        (ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
 
     let thunkIl = thunkDecl.Body.GetILProcessor()
 
@@ -509,8 +514,8 @@ let private addCoreDecls (assm: AssemblyDefinition) =
     let cdr = FieldDefinition("cdr", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
 
     consTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
-        ctor.Parameters.Add <| ParameterDefinition(assm.MainModule.TypeSystem.Object)
-        ctor.Parameters.Add <| ParameterDefinition(assm.MainModule.TypeSystem.Object)
+        ctor.Parameters.Add <| namedParam "cdr" assm.MainModule.TypeSystem.Object
+        ctor.Parameters.Add <| namedParam "car" assm.MainModule.TypeSystem.Object
 
         ctorIl.Emit(OpCodes.Ldarg_0)
         ctorIl.Emit(OpCodes.Ldarg_1)
@@ -535,8 +540,8 @@ let private addCoreDecls (assm: AssemblyDefinition) =
     envTy.Fields.Add(slots)
 
     envTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
-        ctor.Parameters.Add <| ParameterDefinition(envTy)
-        ctor.Parameters.Add <| ParameterDefinition(assm.MainModule.TypeSystem.Int32)
+        ctor.Parameters.Add <| namedParam "parent" envTy
+        ctor.Parameters.Add <| namedParam "size" assm.MainModule.TypeSystem.Int32
 
         ctorIl.Emit(OpCodes.Ldarg_0)
         ctorIl.Emit(OpCodes.Ldarg_1)
