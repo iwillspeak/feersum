@@ -25,6 +25,18 @@
             "console": "integratedTerminal",
             "externalConsole": false,
             "stopAtEntry": false
+        },
+        {
+            "name": "EnvironmentTest",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/EnvironmentTest/bin/Debug/net5.0/EnvironmentTest.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "console": "integratedTerminal",
+            "externalConsole": false,
+            "stopAtEntry": false
         }
     ],
     "inputs": [
