@@ -77,20 +77,18 @@ let private makeTemp ctx ty =
     ctx.IL.Body.Variables.Add <| temp
     temp
 
-/// Create a new environment instance with `size` slots available. The new
-/// environment instnace has the current `ctx`'s environment as a parent.
-let private createEnvironment ctx (size: int) =
-    // TODO: is there a better way to check if we are an instance method?
-    if ctx.ParentEnvSize.IsSome then
-        ctx.IL.Emit(OpCodes.Ldarg_0)
-    else
-        ctx.IL.Emit(OpCodes.Ldnull)
-    ctx.IL.Emit(OpCodes.Ldc_I4, size)
-    let ctor = Seq.head <| ctx.Core.EnvTy.GetConstructors()
-    ctx.IL.Emit(OpCodes.Newobj, ctor)
-
-
+/// Get the variable definition that the local environment is stored in. If the
+/// environment hasn't been referenced yet then IL is emitted to initialise it.
 let private getEnvironment ctx =
+    let createEnvironment ctx (size: int) =
+        // TODO: is there a better way to check if we are an instance method?
+        if ctx.ParentEnvSize.IsSome then
+            ctx.IL.Emit(OpCodes.Ldarg_0)
+        else
+            ctx.IL.Emit(OpCodes.Ldnull)
+        ctx.IL.Emit(OpCodes.Ldc_I4, size)
+        let ctor = Seq.head <| ctx.Core.EnvTy.GetConstructors()
+        ctx.IL.Emit(OpCodes.Newobj, ctor)
     match ctx.Environment with
     | Some env -> env
     | None ->
@@ -104,9 +102,10 @@ let private getEnvironment ctx =
 /// `f` with the environment index that the capture chain ends at. This is used
 /// to read and write values from a captured environment.
 let rec private walkCaptureChain ctx from f =
-    ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[0])
     match from with
-    | StorageRef.Captured(from) -> walkCaptureChain ctx from f
+    | StorageRef.Captured(from) ->
+        ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[0])
+        walkCaptureChain ctx from f
     | StorageRef.Environment(idx, _) -> f idx
     | _ -> failwithf "Unexpected storage in capture chain %A" from
 
@@ -205,7 +204,8 @@ and writeTo ctx storage =
         let temp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
         ctx.IL.Emit(OpCodes.Stloc, temp)
 
-        ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
+        // Start at the parent environment and walk up
+        ctx.IL.Emit(OpCodes.Ldarg_0)
         walkCaptureChain ctx from (writeToEnv ctx temp)
         
     /// Emit a load from the given storage location
@@ -225,7 +225,8 @@ and readFrom ctx storage =
         ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
         readFromEnv ctx idx
     | StorageRef.Captured(from) ->
-        ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
+        // start at the parent environment, and walk up
+        ctx.IL.Emit(OpCodes.Ldarg_0)
         walkCaptureChain ctx from (readFromEnv ctx)
 
     /// Emit a Sequence of Expressions
