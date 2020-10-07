@@ -4,6 +4,7 @@ open System.Collections.Generic
 
 open Diagnostics
 open Syntax
+open Scope
 
 /// Storage Reference
 ///
@@ -48,7 +49,7 @@ type BoundExpr =
 /// Used to pass the state around during the bind. Holds on to scope information
 /// and other transient information about the current `bind` call.
 type private BinderCtx =
-    { Scope: IDictionary<string, StorageRef>
+    { mutable Scope: Scope<StorageRef>
     ; mutable NextEnvSlot: int
     ; mutable Captures: StorageRef list
     ; mutable EnvSize: int option
@@ -71,7 +72,7 @@ module private BinderCtx =
 
     /// Create a new binder context for the given root scope
     let createForGlobalScope scope =
-        { Scope = new Dictionary<string, StorageRef>(Map.toSeq scope |> dict)
+        { Scope = scope |> Scope.fromMap
         ; NextEnvSlot = 0
         ; Captures = []
         ; Diagnostics = DiagnosticBag.Empty
@@ -81,7 +82,7 @@ module private BinderCtx =
     
     /// Create a new binder context for a child scope
     let createWithParent parent storageFact =
-        { Scope = new Dictionary<string, StorageRef>()
+        { Scope = Scope.empty
         ; NextEnvSlot = 0
         ; Captures = []
         ; Diagnostics = parent.Diagnostics
@@ -109,34 +110,34 @@ module private BinderCtx =
             | None -> None
         | None -> None
     and private lookupAndCapture ctx id =
-        match ctx.Scope.TryGetValue(id) with
-        | (true, value) ->
-            match value with
+        match Scope.entry ctx.Scope id with
+        | Some(entry) ->
+            match entry.Value with
             | Local(_)
             | Arg(_) ->  
                 let envSlot = getNextEnvSlot ctx
-                let captured = StorageRef.Environment(envSlot, value)
-                ctx.Scope.[id] <- captured
+                let captured = StorageRef.Environment(envSlot, entry.Value)
+                entry.Value <- captured
                 ctx.EnvSize <- incEnvSize ctx.EnvSize
                 Some(captured)
-            | _ -> Some(value)
+            | _ -> Some(entry.Value)
         | _ -> parentLookup ctx id
     
 
     /// Lookup a given ID in the binder scope
     let tryFindBinding ctx id =
-        match ctx.Scope.TryGetValue(id) with
-        | (true, value) -> Some(value)
+        match Scope.find ctx.Scope id with
+        | Some(find) -> Some(find)
         | _ -> parentLookup ctx id
     
     /// Introduce a binding for the given formal argument
     let addArgumentBinding ctx id idx =
-        ctx.Scope.[id] <- StorageRef.Arg idx
+        ctx.Scope <- Scope.insert ctx.Scope id (StorageRef.Arg idx)
 
     /// Add a new entry to the current scope
     let addBinding ctx id =
         let storage = ctx.Storage(id)
-        ctx.Scope.[id] <- storage
+        ctx.Scope <- Scope.insert ctx.Scope id storage
         storage
 
 /// Bind a Formals List Pattern
