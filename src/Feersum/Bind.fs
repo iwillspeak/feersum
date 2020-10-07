@@ -140,6 +140,13 @@ module private BinderCtx =
         ctx.Scope <- Scope.insert ctx.Scope id storage
         storage
 
+    /// Add a new level to the scopes
+    let pushScope ctx = ctx.Scope
+
+    // Set the scope back to a stored value
+    let restoreScope ctx scope =
+        ctx.Scope <- scope
+
 /// Bind a Formals List Pattern
 ///
 /// This binds the formals list pattern as supported by `(define .. )` forms,
@@ -288,7 +295,44 @@ and private bindForm ctx (form: AstNode list) location =
             bindLambdaBody ctx boundFormals body
         | _ -> illFormed "lambda"
     | { Kind = AstNodeKind.Ident("let") }::body ->
-        failwith "Let bindings not yet implemented"
+        match body with
+        | [bindings;body] ->
+            // Save the current scope so we can restore it later
+            let savedScope = BinderCtx.pushScope ctx
+            let mutable newScope = savedScope
+            let bindLetDecl decl =
+                match decl with
+                | { Kind = AstNodeKind.Form(binding)} ->
+                    match binding with
+                    | [{ Kind = AstNodeKind.Ident id }; body] ->
+                        let bound = bindInContext ctx body
+                        let location = ctx.Storage id;
+                        newScope <- Scope.insert newScope id location
+                        BoundExpr.Store(location, Some bound)
+                    | _ ->
+                        ctx.Diagnostics.Emit decl.Location "Invalid binding form"
+                        BoundExpr.Error
+                | _ -> 
+                    ctx.Diagnostics.Emit decl.Location "Invalid declaration"
+                    BoundExpr.Error
+
+            // Bind each of the definitions
+            let boundDecls =
+                match bindings with
+                | { Kind = AstNodeKind.Form(decls); } ->
+                    List.map bindLetDecl decls
+                | _ ->
+                    ctx.Diagnostics.Emit bindings.Location "Expected binding list"
+                    []
+
+            // Bind the body of the lambda in the new scope
+            ctx.Scope <- newScope
+            let boundBody = bindInContext ctx body
+            // Decrement the scope depth
+            BinderCtx.restoreScope ctx savedScope
+
+            BoundExpr.Seq(List.append boundDecls [ boundBody ])
+        | _ -> illFormed "let"
     | { Kind = AstNodeKind.Ident("let*") }::body ->
         failwith "Let* bindings not yet implemented"
     | { Kind = AstNodeKind.Ident("letrec") }::body ->

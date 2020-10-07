@@ -59,7 +59,8 @@ mutual recursion.
 
 ### Implementation status
 
-Lexical bindings are not yet implemented
+Lexical bindings are partially implemneted. Bindings in lambda context work.
+Bindings do not work properly for global variables that shadow.
 
 ## Definitions
 

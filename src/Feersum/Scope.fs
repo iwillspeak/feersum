@@ -1,15 +1,13 @@
 module Scope
 
 /// An entry in the current scope.
-type ScopeEntry<'t> = { mutable Value: 't; Depth: int; Id: string }
+type ScopeEntry<'t> = { mutable Value: 't; Id: string }
 
 /// The scope type. Used to store locals by the binder.
-type Scope<'t> = { Entries: ScopeEntry<'t> list
-                 ; CurrentDepth: int }
+type Scope<'t> = { Entries: ScopeEntry<'t> list }
 
 /// Create a new empty scope.
-let public empty =
-    { Entries = []; CurrentDepth = 0 }
+let public empty = { Entries = [] }
 
 /// Get an entry in the scope. This allows the value stored in the scope to be
 /// modified if needed.
@@ -23,7 +21,7 @@ let public find scope id =
 /// Add an entry to the given scope. Returns a new scope with the given entry
 /// added at the current depth.
 let public insert scope id value =
-    let entry = { Value = value; Id = id; Depth = scope.CurrentDepth }
+    let entry = { Value = value; Id = id }
     { scope with Entries = entry::scope.Entries; }
 
 /// Create a scope from the initial environment map
