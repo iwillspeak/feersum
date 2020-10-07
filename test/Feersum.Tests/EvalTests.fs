@@ -114,3 +114,12 @@ let ``comp ops return true for simple cases`` op =
 let ``evaluate comparision ops`` expr result =
     let expr = tryReadSingle expr
     Assert.Equal(result, feeri(expr))
+
+[<Theory>]
+[<InlineData("(let ((x 2) (y 3)) (* x y))", "6")>]
+[<InlineData("(let ((x 2) (y 3)) (let ((x 7) (z (+ x y))) (* z x)))", "35")>]
+let ``let expressions`` expr result =
+    let expr = 
+        sprintf "((lambda () %s ))" expr
+        |> tryReadSingle
+    Assert.Equal(result, feeri(expr))
