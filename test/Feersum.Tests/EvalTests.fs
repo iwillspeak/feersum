@@ -57,10 +57,9 @@ let ``Evaluate lambdas returns`` () =
         Form [ Ident "lambda" |> n ; Form [ Ident "x" |> n ] |> n; Ident "x" |> n] |> n;
         Number 123.0 |> n] |> n))
 
-// TODO: Number builtins are only implemented in the interpreter right now.
-[<Fact>]
-let ``Evaluate builtins`` () =
-    let evaluator = interpret
+[<Theory>]
+[<MemberData("evaluators")>]
+let ``Evaluate builtins`` evaluator =
     Assert.Equal("19", evaluator(Form [ Ident "+" |> n; Number 10.0 |> n; Number 9.0 |> n ] |> n))
     Assert.Equal("901", evaluator(Form [ Ident "+" |> n; Number 901.0 |> n ] |> n))
     Assert.Equal("90", evaluator(Form [ Ident "*" |> n; Number 10.0 |> n; Number 9.0 |> n ] |> n))
