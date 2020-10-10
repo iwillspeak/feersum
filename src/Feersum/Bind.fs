@@ -126,9 +126,8 @@ module private BinderCtx =
 
     /// Lookup a given ID in the binder scope
     let tryFindBinding ctx id =
-        match Scope.find ctx.Scope id with
-        | Some(find) -> Some(find)
-        | _ -> parentLookup ctx id
+        Scope.find ctx.Scope id
+        |> Option.orElseWith (fun () -> parentLookup ctx id)
     
     /// Introduce a binding for the given formal argument
     let addArgumentBinding ctx id idx =
