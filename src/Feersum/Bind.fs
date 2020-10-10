@@ -296,18 +296,24 @@ and private bindForm ctx (form: AstNode list) location =
         | _ -> illFormed "lambda"
     | { Kind = AstNodeKind.Ident("let") }::body ->
         match body with
-        | [bindings;body] ->
+        | bindings::body ->
+
             // Save the current scope so we can restore it later
             let savedScope = BinderCtx.pushScope ctx
             let mutable newScope = savedScope
+            let makeStorage id =
+                let location = ctx.Storage id;
+                newScope <- Scope.insert newScope id location
+                location
+            
+            // Bind the let expression form
             let bindLetDecl decl =
                 match decl with
                 | { Kind = AstNodeKind.Form(binding)} ->
                     match binding with
                     | [{ Kind = AstNodeKind.Ident id }; body] ->
                         let bound = bindInContext ctx body
-                        let location = ctx.Storage id;
-                        newScope <- Scope.insert newScope id location
+                        let location = makeStorage id
                         BoundExpr.Store(location, Some bound)
                     | _ ->
                         ctx.Diagnostics.Emit decl.Location "Invalid binding form"
@@ -327,11 +333,11 @@ and private bindForm ctx (form: AstNode list) location =
 
             // Bind the body of the lambda in the new scope
             ctx.Scope <- newScope
-            let boundBody = bindInContext ctx body
+            let boundBody = List.map (bindInContext ctx) body
             // Decrement the scope depth
             BinderCtx.restoreScope ctx savedScope
 
-            BoundExpr.Seq(List.append boundDecls [ boundBody ])
+            BoundExpr.Seq(List.append boundDecls boundBody )
         | _ -> illFormed "let"
     | { Kind = AstNodeKind.Ident("let*") }::body ->
         failwith "Let* bindings not yet implemented"
