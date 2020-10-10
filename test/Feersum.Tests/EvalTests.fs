@@ -115,8 +115,11 @@ let ``evaluate comparision ops`` expr result =
     Assert.Equal(result, feeri(expr))
 
 [<Theory>]
+[<InlineData("(let () 123)", "123")>]
 [<InlineData("(let ((x 2) (y 3)) (* x y))", "6")>]
 [<InlineData("(let ((x 2) (y 3)) (let ((x 7) (z (+ x y))) (* z x)))", "35")>]
+[<InlineData("(let* () 456)", "456")>]
+[<InlineData("(let* ((a 111)) (+ a))", "111")>]
 let ``let expressions`` expr result =
     let expr = 
         sprintf "((lambda () %s ))" expr

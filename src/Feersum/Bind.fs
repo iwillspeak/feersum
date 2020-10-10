@@ -201,6 +201,37 @@ let private bindFormals ctx formals =
         |> ctx.Diagnostics.Emit formals.Location
         BoundFormals.List([])
 
+/// Recognise a given form as a list of let binding specifications. This expects
+/// the `node` to be a form `()`, or `((id init) ...)`.
+let private parseBindingSpecs ctx node =
+    // Bind each of the definitions
+    let parseBindingSpec decl bindings =
+        match decl with
+        | { Kind = AstNodeKind.Form(binding)} ->
+            match binding with
+            | [{ Kind = AstNodeKind.Ident id }; body] ->
+                (id, body)::bindings
+            | _ ->
+                ctx.Diagnostics.Emit decl.Location "Invalid binding form"
+                bindings
+        | _ -> 
+            ctx.Diagnostics.Emit decl.Location "Expeted a binding form"
+            bindings
+
+    match node with
+    | { Kind = AstNodeKind.Form(decls); } ->
+        List.foldBack (parseBindingSpec) decls []
+    | _ ->
+        ctx.Diagnostics.Emit node.Location "Expected binding list"
+        []
+
+/// Emit a diagnostic for an ill-formed special form
+let private illFormedInCtx ctx location formName =
+    formName
+    |> sprintf "Ill-formed '%s' special form"
+    |> ctx.Diagnostics.Emit location
+    BoundExpr.Error
+
 /// Bind a Syntax Node
 ///
 /// Walks the syntax node building up a bound representation. This bound
@@ -229,8 +260,10 @@ let rec private bindInContext ctx node =
 and private bindSequence ctx exprs =
     List.map (bindInContext ctx) exprs
     |> BoundExpr.Seq
+
 and private bindApplication ctx head rest =
     BoundExpr.Application(bindInContext ctx head, List.map (bindInContext ctx) rest)
+
 and private bindLambdaBody ctx formals body =
     let mutable nextLocal = 0
     let createLocal x =
@@ -252,12 +285,24 @@ and private bindLambdaBody ctx formals body =
         addFormal nextFormal dotted |> ignore
     let boundBody = bindSequence lambdaCtx body
     BoundExpr.Lambda(formals, nextLocal, lambdaCtx.Captures, lambdaCtx.EnvSize, boundBody)
+    
+and private bindLet ctx name body location declBinder =
+    match body with
+    | bindings::body ->
+        let bindingSpecs = parseBindingSpecs ctx bindings
+        // Save the current scope so we can restore it later
+        let savedScope = BinderCtx.pushScope ctx
+        // Bind the declarations
+        let decls = declBinder bindingSpecs
+        // Bind the body of the lambda in the new scope
+        let boundBody = List.map (bindInContext ctx) body
+        // Decrement the scope depth
+        BinderCtx.restoreScope ctx savedScope
+        BoundExpr.Seq(List.append decls boundBody)
+    | _ -> illFormedInCtx ctx location name
+
 and private bindForm ctx (form: AstNode list) location =
-    let illFormed formName =
-        formName
-        |> sprintf "Ill-formed '%s' special form"
-        |> ctx.Diagnostics.Emit location
-        BoundExpr.Error
+    let illFormed formName = illFormedInCtx ctx location formName
     match form with
     | { Kind = AstNodeKind.Ident("if") }::body ->
         let b = bindInContext ctx
@@ -294,54 +339,46 @@ and private bindForm ctx (form: AstNode list) location =
             bindLambdaBody ctx boundFormals body
         | _ -> illFormed "lambda"
     | { Kind = AstNodeKind.Ident("let") }::body ->
-        match body with
-        | bindings::body ->
-
-            // Save the current scope so we can restore it later
-            let savedScope = BinderCtx.pushScope ctx
-            let mutable newScope = savedScope
-            let makeStorage id =
-                let location = ctx.Storage id;
-                newScope <- Scope.insert newScope id location
-                location
+        bindLet ctx "let" body location (fun bindingSpecs  ->
             
-            // Bind the let expression form
-            let bindLetDecl decl =
-                match decl with
-                | { Kind = AstNodeKind.Form(binding)} ->
-                    match binding with
-                    | [{ Kind = AstNodeKind.Ident id }; body] ->
-                        let bound = bindInContext ctx body
-                        let location = makeStorage id
-                        BoundExpr.Store(location, Some bound)
-                    | _ ->
-                        ctx.Diagnostics.Emit decl.Location "Invalid binding form"
-                        BoundExpr.Error
-                | _ -> 
-                    ctx.Diagnostics.Emit decl.Location "Invalid declaration"
-                    BoundExpr.Error
-
-            // Bind each of the definitions
+            // Bind the body of each binding spec first
+            let decls =
+                bindingSpecs
+                |> List.map (fun (id, body) ->
+                    (id, bindInContext ctx body))
+                
+            // Once the bodies are bound, we can create assignments and
+            // initialise the environment
             let boundDecls =
-                match bindings with
-                | { Kind = AstNodeKind.Form(decls); } ->
-                    List.map bindLetDecl decls
-                | _ ->
-                    ctx.Diagnostics.Emit bindings.Location "Expected binding list"
-                    []
+                decls
+                |> List.map (fun (id, body) ->
+                    let storage = BinderCtx.addBinding ctx id
+                    BoundExpr.Store(storage, Some(body)))
 
-            // Bind the body of the lambda in the new scope
-            ctx.Scope <- newScope
-            let boundBody = List.map (bindInContext ctx) body
-            // Decrement the scope depth
-            BinderCtx.restoreScope ctx savedScope
-
-            BoundExpr.Seq(List.append boundDecls boundBody )
-        | _ -> illFormed "let"
+            boundDecls)
     | { Kind = AstNodeKind.Ident("let*") }::body ->
-        failwith "Let* bindings not yet implemented"
+        bindLet ctx "let*" body location (
+            // let* binds each spec sequentially
+            List.map (fun (id, body) ->
+                    let body = bindInContext ctx body
+                    let storage = BinderCtx.addBinding ctx id
+                    BoundExpr.Store(storage, Some(body))))
     | { Kind = AstNodeKind.Ident("letrec") }::body ->
-        failwith "Letrec bindings nto yet implemented"
+        bindLet ctx "letrec" body location (fun bindingSpecs  ->
+
+            // Get storage for each of the idents first into scope.
+            let boundIdents =
+                bindingSpecs
+                |> List.map (fun (id, body) ->
+                    ((BinderCtx.addBinding ctx id), body))
+
+            // Now all the IDs are in scope, bind the initialisers
+            let boundDecls =
+                boundIdents
+                |> List.map (fun (storage, body) ->
+                    BoundExpr.Store(storage, Some(bindInContext ctx body)))
+
+            boundDecls)
     | { Kind = AstNodeKind.Ident("set!"); Location = l }::body ->
         match body with
         | [{ Kind = AstNodeKind.Ident(id) };value] ->
