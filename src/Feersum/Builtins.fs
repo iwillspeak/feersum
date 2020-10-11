@@ -204,14 +204,35 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
 
         meth
 
-    [ ("+", createArithBuiltin "+" OpCodes.Add 0.0)
-    ; ("-", createArithBuiltin "-" OpCodes.Sub 0.0)
-    ; ("/", createArithBuiltin "/" OpCodes.Div 1.0)
-    ; ("*", createArithBuiltin "*" OpCodes.Mul 1.0)
+    let newlineBuiltin =
+        let meth, il = declareBuiltinMethod "newline"
+        let fail = il.Create(OpCodes.Nop)
+
+        il.Emit(OpCodes.Ldarg_0)
+        il.Emit(OpCodes.Ldlen)
+        il.Emit(OpCodes.Ldc_I4_0)
+        il.Emit(OpCodes.Bne_Un, fail)
+
+        let write = typeof<Console>.GetMethod("WriteLine", [| |])
+        let write = assm.MainModule.ImportReference write
+        il.Emit(OpCodes.Call, write)
+        il.Emit(OpCodes.Ldnull)
+        il.Emit(OpCodes.Ret)
+
+        il.Append(fail)
+        emitThrow il assm "`newline` expects no arguments"
+
+        meth
+
+    [ ("+", createArithBuiltin "arithadd" OpCodes.Add 0.0)
+    ; ("-", createArithBuiltin "arithsub" OpCodes.Sub 0.0)
+    ; ("/", createArithBuiltin "arithdiv" OpCodes.Div 1.0)
+    ; ("*", createArithBuiltin "arithmul" OpCodes.Mul 1.0)
     ; ("=", createCompBuiltin "aritheq" OpCodes.Beq)
     ; (">", createCompBuiltin "arithgt" OpCodes.Bgt)
     ; ("<", createCompBuiltin "arithlt" OpCodes.Blt)
     ; (">=", createCompBuiltin "arithgte" OpCodes.Bge)
     ; ("<=", createCompBuiltin "arithlte" OpCodes.Ble)
+    ; ("newline", newlineBuiltin)
     ; ("display", displayBuiltin) ]
     |> Map.ofSeq

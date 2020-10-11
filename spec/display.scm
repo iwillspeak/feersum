@@ -1,3 +1,3 @@
-(display "") ; => 
-(display ()) ; =>
-(display 123) ; => 123
+(display "")(newline) ; => 
+(display ())(newline) ; =>
+(display 123)(newline) ; => 123
