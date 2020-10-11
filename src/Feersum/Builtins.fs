@@ -194,7 +194,7 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
 
         il.Append(print)
 
-        let write = typeof<Console>.GetMethod("WriteLine", [| typeof<string> |])
+        let write = typeof<Console>.GetMethod("Write", [| typeof<string> |])
         let write = assm.MainModule.ImportReference write
         il.Emit(OpCodes.Call, write)
         il.Emit(OpCodes.Ret)
