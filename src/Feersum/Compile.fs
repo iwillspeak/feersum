@@ -36,6 +36,17 @@ let private namedParam name ty =
                         ParameterAttributes.None,
                         ty)
 
+/// Set the attributes on a given method to mark it as compiler generated code
+let private markAsCompilerGenerated (method: MethodDefinition) =
+    let addSimpleAttr (attrTy: Type) =
+        method
+            .Module
+            .ImportReference(attrTy.GetConstructor(Type.EmptyTypes))
+        |> CustomAttribute
+        |> method.CustomAttributes.Add
+    addSimpleAttr typeof<Runtime.CompilerServices.CompilerGeneratedAttribute>
+    addSimpleAttr typeof<Diagnostics.DebuggerNonUserCodeAttribute>
+
 /// Emit an instance of the unspecified value
 let private emitUnspecified (il: ILProcessor) =
     // TODO: What should we do about empty sequences? This falls back to '()
@@ -468,6 +479,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
         ctx.ProgramTy.Methods.Add methodDecl
         ctx.ProgramTy.Methods.Add thunkDecl
 
+    markAsCompilerGenerated thunkDecl
     methodDecl, thunkDecl
 
 /// Emit the `Main` Method Epilogue
@@ -607,6 +619,7 @@ let emit (outputStream: Stream) outputName bound scrptLocals =
 
     il.Emit(OpCodes.Call, bodyMethod)
     emitMainEpilogue assm il
+    markAsCompilerGenerated mainMethod
 
     // Write our `Assembly` to the output stream now we are done.
     assm.Write outputStream
