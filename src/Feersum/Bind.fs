@@ -50,11 +50,12 @@ type BoundExpr =
 /// and other transient information about the current `bind` call.
 type private BinderCtx =
     { mutable Scope: Scope<StorageRef>
+    ; mutable OuterScopes: Scope<StorageRef> list
     ; mutable NextEnvSlot: int
+    ; mutable LocalCount: int
     ; mutable Captures: StorageRef list
     ; mutable EnvSize: int option
     ; Diagnostics: DiagnosticBag
-    ; Storage: string -> StorageRef
     ; Parent: BinderCtx option }
 
 /// Add another element into our environment.
@@ -73,26 +74,33 @@ module private BinderCtx =
     /// Create a new binder context for the given root scope
     let createForGlobalScope scope =
         { Scope = scope |> Scope.fromMap
+        ; OuterScopes = []
         ; NextEnvSlot = 0
+        ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = DiagnosticBag.Empty
         ; EnvSize = None
-        ; Storage = StorageRef.Global
         ; Parent = None }
     
     /// Create a new binder context for a child scope
-    let createWithParent parent storageFact =
+    let createWithParent parent =
         { Scope = Scope.empty
+        ; OuterScopes = []
         ; NextEnvSlot = 0
+        ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = parent.Diagnostics
         ; EnvSize = None
-        ; Storage = storageFact
         ; Parent = Some(parent) }
     
     let private getNextEnvSlot ctx =
         let next = ctx.NextEnvSlot
         ctx.NextEnvSlot <- next + 1
+        next
+
+    let private getNextLocal ctx =
+        let next = ctx.LocalCount
+        ctx.LocalCount <- next + 1
         next
 
     let rec private parentLookup ctx id =
@@ -135,16 +143,26 @@ module private BinderCtx =
 
     /// Add a new entry to the current scope
     let addBinding ctx id =
-        let storage = ctx.Storage(id)
+        let storage =
+            if ctx.Parent.IsNone && ctx.OuterScopes.IsEmpty then
+                StorageRef.Global(id)
+            else
+                StorageRef.Local(getNextLocal ctx)
         ctx.Scope <- Scope.insert ctx.Scope id storage
         storage
 
     /// Add a new level to the scopes
-    let pushScope ctx = ctx.Scope
+    let pushScope ctx =
+        ctx.OuterScopes <- ctx.Scope::ctx.OuterScopes
 
     // Set the scope back to a stored value
-    let restoreScope ctx scope =
-        ctx.Scope <- scope
+    let popScope ctx =
+        match ctx.OuterScopes with
+        | scope::scopes ->
+            ctx.Scope <- scope
+            ctx.OuterScopes <- scopes
+        | [] ->
+            failwith "ICE: Unbalanced scope pop"
 
 /// Bind a Formals List Pattern
 ///
@@ -265,12 +283,7 @@ and private bindApplication ctx head rest =
     BoundExpr.Application(bindInContext ctx head, List.map (bindInContext ctx) rest)
 
 and private bindLambdaBody ctx formals body =
-    let mutable nextLocal = 0
-    let createLocal x =
-        let local = nextLocal
-        nextLocal <- nextLocal + 1
-        StorageRef.Local(local)
-    let lambdaCtx = BinderCtx.createWithParent ctx createLocal
+    let lambdaCtx = BinderCtx.createWithParent ctx
     let addFormal idx id =
         BinderCtx.addArgumentBinding lambdaCtx id idx
         idx + 1
@@ -284,7 +297,7 @@ and private bindLambdaBody ctx formals body =
         let nextFormal = (List.fold addFormal 0 fmls)
         addFormal nextFormal dotted |> ignore
     let boundBody = bindSequence lambdaCtx body
-    BoundExpr.Lambda(formals, nextLocal, lambdaCtx.Captures, lambdaCtx.EnvSize, boundBody)
+    BoundExpr.Lambda(formals, lambdaCtx.LocalCount, lambdaCtx.Captures, lambdaCtx.EnvSize, boundBody)
     
 and private bindLet ctx name body location declBinder =
     match body with
@@ -297,7 +310,7 @@ and private bindLet ctx name body location declBinder =
         // Bind the body of the lambda in the new scope
         let boundBody = List.map (bindInContext ctx) body
         // Decrement the scope depth
-        BinderCtx.restoreScope ctx savedScope
+        BinderCtx.popScope ctx
         BoundExpr.Seq(List.append decls boundBody)
     | _ -> illFormedInCtx ctx location name
 
@@ -422,7 +435,8 @@ let createRootScope =
 /// 
 /// TODO: This should probably return some kind of `BoundSyntaxTree` containing
 ///       the tree of bound nodes and a bag of diagnostics generated during the
-///       bind.
-let bind scope node: BoundExpr * Diagnostic list =
+///       bind. This is now _super_ needed as we're returning a 3-tuple so
+///       things get a bit unwieldy. 
+let bind scope node: BoundExpr * int * Diagnostic list =
     let ctx = BinderCtx.createForGlobalScope scope
-    (bindInContext ctx node, ctx.Diagnostics.Take)
+    (bindInContext ctx node, ctx.LocalCount, ctx.Diagnostics.Take)

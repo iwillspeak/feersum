@@ -121,7 +121,9 @@ let ``evaluate comparision ops`` expr result =
 [<InlineData("(let* () 456)", "456")>]
 [<InlineData("(let* ((a 111)) (+ a))", "111")>]
 let ``let expressions`` expr result =
-    let expr = 
+    let parsed = 
         sprintf "((lambda () %s ))" expr
         |> tryReadSingle
-    Assert.Equal(result, feeri(expr))
+    Assert.Equal(result, feeri(parsed))
+    let parsed = expr |> tryReadSingle
+    Assert.Equal(result, feeri(parsed))

@@ -101,7 +101,7 @@ let execute (input: AstNode): Result<SchemeValue, Diagnostic list> =
     let scope: Map<string, StorageRef> =
         Map.fold (fun s id _ -> s.Add(id, StorageRef.Global id)) createRootScope globals
     let initlalEnv = Map.toSeq globals |> dict
-    let bound, diags = bind scope input
+    let bound, _, diags = bind scope input
     if diags.IsEmpty then
         Ok(executeBound initlalEnv bound)
     else

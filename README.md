@@ -19,12 +19,14 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Standard library & builtins from a separate assembly.
  * [ ] Interop with other .NET assemblies.
  * [ ] Multi-statement support in the REPL.
+ * [ ] Debugging support - needs position information in bound tree.
+   * Bound tree should contain sequence points for debuging maybe?
+   * Debuggable REPL with files written to tempdir?
+ * [ ] MSBUILD SDK support so `.scmproj` can be defined.
  * [x] Diagnostics with position
     * [x] Expose position information in parser.
     * [x] Handle multiple parser errors.
     * [x] Turn errors in `bind` into diagnotics too.
- * [ ] Debugging support - needs position information in bound tree.
- * [ ] MSBUILD SDK support so `.scmproj` can be defined.
  * [x] Perform on-demand compilation & emit to in-memory assembly for REPL.
  
   [twitch]: https://twitch.tv/iwillspeak
