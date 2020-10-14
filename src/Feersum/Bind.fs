@@ -44,6 +44,11 @@ type BoundExpr =
     | Null
     | Error
 
+/// Root type returned by the binder.
+type BoundSyntaxTree = { Root: BoundExpr
+                       ; LocalsCount: int
+                       ; Diagnostics: Diagnostic list }
+
 /// Binder Context Type
 ///
 /// Used to pass the state around during the bind. Holds on to scope information
@@ -51,7 +56,6 @@ type BoundExpr =
 type private BinderCtx =
     { mutable Scope: Scope<StorageRef>
     ; mutable OuterScopes: Scope<StorageRef> list
-    ; mutable NextEnvSlot: int
     ; mutable LocalCount: int
     ; mutable Captures: StorageRef list
     ; mutable EnvSize: int option
@@ -75,7 +79,6 @@ module private BinderCtx =
     let createForGlobalScope scope =
         { Scope = scope |> Scope.fromMap
         ; OuterScopes = []
-        ; NextEnvSlot = 0
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = DiagnosticBag.Empty
@@ -86,30 +89,30 @@ module private BinderCtx =
     let createWithParent parent =
         { Scope = Scope.empty
         ; OuterScopes = []
-        ; NextEnvSlot = 0
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = parent.Diagnostics
         ; EnvSize = None
         ; Parent = Some(parent) }
-    
-    let private getNextEnvSlot ctx =
-        let next = ctx.NextEnvSlot
-        ctx.NextEnvSlot <- next + 1
-        next
 
     let private getNextLocal ctx =
         let next = ctx.LocalCount
         ctx.LocalCount <- next + 1
         next
 
-    let rec private parentLookup ctx id =
+    /// Lookup a given ID in the binder scope
+    let rec tryFindBinding ctx id =
+        Scope.find ctx.Scope id
+        |> Option.orElseWith (fun () -> parentLookup ctx id)
+    and private parentLookup ctx id =
         match ctx.Parent with
         | Some(parent) ->
-            match lookupAndCapture parent id with
+            match tryFindBinding parent id with
             | Some(outer) -> 
                 match outer with
                 | Captured(_)
+                | Arg(_)
+                | Local(_)
                 | Environment(_) -> 
                     ctx.Captures <- outer::ctx.Captures
                     ctx.EnvSize <- markEnvUsed ctx.EnvSize
@@ -117,25 +120,7 @@ module private BinderCtx =
                 | _ -> Some(outer)
             | None -> None
         | None -> None
-    and private lookupAndCapture ctx id =
-        match Scope.entry ctx.Scope id with
-        | Some(entry) ->
-            match entry.Value with
-            | Local(_)
-            | Arg(_) ->  
-                let envSlot = getNextEnvSlot ctx
-                let captured = StorageRef.Environment(envSlot, entry.Value)
-                entry.Value <- captured
-                ctx.EnvSize <- incEnvSize ctx.EnvSize
-                Some(captured)
-            | _ -> Some(entry.Value)
-        | _ -> parentLookup ctx id
-    
 
-    /// Lookup a given ID in the binder scope
-    let tryFindBinding ctx id =
-        Scope.find ctx.Scope id
-        |> Option.orElseWith (fun () -> parentLookup ctx id)
     
     /// Introduce a binding for the given formal argument
     let addArgumentBinding ctx id idx =
@@ -436,7 +421,8 @@ let createRootScope =
 /// TODO: This should probably return some kind of `BoundSyntaxTree` containing
 ///       the tree of bound nodes and a bag of diagnostics generated during the
 ///       bind. This is now _super_ needed as we're returning a 3-tuple so
-///       things get a bit unwieldy. 
-let bind scope node: BoundExpr * int * Diagnostic list =
+///       things get a bit unwieldy.
+let bind scope node: BoundSyntaxTree =
     let ctx = BinderCtx.createForGlobalScope scope
-    (bindInContext ctx node, ctx.LocalCount, ctx.Diagnostics.Take)
+    let bound = bindInContext ctx node
+    { Root = bound; LocalsCount = ctx.LocalCount; Diagnostics = ctx.Diagnostics.Take }
