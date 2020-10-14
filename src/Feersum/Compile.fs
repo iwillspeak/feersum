@@ -574,7 +574,7 @@ let private addCoreDecls (assm: AssemblyDefinition) =
 /// given bound tree. This method is responsible for creating the root
 /// `LispProgram` type and preparting the emit context. The main work of
 /// lowering is done by `emitNamedLambda`.
-let emit (outputStream: Stream) outputName bound scrptLocals =
+let emit (outputStream: Stream) outputName bound =
     // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
@@ -605,7 +605,7 @@ let emit (outputStream: Stream) outputName bound scrptLocals =
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams scrptLocals None bound
+    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.LocalsCount None bound.Root
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.
@@ -637,11 +637,13 @@ let emit (outputStream: Stream) outputName bound scrptLocals =
 /// name of the output.
 let compile outputStream outputName node =
     let scope = createRootScope
-    let bound, locals, diags = bind scope node
-    if Diagnostics.hasErrors diags then
-        diags
+    let bound = bind scope node
+    if Diagnostics.hasErrors bound.Diagnostics then
+        bound.Diagnostics
     else
-        emit outputStream outputName bound locals
+        bound
+        |> Lower.lower
+        |> emit outputStream outputName
         []
 
 /// Read a File and Compile

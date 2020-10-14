@@ -101,11 +101,11 @@ let execute (input: AstNode): Result<SchemeValue, Diagnostic list> =
     let scope: Map<string, StorageRef> =
         Map.fold (fun s id _ -> s.Add(id, StorageRef.Global id)) createRootScope globals
     let initlalEnv = Map.toSeq globals |> dict
-    let bound, _, diags = bind scope input
-    if diags.IsEmpty then
-        Ok(executeBound initlalEnv bound)
+    let bound = bind scope input
+    if not (Diagnostics.hasErrors bound.Diagnostics) then
+        Ok(executeBound initlalEnv bound.Root)
     else
-        Result.Error(diags)
+        Result.Error(bound.Diagnostics)
 
 /// Take a Scheme Value and convert it to the
 /// 'external representation' as a string
