@@ -61,13 +61,16 @@ let rec private rewriteExpression ctx = function
         // find out what is captured
         let ctx = { Parent = Some(ctx); Mappings = mappingsForExpr body }
         /// Update our environment size if captures were found
-        let evnSize =
+        let env =
             if Map.isEmpty ctx.Mappings then
                 env
             else
-                Some(Map.count ctx.Mappings)
+                Map.toSeq ctx.Mappings
+                |> Seq.map (fun (_, v) -> v)
+                |> List.ofSeq
+                |> Some
         // re-write the body
-        Lambda(formals, locals, captures, evnSize, (rewriteExpression ctx body))
+        Lambda(formals, locals, captures, env, (rewriteExpression ctx body))
     | e -> e
 
 /// Lower a bound tree to a form better suited for the emit phase.

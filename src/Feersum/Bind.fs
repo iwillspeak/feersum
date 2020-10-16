@@ -40,7 +40,7 @@ type BoundExpr =
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
-    | Lambda of BoundFormals * int * StorageRef list * int option * BoundExpr
+    | Lambda of BoundFormals * int * StorageRef list * StorageRef list option * BoundExpr
     | Null
     | Error
 
@@ -58,7 +58,7 @@ type private BinderCtx =
     ; mutable OuterScopes: Scope<StorageRef> list
     ; mutable LocalCount: int
     ; mutable Captures: StorageRef list
-    ; mutable EnvSize: int option
+    ; mutable HasDynamicEnv: bool
     ; Diagnostics: DiagnosticBag
     ; Parent: BinderCtx option }
 
@@ -66,11 +66,6 @@ type private BinderCtx =
 let private incEnvSize = function
     | None -> Some(1)
     | Some(size) -> Some(size + 1)
-
-/// Mark the environment as used, even if nothing is stored in it.
-let private markEnvUsed = function
-    | None -> Some(0)
-    | o -> o
 
 /// Methods for manipulating the bind context
 module private BinderCtx =
@@ -82,7 +77,7 @@ module private BinderCtx =
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = DiagnosticBag.Empty
-        ; EnvSize = None
+        ; HasDynamicEnv = false
         ; Parent = None }
     
     /// Create a new binder context for a child scope
@@ -92,7 +87,7 @@ module private BinderCtx =
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = parent.Diagnostics
-        ; EnvSize = None
+        ; HasDynamicEnv = false
         ; Parent = Some(parent) }
 
     let private getNextLocal ctx =
@@ -115,7 +110,7 @@ module private BinderCtx =
                 | Local(_)
                 | Environment(_) -> 
                     ctx.Captures <- outer::ctx.Captures
-                    ctx.EnvSize <- markEnvUsed ctx.EnvSize
+                    ctx.HasDynamicEnv <- true
                     Some(StorageRef.Captured(outer))
                 | _ -> Some(outer)
             | None -> None
@@ -282,7 +277,12 @@ and private bindLambdaBody ctx formals body =
         let nextFormal = (List.fold addFormal 0 fmls)
         addFormal nextFormal dotted |> ignore
     let boundBody = bindSequence lambdaCtx body
-    BoundExpr.Lambda(formals, lambdaCtx.LocalCount, lambdaCtx.Captures, lambdaCtx.EnvSize, boundBody)
+    let env =
+        if lambdaCtx.HasDynamicEnv then
+            Some([])
+        else
+            None
+    BoundExpr.Lambda(formals, lambdaCtx.LocalCount, lambdaCtx.Captures, env, boundBody)
     
 and private bindLet ctx name body location declBinder =
     match body with
