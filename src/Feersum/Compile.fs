@@ -21,7 +21,6 @@ type EmitCtx =
     ; Locals: VariableDefinition list
     ; Parameters: ParameterDefinition list
     ; mutable NextLambda: int
-    ; mutable Hoisted: int list
     ; ScopePrefix: string
     ; EnvSize: int option
     ; mutable Environment: VariableDefinition option
@@ -35,6 +34,15 @@ let private namedParam name ty =
     ParameterDefinition(name,
                         ParameterAttributes.None,
                         ty)
+
+let private envSizeForMappings envMappings =
+    envMappings
+    |> Option.map (fun x ->
+        x
+        |> Seq.filter (function
+            | Environment _ -> true
+            | _ -> false)
+        |> Seq.length)
 
 /// Set the attributes on a given method to mark it as compiler generated code
 let private markAsCompilerGenerated (method: MethodDefinition) =
@@ -94,26 +102,26 @@ let private makeTemp ctx ty =
     ctx.IL.Body.Variables.Add <| temp
     temp
 
+/// Create a dynamic environmnet instance for the given context.
+let private createEnvironment ctx (size: int) =
+    if ctx.ParentEnvSize.IsSome then
+        ctx.IL.Emit(OpCodes.Ldarg_0)
+    else
+        ctx.IL.Emit(OpCodes.Ldnull)
+    ctx.IL.Emit(OpCodes.Ldc_I4, size)
+    let ctor = Seq.head <| ctx.Core.EnvTy.GetConstructors()
+    ctx.IL.Emit(OpCodes.Newobj, ctor)
+    let env = makeTemp ctx ctx.Core.EnvTy
+    ctx.Environment <- Some env
+    ctx.IL.Emit(OpCodes.Stloc, env)
+
 /// Get the variable definition that the local environment is stored in. If the
 /// environment hasn't been referenced yet then IL is emitted to initialise it.
 let private getEnvironment ctx =
-    let createEnvironment ctx (size: int) =
-        // TODO: is there a better way to check if we are an instance method?
-        if ctx.ParentEnvSize.IsSome then
-            ctx.IL.Emit(OpCodes.Ldarg_0)
-        else
-            ctx.IL.Emit(OpCodes.Ldnull)
-        ctx.IL.Emit(OpCodes.Ldc_I4, size)
-        let ctor = Seq.head <| ctx.Core.EnvTy.GetConstructors()
-        ctx.IL.Emit(OpCodes.Newobj, ctor)
     match ctx.Environment with
     | Some env -> env
     | None ->
-        let env = makeTemp ctx ctx.Core.EnvTy
-        ctx.Environment <- Some env
-        createEnvironment ctx (Option.defaultValue 0 ctx.EnvSize)
-        ctx.IL.Emit(OpCodes.Stloc, env)
-        env
+        failwith "Internal Compiler Error: Attempt to access environment in context without one"
 
 /// Walk the chain of captures starting at `from` in the parent, and then call
 /// `f` with the environment index that the capture chain ends at. This is used
@@ -299,19 +307,7 @@ and emitLambda ctx formals locals captured envSize body =
     let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals locals envSize body
     let method = thunk :> MethodReference
 
-    // Move all values into the captures environment if not already there
-    let maybeHoistValue hoisted capture =
-        match capture with
-        | Environment(idx, location) ->
-            if List.contains idx hoisted then
-                hoisted
-            else
-                readFrom ctx location
-                writeTo ctx capture
-                idx::hoisted
-        | _ -> hoisted
-    ctx.Hoisted <- List.fold maybeHoistValue ctx.Hoisted captured
-
+    // Create a `Func` instance with the appropriate `this` pointer.
     match ctx.EnvSize with
         | Some(_) ->
             ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
@@ -330,7 +326,7 @@ and emitLambda ctx formals locals captured envSize body =
     /// the function we are calling. A future optimisation may be to transform
     /// the bound tree and lower some calls in the case we _can_ be sure of the
     /// parameters. 
-and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
+and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
 
     let attrs = 
         if ctx.EnvSize.IsSome then
@@ -368,12 +364,27 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envSize body =
     let ctx = { ctx with NextLambda = 0;
                          Locals = locals;
                          Parameters = List.rev parameters;
-                         Hoisted = [];
-                         EnvSize = envSize
+                         EnvSize = envSizeForMappings envMappings
                          ParentEnvSize = ctx.EnvSize
                          Environment = None
                          IL = methodDecl.Body.GetILProcessor();
                          ScopePrefix = name }
+
+    match envMappings with
+    | Some m ->
+        createEnvironment ctx (Option.defaultValue 0 ctx.EnvSize)
+        // Hoist any arguments into the environment
+        m
+        |> Seq.iter (function
+            | Environment(idx, Arg a) ->
+                ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
+                ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
+                ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+                ctx.IL.Emit(OpCodes.Ldarg, argToParam ctx a)
+                ctx.IL.Emit(OpCodes.Stelem_Ref)
+            | _ -> ())
+    | None -> ()
+
     emitExpression ctx body
     ctx.IL.Emit(OpCodes.Ret)
     methodDecl.Body.Optimize()
@@ -596,7 +607,6 @@ let emit (outputStream: Stream) outputName bound =
                       ; Core = coreTypes
                       ; Builtins = Builtins.createBuiltins assm progTy
                       ; NextLambda = 0
-                      ; Hoisted = []
                       ; Locals = []
                       ; Parameters = []
                       ; EnvSize = None
