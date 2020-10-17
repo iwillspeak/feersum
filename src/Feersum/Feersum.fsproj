@@ -6,6 +6,7 @@
     <ToolCommandName>feersum-scheme</ToolCommandName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Options.fs" />
     <Compile Include="Diagnostics.fs" />
     <Compile Include="Syntax.fs" />
     <Compile Include="Scope.fs" />

@@ -1,5 +1,6 @@
 ﻿// Learn more about F# at http://fsharp.org
 
+open Options
 open Syntax
 open System
 open Interpret
@@ -14,6 +15,7 @@ open System.IO
 /// supports.
 type CliArguments =
     | Version
+    | Configuration of BuildConfiguration
     | Interpret
     | [<AltCommandLine("-o")>] Output of string
     | [<MainCommand>] Sources of source_file:string list
@@ -21,6 +23,7 @@ type CliArguments =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
+            | Configuration _ -> "The build configuration (Debug / Release)."
             | Version -> "Print the program version and exit."
             | Interpret -> "Use the legacy interpreter in the REPL."
             | Sources _ -> "Scheme source files for compilation."
