@@ -9,6 +9,7 @@ open System.IO
 open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
+open System.Collections.Generic
 
 /// Core Types Used by the Compiler at Runtime
 type CoreTypes =
@@ -21,6 +22,7 @@ type EmitCtx =
     ; IL: ILProcessor
     ; Locals: VariableDefinition list
     ; Parameters: ParameterDefinition list
+    ; DebugDocuments: Dictionary<string, Document>
     ; mutable NextLambda: int
     ; ScopePrefix: string
     ; EnvSize: int option
@@ -179,7 +181,14 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         let ins = ctx.IL.Body.Instructions.[pos]
         let s = location.Start
         let e = location.End
-        let doc = Document(s.StreamName)
+        let (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
+        if not found then
+            let path =
+                Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    s.StreamName)
+            doc <- Document(sprintf "file://%s" path)
+            ctx.DebugDocuments.[s.StreamName] <- doc
         let point = SequencePoint(ins, doc)
         point.StartLine <- int s.Line
         point.StartColumn <- int s.Column
@@ -637,6 +646,7 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
     let rootEmitCtx = { IL = null
+                      ; DebugDocuments = Dictionary()
                       ; ProgramTy = progTy
                       ; Core = coreTypes
                       ; Builtins = Builtins.createBuiltins assm progTy
