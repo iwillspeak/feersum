@@ -10,5 +10,5 @@
             (iterfact-acc (- n 1) (* acc n))))
     (iterfact-acc n 1))
 
-(display (fact 4)) ; => 24
-(display (iterfact 4)) ; => 24
+(display (fact 4))(newline) ; => 24
+(display (iterfact 4))(newline) ; => 24
