@@ -62,6 +62,7 @@ let builtins =
 let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
     let recurse = executeBound env
     match expr with
+    | BoundExpr.SequencePoint(inner, _) -> recurse inner
     | BoundExpr.Null -> SchemeValue.Nil
     | BoundExpr.Number n -> SchemeValue.Number n
     | BoundExpr.Str s -> SchemeValue.Str s

@@ -173,6 +173,19 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     let recurse = emitExpression ctx
     match expr with
     | BoundExpr.Error -> failwith "ICE: Attempt to lower an error expression"
+    | BoundExpr.SequencePoint(inner, location) ->
+        let pos = ctx.IL.Body.Instructions.Count
+        recurse inner
+        let ins = ctx.IL.Body.Instructions.[pos]
+        let s = location.Start
+        let e = location.End
+        let doc = Document(s.StreamName)
+        let point = SequencePoint(ins, doc)
+        point.StartLine <- int s.Line
+        point.StartColumn <- int s.Column
+        point.EndLine <- int e.Line
+        point.EndColumn <- int e.Column
+        ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
     | BoundExpr.Null -> ctx.IL.Emit(OpCodes.Ldnull)
     | BoundExpr.Number n ->
         ctx.IL.Emit(OpCodes.Ldc_R8, n)
@@ -657,6 +670,7 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     match symbolStream with
     | Some(stream) ->
         writerParams.SymbolStream <- stream
+        writerParams.WriteSymbols <- true
         writerParams.SymbolWriterProvider <- PortablePdbWriterProvider()
     | None -> ()
     assm.Write(outputStream, writerParams)

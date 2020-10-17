@@ -23,6 +23,7 @@ let rec private findCaptured = function
         captures
         |> List.filter isFree
     | Store(_, v) -> Option.map findCaptured v |> Option.defaultValue []
+    | SequencePoint(inner, _) -> findCaptured inner
     | e -> []
 
 /// Finds the variable references that need to be moved into the environment at
@@ -71,6 +72,8 @@ let rec private rewriteExpression ctx = function
                 |> Some
         // re-write the body
         Lambda(formals, locals, captures, env, (rewriteExpression ctx body))
+    | SequencePoint(inner, location) ->
+        SequencePoint((rewriteExpression ctx inner), location)
     | e -> e
 
 /// Lower a bound tree to a form better suited for the emit phase.

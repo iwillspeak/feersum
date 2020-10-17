@@ -31,6 +31,7 @@ type BoundFormals =
 /// Bound expressions represent the syntax of a program with all identifier
 /// references resolved to the correct storage.
 type BoundExpr =
+    | SequencePoint of BoundExpr * TextLocation
     | Boolean of bool
     | Character of char
     | Number of double
@@ -256,7 +257,10 @@ let rec private bindInContext ctx node =
             BoundExpr.Error
 
 and private bindSequence ctx exprs =
-    List.map (bindInContext ctx) exprs
+    let bindSequenceExpr expr =
+        let inner = bindInContext ctx expr
+        SequencePoint(inner, expr.Location)
+    List.map bindSequenceExpr exprs
     |> BoundExpr.Seq
 
 and private bindApplication ctx head rest =

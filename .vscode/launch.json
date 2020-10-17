@@ -13,7 +13,16 @@
             "cwd": "${workspaceFolder}",
             "stopAtEntry": true,
             "justMyCode": false,
-            "console": "internalConsole"
+            "console": "internalConsole",
+            "requireExactSource": false,
+            "internalConsoleOptions": "openOnSessionStart",
+            "symbolOptions": {
+                "searchPaths": [
+                    "${workspaceFolder}/spec/bin/"
+                ],
+                "searchMicrosoftSymbolServer": false,
+                "searchNuGetOrgSymbolServer": false
+            }
         },
         {
             "name": "Feersum",
