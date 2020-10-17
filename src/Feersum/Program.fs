@@ -69,12 +69,12 @@ let rec repl evaluator =
 
 /// Compile a single file printing an error if
 /// there is one.
-let private compileSingle output sourcePath =
+let private compileSingle configuration output sourcePath =
     let outputPath =
         match output with
         | Some(path) -> path
         | None -> Path.ChangeExtension(sourcePath, "exe")
-    match compileFile outputPath sourcePath with
+    match compileFile configuration outputPath sourcePath with
     | [] -> ()
     | diagnostics -> dumpDiagnostics(diagnostics)
 
@@ -108,8 +108,12 @@ let main argv =
         printfn "Feersum Scheme Compiler - %s" versionString
         exit 0
 
+    let buildConfig =
+        args.TryGetResult Configuration
+        |> Option.defaultValue Release
+
     match args.GetResult(Sources, defaultValue = []) with
     | [] -> runRepl (args.Contains Interpret)
-    | files -> Seq.iter (compileSingle (args.TryGetResult Output)) files
+    | files -> Seq.iter (compileSingle buildConfig (args.TryGetResult Output)) files
 
     0 // return an integer exit code

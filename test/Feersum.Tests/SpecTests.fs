@@ -1,6 +1,7 @@
 module SpecTests
 
 open Xunit
+open Options
 open Compile
 open Syntax
 open System.IO
@@ -24,9 +25,9 @@ let listSpecs =
 [<MemberDataAttribute("listSpecs")>]
 let ``spec tests compile and run`` s =
     let sourcePath = Path.Join(specDir, s)
-    let exePath = Path.ChangeExtension(Path.Join(specBin, s), "exe")
+    let exePath = Path.ChangeExtension(Path.Join(specBin, s), "dll")
     let shouldFail = sourcePath.Contains "fail"
-    match compileFile exePath sourcePath with
+    match compileFile BuildConfiguration.Debug exePath sourcePath with
     | [] ->
         if shouldFail then
             failwith "Expected compilation failure!"

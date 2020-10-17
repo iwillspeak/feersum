@@ -26,7 +26,7 @@ let cilExternalRepr (object: Object) =
 /// main method on that.
 let eval ast =
     let memStream = new MemoryStream()
-    let diags = compile memStream "evalCtx" ast
+    let diags = compile memStream "evalCtx" None ast
     if not diags.IsEmpty then
         Result.Error(diags)
     else

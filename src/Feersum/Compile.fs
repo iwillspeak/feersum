@@ -1,5 +1,6 @@
 module Compile
 
+open Options
 open Bind
 open Syntax
 open IlHelpers
@@ -54,6 +55,23 @@ let private markAsCompilerGenerated (method: MethodDefinition) =
         |> method.CustomAttributes.Add
     addSimpleAttr typeof<Runtime.CompilerServices.CompilerGeneratedAttribute>
     addSimpleAttr typeof<Diagnostics.DebuggerNonUserCodeAttribute>
+
+/// Mark the assembly as supporting debugging
+let private markAsDebuggable (assm: AssemblyDefinition) =
+    let attr =
+        assm.MainModule.ImportReference(
+            typeof<Diagnostics.DebuggableAttribute>
+                .GetConstructor([| typeof<bool>; typeof<bool> |]))
+        |> CustomAttribute
+
+    attr.ConstructorArguments.Add(
+        CustomAttributeArgument(assm.MainModule.TypeSystem.Boolean, true))
+    attr.ConstructorArguments.Add(
+        CustomAttributeArgument(assm.MainModule.TypeSystem.Boolean, true))
+
+    attr
+    |> assm.CustomAttributes.Add
+    ()
 
 /// Emit an instance of the unspecified value
 let private emitUnspecified (il: ILProcessor) =
@@ -585,10 +603,13 @@ let private addCoreDecls (assm: AssemblyDefinition) =
 /// given bound tree. This method is responsible for creating the root
 /// `LispProgram` type and preparting the emit context. The main work of
 /// lowering is done by `emitNamedLambda`.
-let emit (outputStream: Stream) outputName bound =
+let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
+
+    if symbolStream.IsSome then
+        markAsDebuggable assm
 
     let coreTypes = addCoreDecls assm
 
@@ -632,7 +653,13 @@ let emit (outputStream: Stream) outputName bound =
     markAsCompilerGenerated mainMethod
 
     // Write our `Assembly` to the output stream now we are done.
-    assm.Write outputStream
+    let mutable writerParams = WriterParameters()
+    match symbolStream with
+    | Some(stream) ->
+        writerParams.SymbolStream <- stream
+        writerParams.SymbolWriterProvider <- PortablePdbWriterProvider()
+    | None -> ()
+    assm.Write(outputStream, writerParams)
 
 /// Compile a single AST node into an assembly
 ///
@@ -645,7 +672,7 @@ let emit (outputStream: Stream) outputName bound =
 /// the expression and writes out the corresponding .NET IL to an `Assembly`
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
 /// name of the output.
-let compile outputStream outputName node =
+let compile outputStream outputName symbolStream node =
     let scope = createRootScope
     let bound = bind scope node
     if Diagnostics.hasErrors bound.Diagnostics then
@@ -653,14 +680,14 @@ let compile outputStream outputName node =
     else
         bound
         |> Lower.lower
-        |> emit outputStream outputName
+        |> emit outputStream outputName  symbolStream
         []
 
 /// Read a File and Compile
 ///
 /// Takes the `source` to an input to read and compile. Compilation results
 /// are written to `output`.
-let compileFile (output: string) (source: string) =
+let compileFile configuration (output: string) (source: string) =
 
     // Ensure the output path exists
     let outDir = Path.GetDirectoryName(output)
@@ -674,7 +701,7 @@ let compileFile (output: string) (source: string) =
     let stem, output =
         if String.IsNullOrWhiteSpace(stem) then
             let stem = Path.GetFileNameWithoutExtension(source)
-            stem, Path.Join(outDir, stem + ".exe")
+            stem, Path.Join(outDir, stem + ".dll")
         else
             stem, output
     
@@ -683,7 +710,14 @@ let compileFile (output: string) (source: string) =
     if Diagnostics.hasErrors diagnostics then
         diagnostics
     else
-        let diags = compile (File.OpenWrite output) stem ast
+        let symbols =
+            match configuration with
+            | BuildConfiguration.Debug ->
+                Some(File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream)
+                // make a symbol file
+            | BuildConfiguration.Release -> None
+
+        let diags = compile (File.OpenWrite output) stem symbols ast
         if diags.IsEmpty then
             // TOOD: This metadata needs to be abstracted to deal with different
             //       target framework's prefrences. For now the `.exe` we generate

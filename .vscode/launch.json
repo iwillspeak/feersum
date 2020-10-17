@@ -11,7 +11,8 @@
             "program": "${workspaceFolder}/${input:dllToDebug}",
             "args": [],
             "cwd": "${workspaceFolder}",
-            "stopAtEntry": false,
+            "stopAtEntry": true,
+            "justMyCode": false,
             "console": "internalConsole"
         },
         {
@@ -23,7 +24,7 @@
             "args": [],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
-            "stopAtEntry": false
+            "stopAtEntry": true
         }
     ],
     "inputs": [
