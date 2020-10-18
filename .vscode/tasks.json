@@ -41,6 +41,23 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "builditerfact",
+            "command": "dotnet",
+            "type": "shell",
+            "dependsOn": "build",
+            "args": [
+                "${workspaceFolder}/src/Feersum/bin/Debug/netcoreapp3.1/Feersum.dll",
+                "--configuration", "Debug",
+                "-o", "${workspaceFolder}/spec/bin/",
+                "${workspaceFolder}/spec/iterfact.scm"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "update-snapshots",
             "command": "dotnet",
             "type": "shell",

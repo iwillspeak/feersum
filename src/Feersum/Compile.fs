@@ -258,6 +258,8 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         ctx.IL.Append(lblTrue)
         recurse ifTrue
 
+        // TODO: Could do with another sequence point here at the join block. Or
+        //       stop using `nops` all over the place as labels and instead.
         ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, locals, captured, envSize, body) ->
         emitLambda ctx formals locals captured envSize body

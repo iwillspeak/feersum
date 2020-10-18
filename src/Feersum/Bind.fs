@@ -257,7 +257,11 @@ let rec private bindInContext ctx node =
             BoundExpr.Error
 
 and private bindWithSequencePoint ctx expr =
-    BoundExpr.SequencePoint((bindInContext ctx expr), expr.Location)
+    let inner = bindInContext ctx expr
+    match inner with
+    | BoundExpr.If _ 
+    | BoundExpr.Seq _ -> inner
+    | _ -> BoundExpr.SequencePoint(inner, expr.Location)
 
 and private bindSequence ctx exprs =
     List.map (bindWithSequencePoint ctx) exprs
@@ -307,7 +311,7 @@ and private bindForm ctx (form: AstNode list) location =
     let illFormed formName = illFormedInCtx ctx location formName
     match form with
     | { Kind = AstNodeKind.Ident("if") }::body ->
-        let b = bindInContext ctx
+        let b = bindWithSequencePoint ctx
         match body with
         | [cond;ifTrue;ifFalse] -> BoundExpr.If((b cond), (b ifTrue), Some(b ifFalse))
         | [cond;ifTrue] -> BoundExpr.If((b cond), (b ifTrue), None)

@@ -7,7 +7,7 @@
         {
             "name": "Iterfact",
             "type": "coreclr",
-            "preLaunchTask": "test",
+            "preLaunchTask": "builditerfact",
             "request": "launch",
             "program": "${workspaceFolder}/spec/bin/iterfact.dll",
             "args": [],
