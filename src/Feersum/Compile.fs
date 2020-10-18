@@ -198,11 +198,11 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
             let e = location.End
             let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
             if not found then
-                let path =
-                    Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        s.StreamName)
-                doc <- Document(sprintf "file://%s" path)
+                doc <- Document(Path.GetFullPath(s.StreamName))
+                doc.Language <- DocumentLanguage.Other
+                doc.LanguageGuid <- Guid("c70c3e24-e471-4637-8129-10f771417dbb")
+                doc.LanguageVendor <- DocumentLanguageVendor.Other
+                doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
                 ctx.DebugDocuments.[s.StreamName] <- doc
             let point = SequencePoint(ins, doc)
             point.StartLine <- int s.Line
