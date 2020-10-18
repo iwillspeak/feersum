@@ -445,10 +445,19 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
     methodDecl.Body.Optimize()
 
     if ctx.EmitSymbols then
-        methodDecl.DebugInformation.Scope <- ScopeDebugInformation(
+        let scope =
+            ScopeDebugInformation(
             methodDecl.Body.Instructions.[0],
             methodDecl.Body.Instructions.[methodDecl.Body.Instructions.Count - 1])
+
+        // If we have an environment tell the debugger about it
+        ctx.Environment
+        |> Option.iter (fun env ->
+            VariableDebugInformation(env, "capture-environment")
+            |> scope.Variables.Add)
+
         // TODO: Flesh out this scope with the local variable names + environment
+        methodDecl.DebugInformation.Scope <- scope
 
     // Emit a 'thunk' that unpacks the arguments to our method
     // This allows us to provide a uniform calling convention for

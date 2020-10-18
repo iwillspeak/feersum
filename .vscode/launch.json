@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Iterfact",
+            "type": "coreclr",
+            "preLaunchTask": "test",
+            "request": "launch",
+            "program": "${workspaceFolder}/spec/bin/iterfact.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/spec/bin/",
+            "stopAtEntry": true,
+            "justMyCode": false,
+            "console": "internalConsole",
+            "requireExactSource": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
             "name": "Test Example",
             "type": "coreclr",
             "request": "launch",
@@ -15,14 +29,7 @@
             "justMyCode": false,
             "console": "internalConsole",
             "requireExactSource": false,
-            "internalConsoleOptions": "openOnSessionStart",
-            "symbolOptions": {
-                "searchPaths": [
-                    "${workspaceFolder}/spec/bin/"
-                ],
-                "searchMicrosoftSymbolServer": false,
-                "searchNuGetOrgSymbolServer": false
-            }
+            "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "name": "Feersum",
@@ -33,7 +40,7 @@
             "args": [],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
-            "stopAtEntry": true
+            "stopAtEntry": false
         }
     ],
     "inputs": [
