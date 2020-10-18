@@ -25,6 +25,7 @@ type EmitCtx =
     ; DebugDocuments: Dictionary<string, Document>
     ; mutable NextLambda: int
     ; ScopePrefix: string
+    ; EmitSymbols: bool
     ; EnvSize: int option
     ; mutable Environment: VariableDefinition option
     ; ParentEnvSize: int option
@@ -191,23 +192,24 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     | BoundExpr.SequencePoint(inner, location) ->
         let pos = ctx.IL.Body.Instructions.Count
         recurse inner
-        let ins = ctx.IL.Body.Instructions.[pos]
-        let s = location.Start
-        let e = location.End
-        let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
-        if not found then
-            let path =
-                Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    s.StreamName)
-            doc <- Document(sprintf "file://%s" path)
-            ctx.DebugDocuments.[s.StreamName] <- doc
-        let point = SequencePoint(ins, doc)
-        point.StartLine <- int s.Line
-        point.StartColumn <- int s.Column
-        point.EndLine <- int e.Line
-        point.EndColumn <- int e.Column
-        ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
+        if ctx.EmitSymbols then
+            let ins = ctx.IL.Body.Instructions.[pos]
+            let s = location.Start
+            let e = location.End
+            let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
+            if not found then
+                let path =
+                    Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        s.StreamName)
+                doc <- Document(sprintf "file://%s" path)
+                ctx.DebugDocuments.[s.StreamName] <- doc
+            let point = SequencePoint(ins, doc)
+            point.StartLine <- int s.Line
+            point.StartColumn <- int s.Column
+            point.EndLine <- int e.Line
+            point.EndColumn <- int e.Column
+            ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
     | BoundExpr.Null -> ctx.IL.Emit(OpCodes.Ldnull)
     | BoundExpr.Number n ->
         ctx.IL.Emit(OpCodes.Ldc_R8, n)
@@ -442,6 +444,12 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
     ctx.IL.Emit(OpCodes.Ret)
     methodDecl.Body.Optimize()
 
+    if ctx.EmitSymbols then
+        methodDecl.DebugInformation.Scope <- ScopeDebugInformation(
+            methodDecl.Body.Instructions.[0],
+            methodDecl.Body.Instructions.[methodDecl.Body.Instructions.Count - 1])
+        // TODO: Flesh out this scope with the local variable names + environment
+
     // Emit a 'thunk' that unpacks the arguments to our method
     // This allows us to provide a uniform calling convention for
     // lambda instances.
@@ -666,6 +674,7 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
                       ; NextLambda = 0
                       ; Locals = []
                       ; Parameters = []
+                      ; EmitSymbols = symbolStream.IsSome
                       ; EnvSize = None
                       ; ParentEnvSize = None
                       ; Environment = None
