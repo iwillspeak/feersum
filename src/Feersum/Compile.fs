@@ -73,6 +73,19 @@ let private markAsDebuggable (assm: AssemblyDefinition) =
 
     attr
     |> assm.CustomAttributes.Add
+
+    let attr =
+        assm.MainModule.ImportReference(
+            typeof<Reflection.AssemblyConfigurationAttribute>
+                .GetConstructor([| typeof<string> |]))
+        |> CustomAttribute
+    attr.ConstructorArguments.Add(
+        CustomAttributeArgument(
+            assm.MainModule.TypeSystem.String,
+            "Debug"))
+
+    attr
+    |> assm.CustomAttributes.Add    
     ()
 
 /// Emit an instance of the unspecified value
@@ -181,7 +194,7 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         let ins = ctx.IL.Body.Instructions.[pos]
         let s = location.Start
         let e = location.End
-        let (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
+        let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
         if not found then
             let path =
                 Path.Combine(
