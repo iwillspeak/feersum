@@ -447,8 +447,8 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
     if ctx.EmitSymbols then
         let scope =
             ScopeDebugInformation(
-            methodDecl.Body.Instructions.[0],
-            methodDecl.Body.Instructions.[methodDecl.Body.Instructions.Count - 1])
+                methodDecl.Body.Instructions.[0],
+                methodDecl.Body.Instructions.[methodDecl.Body.Instructions.Count - 1])
 
         // If we have an environment tell the debugger about it
         ctx.Environment

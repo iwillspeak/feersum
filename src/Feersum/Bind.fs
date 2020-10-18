@@ -256,11 +256,11 @@ let rec private bindInContext ctx node =
             |> ctx.Diagnostics.Emit node.Location
             BoundExpr.Error
 
+and private bindWithSequencePoint ctx expr =
+    BoundExpr.SequencePoint((bindInContext ctx expr), expr.Location)
+
 and private bindSequence ctx exprs =
-    let bindSequenceExpr expr =
-        let inner = bindInContext ctx expr
-        SequencePoint(inner, expr.Location)
-    List.map bindSequenceExpr exprs
+    List.map (bindWithSequencePoint ctx) exprs
     |> BoundExpr.Seq
 
 and private bindApplication ctx head rest =
@@ -313,7 +313,7 @@ and private bindForm ctx (form: AstNode list) location =
         | [cond;ifTrue] -> BoundExpr.If((b cond), (b ifTrue), None)
         | _ -> illFormed "if"
     | { Kind = AstNodeKind.Ident("begin") }::body ->
-        List.map (bindInContext ctx) body |> BoundExpr.Seq
+        bindSequence ctx body
     | { Kind = AstNodeKind.Ident("define") }::body ->
         match body with
         | [{ Kind = AstNodeKind.Ident id }] ->
