@@ -59,10 +59,10 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/src/dbgdumper/bin/Debug/net5.0/dbgdumper.dll",
-            "args": [ "${workspaceRoot}/src/dbgdumper/bin/Debug/net5.0/dbgdumper.dll" ],
+            "args": [ "${workspaceRoot}/src/fooble/bin/Debug/net5.0/fooble.dll" ],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
-            "stopAtEntry": false
+            "stopAtEntry": true
         }
     ],
     "inputs": [
