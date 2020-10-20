@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "foob",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/fooble/bin/Debug/net5.0/fooble.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": true,
+            "console": "internalConsole"
+        },
+        {
             "name": "Iterfact",
             "type": "coreclr",
             "preLaunchTask": "builditerfact",
@@ -38,6 +49,17 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/src/Feersum/bin/Debug/netcoreapp3.1/Feersum.dll",
             "args": [],
+            "cwd": "${workspaceRoot}",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Dbg",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/dbgdumper/bin/Debug/net5.0/dbgdumper.dll",
+            "args": [ "${workspaceRoot}/src/dbgdumper/bin/Debug/net5.0/dbgdumper.dll" ],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
             "stopAtEntry": false
