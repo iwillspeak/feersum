@@ -15,8 +15,18 @@ let private seqOfMonoCol (col: Mono.Collections.Generic.Collection<'t>) =
             None)
         0
 
+let private dumpScope (scope: ScopeDebugInformation) =
+    printfn ">>> Scope: (%A:%A)" scope.Start scope.End
+    printfn "    Variables:"
+    scope.Variables
+    |> seqOfMonoCol
+    |> Seq.iter (fun v -> printfn "    [%A] = %A" v.Index v.Name)
+
 let private dumpMethod (meth: MethodDefinition) =
     printfn ">> Method: %A" meth
+    if not (isNull meth.DebugInformation.Scope) then
+        dumpScope meth.DebugInformation.Scope
+
     let sequencePoints =
         seqOfMonoCol meth.DebugInformation.SequencePoints
         |> Seq.map (fun x -> (x.Offset, x))
@@ -26,7 +36,7 @@ let private dumpMethod (meth: MethodDefinition) =
     |> Seq.iter (fun (i, il) ->
         match Map.tryFind i sequencePoints with
         | Some(point) ->
-            printfn "  %A (%d:%d %d:%d)" point.Document.Url point.StartLine point.StartColumn point.EndLine point.EndColumn
+            printfn "  // %A %A (%d:%d %d:%d)" point.Document.Url point.Document.Type point.StartLine point.StartColumn point.EndLine point.EndColumn
         | None -> ()
         printfn "  %A" il)
     ()
