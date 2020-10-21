@@ -6,11 +6,17 @@ open Mono.Cecil
 open Mono.Cecil.Cil
 open System
 
+/// Core Types Used by the Compiler at Runtime
+type CoreTypes =
+    { ConsTy: TypeDefinition
+    ; EnvTy: TypeDefinition
+    ; Builtins: Map<string,MethodDefinition> }
+
 /// Create all builtin methods
 /// 
 /// Returns a map containing all of the builtin methods supported by the
 /// implementation.
-let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
+let private createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
     let declareBuiltinMethod name =
         let meth = MethodDefinition(name,
                                 MethodAttributes.Public ||| MethodAttributes.Static,
@@ -236,3 +242,63 @@ let createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
     ; ("newline", newlineBuiltin)
     ; ("display", displayBuiltin) ]
     |> Map.ofSeq
+
+
+/// Adds the ConsPair Type
+///
+/// Creates supporting types used for represnting scheme values that the
+/// compiler depends on for emitted code.
+let private addCoreDecls (assm: AssemblyDefinition) =
+    let compilerServicesNs = "Feersum.CompilerServices"
+    let consTy = TypeDefinition(compilerServicesNs,
+                                "ConsPair",
+                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                                assm.MainModule.TypeSystem.Object)
+    let car = FieldDefinition("car", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
+    let cdr = FieldDefinition("cdr", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
+
+    consTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
+        ctor.Parameters.Add <| namedParam "cdr" assm.MainModule.TypeSystem.Object
+        ctor.Parameters.Add <| namedParam "car" assm.MainModule.TypeSystem.Object
+
+        ctorIl.Emit(OpCodes.Ldarg_0)
+        ctorIl.Emit(OpCodes.Ldarg_1)
+        ctorIl.Emit(OpCodes.Stfld, cdr)
+
+        ctorIl.Emit(OpCodes.Ldarg_0)
+        ctorIl.Emit(OpCodes.Ldarg_2)
+        ctorIl.Emit(OpCodes.Stfld, car))
+
+    consTy.Fields.Add(car)
+    consTy.Fields.Add(cdr)
+
+    assm.MainModule.Types.Add consTy
+
+    let envTy = TypeDefinition(compilerServicesNs,
+                               "Environment",
+                               TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                               assm.MainModule.TypeSystem.Object)
+    let parent = FieldDefinition("parent", FieldAttributes.Public, envTy)
+    envTy.Fields.Add(parent)
+    let slots = FieldDefinition("slots", FieldAttributes.Public, ArrayType(assm.MainModule.TypeSystem.Object))
+    envTy.Fields.Add(slots)
+
+    envTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
+        ctor.Parameters.Add <| namedParam "parent" envTy
+        ctor.Parameters.Add <| namedParam "size" assm.MainModule.TypeSystem.Int32
+
+        ctorIl.Emit(OpCodes.Ldarg_0)
+        ctorIl.Emit(OpCodes.Ldarg_1)
+        ctorIl.Emit(OpCodes.Stfld, parent)
+
+        ctorIl.Emit(OpCodes.Ldarg_0)
+        ctorIl.Emit(OpCodes.Ldarg_2)
+        ctorIl.Emit(OpCodes.Newarr, assm.MainModule.TypeSystem.Object)
+        ctorIl.Emit(OpCodes.Stfld, slots))
+    
+    assm.MainModule.Types.Add envTy
+
+    { ConsTy = consTy; EnvTy = envTy; Builtins = Map.empty }
+
+let loadCore (assm: AssemblyDefinition) (ty: TypeDefinition) =
+    { addCoreDecls assm with Builtins = createBuiltins assm ty }

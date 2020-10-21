@@ -43,3 +43,9 @@ let createCtor (assm: AssemblyDefinition) builder =
 /// not required.
 let createEmptyCtor (assm: AssemblyDefinition) =
     createCtor assm (fun _ _ -> ())
+
+/// Create a `ParameterDefinition` with the given `name` and `ty`.
+let namedParam name ty =
+    ParameterDefinition(name,
+                        ParameterAttributes.None,
+                        ty)

@@ -11,13 +11,8 @@ open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 open System.Collections.Generic
 
-/// Core Types Used by the Compiler at Runtime
-type CoreTypes =
-    { ConsTy: TypeDefinition
-    ; EnvTy: TypeDefinition }
-
 /// Type to Hold Context While Emitting IL
-type EmitCtx =
+type EmitCtx = 
     { Assm: AssemblyDefinition
     ; IL: ILProcessor
     ; Locals: VariableDefinition list
@@ -30,14 +25,8 @@ type EmitCtx =
     ; mutable Environment: VariableDefinition option
     ; ParentEnvSize: int option
     ; ProgramTy: TypeDefinition
-    ; Builtins: Map<string,MethodDefinition>
-    ; Core: CoreTypes }
+    ; Core: Builtins.CoreTypes }
 
-/// Create a `ParameterDefinition` with the given `name` and `ty`.
-let private namedParam name ty =
-    ParameterDefinition(name,
-                        ParameterAttributes.None,
-                        ty)
 
 let private envSizeForMappings envMappings =
     envMappings
@@ -294,7 +283,7 @@ and writeTo ctx storage =
 and readFrom ctx storage =
     match storage with
     | StorageRef.Builtin id ->
-        let meth = ctx.Builtins.[id]
+        let meth = ctx.Core.Builtins.[id]
         emitMethodToFunc ctx meth
     | StorageRef.Global id ->
         let field = ensureField ctx id
@@ -595,62 +584,6 @@ let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
     il.Append(load0)
     il.Emit(OpCodes.Ret)
 
-/// Adds the ConsPair Type
-///
-/// Creates supporting types used for represnting scheme values that the
-/// compiler depends on for emitted code.
-let private addCoreDecls (assm: AssemblyDefinition) =
-    let compilerServicesNs = "Feersum.CompilerServices"
-    let consTy = TypeDefinition(compilerServicesNs,
-                                "ConsPair",
-                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
-                                assm.MainModule.TypeSystem.Object)
-    let car = FieldDefinition("car", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
-    let cdr = FieldDefinition("cdr", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
-
-    consTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
-        ctor.Parameters.Add <| namedParam "cdr" assm.MainModule.TypeSystem.Object
-        ctor.Parameters.Add <| namedParam "car" assm.MainModule.TypeSystem.Object
-
-        ctorIl.Emit(OpCodes.Ldarg_0)
-        ctorIl.Emit(OpCodes.Ldarg_1)
-        ctorIl.Emit(OpCodes.Stfld, cdr)
-
-        ctorIl.Emit(OpCodes.Ldarg_0)
-        ctorIl.Emit(OpCodes.Ldarg_2)
-        ctorIl.Emit(OpCodes.Stfld, car))
-
-    consTy.Fields.Add(car)
-    consTy.Fields.Add(cdr)
-
-    assm.MainModule.Types.Add consTy
-
-    let envTy = TypeDefinition(compilerServicesNs,
-                               "Environment",
-                               TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
-                               assm.MainModule.TypeSystem.Object)
-    let parent = FieldDefinition("parent", FieldAttributes.Public, envTy)
-    envTy.Fields.Add(parent)
-    let slots = FieldDefinition("slots", FieldAttributes.Public, ArrayType(assm.MainModule.TypeSystem.Object))
-    envTy.Fields.Add(slots)
-
-    envTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
-        ctor.Parameters.Add <| namedParam "parent" envTy
-        ctor.Parameters.Add <| namedParam "size" assm.MainModule.TypeSystem.Int32
-
-        ctorIl.Emit(OpCodes.Ldarg_0)
-        ctorIl.Emit(OpCodes.Ldarg_1)
-        ctorIl.Emit(OpCodes.Stfld, parent)
-
-        ctorIl.Emit(OpCodes.Ldarg_0)
-        ctorIl.Emit(OpCodes.Ldarg_2)
-        ctorIl.Emit(OpCodes.Newarr, assm.MainModule.TypeSystem.Object)
-        ctorIl.Emit(OpCodes.Stfld, slots))
-    
-    assm.MainModule.Types.Add envTy
-
-    { ConsTy = consTy; EnvTy = envTy }
-
 /// Emit a Bound Expression to .NET
 ///
 /// Creates an assembly and writes out the .NET interpretation of the
@@ -665,7 +598,6 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     if symbolStream.IsSome then
         markAsDebuggable assm
 
-    let coreTypes = addCoreDecls assm
 
     // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName,
@@ -675,13 +607,14 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
 
+    let coreTypes = Builtins.loadCore assm progTy
+
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
     let rootEmitCtx = { IL = null
                       ; DebugDocuments = Dictionary()
                       ; ProgramTy = progTy
                       ; Core = coreTypes
-                      ; Builtins = Builtins.createBuiltins assm progTy
                       ; NextLambda = 0
                       ; Locals = []
                       ; Parameters = []
