@@ -598,7 +598,6 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     if symbolStream.IsSome then
         markAsDebuggable assm
 
-
     // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName,
                                 "LispProgram",

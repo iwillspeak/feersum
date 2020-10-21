@@ -10,7 +10,7 @@ open System
 type CoreTypes =
     { ConsTy: TypeDefinition
     ; EnvTy: TypeDefinition
-    ; Builtins: Map<string,MethodDefinition> }
+    ; Builtins: Map<string,MethodReference> }
 
 /// Create all builtin methods
 /// 
@@ -241,6 +241,7 @@ let private createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
     ; ("<=", createCompBuiltin "arithlte" OpCodes.Ble)
     ; ("newline", newlineBuiltin)
     ; ("display", displayBuiltin) ]
+    |> Seq.map(fun (name, method) -> (name, method :> MethodReference))
     |> Map.ofSeq
 
 
@@ -300,5 +301,24 @@ let private addCoreDecls (assm: AssemblyDefinition) =
 
     { ConsTy = consTy; EnvTy = envTy; Builtins = Map.empty }
 
+let private loadExternBuiltins (assm: AssemblyDefinition) (externAssm: Assembly) =
+    let findBuiltinMethods (ty: Type) =
+        ty.GetMethods(BindingFlags.Public ||| BindingFlags.Static)
+        |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.LispBuiltinAttribute>(), m))
+        |> Seq.where (fun (attr, _) -> not (isNull attr))
+        |> Seq.map (fun (attr, method) ->
+            (attr.Name, assm.MainModule.ImportReference(method)))
+
+    externAssm.ExportedTypes
+    |> Seq.collect findBuiltinMethods
+    |> Map.ofSeq
+
 let loadCore (assm: AssemblyDefinition) (ty: TypeDefinition) =
-    { addCoreDecls assm with Builtins = createBuiltins assm ty }
+    let serehfaAssm = typeof<Serehfa.Class1>.Assembly
+    let externalBuiltins = loadExternBuiltins assm serehfaAssm
+    let internalBuiltins = createBuiltins assm ty
+    let builtins =
+        Map.toSeq internalBuiltins
+        |> Seq.append (Map.toSeq externalBuiltins)
+        |> Map.ofSeq
+    { addCoreDecls assm with Builtins = builtins }

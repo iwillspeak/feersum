@@ -417,7 +417,8 @@ and private bindForm ctx (form: AstNode list) location =
 let createRootScope =
     [ "+"; "-"; "*"; "/"
     ; "="; "<"; ">"; "<="; ">="
-    ; "newline"; "display" ]
+    ; "newline"; "display"
+    ; "test" ]
     |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
     |> Map.ofSeq
 
