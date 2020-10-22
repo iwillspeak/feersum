@@ -418,7 +418,8 @@ let createRootScope =
     [ "+"; "-"; "*"; "/"
     ; "="; "<"; ">"; "<="; ">="
     ; "newline"; "display"
-    ; "test" ]
+    ; "test"
+    ; "vector-length"; "vector-set!"; "vector-ref"; "make-vector" ]
     |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
     |> Map.ofSeq
 
