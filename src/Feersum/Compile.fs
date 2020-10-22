@@ -226,14 +226,14 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
     | BoundExpr.Load storage -> readFrom ctx storage
     | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
         let lblTrue = ctx.IL.Create(OpCodes.Nop)
-        let lblNotBool = ctx.IL.Create(OpCodes.Pop)
+        let lblNotBool = ctx.IL.Create(OpCodes.Nop)
         let lblEnd = ctx.IL.Create(OpCodes.Nop)
 
         recurse cond
 
         ctx.IL.Emit(OpCodes.Dup)
         ctx.IL.Emit(OpCodes.Isinst, ctx.Assm.MainModule.TypeSystem.Boolean)
-        ctx.IL.Emit(OpCodes.Brfalse_S, lblNotBool)
+        ctx.IL.Emit(OpCodes.Brfalse, lblNotBool)
 
         ctx.IL.Emit(OpCodes.Unbox_Any, ctx.Assm.MainModule.TypeSystem.Boolean)
         ctx.IL.Emit(OpCodes.Brtrue, lblTrue)
@@ -241,9 +241,10 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         match maybeIfFalse with
         | Some ifFalse -> recurse ifFalse
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
-        ctx.IL.Emit(OpCodes.Br_S, lblEnd)
+        ctx.IL.Emit(OpCodes.Br, lblEnd)
 
         ctx.IL.Append(lblNotBool)
+        ctx.IL.Emit(OpCodes.Pop)
         ctx.IL.Append(lblTrue)
         recurse ifTrue
 
@@ -486,7 +487,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
 
         // * First check the loop condition
         let loopCond = thunkIl.Create(OpCodes.Ldloc, i)
-        thunkIl.Emit(OpCodes.Br_S, loopCond)
+        thunkIl.Emit(OpCodes.Br, loopCond)
         
         //   * load from the array at <i> and make cons pair
         let loop = thunkIl.Create(OpCodes.Ldarg, thunkDecl.Parameters.[0])
