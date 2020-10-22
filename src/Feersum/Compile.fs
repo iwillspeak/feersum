@@ -725,4 +725,7 @@ let compileFile configuration (output: string) (source: string) =
               }
             }
             """)
+            // FIXME: Copying the core assembly like this is a bit of a hack.
+            let corePath = typeof<Serehfa.LispBuiltinAttribute>.Assembly.Location
+            File.Copy(corePath, Path.Join(outDir, Path.GetFileName(corePath)), true)
         diags
