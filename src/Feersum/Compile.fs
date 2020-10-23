@@ -473,7 +473,8 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
     let unpackRemainder (idx: int) =
         let i = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Int32)
         thunkDecl.Body.Variables.Add(i)
-        let consCtor = ctx.Core.ConsTy.GetConstructors() |> Seq.head
+        let ret = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+        thunkDecl.Body.Variables.Add(ret)
 
         // * get length of array
         thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters.[0])
@@ -484,6 +485,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
         
         // * load null
         thunkIl.Emit(OpCodes.Ldnull)
+        thunkIl.Emit(OpCodes.Stloc, ret)
 
         // * First check the loop condition
         let loopCond = thunkIl.Create(OpCodes.Ldloc, i)
@@ -494,7 +496,9 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
         thunkIl.Append(loop)
         thunkIl.Emit(OpCodes.Ldloc, i)
         thunkIl.Emit(OpCodes.Ldelem_Ref)
-        thunkIl.Emit(OpCodes.Newobj, consCtor)
+        thunkIl.Emit(OpCodes.Ldloc, ret)
+        thunkIl.Emit(OpCodes.Newobj, ctx.Core.ConsCtor)
+        thunkIl.Emit(OpCodes.Stloc, ret)
 
         //   * check if <i> gt idx then loop
         thunkIl.Append(loopCond)
@@ -504,6 +508,9 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
         thunkIl.Emit(OpCodes.Stloc, i)
         thunkIl.Emit(OpCodes.Ldc_I4, idx)
         thunkIl.Emit(OpCodes.Bge, loop)
+
+        //   * load the result
+        thunkIl.Emit(OpCodes.Ldloc, ret)
     
     /// check the argument count using `opCode` and raise if it fails
     let raiseArgCountMismatch (count: int) opCode (err: string) =

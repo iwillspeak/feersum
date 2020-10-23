@@ -3,6 +3,7 @@ module Builtins
 open IlHelpers
 open System.Reflection
 open Mono.Cecil
+open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 open System
 
@@ -10,6 +11,7 @@ open System
 type CoreTypes =
     { ConsTy: TypeDefinition
     ; EnvTy: TypeDefinition
+    ; ConsCtor: MethodReference
     ; Builtins: Map<string,MethodReference> }
 
 /// Create all builtin methods
@@ -245,35 +247,12 @@ let private createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
     |> Map.ofSeq
 
 
-/// Adds the ConsPair Type
+/// Adds the Environment Type
 ///
-/// Creates supporting types used for represnting scheme values that the
-/// compiler depends on for emitted code.
-let private addCoreDecls (assm: AssemblyDefinition) =
+/// Creates the environment class that is used to hold dynamic environments
+/// introduced by lambda captures..
+let private addEnvDecls (assm: AssemblyDefinition) =
     let compilerServicesNs = "Feersum.CompilerServices"
-    let consTy = TypeDefinition(compilerServicesNs,
-                                "ConsPair",
-                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
-                                assm.MainModule.TypeSystem.Object)
-    let car = FieldDefinition("car", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
-    let cdr = FieldDefinition("cdr", FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
-
-    consTy.Methods.Add <| createCtor assm (fun ctor ctorIl ->
-        ctor.Parameters.Add <| namedParam "cdr" assm.MainModule.TypeSystem.Object
-        ctor.Parameters.Add <| namedParam "car" assm.MainModule.TypeSystem.Object
-
-        ctorIl.Emit(OpCodes.Ldarg_0)
-        ctorIl.Emit(OpCodes.Ldarg_1)
-        ctorIl.Emit(OpCodes.Stfld, cdr)
-
-        ctorIl.Emit(OpCodes.Ldarg_0)
-        ctorIl.Emit(OpCodes.Ldarg_2)
-        ctorIl.Emit(OpCodes.Stfld, car))
-
-    consTy.Fields.Add(car)
-    consTy.Fields.Add(cdr)
-
-    assm.MainModule.Types.Add consTy
 
     let envTy = TypeDefinition(compilerServicesNs,
                                "Environment",
@@ -299,19 +278,27 @@ let private addCoreDecls (assm: AssemblyDefinition) =
     
     assm.MainModule.Types.Add envTy
 
-    { ConsTy = consTy; EnvTy = envTy; Builtins = Map.empty }
+    envTy
 
-let private loadExternBuiltins (assm: AssemblyDefinition) (externAssm: Assembly) =
+let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
     let findBuiltinMethods (ty: Type) =
         ty.GetMethods(BindingFlags.Public ||| BindingFlags.Static)
         |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.LispBuiltinAttribute>(), m))
         |> Seq.where (fun (attr, _) -> not (isNull attr))
         |> Seq.map (fun (attr, method) ->
-            (attr.Name, assm.MainModule.ImportReference(method)))
+            (attr.Name, lispAssm.MainModule.ImportReference(method)))
 
     externAssm.ExportedTypes
     |> Seq.collect findBuiltinMethods
     |> Map.ofSeq
+
+let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
+    let consTy = lispAssm.MainModule.ImportReference(externAssm.GetType("Serehfa.ConsPair")).Resolve()
+    let consCtor =
+        consTy.GetConstructors()
+        |> Seq.head
+        |> lispAssm.MainModule.ImportReference
+    { ConsTy = consTy; ConsCtor = consCtor; EnvTy = null; Builtins = Map.empty }
 
 let loadCore (assm: AssemblyDefinition) (ty: TypeDefinition) =
     let serehfaAssm = typeof<Serehfa.Class1>.Assembly
@@ -321,4 +308,4 @@ let loadCore (assm: AssemblyDefinition) (ty: TypeDefinition) =
         Map.toSeq internalBuiltins
         |> Seq.append (Map.toSeq externalBuiltins)
         |> Map.ofSeq
-    { addCoreDecls assm with Builtins = builtins }
+    { loadCoreTypes assm serehfaAssm with EnvTy = addEnvDecls assm; Builtins = builtins }
