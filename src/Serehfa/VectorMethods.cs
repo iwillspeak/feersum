@@ -11,17 +11,30 @@ namespace Serehfa
     /// </summary>
     public static class VectorMethods
     {
+        [LispBuiltin("vector")]
+        public static object VectorNew(object[] args)
+        {
+            return args;
+        }
+
+        [LispBuiltin("vector?")]
+        public static object IsVector(object[] args)
+        {
+            var vec = UnpackArgs<object>(args);
+            return vec is object[];
+        }
+
         [LispBuiltin("vector-length")]
         public static object VectorLength(object[] args)
         {
-            var vec = UnpackArgs<List<object>>(args);
-            return (Double)vec.Count;
+            var vec = UnpackArgs<object[]>(args);
+            return (Double)vec.Length;
         }
 
         [LispBuiltin("vector-set!")]
         public static object VectorSet(object[] args)
         {
-            var (vec, index, value) = UnpackArgs<List<object>,Double,object>(args);
+            var (vec, index, value) = UnpackArgs<object[],Double,object>(args);
             vec[(int)index] = value;
             return null;
         }
@@ -29,7 +42,7 @@ namespace Serehfa
         [LispBuiltin("vector-ref")]
         public static object VectorRef(object[] args)
         {
-            var (vec, index) = UnpackArgs<List<object>, Double>(args);
+            var (vec, index) = UnpackArgs<object[], Double>(args);
             return vec[(int)index];
         }
         
@@ -38,10 +51,10 @@ namespace Serehfa
         {
             var (size, init) = UnpackArgs<Double, object>(args);
             var isize = (int)size;
-            var vec = new List<object>(isize);
+            var vec = new object[isize];
             for (int i = 0; i < isize; i++)
             {
-                vec.Add(init);
+                vec[i] = init;
             }
             return vec;
         }
