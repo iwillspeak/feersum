@@ -267,6 +267,10 @@ and emitQuoted ctx quoted =
         // * return the result
         ctx.IL.Emit(OpCodes.Ldloc, ret)
 
+    let quoteIdent (id: string) =
+        ctx.IL.Emit(OpCodes.Ldstr, id)
+        ctx.IL.Emit(OpCodes.Newobj, ctx.Core.IdentCtor)
+
     match quoted.Kind with
     | Number n -> emitLiteral ctx (BoundLiteral.Number n)
     | Str s -> emitLiteral ctx (BoundLiteral.Str s) 
@@ -278,8 +282,8 @@ and emitQuoted ctx quoted =
         [ { Kind = AstNodeKind.Ident "quote"
           ; Location = quoted.Location }; q ]
         |> quoteSequence
-    | Dot // Dot is technically an ident, but not a useful one
-    | Ident _ -> failwith "TODO: Support identifier quotes"
+    | Dot -> quoteIdent "."
+    | Ident id -> quoteIdent id
     | Error -> failwith "Error in quoted expression"
 
 and emitLiteral ctx = function

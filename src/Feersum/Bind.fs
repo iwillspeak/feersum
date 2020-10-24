@@ -262,12 +262,7 @@ let rec private bindInContext ctx node =
     | AstNodeKind.Quoted q -> bindQuoted ctx q
 
 and private bindQuoted ctx quoted =
-    match quoted.Kind with
-    | AstNodeKind.Dot
-    | AstNodeKind.Form _
-    | AstNodeKind.Seq _
-    | AstNodeKind.Ident _ -> BoundExpr.Quoted quoted
-    | _ -> bindInContext ctx quoted
+    BoundExpr.Quoted quoted
 
 and private bindWithSequencePoint ctx expr =
     let inner = bindInContext ctx expr

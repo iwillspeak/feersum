@@ -12,6 +12,7 @@ type CoreTypes =
     { ConsTy: TypeDefinition
     ; EnvTy: TypeDefinition
     ; ConsCtor: MethodReference
+    ; IdentCtor: MethodReference
     ; Builtins: Map<string,MethodReference> }
 
 /// Create all builtin methods
@@ -298,7 +299,18 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) 
         consTy.GetConstructors()
         |> Seq.head
         |> lispAssm.MainModule.ImportReference
-    { ConsTy = consTy; ConsCtor = consCtor; EnvTy = null; Builtins = Map.empty }
+        
+    let identTy = lispAssm.MainModule.ImportReference(externAssm.GetType("Serehfa.Ident")).Resolve()
+    let identCtor =
+        identTy.GetConstructors()
+        |> Seq.head
+        |> lispAssm.MainModule.ImportReference
+
+    { ConsTy = consTy
+    ; ConsCtor = consCtor
+    ; IdentCtor = identCtor
+    ; EnvTy = null
+    ; Builtins = Map.empty }
 
 let loadCore (assm: AssemblyDefinition) (ty: TypeDefinition) =
     let serehfaAssm = typeof<Serehfa.Class1>.Assembly

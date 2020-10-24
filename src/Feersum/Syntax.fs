@@ -148,6 +148,9 @@ let private parseDot =
     (skipChar '.' >>? notFollowedBy (satisfy isIdentifierChar))
     |> spannedNodeOfKind Dot
 
+let private parseQuoted =
+    skipChar '\'' >>. parseForm |> spannedNode Quoted
+
 let private parseAtom =
     // The order is important here. Numbers have higher priority than
     // symbols / identifiers. The `.` token must come before identifier.
@@ -160,19 +163,13 @@ let private parseAtom =
         parseIdent
     ]
 
-
 let private parseApplication =
     between (skipChar '(') (expect (skipChar ')') "Missing closing ')'")
         (many parseForm)
     |> spannedNode Form
 
-let private parseDatum = (parseApplication <|> parseAtom)
-
-let private parseQuoted =
-    skipChar '\'' >>. parseDatum |> spannedNode Quoted
-
 do parseFormRef :=
-    between ws ws (parseDatum <|> parseQuoted)
+    between ws ws (parseApplication <|> parseAtom <|> parseQuoted)
 
 /// Parse the given string into a syntax tree
 let private parse: Parser<AstNode, State> =

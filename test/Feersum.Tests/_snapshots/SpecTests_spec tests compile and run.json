@@ -157,7 +157,7 @@
     "Exit": 0
   },
   "quotes.scm": {
-    "Output": "1\nhello world\n\n(1 2 3)\n1\nhello world\n\n(1 2 3)\n",
+    "Output": "1\nhello world\n\n(1 2 3)\n1\nhello world\n\n(1 2 3)\n(quote (quote 123))\nd\n| |\n|test\\x9;ident|\n|hello world|\nTrue\n",
     "Error": "",
     "Exit": 0
   }
