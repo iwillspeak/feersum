@@ -95,11 +95,23 @@ let private hexScalarValue =
     let hexUnescape x =
         System.Int32.Parse(x, NumberStyles.HexNumber)
         |> System.Char.ConvertFromUtf32
-        |> System.Char.Parse
-    many1Chars hex |>> hexUnescape
+        |> System.Char.TryParse
+    
+    fun (stream: CharStream<State>) ->
+        let s = stream.Position
+        let r = many1Chars hex stream
+        if r.Status = ReplyStatus.Ok then
+            match hexUnescape r.Result with
+            | (true, ch) -> Reply(ch)
+            | (false, ch) ->
+                stream.UserState.Emit s "Invalid code unit"
+                Reply(ch)
+        else
+            Reply(r.Status, r.Error)
 
 let private hexEscape =
-    between (skipString "\\x") (expectChar ';') hexScalarValue
+    between (skipString "\\x") (expectChar ';') (expect (hexScalarValue) "Expected hex character literal")
+    |>> Option.defaultValue '\xFF'
 
 let private escapedChar =
     let inline unescape ch =

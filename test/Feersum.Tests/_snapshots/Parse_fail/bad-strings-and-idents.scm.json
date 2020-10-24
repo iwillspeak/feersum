@@ -1,0 +1,364 @@
+{
+  "Item1": {
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Str",
+              "Fields": [
+                "ÿ"
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 5,
+                  "Line": 1,
+                  "Column": 6,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Str",
+              "Fields": [
+                " "
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 6,
+                  "Line": 2,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 12,
+                  "Line": 2,
+                  "Column": 7,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Str",
+              "Fields": [
+                "\u0000\"\n'|"
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 13,
+                  "Line": 3,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 28,
+                  "Line": 4,
+                  "Column": 4,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Character",
+              "Fields": [
+                "\u0000"
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 29,
+                  "Line": 5,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 37,
+                  "Line": 5,
+                  "Column": 9,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Quoted",
+              "Fields": [
+                {
+                  "Kind": {
+                    "Case": "Ident",
+                    "Fields": [
+                      "ÿ"
+                    ]
+                  },
+                  "Location": {
+                    "Case": "Span",
+                    "Fields": [
+                      {
+                        "Index": 39,
+                        "Line": 6,
+                        "Column": 2,
+                        "StreamName": "dummy"
+                      },
+                      {
+                        "Index": 44,
+                        "Line": 6,
+                        "Column": 7,
+                        "StreamName": "dummy"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 38,
+                  "Line": 6,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 45,
+                  "Line": 7,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Quoted",
+              "Fields": [
+                {
+                  "Kind": {
+                    "Case": "Ident",
+                    "Fields": [
+                      "ÿ"
+                    ]
+                  },
+                  "Location": {
+                    "Case": "Span",
+                    "Fields": [
+                      {
+                        "Index": 46,
+                        "Line": 7,
+                        "Column": 2,
+                        "StreamName": "dummy"
+                      },
+                      {
+                        "Index": 49,
+                        "Line": 7,
+                        "Column": 5,
+                        "StreamName": "dummy"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 45,
+                  "Line": 7,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 49,
+                  "Line": 7,
+                  "Column": 5,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
+        {
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "dummy"
+        },
+        {
+          "Index": 49,
+          "Line": 7,
+          "Column": 5,
+          "StreamName": "dummy"
+        }
+      ]
+    }
+  },
+  "Item2": [
+    {
+      "Case": "Diagnostic",
+      "Fields": [
+        {
+          "Case": "Point",
+          "Fields": [
+            {
+              "Index": 49,
+              "Line": 7,
+              "Column": 5,
+              "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/fail/bad-strings-and-idents.scm"
+            }
+          ]
+        },
+        "Missing closing '|'"
+      ]
+    },
+    {
+      "Case": "Diagnostic",
+      "Fields": [
+        {
+          "Case": "Point",
+          "Fields": [
+            {
+              "Index": 49,
+              "Line": 7,
+              "Column": 5,
+              "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/fail/bad-strings-and-idents.scm"
+            }
+          ]
+        },
+        "Expected ';'"
+      ]
+    },
+    {
+      "Case": "Diagnostic",
+      "Fields": [
+        {
+          "Case": "Point",
+          "Fields": [
+            {
+              "Index": 49,
+              "Line": 7,
+              "Column": 5,
+              "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/fail/bad-strings-and-idents.scm"
+            }
+          ]
+        },
+        "Expected hex character literal"
+      ]
+    },
+    {
+      "Case": "Diagnostic",
+      "Fields": [
+        {
+          "Case": "Point",
+          "Fields": [
+            {
+              "Index": 42,
+              "Line": 6,
+              "Column": 5,
+              "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/fail/bad-strings-and-idents.scm"
+            }
+          ]
+        },
+        "Expected hex character literal"
+      ]
+    },
+    {
+      "Case": "Diagnostic",
+      "Fields": [
+        {
+          "Case": "Point",
+          "Fields": [
+            {
+              "Index": 32,
+              "Line": 5,
+              "Column": 4,
+              "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/fail/bad-strings-and-idents.scm"
+            }
+          ]
+        },
+        "Invalid code unit"
+      ]
+    },
+    {
+      "Case": "Diagnostic",
+      "Fields": [
+        {
+          "Case": "Point",
+          "Fields": [
+            {
+              "Index": 16,
+              "Line": 3,
+              "Column": 4,
+              "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/fail/bad-strings-and-idents.scm"
+            }
+          ]
+        },
+        "Invalid code unit"
+      ]
+    },
+    {
+      "Case": "Diagnostic",
+      "Fields": [
+        {
+          "Case": "Point",
+          "Fields": [
+            {
+              "Index": 11,
+              "Line": 2,
+              "Column": 6,
+              "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/fail/bad-strings-and-idents.scm"
+            }
+          ]
+        },
+        "Expected ';'"
+      ]
+    },
+    {
+      "Case": "Diagnostic",
+      "Fields": [
+        {
+          "Case": "Point",
+          "Fields": [
+            {
+              "Index": 3,
+              "Line": 1,
+              "Column": 4,
+              "StreamName": "/Users/will/Repositories/Feersum/test/Feersum.Tests/../../spec/fail/bad-strings-and-idents.scm"
+            }
+          ]
+        },
+        "Expected hex character literal"
+      ]
+    }
+  ]
+}
