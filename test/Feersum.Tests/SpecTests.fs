@@ -59,7 +59,11 @@ let ``spec tests compile and run`` s =
 
 [<Theory>]
 [<MemberDataAttribute("listSpecs")>]
-let ``spect tests parse result`` s =
+let ``spec tests parse result`` s =
     let node, diagnostics = parseFile (Path.Join(specDir, s))
-    let tree = (node |> sanitiseWithPosition, diagnostics)
+    let tree = (node |> sanitiseWithPosition, diagnostics |> sanitiseDiagnostics specDir)
     tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s))
+
+[<Fact>]
+let testOne () =
+    ``spec tests parse result`` "fail/bad-strings-and-idents.scm"
