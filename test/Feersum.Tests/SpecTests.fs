@@ -10,6 +10,11 @@ open Snapper.Attributes
 open System.Diagnostics
 open SyntaxUtils
 
+type TestExecutionResult =
+    { Output: string
+    ; Error: string
+    ; Exit: int }
+
 // [<assembly: UpdateSnapshots>]
 // ()
 
@@ -21,6 +26,20 @@ let listSpecs =
     Directory.GetFiles(specDir, "*.scm", SearchOption.AllDirectories)
     |> Seq.map (fun x -> [| Path.GetRelativePath(specDir, x) |])
 
+let private runExample exePath =
+    let p = new Process()
+    p.StartInfo <- ProcessStartInfo("dotnet")
+    p.StartInfo.ArgumentList.Add(exePath)
+    p.StartInfo.UseShellExecute <- false
+    // p.StartInfo.RedirectStandardInput <- true
+    p.StartInfo.RedirectStandardOutput <- true
+    p.StartInfo.RedirectStandardError <- true
+    Assert.True(p.Start())
+    p.WaitForExit()
+    { Output = p.StandardOutput.ReadToEnd()
+    ; Error = p.StandardError.ReadToEnd()
+    ; Exit = p.ExitCode }
+
 [<Theory>]
 [<MemberDataAttribute("listSpecs")>]
 let ``spec tests compile and run`` s =
@@ -31,9 +50,8 @@ let ``spec tests compile and run`` s =
     | [] ->
         if shouldFail then
             failwith "Expected compilation failure!"
-        let p = Process.Start("dotnet", exePath)
-        p.WaitForExit()
-        p.ExitCode.ShouldMatchChildSnapshot(s)
+        let r = runExample exePath
+        r.ShouldMatchChildSnapshot(s)
     | diags ->
         if not shouldFail then
             failwithf "Compilation error: %A" diags
