@@ -12,12 +12,18 @@
               ]
             },
             "Location": {
-              "Case": "Point",
+              "Case": "Span",
               "Fields": [
                 {
-                  "Index": -1,
-                  "Line": -1,
-                  "Column": -1,
+                  "Index": 76,
+                  "Line": 7,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 77,
+                  "Line": 7,
+                  "Column": 2,
                   "StreamName": "dummy"
                 }
               ]
@@ -27,12 +33,18 @@
       ]
     },
     "Location": {
-      "Case": "Point",
+      "Case": "Span",
       "Fields": [
         {
-          "Index": -1,
-          "Line": -1,
-          "Column": -1,
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "dummy"
+        },
+        {
+          "Index": 163,
+          "Line": 9,
+          "Column": 16,
           "StreamName": "dummy"
         }
       ]

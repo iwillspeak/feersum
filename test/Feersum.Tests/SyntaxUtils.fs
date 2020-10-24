@@ -2,6 +2,8 @@ module SyntaxUtils
 
 open Syntax
 open Diagnostics
+open System.IO
+open FParsec
 
 module SyntaxFactory =
 
@@ -13,14 +15,26 @@ module SyntaxFactory =
     let node kind =
         { Kind = kind; Location = dummyLocation }
 
-open SyntaxFactory
-open System.IO
+let normalisePaths (p: Position) =
+    Position("dummy", p.Index, p.Line, p.Column)
+
+let useDummyPoints l =
+    SyntaxFactory.dummyLocation
+
+let sanitiseLocation = function
+    | Point(p) -> Point(normalisePaths p)
+    | Span(s, e) -> Span(normalisePaths s, normalisePaths e)
 
 let rec sanitise node =
-    { Kind = node.Kind |> sanitiseKind; Location = dummyLocation }
-and sanitiseKind = function
-    | Form(f) -> List.map (sanitise) f |> Form
-    | Seq(s) -> List.map (sanitise) s |> Seq
+    sanitiseWith useDummyPoints node
+and sanitiseWithPosition node =
+    sanitiseWith sanitiseLocation node 
+and sanitiseWith rewriter node =
+    { Kind = node.Kind |> sanitiseKind rewriter; Location = node.Location |> rewriter }
+and sanitiseKind rewriter = function
+    | Form(f) -> List.map (sanitiseWith rewriter) f |> Form
+    | Seq(s) -> List.map (sanitiseWith rewriter) s |> Seq
+    | Quoted(q) -> sanitiseWith rewriter q |> Quoted
     | other -> other
 
 let sanitiseDiagnostics (b: string) (diags: Diagnostic list) =

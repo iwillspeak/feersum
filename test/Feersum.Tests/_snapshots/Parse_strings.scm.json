@@ -12,12 +12,18 @@
               ]
             },
             "Location": {
-              "Case": "Point",
+              "Case": "Span",
               "Fields": [
                 {
-                  "Index": -1,
-                  "Line": -1,
-                  "Column": -1,
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 13,
+                  "Line": 1,
+                  "Column": 14,
                   "StreamName": "dummy"
                 }
               ]
@@ -31,12 +37,18 @@
               ]
             },
             "Location": {
-              "Case": "Point",
+              "Case": "Span",
               "Fields": [
                 {
-                  "Index": -1,
-                  "Line": -1,
-                  "Column": -1,
+                  "Index": 14,
+                  "Line": 2,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32,
+                  "Line": 2,
+                  "Column": 19,
                   "StreamName": "dummy"
                 }
               ]
@@ -46,12 +58,18 @@
       ]
     },
     "Location": {
-      "Case": "Point",
+      "Case": "Span",
       "Fields": [
         {
-          "Index": -1,
-          "Line": -1,
-          "Column": -1,
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "dummy"
+        },
+        {
+          "Index": 33,
+          "Line": 3,
+          "Column": 1,
           "StreamName": "dummy"
         }
       ]
