@@ -105,13 +105,13 @@ let private hexScalarValue =
             | (true, ch) -> Reply(ch)
             | (false, ch) ->
                 stream.UserState.Emit s "Invalid code unit"
-                Reply(ch)
+                Reply('\uFFFD')
         else
             Reply(r.Status, r.Error)
 
 let private hexEscape =
     between (skipString "\\x") (expectChar ';') (expect (hexScalarValue) "Expected hex character literal")
-    |>> Option.defaultValue '\xFF'
+    |>> Option.defaultValue '\uFFFD'
 
 let private escapedChar =
     let inline unescape ch =
