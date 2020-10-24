@@ -54,6 +54,13 @@ let skipUnrecognised problem: Parser<unit, State> =
             stream.UserState.Emit pos (problem skipped)
             Reply(())
 
+let expectCharWithMessage message chr =
+    expect (skipChar chr) (message chr)
+
+let expectChar = expectCharWithMessage (sprintf "Expected '%c'")
+
+let expectCharClosing = expectCharWithMessage (sprintf "Missing closing '%c'")
+
 let private parseForm, parseFormRef = createParserForwardedToRef()
 
 let private spannedNode nodeCons nodeParser =
@@ -92,7 +99,7 @@ let private hexScalarValue =
     many1Chars hex |>> hexUnescape
 
 let private hexEscape =
-    between (skipString "\\x") (skipChar ';') hexScalarValue
+    between (skipString "\\x") (expectChar ';') hexScalarValue
 
 let private escapedChar =
     let inline unescape ch =
@@ -108,7 +115,7 @@ let private escapedChar =
     skipChar '\\' >>. (noneOf "x") |>> unescape
       
 let private parseStr =
-    between (skipChar '"') (skipChar '"')
+    between (skipChar '"') (expectCharClosing '"')
                 (manyChars (unescapedChar <|> hexEscape <|> escapedChar))
     |> spannedNode Str
 
@@ -140,7 +147,7 @@ let inline private isIdentifierChar c =
 let private parseIdent =
     let simpleIdent = many1SatisfyL isIdentifierChar "identifier"
     let identLiteralChar = (manyChars ((noneOf "\\|") <|> hexEscape <|> escapedChar))
-    let identLiteral = between (skipChar '|') (skipChar '|') identLiteralChar
+    let identLiteral = between (skipChar '|') (expectCharClosing '|') identLiteralChar
 
     spannedNode Ident (simpleIdent <|> identLiteral)
  
@@ -164,7 +171,7 @@ let private parseAtom =
     ]
 
 let private parseApplication =
-    between (skipChar '(') (expect (skipChar ')') "Missing closing ')'")
+    between (skipChar '(') (expectCharClosing ')')
         (many parseForm)
     |> spannedNode Form
 
@@ -183,6 +190,7 @@ let private unpack = function
     | Success(node, s, _) -> (node, s.Diagnostics.Take)
     | Failure(mess, err, s) ->
         s.Diagnostics.Emit (Point(err.Position)) mess
+        s.Diagnostics.Emit (Point(err.Position)) "The parser encountered an error that could not be recovered from."
         (errorNode, s.Diagnostics.Take)
 
 /// Read expressions from the input text
