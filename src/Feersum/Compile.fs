@@ -199,17 +199,7 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
             point.EndLine <- int e.Line
             point.EndColumn <- int e.Column
             ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
-    | BoundExpr.Null -> ctx.IL.Emit(OpCodes.Ldnull)
-    | BoundExpr.Number n ->
-        ctx.IL.Emit(OpCodes.Ldc_R8, n)
-        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Double)
-    | BoundExpr.Str s -> ctx.IL.Emit(OpCodes.Ldstr, s)
-    | BoundExpr.Boolean b ->
-        ctx.IL.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
-        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Boolean)
-    | BoundExpr.Character c ->
-        ctx.IL.Emit(OpCodes.Ldc_I4, int c)
-        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Char)
+    | BoundExpr.Literal l -> emitLiteral ctx l
     | BoundExpr.Seq [] -> emitUnspecified ctx.IL
     | BoundExpr.Seq s -> emitSequence ctx s
     | BoundExpr.Application(ap, args) -> emitApplication ctx ap args
@@ -253,6 +243,57 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, locals, captured, envSize, body) ->
         emitLambda ctx formals locals captured envSize body
+    | BoundExpr.Quoted quoted ->
+        emitQuoted ctx quoted
+
+and emitQuoted ctx quoted =
+    let quoteSequence s =
+        let ret = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+
+        // * start with null
+        ctx.IL.Emit(OpCodes.Ldnull)
+        ctx.IL.Emit(OpCodes.Stloc, ret)
+
+        // * Build up list
+        s
+        |> List.toSeq
+        |> Seq.rev
+        |> Seq.iter (fun q ->
+            emitQuoted ctx q
+            ctx.IL.Emit(OpCodes.Ldloc, ret)
+            ctx.IL.Emit(OpCodes.Newobj, ctx.Core.ConsCtor)
+            ctx.IL.Emit(OpCodes.Stloc, ret))
+
+        // * return the result
+        ctx.IL.Emit(OpCodes.Ldloc, ret)
+
+    match quoted.Kind with
+    | Number n -> emitLiteral ctx (BoundLiteral.Number n)
+    | Str s -> emitLiteral ctx (BoundLiteral.Str s) 
+    | Boolean b -> emitLiteral ctx (BoundLiteral.Boolean b)
+    | Character c -> emitLiteral ctx (BoundLiteral.Character c)
+    | Form [] -> emitLiteral ctx (BoundLiteral.Null)
+    | Form s | Seq s -> quoteSequence s
+    | Quoted q ->
+        [ { Kind = AstNodeKind.Ident "quote"
+          ; Location = quoted.Location }; q ]
+        |> quoteSequence
+    | Dot // Dot is technically an ident, but not a useful one
+    | Ident _ -> failwith "TODO: Support identifier quotes"
+    | Error -> failwith "Error in quoted expression"
+
+and emitLiteral ctx = function
+    | BoundLiteral.Null -> ctx.IL.Emit(OpCodes.Ldnull)
+    | BoundLiteral.Number n ->
+        ctx.IL.Emit(OpCodes.Ldc_R8, n)
+        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Double)
+    | BoundLiteral.Str s -> ctx.IL.Emit(OpCodes.Ldstr, s)
+    | BoundLiteral.Boolean b ->
+        ctx.IL.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
+        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Boolean)
+    | BoundLiteral.Character c ->
+        ctx.IL.Emit(OpCodes.Ldc_I4, int c)
+        ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Char)
 
     /// Emit a write to a given storage location
 and writeTo ctx storage =

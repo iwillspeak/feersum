@@ -26,23 +26,27 @@ type BoundFormals =
     | List of string list
     | DottedList of string list * string
 
+type BoundLiteral =
+    | Boolean of bool
+    | Character of char
+    | Number of double
+    | Str of string
+    | Null
+
 /// Bound Expression Type
 ///
 /// Bound expressions represent the syntax of a program with all identifier
 /// references resolved to the correct storage.
 type BoundExpr =
+    | Literal of BoundLiteral
+    | Quoted of AstNode
     | SequencePoint of BoundExpr * TextLocation
-    | Boolean of bool
-    | Character of char
-    | Number of double
-    | Str of string
     | Load of StorageRef
     | Store of StorageRef * BoundExpr option
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
     | Lambda of BoundFormals * int * StorageRef list * StorageRef list option * BoundExpr
-    | Null
     | Error
 
 /// Root type returned by the binder.
@@ -239,10 +243,10 @@ let private illFormedInCtx ctx location formName =
 let rec private bindInContext ctx node =
     match node.Kind with
     | AstNodeKind.Error -> failwithf "ICE: Attempt to bind an error node."
-    | AstNodeKind.Number n -> BoundExpr.Number n
-    | AstNodeKind.Str s -> BoundExpr.Str s
-    | AstNodeKind.Boolean b -> BoundExpr.Boolean b
-    | AstNodeKind.Character c -> BoundExpr.Character c
+    | AstNodeKind.Number n -> BoundExpr.Literal(BoundLiteral.Number n)
+    | AstNodeKind.Str s -> BoundExpr.Literal(BoundLiteral.Str s)
+    | AstNodeKind.Boolean b -> BoundExpr.Literal(BoundLiteral.Boolean b)
+    | AstNodeKind.Character c -> BoundExpr.Literal(BoundLiteral.Character c)
     | AstNodeKind.Dot ->
         ctx.Diagnostics.Emit node.Location "Unexpected dot"
         BoundExpr.Error
@@ -255,6 +259,15 @@ let rec private bindInContext ctx node =
             sprintf "reference to undefined symbol %s" id
             |> ctx.Diagnostics.Emit node.Location
             BoundExpr.Error
+    | AstNodeKind.Quoted q -> bindQuoted ctx q
+
+and private bindQuoted ctx quoted =
+    match quoted.Kind with
+    | AstNodeKind.Dot
+    | AstNodeKind.Form _
+    | AstNodeKind.Seq _
+    | AstNodeKind.Ident _ -> BoundExpr.Quoted quoted
+    | _ -> bindInContext ctx quoted
 
 and private bindWithSequencePoint ctx expr =
     let inner = bindInContext ctx expr
@@ -397,7 +410,9 @@ and private bindForm ctx (form: AstNode list) location =
                 BoundExpr.Error
         | _ -> illFormed "set!"
     | { Kind = AstNodeKind.Ident("quote") }::body ->
-        failwith "Quote expressions not yet implemented"
+        match body with
+        | [ item ] -> bindQuoted ctx item
+        | _ -> illFormed "quote"
     | { Kind = AstNodeKind.Ident("and") }::body ->
         failwith "And expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("or") }::body ->
@@ -407,7 +422,7 @@ and private bindForm ctx (form: AstNode list) location =
     | { Kind = AstNodeKind.Ident("case") }::body ->
         failwith "Case expressions not yet implemented"
     | head::rest -> bindApplication ctx head rest
-    | [] -> BoundExpr.Null
+    | [] -> BoundExpr.Literal BoundLiteral.Null
 
 // ------------------------------ Public Binder API --------------------------
 

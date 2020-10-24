@@ -1,0 +1,8 @@
+(display '1)(newline)
+(display '"hello world")(newline)
+(display '())(newline)
+(display '(1 2 3))(newline)
+(display (quote 1))(newline)
+(display (quote "hello world"))(newline)
+(display (quote ()))(newline)
+(display (quote (1 2 3)))(newline)

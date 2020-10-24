@@ -16,6 +16,7 @@ type AstNodeKind<'t> =
     | Dot
     | Form of 't list
     | Seq of 't list
+    | Quoted of 't
     | Error
 
 /// A node in our syntax tree.
@@ -159,12 +160,19 @@ let private parseAtom =
         parseIdent
     ]
 
+
 let private parseApplication =
     between (skipChar '(') (expect (skipChar ')') "Missing closing ')'")
         (many parseForm)
     |> spannedNode Form
+
+let private parseDatum = (parseApplication <|> parseAtom)
+
+let private parseQuoted =
+    skipChar '\'' >>. parseDatum |> spannedNode Quoted
+
 do parseFormRef :=
-    between ws ws (parseApplication <|> parseAtom)
+    between ws ws (parseDatum <|> parseQuoted)
 
 /// Parse the given string into a syntax tree
 let private parse: Parser<AstNode, State> =

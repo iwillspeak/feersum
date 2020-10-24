@@ -63,10 +63,10 @@ let rec executeBound (env: IDictionary<string, SchemeValue>) (expr: BoundExpr) =
     let recurse = executeBound env
     match expr with
     | BoundExpr.SequencePoint(inner, _) -> recurse inner
-    | BoundExpr.Null -> SchemeValue.Nil
-    | BoundExpr.Number n -> SchemeValue.Number n
-    | BoundExpr.Str s -> SchemeValue.Str s
-    | BoundExpr.Boolean b ->  SchemeValue.Boolean b
+    | BoundExpr.Literal(BoundLiteral.Null) -> SchemeValue.Nil
+    | BoundExpr.Literal(BoundLiteral.Number n) -> SchemeValue.Number n
+    | BoundExpr.Literal(BoundLiteral.Str s) -> SchemeValue.Str s
+    | BoundExpr.Literal(BoundLiteral.Boolean b) ->  SchemeValue.Boolean b
     | BoundExpr.Store(store, maybeInit) ->
         let init = Option.map recurse maybeInit |> SchemeValue.fromOption
         match store with
