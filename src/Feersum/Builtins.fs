@@ -165,74 +165,6 @@ let private createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
 
         meth
 
-    /// Display builtin. This is intended for user-readable output rather than
-    /// any machine readable round tripping. Printing out strings & chars should
-    /// display their raw form. All other objects is up to the implementation.
-    /// 
-    /// This implementation calls `ToString` on the underlying .NET object and
-    /// uses that directly.
-    let displayBuiltin =
-        let meth, il = declareBuiltinMethod "display"
-        let fail = il.Create(OpCodes.Nop)
-        let hasValue = il.Create(OpCodes.Nop)
-        let print = il.Create(OpCodes.Dup)
-
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldlen)
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Bne_Un, fail)
-
-        // null check
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldc_I4_0)
-        il.Emit(OpCodes.Ldelem_Ref)
-        il.Emit(OpCodes.Brtrue_S, hasValue)
-
-        // If null use empty string
-        il.Emit(OpCodes.Ldstr, "")
-        il.Emit(OpCodes.Br, print)
-
-        // convert to string
-        il.Append(hasValue)
-        let toStr = typeof<obj>.GetMethod("ToString", BindingFlags.Public ||| BindingFlags.Instance)
-        let toStr = assm.MainModule.ImportReference toStr
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldc_I4_0)
-        il.Emit(OpCodes.Ldelem_Ref)
-        il.Emit(OpCodes.Callvirt, toStr)
-
-        il.Append(print)
-
-        let write = typeof<Console>.GetMethod("Write", [| typeof<string> |])
-        let write = assm.MainModule.ImportReference write
-        il.Emit(OpCodes.Call, write)
-        il.Emit(OpCodes.Ret)
-
-        il.Append(fail)
-        emitThrow il assm "`dsiplay` expects a single argument"
-
-        meth
-
-    let newlineBuiltin =
-        let meth, il = declareBuiltinMethod "newline"
-        let fail = il.Create(OpCodes.Nop)
-
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldlen)
-        il.Emit(OpCodes.Ldc_I4_0)
-        il.Emit(OpCodes.Bne_Un, fail)
-
-        let write = typeof<Console>.GetMethod("WriteLine", [| |])
-        let write = assm.MainModule.ImportReference write
-        il.Emit(OpCodes.Call, write)
-        il.Emit(OpCodes.Ldnull)
-        il.Emit(OpCodes.Ret)
-
-        il.Append(fail)
-        emitThrow il assm "`newline` expects no arguments"
-
-        meth
-
     [ ("+", createArithBuiltin "arithadd" OpCodes.Add 0.0)
     ; ("-", createArithBuiltin "arithsub" OpCodes.Sub 0.0)
     ; ("/", createArithBuiltin "arithdiv" OpCodes.Div 1.0)
@@ -241,9 +173,7 @@ let private createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
     ; (">", createCompBuiltin "arithgt" OpCodes.Bgt)
     ; ("<", createCompBuiltin "arithlt" OpCodes.Blt)
     ; (">=", createCompBuiltin "arithgte" OpCodes.Bge)
-    ; ("<=", createCompBuiltin "arithlte" OpCodes.Ble)
-    ; ("newline", newlineBuiltin)
-    ; ("display", displayBuiltin) ]
+    ; ("<=", createCompBuiltin "arithlte" OpCodes.Ble) ]
     |> Seq.map(fun (name, method) -> (name, method :> MethodReference))
     |> Map.ofSeq
 

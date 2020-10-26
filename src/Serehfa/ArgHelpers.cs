@@ -4,6 +4,16 @@ namespace Serehfa
 {
     public class ArgHelpers
     {
+        public static void CheckNoArgs(object[] args)
+        {
+            if (args.Length != 0)
+            {
+                throw new ArgumentException(
+                    $"Expected no arguments, but received {args.Length}",
+                    nameof(args));
+            }
+        }
+
         public static T UnpackArgs<T>(object[] args)
         {
             if (args.Length != 1)
