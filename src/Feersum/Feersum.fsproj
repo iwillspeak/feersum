@@ -4,6 +4,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackAsTool>True</PackAsTool>
     <ToolCommandName>feersum-scheme</ToolCommandName>
+    <Title>The Feersum Scheme Compiler</Title>
+    <Description>
+      This package contains the main compiler entry point for the Feersum
+      Scheme compiler. Compile Scheme to a .NET Assembly!
+    </Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Options.fs" />
