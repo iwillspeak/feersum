@@ -30,66 +30,6 @@ let private createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
         let il = meth.Body.GetILProcessor()
         (meth, il)
 
-    /// Arithmetic builtin. Combines all elements in the arguments array with
-    /// the given `opcode`. If only 1 element is provided then `def` is used to
-    /// compute some form of inverse. If no arguments are provided then `def` is
-    /// returned.
-    let createArithBuiltin name opcode (def: double) = 
-        let meth, il = declareBuiltinMethod name
-
-        let i = VariableDefinition(assm.MainModule.TypeSystem.Int32)
-        meth.Body.Variables.Add(i)
-
-
-        let setup = il.Create(OpCodes.Nop)
-        let cond = il.Create(OpCodes.Nop)
-
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldlen)
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Ble, setup)
-
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldc_I4_0)
-        il.Emit(OpCodes.Ldelem_Ref)
-        il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Stloc, i)
-        il.Emit(OpCodes.Br, cond)
-
-        il.Append(setup)
-
-        il.Emit(OpCodes.Ldc_R8, def)
-        il.Emit(OpCodes.Ldc_I4_0)
-        il.Emit(OpCodes.Stloc, i)
-        il.Emit(OpCodes.Br, cond)
-
-        let loop = il.Create(OpCodes.Nop)
-        il.Append(loop)
-
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldloc, i)
-        il.Emit(OpCodes.Ldelem_Ref)
-
-        il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
-        il.Emit(opcode)
-
-        il.Emit(OpCodes.Ldloc, i)
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Add)
-        il.Emit(OpCodes.Stloc, i)
-
-        il.Append(cond)
-        il.Emit(OpCodes.Ldloc, i)
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldlen)
-        il.Emit(OpCodes.Blt, loop)
-
-        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Double)
-        il.Emit(OpCodes.Ret)
-
-        meth
-    
     /// Comparator Builtin. Builds a method which uses the given `op` to compare
     /// all arguments and returns a boolean result. If 0 or 1 elements are
     /// given the method will always return `#t`.
@@ -165,11 +105,7 @@ let private createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
 
         meth
 
-    [ ("+", createArithBuiltin "arithadd" OpCodes.Add 0.0)
-    ; ("-", createArithBuiltin "arithsub" OpCodes.Sub 0.0)
-    ; ("/", createArithBuiltin "arithdiv" OpCodes.Div 1.0)
-    ; ("*", createArithBuiltin "arithmul" OpCodes.Mul 1.0)
-    ; ("=", createCompBuiltin "aritheq" OpCodes.Beq)
+    [ ("=", createCompBuiltin "aritheq" OpCodes.Beq)
     ; (">", createCompBuiltin "arithgt" OpCodes.Bgt)
     ; ("<", createCompBuiltin "arithlt" OpCodes.Blt)
     ; (">=", createCompBuiltin "arithgte" OpCodes.Bge)
