@@ -659,7 +659,7 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
 
-    let coreTypes = Builtins.loadCore assm progTy
+    let coreTypes = Builtins.loadCore assm
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly

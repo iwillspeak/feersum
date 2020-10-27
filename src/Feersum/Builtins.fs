@@ -15,104 +15,6 @@ type CoreTypes =
     ; IdentCtor: MethodReference
     ; Builtins: Map<string,MethodReference> }
 
-/// Create all builtin methods
-/// 
-/// Returns a map containing all of the builtin methods supported by the
-/// implementation.
-let private createBuiltins (assm: AssemblyDefinition) (ty: TypeDefinition) =
-    let declareBuiltinMethod name =
-        let meth = MethodDefinition(name,
-                                MethodAttributes.Public ||| MethodAttributes.Static,
-                                assm.MainModule.TypeSystem.Object)
-        let args = ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.Object))
-        meth.Parameters.Add(args)
-        ty.Methods.Add meth
-        let il = meth.Body.GetILProcessor()
-        (meth, il)
-
-    /// Comparator Builtin. Builds a method which uses the given `op` to compare
-    /// all arguments and returns a boolean result. If 0 or 1 elements are
-    /// given the method will always return `#t`.
-    let createCompBuiltin name op =
-        let meth, il = declareBuiltinMethod name
-
-        let last = VariableDefinition(assm.MainModule.TypeSystem.Double)
-        meth.Body.Variables.Add(last)
-        let i = VariableDefinition(assm.MainModule.TypeSystem.Int32)
-        meth.Body.Variables.Add(i)
-
-        let main = il.Create(OpCodes.Nop)
-
-        // If we have only 0 or 1 arguments just return true
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldlen)
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Bgt, main)
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
-        il.Emit(OpCodes.Ret)
-
-        il.Append(main)
-
-        // Load the first element and store it as `last` then begin the loop
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldc_I4_0)
-        il.Emit(OpCodes.Ldelem_Ref)
-        il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
-        il.Emit(OpCodes.Stloc, last)
-
-        // start at index i
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Stloc, i)
-        
-        let loop = il.Create(OpCodes.Nop)
-        il.Append(loop)
-
-        // Get the last + current from the array
-        il.Emit(OpCodes.Ldloc, last)
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldloc, i)
-        il.Emit(OpCodes.Ldelem_Ref)
-        il.Emit(OpCodes.Unbox_Any, assm.MainModule.TypeSystem.Double)
-        il.Emit(OpCodes.Dup)
-        il.Emit(OpCodes.Stloc, last)
-
-        let cond = il.Create(OpCodes.Nop)
-        
-        il.Emit(op, cond)
-
-        // Check failed, so return `#f`
-        il.Emit(OpCodes.Ldc_I4_0)
-        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
-        il.Emit(OpCodes.Ret)
-
-        il.Append(cond)
-
-        // check if i works for rest of loop
-        il.Emit(OpCodes.Ldloc, i)
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Add)
-        il.Emit(OpCodes.Dup)
-        il.Emit(OpCodes.Stloc, i)
-        il.Emit(OpCodes.Ldarg_0)
-        il.Emit(OpCodes.Ldlen)
-        il.Emit(OpCodes.Blt, loop)
-
-        // Ran out of things to check, return `#t`
-        il.Emit(OpCodes.Ldc_I4_1)
-        il.Emit(OpCodes.Box, assm.MainModule.TypeSystem.Boolean)
-        il.Emit(OpCodes.Ret)
-
-        meth
-
-    [ ("=", createCompBuiltin "aritheq" OpCodes.Beq)
-    ; (">", createCompBuiltin "arithgt" OpCodes.Bgt)
-    ; ("<", createCompBuiltin "arithlt" OpCodes.Blt)
-    ; (">=", createCompBuiltin "arithgte" OpCodes.Bge)
-    ; ("<=", createCompBuiltin "arithlte" OpCodes.Ble) ]
-    |> Seq.map(fun (name, method) -> (name, method :> MethodReference))
-    |> Map.ofSeq
-
 
 /// Adds the Environment Type
 ///
@@ -178,12 +80,7 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) 
     ; EnvTy = null
     ; Builtins = Map.empty }
 
-let loadCore (assm: AssemblyDefinition) (ty: TypeDefinition) =
+let loadCore (assm: AssemblyDefinition) =
     let serehfaAssm = typeof<Serehfa.Class1>.Assembly
-    let externalBuiltins = loadExternBuiltins assm serehfaAssm
-    let internalBuiltins = createBuiltins assm ty
-    let builtins =
-        Map.toSeq internalBuiltins
-        |> Seq.append (Map.toSeq externalBuiltins)
-        |> Map.ofSeq
+    let builtins = loadExternBuiltins assm serehfaAssm
     { loadCoreTypes assm serehfaAssm with EnvTy = addEnvDecls assm; Builtins = builtins }
