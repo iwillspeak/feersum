@@ -18,6 +18,7 @@ type AstNodeKind<'t> =
     | Seq of 't list
     | Quoted of 't
     | Vector of 't list
+    | ByteVector of byte list
     | Error
 
 /// A node in our syntax tree.
@@ -137,6 +138,11 @@ let private parseVec =
         (many parseForm)
     |> spannedNode Vector
 
+let private parseByteVec =
+    between (skipString "#u8(") (expectCharClosing ')')
+        (many (between (ws) (ws) puint8))
+    |> spannedNode ByteVector
+
 let private parseBool =
     stringReturn "#true"  true <|>
     stringReturn "#t"     true <|>
@@ -182,6 +188,7 @@ let private parseAtom =
     choice [
         parseStr
         parseVec
+        parseByteVec
         parseChar
         parseNum
         parseBool

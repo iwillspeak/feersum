@@ -273,6 +273,7 @@ and emitQuoted ctx quoted =
 
     match quoted.Kind with
     | Vector v -> emitLiteral ctx (BoundLiteral.Vector v)
+    | ByteVector v -> emitLiteral ctx (BoundLiteral.ByteVector v)
     | Number n -> emitLiteral ctx (BoundLiteral.Number n)
     | Str s -> emitLiteral ctx (BoundLiteral.Str s) 
     | Boolean b -> emitLiteral ctx (BoundLiteral.Boolean b)
@@ -311,6 +312,21 @@ and emitLiteral ctx = function
             ctx.IL.Emit(OpCodes.Ldc_I4, idx)
             emitQuoted ctx e
             ctx.IL.Emit(OpCodes.Stelem_Ref)
+            idx + 1) 0 |> ignore
+    | BoundLiteral.ByteVector bv ->
+
+        // Create an empty array
+        ctx.IL.Emit(OpCodes.Ldc_I4, List.length bv)
+        ctx.IL.Emit(OpCodes.Newarr, ctx.Assm.MainModule.TypeSystem.Byte)
+
+        // Fill the array with quoted expressions
+        bv
+        |> List.fold (fun (idx: int) b -> 
+            ctx.IL.Emit(OpCodes.Dup)
+            ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+            ctx.IL.Emit(OpCodes.Ldc_I4, int b)
+            ctx.IL.Emit(OpCodes.Conv_I1)
+            ctx.IL.Emit(OpCodes.Stelem_I1)
             idx + 1) 0 |> ignore
 
 

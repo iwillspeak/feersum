@@ -43,6 +43,7 @@ namespace Serehfa
             null => "'()",
             Func<object[], object> f => $"#<compiledProcedure {f.Method}>",
             object[] v => VectorMethods.GetDisplayRepresentation(v),
+            byte[] v => ByteVectorMethods.GetDisplayRepresentation(v),
             _ => o.ToString(),
         };
     }

@@ -305,5 +305,10 @@
     "Output": "(#(1 2 3) #(#\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a) #(0 (2 2 2 2) Anna) #t #t #f 3 test 8 #(0 (Sue Sue) Anna))",
     "Error": "",
     "Exit": 0
+  },
+  "byte-vectors.scm": {
+    "Output": "(#u8() #u8(255) #u8(1 2 3))",
+    "Error": "",
+    "Exit": 0
   }
 }
