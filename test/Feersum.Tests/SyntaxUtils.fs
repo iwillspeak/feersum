@@ -35,6 +35,7 @@ and sanitiseKind rewriter = function
     | Form(f) -> List.map (sanitiseWith rewriter) f |> Form
     | Seq(s) -> List.map (sanitiseWith rewriter) s |> Seq
     | Quoted(q) -> sanitiseWith rewriter q |> Quoted
+    | Vector(v) -> List.map (sanitiseWith rewriter) v |> Vector 
     | other -> other
 
 let sanitiseDiagnostics (b: string) (diags: Diagnostic list) =
