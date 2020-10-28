@@ -28,12 +28,22 @@ namespace Serehfa
         {
             var obj = UnpackArgs<object>(args);
 
-            var repr = obj == null ?
-                "'()" : obj.ToString();
+            var repr = GetDisplayRepresentation(obj);
 
             Console.Write(repr);
 
             return Undefined.Instance;
         }
+
+        public static string GetDisplayRepresentation(object o) => o switch
+        {
+            bool b => b ? "#t" : "#f",
+            double d => d.ToString("G"),
+            char c => @"#\" + c,
+            null => "'()",
+            Func<object[], object> f => $"#<compiledProcedure {f.Method}>",
+            object[] v => VectorMethods.GetDisplayRepresentation(v),
+            _ => o.ToString(),
+        };
     }
 }

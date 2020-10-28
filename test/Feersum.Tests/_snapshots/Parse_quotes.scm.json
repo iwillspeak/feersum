@@ -2527,6 +2527,157 @@
                 }
               ]
             }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 422,
+                          "Line": 15,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 429,
+                          "Line": 15,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Quoted",
+                      "Fields": [
+                        {
+                          "Kind": {
+                            "Case": "Str",
+                            "Fields": [
+                              "funky-quote-char"
+                            ]
+                          },
+                          "Location": {
+                            "Case": "Span",
+                            "Fields": [
+                              {
+                                "Index": 431,
+                                "Line": 15,
+                                "Column": 11,
+                                "StreamName": "dummy"
+                              },
+                              {
+                                "Index": 449,
+                                "Line": 15,
+                                "Column": 29,
+                                "StreamName": "dummy"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 430,
+                          "Line": 15,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 449,
+                          "Line": 15,
+                          "Column": 29,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 421,
+                  "Line": 15,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 450,
+                  "Line": 15,
+                  "Column": 30,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 451,
+                          "Line": 15,
+                          "Column": 31,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 458,
+                          "Line": 15,
+                          "Column": 38,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 450,
+                  "Line": 15,
+                  "Column": 30,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 459,
+                  "Line": 15,
+                  "Column": 39,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
           }
         ]
       ]
@@ -2541,8 +2692,8 @@
           "StreamName": "dummy"
         },
         {
-          "Index": 421,
-          "Line": 15,
+          "Index": 460,
+          "Line": 16,
           "Column": 1,
           "StreamName": "dummy"
         }

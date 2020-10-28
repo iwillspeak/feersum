@@ -7,6 +7,7 @@ open System.IO
 open System.Reflection
 open System
 open System.Runtime.ExceptionServices
+open Serehfa
 
 /// Raw External Representation
 ///
@@ -18,7 +19,9 @@ let cilExternalRepr (object: Object) =
     | :? Char as c -> @"#\" + string c
     | null -> "()"
     | :? Func<obj[], obj> as f -> sprintf "#<compiledProcedure %A>" f.Method
-    | other -> sprintf "%A" other
+    | :? string as s -> sprintf "%A" s
+    | other -> Write.GetDisplayRepresentation(other)
+
 
 /// Take a syntax tree and evaluate it in-process
 ///

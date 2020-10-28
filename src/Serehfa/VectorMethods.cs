@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Serehfa
 {
@@ -57,6 +58,25 @@ namespace Serehfa
                 vec[i] = init;
             }
             return vec;
+        }
+
+        internal static string GetDisplayRepresentation(object[] v)
+        {
+            var sb = new StringBuilder();
+            sb.Append("#(");
+            bool first = true;
+            foreach (var o in v)
+            {
+                if (!first)
+                {
+                    sb.Append(" ");
+                }
+                sb.Append(Write.GetDisplayRepresentation(o));
+                first = false;
+            }
+            
+            sb.Append(")");
+            return sb.ToString();
         }
     }
 }

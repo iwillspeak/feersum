@@ -132,7 +132,7 @@
     "Exit": 0
   },
   "issue-5_b.scm": {
-    "Output": "True\nFalse\n",
+    "Output": "#t\n#f\n",
     "Error": "",
     "Exit": 255
   },
@@ -147,7 +147,7 @@
     "Exit": 0
   },
   "lists.scm": {
-    "Output": "((12 34 56) (False 4) 2)\n(5 4 3 2 1)\nTrueTrueFalse\nTrueTrueTrue\n",
+    "Output": "((12 34 56) (#f 4) 2)\n(5 4 3 2 1)\n#t#t#f\n#t#t#t\n",
     "Error": "",
     "Exit": 0
   },
@@ -157,7 +157,7 @@
     "Exit": 0
   },
   "quotes.scm": {
-    "Output": "1\nhello world\n'()\n(1 2 3)\n1\nhello world\n'()\n(1 2 3)\n(quote (quote 123))\nd\n| |\n|test\\x9;ident|\n|hello world|\nTrue\n",
+    "Output": "1\nhello world\n'()\n(1 2 3)\n1\nhello world\n'()\n(1 2 3)\n(quote (quote 123))\nd\n| |\n|test\\x9;ident|\n|hello world|\n#t\nfunky-quote-char\n",
     "Error": "",
     "Exit": 0
   },
@@ -300,5 +300,10 @@
         ]
       }
     ]
+  },
+  "vectors.scm": {
+    "Output": "(#(1 2 3) #(#\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a) #(0 (2 2 2 2) Anna) #t #t #f 3 test 8 #(0 (Sue Sue) Anna))",
+    "Error": "",
+    "Exit": 0
   }
 }

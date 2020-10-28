@@ -17,6 +17,7 @@ type AstNodeKind<'t> =
     | Form of 't list
     | Seq of 't list
     | Quoted of 't
+    | Vector of 't list
     | Error
 
 /// A node in our syntax tree.
@@ -131,6 +132,11 @@ let private parseStr =
                 (manyChars (unescapedChar <|> hexEscape <|> escapedChar))
     |> spannedNode Str
 
+let private parseVec =
+    between (skipString "#(") (expectCharClosing ')')
+        (many parseForm)
+    |> spannedNode Vector
+
 let private parseBool =
     stringReturn "#true"  true <|>
     stringReturn "#t"     true <|>
@@ -168,13 +174,14 @@ let private parseDot =
     |> spannedNodeOfKind Dot
 
 let private parseQuoted =
-    skipChar '\'' >>. parseForm |> spannedNode Quoted
+    skipAnyOf "’'" >>. parseForm |> spannedNode Quoted
 
 let private parseAtom =
     // The order is important here. Numbers have higher priority than
     // symbols / identifiers. The `.` token must come before identifier.
     choice [
         parseStr
+        parseVec
         parseChar
         parseNum
         parseBool

@@ -12,3 +12,4 @@
 (display '|test\tident|)(newline)
 (display '|hello world|)(newline)
 (display #t)(newline)
+(display ’"funky-quote-char")(newline)

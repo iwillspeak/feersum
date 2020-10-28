@@ -31,6 +31,7 @@ type BoundLiteral =
     | Character of char
     | Number of double
     | Str of string
+    | Vector of AstNode list
     | Null
 
 /// Bound Expression Type
@@ -247,6 +248,7 @@ let rec private bindInContext ctx node =
     | AstNodeKind.Str s -> BoundExpr.Literal(BoundLiteral.Str s)
     | AstNodeKind.Boolean b -> BoundExpr.Literal(BoundLiteral.Boolean b)
     | AstNodeKind.Character c -> BoundExpr.Literal(BoundLiteral.Character c)
+    | AstNodeKind.Vector v -> BoundExpr.Literal(BoundLiteral.Vector v)
     | AstNodeKind.Dot ->
         ctx.Diagnostics.Emit node.Location "Unexpected dot"
         BoundExpr.Error
