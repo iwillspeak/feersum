@@ -314,21 +314,32 @@ and emitLiteral ctx = function
             ctx.IL.Emit(OpCodes.Stelem_Ref)
             idx + 1) 0 |> ignore
     | BoundLiteral.ByteVector bv ->
+        let len = List.length bv
 
         // Create an empty array
-        ctx.IL.Emit(OpCodes.Ldc_I4, List.length bv)
+        ctx.IL.Emit(OpCodes.Ldc_I4, len)
         ctx.IL.Emit(OpCodes.Newarr, ctx.Assm.MainModule.TypeSystem.Byte)
 
-        // Fill the array with quoted expressions
-        bv
-        |> List.fold (fun (idx: int) b -> 
-            ctx.IL.Emit(OpCodes.Dup)
-            ctx.IL.Emit(OpCodes.Ldc_I4, idx)
-            ctx.IL.Emit(OpCodes.Ldc_I4, int b)
-            ctx.IL.Emit(OpCodes.Conv_I1)
-            ctx.IL.Emit(OpCodes.Stelem_I1)
-            idx + 1) 0 |> ignore
+        if len > 0 then
+            // Create a static copy of the bytes
+            let literalTy = TypeDefinition("Feersum.Internals",
+                                           sprintf "<>ByteLiteral%d" ctx.ProgramTy.Fields.Count,
+                                           TypeAttributes.NestedPrivate ||| TypeAttributes.Sealed ||| TypeAttributes.ExplicitLayout,
+                                           ctx.Assm.MainModule.ImportReference(typeof<System.ValueType>))
+            literalTy.PackingSize <- 1s
+            literalTy.ClassSize <- len
+            ctx.ProgramTy.NestedTypes.Add(literalTy)
+            let literalField = FieldDefinition(sprintf "<>/Lit%d" ctx.ProgramTy.Fields.Count,
+                                               FieldAttributes.Static ||| FieldAttributes.InitOnly ||| FieldAttributes.Assembly ||| FieldAttributes.HasFieldRVA,
+                                               literalTy)
+            literalField.InitialValue <- List.toArray bv
+            ctx.ProgramTy.Fields.Add(literalField)
 
+            /// Copy to our new array using the `InitializeArray` intrinsic.
+            let initArray = ctx.Assm.MainModule.ImportReference(typeof<Runtime.CompilerServices.RuntimeHelpers>.GetMethod("InitializeArray"))
+            ctx.IL.Emit(OpCodes.Dup)
+            ctx.IL.Emit(OpCodes.Ldtoken, literalField)
+            ctx.IL.Emit(OpCodes.Call, initArray)
 
     /// Emit a write to a given storage location
 and writeTo ctx storage =
