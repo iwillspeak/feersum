@@ -310,5 +310,10 @@
     "Output": "(#u8() #u8(255) #u8(1 2 3) #t #t #u8() #u8(1 2 4 5) #u8(90 90 90 90 90 90 90 90 90 90))",
     "Error": "",
     "Exit": 0
+  },
+  "equivalence.scm": {
+    "Output": "(#t #f #t #t #t #t #f #f #t #f)\n(#t #f #f #f)\n#t#f\n",
+    "Error": "",
+    "Exit": 0
   }
 }
