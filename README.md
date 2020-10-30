@@ -14,9 +14,9 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Proper support for different target frameworks
  * [ ] Implement [all special forms](docs/special-forms.md)
  * [ ] Support [all value types](docs/values.md)
- * [ ] Quoted expressions.
+ * [x] Quoted expressions.
  * [ ] Macros support.
- * [ ] Standard library & builtins from a separate assembly.
+ * [x] Standard library & builtins from a separate assembly.
  * [ ] Interop with other .NET assemblies.
  * [ ] Multi-statement support in the REPL.
  * [ ] Debugging support
