@@ -17,11 +17,33 @@ let ``patterns with constant number`` () =
         | Result.Ok _ -> ()
         | Result.Error e -> failwithf "%A" e
     
-    testConstantMatch (SyntaxConstant.Number 101.0)
-    testConstantMatch (SyntaxConstant.Number 0.0)
-    testConstantMatch (SyntaxConstant.Character 'a')
-    testConstantMatch (SyntaxConstant.Boolean true)
-    testConstantMatch (SyntaxConstant.Boolean false)
-    testConstantMatch (SyntaxConstant.Str "")
-    testConstantMatch (SyntaxConstant.Str "§2")
+    testConstantMatch (Number 101.0)
+    testConstantMatch (Number 0.0)
+    testConstantMatch (Character 'a')
+    testConstantMatch (Boolean true)
+    testConstantMatch (Boolean false)
+    testConstantMatch (Str "")
+    testConstantMatch (Str "§2")
 
+[<Fact>]
+let ``variable patterns match anything`` () =
+
+    let testVarMatch syntax =
+        let pattern = MacroPattern.Variable "test"
+
+        match macroMatch pattern syntax with
+        | Result.Ok [("test", s)] ->
+            Assert.Same(syntax, s)
+        | o -> failwithf "Pattern variable did not match %A" o
+    
+    testVarMatch (Number 101.0 |> constant)
+    testVarMatch (Number 0.0 |> constant)
+    testVarMatch (Character 'a' |> constant)
+    testVarMatch (Boolean true |> constant)
+    testVarMatch (Boolean false |> constant)
+    testVarMatch (Str "" |> constant)
+    testVarMatch (Str "§2" |> constant)
+    testVarMatch (Form [] |> node)
+    testVarMatch (Ident "test" |> node)
+    testVarMatch (Form [ Ident "foodafdf" |> node ] |> node)
+    testVarMatch (Form [ number 123.0 ] |> node)
