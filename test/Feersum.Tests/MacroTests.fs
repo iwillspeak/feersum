@@ -47,3 +47,19 @@ let ``variable patterns match anything`` () =
     testVarMatch (Ident "test" |> node)
     testVarMatch (Form [ Ident "foodafdf" |> node ] |> node)
     testVarMatch (Form [ number 123.0 ] |> node)
+
+
+[<Fact>]
+let ``simple form patterns`` () =
+
+    let formMatch pattern syntax =
+        match macroMatch pattern syntax with
+        | Result.Ok bindings -> bindings
+        | o -> failwithf "Pattern variable did not match %A" o
+
+    Assert.Equal<_ list>([], formMatch (MacroPattern.Form []) (Form [] |> node))
+    Assert.Equal<_ list>([], formMatch (MacroPattern.Form [ MacroPattern.Constant (Boolean false); MacroPattern.Constant (Str "frob"); MacroPattern.Constant (Number 123.56)]) (Form [ constant (Boolean false); constant (Str "frob"); number 123.56] |> node))
+    let testNode = (number 123.4)
+    Assert.Equal<_ list>([("test", testNode)],
+                         formMatch (MacroPattern.Form [ MacroPattern.Variable "test" ]) (Form [ testNode ] |> node))
+    
