@@ -7,7 +7,7 @@ branches:
     increment: none
   feature:
     mode: ContinuousDeployment
-    regex: feature[/-]
+    regex: ^(?!main).*$
     increment: none
 ignore:
   sha: []
