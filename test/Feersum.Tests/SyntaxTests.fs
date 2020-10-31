@@ -11,22 +11,22 @@ open SyntaxFactory
 
 [<Fact>]
 let ``parse seqs`` () =
-    Assert.Equal(Seq [ Number 1.0 |> node; Number 23.0 |> node] |> node, readMany "1 23" |> sanitise)
-    Assert.Equal(Seq [ Boolean true |> node] |> node, readMany "#t" |> sanitise)
+    Assert.Equal(Seq [ Number 1.0 |> Constant |> node; Number 23.0  |> Constant|> node] |> node, readMany "1 23" |> sanitise)
+    Assert.Equal(Seq [ Boolean true  |> Constant |> node] |> node, readMany "#t" |> sanitise)
     Assert.Equal(Seq [ ] |> node, readMany "" |> sanitise)
-    Assert.Equal(Seq [ Form [ Ident "+" |> node; Number 12.0 |> node; Number 34.0 |> node ] |> node; Boolean false |> node] |> node, readMany "(+ 12 34) #f" |> sanitise)
+    Assert.Equal(Seq [ Form [ Ident "+" |> node; Number 12.0 |> Constant |> node; Number 34.0  |> Constant|> node ] |> node; Boolean false |> Constant |> node] |> node, readMany "(+ 12 34) #f" |> sanitise)
 
 [<Fact>]
 let ``parse atoms`` () =
-    Assert.Equal(Number 123.559, readSingle "123.559")
-    Assert.Equal(Number 789.0, readSingle "789")
-    Assert.Equal(Str "hello\nworld", readSingle @"""hello\nworld""")
-    Assert.Equal(Str "", readSingle("\"\""))
+    Assert.Equal(Number 123.559 |> Constant, readSingle "123.559")
+    Assert.Equal(Number 789.0|> Constant, readSingle "789")
+    Assert.Equal(Str "hello\nworld"|> Constant, readSingle @"""hello\nworld""")
+    Assert.Equal(Str ""|> Constant, readSingle("\"\""))
     Assert.Equal(Ident "nil", readSingle "nil")
-    Assert.Equal(Boolean true, readSingle "#t")
-    Assert.Equal(Boolean false, readSingle "#f")
-    Assert.Equal(Boolean true, readSingle "#true")
-    Assert.Equal(Boolean false, readSingle "#false")
+    Assert.Equal(Boolean true |> Constant, readSingle "#t")
+    Assert.Equal(Boolean false |> Constant, readSingle "#f")
+    Assert.Equal(Boolean true |> Constant, readSingle "#true")
+    Assert.Equal(Boolean false |> Constant, readSingle "#false")
     Assert.Equal(Dot, readSingle ".")
 
 [<Theory>]
@@ -101,20 +101,20 @@ let ``identifier literals`` raw cooked =
 [<InlineData("\\x41;", 'A')>]
 [<InlineData("\\x1234;", '\u1234')>]
 let ``parse escaped characters`` escaped char =
-    Assert.Equal(Str (char |> string), readSingle (sprintf "\"%s\"" escaped))
+    Assert.Equal(Str (char |> string) |> Constant, readSingle (sprintf "\"%s\"" escaped))
 
 [<Fact>]
 let ``parse datum comment`` () =
-    Assert.Equal(Number 1.0, readSingle "#;(= n 1)
+    Assert.Equal(Number 1.0 |> Constant, readSingle "#;(= n 1)
             1        ;Base case: return 1")
-    Assert.Equal(Number 123.0, readSingle "#;(= n 1)123")
-    Assert.Equal(Number 456.0, readSingle "#;123 456")
+    Assert.Equal(Number 123.0 |> Constant, readSingle "#;(= n 1)123")
+    Assert.Equal(Number 456.0 |> Constant, readSingle "#;123 456")
 
 [<Fact>]
 let ``parse block comments`` () =
-    Assert.Equal(Number 1.0, readSingle "#| this is a comment |#1")
-    Assert.Equal(Number 1.0, readSingle "1#| this is a comment |#")
-    Assert.Equal(Number 1.0, readSingle "#| this #| is a |# comment |#1")
+    Assert.Equal(Number 1.0 |> Constant, readSingle "#| this is a comment |#1")
+    Assert.Equal(Number 1.0 |> Constant, readSingle "1#| this is a comment |#")
+    Assert.Equal(Number 1.0 |> Constant, readSingle "#| this #| is a |# comment |#1")
 
 [<Theory>]
 [<InlineData('a')>]
@@ -131,7 +131,7 @@ let ``parse block comments`` () =
 [<InlineData('§')>]
 [<InlineData('±')>]
 let ``parse simple character literals`` char =
-    Assert.Equal(Character char, readSingle (@"#\" + string char))
+    Assert.Equal(Character char |> Constant, readSingle (@"#\" + string char))
 
 [<Theory>]
 [<InlineData("alarm", '\u0007')>]
@@ -144,14 +144,14 @@ let ``parse simple character literals`` char =
 [<InlineData("space", ' ')>]
 [<InlineData("tab", '\u0009')>]
 let ``parse named characters`` name char =
-    Assert.Equal(Character char, readSingle (@"#\" + name))
+    Assert.Equal(Character char |> Constant, readSingle (@"#\" + name))
 
 [<Theory>]
 [<InlineData(@"#\x03BB", 'λ')>]
 [<InlineData(@"#\x03bb", 'λ')>]
 [<InlineData(@"#\x20", ' ')>]
 let ``parse hex characters`` hex char =
-    Assert.Equal(Character char, readSingle hex)
+    Assert.Equal(Character char |> Constant, readSingle hex)
 
 [<Fact>]
 let ``multiple diagnostics on error`` () =

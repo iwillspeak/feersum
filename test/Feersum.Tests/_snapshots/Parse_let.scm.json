@@ -253,9 +253,14 @@
                                           },
                                           {
                                             "Kind": {
-                                              "Case": "Number",
+                                              "Case": "Constant",
                                               "Fields": [
-                                                100.0
+                                                {
+                                                  "Case": "Number",
+                                                  "Fields": [
+                                                    100.0
+                                                  ]
+                                                }
                                               ]
                                             },
                                             "Location": {
@@ -645,9 +650,14 @@
                   },
                   {
                     "Kind": {
-                      "Case": "Number",
+                      "Case": "Constant",
                       "Fields": [
-                        123.0
+                        {
+                          "Case": "Number",
+                          "Fields": [
+                            123.0
+                          ]
+                        }
                       ]
                     },
                     "Location": {

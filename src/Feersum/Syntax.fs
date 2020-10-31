@@ -6,13 +6,17 @@ open System.Text
 
 open Diagnostics
 
-/// Type of nodes in our syntax tree
-type AstNodeKind<'t> =
-    | Ident of string
-    | Number of float
+/// Constant or literal value in the syntax tree
+type SyntaxConstant = 
+    | Number of double
     | Str of string
     | Boolean of bool
     | Character of char
+
+/// Type of nodes in our syntax tree
+type AstNodeKind<'t> =
+    | Ident of string
+    | Constant of SyntaxConstant
     | Dot
     | Form of 't list
     | Seq of 't list
@@ -88,7 +92,7 @@ let private comment =
 let private ws = skipMany (comment <|> unicodeSpaces1)
 
 let private parseNum =
-    spannedNode Number pfloat
+    spannedNode (Number >> Constant) pfloat
 
 let private unescapedChar =
     noneOf "\"\\"
@@ -131,7 +135,7 @@ let private escapedChar =
 let private parseStr =
     between (skipChar '"') (expectCharClosing '"')
                 (manyChars (unescapedChar <|> hexEscape <|> escapedChar))
-    |> spannedNode Str
+    |> spannedNode (Str >> Constant)
 
 let private parseVec =
     between (skipString "#(") (expectCharClosing ')')
@@ -148,7 +152,7 @@ let private parseBool =
     stringReturn "#t"     true <|>
     stringReturn "#false" false <|>
     stringReturn "#f"     false
-    |> spannedNode Boolean
+    |> spannedNode (Boolean >> Constant)
 
 let private parseChar =
     let namedChar = choice [
@@ -163,7 +167,7 @@ let private parseChar =
         stringReturn "tab" '\u0009'
     ]
     let hexChar = attempt (skipChar 'x' >>. hexScalarValue)
-    spannedNode Character (skipString @"#\" >>. (namedChar <|> hexChar <|> anyChar))
+    spannedNode (Character >> Constant) (skipString @"#\" >>. (namedChar <|> hexChar <|> anyChar))
 
 let inline private isIdentifierChar c =
     isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~+-." c

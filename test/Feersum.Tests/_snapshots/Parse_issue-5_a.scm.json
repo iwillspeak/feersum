@@ -152,9 +152,14 @@
                                           },
                                           {
                                             "Kind": {
-                                              "Case": "Boolean",
+                                              "Case": "Constant",
                                               "Fields": [
-                                                false
+                                                {
+                                                  "Case": "Boolean",
+                                                  "Fields": [
+                                                    false
+                                                  ]
+                                                }
                                               ]
                                             },
                                             "Location": {
@@ -391,9 +396,14 @@
                   },
                   {
                     "Kind": {
-                      "Case": "Number",
+                      "Case": "Constant",
                       "Fields": [
-                        101.0
+                        {
+                          "Case": "Number",
+                          "Fields": [
+                            101.0
+                          ]
+                        }
                       ]
                     },
                     "Location": {

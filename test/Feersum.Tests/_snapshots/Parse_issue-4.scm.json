@@ -252,9 +252,14 @@
                                           },
                                           {
                                             "Kind": {
-                                              "Case": "Number",
+                                              "Case": "Constant",
                                               "Fields": [
-                                                1.0
+                                                {
+                                                  "Case": "Number",
+                                                  "Fields": [
+                                                    1.0
+                                                  ]
+                                                }
                                               ]
                                             },
                                             "Location": {
@@ -496,9 +501,14 @@
                           },
                           {
                             "Kind": {
-                              "Case": "Number",
+                              "Case": "Constant",
                               "Fields": [
-                                10.0
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    10.0
+                                  ]
+                                }
                               ]
                             },
                             "Location": {
@@ -648,9 +658,14 @@
                           },
                           {
                             "Kind": {
-                              "Case": "Number",
+                              "Case": "Constant",
                               "Fields": [
-                                100.0
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    100.0
+                                  ]
+                                }
                               ]
                             },
                             "Location": {

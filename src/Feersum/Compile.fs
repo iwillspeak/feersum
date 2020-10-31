@@ -275,10 +275,7 @@ and emitQuoted ctx quoted =
     match quoted.Kind with
     | Vector v -> emitLiteral ctx (BoundLiteral.Vector v)
     | ByteVector v -> emitLiteral ctx (BoundLiteral.ByteVector v)
-    | Number n -> emitLiteral ctx (BoundLiteral.Number n)
-    | Str s -> emitLiteral ctx (BoundLiteral.Str s) 
-    | Boolean b -> emitLiteral ctx (BoundLiteral.Boolean b)
-    | Character c -> emitLiteral ctx (BoundLiteral.Character c)
+    | Constant c -> emitLiteral ctx (BoundLiteral.FromConstant c)
     | Form [] -> emitLiteral ctx (BoundLiteral.Null)
     | Form s | Seq s -> quoteSequence s
     | Quoted q ->

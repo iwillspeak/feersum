@@ -5,6 +5,8 @@ open Xunit
 open Interpret
 open Eval
 open Syntax
+open SyntaxUtils
+open SyntaxFactory
 open Diagnostics
 
 let private expectOk = function
@@ -13,11 +15,6 @@ let private expectOk = function
 
 let interpret = execute >> expectOk >> externalRepr
 let feeri = eval >> expectOk >> cilExternalRepr
-
-let private dummyLocation = Point(FParsec.Position("dummy", 0L, 0L, 0L))
-
-let n node =
-    { Kind = node; Location = dummyLocation }
 
 let evaluators = [|
         [| interpret |];
@@ -32,40 +29,40 @@ let private tryReadSingle expr =
 [<Theory>]
 [<MemberData("evaluators")>]
 let ``Evaluate atoms`` evaluator =
-    Assert.Equal("#t", evaluator(Boolean true |> n))
-    Assert.Equal("#f", evaluator(Boolean false |> n))
-    Assert.Equal(@"""hello""", evaluator(Str "hello" |> n))
-    Assert.Equal("1337", evaluator(Number 1337.0 |> n))
-    Assert.Equal("123.456", evaluator(Number 123.456 |> n))
+    Assert.Equal("#t", evaluator(Boolean true |> constant))
+    Assert.Equal("#f", evaluator(Boolean false |> constant))
+    Assert.Equal(@"""hello""", evaluator(Str "hello" |> constant))
+    Assert.Equal("1337", evaluator(Number 1337.0 |> constant))
+    Assert.Equal("123.456", evaluator(Number 123.456 |> constant))
 
 [<Theory>]
 [<MemberData("evaluators")>]
 let ``Evaluate lists`` evaluator =
-    Assert.Equal("132", evaluator(Seq [ Boolean false |> n; Number 132.0  |> n] |> n))
-    Assert.Equal("#t", evaluator(Seq [ Boolean true |> n ] |> n))
+    Assert.Equal("132", evaluator(Seq [ Boolean false |> constant; Number 132.0  |> constant] |> node))
+    Assert.Equal("#t", evaluator(Seq [ Boolean true |> constant ] |> node))
 
 // TODO: Empty program yields NULL for eval, but special undefined value for
 //       the interpreter. How can we represent undefined values in .NET?
 [<Fact>]
 let ``Evaluate empty program`` () =
-    Assert.Equal("; unspecified value", interpret(Seq [ ] |> n))
-    Assert.Equal("()", feeri(Seq [ ] |> n))
+    Assert.Equal("; unspecified value", interpret(Seq [ ] |> node))
+    Assert.Equal("()", feeri(Seq [ ] |> node))
 
 [<Fact>]
 let ``Evaluate lambdas returns`` () =
     Assert.Equal("123", feeri(Form [
-        Form [ Ident "lambda" |> n ; Form [ Ident "x" |> n ] |> n; Ident "x" |> n] |> n;
-        Number 123.0 |> n] |> n))
+        Form [ Ident "lambda" |> node ; Form [ Ident "x" |> node ] |> node; Ident "x" |> node] |> node;
+        Number 123.0 |> constant] |> node))
 
 [<Theory>]
 [<MemberData("evaluators")>]
 let ``Evaluate builtins`` evaluator =
-    Assert.Equal("19", evaluator(Form [ Ident "+" |> n; Number 10.0 |> n; Number 9.0 |> n ] |> n))
-    Assert.Equal("901", evaluator(Form [ Ident "+" |> n; Number 901.0 |> n ] |> n))
-    Assert.Equal("90", evaluator(Form [ Ident "*" |> n; Number 10.0 |> n; Number 9.0 |> n ] |> n))
-    Assert.Equal("901", evaluator(Form [ Ident "+" |> n; Form [ Ident "*" |> n; Number 100.0 |> n; Number 9.0 |> n ]|> n; Number 1.0 |> n] |> n))
-    Assert.Equal("1", evaluator(Form [ Ident "-" |> n; Number 10.0 |> n; Number 9.0 |> n ] |> n))
-    Assert.Equal("2", evaluator(Form [ Ident "/" |> n; Number 16.0 |> n; Number 8.0 |> n ] |> n))
+    Assert.Equal("19", evaluator(Form [ Ident "+" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
+    Assert.Equal("901", evaluator(Form [ Ident "+" |> node; Number 901.0 |> constant ] |> node))
+    Assert.Equal("90", evaluator(Form [ Ident "*" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
+    Assert.Equal("901", evaluator(Form [ Ident "+" |> node; Form [ Ident "*" |> node; Number 100.0 |> constant; Number 9.0 |> constant ]|> node; Number 1.0 |> constant] |> node))
+    Assert.Equal("1", evaluator(Form [ Ident "-" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
+    Assert.Equal("2", evaluator(Form [ Ident "/" |> node; Number 16.0 |> constant; Number 8.0 |> constant ] |> node))
 
 [<Theory>]
 [<InlineData("(+ 3 4)", "7")>]
@@ -92,7 +89,6 @@ let ``evaluate artithemtic ops`` expr result =
     let expr = tryReadSingle expr
     Assert.Equal(result, feeri(expr))
 
-
 [<Theory>]
 [<InlineData("=")>]
 [<InlineData(">")>]
@@ -100,8 +96,8 @@ let ``evaluate artithemtic ops`` expr result =
 [<InlineData(">=")>]
 [<InlineData("<=")>]
 let ``comp ops return true for simple cases`` op =
-    Assert.Equal("#t", feeri(Form [ Ident op  |> n] |> n))
-    Assert.Equal("#t", feeri(Form [ Ident op |> n; Number 123.456 |> n ] |> n))
+    Assert.Equal("#t", feeri(Form [ Ident op  |> node] |> node))
+    Assert.Equal("#t", feeri(Form [ Ident op |> node; Number 123.456 |> constant ] |> node))
 
 [<Theory>]
 [<InlineData("(= 23 4234 234)", "#f")>]
