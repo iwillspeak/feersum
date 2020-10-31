@@ -35,6 +35,13 @@ type BoundLiteral =
     | ByteVector of byte list
     | Null
 
+with
+    static member FromConstant = function
+        | SyntaxConstant.Number n -> BoundLiteral.Number n
+        | SyntaxConstant.Character c -> BoundLiteral.Character c
+        | SyntaxConstant.Boolean b -> BoundLiteral.Boolean b
+        | SyntaxConstant.Str s -> BoundLiteral.Str s
+    
 /// Bound Expression Type
 ///
 /// Bound expressions represent the syntax of a program with all identifier
@@ -245,10 +252,9 @@ let private illFormedInCtx ctx location formName =
 let rec private bindInContext ctx node =
     match node.Kind with
     | AstNodeKind.Error -> failwithf "ICE: Attempt to bind an error node."
-    | AstNodeKind.Number n -> BoundExpr.Literal(BoundLiteral.Number n)
-    | AstNodeKind.Str s -> BoundExpr.Literal(BoundLiteral.Str s)
-    | AstNodeKind.Boolean b -> BoundExpr.Literal(BoundLiteral.Boolean b)
-    | AstNodeKind.Character c -> BoundExpr.Literal(BoundLiteral.Character c)
+    | AstNodeKind.Constant c ->
+        BoundLiteral.FromConstant c
+        |> BoundExpr.Literal
     | AstNodeKind.Vector v -> BoundExpr.Literal(BoundLiteral.Vector v)
     | AstNodeKind.ByteVector bv -> BoundExpr.Literal(BoundLiteral.ByteVector bv)
     | AstNodeKind.Dot ->

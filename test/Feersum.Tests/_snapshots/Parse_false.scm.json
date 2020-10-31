@@ -6,9 +6,14 @@
         [
           {
             "Kind": {
-              "Case": "Boolean",
+              "Case": "Constant",
               "Fields": [
-                false
+                {
+                  "Case": "Boolean",
+                  "Fields": [
+                    false
+                  ]
+                }
               ]
             },
             "Location": {

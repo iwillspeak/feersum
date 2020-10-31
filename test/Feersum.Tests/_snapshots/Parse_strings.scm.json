@@ -6,9 +6,14 @@
         [
           {
             "Kind": {
-              "Case": "Str",
+              "Case": "Constant",
               "Fields": [
-                "hello world"
+                {
+                  "Case": "Str",
+                  "Fields": [
+                    "hello world"
+                  ]
+                }
               ]
             },
             "Location": {
@@ -31,9 +36,14 @@
           },
           {
             "Kind": {
-              "Case": "Str",
+              "Case": "Constant",
               "Fields": [
-                "stuff and things"
+                {
+                  "Case": "Str",
+                  "Fields": [
+                    "stuff and things"
+                  ]
+                }
               ]
             },
             "Location": {

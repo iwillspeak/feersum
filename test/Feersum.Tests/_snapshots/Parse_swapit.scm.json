@@ -472,9 +472,14 @@
                           },
                           {
                             "Kind": {
-                              "Case": "Str",
+                              "Case": "Constant",
                               "Fields": [
-                                "Fooble"
+                                {
+                                  "Case": "Str",
+                                  "Fields": [
+                                    "Fooble"
+                                  ]
+                                }
                               ]
                             },
                             "Location": {
@@ -497,9 +502,14 @@
                           },
                           {
                             "Kind": {
-                              "Case": "Str",
+                              "Case": "Constant",
                               "Fields": [
-                                "Barble"
+                                {
+                                  "Case": "Str",
+                                  "Fields": [
+                                    "Barble"
+                                  ]
+                                }
                               ]
                             },
                             "Location": {
@@ -624,9 +634,14 @@
                           },
                           {
                             "Kind": {
-                              "Case": "Number",
+                              "Case": "Constant",
                               "Fields": [
-                                123.0
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    123.0
+                                  ]
+                                }
                               ]
                             },
                             "Location": {
@@ -649,9 +664,14 @@
                           },
                           {
                             "Kind": {
-                              "Case": "Str",
+                              "Case": "Constant",
                               "Fields": [
-                                "Test"
+                                {
+                                  "Case": "Str",
+                                  "Fields": [
+                                    "Test"
+                                  ]
+                                }
                               ]
                             },
                             "Location": {
@@ -695,9 +715,14 @@
                   },
                   {
                     "Kind": {
-                      "Case": "Number",
+                      "Case": "Constant",
                       "Fields": [
-                        123.0
+                        {
+                          "Case": "Number",
+                          "Fields": [
+                            123.0
+                          ]
+                        }
                       ]
                     },
                     "Location": {

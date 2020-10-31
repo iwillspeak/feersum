@@ -15,6 +15,16 @@ module SyntaxFactory =
     let node kind =
         { Kind = kind; Location = dummyLocation }
 
+    let constant c =
+        c
+        |> AstNodeKind.Constant
+        |> node
+
+    let number n =
+        n
+        |> SyntaxConstant.Number
+        |> constant
+
 let normalisePaths (p: Position) =
     Position("dummy", p.Index, p.Line, p.Column)
 
