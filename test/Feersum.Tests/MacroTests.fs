@@ -106,5 +106,5 @@ let ``dotted form patterns`` () =
     let headNode = (number 123.4)
     let tailNode = (number 567.8)
     // (head . tail)
-    Assert.Equal<_ list>([("tail", tailNode);("head", headNode)],
+    Assert.Equal<_ list>([("head", headNode);("tail", tailNode)],
                          assertMatches (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail")) (Form [ headNode; tailNode ] |> node))
