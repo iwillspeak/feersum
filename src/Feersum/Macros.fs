@@ -65,16 +65,22 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
         | _ -> Result.Error ()
 
 and matchDottedForm patterns tailPattern syntax =
-    let syntax = List.rev syntax
-    let patterns = List.rev patterns
-
-    match syntax with
-    | tail::rest ->
-        match macroMatch tailPattern tail with
-        | Ok tailVars ->
-            List.map2 (macroMatch) patterns rest
-            |> collectResults
-            |> Result.map (List.collect id)
-            |> Result.map (List.append tailVars)
-        | e -> e
-    | [] -> Result.Error ()
+    match patterns with
+    | headPat::patterns ->
+        match syntax with
+        | head::rest ->
+            match macroMatch headPat head with
+            | Ok vars ->
+                matchDottedForm patterns tailPattern rest
+                |> Result.map (List.append vars)
+            | e -> e
+        | [] -> Result.Error ()
+    | [] ->
+        match syntax with
+        | [single] -> 
+            macroMatch tailPattern single
+        | other ->
+            match tailPattern with
+            | Underscore -> Result.Ok []
+            | Variable _ -> Result.Ok [] // FIXME: need a way to bind this
+            | _ -> Result.Error ()
