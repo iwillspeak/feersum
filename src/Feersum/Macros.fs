@@ -9,6 +9,7 @@ type MacroPattern =
     | Constant of SyntaxConstant
     | Variable of string
     | Form of MacroPattern list
+    | DottedForm of MacroPattern list * MacroPattern
     
 type MacroBinding = (string * AstNode)
 
@@ -46,3 +47,23 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
             |> Result.map (List.collect id)
             
         | _ -> Result.Error ()
+    | DottedForm(patterns, tail) ->
+        match ast.Kind with
+        | AstNodeKind.Form g ->
+            matchDottedForm patterns tail g
+        | _ -> Result.Error ()
+        
+and matchDottedForm patterns tailPattern syntax =
+    let syntax = List.rev syntax
+    let patterns = List.rev patterns
+
+    match syntax with
+    | tail::rest ->
+        match macroMatch tailPattern tail with
+        | Ok tailVars ->
+            List.map2 (macroMatch) patterns rest
+            |> collectResults
+            |> Result.map (List.collect id)
+            |> Result.map (List.append tailVars)
+        | e -> e
+    | [] -> Result.Error ()
