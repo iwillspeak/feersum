@@ -7,6 +7,8 @@ open Syntax
 /// macro should match.
 type MacroPattern =
     | Constant of SyntaxConstant
+    | Underscore
+    | Literal of string
     | Variable of string
     | Form of MacroPattern list
     | DottedForm of MacroPattern list * MacroPattern
@@ -52,7 +54,16 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
         | AstNodeKind.Form g ->
             matchDottedForm patterns tail g
         | _ -> Result.Error ()
-        
+    | Underscore -> Result.Ok []
+    | Literal literal ->
+        match ast.Kind with
+        | AstNodeKind.Ident id ->
+            if id = literal then
+                Result.Ok []
+            else
+                Result.Error ()
+        | _ -> Result.Error ()
+
 and matchDottedForm patterns tailPattern syntax =
     let syntax = List.rev syntax
     let patterns = List.rev patterns
