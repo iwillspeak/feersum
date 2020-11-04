@@ -30,6 +30,20 @@ let ``patterns with constant number`` () =
     testConstantMatch (Str "")
     testConstantMatch (Str "§2")
 
+[<Theory>]
+[<InlineData("if", "if", true)>]
+[<InlineData("if", "else", false)>]
+[<InlineData("else", "else", true)>]
+[<InlineData("test-thing", "test-thing", true)>]
+[<InlineData("...", "...", true)>]
+let ``literal identifiers only match their literal values`` pattern id expected =
+    let pattern = MacroPattern.Literal pattern
+    let actual =
+        match macroMatch pattern (Ident id |> node) with
+        | Ok _ -> true
+        | _ -> false
+    Assert.Equal(expected, actual)
+
 [<Fact>]
 let ``variable patterns match anything`` () =
 
@@ -53,6 +67,27 @@ let ``variable patterns match anything`` () =
     testVarMatch (Form [ Ident "foodafdf" |> node ] |> node)
     testVarMatch (Form [ number 123.0 ] |> node)
 
+[<Fact>]
+let ``underscore patterns match anything`` () =
+
+    let testUnderscoreMatch syntax =
+        let pattern = MacroPattern.Underscore
+
+        match macroMatch pattern syntax with
+        | Result.Ok [] -> ()
+        | o -> failwithf "Pattern variable did not match %A" o
+    
+    testUnderscoreMatch (Number 101.0 |> constant)
+    testUnderscoreMatch (Number 0.0 |> constant)
+    testUnderscoreMatch (Character 'a' |> constant)
+    testUnderscoreMatch (Boolean true |> constant)
+    testUnderscoreMatch (Boolean false |> constant)
+    testUnderscoreMatch (Str "" |> constant)
+    testUnderscoreMatch (Str "§2" |> constant)
+    testUnderscoreMatch (Form [] |> node)
+    testUnderscoreMatch (Ident "test" |> node)
+    testUnderscoreMatch (Form [ Ident "foodafdf" |> node ] |> node)
+    testUnderscoreMatch (Form [ number 123.0 ] |> node)
 
 [<Fact>]
 let ``simple form patterns`` () =
