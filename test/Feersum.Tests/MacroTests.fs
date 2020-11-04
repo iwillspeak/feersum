@@ -7,6 +7,11 @@ open SyntaxUtils
 open SyntaxFactory
 open Syntax
 
+let private assertMatches pattern syntax =
+        match macroMatch pattern syntax with
+        | Result.Ok bindings -> bindings
+        | o -> failwithf "Pattern variable did not match %A" o
+
 [<Fact>]
 let ``patterns with constant number`` () =
 
@@ -52,14 +57,19 @@ let ``variable patterns match anything`` () =
 [<Fact>]
 let ``simple form patterns`` () =
 
-    let formMatch pattern syntax =
-        match macroMatch pattern syntax with
-        | Result.Ok bindings -> bindings
-        | o -> failwithf "Pattern variable did not match %A" o
-
-    Assert.Equal<_ list>([], formMatch (MacroPattern.Form []) (Form [] |> node))
-    Assert.Equal<_ list>([], formMatch (MacroPattern.Form [ MacroPattern.Constant (Boolean false); MacroPattern.Constant (Str "frob"); MacroPattern.Constant (Number 123.56)]) (Form [ constant (Boolean false); constant (Str "frob"); number 123.56] |> node))
+    Assert.Equal<_ list>([], assertMatches (MacroPattern.Form []) (Form [] |> node))
+    Assert.Equal<_ list>([], assertMatches (MacroPattern.Form [ MacroPattern.Constant (Boolean false); MacroPattern.Constant (Str "frob"); MacroPattern.Constant (Number 123.56)]) (Form [ constant (Boolean false); constant (Str "frob"); number 123.56] |> node))
     let testNode = (number 123.4)
     Assert.Equal<_ list>([("test", testNode)],
-                         formMatch (MacroPattern.Form [ MacroPattern.Variable "test" ]) (Form [ testNode ] |> node))
+                         assertMatches (MacroPattern.Form [ MacroPattern.Variable "test" ]) (Form [ testNode ] |> node))
     
+[<Fact>]
+let ``dotted form patterns`` () =
+
+    // FIXME: this pattern is nonsense '( . 123.4)' matching (123.4)
+    Assert.Equal<_ list>([], assertMatches (MacroPattern.DottedForm([], MacroPattern.Constant (Number 123.4))) (Form [ number 123.4 ] |> node))
+    let headNode = (number 123.4)
+    let tailNode = (number 567.8)
+    // (head . tail)
+    Assert.Equal<_ list>([("tail", tailNode);("head", headNode)],
+                         assertMatches (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail")) (Form [ headNode; tailNode ] |> node))
