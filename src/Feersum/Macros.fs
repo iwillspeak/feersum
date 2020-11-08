@@ -10,6 +10,7 @@ type MacroPattern =
     | Underscore
     | Literal of string
     | Variable of string
+    | Repeat of MacroPattern
     | Form of MacroPattern list
     | DottedForm of MacroPattern list * MacroPattern
     
@@ -41,18 +42,15 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
         | _ -> Result.Error ()
     | Variable v ->
         Result.Ok [(v, ast)]
-    | Form f ->
+    | Form patterns ->
         match ast.Kind with
         | AstNodeKind.Form g ->
-            List.map2 (macroMatch) f g
-            |> collectResults
-            |> Result.map (List.collect id)
-            
+            matchForm patterns None g
         | _ -> Result.Error ()
     | DottedForm(patterns, tail) ->
         match ast.Kind with
         | AstNodeKind.Form g ->
-            matchDottedForm patterns tail g
+            matchForm patterns (Some(tail)) g
         | _ -> Result.Error ()
     | Underscore -> Result.Ok []
     | Literal literal ->
@@ -63,27 +61,53 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
             else
                 Result.Error ()
         | _ -> Result.Error ()
+    | Repeat pat ->
+        failwith "Repeat at top level"
 
-and matchDottedForm patterns tailPattern syntax =
+and matchForm patterns maybeTail syntax =
     match patterns with
+    | MacroPattern.Repeat(repeat)::pats ->
+        matchRepeated repeat pats maybeTail syntax
     | headPat::patterns ->
         match syntax with
         | head::rest ->
             match macroMatch headPat head with
             | Ok vars ->
-                matchDottedForm patterns tailPattern rest
+                matchForm patterns maybeTail rest
                 |> Result.map (List.append vars)
             | e -> e
         | [] -> Result.Error ()
     | [] ->
+        match maybeTail with
+        | Some tailPattern ->
+            match syntax with
+            | [single] -> 
+                macroMatch tailPattern single
+            | other ->
+                match tailPattern with
+                | Underscore -> Result.Ok []
+                 // FIXME: vv need a way to bind this vv
+                | Variable _ -> Result.Ok []
+                | _ -> Result.Error ()
+        | None ->
+            if List.isEmpty syntax then
+                Ok []
+            else
+                Result.Error ()
+
+and matchRepeated repeat patterns maybeTail syntax =
+    match matchForm patterns maybeTail syntax with
+    | Ok vars -> Ok vars
+    | _ ->
         match syntax with
-        | [single] -> 
-            macroMatch tailPattern single
-        | other ->
-            match tailPattern with
-            | Underscore -> Result.Ok []
-            | Variable _ -> Result.Ok [] // FIXME: need a way to bind this
-            | _ -> Result.Error ()
+        | head::syntax ->
+            macroMatch repeat head
+            |> Result.bind (fun x ->
+                matchRepeated repeat patterns maybeTail syntax
+                |> Result.map (List.append x))
+        | _ ->
+            // Ran out of repeats and tail never matched
+            Result.Error ()
 
 let rec parsePattern literals syntax =
     let recurse = parsePattern literals
@@ -95,7 +119,6 @@ let rec parsePattern literals syntax =
     | AstNodeKind.Ident id ->
         match id with
         | "_" -> MacroPattern.Underscore
-        // TODO: support elipsis
         | l when List.contains l literals ->
             MacroPattern.Literal l
         | v -> MacroPattern.Variable v
@@ -115,8 +138,14 @@ let rec parsePattern literals syntax =
                 | { Kind = AstNodeKind.Dot; Location = l }::rest ->
                     parseForm (Some(l)) rest
                 | node::rest ->
+                    let pat = recurse node
+                    let (pat, rest) = 
+                        match rest with
+                        | { Kind = AstNodeKind.Ident("...") }::rest ->
+                            (pat |> Result.map MacroPattern.Repeat, rest)
+                        | _ -> (pat, rest)
                     let (pats, dotPat) = parseForm dotLoc rest
-                    ((recurse node)::pats, dotPat) 
+                    (pat::pats, dotPat) 
                 | [] -> ([], None)
 
         let (pats, dotPat) = parseForm None f
