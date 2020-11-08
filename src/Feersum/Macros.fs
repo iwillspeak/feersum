@@ -2,7 +2,6 @@ module Macros
 open Syntax
 
 // TODO: Macro patterns shold support `...` matches
-// TODO: Macro patterns should support dotted lists `( . )`
 /// The macro pattern type. Used in syntax cases to define the form that a
 /// macro should match.
 type MacroPattern =
