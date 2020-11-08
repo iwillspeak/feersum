@@ -1,0 +1,32 @@
+module Utils
+
+module ResultEx =
+
+    /// Unwrap a result into the inner value. Useful for testing, or in cases
+    /// where other inference indciates the result will be `Ok`.
+    let unwrap = function
+        | Ok x -> x
+        | Error e -> failwithf "Called unwrap on `Error`: %A" e
+
+    /// Collect a list of results into a single result. If all results are `Ok`
+    /// then `Ok` is returned with the inner values as a list. If any result is
+    /// `Error` the first such is returned.
+    let collect input =
+        let rec decompose = function
+            | [] -> ([],None)
+            | Result.Error e::_ -> ([],Some(e))
+            | Result.Ok v::rest ->
+                let (results,err) = decompose rest
+                (v::results,err)
+        let (results, maybeErr) = decompose input
+        match maybeErr with
+        | Some e -> Result.Error e
+        | None -> Result.Ok results    
+
+module OptionEx =
+
+    /// Unwrap an option into the inner value. Useful for testing, or in cases
+    /// where other inference indicates the result will be `Some`.
+    let unwrap = function
+        | Some s -> s
+        | None -> failwith "Called unwrap on a `None`."

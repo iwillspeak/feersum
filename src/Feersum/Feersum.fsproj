@@ -11,6 +11,10 @@
     </Description>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Serehfa\Serehfa.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Utils.fs" />
     <Compile Include="Options.fs" />
     <Compile Include="Diagnostics.fs" />
     <Compile Include="Syntax.fs" />
@@ -30,8 +34,5 @@
     <PackageReference Include="FParsec" Version="1.1.1" />
     <PackageReference Include="Mono.Cecil" Version="0.11.2" />
     <PackageReference Include="ReadLine" Version="2.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Serehfa\Serehfa.csproj" />
   </ItemGroup>
 </Project>

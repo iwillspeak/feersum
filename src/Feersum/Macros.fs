@@ -1,8 +1,8 @@
 module Macros
 open Syntax
 open Diagnostics
+open Utils
 
-// TODO: Macro patterns shold support `...` matches
 /// The macro pattern type. Used in syntax cases to define the form that a
 /// macro should match.
 type MacroPattern =
@@ -13,20 +13,14 @@ type MacroPattern =
     | Repeat of MacroPattern
     | Form of MacroPattern list
     | DottedForm of MacroPattern list * MacroPattern
-    
+
+/// The binding of a macro variable to syntax.
 type MacroBinding = (string * AstNode)
 
-let private collectResults (input: Result<'a,'b> list): Result<'a list, 'b> =
-    let rec decompose = function
-        | [] -> ([],None)
-        | Result.Error e::_ -> ([],Some(e))
-        | Result.Ok v::rest ->
-            let (results,err) = decompose rest
-            (v::results,err)
-    let (results, maybeErr) = decompose input
-    match maybeErr with
-    | Some e -> Result.Error e
-    | None -> Result.Ok results
+/// Create an error result with a diagnostic at `location`
+let private errAt location message =
+    Diagnostic(location, message)
+    |> Result.Error
 
 /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
 /// pattern matches. Returns `Err` if the pattern does not match the given node.
@@ -61,21 +55,26 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
             else
                 Result.Error ()
         | _ -> Result.Error ()
-    | Repeat pat ->
+    | Repeat _ ->
+        // We _could_ try and 'gracefully' fail here by just matching the inner
+        // pattern. That would make finding any bugs in our pattern parsing more
+        // difficult to track down though.
         failwith "Repeat at top level"
 
-and matchForm patterns maybeTail syntax =
+/// Try to match a list of patterns and, optionally, a tail form against the
+/// contents of a form. If the pattern list contains any elipsis the heavy
+/// is forwarded to `matchRepeated`.
+and private matchForm patterns maybeTail syntax =
     match patterns with
     | MacroPattern.Repeat(repeat)::pats ->
         matchRepeated repeat pats maybeTail syntax
     | headPat::patterns ->
         match syntax with
         | head::rest ->
-            match macroMatch headPat head with
-            | Ok vars ->
+            macroMatch headPat head
+            |> Result.bind (fun vars ->
                 matchForm patterns maybeTail rest
-                |> Result.map (List.append vars)
-            | e -> e
+                |> Result.map (List.append vars))
         | [] -> Result.Error ()
     | [] ->
         match maybeTail with
@@ -95,7 +94,10 @@ and matchForm patterns maybeTail syntax =
             else
                 Result.Error ()
 
-and matchRepeated repeat patterns maybeTail syntax =
+/// Try and match a repeated pattern. This effectively re-matches the tail
+/// patterns until no further matches of repeat are required in a manner similar
+/// to backtracking.
+and private matchRepeated repeat patterns maybeTail syntax =
     match matchForm patterns maybeTail syntax with
     | Ok vars -> Ok vars
     | _ ->
@@ -109,13 +111,13 @@ and matchRepeated repeat patterns maybeTail syntax =
             // Ran out of repeats and tail never matched
             Result.Error ()
 
+/// Try to parse a pattern from the given syntax.
 let rec parsePattern literals syntax =
     let recurse = parsePattern literals
+    let e = errAt syntax.Location
     match syntax.Kind with
     | AstNodeKind.Constant c -> Ok(MacroPattern.Constant c)
-    | AstNodeKind.Dot ->
-        Diagnostic(syntax.Location, "Unexpected dot")
-        |> Result.Error
+    | AstNodeKind.Dot -> e "Unexpected dot"
     | AstNodeKind.Ident id ->
         match id with
         | "_" -> MacroPattern.Underscore
@@ -130,8 +132,7 @@ let rec parsePattern literals syntax =
                 ([],match nodes with
                     | [n] -> recurse n
                     | _ ->
-                        Diagnostic(loc, "Only expected a single pattern after dot")
-                        |> Result.Error
+                        errAt loc "Only expected a single pattern after dot"
                 |> Some)
             | _ ->
                 match nodes with
@@ -151,16 +152,15 @@ let rec parsePattern literals syntax =
         let (pats, dotPat) = parseForm None f
         match dotPat with
         | Some dot ->
-            pats |> collectResults
+            pats
+            |> ResultEx.collect
             |> Result.bind (fun pats ->
                 match dot with 
                 | Ok d -> Ok(MacroPattern.DottedForm(pats, d))
                 | _ -> dot)
         | None ->
-            pats |> collectResults |> Result.map MacroPattern.Form
+            pats |> ResultEx.collect |> Result.map MacroPattern.Form
     | AstNodeKind.Vector _ | AstNodeKind.ByteVector _ | AstNodeKind.Quoted _ ->
-        Diagnostic(syntax.Location, "Unsupported pattern element")
-        |> Result.Error
+        e "Unsupported pattern element"
     | AstNodeKind.Seq _ | AstNodeKind.Error ->
-        Diagnostic(syntax.Location, "Invalid macro pattern")
-        |> Result.Error
+        e "Invalid macro pattern"
