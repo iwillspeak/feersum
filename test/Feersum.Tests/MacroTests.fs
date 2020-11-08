@@ -7,9 +7,9 @@ open SyntaxUtils
 open SyntaxFactory
 open Syntax
 
-let private tryMatch pattern haystack =
+let private tryMatch literals pattern haystack =
     let macroPat =
-        match (readSingleNode pattern) |> parsePattern with
+        match (readSingleNode pattern) |> parsePattern literals with
         | Result.Ok p -> p
         | Result.Error e -> failwithf "Could not parse macro pattern %A" e
 
@@ -121,11 +121,14 @@ let ``dotted form patterns`` () =
                          assertMatches (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail")) (Form [ headNode; tailNode ] |> node))
 
 [<Theory>]
-[<InlineData("a","1" )>]
-[<InlineData("1.0","1" )>]
-[<InlineData("a", "#f")>]
-[<InlineData("#f", "#f")>]
-[<InlineData("(a 1)", "(test 1)")>]
-[<InlineData("(a . 1)", "(test 1)")>]
-let ``macro parse tests`` pattern syntax =
-    Assert.True(tryMatch pattern syntax |> Option.isSome)
+[<InlineData("a","1", true)>]
+[<InlineData("1.0","1", true)>]
+[<InlineData("a", "#f", true)>]
+[<InlineData("#f", "#f", true)>]
+[<InlineData("(a 1)", "(test 1)", true)>]
+[<InlineData("(a . 1)", "(test 1)", true)>]
+[<InlineData("foo", "foo", true)>]
+[<InlineData("foo", "test", false)>]
+let ``macro parse tests`` pattern syntax shouldMatch =
+    let literals = [ "foo"; "bar" ]
+    Assert.Equal(shouldMatch, tryMatch literals pattern syntax |> Option.isSome)

@@ -85,7 +85,8 @@ and matchDottedForm patterns tailPattern syntax =
             | Variable _ -> Result.Ok [] // FIXME: need a way to bind this
             | _ -> Result.Error ()
 
-let rec parsePattern syntax =
+let rec parsePattern literals syntax =
+    let recurse = parsePattern literals
     match syntax.Kind with
     | AstNodeKind.Constant c -> Ok(MacroPattern.Constant c)
     | AstNodeKind.Dot ->
@@ -94,7 +95,9 @@ let rec parsePattern syntax =
     | AstNodeKind.Ident id ->
         match id with
         | "_" -> MacroPattern.Underscore
-        // TODO: need to support literal identifiers
+        // TODO: support elipsis
+        | l when List.contains l literals ->
+            MacroPattern.Literal l
         | v -> MacroPattern.Variable v
         |> Ok
     | AstNodeKind.Form f ->
@@ -102,7 +105,7 @@ let rec parsePattern syntax =
             match dotLoc with
             | Some loc ->
                 ([],match nodes with
-                    | [n] -> parsePattern n
+                    | [n] -> recurse n
                     | _ ->
                         Diagnostic(loc, "Only expected a single pattern after dot")
                         |> Result.Error
@@ -113,7 +116,7 @@ let rec parsePattern syntax =
                     parseForm (Some(l)) rest
                 | node::rest ->
                     let (pats, dotPat) = parseForm dotLoc rest
-                    ((parsePattern node)::pats, dotPat) 
+                    ((recurse node)::pats, dotPat) 
                 | [] -> ([], None)
 
         let (pats, dotPat) = parseForm None f
