@@ -129,6 +129,10 @@ let ``dotted form patterns`` () =
 [<InlineData("(a . 1)", "(test 1)", true)>]
 [<InlineData("foo", "foo", true)>]
 [<InlineData("foo", "test", false)>]
+[<InlineData("(1 ...)", "(1 2 3)", false)>]
+[<InlineData("(1 ...)", "(1 1 1 1)", true)>]
+[<InlineData("(1 ... 2 . c)", "(1 1 2)", true)>]
+[<InlineData("(1 ... 2 . c)", "(1 1 2 3 4)", true)>]
 let ``macro parse tests`` pattern syntax shouldMatch =
     let literals = [ "foo"; "bar" ]
     Assert.Equal(shouldMatch, tryMatch literals pattern syntax |> Option.isSome)
