@@ -60,11 +60,14 @@ let sanitiseDiagnostics (b: string) (diags: Diagnostic list) =
         | Diagnostic(l, m) -> Diagnostic(l |> santiiseLocation, m)
     List.map (sanitiseDiag) diags
 
-let readSingle input =
+let readSingleNode input =
     match readExpr input with
-    | ({ Kind = Seq exprs }, []) -> (List.exactlyOne exprs).Kind
-    | (expr, []) -> expr.Kind
+    | ({ Kind = Seq exprs }, []) -> (List.exactlyOne exprs)
+    | (expr, []) -> expr
     | (_, diag) -> failwithf "Expected single expression but got: %A" diag
+
+let readSingle input =
+    (readSingleNode input).Kind
 
 let readMany input =
     match readExpr input with
