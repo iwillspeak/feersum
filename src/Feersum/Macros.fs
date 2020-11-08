@@ -98,39 +98,34 @@ let rec parsePattern syntax =
         | v -> MacroPattern.Variable v
         |> Ok
     | AstNodeKind.Form f ->
-        let bindFormElement state node =
-            let (pats, seenDot, dotPat: Option<Result<MacroPattern,Diagnostic>>) = state
-            if seenDot then
-                let dotPat =
-                    if dotPat.IsSome then
-                        Diagnostic(node.Location, "Only expected a single pattern after dot")
+        let rec parseForm dotLoc nodes =
+            match dotLoc with
+            | Some loc ->
+                ([],match nodes with
+                    | [n] -> parsePattern n
+                    | _ ->
+                        Diagnostic(loc, "Only expected a single pattern after dot")
                         |> Result.Error
-                    else
-                        parsePattern node
-                (pats, seenDot, Some(dotPat))
-            else
-                match node.Kind with
-                | Dot -> (pats, true, dotPat)
-                | _ -> ((parsePattern node)::pats, seenDot, dotPat)
-        let (pats, seenDot, dotPat) =
-            List.fold
-                bindFormElement
-                ([], false, None)
-                f
-        if (seenDot && dotPat.IsNone) then
-            Diagnostic(syntax.Location, "Expected pattern after dot")
-            |> Result.Error
-        else
-            let pats = List.rev pats
-            match dotPat with
-            | Some dot ->
-                pats |> collectResults
-                |> Result.bind (fun pats ->
-                    match dot with 
-                    | Ok d -> Ok(MacroPattern.DottedForm(pats, d))
-                    | _ -> dot)
-            | None ->
-                pats |> collectResults |> Result.map MacroPattern.Form
+                |> Some)
+            | _ ->
+                match nodes with
+                | { Kind = AstNodeKind.Dot; Location = l }::rest ->
+                    parseForm (Some(l)) rest
+                | node::rest ->
+                    let (pats, dotPat) = parseForm dotLoc rest
+                    ((parsePattern node)::pats, dotPat) 
+                | [] -> ([], None)
+
+        let (pats, dotPat) = parseForm None f
+        match dotPat with
+        | Some dot ->
+            pats |> collectResults
+            |> Result.bind (fun pats ->
+                match dot with 
+                | Ok d -> Ok(MacroPattern.DottedForm(pats, d))
+                | _ -> dot)
+        | None ->
+            pats |> collectResults |> Result.map MacroPattern.Form
     | AstNodeKind.Vector _ | AstNodeKind.ByteVector _ | AstNodeKind.Quoted _ ->
         Diagnostic(syntax.Location, "Unsupported pattern element")
         |> Result.Error
