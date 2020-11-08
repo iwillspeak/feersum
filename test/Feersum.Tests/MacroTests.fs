@@ -7,6 +7,17 @@ open SyntaxUtils
 open SyntaxFactory
 open Syntax
 
+let private tryMatch pattern haystack =
+    let macroPat =
+        match (readSingleNode pattern) |> parsePattern with
+        | Result.Ok p -> p
+        | Result.Error e -> failwithf "Could not parse macro pattern %A" e
+
+    let syntaxTree = readSingleNode haystack
+    match macroMatch macroPat syntaxTree with
+    | Result.Ok b -> Some b
+    | _ -> None
+
 let private assertMatches pattern syntax =
         match macroMatch pattern syntax with
         | Result.Ok bindings -> bindings
@@ -108,3 +119,13 @@ let ``dotted form patterns`` () =
     // (head . tail)
     Assert.Equal<_ list>([("head", headNode);("tail", tailNode)],
                          assertMatches (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail")) (Form [ headNode; tailNode ] |> node))
+
+[<Theory>]
+[<InlineData("a","1" )>]
+[<InlineData("1.0","1" )>]
+[<InlineData("a", "#f")>]
+[<InlineData("#f", "#f")>]
+[<InlineData("(a 1)", "(test 1)")>]
+[<InlineData("(a . 1)", "(test 1)")>]
+let ``macro parse tests`` pattern syntax =
+    Assert.True(tryMatch pattern syntax |> Option.isSome)
