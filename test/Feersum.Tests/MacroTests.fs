@@ -6,6 +6,7 @@ open Macros
 open SyntaxUtils
 open SyntaxFactory
 open Syntax
+open Utils
 
 let private tryMatch literals pattern haystack =
     let macroPat =
@@ -18,6 +19,26 @@ let private tryMatch literals pattern haystack =
     | Result.Ok b -> Some b
     | _ -> None
 
+let private tryExpand transformer bindings =
+    let transformer =
+        readSingleNode transformer
+        |> parseTransformer
+        |> ResultEx.unwrap
+
+    match macroExpand transformer bindings with
+        | Result.Ok expanded -> Some expanded
+        | Result.Error e -> failwithf "Error expanding macro %A" e
+
+let private ppConst = function
+    | SyntaxConstant.Number n -> n.ToString("g")
+    | SyntaxConstant.Boolean b -> if b then "#t" else "#f"
+    | c -> failwithf "unsupported constant %A" c
+
+let private pp syntax =
+    match syntax.Kind with
+        | Constant c -> ppConst c
+        | _ -> failwith "unsupported syntax kind"
+    
 let private assertMatches pattern syntax =
         match macroMatch pattern syntax with
         | Result.Ok bindings -> bindings
@@ -136,3 +157,22 @@ let ``dotted form patterns`` () =
 let ``macro parse tests`` pattern syntax shouldMatch =
     let literals = [ "foo"; "bar" ]
     Assert.Equal(shouldMatch, tryMatch literals pattern syntax |> Option.isSome)
+
+[<Fact>]
+let ``simple macro expand`` () =
+    let expanded = macroExpand (MacroTransformer.Quoted (number 123.0)) []
+    Assert.Equal(Ok(number 123.0), expanded);
+
+    let expanded = macroExpand (MacroTransformer.Subst "test") [("test", constant (Boolean true))]
+    Assert.Equal(Ok(constant (Boolean true)), expanded)
+
+    let expanded = macroExpand (MacroTransformer.Subst "thing") []
+    Assert.True(ResultEx.isError expanded)
+
+[<Theory>]
+[<InlineData("(a)", "a", "(1)", "1")>]
+[<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
+let ``macro expand tests`` pattern transformer invocation expected =
+    let bindings = tryMatch [] pattern invocation |> OptionEx.unwrap
+    let expanded = tryExpand transformer bindings |> OptionEx.unwrap
+    Assert.Equal(expected, pp expanded)

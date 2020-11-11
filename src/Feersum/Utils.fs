@@ -7,6 +7,16 @@ module ResultEx =
     let unwrap = function
         | Ok x -> x
         | Error e -> failwithf "Called unwrap on `Error`: %A" e
+    
+    /// Check if the result is OK
+    let isOk = function
+        | Ok _ -> true
+        | Error _ -> false
+
+    /// Check if the result is OK
+    let isError = function
+        | Ok _ -> false
+        | Error _ -> true
 
     /// Collect a list of results into a single result. If all results are `Ok`
     /// then `Ok` is returned with the inner values as a list. If any result is
