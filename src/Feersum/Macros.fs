@@ -14,6 +14,12 @@ type MacroPattern =
     | Form of MacroPattern list
     | DottedForm of MacroPattern list * MacroPattern
 
+/// Macro transformers specify how to convert a match into new syntax. They are
+/// effecively patterns for the syntax, with holes to be filled in by matches.
+type MacroTransformer =
+    | Quoted of AstNode
+    | Subst of string
+
 /// The binding of a macro variable to syntax.
 type MacroBinding = (string * AstNode)
 
@@ -111,6 +117,15 @@ and private matchRepeated repeat patterns maybeTail syntax =
             // Ran out of repeats and tail never matched
             Result.Error ()
 
+/// Expand a macro transformer with the given bindings.
+let public macroExpand transformer bindings =
+    match transformer with
+    | Quoted q -> Result.Ok q
+    | Subst v ->
+        match List.tryFind (fun (id, _) -> id = v) bindings with
+        | Some(id, syntax) -> Result.Ok syntax
+        | None -> Result.Error (sprintf "Reference to unbound substitution %s" v)
+
 /// Try to parse a pattern from the given syntax.
 let rec parsePattern literals syntax =
     let recurse = parsePattern literals
@@ -164,3 +179,12 @@ let rec parsePattern literals syntax =
         e "Unsupported pattern element"
     | AstNodeKind.Seq _ | AstNodeKind.Error ->
         e "Invalid macro pattern"
+
+/// Parse a macro transformer specification from a syntax tree.
+let public parseTransformer syntax =
+    match syntax.Kind with
+    | AstNodeKind.Form f ->
+        failwith "TODO: recurse in some way"
+    | AstNodeKind.Ident id ->
+        Ok(MacroTransformer.Subst id)
+    | _ -> Ok(MacroTransformer.Quoted syntax)
