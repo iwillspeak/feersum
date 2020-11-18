@@ -450,11 +450,6 @@ let createRootScope =
 /// 
 /// Walks the parse tree and computes semantic information. The result of this
 /// call can be passed to the `Compile` or `Emit` API to be lowered to IL.
-/// 
-/// TODO: This should probably return some kind of `BoundSyntaxTree` containing
-///       the tree of bound nodes and a bag of diagnostics generated during the
-///       bind. This is now _super_ needed as we're returning a 3-tuple so
-///       things get a bit unwieldy.
 let bind scope node: BoundSyntaxTree =
     let ctx = BinderCtx.createForGlobalScope scope
     let bound = bindInContext ctx node

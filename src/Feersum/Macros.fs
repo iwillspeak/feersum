@@ -223,5 +223,7 @@ let public parseTransformer syntax =
     | AstNodeKind.Form f ->
         failwith "TODO: recurse in some way"
     | AstNodeKind.Ident id ->
+        // FIXME: Not all ids are substs, need a way to make bound variables
+        //        available to `parseTransformer`
         Ok(MacroTemplate.Subst id)
     | _ -> Ok(MacroTemplate.Quoted syntax)
