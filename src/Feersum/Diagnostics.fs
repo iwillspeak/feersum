@@ -2,6 +2,8 @@ module Diagnostics
 
 open FParsec
 
+let missingPos = Position("missing", 0L, 0L, 0L)
+
 /// A point in the source text
 /// 
 /// A text position represents either a single `Point` in the source text that
@@ -9,6 +11,7 @@ open FParsec
 type TextLocation =
     | Span of Position * Position
     | Point of Position
+    | Missing
 with
     /// Get the start of the text location. This returns a cursor that lies just
     /// before any text represented by this locaiton.
@@ -16,6 +19,7 @@ with
         match x with
         | Span(s, _) -> s
         | Point p -> p
+        | Missing -> missingPos
 
     /// Get the end of the text location. This returns a cursot that lies just
     /// after any text represented by this location.
@@ -23,6 +27,7 @@ with
         match x with
         | Span(_, e) -> e
         | Point p -> p
+        | Missing -> missingPos
 
 /// Diagnostics indicate problems with our source code at a given position.
 type Diagnostic = Diagnostic of TextLocation * string

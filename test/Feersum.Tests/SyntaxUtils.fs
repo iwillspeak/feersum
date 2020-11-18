@@ -34,6 +34,7 @@ let useDummyPoints l =
 let sanitiseLocation = function
     | Point(p) -> Point(normalisePaths p)
     | Span(s, e) -> Span(normalisePaths s, normalisePaths e)
+    | Missing -> Missing
 
 let rec sanitise node =
     sanitiseWith useDummyPoints node
@@ -51,13 +52,14 @@ and sanitiseKind rewriter = function
 let sanitiseDiagnostics (b: string) (diags: Diagnostic list) =
     let sanitisePoint (p: FParsec.Position) =
         FParsec.Position(Path.GetRelativePath(b, p.StreamName), p.Index, p.Line, p.Column)
-    let santiiseLocation l =
+    let santiseLocation l =
         match l with
         | Point p -> sanitisePoint p |> Point
         | Span(s, e) -> Span(sanitisePoint s, sanitisePoint e)
+        | Missing -> Missing
     let sanitiseDiag d =
         match d with
-        | Diagnostic(l, m) -> Diagnostic(l |> santiiseLocation, m)
+        | Diagnostic(l, m) -> Diagnostic(l |> santiseLocation, m)
     List.map (sanitiseDiag) diags
 
 let readSingleNode input =
