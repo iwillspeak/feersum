@@ -28,6 +28,26 @@ and MacroTemplateElement =
 /// The binding of a macro variable to syntax.
 type MacroBinding = (string * AstNode)
 
+/// Collection of bindings produced by a macro match
+type MacroBindings =
+    { Bindings: MacroBinding list
+    ; Repeated: MacroBindings list }
+
+with
+
+    /// Empty set of bindings
+    static member public Empty = { Bindings = []; Repeated = [] }
+
+    /// Create a set of bindings with a single bound variable
+    static member public FromVariable name node =
+        { Bindings = [(name, node)]; Repeated = [] }
+
+    static member public Union left right =
+        let rec f left right = 
+            { Bindings = List.append left.Bindings right.Bindings
+            ; Repeated = List.map2 (f) left.Repeated right.Repeated }
+        f left right
+
 /// Create an error result with a diagnostic at `location`
 let private errAt location message =
     Diagnostic(location, message)
@@ -35,18 +55,18 @@ let private errAt location message =
 
 /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
 /// pattern matches. Returns `Err` if the pattern does not match the given node.
-let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,unit> =
+let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBindings,unit> =
     match pat with
     | Constant c ->
         match ast.Kind with
         | AstNodeKind.Constant k ->
             if k = c then
-                Result.Ok []
+                Result.Ok MacroBindings.Empty
             else
                 Result.Error ()
         | _ -> Result.Error ()
     | Variable v ->
-        Result.Ok [(v, ast)]
+        Result.Ok (MacroBindings.FromVariable v ast)
     | MacroPattern.Form patterns ->
         match ast.Kind with
         | AstNodeKind.Form g ->
@@ -57,12 +77,12 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
         | AstNodeKind.Form g ->
             matchForm patterns (Some(tail)) g
         | _ -> Result.Error ()
-    | Underscore -> Result.Ok []
+    | Underscore -> Result.Ok MacroBindings.Empty
     | Literal literal ->
         match ast.Kind with
         | AstNodeKind.Ident id ->
             if id = literal then
-                Result.Ok []
+                Result.Ok MacroBindings.Empty
             else
                 Result.Error ()
         | _ -> Result.Error ()
@@ -78,14 +98,14 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
 and private matchForm patterns maybeTail syntax =
     match patterns with
     | MacroPattern.Repeat(repeat)::pats ->
-        matchRepeated repeat pats maybeTail syntax
+        matchRepeated repeat pats maybeTail syntax []
     | headPat::patterns ->
         match syntax with
         | head::rest ->
             macroMatch headPat head
             |> Result.bind (fun vars ->
                 matchForm patterns maybeTail rest
-                |> Result.map (List.append vars))
+                |> Result.map (MacroBindings.Union vars))
         | [] -> Result.Error ()
     | [] ->
         match maybeTail with
@@ -95,55 +115,53 @@ and private matchForm patterns maybeTail syntax =
                 macroMatch tailPattern single
             | other ->
                 match tailPattern with
-                | Underscore -> Result.Ok []
+                | Underscore -> Result.Ok MacroBindings.Empty
                 | Variable v -> 
-                    Result.Ok [(v, { Kind = AstNodeKind.Form(other); Location = Missing })]
+                    Result.Ok (MacroBindings.FromVariable v { Kind = AstNodeKind.Form(other); Location = Missing })
                 | _ -> Result.Error ()
         | None ->
             if List.isEmpty syntax then
-                Ok []
+                Ok MacroBindings.Empty
             else
                 Result.Error ()
 
 /// Try and match a repeated pattern. This effectively re-matches the tail
 /// patterns until no further matches of repeat are required in a manner similar
 /// to backtracking.
-and private matchRepeated repeat patterns maybeTail syntax =
+and private matchRepeated repeat patterns maybeTail syntax repeatedBindings =
     match matchForm patterns maybeTail syntax with
-    | Ok vars -> Ok vars
+    | Ok vars -> Ok { vars with Repeated = repeatedBindings |> List.rev } 
     | _ ->
         match syntax with
         | head::syntax ->
             macroMatch repeat head
             |> Result.bind (fun x ->
-                matchRepeated repeat patterns maybeTail syntax
-                |> Result.map (List.append x))
+                matchRepeated repeat patterns maybeTail syntax (x::repeatedBindings))
         | _ ->
             // Ran out of repeats and tail never matched
             Result.Error ()
 
 /// Expand a macro template with the given bindings.
-let rec public macroExpand template bindings =
+let rec public macroExpand template (bindings: MacroBindings) =
     match template with
     | Quoted q -> Result.Ok q
     | Subst v ->
-        match List.tryFind (fun (id, _) -> id = v) bindings with
+        match List.tryFind (fun (id, _) -> id = v) bindings.Bindings with
         | Some(id, syntax) -> Result.Ok syntax
         | None -> Result.Error (sprintf "Reference to unbound substitution %s" v)
     | Form templateElements ->
-        List.map (fun t -> macroExpandElement t bindings) templateElements
+        List.collect (fun t -> macroExpandElement t bindings) templateElements
         |> ResultEx.collect
         |> Result.map(fun expanded ->
             { Kind = AstNodeKind.Form(expanded)
             // TODO: Syntax locations from macro elements?
             ; Location = TextLocation.Missing })
     | DottedForm _ -> failwith "Not supported"
-and macroExpandElement templateElement bindings =
+and macroExpandElement templateElement bindings: Result<AstNode,string> list =
     match templateElement with
-    | Template t -> macroExpand t bindings
+    | Template t -> [ macroExpand t bindings ]
     | Repeated t ->
-        // FIXME: nested bindings
-        macroExpand t bindings
+        List.map (macroExpand t) bindings.Repeated
 
 /// Try to parse a pattern from the given syntax.
 let rec parsePattern literals syntax =

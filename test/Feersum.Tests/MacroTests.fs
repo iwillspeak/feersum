@@ -34,9 +34,10 @@ let private ppConst = function
     | SyntaxConstant.Boolean b -> if b then "#t" else "#f"
     | c -> failwithf "unsupported constant %A" c
 
-let private pp syntax =
+let rec private pp syntax =
     match syntax.Kind with
         | Constant c -> ppConst c
+        | Form f -> List.map (pp) f |> String.concat " " |> sprintf "(%s)"
         | _ -> failwith "unsupported syntax kind"
     
 let private assertMatches pattern syntax =
@@ -83,7 +84,9 @@ let ``variable patterns match anything`` () =
         let pattern = MacroPattern.Variable "test"
 
         match macroMatch pattern syntax with
-        | Result.Ok [("test", s)] ->
+        | Result.Ok bindings ->
+            let n, s = Assert.Single bindings.Bindings
+            Assert.Equal("test", n)
             Assert.Same(syntax, s)
         | o -> failwithf "Pattern variable did not match %A" o
     
@@ -106,7 +109,7 @@ let ``underscore patterns match anything`` () =
         let pattern = MacroPattern.Underscore
 
         match macroMatch pattern syntax with
-        | Result.Ok [] -> ()
+        | Result.Ok _ -> ()
         | o -> failwithf "Pattern variable did not match %A" o
     
     testUnderscoreMatch (Number 101.0 |> constant)
@@ -124,22 +127,22 @@ let ``underscore patterns match anything`` () =
 [<Fact>]
 let ``simple form patterns`` () =
 
-    Assert.Equal<_ list>([], assertMatches (MacroPattern.Form []) (Form [] |> node))
-    Assert.Equal<_ list>([], assertMatches (MacroPattern.Form [ MacroPattern.Constant (Boolean false); MacroPattern.Constant (Str "frob"); MacroPattern.Constant (Number 123.56)]) (Form [ constant (Boolean false); constant (Str "frob"); number 123.56] |> node))
+    Assert.Equal(MacroBindings.Empty, assertMatches (MacroPattern.Form []) (Form [] |> node))
+    Assert.Equal(MacroBindings.Empty, assertMatches (MacroPattern.Form [ MacroPattern.Constant (Boolean false); MacroPattern.Constant (Str "frob"); MacroPattern.Constant (Number 123.56)]) (Form [ constant (Boolean false); constant (Str "frob"); number 123.56] |> node))
     let testNode = (number 123.4)
-    Assert.Equal<_ list>([("test", testNode)],
+    Assert.Equal((MacroBindings.FromVariable "test" testNode),
                          assertMatches (MacroPattern.Form [ MacroPattern.Variable "test" ]) (Form [ testNode ] |> node))
     
 [<Fact>]
 let ``dotted form patterns`` () =
 
     // FIXME: this pattern is nonsense '( . 123.4)' matching (123.4)
-    Assert.Equal<_ list>([], assertMatches (MacroPattern.DottedForm([], MacroPattern.Constant (Number 123.4))) (Form [ number 123.4 ] |> node))
+    Assert.Equal(MacroBindings.Empty, assertMatches (MacroPattern.DottedForm([], MacroPattern.Constant (Number 123.4))) (Form [ number 123.4 ] |> node))
     let headNode = (number 123.4)
     let tailNode = (number 567.8)
     // (head . tail)
-    Assert.Equal<_ list>([("head", headNode);("tail", tailNode)],
-                         assertMatches (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail")) (Form [ headNode; tailNode ] |> node))
+    Assert.Equal(MacroBindings.Union (MacroBindings.FromVariable "head" headNode) (MacroBindings.FromVariable "tail" tailNode),
+                 assertMatches (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail")) (Form [ headNode; tailNode ] |> node))
 
 [<Theory>]
 [<InlineData("a","1", true)>]
@@ -160,13 +163,13 @@ let ``macro parse tests`` pattern syntax shouldMatch =
 
 [<Fact>]
 let ``simple macro expand`` () =
-    let expanded = macroExpand (MacroTemplate.Quoted (number 123.0)) []
+    let expanded = macroExpand (MacroTemplate.Quoted (number 123.0)) MacroBindings.Empty
     Assert.Equal(Ok(number 123.0), expanded);
 
-    let expanded = macroExpand (MacroTemplate.Subst "test") [("test", constant (Boolean true))]
+    let expanded = macroExpand (MacroTemplate.Subst "test") (MacroBindings.FromVariable "test" (constant (Boolean true)))
     Assert.Equal(Ok(constant (Boolean true)), expanded)
 
-    let expanded = macroExpand (MacroTemplate.Subst "thing") []
+    let expanded = macroExpand (MacroTemplate.Subst "thing") MacroBindings.Empty
     Assert.True(ResultEx.isError expanded)
 
 [<Theory>]
@@ -176,3 +179,13 @@ let ``macro expand tests`` pattern transformer invocation expected =
     let bindings = tryMatch [] pattern invocation |> OptionEx.unwrap
     let expanded = tryExpand transformer bindings |> OptionEx.unwrap
     Assert.Equal(expected, pp expanded)
+
+[<Fact>]
+let ``repeated values`` () =
+    let bindings = tryMatch [] "(a ...)" "(1 2 3)" |> OptionEx.unwrap
+    let expanded =
+        macroExpand (MacroTemplate.Form([MacroTemplateElement.Repeated (MacroTemplate.Subst "a")])) bindings
+        |> ResultEx.unwrap
+    
+    Assert.Equal("(1 2 3)", pp expanded)
+    
