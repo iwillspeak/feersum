@@ -160,13 +160,13 @@ let ``macro parse tests`` pattern syntax shouldMatch =
 
 [<Fact>]
 let ``simple macro expand`` () =
-    let expanded = macroExpand (MacroTransformer.Quoted (number 123.0)) []
+    let expanded = macroExpand (MacroTemplate.Quoted (number 123.0)) []
     Assert.Equal(Ok(number 123.0), expanded);
 
-    let expanded = macroExpand (MacroTransformer.Subst "test") [("test", constant (Boolean true))]
+    let expanded = macroExpand (MacroTemplate.Subst "test") [("test", constant (Boolean true))]
     Assert.Equal(Ok(constant (Boolean true)), expanded)
 
-    let expanded = macroExpand (MacroTransformer.Subst "thing") []
+    let expanded = macroExpand (MacroTemplate.Subst "thing") []
     Assert.True(ResultEx.isError expanded)
 
 [<Theory>]

@@ -14,11 +14,16 @@ type MacroPattern =
     | Form of MacroPattern list
     | DottedForm of MacroPattern list * MacroPattern
 
-/// Macro transformers specify how to convert a match into new syntax. They are
+/// Macro template specify how to convert a match into new syntax. They are
 /// effecively patterns for the syntax, with holes to be filled in by matches.
-type MacroTransformer =
+type MacroTemplate =
     | Quoted of AstNode
     | Subst of string
+    | Form of MacroTemplateElement list
+    | DottedForm of MacroTemplateElement list * MacroTemplate
+and MacroTemplateElement =
+    | Template of MacroTemplate
+    | Repeated of MacroTemplate
 
 /// The binding of a macro variable to syntax.
 type MacroBinding = (string * AstNode)
@@ -42,12 +47,12 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBinding list,
         | _ -> Result.Error ()
     | Variable v ->
         Result.Ok [(v, ast)]
-    | Form patterns ->
+    | MacroPattern.Form patterns ->
         match ast.Kind with
         | AstNodeKind.Form g ->
             matchForm patterns None g
         | _ -> Result.Error ()
-    | DottedForm(patterns, tail) ->
+    | MacroPattern.DottedForm(patterns, tail) ->
         match ast.Kind with
         | AstNodeKind.Form g ->
             matchForm patterns (Some(tail)) g
@@ -91,8 +96,8 @@ and private matchForm patterns maybeTail syntax =
             | other ->
                 match tailPattern with
                 | Underscore -> Result.Ok []
-                 // FIXME: vv need a way to bind this vv
-                | Variable _ -> Result.Ok []
+                | Variable v -> 
+                    Result.Ok [(v, { Kind = AstNodeKind.Form(other); Location = Missing })]
                 | _ -> Result.Error ()
         | None ->
             if List.isEmpty syntax then
@@ -117,14 +122,28 @@ and private matchRepeated repeat patterns maybeTail syntax =
             // Ran out of repeats and tail never matched
             Result.Error ()
 
-/// Expand a macro transformer with the given bindings.
-let public macroExpand transformer bindings =
-    match transformer with
+/// Expand a macro template with the given bindings.
+let rec public macroExpand template bindings =
+    match template with
     | Quoted q -> Result.Ok q
     | Subst v ->
         match List.tryFind (fun (id, _) -> id = v) bindings with
         | Some(id, syntax) -> Result.Ok syntax
         | None -> Result.Error (sprintf "Reference to unbound substitution %s" v)
+    | Form templateElements ->
+        List.map (fun t -> macroExpandElement t bindings) templateElements
+        |> ResultEx.collect
+        |> Result.map(fun expanded ->
+            { Kind = AstNodeKind.Form(expanded)
+            // TODO: Syntax locations from macro elements?
+            ; Location = TextLocation.Missing })
+    | DottedForm _ -> failwith "Not supported"
+and macroExpandElement templateElement bindings =
+    match templateElement with
+    | Template t -> macroExpand t bindings
+    | Repeated t ->
+        // FIXME: nested bindings
+        macroExpand t bindings
 
 /// Try to parse a pattern from the given syntax.
 let rec parsePattern literals syntax =
@@ -186,5 +205,5 @@ let public parseTransformer syntax =
     | AstNodeKind.Form f ->
         failwith "TODO: recurse in some way"
     | AstNodeKind.Ident id ->
-        Ok(MacroTransformer.Subst id)
-    | _ -> Ok(MacroTransformer.Quoted syntax)
+        Ok(MacroTemplate.Subst id)
+    | _ -> Ok(MacroTemplate.Quoted syntax)
