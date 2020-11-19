@@ -10,7 +10,7 @@ open Utils
 
 let private tryMatch literals pattern haystack =
     let macroPat =
-        match (readSingleNode pattern) |> parsePattern literals with
+        match (readSingleNode pattern) |> parsePattern "..." literals with
         | Result.Ok p -> p
         | Result.Error e -> failwithf "Could not parse macro pattern %A" e
 
@@ -160,6 +160,12 @@ let ``dotted form patterns`` () =
 let ``macro parse tests`` pattern syntax shouldMatch =
     let literals = [ "foo"; "bar" ]
     Assert.Equal(shouldMatch, tryMatch literals pattern syntax |> Option.isSome)
+
+[<Fact>]
+let ``custom elipsis patterns`` () =
+    let pattern = parsePattern ":::" [] (readSingleNode "(a :::)") |> ResultEx.unwrap
+    Assert.Equal(MacroPattern.Form [ MacroPattern.Repeat (MacroPattern.Variable "a")]
+                ,pattern)
 
 [<Fact>]
 let ``simple macro expand`` () =

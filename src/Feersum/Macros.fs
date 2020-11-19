@@ -157,15 +157,15 @@ let rec public macroExpand template (bindings: MacroBindings) =
             // TODO: Syntax locations from macro elements?
             ; Location = TextLocation.Missing })
     | DottedForm _ -> failwith "Not supported"
-and macroExpandElement templateElement bindings: Result<AstNode,string> list =
+and private macroExpandElement templateElement bindings: Result<AstNode,string> list =
     match templateElement with
     | Template t -> [ macroExpand t bindings ]
     | Repeated t ->
         List.map (macroExpand t) bindings.Repeated
 
 /// Try to parse a pattern from the given syntax.
-let rec parsePattern literals syntax =
-    let recurse = parsePattern literals
+let rec public parsePattern elipsis literals syntax =
+    let recurse = parsePattern elipsis literals
     let e = errAt syntax.Location
     match syntax.Kind with
     | AstNodeKind.Constant c -> Ok(MacroPattern.Constant c)
@@ -194,7 +194,7 @@ let rec parsePattern literals syntax =
                     let pat = recurse node
                     let (pat, rest) = 
                         match rest with
-                        | { Kind = AstNodeKind.Ident("...") }::rest ->
+                        | { Kind = AstNodeKind.Ident(id) }::rest when id = elipsis ->
                             (pat |> Result.map MacroPattern.Repeat, rest)
                         | _ -> (pat, rest)
                     let (pats, dotPat) = parseForm dotLoc rest
