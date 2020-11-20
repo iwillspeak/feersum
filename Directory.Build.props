@@ -1,9 +1,8 @@
 <Project>
     <ItemGroup>
-        <!-- On Manjaro the rid is incompatible with libgit2sharp. Sad times. -->
-        <!-- <PackageReference Include="GitVersionTask" Version="5.5.1">
+        <PackageReference Include="GitVersionTask" Version="5.5.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference> -->
+        </PackageReference>
     </ItemGroup>
 </Project>
