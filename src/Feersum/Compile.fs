@@ -10,6 +10,7 @@ open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 open System.Collections.Generic
+open System.Runtime.InteropServices
 
 /// Type to Hold Context While Emitting IL
 type EmitCtx = 
@@ -809,17 +810,25 @@ let compileFile configuration (output: string) (source: string) =
             //       this explicit somewhere in future.
             //       It would be nice to register ourselves as a proper SDK so that
             //       this metadata is generated for us by `dotnet`.
-            File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), """
-            {
-              "runtimeOptions": {
-                "tfm": "netcoreapp3.1",
-                "framework": {
-                  "name": "Microsoft.NETCore.App",
-                  "version": "3.1.0"
+            let getTfm =
+                if RuntimeInformation.FrameworkDescription.StartsWith ".NET Core" then
+                    "netcoreapp"
+                else
+                    "net"
+            let version = Environment.Version
+            let config =
+                sprintf """
+                {
+                  "runtimeOptions": {
+                    "tfm": "%s%i.%i",
+                    "framework": {
+                      "name": "Microsoft.NETCore.App",
+                      "version": "%A"
+                    }
+                  }
                 }
-              }
-            }
-            """)
+                """ getTfm version.Major version.Minor version
+            File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), config)
             // FIXME: Copying the core assembly like this is a bit of a hack.
             let corePath = typeof<Serehfa.LispBuiltinAttribute>.Assembly.Location
             File.Copy(corePath, Path.Join(outDir, Path.GetFileName(corePath)), true)
