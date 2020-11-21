@@ -45,13 +45,56 @@ with
     static member public Union left right =
         let rec f left right = 
             { Bindings = List.append left.Bindings right.Bindings
-            ; Repeated = List.map2 (f) left.Repeated right.Repeated }
+            ; Repeated = g left.Repeated right.Repeated }
+        and g left right =
+            match left, right with
+            | [],a -> a
+            | a,[] -> a
+            | lh::lt,rh::rt -> (f lh rh)::(g lt rt)
         f left right
 
 /// Create an error result with a diagnostic at `location`
 let private errAt location message =
     Diagnostic(location, message)
     |> Result.Error
+
+/// Parse a (a ... . b) or (a ...) form. This is used to parse both patterns and
+/// templates for transformers.
+let private parseMacroForm form elipsis recurse onRepeated onSingle onDotted onForm =
+    let rec parseForm maybeDot nodes =
+        match maybeDot with
+        | Some loc ->
+            ([],match nodes with
+                | [n] -> recurse n
+                | _ ->
+                    errAt loc "Only expected a single element after dot"
+            |> Some)
+        | None ->
+            match nodes with
+            | { Kind = AstNodeKind.Dot; Location = l }::rest ->
+                parseForm (Some(l)) rest
+            | node::rest ->
+                let element = recurse node
+                let (element, rest) = 
+                    match rest with
+                    | { Kind = AstNodeKind.Ident(id) }::rest when id = elipsis ->
+                        (element |> Result.map onRepeated, rest)
+                    | _ -> (element |> Result.map onSingle, rest)
+                let (templates, maybeDotElement) = parseForm None rest
+                (element::templates, maybeDotElement) 
+            | [] -> ([], None)
+
+    let (elements, maybeDotElement) = parseForm None form
+    match maybeDotElement with
+    | Some dot ->
+        elements
+        |> ResultEx.collect
+        |> Result.bind (fun elements ->
+            match dot with 
+            | Ok d -> Ok(onDotted(elements, d))
+            | _ -> dot)
+    | None ->
+        elements |> ResultEx.collect |> Result.map onForm
 
 /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
 /// pattern matches. Returns `Err` if the pattern does not match the given node.
@@ -178,52 +221,20 @@ let rec public parsePattern elipsis literals syntax =
         | v -> MacroPattern.Variable v
         |> Ok
     | AstNodeKind.Form f ->
-        let rec parseForm dotLoc nodes =
-            match dotLoc with
-            | Some loc ->
-                ([],match nodes with
-                    | [n] -> recurse n
-                    | _ ->
-                        errAt loc "Only expected a single pattern after dot"
-                |> Some)
-            | _ ->
-                match nodes with
-                | { Kind = AstNodeKind.Dot; Location = l }::rest ->
-                    parseForm (Some(l)) rest
-                | node::rest ->
-                    let pat = recurse node
-                    let (pat, rest) = 
-                        match rest with
-                        | { Kind = AstNodeKind.Ident(id) }::rest when id = elipsis ->
-                            (pat |> Result.map MacroPattern.Repeat, rest)
-                        | _ -> (pat, rest)
-                    let (pats, dotPat) = parseForm dotLoc rest
-                    (pat::pats, dotPat) 
-                | [] -> ([], None)
-
-        let (pats, dotPat) = parseForm None f
-        match dotPat with
-        | Some dot ->
-            pats
-            |> ResultEx.collect
-            |> Result.bind (fun pats ->
-                match dot with 
-                | Ok d -> Ok(MacroPattern.DottedForm(pats, d))
-                | _ -> dot)
-        | None ->
-            pats |> ResultEx.collect |> Result.map MacroPattern.Form
+        parseMacroForm f elipsis (recurse) (MacroPattern.Repeat) (id) (MacroPattern.DottedForm) (MacroPattern.Form)
     | AstNodeKind.Vector _ | AstNodeKind.ByteVector _ | AstNodeKind.Quoted _ ->
         e "Unsupported pattern element"
     | AstNodeKind.Seq _ | AstNodeKind.Error ->
         e "Invalid macro pattern"
 
-/// Parse a macro transformer specification from a syntax tree.
-let public parseTransformer syntax =
+/// Parse a macro template specification from a syntax tree.
+let rec public parseTemplate elipsis syntax =
+    let recurse = parseTemplate elipsis
     match syntax.Kind with
     | AstNodeKind.Form f ->
-        failwith "TODO: recurse in some way"
+        parseMacroForm f elipsis (recurse) (MacroTemplateElement.Repeated) (MacroTemplateElement.Template) (MacroTemplate.DottedForm) (MacroTemplate.Form)
     | AstNodeKind.Ident id ->
         // FIXME: Not all ids are substs, need a way to make bound variables
-        //        available to `parseTransformer`
+        //        available to `parseTemplate`
         Ok(MacroTemplate.Subst id)
     | _ -> Ok(MacroTemplate.Quoted syntax)
