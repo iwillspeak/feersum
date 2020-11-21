@@ -22,7 +22,7 @@ let private tryMatch literals pattern haystack =
 let private tryExpand transformer bindings =
     let transformer =
         readSingleNode transformer
-        |> parseTransformer
+        |> parseTemplate "..."
         |> ResultEx.unwrap
 
     match macroExpand transformer bindings with
@@ -37,8 +37,9 @@ let private ppConst = function
 let rec private pp syntax =
     match syntax.Kind with
         | Constant c -> ppConst c
+        | Ident id -> id
         | Form f -> List.map (pp) f |> String.concat " " |> sprintf "(%s)"
-        | _ -> failwith "unsupported syntax kind"
+        | x -> failwithf "unsupported syntax kind %A" x
     
 let private assertMatches pattern syntax =
         match macroMatch pattern syntax with
@@ -157,6 +158,7 @@ let ``dotted form patterns`` () =
 [<InlineData("(1 ...)", "(1 1 1 1)", true)>]
 [<InlineData("(1 ... 2 . c)", "(1 1 2)", true)>]
 [<InlineData("(1 ... 2 . c)", "(1 1 2 3 4)", true)>]
+[<InlineData("((a ...)...)", "(() (1 2 3) ((1)(2)(3)))", true)>]
 let ``macro parse tests`` pattern syntax shouldMatch =
     let literals = [ "foo"; "bar" ]
     Assert.Equal(shouldMatch, tryMatch literals pattern syntax |> Option.isSome)
@@ -179,11 +181,12 @@ let ``simple macro expand`` () =
     Assert.True(ResultEx.isError expanded)
 
 [<Theory>]
-[<InlineData("(a)", "a", "(1)", "1")>]
-[<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
-let ``macro expand tests`` pattern transformer invocation expected =
+// [<InlineData("(a)", "a", "(1)", "1")>]
+// [<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
+[<InlineData("(_ (a)...)", "(a ...)", "(test (1)(#f)(foo))", "(1 #f foo)")>]
+let ``macro expand tests`` pattern template invocation expected =
     let bindings = tryMatch [] pattern invocation |> OptionEx.unwrap
-    let expanded = tryExpand transformer bindings |> OptionEx.unwrap
+    let expanded = tryExpand template bindings |> OptionEx.unwrap
     Assert.Equal(expected, pp expanded)
 
 [<Fact>]
@@ -194,4 +197,3 @@ let ``repeated values`` () =
         |> ResultEx.unwrap
     
     Assert.Equal("(1 2 3)", pp expanded)
-    
