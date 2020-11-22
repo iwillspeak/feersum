@@ -4,6 +4,7 @@ open System.Collections.Generic
 
 open Diagnostics
 open Syntax
+open Macros
 open Scope
 
 /// Storage Reference
@@ -11,6 +12,7 @@ open Scope
 /// Reference to a given storage location. Used to express reads and writes
 /// of values to storage locations.
 type StorageRef =
+    | Macro of Macro
     | Builtin of string
     | Local of int
     | Global of string
@@ -261,7 +263,7 @@ let rec private bindInContext ctx node =
         ctx.Diagnostics.Emit node.Location "Unexpected dot"
         BoundExpr.Error
     | AstNodeKind.Seq s -> bindSequence ctx s
-    | AstNodeKind.Form f -> bindForm ctx f node.Location
+    | AstNodeKind.Form f -> bindForm ctx f node
     | AstNodeKind.Ident id ->
         match BinderCtx.tryFindBinding ctx id with
         | Some s -> BoundExpr.Load(s)
@@ -285,8 +287,16 @@ and private bindSequence ctx exprs =
     List.map (bindWithSequencePoint ctx) exprs
     |> BoundExpr.Seq
 
-and private bindApplication ctx head rest =
-    BoundExpr.Application(bindInContext ctx head, List.map (bindInContext ctx) rest)
+and private bindApplication ctx head rest node =
+    let applicant = bindInContext ctx head
+    match applicant with
+    | BoundExpr.Load(StorageRef.Macro m) ->
+        match macroApply m node with
+        | Ok ast -> bindInContext ctx ast
+        | Result.Error diag ->
+            ctx.Diagnostics.Add diag
+            BoundExpr.Error
+    | _ -> BoundExpr.Application(applicant, List.map (bindInContext ctx) rest)
 
 and private bindLambdaBody ctx formals body =
     let lambdaCtx = BinderCtx.createWithParent ctx
@@ -325,8 +335,8 @@ and private bindLet ctx name body location declBinder =
         BoundExpr.Seq(List.append decls boundBody)
     | _ -> illFormedInCtx ctx location name
 
-and private bindForm ctx (form: AstNode list) location =
-    let illFormed formName = illFormedInCtx ctx location formName
+and private bindForm ctx (form: AstNode list) node =
+    let illFormed formName = illFormedInCtx ctx node.Location formName
     match form with
     | { Kind = AstNodeKind.Ident("if") }::body ->
         let b = bindWithSequencePoint ctx
@@ -363,7 +373,7 @@ and private bindForm ctx (form: AstNode list) location =
             bindLambdaBody ctx boundFormals body
         | _ -> illFormed "lambda"
     | { Kind = AstNodeKind.Ident("let") }::body ->
-        bindLet ctx "let" body location (fun bindingSpecs  ->
+        bindLet ctx "let" body node.Location (fun bindingSpecs  ->
             
             // Bind the body of each binding spec first
             let decls =
@@ -381,14 +391,14 @@ and private bindForm ctx (form: AstNode list) location =
 
             boundDecls)
     | { Kind = AstNodeKind.Ident("let*") }::body ->
-        bindLet ctx "let*" body location (
+        bindLet ctx "let*" body node.Location (
             // let* binds each spec sequentially
             List.map (fun (id, body) ->
                     let body = bindInContext ctx body
                     let storage = BinderCtx.addBinding ctx id
                     BoundExpr.Store(storage, Some(body))))
     | { Kind = AstNodeKind.Ident("letrec") }::body ->
-        bindLet ctx "letrec" body location (fun bindingSpecs  ->
+        bindLet ctx "letrec" body node.Location (fun bindingSpecs  ->
 
             // Get storage for each of the idents first into scope.
             let boundIdents =
@@ -418,15 +428,14 @@ and private bindForm ctx (form: AstNode list) location =
         match body with
         | [ item ] -> bindQuoted ctx item
         | _ -> illFormed "quote"
-    | { Kind = AstNodeKind.Ident("and") }::body ->
-        failwith "And expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("or") }::body ->
         failwith "Or expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("cond") }::body ->
         failwith "Condition expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("case") }::body ->
         failwith "Case expressions not yet implemented"
-    | head::rest -> bindApplication ctx head rest
+    | head::rest -> 
+        bindApplication ctx head rest node
     | [] -> BoundExpr.Literal BoundLiteral.Null
 
 // ------------------------------ Public Binder API --------------------------
@@ -435,8 +444,13 @@ and private bindForm ctx (form: AstNode list) location =
 /// 
 /// The root scope contains the global functions available to the program.
 let createRootScope =
-    Builtins.coreProcNames
-    |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
+    let builtinProcs =
+        Builtins.coreProcNames
+        |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
+    let builtinMacros =
+        Builtins.coreMacros
+        |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m)))
+    Seq.append builtinProcs builtinMacros
     |> Map.ofSeq
 
 /// Bind a syntax node in a given scope

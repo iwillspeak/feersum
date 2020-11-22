@@ -5,7 +5,10 @@ open System.Reflection
 open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
+open Macros
 open System
+open Syntax
+open Diagnostics
 
 /// Core Types Used by the Compiler at Runtime
 type CoreTypes =
@@ -81,6 +84,16 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) 
     ; EnvTy = null
     ; Builtins = Map.empty }
 
+// --------------------  Builtin Macro Definitions -----------------------------
+
+/// And Macro
+let private macroAnd =
+    { Name = "and"
+    ; Transformers =
+        [(MacroPattern.Form([MacroPattern.Underscore; MacroPattern.Variable "a"]), MacroTemplate.Subst "a")
+        ;(MacroPattern.Form([MacroPattern.Underscore; MacroPattern.Variable "a"; MacroPattern.Repeat(MacroPattern.Variable "b")]), MacroTemplate.Form([MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Ident "if"; Location = TextLocation.Missing})); MacroTemplateElement.Template(MacroTemplate.Subst "a"); MacroTemplateElement.Template(MacroTemplate.Form([MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Ident "and"; Location = TextLocation.Missing })); MacroTemplateElement.Repeated(MacroTemplate.Subst "b")]));MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Constant(SyntaxConstant.Boolean false); Location = TextLocation.Missing}))]))
+        ;(MacroPattern.Underscore, MacroTemplate.Quoted({ Kind = AstNodeKind.Constant(SyntaxConstant.Boolean true); Location = TextLocation.Missing }))]}
+
 let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
 
 // ------------------------ Public Builtins API --------------------------------
@@ -90,6 +103,9 @@ let public coreProcNames =
     findBuiltinMethods serehfaAssm
     |> Seq.map (fun (a, _) -> a.Name)
 
+/// The list of builtin macros
+let public coreMacros =
+    [ macroAnd ]
 
 /// Load the core types into the given assembly
 let loadCore (assm: AssemblyDefinition) =
