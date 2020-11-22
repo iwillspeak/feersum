@@ -81,6 +81,6 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) 
     ; Builtins = Map.empty }
 
 let loadCore (assm: AssemblyDefinition) =
-    let serehfaAssm = typeof<Serehfa.Class1>.Assembly
+    let serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
     let builtins = loadExternBuiltins assm serehfaAssm
     { loadCoreTypes assm serehfaAssm with EnvTy = addEnvDecls assm; Builtins = builtins }

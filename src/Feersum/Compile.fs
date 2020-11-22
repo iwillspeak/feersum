@@ -76,7 +76,7 @@ let private markAsDebuggable (assm: AssemblyDefinition) =
             "Debug"))
 
     attr
-    |> assm.CustomAttributes.Add    
+    |> assm.CustomAttributes.Add
     ()
 
 /// Emit an instance of the unspecified value
