@@ -49,8 +49,11 @@ type DiagnosticBag = { mutable Diagnostics: Diagnostic list }
 with
     /// Buffer a diagnostic into the bag.
     member b.Emit pos message =
-        let d = Diagnostic(pos, message)
-        b.Diagnostics <- d::b.Diagnostics
+        Diagnostic(pos, message) |> b.Add
+
+    /// Add a diagnostic to the bag.
+    member b.Add diag =
+        b.Diagnostics <- diag::b.Diagnostics
 
     /// Finalise the bag by taking the diagnostics from it.
     member b.Take = b.Diagnostics

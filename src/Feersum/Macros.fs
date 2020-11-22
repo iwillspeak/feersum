@@ -25,6 +25,14 @@ and MacroTemplateElement =
     | Template of MacroTemplate
     | Repeated of MacroTemplate
 
+/// Macro transformer is a pair of macro pattern, and macro template
+type MacroTransformer = (MacroPattern * MacroTemplate)
+
+/// Macro is a list of transformers
+type Macro =
+    { Name : string
+    ; Transformers : MacroTransformer list }
+
 /// The binding of a macro variable to syntax.
 type MacroBinding = (string * AstNode)
 
@@ -205,6 +213,19 @@ and private macroExpandElement templateElement bindings: Result<AstNode,string> 
     | Template t -> [ macroExpand t bindings ]
     | Repeated t ->
         List.map (macroExpand t) bindings.Repeated
+
+/// Apply a macro to a given syntax node
+let macroApply (macro: Macro) syntax =
+    let rec macroTryApply transfomers =
+        match transfomers with
+        | (p, t)::rest ->
+            match macroMatch p syntax with
+            | Ok binds -> macroExpand t binds
+            | Result.Error _ -> macroTryApply rest
+        | [] -> Result.Error "No pattern matched the syntax"
+
+    macroTryApply macro.Transformers
+    |> Result.mapError (fun e -> Diagnostic(syntax.Location, e))
 
 /// Try to parse a pattern from the given syntax.
 let rec public parsePattern elipsis literals syntax =
