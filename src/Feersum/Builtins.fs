@@ -49,16 +49,17 @@ let private addEnvDecls (assm: AssemblyDefinition) =
 
     envTy
 
-let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
-    let findBuiltinMethods (ty: Type) =
-        ty.GetMethods(BindingFlags.Public ||| BindingFlags.Static)
-        |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.LispBuiltinAttribute>(), m))
-        |> Seq.where (fun (attr, _) -> not (isNull attr))
-        |> Seq.map (fun (attr, method) ->
-            (attr.Name, lispAssm.MainModule.ImportReference(method)))
-
+let private findBuiltinMethods (externAssm: Assembly) =
+    let findBuiltinMethodsForTy (ty: Type) =
+            ty.GetMethods(BindingFlags.Public ||| BindingFlags.Static)
+            |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.LispBuiltinAttribute>(), m))
+            |> Seq.where (fun (attr, _) -> not (isNull attr))
     externAssm.ExportedTypes
-    |> Seq.collect findBuiltinMethods
+    |> Seq.collect findBuiltinMethodsForTy
+
+let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
+    findBuiltinMethods externAssm
+    |> Seq.map (fun (a, m) -> (a.Name, lispAssm.MainModule.ImportReference(m)))
     |> Map.ofSeq
 
 let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
@@ -80,7 +81,17 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) 
     ; EnvTy = null
     ; Builtins = Map.empty }
 
+let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
+
+// ------------------------ Public Builtins API --------------------------------
+
+/// The list of builtin procedure names
+let public coreProcNames =
+    findBuiltinMethods serehfaAssm
+    |> Seq.map (fun (a, _) -> a.Name)
+
+
+/// Load the core types into the given assembly
 let loadCore (assm: AssemblyDefinition) =
-    let serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
     let builtins = loadExternBuiltins assm serehfaAssm
     { loadCoreTypes assm serehfaAssm with EnvTy = addEnvDecls assm; Builtins = builtins }

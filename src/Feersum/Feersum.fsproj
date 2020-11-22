@@ -20,10 +20,10 @@
     <Compile Include="Syntax.fs" />
     <Compile Include="Macros.fs" />
     <Compile Include="Scope.fs" />
-    <Compile Include="Bind.fs" />
-    <Compile Include="Lower.fs" />
     <Compile Include="IlHelpers.fs" />
     <Compile Include="Builtins.fs" />
+    <Compile Include="Bind.fs" />
+    <Compile Include="Lower.fs" />
     <Compile Include="Compile.fs" />
     <Compile Include="Interpret.fs" />
     <Compile Include="Eval.fs" />
