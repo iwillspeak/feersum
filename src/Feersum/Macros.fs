@@ -81,7 +81,7 @@ let private parseMacroForm form elipsis recurse onRepeated onSingle onDotted onF
                         (element |> Result.map onRepeated, rest)
                     | _ -> (element |> Result.map onSingle, rest)
                 let (templates, maybeDotElement) = parseForm None rest
-                (element::templates, maybeDotElement) 
+                (element::templates, maybeDotElement)
             | [] -> ([], None)
 
     let (elements, maybeDotElement) = parseForm None form
@@ -90,7 +90,7 @@ let private parseMacroForm form elipsis recurse onRepeated onSingle onDotted onF
         elements
         |> ResultEx.collect
         |> Result.bind (fun elements ->
-            match dot with 
+            match dot with
             | Ok d -> Ok(onDotted(elements, d))
             | _ -> dot)
     | None ->
