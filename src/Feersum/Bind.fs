@@ -435,13 +435,7 @@ and private bindForm ctx (form: AstNode list) location =
 /// 
 /// The root scope contains the global functions available to the program.
 let createRootScope =
-    [ "+"; "-"; "*"; "/"
-    ; "="; "<"; ">"; "<="; ">="
-    ; "newline"; "display"
-    ; "eqv?"
-    ; "cons"; "list"; "list?"; "car"; "cdr"; "null?"; "pair?"
-    ; "bytevector"; "bytevector?"; "make-bytevector"
-    ; "vector"; "vector?"; "vector-length"; "vector-set!"; "vector-ref"; "make-vector" ]
+    Builtins.coreProcNames
     |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
     |> Map.ofSeq
 
