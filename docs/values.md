@@ -20,7 +20,7 @@ e.g.: `#(123 456 789)`.
 
 ### Implementation Status
 
-Vectors are not yet supported.
+Vectors are represented as `object[]` instances.
 
 ## Bytevector
 
@@ -29,7 +29,7 @@ Byte vectors are lists prefixed by `#u8(`. e.g.: `#u8(0 10 5)`.
 
 ### Implementation status
 
-Byte vectors are not yet supported.
+Byte vectors are represented as `byte[]` instances.
 
 ## Char
 
@@ -39,7 +39,10 @@ also be encoded as `#\x` followed by a hexedecimal character value.
 
 ### Implementation status
 
-Characters are not yet supported.
+Characters are represented as boxed `char` types. This means Unicode
+code points outside the BMP cannot be properly handled as character
+values. It's unclear if characters should appear as UTF-32 code units
+or not.
 
 ## Null
 
@@ -80,7 +83,7 @@ as `(<car> . <cdr>)` where `<car>` is the 'left hand' or 'head' of the pair and
 
 ### Implementation Status
 
-Cons pairs are not yet supported. Pair literals are not yet handled or bound.
+Cons pairs are impemented in the runtime. Cons pair literals are not yet supported.
 
 ## Port
 
@@ -124,4 +127,4 @@ Symbols are quoted identifiers. Symbols behave like interned strings.
 
 ### Implementation status
 
-Symbols are not yet implemented.
+Symbols are instances of the `Ident` type.

@@ -59,8 +59,7 @@ mutual recursion.
 
 ### Implementation status
 
-Lexical bindings are partially implemneted. Bindings in lambda context work.
-Bindings do not work properly for global variables that shadow.
+Lexical bindings are implemneted.
 
 ## Definitions
 
@@ -110,7 +109,7 @@ allows creation of lists directly.
 
 ### Implementation status
 
-Quoring is only impelmented in the interpreter so far.
+Simple quoted forms are implemented. Quasiquote is not supported yet.
 
 ## Conditionals
 

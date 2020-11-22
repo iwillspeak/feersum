@@ -4,7 +4,7 @@
 
 > Wots in that thare box yoor holdin?
 
-A programming lanugage experiment in F#. Progress [livestreamed on Twitch][twitch], [catchup on YouTube][yt]
+A Scheme compiler for .NET written in F#. Progress [livestreamed on Twitch][twitch], [catchup on YouTube][yt]
 
 # Planned Features
 
