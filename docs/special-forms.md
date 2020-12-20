@@ -150,8 +150,9 @@ of the value list to provide a default.
 
 ### Implementation status
 
-The `if` conditional special form is implemnted. The remaining forms
-could be implemneted either directly or wait for macros.
+The `if` conditional special form is implemnted. The `and` and `or` forms
+are implemented as builtin macros. The remaining forms could be
+implemneted either directly or wait for macros.
 
 ## Sequence
 
