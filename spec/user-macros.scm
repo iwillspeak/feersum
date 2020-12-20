@@ -15,5 +15,12 @@
     (display (list (foo bar) (foo b)))
     (newline))
 
+(display
+    (let-syntax
+        ((foo (syntax-rules ()
+            ((foo _) '(inner foo)))))
+        (foo "123")))(newline)
+
 ; Should be the first `foo` again...
 (display (foo 123))(newline)
+

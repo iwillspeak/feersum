@@ -417,6 +417,16 @@ and private bindForm ctx (form: AstNode list) node =
                     BoundExpr.Store(storage, Some(bindInContext ctx body)))
 
             boundDecls)
+    | { Kind = AstNodeKind.Ident("let-syntax")}::body ->
+        bindLet ctx "let-syntax" body node.Location (fun bindingSpecs ->
+
+            Seq.iter (fun (id, syntaxRules) ->
+                match Macros.parseSyntaxRules id syntaxRules with
+                | Ok(macro) ->
+                    BinderCtx.addMacro ctx id macro
+                | Result.Error e ->
+                    ctx.Diagnostics.Add e) bindingSpecs
+            [])
     | { Kind = AstNodeKind.Ident("set!"); Location = l }::body ->
         match body with
         | [{ Kind = AstNodeKind.Ident(id) };value] ->
