@@ -87,13 +87,6 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) 
 
 // --------------------  Builtin Macro Definitions -----------------------------
 
-/// And Macro
-let private macroAnd =
-    { Name = "and"
-    ; Transformers =
-        [(MacroPattern.Form([MacroPattern.Underscore; MacroPattern.Variable "a"]), MacroTemplate.Subst "a")
-        ;(MacroPattern.Form([MacroPattern.Underscore; MacroPattern.Variable "a"; MacroPattern.Repeat(MacroPattern.Variable "b")]), MacroTemplate.Form([MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Ident "if"; Location = TextLocation.Missing})); MacroTemplateElement.Template(MacroTemplate.Subst "a"); MacroTemplateElement.Template(MacroTemplate.Form([MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Ident "and"; Location = TextLocation.Missing })); MacroTemplateElement.Repeated(MacroTemplate.Subst "b")]));MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Constant(SyntaxConstant.Boolean false); Location = TextLocation.Missing}))]))
-        ;(MacroPattern.Underscore, MacroTemplate.Quoted({ Kind = AstNodeKind.Constant(SyntaxConstant.Boolean true); Location = TextLocation.Missing }))]}
 
 /// Parse a builtin macro from syntax rules
 let private parseBuiltinMacro id rules =
@@ -107,6 +100,16 @@ let private parseBuiltinMacro id rules =
     |> Macros.parseSyntaxRules id
     |> ResultEx.unwrap
 
+
+/// Builtin `and` Macro
+let private macroAnd =
+    "(syntax-rules ::: ()
+        ((_ a) a)
+        ((_ a b :::) (if a (and b :::) #f))
+        ((_) #t))"
+    |> parseBuiltinMacro "and"
+
+/// Builtin `or` Macro
 let private macroOr =
     "(syntax-rules ()
         ((or) #f)
