@@ -192,6 +192,7 @@ let ``simple macro expand`` () =
 [<InlineData("(a)", "a", "(1)", "1")>]
 [<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
 [<InlineData("(_ (a)...)", "(a ...)", "(test (1)(#f)(foo))", "(1 #f foo)")>]
+[<InlineData("(_ (a ...)...)", "((f a ...) ...)", "(test (1 2)(#f))", "((f 1 2) (f #f))")>]
 let ``macro expand tests`` pattern template invocation expected =
     let bindings = tryMatch [] pattern invocation |> OptionEx.unwrap
     let expanded = tryExpand template bindings |> OptionEx.unwrap
