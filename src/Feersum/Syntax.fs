@@ -223,9 +223,12 @@ let private unpack = function
         s.Diagnostics.Emit (Point(err.Position)) "The parser encountered an error that could not be recovered from."
         (errorNode, s.Diagnostics.Take)
 
-/// Read expressions from the input text
-let readExpr line: (AstNode * Diagnostic list) =
-    runParserOnString parse State.Empty "repl" line |> unpack
+/// Read a single expression from the named input text
+let readExpr1 name line: (AstNode * Diagnostic list) =
+    runParserOnString parse State.Empty name line |> unpack
+
+/// Read a single expression from the input text
+let readExpr = readExpr1 "repl"
 
 /// Read an expression from source code on disk
 let parseFile path: (AstNode * Diagnostic list)=

@@ -20,9 +20,17 @@ let private tryMatch literals pattern haystack =
     | _ -> None
 
 let private tryExpand transformer bindings =
+    let rec findBound bindings =
+        let immediate =
+            List.map (fun (id, _) -> id) bindings.Bindings
+        let nested =
+            Seq.map findBound bindings.Repeated
+            |> List.concat
+        List.append immediate nested
+
     let transformer =
         readSingleNode transformer
-        |> parseTemplate "..."
+        |> parseTemplate "..." (findBound bindings)
         |> ResultEx.unwrap
 
     match macroExpand transformer bindings with
@@ -181,8 +189,8 @@ let ``simple macro expand`` () =
     Assert.True(ResultEx.isError expanded)
 
 [<Theory>]
-// [<InlineData("(a)", "a", "(1)", "1")>]
-// [<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
+[<InlineData("(a)", "a", "(1)", "1")>]
+[<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
 [<InlineData("(_ (a)...)", "(a ...)", "(test (1)(#f)(foo))", "(1 #f foo)")>]
 let ``macro expand tests`` pattern template invocation expected =
     let bindings = tryMatch [] pattern invocation |> OptionEx.unwrap
