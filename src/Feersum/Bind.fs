@@ -137,6 +137,10 @@ module private BinderCtx =
     let addArgumentBinding ctx id idx =
         ctx.Scope <- Scope.insert ctx.Scope id (StorageRef.Arg idx)
 
+    /// Adds a macro definition to the current scope.
+    let addMacro ctx id macro =
+        ctx.Scope <- Scope.insert ctx.Scope id (StorageRef.Macro macro)
+
     /// Add a new entry to the current scope
     let addBinding ctx id =
         let storage =
@@ -428,6 +432,17 @@ and private bindForm ctx (form: AstNode list) node =
         match body with
         | [ item ] -> bindQuoted ctx item
         | _ -> illFormed "quote"
+    | { Kind = AstNodeKind.Ident("define-syntax")}::body ->
+        match body with
+        | [{ Kind = AstNodeKind.Ident(id) } as idSyn; syntaxRules] ->
+            match Macros.parseSyntaxRules id syntaxRules with
+            | Ok(macro) ->
+                BinderCtx.addMacro ctx id macro
+                BoundExpr.Quoted idSyn
+            | Result.Error e ->
+                ctx.Diagnostics.Add e
+                BoundExpr.Error
+        | _ -> illFormed "define-syntax"
     | { Kind = AstNodeKind.Ident("or") }::body ->
         failwith "Or expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("cond") }::body ->

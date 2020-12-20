@@ -259,3 +259,43 @@ let rec public parseTemplate elipsis syntax =
         //        available to `parseTemplate`
         Ok(MacroTemplate.Subst id)
     | _ -> Ok(MacroTemplate.Quoted syntax)
+
+/// Parse a single macro transformer from a syntax node
+let private parseTransformer id elip literals = function
+    | { Kind = AstNodeKind.Form([pat;template])} ->
+        parsePattern elip literals pat
+        |> Result.bind (fun pat ->
+            parseTemplate elip template
+            |> Result.map (fun template ->
+                (pat, template)))
+    | n -> errAt n.Location "Ill-formed syntax case"
+
+// Parse a list of syntax transformers
+let private parseTransformers id elip literals body =
+    List.map (function
+        | { Kind = AstNodeKind.Ident(id)} -> Ok(id)
+        | n -> errAt n.Location "Expected an identifier in macro literals") literals
+    |> ResultEx.collect
+    |> Result.bind (fun literals ->
+        List.map (fun case ->
+            parseTransformer id elip literals case) body
+        |> ResultEx.collect)
+
+/// Parse the body of a syntax rules form.
+let private parseSyntaxRulesBody id loc syntax =
+    match syntax with
+    | { Kind = AstNodeKind.Ident(elip) }::
+      { Kind = AstNodeKind.Form(literals)}::
+      body ->
+        parseTransformers id elip literals body
+    | { Kind = AstNodeKind.Form(literals)}::body ->
+        parseTransformers id "..." literals body
+    | _ -> errAt loc "Ill-formed syntax rules."
+    |> Result.map (fun transformers -> { Name = id; Transformers = transformers})
+
+/// Parse a syntax rules expression into a macro definition.
+let public parseSyntaxRules id syntaxRulesSyn =
+    match syntaxRulesSyn with
+    | { Kind = AstNodeKind.Form({ Kind = AstNodeKind.Ident("syntax-rules")}::body) } ->
+        parseSyntaxRulesBody id syntaxRulesSyn.Location body
+    | _ -> errAt syntaxRulesSyn.Location "Expected `syntax-rules` special form"
