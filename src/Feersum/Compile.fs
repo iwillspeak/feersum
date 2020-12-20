@@ -345,7 +345,7 @@ and writeTo ctx storage =
     | StorageRef.Builtin id ->
         failwithf "Can't re-define builtin %s" id
     | StorageRef.Macro m ->
-        failwith "Can't re-define macro %s" m.Name
+        failwithf "Can't re-define macro %s" m.Name
     | StorageRef.Global id ->
         let field = ensureField ctx id
         ctx.IL.Emit(OpCodes.Stsfld, field)
@@ -371,7 +371,7 @@ and writeTo ctx storage =
 and readFrom ctx storage =
     match storage with
     | StorageRef.Macro m ->
-        failwith "Invalid macro application %s" m.Name
+        failwithf "Invalid macro application %s" m.Name
     | StorageRef.Builtin id ->
         let meth = ctx.Core.Builtins.[id]
         emitMethodToFunc ctx meth
