@@ -9,6 +9,7 @@ open Macros
 open System
 open Syntax
 open Diagnostics
+open Utils
 
 /// Core Types Used by the Compiler at Runtime
 type CoreTypes =
@@ -94,6 +95,27 @@ let private macroAnd =
         ;(MacroPattern.Form([MacroPattern.Underscore; MacroPattern.Variable "a"; MacroPattern.Repeat(MacroPattern.Variable "b")]), MacroTemplate.Form([MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Ident "if"; Location = TextLocation.Missing})); MacroTemplateElement.Template(MacroTemplate.Subst "a"); MacroTemplateElement.Template(MacroTemplate.Form([MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Ident "and"; Location = TextLocation.Missing })); MacroTemplateElement.Repeated(MacroTemplate.Subst "b")]));MacroTemplateElement.Template(MacroTemplate.Quoted({ Kind = AstNodeKind.Constant(SyntaxConstant.Boolean false); Location = TextLocation.Missing}))]))
         ;(MacroPattern.Underscore, MacroTemplate.Quoted({ Kind = AstNodeKind.Constant(SyntaxConstant.Boolean true); Location = TextLocation.Missing }))]}
 
+/// Parse a builtin macro from syntax rules
+let private parseBuiltinMacro id rules =
+    let (node, errs) =
+        Syntax.readExpr1 (sprintf "builtin-%s" id) rules
+    if Diagnostics.hasErrors errs then
+        failwithf "ICE: Error in builtin macro: %A" errs
+    match node with
+    | { Kind = AstNodeKind.Seq([n])} -> n
+    | n -> n
+    |> Macros.parseSyntaxRules id
+    |> ResultEx.unwrap
+
+let private macroOr =
+    "(syntax-rules ()
+        ((or) #f)
+        ((or test) test)
+        ((or test1 test2 ...)
+            (let ((x test1))
+                (if x x (or test2 ...)))))"
+    |> parseBuiltinMacro "or" 
+
 let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
 
 // ------------------------ Public Builtins API --------------------------------
@@ -105,7 +127,7 @@ let public coreProcNames =
 
 /// The list of builtin macros
 let public coreMacros =
-    [ macroAnd ]
+    [ macroAnd ; macroOr ]
 
 /// Load the core types into the given assembly
 let loadCore (assm: AssemblyDefinition) =

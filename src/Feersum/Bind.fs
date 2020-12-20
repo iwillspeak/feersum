@@ -443,8 +443,6 @@ and private bindForm ctx (form: AstNode list) node =
                 ctx.Diagnostics.Add e
                 BoundExpr.Error
         | _ -> illFormed "define-syntax"
-    | { Kind = AstNodeKind.Ident("or") }::body ->
-        failwith "Or expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("cond") }::body ->
         failwith "Condition expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("case") }::body ->

@@ -249,23 +249,37 @@ let rec public parsePattern elipsis literals syntax =
         e "Invalid macro pattern"
 
 /// Parse a macro template specification from a syntax tree.
-let rec public parseTemplate elipsis syntax =
-    let recurse = parseTemplate elipsis
+let rec public parseTemplate elipsis bound syntax =
+    let recurse = parseTemplate elipsis bound
     match syntax.Kind with
     | AstNodeKind.Form f ->
         parseMacroForm f elipsis (recurse) (MacroTemplateElement.Repeated) (MacroTemplateElement.Template) (MacroTemplate.DottedForm) (MacroTemplate.Form)
     | AstNodeKind.Ident id ->
-        // FIXME: Not all ids are substs, need a way to make bound variables
-        //        available to `parseTemplate`
-        Ok(MacroTemplate.Subst id)
+        if List.contains id bound then
+            MacroTemplate.Subst id
+        else
+            MacroTemplate.Quoted syntax
+        |> Ok
     | _ -> Ok(MacroTemplate.Quoted syntax)
+
+let rec public findBound = function
+    | MacroPattern.Variable v -> [v]
+    | MacroPattern.Repeat r -> findBound r
+    | MacroPattern.Form body ->
+        Seq.map (findBound) body
+        |> List.concat
+    | MacroPattern.DottedForm(body, extra) ->
+        List.append (Seq.map (findBound) body
+            |> List.concat) (findBound extra)
+    | _ -> []
 
 /// Parse a single macro transformer from a syntax node
 let private parseTransformer id elip literals = function
     | { Kind = AstNodeKind.Form([pat;template])} ->
         parsePattern elip literals pat
         |> Result.bind (fun pat ->
-            parseTemplate elip template
+            let bound = findBound pat
+            parseTemplate elip bound template
             |> Result.map (fun template ->
                 (pat, template)))
     | n -> errAt n.Location "Ill-formed syntax case"
