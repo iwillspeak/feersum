@@ -79,16 +79,21 @@ let private parseMacroForm form elipsis recurse onRepeated onSingle onDotted onF
             |> Some)
         | None ->
             match nodes with
-            | { Kind = AstNodeKind.Dot; Location = l }::rest ->
-                parseForm (Some(l)) rest
+            | { Kind = AstNodeKind.Dot; Location = l }::_ ->
+                ([], errAt l "Invalid dotted form" |> Some)
             | node::rest ->
                 let element = recurse node
+                let (maybeDot, rest) =
+                    match rest with
+                    | { Kind = AstNodeKind.Dot; Location = l}::rest ->
+                        (Some(l), rest)
+                    | _ -> (None, rest)
                 let (element, rest) = 
                     match rest with
                     | { Kind = AstNodeKind.Ident(id) }::rest when id = elipsis ->
                         (element |> Result.map onRepeated, rest)
                     | _ -> (element |> Result.map onSingle, rest)
-                let (templates, maybeDotElement) = parseForm None rest
+                let (templates, maybeDotElement) = parseForm maybeDot rest
                 (element::templates, maybeDotElement)
             | [] -> ([], None)
 
