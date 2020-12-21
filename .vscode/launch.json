@@ -41,6 +41,19 @@
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
             "stopAtEntry": false
+        },
+        {
+            "name": "Feersum compile",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
+            "args": [
+                "${input:scmToCompile}"
+            ],
+            "cwd": "${workspaceRoot}",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
         }
     ],
     "inputs": [
@@ -48,6 +61,11 @@
             "type": "promptString",
             "description": "DLL to debug",
             "id": "dllToDebug"
+        }
+        {
+            "type": "promptString",
+            "description": "Scheme file to compile",
+            "id": "scmToCompile"
         }
     ]
 }
