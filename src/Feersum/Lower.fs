@@ -48,6 +48,16 @@ let rec private rewriteStorage ctx = function
         | Some mapped -> mapped
         | None -> s
 
+/// RE-write the environment size, if needed.
+let private rewriteEnvSize env mappings =
+    if Map.isEmpty mappings then
+        env
+    else
+        Map.toSeq mappings
+        |> Seq.map (fun (_, v) -> v)
+        |> List.ofSeq
+        |> Some
+
 /// Lower a single expression and re-write the capture environment for it.
 let rec private rewriteExpression ctx = function
     | Load s -> Load (rewriteStorage ctx s)
@@ -62,14 +72,7 @@ let rec private rewriteExpression ctx = function
         // find out what is captured
         let ctx = { Parent = Some(ctx); Mappings = mappingsForExpr body }
         /// Update our environment size if captures were found
-        let env =
-            if Map.isEmpty ctx.Mappings then
-                env
-            else
-                Map.toSeq ctx.Mappings
-                |> Seq.map (fun (_, v) -> v)
-                |> List.ofSeq
-                |> Some
+        let env = rewriteEnvSize env ctx.Mappings
         // re-write the body
         Lambda(formals, locals, captures, env, (rewriteExpression ctx body))
     | SequencePoint(inner, location) ->
@@ -78,5 +81,7 @@ let rec private rewriteExpression ctx = function
 
 /// Lower a bound tree to a form better suited for the emit phase.
 let lower (ast: BoundSyntaxTree) =
-    let ctx = { Parent = None; Mappings = mappingsForExpr ast.Root }
-    { ast with Root = rewriteExpression ctx ast.Root }
+    let ctx = { Parent = None
+              ; Mappings = mappingsForExpr ast.Root }
+    { ast with Root = rewriteExpression ctx ast.Root
+             ; EnvMappings = rewriteEnvSize ast.EnvMappings ctx.Mappings }

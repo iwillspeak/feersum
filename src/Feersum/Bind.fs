@@ -63,6 +63,7 @@ type BoundExpr =
 /// Root type returned by the binder.
 type BoundSyntaxTree = { Root: BoundExpr
                        ; LocalsCount: int
+                       ; EnvMappings: StorageRef list option
                        ; Diagnostics: Diagnostic list }
 
 /// Binder Context Type
@@ -483,4 +484,7 @@ let createRootScope =
 let bind scope node: BoundSyntaxTree =
     let ctx = BinderCtx.createForGlobalScope scope
     let bound = bindInContext ctx node
-    { Root = bound; LocalsCount = ctx.LocalCount; Diagnostics = ctx.Diagnostics.Take }
+    { Root = bound
+    ; LocalsCount = ctx.LocalCount
+    ; EnvMappings = None
+    ; Diagnostics = ctx.Diagnostics.Take }

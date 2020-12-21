@@ -721,7 +721,7 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.LocalsCount None bound.Root
+    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.LocalsCount bound.EnvMappings bound.Root
 
     // The `Main` method is the entry point of the program. It calls
     // `$ScriptBody` and coerces the return value to an exit code.
