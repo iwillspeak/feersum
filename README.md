@@ -15,7 +15,8 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Implement [all special forms](docs/special-forms.md)
  * [ ] Support [all value types](docs/values.md)
  * [x] Quoted expressions.
- * [ ] Macros support.
+ * [x] Macros support.
+   * [ ] Macro Hygene.
  * [x] Standard library & builtins from a separate assembly.
  * [ ] Interop with other .NET assemblies.
  * [ ] Multi-statement support in the REPL.
