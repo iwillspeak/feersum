@@ -39,3 +39,37 @@
     (eqv? g g))) ; ~> #t
 (display (eqv? (gen-counter) (gen-counter))) ; ~> #f
 (newline)
+
+;; The `eq?` Predicate is allowed to just do a pointer equivalence test
+(display
+ (list
+  (eq? ’a ’a) ; -> #t
+  (eq? ’(a) ’(a)) ; -> unspecified
+  (eq? (list ’a) (list ’a)) ; -> #f
+  (eq? "a" "a") ; -> unspecified
+  (eq? "" "") ; -> unspecified
+  (eq? ’() ’()) ; -> #t
+  (eq? 2 2) ; -> unspecified
+  (eq? #\A #\A) ; -> unspecified
+  (eq? car car) ; -> #t
+  (let ((n (+ 2 3)))
+	(eq? n n)) ; -> unspecified
+  (let ((x ’(a)))(eq? x x)) ; -> #t
+  (let ((x ’#()))(eq? x x)) ; -> #t
+  (let ((p (lambda (x) x)))(eq? p p)) ; -> #t
+  ))(newline)
+
+;; The `equals?` predicate should recursively calculate equivalence. For
+;; our implementation this is close to `object.Equals`.
+(display
+ (list
+  (equal? ’a ’a) ; -> #t
+  (equal? ’(a) ’(a)) ; -> #t
+  (equal? ’(a (b) c)’(a (b) c)) ; -> #t
+  (equal? "abc" "abc") ; -> #t
+  (equal? 2 2) ; -> #t
+  (equal? (make-vector 5 ’a)(make-vector 5 ’a)) ; -> #t
+  ; We don't support quote references yet
+  ; (equal? ’#1=(a b . #1#)’#2=(a b a b . #2#)) ; -> #t
+  (equal? (lambda (x) x)(lambda (y) y)) ; -> unspecified
+  ))(newline)
