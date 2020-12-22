@@ -35,9 +35,14 @@ let private runExample exePath =
     p.StartInfo.RedirectStandardOutput <- true
     p.StartInfo.RedirectStandardError <- true
     Assert.True(p.Start())
+    let output =
+        [ p.StandardOutput.ReadToEndAsync() |> Async.AwaitTask
+        ; p.StandardError.ReadToEndAsync() |> Async.AwaitTask ]
+        |> Async.Parallel
+        |> Async.RunSynchronously
     p.WaitForExit()
-    { Output = p.StandardOutput.ReadToEnd()
-    ; Error = p.StandardError.ReadToEnd()
+    { Output = output.[0]
+    ; Error = output.[1]
     ; Exit = p.ExitCode }
 
 [<Theory>]
