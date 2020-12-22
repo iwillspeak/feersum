@@ -14,6 +14,16 @@ namespace Serehfa
             }
         }
 
+        public static void CheckAtLeastArgs(object[] args, int count)
+        {
+            if (args.Length < count)
+            {
+                throw new ArgumentException(
+                    $"Expected at least {count} arguments, but received {args.Length}",
+                    nameof(args));
+            }
+        }
+
         public static T UnpackArgs<T>(object[] args)
         {
             if (args.Length != 1)

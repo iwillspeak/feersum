@@ -398,5 +398,10 @@
         ]
       }
     ]
+  },
+  "booleans.scm": {
+    "Output": "(#f #f #t #t #f #t #t #f #t #t pass pass pass pass pass pass)\n(#f #t)\n(#f #f #f #t #f #f #f #t #f #f #t #f #f #t #t #f #f #f)",
+    "Error": "Unhandled exception. System.ArgumentException: Expected no arguments, but received 1 (Parameter 'args')\n   at Serehfa.ArgHelpers.CheckNoArgs(Object[] args)\n   at Serehfa.Write.Newline(Object[] args)\n   at booleans.LispProgram.$ScriptBody()\n   at booleans.LispProgram.Main(String[] )\n",
+    "Exit": 134
   }
 }
