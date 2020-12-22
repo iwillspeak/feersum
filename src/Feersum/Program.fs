@@ -75,8 +75,10 @@ let private compileSingle configuration output sourcePath =
         | Some(path) -> path
         | None -> Path.ChangeExtension(sourcePath, "exe")
     match compileFile configuration outputPath sourcePath with
-    | [] -> ()
-    | diagnostics -> dumpDiagnostics(diagnostics)
+    | [] -> 0
+    | diagnostics ->
+        dumpDiagnostics(diagnostics)
+        List.length diagnostics
 
 /// Run the REPL, using either the reflection-based evaluator, or the tree
 /// walk interpreter.
@@ -113,7 +115,9 @@ let main argv =
         |> Option.defaultValue Release
 
     match args.GetResult(Sources, defaultValue = []) with
-    | [] -> runRepl (args.Contains Interpret)
-    | files -> Seq.iter (compileSingle buildConfig (args.TryGetResult Output)) files
-
-    0 // return an integer exit code
+    | [] ->
+        runRepl (args.Contains Interpret)
+        0
+    | files ->
+        Seq.map (compileSingle buildConfig (args.TryGetResult Output)) files
+        |> Seq.sum
