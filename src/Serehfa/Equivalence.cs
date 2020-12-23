@@ -23,7 +23,7 @@ namespace Serehfa
                 (Func<object[], object> a, Func<object[], object> b) =>
                     a.Target == b.Target && a.Method == b.Method,
                 (null, null) => true,
-                (object lhs, object rhs) => 
+                (object lhs, object rhs) =>
                     (lhs != null && rhs != null) &&
                     object.ReferenceEquals(lhs, rhs),
             };
@@ -43,7 +43,7 @@ namespace Serehfa
                 (Func<object[], object> a, Func<object[], object> b) =>
                     a.Target == b.Target && a.Method == b.Method,
                 (null, null) => true,
-                (object lhs, object rhs) => 
+                (object lhs, object rhs) =>
                     (lhs != null && rhs != null) &&
                     object.ReferenceEquals(lhs, rhs),
             };
@@ -92,7 +92,7 @@ namespace Serehfa
             public override int GetHashCode(object o) =>
                 EqualityComparer<object>.Default.GetHashCode(o);
 
-            public new static LispEqualityComparer Default { get; } = 
+            public new static LispEqualityComparer Default { get; } =
                 new LispEqualityComparer();
         }
     }

@@ -12,7 +12,7 @@ namespace Serehfa
         {
             _id = string.Intern(id);
         }
-        
+
         public bool IsSimple => _id.All(c => char.IsLetterOrDigit(c));
 
         public string Raw => _id;
@@ -22,7 +22,7 @@ namespace Serehfa
         public override bool Equals(object obj) => obj switch
         {
             Ident other => _id == other._id,
-            _  => false,
+            _ => false,
         };
 
         public override string ToString() => IsSimple ?
@@ -57,12 +57,12 @@ namespace Serehfa
             return sb.ToString();
         }
 
-        public static bool operator == (Ident lhs, Ident rhs)
+        public static bool operator ==(Ident lhs, Ident rhs)
         {
             return lhs._id == rhs._id;
         }
 
-        public static bool operator != (Ident lhs, Ident rhs)
+        public static bool operator !=(Ident lhs, Ident rhs)
         {
             return lhs._id != rhs._id;
         }

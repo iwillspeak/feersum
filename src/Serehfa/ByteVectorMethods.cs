@@ -4,7 +4,7 @@ using System.Text;
 namespace Serehfa
 {
     using static ArgHelpers;
-    
+
     public static class ByteVectorMethods
     {
         [LispBuiltin("bytevector?")]
@@ -27,7 +27,7 @@ namespace Serehfa
             {
                 vec[i] = byteFill;
             }
-            
+
             return vec;
         }
 
@@ -59,7 +59,7 @@ namespace Serehfa
                 sb.Append(b);
                 first = false;
             }
-            
+
             sb.Append(")");
             return sb.ToString();
         }

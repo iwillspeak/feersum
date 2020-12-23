@@ -35,7 +35,7 @@ namespace Serehfa
         [LispBuiltin("vector-set!")]
         public static object VectorSet(object[] args)
         {
-            var (vec, index, value) = UnpackArgs<object[],Double,object>(args);
+            var (vec, index, value) = UnpackArgs<object[], Double, object>(args);
             vec[(int)index] = value;
             return null;
         }
@@ -46,7 +46,7 @@ namespace Serehfa
             var (vec, index) = UnpackArgs<object[], Double>(args);
             return vec[(int)index];
         }
-        
+
         [LispBuiltin("make-vector")]
         public static object MakeVector(object[] args)
         {
@@ -74,7 +74,7 @@ namespace Serehfa
                 sb.Append(Write.GetDisplayRepresentation(o));
                 first = false;
             }
-            
+
             sb.Append(")");
             return sb.ToString();
         }
