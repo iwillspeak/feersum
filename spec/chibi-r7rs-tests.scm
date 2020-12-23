@@ -46,46 +46,53 @@
 ;; This is mostly a subset of SRFI-64, providing test-begin, test-end
 ;; and test, which could be defined as something like:
 ;;
+(define indent-level 0)
+(define (indent)
+  (define (do-indent n)
+	(if (> n 0)
+		(begin
+		  (display "\t")
+		  (do-indent (- n 1)))))
+  (do-indent indent-level))
+
+(define tests 0)(define fails 0)
 (define (test-begin . o)
-  (display "@{ ")
-  (display o)
-  (newline)
+  (display "### ")(display o)(newline)
+  (set! indent-level (+ indent-level 1))
+  (indent)
   #f)
+
+(define (print-test-summary)
+  (display "----------------------")(newline)
+  (display "Total: ")(display tests)(newline)
+  (display "Fails: ")(display fails)(newline)
+  fails)
 
 (define (test-end . o)
   (newline)
-  (display "}")
-  #f)
-;;
-;;   (define-syntax test
-;;     (syntax-rules ()
-;;       ((test expected expr)
-;;        (let ((res expr))
-;;          (cond
-;;           ((not (equal? expr expected))
-;;            (display "FAIL: ")
-;;            (write 'expr)
-;;            (display ": expected ")
-;;            (write expected)
-;;            (display " but got ")
-;;            (write res)
-;;            (newline)))))))
+  (set! indent-level (- indent-level 1))
+  (if (= indent-level 0)
+	  (print-test-summary)
+	  (indent)))
 
 (define-syntax test
   (syntax-rules ()
 	((_ expected expr)
 	 (let ((res expr))
+	   (set! tests (+ tests 1))
 	   (if (equal? res expected)
-      (display ".")
-      (begin
-        (newline)
-        (display "FAIL: ")
-        (display 'expr)
-        (display ": expected ")
-        (display expected)
-        (display " but got ")
-        (display res)
-        (newline)))))))
+		   (display ".")
+		   (begin
+			 (set! fails (+ fails 1))
+			 (newline)
+			 (display "FAIL: ")
+			 (display 'expr)
+			 (display ": expected ")
+			 (display expected)
+			 (display " but got ")
+			 (display res)
+			 (newline)))))))
+
 ;;
 ;; however (chibi test) provides nicer output, timings, and
 ;; approximate equivalence for floating point numbers.
@@ -144,8 +151,9 @@
 
 (test-end)
 
-;; (test-begin "4.2 Derived expression types")
+(test-begin "4.2 Derived expression types")
 
+;;;;; FIXME: No `cond` or `case` support yet
 ;; (test 'greater
 ;;     (cond ((> 3 2) 'greater)
 ;;           ((< 3 2) 'less)))
@@ -179,43 +187,44 @@
 ;;              (else => (lambda (w) (cons 'other w)))))
 ;;          '(z y x w u)))
 
-;; (test #t (and (= 2 2) (> 2 1)))
-;; (test #f (and (= 2 2) (< 2 1)))
-;; (test '(f g) (and 1 2 'c '(f g)))
-;; (test #t (and))
+(test #t (and (= 2 2) (> 2 1)))
+(test #f (and (= 2 2) (< 2 1)))
+(test '(f g) (and 1 2 'c '(f g)))
+(test #t (and))
 
-;; (test #t (or (= 2 2) (> 2 1)))
-;; (test #t (or (= 2 2) (< 2 1)))
-;; (test #f (or #f #f #f))
-;; (test '(b c) (or (memq 'b '(a b c))
+(test #t (or (= 2 2) (> 2 1)))
+(test #t (or (= 2 2) (< 2 1)))
+(test #f (or #f #f #f))
+;; (test '(b c) (or (memq 'b '(a b c)) ;; FIXME: No `memq` yet
 ;;     (/ 3 0)))
 
-;; (test 6 (let ((x 2) (y 3))
-;;   (* x y)))
+(test 6 (let ((x 2) (y 3))
+  (* x y)))
 
-;; (test 35 (let ((x 2) (y 3))
-;;   (let ((x 7)
-;;         (z (+ x y)))
-;;     (* z x))))
+(test 35 (let ((x 2) (y 3))
+  (let ((x 7)
+        (z (+ x y)))
+    (* z x))))
 
-;; (test 70 (let ((x 2) (y 3))
-;;   (let* ((x 7)
-;;          (z (+ x y)))
-;;     (* z x))))
+(test 70 (let ((x 2) (y 3))
+  (let* ((x 7)
+         (z (+ x y)))
+    (* z x))))
 
-;; (test #t
-;;     (letrec ((even?
-;;               (lambda (n)
-;;                 (if (zero? n)
-;;                     #t
-;;                     (odd? (- n 1)))))
-;;              (odd?
-;;               (lambda (n)
-;;                 (if (zero? n)
-;;                     #f
-;;                     (even? (- n 1))))))
-;;       (even? 88)))
+(test #t
+    (letrec ((even?
+              (lambda (n)
+                (if (zero? n)
+                    #t
+                    (odd? (- n 1)))))
+             (odd?
+              (lambda (n)
+                (if (zero? n)
+                    #f
+                    (even? (- n 1))))))
+      (even? 88)))
 
+;;; FIXME: `letrec*` support.
 ;; (test 5
 ;;     (letrec* ((p
 ;;                (lambda (x)
@@ -229,6 +238,8 @@
 ;;               (y x))
 ;;              y))
 
+
+;;; FIXME: `let*values` support.
 ;; ;; By Jussi Piitulainen <jpiitula@ling.helsinki.fi>
 ;; ;; and John Cowan <cowan@mercury.ccil.org>:
 ;; ;; http://lists.scheme-reports.org/pipermail/scheme-reports/2013-December/003876.html
@@ -298,11 +309,12 @@
 ;; 	    #f)
 ;; 	  x))
 
-;; (let ()
-;;   (define x 0)
-;;   (set! x 5)
-;;   (test 6 (+ x 1)))
+(let ()
+  (define x 0)
+  (set! x 5)
+  (test 6 (+ x 1)))
 
+;;; FIXME: `do` support
 ;; (test #(0 1 2 3 4) (do ((vec (make-vector 5))
 ;;      (i 0 (+ i 1)))
 ;;     ((= i 5) vec)
@@ -313,6 +325,7 @@
 ;;        (sum 0 (+ sum (car x))))
 ;;       ((null? x) sum))))
 
+;;; FIXME: looping
 ;; (test '((6 1 3) (-5 -2))
 ;;     (let loop ((numbers '(3 -2 1 6 -5))
 ;;                (nonneg '())
@@ -422,7 +435,7 @@
 ;; (test 10 (plus 1 2 3 4))
 
 ;; (define mult
-;;   (case-lambda 
+;;   (case-lambda
 ;;    (() 1)
 ;;    ((x) x)
 ;;    ((x y) (* x y))
@@ -434,24 +447,25 @@
 ;; (test 6 (mult 1 2 3))
 ;; (test 24 (mult 1 2 3 4))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "4.3 Macros")
+(test-begin "4.3 Macros")
 
-;; (test 'now (let-syntax
-;;                ((when (syntax-rules ()
-;;                         ((when test stmt1 stmt2 ...)
-;;                          (if test
-;;                              (begin stmt1
-;;                                     stmt2 ...))))))
-;;              (let ((if #t))
-;;                (when if (set! if 'now))
-;;                if)))
+(test 'now (let-syntax
+               ((when (syntax-rules ()
+                        ((when test stmt1 stmt2 ...)
+                         (if test
+                             (begin stmt1
+                                    stmt2 ...))))))
+             (let ((if #t))
+               (when if (set! if 'now))
+               if)))
 
-;; (test 'outer (let ((x 'outer))
-;;   (let-syntax ((m (syntax-rules () ((m) x))))
-;;     (let ((x 'inner))
-;;       (m)))))
+;;; FIXME: hygene?
+(test 'outer (let ((x 'outer))
+  (let-syntax ((m (syntax-rules () ((m) x))))
+    (let ((x 'inner))
+      (m)))))
 
 ;; (test 7 (letrec-syntax
 ;;   ((my-or (syntax-rules ()
@@ -472,6 +486,7 @@
 ;;            (if y)
 ;;            y))))
 
+;;; FIXME: quoted elipsis `(... ...)` support
 ;; (define-syntax be-like-begin1
 ;;   (syntax-rules ()
 ;;     ((be-like-begin1 name)
@@ -492,38 +507,38 @@
 ;; (be-like-begin2 sequence2)
 ;; (test 4 (sequence2 1 2 3 4))
 
-;; (define-syntax be-like-begin3
-;;   (syntax-rules ()
-;;     ((be-like-begin3 name)
-;;      (define-syntax name
-;;        (syntax-rules dots ()
-;;          ((name expr dots)
-;;           (begin expr dots)))))))
-;; (be-like-begin3 sequence3)
-;; (test 5 (sequence3 2 3 4 5))
+(define-syntax be-like-begin3
+  (syntax-rules ()
+    ((be-like-begin3 name)
+     (define-syntax name
+       (syntax-rules dots ()
+         ((name expr dots)
+          (begin expr dots)))))))
+(be-like-begin3 sequence3)
+(test 5 (sequence3 2 3 4 5))
 
-;; ;; ellipsis escape
-;; (define-syntax elli-esc-1
-;;   (syntax-rules ()
-;;     ((_)
-;;      '(... ...))
-;;     ((_ x)
-;;      '(... (x ...)))
-;;     ((_ x y)
-;;      '(... (... x y)))))
+;; ellipsis escape
+(define-syntax elli-esc-1
+  (syntax-rules ()
+    ((_)
+     '(... ...))
+    ((_ x)
+     '(... (x ...)))
+    ((_ x y)
+     '(... (... x y)))))
 
-;; (test '... (elli-esc-1))
-;; (test '(100 ...) (elli-esc-1 100))
-;; (test '(... 100 200) (elli-esc-1 100 200))
+(test '... (elli-esc-1))
+(test '(100 ...) (elli-esc-1 100))
+(test '(... 100 200) (elli-esc-1 100 200))
 
-;; ;; Syntax pattern with ellipsis in middle of proper list.
-;; (define-syntax part-2
-;;   (syntax-rules ()
-;;     ((_ a b (m n) ... x y)
-;;      (vector (list a b) (list m ...) (list n ...) (list x y)))
-;;     ((_ . rest) 'error)))
-;; (test '#((10 43) (31 41 51) (32 42 52) (63 77))
-;;     (part-2 10 (+ 21 22) (31 32) (41 42) (51 52) (+ 61 2) 77))
+;; Syntax pattern with ellipsis in middle of proper list.
+(define-syntax part-2
+  (syntax-rules ()
+    ((_ a b (m n) ... x y)
+     (vector (list a b) (list m ...) (list n ...) (list x y)))
+    ((_ . rest) 'error)))
+(test '#((10 43) (31 41 51) (32 42 52) (63 77))
+    (part-2 10 (+ 21 22) (31 32) (41 42) (51 52) (+ 61 2) 77))
 ;; ;; Syntax pattern with ellipsis in middle of improper list.
 ;; (define-syntax part-2x
 ;;   (syntax-rules ()
@@ -536,67 +551,69 @@
 ;; (test '#((10 43) (31 41 51) (32 42 52) (63 77) ("rest:" . "tail"))
 ;;     (part-2x (10 (+ 21 22) (31 32) (41 42) (51 52) (+ 61 2) 77 . "tail")))
 
-;; ;; underscore
-;; (define-syntax underscore
-;;   (syntax-rules ()
-;;     ((foo _) '_)))
-;; (test '_ (underscore foo))
+;; underscore
+(define-syntax underscore
+  (syntax-rules ()
+    ((foo _) '_)))
+(test '_ (underscore foo))
 
-;; (let ()
-;;   (define-syntax underscore2
-;;     (syntax-rules ()
-;;       ((underscore2 (a _) ...) 42)))
-;;   (test 42 (underscore2 (1 2))))
+(let ()
+  (define-syntax underscore2
+    (syntax-rules ()
+      ((underscore2 (a _) ...) 42)))
+  (test 42 (underscore2 (1 2))))
 
-;; (define-syntax count-to-2
-;;   (syntax-rules ()
-;;     ((_) 0)
-;;     ((_ _) 1)
-;;     ((_ _ _) 2)
-;;     ((_ . _) 'many)))
-;; (test '(2 0 many)
-;;     (list (count-to-2 a b) (count-to-2) (count-to-2 a b c d)))
+(define-syntax count-to-2
+  (syntax-rules ()
+    ((_) 0)
+    ((_ _) 1)
+    ((_ _ _) 2)
+    ((_ . _) 'many)))
+(test '(2 0 many)
+    (list (count-to-2 a b) (count-to-2) (count-to-2 a b c d)))
 
-;; (define-syntax count-to-2_
-;;   (syntax-rules (_)
-;;     ((_) 0)
-;;     ((_ _) 1)
-;;     ((_ _ _) 2)
-;;     ((x . y) 'fail)))
-;; (test '(2 0 fail fail)
-;;     (list (count-to-2_ _ _) (count-to-2_)
-;;           (count-to-2_ a b) (count-to-2_ a b c d)))
+;; FIXME: Underscore as a literal
+(define-syntax count-to-2_
+  (syntax-rules (_)
+    ((_) 0)
+    ((_ _) 1)
+    ((_ _ _) 2)
+    ((x . y) 'fail)))
+(test '(2 0 fail fail)
+    (list (count-to-2_ _ _) (count-to-2_)
+          (count-to-2_ a b) (count-to-2_ a b c d)))
 
-;; (define-syntax jabberwocky
-;;   (syntax-rules ()
-;;     ((_ hatter)
-;;      (begin
-;;        (define march-hare 42)
-;;        (define-syntax hatter
-;;          (syntax-rules ()
-;;            ((_) march-hare)))))))
-;; (jabberwocky mad-hatter)
-;; (test 42 (mad-hatter))
+(define-syntax jabberwocky
+  (syntax-rules ()
+    ((_ hatter)
+     (begin
+       (define march-hare 42)
+       (define-syntax hatter
+         (syntax-rules ()
+           ((_) march-hare)))))))
+(jabberwocky mad-hatter)
+(test 42 (mad-hatter))
 
 ;; (test 'ok (let ((=> #f)) (cond (#t => 'ok))))
 
-;; (let ()
-;;   (define x 1)
-;;   (let-syntax ()
-;;     (define x 2)
-;;     #f)
-;;   (test 1 x))
+(let ()
+  (define x 1)
+  (let-syntax ()
+    (define x 2)
+    #f)
+  (test 1 x))
 
-;; (let ()
-;;  (define-syntax foo
-;;    (syntax-rules ()
-;;      ((foo bar y)
-;;       (define-syntax bar
-;;         (syntax-rules ()
-;;           ((bar x) 'y))))))
-;;  (foo bar x)
-;;  (test 'x (bar 1)))
+(let ()
+ (define-syntax foo
+   (syntax-rules ()
+     ((foo bar y)
+      (define-syntax bar
+        (syntax-rules ()
+          ((bar x) 'y))))))
+ (foo bar x)
+ (test 'x (bar 1)))
 
+;;; FIXME: Mutual recursion of `define` forms?
 ;; (begin
 ;;   (define-syntax ffoo
 ;;     (syntax-rules ()
@@ -609,11 +626,11 @@
 ;;   (ffoo ff)
 ;;   (test 100 (ff 10)))
 
-;; (let-syntax ((vector-lit
-;;                (syntax-rules ()
-;;                  ((vector-lit)
-;;                   '#(b)))))
-;;   (test '#(b) (vector-lit)))
+(let-syntax ((vector-lit
+               (syntax-rules ()
+                 ((vector-lit)
+                  '#(b)))))
+  (test '#(b) (vector-lit)))
 
 ;; (let ()
 ;;   ;; forward hygienic refs
@@ -625,54 +642,56 @@
 ;;     42)
 ;;   (test 42 (quux399)))
 
-;; (let-syntax
-;;     ((m (syntax-rules ()
-;;           ((m x) (let-syntax
-;;                      ((n (syntax-rules (k)
-;;                            ((n x) 'bound-identifier=?)
-;;                            ((n y) 'free-identifier=?))))
-;;                    (n z))))))
-;;   (test 'bound-identifier=? (m k)))
+;;; FIXME: Hygene.
+(let-syntax
+    ((m (syntax-rules ()
+          ((m x) (let-syntax
+                     ((n (syntax-rules (k)
+                           ((n x) 'bound-identifier=?)
+                           ((n y) 'free-identifier=?))))
+                   (n z))))))
+  (test 'bound-identifier=? (m k)))
 
-;; ;; literal has priority to ellipsis (R7RS 4.3.2)
-;; (let ()
-;;   (define-syntax elli-lit-1
-;;     (syntax-rules ... (...)
-;;       ((_ x)
-;;        '(x ...))))
-;;   (test '(100 ...) (elli-lit-1 100)))
+;; literal has priority to ellipsis (R7RS 4.3.2)
+(let ()
+  (define-syntax elli-lit-1
+    (syntax-rules ... (...)
+      ((_ x)
+       '(x ...))))
+  (test '(100 ...) (elli-lit-1 100)))
 
-;; ;; bad ellipsis
-;; #|
-;; (test 'error
-;;       (guard (exn (else 'error))
-;;         (eval
-;;          '(define-syntax bad-elli-1
-;;             (syntax-rules ()
-;;               ((_ ... x)
-;;                '(... x))))
-;;          (interaction-environment))))
+;; bad ellipsis
+#|
+(test 'error
+      (guard (exn (else 'error))
+        (eval
+         '(define-syntax bad-elli-1
+            (syntax-rules ()
+              ((_ ... x)
+               '(... x))))
+         (interaction-environment))))
 
-;; (test 'error
-;;       (guard (exn (else 'error))
-;;         (eval
-;;          '(define-syntax bad-elli-2
-;;             (syntax-rules ()
-;;               ((_ (... x))
-;;                '(... x))))
-;;          (interaction-environment))))
-;; |#
+(test 'error
+      (guard (exn (else 'error))
+        (eval
+         '(define-syntax bad-elli-2
+            (syntax-rules ()
+              ((_ (... x))
+               '(... x))))
+         (interaction-environment))))
+|#
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "5 Program structure")
+(test-begin "5 Program structure")
 
-;; (define add3
-;;   (lambda (x) (+ x 3)))
-;; (test 6 (add3 3))
-;; (define first car)
-;; (test 1 (first '(1 2)))
+(define add3
+  (lambda (x) (+ x 3)))
+(test 6 (add3 3))
+(define first car)
+(test 1 (first '(1 2)))
 
+;;; FIXME: `define` mutual recursion.
 ;; (test 45 (let ((x 5))
 ;;   (define foo (lambda (y) (bar x y)))
 ;;   (define bar (lambda (a b) (+ (* a b) a)))
@@ -729,12 +748,12 @@
 ;;           (set-kar! k 3)
 ;;           (kar k)))
 
-;; (test-end)
+(test-end)
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; 6 Standard Procedures
 
-;; (test-begin "6.1 Equivalence Predicates")
+(test-begin "6.1 Equivalence Predicates")
 
 ;; (test #t (eqv? 'a 'a))
 ;; (test #f (eqv? 'a 'b))
@@ -792,9 +811,9 @@
 ;; (test #t (equal? (make-vector 5 'a)
 ;;                  (make-vector 5 'a)))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.2 Numbers")
+(test-begin "6.2 Numbers")
 
 ;; (test #t (complex? 3+4i))
 ;; (test #t (complex? 3))
@@ -1078,9 +1097,9 @@
 ;; (test 256 (string->number "100" 16))
 ;; (test 100.0 (string->number "1e2"))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.3 Booleans")
+(test-begin "6.3 Booleans")
 
 ;; (test #t #t)
 ;; (test #f #f)
@@ -1104,9 +1123,9 @@
 ;; (test #t (boolean=? #f #f #f))
 ;; (test #f (boolean=? #t #t #f))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.4 Lists")
+(test-begin "6.4 Lists")
 
 ;; (let* ((x (list 'a 'b 'c))
 ;;        (y x))
@@ -1205,9 +1224,9 @@
 ;;   (test #f (eq? (cdr l1) (cdr l2)))
 ;;   (test #f (eq? (cddr l1) (cddr l2))))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.5 Symbols")
+(test-begin "6.5 Symbols")
 
 ;; (test #t (symbol? 'foo))
 ;; (test #t (symbol? (car '(a b))))
@@ -1232,9 +1251,9 @@
 ;; (test #t (string=? "K. Harper, M.D."
 ;;                    (symbol->string (string->symbol "K. Harper, M.D."))))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.6 Characters")
+(test-begin "6.6 Characters")
 
 ;; (test #t (char? #\a))
 ;; (test #f (char? "a"))
@@ -1324,9 +1343,9 @@
 ;; (test #\λ (char-foldcase #\λ))
 ;; (test #\λ (char-foldcase #\Λ))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.7 Strings")
+(test-begin "6.7 Strings")
 
 ;; (test #t (string? ""))
 ;; (test #t (string? " "))
@@ -1508,9 +1527,9 @@
 ;; (test "abcab"
 ;;     (let ((str (string-copy "abcde"))) (string-copy! str 3 str 0 2) str))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.8 Vectors")
+(test-begin "6.8 Vectors")
 
 ;; (test #t (vector? #()))
 ;; (test #t (vector? #(1 2 3)))
@@ -1587,9 +1606,9 @@
 ;; (test #(1 2 3 1 2)
 ;;     (let ((vec (vector 1 2 3 4 5))) (vector-copy! vec 3 vec 0 2) vec))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.9 Bytevectors")
+(test-begin "6.9 Bytevectors")
 
 ;; (test #t (bytevector? #u8()))
 ;; (test #t (bytevector? #u8(0 1 2)))
@@ -1663,9 +1682,9 @@
 ;; (test #u8(#x42) (string->utf8 "ABC" 1 2))
 ;; (test #u8(#xCE #xBB) (string->utf8 "λ"))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.10 Control Features")
+(test-begin "6.10 Control Features")
 
 ;; (test #t (procedure? car))
 ;; (test #f (procedure? 'car))
@@ -1816,9 +1835,9 @@
 ;;             (c 'talk2)
 ;;             (reverse path)))))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.11 Exceptions")
+(test-begin "6.11 Exceptions")
 
 ;; (test 65
 ;;     (with-exception-handler
@@ -1966,9 +1985,9 @@
 ;;                ((assq 'b condition)))
 ;;          (raise (list (cons 'd 24)))))))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.12 Environments and evaluation")
+(test-begin "6.12 Environments and evaluation")
 
 ;; ;; (test 21 (eval '(* 7 3) (scheme-report-environment 5)))
 
@@ -1983,9 +2002,9 @@
 ;; (test 1024.0 (eval '(+ (expt 2 10) (inexact (sin 0)))
 ;;                    (environment '(scheme base) '(scheme inexact))))
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.13 Input and output")
+(test-begin "6.13 Input and output")
 
 ;; (test #t (port? (current-input-port)))
 ;; (test #t (input-port? (current-input-port)))
@@ -2187,7 +2206,7 @@
 ;;                  '("(#0=(1 2 3) #0#)" "(#1=(1 2 3) #1#)"))
 ;;          #t))
 
-;; (test-begin "Read syntax")
+(test-begin "Read syntax")
 
 ;; ;; check reading boolean followed by eof
 ;; (test #t (read (open-input-string "#t")))
@@ -2313,9 +2332,9 @@
 ;; (test-write-syntax "|+NaN.0|" '|+NaN.0|)
 ;; (test-write-syntax "|+NaN.0abc|" '|+NaN.0abc|)
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "Numeric syntax")
+(test-begin "Numeric syntax")
 
 ;; ;; Numeric syntax adapted from Peter Bex's tests.
 ;; ;;
@@ -2503,11 +2522,11 @@
 ;; (test-precision "0.14285714285714282" "0.14285714285714288" "0.14285715")
 ;; (test-precision "1.7976931348623157e+308" "+inf.0")
 
-;; (test-end)
+(test-end)
 
-;; (test-end)
+(test-end)
 
-;; (test-begin "6.14 System interface")
+(test-begin "6.14 System interface")
 
 ;; ;; 6.14 System interface
 
@@ -2542,6 +2561,6 @@
 ;;           (guard (exn (else exn))
 ;;             (delete-file " no such file "))))
 
-;; (test-end)
+(test-end)
 
 (test-end)
