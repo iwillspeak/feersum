@@ -47491,6 +47491,3818 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32000,
+                          "Line": 1231,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32004,
+                          "Line": 1231,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32005,
+                          "Line": 1231,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32007,
+                          "Line": 1231,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32009,
+                                  "Line": 1231,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32016,
+                                  "Line": 1231,
+                                  "Column": 18,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "foo"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32018,
+                                        "Line": 1231,
+                                        "Column": 20,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32021,
+                                        "Line": 1231,
+                                        "Column": 23,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32017,
+                                  "Line": 1231,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32021,
+                                  "Line": 1231,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32008,
+                          "Line": 1231,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32022,
+                          "Line": 1231,
+                          "Column": 24,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 31999,
+                  "Line": 1231,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32023,
+                  "Line": 1231,
+                  "Column": 25,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32025,
+                          "Line": 1232,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32029,
+                          "Line": 1232,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32030,
+                          "Line": 1232,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32032,
+                          "Line": 1232,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32034,
+                                  "Line": 1232,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32041,
+                                  "Line": 1232,
+                                  "Column": 18,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "car"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32043,
+                                          "Line": 1232,
+                                          "Column": 20,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32046,
+                                          "Line": 1232,
+                                          "Column": 23,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Form",
+                                            "Fields": [
+                                              [
+                                                {
+                                                  "Kind": {
+                                                    "Case": "Ident",
+                                                    "Fields": [
+                                                      "a"
+                                                    ]
+                                                  },
+                                                  "Location": {
+                                                    "Case": "Span",
+                                                    "Fields": [
+                                                      {
+                                                        "Index": 32049,
+                                                        "Line": 1232,
+                                                        "Column": 26,
+                                                        "StreamName": "dummy"
+                                                      },
+                                                      {
+                                                        "Index": 32050,
+                                                        "Line": 1232,
+                                                        "Column": 27,
+                                                        "StreamName": "dummy"
+                                                      }
+                                                    ]
+                                                  }
+                                                },
+                                                {
+                                                  "Kind": {
+                                                    "Case": "Ident",
+                                                    "Fields": [
+                                                      "b"
+                                                    ]
+                                                  },
+                                                  "Location": {
+                                                    "Case": "Span",
+                                                    "Fields": [
+                                                      {
+                                                        "Index": 32051,
+                                                        "Line": 1232,
+                                                        "Column": 28,
+                                                        "StreamName": "dummy"
+                                                      },
+                                                      {
+                                                        "Index": 32052,
+                                                        "Line": 1232,
+                                                        "Column": 29,
+                                                        "StreamName": "dummy"
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              ]
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 32048,
+                                                "Line": 1232,
+                                                "Column": 25,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 32053,
+                                                "Line": 1232,
+                                                "Column": 30,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32047,
+                                          "Line": 1232,
+                                          "Column": 24,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32053,
+                                          "Line": 1232,
+                                          "Column": 30,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32042,
+                                  "Line": 1232,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32054,
+                                  "Line": 1232,
+                                  "Column": 31,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32033,
+                          "Line": 1232,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32055,
+                          "Line": 1232,
+                          "Column": 32,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32024,
+                  "Line": 1232,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32056,
+                  "Line": 1232,
+                  "Column": 33,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32058,
+                          "Line": 1233,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32062,
+                          "Line": 1233,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            false
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32063,
+                          "Line": 1233,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32065,
+                          "Line": 1233,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32067,
+                                  "Line": 1233,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32074,
+                                  "Line": 1233,
+                                  "Column": 18,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Str",
+                                  "Fields": [
+                                    "bar"
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32075,
+                                  "Line": 1233,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32080,
+                                  "Line": 1233,
+                                  "Column": 24,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32066,
+                          "Line": 1233,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32081,
+                          "Line": 1233,
+                          "Column": 25,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32057,
+                  "Line": 1233,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32082,
+                  "Line": 1233,
+                  "Column": 26,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32084,
+                          "Line": 1234,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32088,
+                          "Line": 1234,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32089,
+                          "Line": 1234,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32091,
+                          "Line": 1234,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32093,
+                                  "Line": 1234,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32100,
+                                  "Line": 1234,
+                                  "Column": 18,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "nil"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32102,
+                                        "Line": 1234,
+                                        "Column": 20,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32105,
+                                        "Line": 1234,
+                                        "Column": 23,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32101,
+                                  "Line": 1234,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32105,
+                                  "Line": 1234,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32092,
+                          "Line": 1234,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32106,
+                          "Line": 1234,
+                          "Column": 24,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32083,
+                  "Line": 1234,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32107,
+                  "Line": 1234,
+                  "Column": 25,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32109,
+                          "Line": 1235,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32113,
+                          "Line": 1235,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            false
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32114,
+                          "Line": 1235,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32116,
+                          "Line": 1235,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32118,
+                                  "Line": 1235,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32125,
+                                  "Line": 1235,
+                                  "Column": 18,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Form",
+                                    "Fields": [
+                                      []
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32127,
+                                        "Line": 1235,
+                                        "Column": 20,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32129,
+                                        "Line": 1235,
+                                        "Column": 22,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32126,
+                                  "Line": 1235,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32129,
+                                  "Line": 1235,
+                                  "Column": 22,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32117,
+                          "Line": 1235,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32130,
+                          "Line": 1235,
+                          "Column": 23,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32108,
+                  "Line": 1235,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32131,
+                  "Line": 1235,
+                  "Column": 24,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32133,
+                          "Line": 1236,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32137,
+                          "Line": 1236,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            false
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32138,
+                          "Line": 1236,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32140,
+                          "Line": 1236,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32142,
+                                  "Line": 1236,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32149,
+                                  "Line": 1236,
+                                  "Column": 18,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Boolean",
+                                  "Fields": [
+                                    false
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32150,
+                                  "Line": 1236,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32152,
+                                  "Line": 1236,
+                                  "Column": 21,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32141,
+                          "Line": 1236,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32153,
+                          "Line": 1236,
+                          "Column": 22,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32132,
+                  "Line": 1236,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32154,
+                  "Line": 1236,
+                  "Column": 23,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32157,
+                          "Line": 1238,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32161,
+                          "Line": 1238,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32162,
+                          "Line": 1238,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32164,
+                          "Line": 1238,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol=?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32166,
+                                  "Line": 1238,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32174,
+                                  "Line": 1238,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32176,
+                                        "Line": 1238,
+                                        "Column": 21,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32177,
+                                        "Line": 1238,
+                                        "Column": 22,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32175,
+                                  "Line": 1238,
+                                  "Column": 20,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32178,
+                                  "Line": 1238,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32179,
+                                        "Line": 1238,
+                                        "Column": 24,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32180,
+                                        "Line": 1238,
+                                        "Column": 25,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32178,
+                                  "Line": 1238,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32180,
+                                  "Line": 1238,
+                                  "Column": 25,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32165,
+                          "Line": 1238,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32181,
+                          "Line": 1238,
+                          "Column": 26,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32156,
+                  "Line": 1238,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32182,
+                  "Line": 1238,
+                  "Column": 27,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32184,
+                          "Line": 1239,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32188,
+                          "Line": 1239,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            false
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32189,
+                          "Line": 1239,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32191,
+                          "Line": 1239,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol=?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32193,
+                                  "Line": 1239,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32201,
+                                  "Line": 1239,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32203,
+                                        "Line": 1239,
+                                        "Column": 21,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32204,
+                                        "Line": 1239,
+                                        "Column": 22,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32202,
+                                  "Line": 1239,
+                                  "Column": 20,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32205,
+                                  "Line": 1239,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "A"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32206,
+                                        "Line": 1239,
+                                        "Column": 24,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32207,
+                                        "Line": 1239,
+                                        "Column": 25,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32205,
+                                  "Line": 1239,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32207,
+                                  "Line": 1239,
+                                  "Column": 25,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32192,
+                          "Line": 1239,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32208,
+                          "Line": 1239,
+                          "Column": 26,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32183,
+                  "Line": 1239,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32209,
+                  "Line": 1239,
+                  "Column": 27,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32211,
+                          "Line": 1240,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32215,
+                          "Line": 1240,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32216,
+                          "Line": 1240,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32218,
+                          "Line": 1240,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol=?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32220,
+                                  "Line": 1240,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32228,
+                                  "Line": 1240,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32230,
+                                        "Line": 1240,
+                                        "Column": 21,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32231,
+                                        "Line": 1240,
+                                        "Column": 22,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32229,
+                                  "Line": 1240,
+                                  "Column": 20,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32232,
+                                  "Line": 1240,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32233,
+                                        "Line": 1240,
+                                        "Column": 24,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32234,
+                                        "Line": 1240,
+                                        "Column": 25,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32232,
+                                  "Line": 1240,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32235,
+                                  "Line": 1240,
+                                  "Column": 26,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32236,
+                                        "Line": 1240,
+                                        "Column": 27,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32237,
+                                        "Line": 1240,
+                                        "Column": 28,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32235,
+                                  "Line": 1240,
+                                  "Column": 26,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32237,
+                                  "Line": 1240,
+                                  "Column": 28,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32219,
+                          "Line": 1240,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32238,
+                          "Line": 1240,
+                          "Column": 29,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32210,
+                  "Line": 1240,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32239,
+                  "Line": 1240,
+                  "Column": 30,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32241,
+                          "Line": 1241,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32245,
+                          "Line": 1241,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            false
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32246,
+                          "Line": 1241,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32248,
+                          "Line": 1241,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol=?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32250,
+                                  "Line": 1241,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32258,
+                                  "Line": 1241,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32260,
+                                        "Line": 1241,
+                                        "Column": 21,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32261,
+                                        "Line": 1241,
+                                        "Column": 22,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32259,
+                                  "Line": 1241,
+                                  "Column": 20,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32262,
+                                  "Line": 1241,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32263,
+                                        "Line": 1241,
+                                        "Column": 24,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32264,
+                                        "Line": 1241,
+                                        "Column": 25,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32262,
+                                  "Line": 1241,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32265,
+                                  "Line": 1241,
+                                  "Column": 26,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "A"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32266,
+                                        "Line": 1241,
+                                        "Column": 27,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32267,
+                                        "Line": 1241,
+                                        "Column": 28,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32265,
+                                  "Line": 1241,
+                                  "Column": 26,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32267,
+                                  "Line": 1241,
+                                  "Column": 28,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32249,
+                          "Line": 1241,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32268,
+                          "Line": 1241,
+                          "Column": 29,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32240,
+                  "Line": 1241,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32269,
+                  "Line": 1241,
+                  "Column": 30,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32272,
+                          "Line": 1243,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32276,
+                          "Line": 1243,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Str",
+                          "Fields": [
+                            "flying-fish"
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32277,
+                          "Line": 1243,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32290,
+                          "Line": 1243,
+                          "Column": 20,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol->string"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32297,
+                                  "Line": 1244,
+                                  "Column": 2,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32311,
+                                  "Line": 1244,
+                                  "Column": 16,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "flying-fish"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32313,
+                                        "Line": 1244,
+                                        "Column": 18,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32324,
+                                        "Line": 1244,
+                                        "Column": 29,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32312,
+                                  "Line": 1244,
+                                  "Column": 17,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32324,
+                                  "Line": 1244,
+                                  "Column": 29,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32296,
+                          "Line": 1244,
+                          "Column": 1,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32325,
+                          "Line": 1244,
+                          "Column": 30,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32271,
+                  "Line": 1243,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32326,
+                  "Line": 1244,
+                  "Column": 31,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32328,
+                          "Line": 1245,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32332,
+                          "Line": 1245,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Str",
+                          "Fields": [
+                            "Martin"
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32333,
+                          "Line": 1245,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32341,
+                          "Line": 1245,
+                          "Column": 15,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol->string"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32343,
+                                  "Line": 1245,
+                                  "Column": 17,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32357,
+                                  "Line": 1245,
+                                  "Column": 31,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "Martin"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32359,
+                                        "Line": 1245,
+                                        "Column": 33,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32365,
+                                        "Line": 1245,
+                                        "Column": 39,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32358,
+                                  "Line": 1245,
+                                  "Column": 32,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32365,
+                                  "Line": 1245,
+                                  "Column": 39,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32342,
+                          "Line": 1245,
+                          "Column": 16,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32366,
+                          "Line": 1245,
+                          "Column": 40,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32327,
+                  "Line": 1245,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32367,
+                  "Line": 1245,
+                  "Column": 41,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32369,
+                          "Line": 1246,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32373,
+                          "Line": 1246,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Str",
+                          "Fields": [
+                            "Malvina"
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32374,
+                          "Line": 1246,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32383,
+                          "Line": 1246,
+                          "Column": 16,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "symbol->string"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32385,
+                                  "Line": 1246,
+                                  "Column": 18,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32399,
+                                  "Line": 1246,
+                                  "Column": 32,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "string->symbol"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32401,
+                                          "Line": 1246,
+                                          "Column": 34,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32415,
+                                          "Line": 1246,
+                                          "Column": 48,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "Malvina"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32416,
+                                          "Line": 1246,
+                                          "Column": 49,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32425,
+                                          "Line": 1246,
+                                          "Column": 58,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32400,
+                                  "Line": 1246,
+                                  "Column": 33,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32426,
+                                  "Line": 1246,
+                                  "Column": 59,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32384,
+                          "Line": 1246,
+                          "Column": 17,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32427,
+                          "Line": 1246,
+                          "Column": 60,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32368,
+                  "Line": 1246,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32428,
+                  "Line": 1246,
+                  "Column": 61,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32431,
+                          "Line": 1248,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32435,
+                          "Line": 1248,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Quoted",
+                      "Fields": [
+                        {
+                          "Kind": {
+                            "Case": "Ident",
+                            "Fields": [
+                              "mISSISSIppi"
+                            ]
+                          },
+                          "Location": {
+                            "Case": "Span",
+                            "Fields": [
+                              {
+                                "Index": 32437,
+                                "Line": 1248,
+                                "Column": 8,
+                                "StreamName": "dummy"
+                              },
+                              {
+                                "Index": 32448,
+                                "Line": 1248,
+                                "Column": 19,
+                                "StreamName": "dummy"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32436,
+                          "Line": 1248,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32449,
+                          "Line": 1248,
+                          "Column": 20,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "string->symbol"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32450,
+                                  "Line": 1248,
+                                  "Column": 21,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32464,
+                                  "Line": 1248,
+                                  "Column": 35,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Str",
+                                  "Fields": [
+                                    "mISSISSIppi"
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32465,
+                                  "Line": 1248,
+                                  "Column": 36,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32478,
+                                  "Line": 1248,
+                                  "Column": 49,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32449,
+                          "Line": 1248,
+                          "Column": 20,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32479,
+                          "Line": 1248,
+                          "Column": 50,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32430,
+                  "Line": 1248,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32480,
+                  "Line": 1248,
+                  "Column": 51,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32482,
+                          "Line": 1249,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32486,
+                          "Line": 1249,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32487,
+                          "Line": 1249,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32489,
+                          "Line": 1249,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "eq?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32491,
+                                  "Line": 1249,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32494,
+                                  "Line": 1249,
+                                  "Column": 14,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "bitBlt"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32496,
+                                        "Line": 1249,
+                                        "Column": 16,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32502,
+                                        "Line": 1249,
+                                        "Column": 22,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32495,
+                                  "Line": 1249,
+                                  "Column": 15,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32503,
+                                  "Line": 1249,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "string->symbol"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32504,
+                                          "Line": 1249,
+                                          "Column": 24,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32518,
+                                          "Line": 1249,
+                                          "Column": 38,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "bitBlt"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32519,
+                                          "Line": 1249,
+                                          "Column": 39,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32527,
+                                          "Line": 1249,
+                                          "Column": 47,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32503,
+                                  "Line": 1249,
+                                  "Column": 23,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32528,
+                                  "Line": 1249,
+                                  "Column": 48,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32490,
+                          "Line": 1249,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32529,
+                          "Line": 1249,
+                          "Column": 49,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32481,
+                  "Line": 1249,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32530,
+                  "Line": 1249,
+                  "Column": 50,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32532,
+                          "Line": 1250,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32536,
+                          "Line": 1250,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32537,
+                          "Line": 1250,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32539,
+                          "Line": 1250,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "eq?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32541,
+                                  "Line": 1250,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32544,
+                                  "Line": 1250,
+                                  "Column": 14,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "LollyPop"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 32546,
+                                        "Line": 1250,
+                                        "Column": 16,
+                                        "StreamName": "dummy"
+                                      },
+                                      {
+                                        "Index": 32554,
+                                        "Line": 1250,
+                                        "Column": 24,
+                                        "StreamName": "dummy"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32545,
+                                  "Line": 1250,
+                                  "Column": 15,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32555,
+                                  "Line": 1250,
+                                  "Column": 25,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "string->symbol"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32556,
+                                          "Line": 1250,
+                                          "Column": 26,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32570,
+                                          "Line": 1250,
+                                          "Column": 40,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "symbol->string"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 32572,
+                                                  "Line": 1250,
+                                                  "Column": 42,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 32586,
+                                                  "Line": 1250,
+                                                  "Column": 56,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Quoted",
+                                              "Fields": [
+                                                {
+                                                  "Kind": {
+                                                    "Case": "Ident",
+                                                    "Fields": [
+                                                      "LollyPop"
+                                                    ]
+                                                  },
+                                                  "Location": {
+                                                    "Case": "Span",
+                                                    "Fields": [
+                                                      {
+                                                        "Index": 32588,
+                                                        "Line": 1250,
+                                                        "Column": 58,
+                                                        "StreamName": "dummy"
+                                                      },
+                                                      {
+                                                        "Index": 32596,
+                                                        "Line": 1250,
+                                                        "Column": 66,
+                                                        "StreamName": "dummy"
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 32587,
+                                                  "Line": 1250,
+                                                  "Column": 57,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 32596,
+                                                  "Line": 1250,
+                                                  "Column": 66,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32571,
+                                          "Line": 1250,
+                                          "Column": 41,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32597,
+                                          "Line": 1250,
+                                          "Column": 67,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32555,
+                                  "Line": 1250,
+                                  "Column": 25,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32598,
+                                  "Line": 1250,
+                                  "Column": 68,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32540,
+                          "Line": 1250,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32599,
+                          "Line": 1250,
+                          "Column": 69,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32531,
+                  "Line": 1250,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32600,
+                  "Line": 1250,
+                  "Column": 70,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32602,
+                          "Line": 1251,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32606,
+                          "Line": 1251,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32607,
+                          "Line": 1251,
+                          "Column": 7,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32609,
+                          "Line": 1251,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "string=?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32611,
+                                  "Line": 1251,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32619,
+                                  "Line": 1251,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Str",
+                                  "Fields": [
+                                    "K. Harper, M.D."
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32620,
+                                  "Line": 1251,
+                                  "Column": 20,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32637,
+                                  "Line": 1251,
+                                  "Column": 37,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol->string"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32658,
+                                          "Line": 1252,
+                                          "Column": 21,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32672,
+                                          "Line": 1252,
+                                          "Column": 35,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "string->symbol"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 32674,
+                                                  "Line": 1252,
+                                                  "Column": 37,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 32688,
+                                                  "Line": 1252,
+                                                  "Column": 51,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Constant",
+                                              "Fields": [
+                                                {
+                                                  "Case": "Str",
+                                                  "Fields": [
+                                                    "K. Harper, M.D."
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 32689,
+                                                  "Line": 1252,
+                                                  "Column": 52,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 32706,
+                                                  "Line": 1252,
+                                                  "Column": 69,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 32673,
+                                          "Line": 1252,
+                                          "Column": 36,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32707,
+                                          "Line": 1252,
+                                          "Column": 70,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 32657,
+                                  "Line": 1252,
+                                  "Column": 20,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 32708,
+                                  "Line": 1252,
+                                  "Column": 71,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 32610,
+                          "Line": 1251,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 32709,
+                          "Line": 1252,
+                          "Column": 72,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 32601,
+                  "Line": 1251,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 32710,
+                  "Line": 1252,
+                  "Column": 73,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
                         "test-end"
                       ]
                     },
@@ -47498,13 +51310,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 32770,
+                          "Index": 32713,
                           "Line": 1254,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 32778,
+                          "Index": 32721,
                           "Line": 1254,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -47519,13 +51331,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 32769,
+                  "Index": 32712,
                   "Line": 1254,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 32779,
+                  "Index": 32722,
                   "Line": 1254,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -47549,13 +51361,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 32782,
+                          "Index": 32725,
                           "Line": 1256,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 32792,
+                          "Index": 32735,
                           "Line": 1256,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -47579,13 +51391,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 32793,
+                          "Index": 32736,
                           "Line": 1256,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 32809,
+                          "Index": 32752,
                           "Line": 1256,
                           "Column": 29,
                           "StreamName": "dummy"
@@ -47600,13 +51412,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 32781,
+                  "Index": 32724,
                   "Line": 1256,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 32810,
+                  "Index": 32753,
                   "Line": 1256,
                   "Column": 30,
                   "StreamName": "dummy"
@@ -47630,13 +51442,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 35485,
+                          "Index": 35428,
                           "Line": 1346,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 35493,
+                          "Index": 35436,
                           "Line": 1346,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -47651,13 +51463,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 35484,
+                  "Index": 35427,
                   "Line": 1346,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 35494,
+                  "Index": 35437,
                   "Line": 1346,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -47681,13 +51493,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 35497,
+                          "Index": 35440,
                           "Line": 1348,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 35507,
+                          "Index": 35450,
                           "Line": 1348,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -47711,13 +51523,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 35508,
+                          "Index": 35451,
                           "Line": 1348,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 35521,
+                          "Index": 35464,
                           "Line": 1348,
                           "Column": 26,
                           "StreamName": "dummy"
@@ -47732,13 +51544,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 35496,
+                  "Index": 35439,
                   "Line": 1348,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 35522,
+                  "Index": 35465,
                   "Line": 1348,
                   "Column": 27,
                   "StreamName": "dummy"
@@ -47762,13 +51574,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 41407,
+                          "Index": 41350,
                           "Line": 1530,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 41415,
+                          "Index": 41358,
                           "Line": 1530,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -47783,13 +51595,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 41406,
+                  "Index": 41349,
                   "Line": 1530,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 41416,
+                  "Index": 41359,
                   "Line": 1530,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -47813,13 +51625,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 41419,
+                          "Index": 41362,
                           "Line": 1532,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 41429,
+                          "Index": 41372,
                           "Line": 1532,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -47843,13 +51655,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 41430,
+                          "Index": 41373,
                           "Line": 1532,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 41443,
+                          "Index": 41386,
                           "Line": 1532,
                           "Column": 26,
                           "StreamName": "dummy"
@@ -47864,13 +51676,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 41418,
+                  "Index": 41361,
                   "Line": 1532,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 41444,
+                  "Index": 41387,
                   "Line": 1532,
                   "Column": 27,
                   "StreamName": "dummy"
@@ -47894,13 +51706,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 44243,
+                          "Index": 44186,
                           "Line": 1609,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 44251,
+                          "Index": 44194,
                           "Line": 1609,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -47915,13 +51727,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 44242,
+                  "Index": 44185,
                   "Line": 1609,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 44252,
+                  "Index": 44195,
                   "Line": 1609,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -47945,13 +51757,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 44255,
+                          "Index": 44198,
                           "Line": 1611,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 44265,
+                          "Index": 44208,
                           "Line": 1611,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -47975,13 +51787,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 44266,
+                          "Index": 44209,
                           "Line": 1611,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 44283,
+                          "Index": 44226,
                           "Line": 1611,
                           "Column": 30,
                           "StreamName": "dummy"
@@ -47996,13 +51808,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 44254,
+                  "Index": 44197,
                   "Line": 1611,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 44284,
+                  "Index": 44227,
                   "Line": 1611,
                   "Column": 31,
                   "StreamName": "dummy"
@@ -48026,13 +51838,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 46859,
+                          "Index": 46802,
                           "Line": 1685,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 46867,
+                          "Index": 46810,
                           "Line": 1685,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -48047,13 +51859,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 46858,
+                  "Index": 46801,
                   "Line": 1685,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 46868,
+                  "Index": 46811,
                   "Line": 1685,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -48077,13 +51889,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 46871,
+                          "Index": 46814,
                           "Line": 1687,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 46881,
+                          "Index": 46824,
                           "Line": 1687,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -48107,13 +51919,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 46882,
+                          "Index": 46825,
                           "Line": 1687,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 46905,
+                          "Index": 46848,
                           "Line": 1687,
                           "Column": 36,
                           "StreamName": "dummy"
@@ -48128,13 +51940,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 46870,
+                  "Index": 46813,
                   "Line": 1687,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 46906,
+                  "Index": 46849,
                   "Line": 1687,
                   "Column": 37,
                   "StreamName": "dummy"
@@ -48158,13 +51970,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 51205,
+                          "Index": 51148,
                           "Line": 1838,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 51213,
+                          "Index": 51156,
                           "Line": 1838,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -48179,13 +51991,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 51204,
+                  "Index": 51147,
                   "Line": 1838,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 51214,
+                  "Index": 51157,
                   "Line": 1838,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -48209,13 +52021,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 51217,
+                          "Index": 51160,
                           "Line": 1840,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 51227,
+                          "Index": 51170,
                           "Line": 1840,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -48239,13 +52051,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 51228,
+                          "Index": 51171,
                           "Line": 1840,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 51245,
+                          "Index": 51188,
                           "Line": 1840,
                           "Column": 30,
                           "StreamName": "dummy"
@@ -48260,13 +52072,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 51216,
+                  "Index": 51159,
                   "Line": 1840,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 51246,
+                  "Index": 51189,
                   "Line": 1840,
                   "Column": 31,
                   "StreamName": "dummy"
@@ -48290,13 +52102,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 56273,
+                          "Index": 56216,
                           "Line": 1988,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 56281,
+                          "Index": 56224,
                           "Line": 1988,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -48311,13 +52123,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 56272,
+                  "Index": 56215,
                   "Line": 1988,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 56282,
+                  "Index": 56225,
                   "Line": 1988,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -48341,13 +52153,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 56285,
+                          "Index": 56228,
                           "Line": 1990,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 56295,
+                          "Index": 56238,
                           "Line": 1990,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -48371,13 +52183,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 56296,
+                          "Index": 56239,
                           "Line": 1990,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 56330,
+                          "Index": 56273,
                           "Line": 1990,
                           "Column": 47,
                           "StreamName": "dummy"
@@ -48392,13 +52204,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 56284,
+                  "Index": 56227,
                   "Line": 1990,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 56331,
+                  "Index": 56274,
                   "Line": 1990,
                   "Column": 48,
                   "StreamName": "dummy"
@@ -48422,13 +52234,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 56815,
+                          "Index": 56758,
                           "Line": 2005,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 56823,
+                          "Index": 56766,
                           "Line": 2005,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -48443,13 +52255,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 56814,
+                  "Index": 56757,
                   "Line": 2005,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 56824,
+                  "Index": 56767,
                   "Line": 2005,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -48473,13 +52285,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 56827,
+                          "Index": 56770,
                           "Line": 2007,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 56837,
+                          "Index": 56780,
                           "Line": 2007,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -48503,13 +52315,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 56838,
+                          "Index": 56781,
                           "Line": 2007,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 56861,
+                          "Index": 56804,
                           "Line": 2007,
                           "Column": 36,
                           "StreamName": "dummy"
@@ -48524,13 +52336,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 56826,
+                  "Index": 56769,
                   "Line": 2007,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 56862,
+                  "Index": 56805,
                   "Line": 2007,
                   "Column": 37,
                   "StreamName": "dummy"
@@ -48554,13 +52366,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 63258,
+                          "Index": 63201,
                           "Line": 2209,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 63268,
+                          "Index": 63211,
                           "Line": 2209,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -48584,13 +52396,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 63269,
+                          "Index": 63212,
                           "Line": 2209,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 63282,
+                          "Index": 63225,
                           "Line": 2209,
                           "Column": 26,
                           "StreamName": "dummy"
@@ -48605,13 +52417,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 63257,
+                  "Index": 63200,
                   "Line": 2209,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 63283,
+                  "Index": 63226,
                   "Line": 2209,
                   "Column": 27,
                   "StreamName": "dummy"
@@ -48635,13 +52447,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 69303,
+                          "Index": 69246,
                           "Line": 2335,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 69311,
+                          "Index": 69254,
                           "Line": 2335,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -48656,13 +52468,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 69302,
+                  "Index": 69245,
                   "Line": 2335,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 69312,
+                  "Index": 69255,
                   "Line": 2335,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -48686,13 +52498,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 69315,
+                          "Index": 69258,
                           "Line": 2337,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 69325,
+                          "Index": 69268,
                           "Line": 2337,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -48716,13 +52528,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 69326,
+                          "Index": 69269,
                           "Line": 2337,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 69342,
+                          "Index": 69285,
                           "Line": 2337,
                           "Column": 29,
                           "StreamName": "dummy"
@@ -48737,13 +52549,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 69314,
+                  "Index": 69257,
                   "Line": 2337,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 69343,
+                  "Index": 69286,
                   "Line": 2337,
                   "Column": 30,
                   "StreamName": "dummy"
@@ -48767,13 +52579,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 78936,
+                          "Index": 78879,
                           "Line": 2525,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 78944,
+                          "Index": 78887,
                           "Line": 2525,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -48788,13 +52600,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 78935,
+                  "Index": 78878,
                   "Line": 2525,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 78945,
+                  "Index": 78888,
                   "Line": 2525,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -48818,13 +52630,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 78948,
+                          "Index": 78891,
                           "Line": 2527,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 78956,
+                          "Index": 78899,
                           "Line": 2527,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -48839,13 +52651,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 78947,
+                  "Index": 78890,
                   "Line": 2527,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 78957,
+                  "Index": 78900,
                   "Line": 2527,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -48869,13 +52681,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 78960,
+                          "Index": 78903,
                           "Line": 2529,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 78970,
+                          "Index": 78913,
                           "Line": 2529,
                           "Column": 12,
                           "StreamName": "dummy"
@@ -48899,13 +52711,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 78971,
+                          "Index": 78914,
                           "Line": 2529,
                           "Column": 13,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 78994,
+                          "Index": 78937,
                           "Line": 2529,
                           "Column": 36,
                           "StreamName": "dummy"
@@ -48920,13 +52732,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 78959,
+                  "Index": 78902,
                   "Line": 2529,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 78995,
+                  "Index": 78938,
                   "Line": 2529,
                   "Column": 37,
                   "StreamName": "dummy"
@@ -48950,13 +52762,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 80000,
+                          "Index": 79943,
                           "Line": 2564,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 80008,
+                          "Index": 79951,
                           "Line": 2564,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -48971,13 +52783,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 79999,
+                  "Index": 79942,
                   "Line": 2564,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 80009,
+                  "Index": 79952,
                   "Line": 2564,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -49001,13 +52813,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 80012,
+                          "Index": 79955,
                           "Line": 2566,
                           "Column": 2,
                           "StreamName": "dummy"
                         },
                         {
-                          "Index": 80020,
+                          "Index": 79963,
                           "Line": 2566,
                           "Column": 10,
                           "StreamName": "dummy"
@@ -49022,13 +52834,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 80011,
+                  "Index": 79954,
                   "Line": 2566,
                   "Column": 1,
                   "StreamName": "dummy"
                 },
                 {
-                  "Index": 80021,
+                  "Index": 79964,
                   "Line": 2566,
                   "Column": 11,
                   "StreamName": "dummy"
@@ -49049,7 +52861,7 @@
           "StreamName": "dummy"
         },
         {
-          "Index": 80022,
+          "Index": 79965,
           "Line": 2567,
           "Column": 1,
           "StreamName": "dummy"
