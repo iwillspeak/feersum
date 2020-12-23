@@ -56,4 +56,4 @@
     (boolean=? #f '())
     (boolean=? (list 123) 21 #t)
 
-    ))(newline())
+    ))(newline)

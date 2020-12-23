@@ -15,6 +15,8 @@ namespace Serehfa
         
         public bool IsSimple => _id.All(c => char.IsLetterOrDigit(c));
 
+        public string Raw => _id;
+
         public override int GetHashCode() => (_id).GetHashCode();
 
         public override bool Equals(object obj) => obj switch
@@ -53,6 +55,16 @@ namespace Serehfa
             }
             sb.Append("|");
             return sb.ToString();
+        }
+
+        public static bool operator == (Ident lhs, Ident rhs)
+        {
+            return lhs._id == rhs._id;
+        }
+
+        public static bool operator != (Ident lhs, Ident rhs)
+        {
+            return lhs._id != rhs._id;
         }
     }
 }

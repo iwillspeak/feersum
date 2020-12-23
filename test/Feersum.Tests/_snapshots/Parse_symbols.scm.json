@@ -1,0 +1,2538 @@
+{
+  "Item1": {
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 8,
+                          "Line": 1,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "list"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 10,
+                                  "Line": 1,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 14,
+                                  "Line": 1,
+                                  "Column": 15,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 20,
+                                          "Line": 2,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 27,
+                                          "Line": 2,
+                                          "Column": 13,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "foo"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 29,
+                                                "Line": 2,
+                                                "Column": 15,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 32,
+                                                "Line": 2,
+                                                "Column": 18,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 28,
+                                          "Line": 2,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 32,
+                                          "Line": 2,
+                                          "Column": 18,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 19,
+                                  "Line": 2,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 47,
+                                          "Line": 3,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 54,
+                                          "Line": 3,
+                                          "Column": 13,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "car"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 56,
+                                                  "Line": 3,
+                                                  "Column": 15,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 59,
+                                                  "Line": 3,
+                                                  "Column": 18,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Quoted",
+                                              "Fields": [
+                                                {
+                                                  "Kind": {
+                                                    "Case": "Form",
+                                                    "Fields": [
+                                                      [
+                                                        {
+                                                          "Kind": {
+                                                            "Case": "Ident",
+                                                            "Fields": [
+                                                              "a"
+                                                            ]
+                                                          },
+                                                          "Location": {
+                                                            "Case": "Span",
+                                                            "Fields": [
+                                                              {
+                                                                "Index": 62,
+                                                                "Line": 3,
+                                                                "Column": 21,
+                                                                "StreamName": "dummy"
+                                                              },
+                                                              {
+                                                                "Index": 63,
+                                                                "Line": 3,
+                                                                "Column": 22,
+                                                                "StreamName": "dummy"
+                                                              }
+                                                            ]
+                                                          }
+                                                        },
+                                                        {
+                                                          "Kind": {
+                                                            "Case": "Ident",
+                                                            "Fields": [
+                                                              "b"
+                                                            ]
+                                                          },
+                                                          "Location": {
+                                                            "Case": "Span",
+                                                            "Fields": [
+                                                              {
+                                                                "Index": 64,
+                                                                "Line": 3,
+                                                                "Column": 23,
+                                                                "StreamName": "dummy"
+                                                              },
+                                                              {
+                                                                "Index": 65,
+                                                                "Line": 3,
+                                                                "Column": 24,
+                                                                "StreamName": "dummy"
+                                                              }
+                                                            ]
+                                                          }
+                                                        }
+                                                      ]
+                                                    ]
+                                                  },
+                                                  "Location": {
+                                                    "Case": "Span",
+                                                    "Fields": [
+                                                      {
+                                                        "Index": 61,
+                                                        "Line": 3,
+                                                        "Column": 20,
+                                                        "StreamName": "dummy"
+                                                      },
+                                                      {
+                                                        "Index": 66,
+                                                        "Line": 3,
+                                                        "Column": 25,
+                                                        "StreamName": "dummy"
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 60,
+                                                  "Line": 3,
+                                                  "Column": 19,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 66,
+                                                  "Line": 3,
+                                                  "Column": 25,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 55,
+                                          "Line": 3,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 67,
+                                          "Line": 3,
+                                          "Column": 26,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 46,
+                                  "Line": 3,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 68,
+                                  "Line": 3,
+                                  "Column": 27,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 82,
+                                          "Line": 4,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 89,
+                                          "Line": 4,
+                                          "Column": 13,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "bar"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 90,
+                                          "Line": 4,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 95,
+                                          "Line": 4,
+                                          "Column": 19,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 81,
+                                  "Line": 4,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 96,
+                                  "Line": 4,
+                                  "Column": 20,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 110,
+                                          "Line": 5,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 117,
+                                          "Line": 5,
+                                          "Column": 13,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "nil"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 119,
+                                                "Line": 5,
+                                                "Column": 15,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 122,
+                                                "Line": 5,
+                                                "Column": 18,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 118,
+                                          "Line": 5,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 122,
+                                          "Line": 5,
+                                          "Column": 18,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 109,
+                                  "Line": 5,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 123,
+                                  "Line": 5,
+                                  "Column": 19,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 137,
+                                          "Line": 6,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 144,
+                                          "Line": 6,
+                                          "Column": 13,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Form",
+                                            "Fields": [
+                                              []
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 146,
+                                                "Line": 6,
+                                                "Column": 15,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 148,
+                                                "Line": 6,
+                                                "Column": 17,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 145,
+                                          "Line": 6,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 148,
+                                          "Line": 6,
+                                          "Column": 17,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 136,
+                                  "Line": 6,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 149,
+                                  "Line": 6,
+                                  "Column": 18,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 163,
+                                          "Line": 7,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 170,
+                                          "Line": 7,
+                                          "Column": 13,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Boolean",
+                                          "Fields": [
+                                            false
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 171,
+                                          "Line": 7,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 173,
+                                          "Line": 7,
+                                          "Column": 16,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 162,
+                                  "Line": 7,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 174,
+                                  "Line": 7,
+                                  "Column": 17,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 9,
+                          "Line": 1,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 188,
+                          "Line": 8,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 189,
+                  "Line": 8,
+                  "Column": 7,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 190,
+                          "Line": 8,
+                          "Column": 8,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 197,
+                          "Line": 8,
+                          "Column": 15,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 189,
+                  "Line": 8,
+                  "Column": 7,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 198,
+                  "Line": 8,
+                  "Column": 16,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 200,
+                          "Line": 9,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 207,
+                          "Line": 9,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "list"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 209,
+                                  "Line": 9,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 213,
+                                  "Line": 9,
+                                  "Column": 15,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol=?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 219,
+                                          "Line": 10,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 227,
+                                          "Line": 10,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "hello"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 229,
+                                                "Line": 10,
+                                                "Column": 16,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 234,
+                                                "Line": 10,
+                                                "Column": 21,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 228,
+                                          "Line": 10,
+                                          "Column": 15,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 235,
+                                          "Line": 10,
+                                          "Column": 22,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "hello"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 236,
+                                                "Line": 10,
+                                                "Column": 23,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 241,
+                                                "Line": 10,
+                                                "Column": 28,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 235,
+                                          "Line": 10,
+                                          "Column": 22,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 242,
+                                          "Line": 10,
+                                          "Column": 29,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "hello"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 243,
+                                                "Line": 10,
+                                                "Column": 30,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 248,
+                                                "Line": 10,
+                                                "Column": 35,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 242,
+                                          "Line": 10,
+                                          "Column": 29,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 248,
+                                          "Line": 10,
+                                          "Column": 35,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 218,
+                                  "Line": 10,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 249,
+                                  "Line": 10,
+                                  "Column": 36,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol=?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 255,
+                                          "Line": 11,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 263,
+                                          "Line": 11,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "nope"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 264,
+                                          "Line": 11,
+                                          "Column": 15,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 270,
+                                          "Line": 11,
+                                          "Column": 21,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "nope"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 272,
+                                                "Line": 11,
+                                                "Column": 23,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 276,
+                                                "Line": 11,
+                                                "Column": 27,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 271,
+                                          "Line": 11,
+                                          "Column": 22,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 276,
+                                          "Line": 11,
+                                          "Column": 27,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 254,
+                                  "Line": 11,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 277,
+                                  "Line": 11,
+                                  "Column": 28,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 208,
+                          "Line": 9,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 283,
+                          "Line": 12,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 199,
+                  "Line": 9,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 284,
+                  "Line": 12,
+                  "Column": 7,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 285,
+                          "Line": 12,
+                          "Column": 8,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 292,
+                          "Line": 12,
+                          "Column": 15,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 284,
+                  "Line": 12,
+                  "Column": 7,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 293,
+                  "Line": 12,
+                  "Column": 16,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 295,
+                          "Line": 13,
+                          "Column": 2,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 302,
+                          "Line": 13,
+                          "Column": 9,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "list"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 304,
+                                  "Line": 13,
+                                  "Column": 11,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 308,
+                                  "Line": 13,
+                                  "Column": 15,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol->string"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 314,
+                                          "Line": 14,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 328,
+                                          "Line": 14,
+                                          "Column": 20,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "flying-fish"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 330,
+                                                "Line": 14,
+                                                "Column": 22,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 341,
+                                                "Line": 14,
+                                                "Column": 33,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 329,
+                                          "Line": 14,
+                                          "Column": 21,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 341,
+                                          "Line": 14,
+                                          "Column": 33,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 313,
+                                  "Line": 14,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 342,
+                                  "Line": 14,
+                                  "Column": 34,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol->string"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 367,
+                                          "Line": 15,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 381,
+                                          "Line": 15,
+                                          "Column": 20,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "Martin"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 383,
+                                                "Line": 15,
+                                                "Column": 22,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 389,
+                                                "Line": 15,
+                                                "Column": 28,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 382,
+                                          "Line": 15,
+                                          "Column": 21,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 389,
+                                          "Line": 15,
+                                          "Column": 28,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 366,
+                                  "Line": 15,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 390,
+                                  "Line": 15,
+                                  "Column": 29,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "symbol->string"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 410,
+                                          "Line": 16,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 424,
+                                          "Line": 16,
+                                          "Column": 20,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "string->symbol"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 426,
+                                                  "Line": 16,
+                                                  "Column": 22,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 440,
+                                                  "Line": 16,
+                                                  "Column": 36,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Constant",
+                                              "Fields": [
+                                                {
+                                                  "Case": "Str",
+                                                  "Fields": [
+                                                    "Malvina"
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 441,
+                                                  "Line": 16,
+                                                  "Column": 37,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 450,
+                                                  "Line": 16,
+                                                  "Column": 46,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 425,
+                                          "Line": 16,
+                                          "Column": 21,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 451,
+                                          "Line": 16,
+                                          "Column": 47,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 409,
+                                  "Line": 16,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 452,
+                                  "Line": 16,
+                                  "Column": 48,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "string->symbol"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 473,
+                                          "Line": 17,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 487,
+                                          "Line": 17,
+                                          "Column": 20,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "mISSISSIppi"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 488,
+                                          "Line": 17,
+                                          "Column": 21,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 501,
+                                          "Line": 17,
+                                          "Column": 34,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 472,
+                                  "Line": 17,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 502,
+                                  "Line": 17,
+                                  "Column": 35,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "eqv?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 525,
+                                          "Line": 18,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 529,
+                                          "Line": 18,
+                                          "Column": 10,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "bitBlt"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 531,
+                                                "Line": 18,
+                                                "Column": 12,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 537,
+                                                "Line": 18,
+                                                "Column": 18,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 530,
+                                          "Line": 18,
+                                          "Column": 11,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 538,
+                                          "Line": 18,
+                                          "Column": 19,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "string->symbol"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 539,
+                                                  "Line": 18,
+                                                  "Column": 20,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 553,
+                                                  "Line": 18,
+                                                  "Column": 34,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Constant",
+                                              "Fields": [
+                                                {
+                                                  "Case": "Str",
+                                                  "Fields": [
+                                                    "bitBlt"
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 554,
+                                                  "Line": 18,
+                                                  "Column": 35,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 562,
+                                                  "Line": 18,
+                                                  "Column": 43,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 538,
+                                          "Line": 18,
+                                          "Column": 19,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 563,
+                                          "Line": 18,
+                                          "Column": 44,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 524,
+                                  "Line": 18,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 564,
+                                  "Line": 18,
+                                  "Column": 45,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "eqv?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 578,
+                                          "Line": 19,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 582,
+                                          "Line": 19,
+                                          "Column": 10,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "LollyPop"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 584,
+                                                "Line": 19,
+                                                "Column": 12,
+                                                "StreamName": "dummy"
+                                              },
+                                              {
+                                                "Index": 592,
+                                                "Line": 19,
+                                                "Column": 20,
+                                                "StreamName": "dummy"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 583,
+                                          "Line": 19,
+                                          "Column": 11,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 592,
+                                          "Line": 19,
+                                          "Column": 20,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "string->symbol"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 593,
+                                                  "Line": 19,
+                                                  "Column": 21,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 607,
+                                                  "Line": 19,
+                                                  "Column": 35,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "symbol->string"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 608,
+                                                          "Line": 19,
+                                                          "Column": 36,
+                                                          "StreamName": "dummy"
+                                                        },
+                                                        {
+                                                          "Index": 622,
+                                                          "Line": 19,
+                                                          "Column": 50,
+                                                          "StreamName": "dummy"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Quoted",
+                                                      "Fields": [
+                                                        {
+                                                          "Kind": {
+                                                            "Case": "Ident",
+                                                            "Fields": [
+                                                              "LollyPop"
+                                                            ]
+                                                          },
+                                                          "Location": {
+                                                            "Case": "Span",
+                                                            "Fields": [
+                                                              {
+                                                                "Index": 624,
+                                                                "Line": 19,
+                                                                "Column": 52,
+                                                                "StreamName": "dummy"
+                                                              },
+                                                              {
+                                                                "Index": 632,
+                                                                "Line": 19,
+                                                                "Column": 60,
+                                                                "StreamName": "dummy"
+                                                              }
+                                                            ]
+                                                          }
+                                                        }
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 623,
+                                                          "Line": 19,
+                                                          "Column": 51,
+                                                          "StreamName": "dummy"
+                                                        },
+                                                        {
+                                                          "Index": 632,
+                                                          "Line": 19,
+                                                          "Column": 60,
+                                                          "StreamName": "dummy"
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 607,
+                                                  "Line": 19,
+                                                  "Column": 35,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 633,
+                                                  "Line": 19,
+                                                  "Column": 61,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 592,
+                                          "Line": 19,
+                                          "Column": 20,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 634,
+                                          "Line": 19,
+                                          "Column": 62,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 577,
+                                  "Line": 19,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 635,
+                                  "Line": 19,
+                                  "Column": 63,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "string=?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 649,
+                                          "Line": 20,
+                                          "Column": 6,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 657,
+                                          "Line": 20,
+                                          "Column": 14,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "K. Harper, M.D."
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 658,
+                                          "Line": 20,
+                                          "Column": 15,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 675,
+                                          "Line": 20,
+                                          "Column": 32,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "symbol->string"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 676,
+                                                  "Line": 20,
+                                                  "Column": 33,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 690,
+                                                  "Line": 20,
+                                                  "Column": 47,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "string->symbol"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 691,
+                                                          "Line": 20,
+                                                          "Column": 48,
+                                                          "StreamName": "dummy"
+                                                        },
+                                                        {
+                                                          "Index": 705,
+                                                          "Line": 20,
+                                                          "Column": 62,
+                                                          "StreamName": "dummy"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Constant",
+                                                      "Fields": [
+                                                        {
+                                                          "Case": "Str",
+                                                          "Fields": [
+                                                            "K. Harper, M.D."
+                                                          ]
+                                                        }
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 706,
+                                                          "Line": 20,
+                                                          "Column": 63,
+                                                          "StreamName": "dummy"
+                                                        },
+                                                        {
+                                                          "Index": 723,
+                                                          "Line": 20,
+                                                          "Column": 80,
+                                                          "StreamName": "dummy"
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 690,
+                                                  "Line": 20,
+                                                  "Column": 47,
+                                                  "StreamName": "dummy"
+                                                },
+                                                {
+                                                  "Index": 724,
+                                                  "Line": 20,
+                                                  "Column": 81,
+                                                  "StreamName": "dummy"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 675,
+                                          "Line": 20,
+                                          "Column": 32,
+                                          "StreamName": "dummy"
+                                        },
+                                        {
+                                          "Index": 725,
+                                          "Line": 20,
+                                          "Column": 82,
+                                          "StreamName": "dummy"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 648,
+                                  "Line": 20,
+                                  "Column": 5,
+                                  "StreamName": "dummy"
+                                },
+                                {
+                                  "Index": 726,
+                                  "Line": 20,
+                                  "Column": 83,
+                                  "StreamName": "dummy"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 303,
+                          "Line": 13,
+                          "Column": 10,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 740,
+                          "Line": 21,
+                          "Column": 6,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 294,
+                  "Line": 13,
+                  "Column": 1,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 741,
+                  "Line": 21,
+                  "Column": 7,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 742,
+                          "Line": 21,
+                          "Column": 8,
+                          "StreamName": "dummy"
+                        },
+                        {
+                          "Index": 749,
+                          "Line": 21,
+                          "Column": 15,
+                          "StreamName": "dummy"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 741,
+                  "Line": 21,
+                  "Column": 7,
+                  "StreamName": "dummy"
+                },
+                {
+                  "Index": 750,
+                  "Line": 21,
+                  "Column": 16,
+                  "StreamName": "dummy"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
+        {
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "dummy"
+        },
+        {
+          "Index": 750,
+          "Line": 21,
+          "Column": 16,
+          "StreamName": "dummy"
+        }
+      ]
+    }
+  },
+  "Item2": []
+}
