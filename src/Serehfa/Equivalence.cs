@@ -88,9 +88,30 @@ namespace Serehfa
                 return true;
             }
 
-            // FIXME: Should return custom hashcode with arrays + cons pairs.
-            public override int GetHashCode(object o) =>
-                EqualityComparer<object>.Default.GetHashCode(o);
+            public override int GetHashCode(object o)
+            {
+                return o switch
+                {
+                    ConsPair p => HashCode.Combine(p.Car, p.Cdr),
+                    object[] v => ArrayHash(v),
+                    bool[] bv => ArrayHash(bv),
+                    _ => EqualityComparer<object>.Default.GetHashCode(o),
+                };
+            }
+
+            private int ArrayHash<T>(T[] v)
+            {
+                unchecked
+                {
+                    var hash = 0xcbf29ce484222325;
+                    foreach (var item in v)
+                    {
+                        hash ^= (ulong)item.GetHashCode();
+                        hash *= 0x100000001b3;
+                    }
+                    return (int)hash;
+                }
+            }
 
             public new static LispEqualityComparer Default { get; } =
                 new LispEqualityComparer();

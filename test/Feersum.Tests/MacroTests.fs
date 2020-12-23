@@ -145,7 +145,8 @@ let ``simple form patterns`` () =
 [<Fact>]
 let ``dotted form patterns`` () =
 
-    // FIXME: this pattern is nonsense '( . 123.4)' matching (123.4)
+    // This pattern is nonsense '( . 123.4)' matching (123.4). It's still an
+    // interesting test though, so we'll keep it for now.
     Assert.Equal(MacroBindings.Empty, assertMatches (MacroPattern.DottedForm([], MacroPattern.Constant (Number 123.4))) (Form [ number 123.4 ] |> node))
     let headNode = (number 123.4)
     let tailNode = (number 567.8)

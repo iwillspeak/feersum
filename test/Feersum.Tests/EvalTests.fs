@@ -42,7 +42,8 @@ let ``Evaluate lists`` evaluator =
     Assert.Equal("#t", evaluator(Seq [ Boolean true |> constant ] |> node))
 
 // TODO: Empty program yields NULL for eval, but special undefined value for
-//       the interpreter. How can we represent undefined values in .NET?
+//       the interpreter. We should emit an instance of `Undefined` in
+//       `emitUnspecified`.
 [<Fact>]
 let ``Evaluate empty program`` () =
     Assert.Equal("; unspecified value", interpret(Seq [ ] |> node))
