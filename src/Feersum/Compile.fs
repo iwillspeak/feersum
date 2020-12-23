@@ -201,7 +201,6 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
             point.EndColumn <- int e.Column
             ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
     | BoundExpr.Literal l -> emitLiteral ctx l
-    | BoundExpr.Seq [] -> emitUnspecified ctx.IL
     | BoundExpr.Seq s -> emitSequence ctx s
     | BoundExpr.Application(ap, args) -> emitApplication ctx ap args
     | BoundExpr.Store(storage, maybeVal) ->
@@ -393,14 +392,16 @@ and readFrom ctx storage =
     /// Emit a Sequence of Expressions
     ///
     /// Emits each expression in the sequence, and pops any intermediate values
-    /// from the stack.
+    /// from the stack. Emits the unspecified value if the sequence is empty.
 and emitSequence ctx seq =
-    let popAndEmit x =
+    match seq with
+    | [one] ->
+        emitExpression ctx one
+    | head::rest ->
+        emitExpression ctx head
         ctx.IL.Emit(OpCodes.Pop)
-        emitExpression ctx x
-    emitExpression ctx (List.head seq)
-    List.tail seq
-    |>  Seq.iter popAndEmit
+        emitSequence ctx rest
+    | _ -> emitUnspecified ctx.IL
 
     /// Emit a Function application
     /// 
