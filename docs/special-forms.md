@@ -124,15 +124,19 @@ Quasiquote is not supported yet.
 
 ```scheme
 (if <cond> <if-true> <if-false>?)
+(when <cond> <if-true>+)
+(unless <cond> <if-false>+)
 ```
 
 An if expression evaluates the `<cond>`ition followed by one of either
 `<if-true>` or `<if-false>`. This defers the evaluation of the
-consequent expression until after the variable check.
+consequent expression until after the variable check. The `when` and `unless`
+forms allow executing multiple expressions in response to true or or false
+conditions and are shorthands for an `if` and `begin`.
 
 ```scheme
-(and <expression>?)
-(or <expression>?)
+(and <expression>*)
+(or <expression>*)
 ```
 
 Boolean conditional expressions. Both lazily evaluate the given
@@ -159,9 +163,9 @@ of the value list to provide a default.
 
 ### Implementation status
 
-The `if` conditional special form is implemnted. The `and` and `or` forms
-are implemented as builtin macros. The remaining forms could be
-implemneted either directly or wait for macros.
+The `if` conditional special form is implemnted. The `and`, `or`, `when` and
+`unless` forms are implemented as builtin macros. The `cond` and `case` forms
+may need macro hygene to be implemented properly.
 
 ## Sequence
 

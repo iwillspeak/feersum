@@ -119,6 +119,26 @@ let private macroOr =
                 (if x x (or test2 ...)))))"
     |> parseBuiltinMacro "or" 
 
+/// Builtin `when` Macro
+let private macroWhen =
+    "(syntax-rules ()
+        ((_ cond expr expr1 ...)
+         (if cond
+            (begin
+                expr
+                expr1 ...))))"
+    |> parseBuiltinMacro "when"
+
+/// Builtin `unless` Macro
+let private macroUnless =
+    "(syntax-rules ()
+        ((_ cond expr expr1 ...)
+         (if (not cond)
+            (begin
+                expr
+                expr1 ...))))"
+    |> parseBuiltinMacro "unless"
+
 let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
 
 // ------------------------ Public Builtins API --------------------------------
@@ -130,7 +150,7 @@ let public coreProcNames =
 
 /// The list of builtin macros
 let public coreMacros =
-    [ macroAnd ; macroOr ]
+    [ macroAnd ; macroOr; macroWhen; macroUnless ]
 
 /// Load the core types into the given assembly
 let loadCore (assm: AssemblyDefinition) =
