@@ -14,6 +14,7 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Proper support for different target frameworks
  * [ ] Implement [all special forms](docs/special-forms.md)
  * [ ] Support [all value types](docs/values.md)
+ * [ ] Support [all standard procedures](docs/standard-procedures.md)
  * [x] Macros support.
    * [ ] Macro Hygene (#13).
  * [ ] Support for Scheme exceptions and `guard`.
