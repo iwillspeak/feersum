@@ -39,7 +39,8 @@ namespace Serehfa
         {
             bool b => b ? "#t" : "#f",
             double d => d.ToString("G"),
-            char c => @"#\" + c,
+            char c => char.IsLetterOrDigit(c) ?
+                @"#\" + c : $@"#\x{Convert.ToUInt32(c):x4}",
             null => "'()",
             Func<object[], object> f => $"#<compiledProcedure {f.Method}>",
             object[] v => VectorMethods.GetDisplayRepresentation(v),

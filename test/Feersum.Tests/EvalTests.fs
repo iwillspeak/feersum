@@ -47,7 +47,7 @@ let ``Evaluate lists`` evaluator =
 [<Fact>]
 let ``Evaluate empty program`` () =
     Assert.Equal("; unspecified value", interpret(Seq [ ] |> node))
-    Assert.Equal("()", feeri(Seq [ ] |> node))
+    Assert.Equal("'()", feeri(Seq [ ] |> node))
 
 [<Fact>]
 let ``Evaluate lambdas returns`` () =
@@ -85,7 +85,7 @@ let ``Evaluate builtins`` evaluator =
 //  ╱╱┏┳┓╭╮┏┳┓ ╲╲
 //  ▔▏┗┻┛┃┃┗┻┛▕▔
 [<InlineData("(/ 3 4 5)", "0.15")>]
-[<InlineData("(/ 3)", "0.333333")>]
+[<InlineData("(/ 3)", "0.3333333333333333")>]
 let ``evaluate artithemtic ops`` expr result =
     let expr = tryReadSingle expr
     Assert.Equal(result, feeri(expr))

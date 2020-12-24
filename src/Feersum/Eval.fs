@@ -14,11 +14,6 @@ open Serehfa
 /// Returns the external representation for a CIL type.
 let cilExternalRepr (object: Object) =
     match object with
-    | :? Boolean as b -> if b then "#t" else "#f"
-    | :? Double as d -> sprintf "%g" d
-    | :? Char as c -> @"#\" + string c
-    | null -> "()"
-    | :? Func<obj[], obj> as f -> sprintf "#<compiledProcedure %A>" f.Method
     | :? string as s -> sprintf "%A" s
     | other -> Write.GetDisplayRepresentation(other)
 
