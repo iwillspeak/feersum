@@ -81,6 +81,11 @@ as the first element of the `<formals>` definition.
 Variable definitions are bound and lowered. Function definitions are bound
 as definitions of lambdas and rely on `lambda` support for lowering.
 
+Internal deifnitions (that is a `define` that isn't in the root) aren't properly
+handled. Internal definitions _should_ be mutually recursive. Definitions in
+internal contexts should only be permitted before the first non-definition
+expression.
+
 ## Assignments
 
 ```scheme
@@ -100,6 +105,7 @@ Assignments are bound and lowered.
 ```scheme
 (quote <expression>)
 '<expression>
+,<expression>
 ```
 
 Quote expressions evaluate to the external representation of the
@@ -109,7 +115,10 @@ allows creation of lists directly.
 
 ### Implementation status
 
-Simple quoted forms are implemented. Quasiquote is not supported yet.
+Simple quoted forms are implemented. As well as the standard ' character for
+quoting we also support `’` for compatibility with example code in LaTeX docs.
+
+Quasiquote is not supported yet.
 
 ## Conditionals
 
