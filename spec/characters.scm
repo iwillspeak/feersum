@@ -47,6 +47,77 @@
         )
     ))(newline)
 
+;; Character comparisons
+(display (boolean=?
+    #t
+    
+    (char=? #\a #\a #\a)
+    (char-ci=? #\a #\a #\a)
+    (char=? #\A #\A #\A)
+    (char-ci=? #\A #\A #\A)
+    (not (char=? #\a #\A #\a))
+    (char-ci=? #\a #\A #\a)
+    (char=? #\λ #\λ #\λ)
+    (char-ci=? #\λ #\λ #\λ)
+    (char=? #\Λ #\Λ #\Λ #\Λ #\Λ)
+    (char-ci=? #\Λ #\Λ #\Λ #\Λ #\Λ)
+    (not (char=? #\Λ #\λ #\Λ #\Λ #\Λ))
+    (char-ci=? #\Λ #\λ #\Λ #\Λ #\Λ)
+    (not (char=? #\λ #\λ #\λ #\space))
+    (not (char-ci=? #\λ #\λ #\λ #\space))
+    (not (char=? #\a #\λ))
+    (not (char-ci=? #\a #\λ))
+
+    (char<? #\a #\b #\c #\d)
+    (char-ci<? #\a #\b #\c #\d)
+    (not (char<? #\A #\b #\c #\D))
+    (char-ci<? #\A #\b #\c #\D)
+    (not (char<? #\d #\c #\b #\a))
+    (not (char-ci<? #\d #\c #\b #\a))
+    (not (char<? #\D #\c #\b #\A))
+    (not (char-ci<? #\D #\c #\b #\A))
+
+    (char<=? #\a #\b #\c #\d)
+    (char-ci<=? #\a #\b #\c #\d)
+    (not (char<=? #\A #\b #\c #\D))
+    (char-ci<=? #\A #\b #\c #\D)
+    (not (char<=? #\d #\c #\b #\a))
+    (not (char-ci<=? #\d #\c #\b #\a))
+    (not (char<=? #\D #\c #\b #\A))
+    (not (char-ci<=? #\D #\c #\b #\A))
+    (char<=? #\λ #\λ #\λ)
+    (char-ci<=? #\λ #\λ #\λ)
+    (char<=? #\Λ #\Λ #\Λ #\Λ #\Λ)
+    (char-ci<=? #\Λ #\Λ #\Λ #\Λ #\Λ)
+    (not (char<=? #\Λ #\λ #\Λ #\Λ #\Λ))
+    (char-ci<=? #\Λ #\λ #\Λ #\Λ #\Λ)
+
+    (not (char>? #\a #\b #\c #\d))
+    (not (char-ci>? #\a #\b #\c #\d))
+    (not (char>? #\A #\b #\c #\D))
+    (not (char-ci>? #\A #\b #\c #\D))
+    (char>? #\d #\c #\b #\a)
+    (char-ci>? #\d #\c #\b #\a)
+    (not (char>? #\D #\c #\b #\A))
+    (char-ci>? #\D #\c #\b #\A)
+
+    (not (char>=? #\a #\b #\c #\d))
+    (not (char-ci>=? #\a #\b #\c #\d))
+    (not (char>=? #\A #\b #\c #\D))
+    (not (char-ci>=? #\A #\b #\c #\D))
+    (char>=? #\d #\c #\b #\a)
+    (char-ci>=? #\d #\c #\b #\a)
+    (not (char>=? #\D #\c #\b #\A))
+    (char-ci>=? #\D #\c #\b #\A)
+    (char>=? #\λ #\λ #\λ)
+    (char-ci>=? #\λ #\λ #\λ)
+    (char>=? #\Λ #\Λ #\Λ #\Λ #\Λ)
+    (char-ci>=? #\Λ #\Λ #\Λ #\Λ #\Λ)
+    (not (char>=? #\Λ #\λ #\Λ #\Λ #\Λ))
+    (char-ci>=? #\Λ #\λ #\Λ #\Λ #\Λ)
+
+    ))(newline)
+
 ;; Character class predicates
 (display (boolean=?
     #t

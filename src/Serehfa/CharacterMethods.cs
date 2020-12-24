@@ -11,6 +11,95 @@ namespace Serehfa
             return UnpackArgs<object>(args) is char;
         }
 
+        [LispBuiltin("char=?")]
+        public static object CharEqual(object[] args)
+        {
+            return ComparisonOp(args, false, (c, d) => c == d);
+        }
+
+        [LispBuiltin("char<?")]
+        public static object CharLt(object[] args)
+        {
+            return ComparisonOp(args, false, (c, d) => c < d);
+        }
+
+        [LispBuiltin("char>?")]
+        public static object CharGt(object[] args)
+        {
+            return ComparisonOp(args, false, (c, d) => c > d);
+        }
+
+        [LispBuiltin("char<=?")]
+        public static object CharLte(object[] args)
+        {
+            return ComparisonOp(args, false, (c, d) => c <= d);
+        }
+
+        [LispBuiltin("char>=?")]
+        public static object CharGte(object[] args)
+        {
+            return ComparisonOp(args, false, (c, d) => c >= d);
+        }
+
+        [LispBuiltin("char-ci=?")]
+        public static object CharEqualCI(object[] args)
+        {
+            return ComparisonOp(args, true, (c, d) => c == d);
+        }
+
+        [LispBuiltin("char-ci<?")]
+        public static object CharLtCi(object[] args)
+        {
+            return ComparisonOp(args, true, (c, d) => c < d);
+        }
+
+        [LispBuiltin("char-ci>?")]
+        public static object CharGtCi(object[] args)
+        {
+            return ComparisonOp(args, true, (c, d) => c > d);
+        }
+
+        [LispBuiltin("char-ci<=?")]
+        public static object CharLteCi(object[] args)
+        {
+            return ComparisonOp(args, true, (c, d) => c <= d);
+        }
+
+        [LispBuiltin("char-ci>=?")]
+        public static object CharGteCi(object[] args)
+        {
+            return ComparisonOp(args, true, (c, d) => c >= d);
+        }
+
+        private static bool ComparisonOp(
+            object[] args,
+            bool foldCase,
+            Func<uint, uint, bool> comparator)
+        {
+            CheckAtLeastArgs(args, 2);
+            var last = Unpack(args[0]);
+            for (int i = 1; i < args.Length; i++)
+            {
+                var current = Unpack(args[i]);
+                if (!comparator(last, current))
+                {
+                    return false;
+                }
+                last = current;
+            }
+            return true;
+
+            uint Unpack(object input)
+            {
+                var c = Unpack<char>(input);
+                if (foldCase)
+                {
+                    c = char.ToLowerInvariant(c);
+                }
+                return Convert.ToUInt32(c);
+            }
+        }
+
         [LispBuiltin("char-alphabetic?")]
         public static object IsAlphabetic(object[] args)
         {
