@@ -119,5 +119,4 @@ let main argv =
         runRepl (args.Contains Interpret)
         0
     | files ->
-        Seq.map (compileSingle buildConfig (args.TryGetResult Output)) files
-        |> Seq.sum
+        Seq.sumBy (compileSingle buildConfig (args.TryGetResult Output)) files

@@ -13,6 +13,7 @@
     (equal? #\x03BB      #\λ    )  ; λ
     ))(newline)
 
+;; Simple character operations
 (display (list
     (char? #\space)
     (char? #\tab)
@@ -28,5 +29,85 @@
         (equal? (digit-value #\x0AE6)  0)
         (equal? (digit-value #\x0EA6) #f)
         (equal? (digit-value #\১)      1)
+        (equal? (digit-value #\५)      5)
+        )
+
+    (boolean=?
+        #t
+
+        (equal? (char->integer #\space) 32)
+        (equal? (char->integer #\null) 0)
+        (equal? (char->integer #\x0EA6) 3750)
+        (equal? (integer->char 38) #\&)
+        (equal? (integer->char 0) #\x0000)
+        (equal? (integer->char 55295) #\xD7FF)
+
+        (let ((bad-char (integer->char 55296)))
+            (and (> bad-char 1114111) (not (char? bad-char))))
         )
     ))(newline)
+
+;; Character class predicates
+(display (boolean=?
+    #t
+
+    (char-alphabetic? #\a)
+    (not (char-alphabetic? #\५))
+    (char-alphabetic? #\λ)
+    (not (char-alphabetic? #\null))
+    (not (char-alphabetic? #\space))
+
+    (not (char-numeric? #\a))
+    (char-numeric? #\५)
+    (not (char-numeric? #\λ))
+    (not (char-numeric? #\null))
+    (not (char-numeric? #\space))
+
+    (not (char-whitespace? #\a))
+    (not (char-whitespace? #\५))
+    (not (char-whitespace? #\λ))
+    (not (char-whitespace? #\null))
+    (char-whitespace? #\space)
+    (char-whitespace? #\tab)
+    
+    (not (char-upper-case? #\a))
+    (char-upper-case? #\A)
+    (not (char-upper-case? #\५))
+    (not (char-upper-case? #\λ))
+    (char-upper-case? #\Λ)
+    (not (char-upper-case? #\null))
+    (not (char-upper-case? #\space))
+    (not (char-upper-case? #\tab))
+
+    (char-lower-case? #\a)
+    (not (char-lower-case? #\A))
+    (not (char-lower-case? #\५))
+    (char-lower-case? #\λ)
+    (not (char-lower-case? #\Λ))
+    (not (char-lower-case? #\null))
+    (not (char-lower-case? #\space))
+    (not (char-lower-case? #\tab))
+
+    ))
+
+;; casing transforms
+(display (list
+    (char-upcase #\a)
+    (char-upcase #\A)
+    (char-upcase #\५)
+    (char-upcase #\λ)
+    (char-upcase #\null)
+    (char-upcase #\space)
+    (char-downcase #\a)
+    (char-downcase #\A)
+    (char-downcase #\५)
+    (char-downcase #\Λ)
+    (char-upcase #\null)
+    (char-upcase #\space)
+    (char-foldcase #\a)
+    (char-foldcase #\A)
+    (char-foldcase #\५)
+    (char-foldcase #\Λ)
+    (char-upcase #\null)
+    (char-upcase #\space)
+    ))
