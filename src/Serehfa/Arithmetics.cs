@@ -7,11 +7,11 @@ namespace Serehfa
 
     public static class Arithmetics
     {
-		[LispBuiltin("zero?")]
-		public static object ArithZero(object[] args)
-		{
-			return UnpackArgs<double>(args) == 0.0;
-		}
+        [LispBuiltin("zero?")]
+        public static object ArithZero(object[] args)
+        {
+            return UnpackArgs<double>(args) == 0.0;
+        }
 
         [LispBuiltin("+")]
         public static object Arithadd(object[] args)

@@ -16,6 +16,8 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Support [all value types](docs/values.md)
  * [x] Macros support.
    * [ ] Macro Hygene (#13).
+ * [ ] Support for Scheme exceptions and `guard`.
+ * [ ] Full numeric tower support.
  * [ ] Scheme library and import support.
  * [ ] Interop with other .NET assemblies.
  * [ ] Multi-statement support in the REPL.
