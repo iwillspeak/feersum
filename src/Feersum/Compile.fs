@@ -688,7 +688,7 @@ let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
 /// given bound tree. This method is responsible for creating the root
 /// `LispProgram` type and preparting the emit context. The main work of
 /// lowering is done by `emitNamedLambda`.
-let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
+let emit options (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
@@ -724,19 +724,20 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
     let bodyParams = BoundFormals.List([])
     let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.LocalsCount bound.EnvMappings bound.Root
 
-    // The `Main` method is the entry point of the program. It calls
-    // `$ScriptBody` and coerces the return value to an exit code.
-    let mainMethod = MethodDefinition("Main",
-                                      MethodAttributes.Public ||| MethodAttributes.Static,
-                                      assm.MainModule.TypeSystem.Int32)
-    mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
-    progTy.Methods.Add mainMethod
-    assm.EntryPoint <- mainMethod
-    let il = mainMethod.Body.GetILProcessor()
+    if options.OutputType = OutputType.Exe then
+        // The `Main` method is the entry point of the program. It calls
+        // `$ScriptBody` and coerces the return value to an exit code.
+        let mainMethod = MethodDefinition("Main",
+                                          MethodAttributes.Public ||| MethodAttributes.Static,
+                                          assm.MainModule.TypeSystem.Int32)
+        mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
+        progTy.Methods.Add mainMethod
+        assm.EntryPoint <- mainMethod
+        let il = mainMethod.Body.GetILProcessor()
 
-    il.Emit(OpCodes.Call, bodyMethod)
-    emitMainEpilogue assm il
-    markAsCompilerGenerated mainMethod
+        il.Emit(OpCodes.Call, bodyMethod)
+        emitMainEpilogue assm il
+        markAsCompilerGenerated mainMethod
 
     // Write our `Assembly` to the output stream now we are done.
     let mutable writerParams = WriterParameters()
@@ -759,7 +760,7 @@ let emit (outputStream: Stream) outputName (symbolStream: Stream option) bound =
 /// the expression and writes out the corresponding .NET IL to an `Assembly`
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
 /// name of the output.
-let compile outputStream outputName symbolStream node =
+let compile options outputStream outputName symbolStream node =
     let scope = createRootScope
     let bound = bind scope node
     if Diagnostics.hasErrors bound.Diagnostics then
@@ -767,14 +768,14 @@ let compile outputStream outputName symbolStream node =
     else
         bound
         |> Lower.lower
-        |> emit outputStream outputName  symbolStream
+        |> emit options outputStream outputName symbolStream
         []
 
 /// Read a File and Compile
 ///
 /// Takes the `source` to an input to read and compile. Compilation results
 /// are written to `output`.
-let compileFile configuration (output: string) (source: string) =
+let compileFile options (output: string) (source: string) =
 
     // Ensure the output path exists
     let outDir = Path.GetDirectoryName(output)
@@ -798,13 +799,13 @@ let compileFile configuration (output: string) (source: string) =
         diagnostics
     else
         let symbols =
-            match configuration with
+            match options.Configuration with
             | BuildConfiguration.Debug ->
                 Some(File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream)
                 // make a symbol file
             | BuildConfiguration.Release -> None
 
-        let diags = compile (File.OpenWrite output) stem symbols ast
+        let diags = compile options (File.OpenWrite output) stem symbols ast
         if diags.IsEmpty then
             // TOOD: This metadata needs to be abstracted to deal with different
             //       target framework's prefrences. For now the `.exe` we generate

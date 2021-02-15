@@ -8,6 +8,7 @@ open System.Reflection
 open System
 open System.Runtime.ExceptionServices
 open Serehfa
+open Options
 
 /// Raw External Representation
 ///
@@ -24,7 +25,10 @@ let cilExternalRepr (object: Object) =
 /// main method on that.
 let eval ast =
     let memStream = new MemoryStream()
-    let diags = compile memStream "evalCtx" None ast
+    let options =
+        { Configuration = Debug
+        ; OutputType = Script }
+    let diags = compile options memStream "evalCtx" None ast
     if not diags.IsEmpty then
         Result.Error(diags)
     else

@@ -51,7 +51,10 @@ let ``spec tests compile and run`` s =
     let sourcePath = Path.Join(specDir, s)
     let exePath = Path.ChangeExtension(Path.Join(specBin, s), "dll")
     let shouldFail = sourcePath.Contains "fail"
-    match compileFile BuildConfiguration.Debug exePath sourcePath with
+    let options =
+        { Configuration = BuildConfiguration.Debug
+        ; OutputType = Exe }
+    match compileFile options exePath sourcePath with
     | [] ->
         if shouldFail then
             failwith "Expected compilation failure!"

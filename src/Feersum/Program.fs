@@ -17,12 +17,14 @@ type CliArguments =
     | Version
     | Configuration of BuildConfiguration
     | Interpret
+    | OutputType of OutputType
     | [<AltCommandLine("-o")>] Output of string
     | [<MainCommand>] Sources of source_file:string list
 
     interface IArgParserTemplate with
         member s.Usage =
             match s with
+            | OutputType _ -> "The output type (Lib / Exe / Script)."
             | Configuration _ -> "The build configuration (Debug / Release)."
             | Version -> "Print the program version and exit."
             | Interpret -> "Use the legacy interpreter in the REPL."
@@ -69,12 +71,12 @@ let rec repl evaluator =
 
 /// Compile a single file printing an error if
 /// there is one.
-let private compileSingle configuration output sourcePath =
+let private compileSingle options output sourcePath =
     let outputPath =
         match output with
         | Some(path) -> path
-        | None -> Path.ChangeExtension(sourcePath, "exe")
-    match compileFile configuration outputPath sourcePath with
+        | None -> Path.ChangeExtension(sourcePath, options |> getDefaultExtension)
+    match compileFile options outputPath sourcePath with
     | [] -> 0
     | diagnostics ->
         dumpDiagnostics(diagnostics)
@@ -114,9 +116,17 @@ let main argv =
         args.TryGetResult Configuration
         |> Option.defaultValue Release
 
+    let outputType =
+        args.TryGetResult OutputType
+        |> Option.defaultValue Exe
+
+    let options =
+        { Configuration = buildConfig
+        ; OutputType = outputType }
+
     match args.GetResult(Sources, defaultValue = []) with
     | [] ->
         runRepl (args.Contains Interpret)
         0
     | files ->
-        Seq.sumBy (compileSingle buildConfig (args.TryGetResult Output)) files
+        Seq.sumBy (compileSingle options (args.TryGetResult Output)) files
