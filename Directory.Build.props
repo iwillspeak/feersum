@@ -1,8 +1,11 @@
 <Project>
+    <PropertyGroup>
+        <UpdateVersionProperties>true</UpdateVersionProperties>
+        <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="GitVersion.Msbuild" Version="5.6.6">
             <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
     </ItemGroup>
 </Project>
