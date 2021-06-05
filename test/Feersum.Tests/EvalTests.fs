@@ -14,29 +14,24 @@ let private expectOk = function
 
 let feeri = eval >> expectOk >> cilExternalRepr
 
-let evaluators = [|
-        [| feeri |]
-    |]
 
 let private tryReadSingle expr =
     match readExpr expr with
     | (o, []) -> o
     | (_, diagnostics) -> failwithf "parse error %A" diagnostics
 
-[<Theory>]
-[<MemberData("evaluators")>]
-let ``Evaluate atoms`` evaluator =
-    Assert.Equal("#t", evaluator(Boolean true |> constant))
-    Assert.Equal("#f", evaluator(Boolean false |> constant))
-    Assert.Equal(@"""hello""", evaluator(Str "hello" |> constant))
-    Assert.Equal("1337", evaluator(Number 1337.0 |> constant))
-    Assert.Equal("123.456", evaluator(Number 123.456 |> constant))
+[<Fact>]
+let ``Evaluate atoms`` () =
+    Assert.Equal("#t", feeri(Boolean true |> constant))
+    Assert.Equal("#f", feeri(Boolean false |> constant))
+    Assert.Equal(@"""hello""", feeri(Str "hello" |> constant))
+    Assert.Equal("1337", feeri(Number 1337.0 |> constant))
+    Assert.Equal("123.456", feeri(Number 123.456 |> constant))
 
-[<Theory>]
-[<MemberData("evaluators")>]
-let ``Evaluate lists`` evaluator =
-    Assert.Equal("132", evaluator(Seq [ Boolean false |> constant; Number 132.0  |> constant] |> node))
-    Assert.Equal("#t", evaluator(Seq [ Boolean true |> constant ] |> node))
+[<Fact>]
+let ``Evaluate lists`` () =
+    Assert.Equal("132", feeri(Seq [ Boolean false |> constant; Number 132.0  |> constant] |> node))
+    Assert.Equal("#t", feeri(Seq [ Boolean true |> constant ] |> node))
 
 [<Fact>]
 let ``Evaluate empty program`` () =
@@ -48,15 +43,14 @@ let ``Evaluate lambdas returns`` () =
         Form [ Ident "lambda" |> node ; Form [ Ident "x" |> node ] |> node; Ident "x" |> node] |> node;
         Number 123.0 |> constant] |> node))
 
-[<Theory>]
-[<MemberData("evaluators")>]
-let ``Evaluate builtins`` evaluator =
-    Assert.Equal("19", evaluator(Form [ Ident "+" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
-    Assert.Equal("901", evaluator(Form [ Ident "+" |> node; Number 901.0 |> constant ] |> node))
-    Assert.Equal("90", evaluator(Form [ Ident "*" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
-    Assert.Equal("901", evaluator(Form [ Ident "+" |> node; Form [ Ident "*" |> node; Number 100.0 |> constant; Number 9.0 |> constant ]|> node; Number 1.0 |> constant] |> node))
-    Assert.Equal("1", evaluator(Form [ Ident "-" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
-    Assert.Equal("2", evaluator(Form [ Ident "/" |> node; Number 16.0 |> constant; Number 8.0 |> constant ] |> node))
+[<Fact>]
+let ``Evaluate builtins`` () =
+    Assert.Equal("19", feeri(Form [ Ident "+" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
+    Assert.Equal("901", feeri(Form [ Ident "+" |> node; Number 901.0 |> constant ] |> node))
+    Assert.Equal("90", feeri(Form [ Ident "*" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
+    Assert.Equal("901", feeri(Form [ Ident "+" |> node; Form [ Ident "*" |> node; Number 100.0 |> constant; Number 9.0 |> constant ]|> node; Number 1.0 |> constant] |> node))
+    Assert.Equal("1", feeri(Form [ Ident "-" |> node; Number 10.0 |> constant; Number 9.0 |> constant ] |> node))
+    Assert.Equal("2", feeri(Form [ Ident "/" |> node; Number 16.0 |> constant; Number 8.0 |> constant ] |> node))
 
 [<Theory>]
 [<InlineData("(+ 3 4)", "7")>]
