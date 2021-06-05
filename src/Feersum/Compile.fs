@@ -80,9 +80,8 @@ let private markAsDebuggable (assm: AssemblyDefinition) =
     ()
 
 /// Emit an instance of the unspecified value
-let private emitUnspecified (il: ILProcessor) =
-    // TODO: What should we do about empty sequences? This falls back to '()
-    il.Emit(OpCodes.Ldnull)
+let private emitUnspecified ctx =
+    ctx.IL.Emit(OpCodes.Call, ctx.Core.UndefinedInstance)
 
 /// Ensure a field exists on the program type to be used as a global variable
 let private ensureField ctx id =
@@ -401,7 +400,7 @@ and emitSequence ctx seq =
         emitExpression ctx head
         ctx.IL.Emit(OpCodes.Pop)
         emitSequence ctx rest
-    | _ -> emitUnspecified ctx.IL
+    | _ -> emitUnspecified ctx
 
     /// Emit a Function application
     /// 

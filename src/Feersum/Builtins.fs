@@ -16,6 +16,7 @@ type CoreTypes =
     { ConsTy: TypeDefinition
     ; EnvTy: TypeDefinition
     ; ConsCtor: MethodReference
+    ; UndefinedInstance: MethodReference
     ; IdentCtor: MethodReference
     ; Builtins: Map<string,MethodReference> }
 
@@ -79,9 +80,16 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) 
         |> Seq.head
         |> lispAssm.MainModule.ImportReference
 
+    let undefinedTy = lispAssm.MainModule.ImportReference(externAssm.GetType("Serehfa.Undefined")).Resolve()
+    let undefinedInstance =
+        undefinedTy.GetMethods()
+        |> Seq.find (fun x -> x.Name = "get_Instance")
+        |> lispAssm.MainModule.ImportReference
+
     { ConsTy = consTy
     ; ConsCtor = consCtor
     ; IdentCtor = identCtor
+    ; UndefinedInstance = undefinedInstance
     ; EnvTy = null
     ; Builtins = Map.empty }
 
