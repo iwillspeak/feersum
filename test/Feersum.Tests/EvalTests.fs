@@ -38,11 +38,9 @@ let ``Evaluate lists`` evaluator =
     Assert.Equal("132", evaluator(Seq [ Boolean false |> constant; Number 132.0  |> constant] |> node))
     Assert.Equal("#t", evaluator(Seq [ Boolean true |> constant ] |> node))
 
-// TODO: Empty program yields NULL for eval. We should emit an instance of
-//       `Undefined` in `emitUnspecified`.
 [<Fact>]
 let ``Evaluate empty program`` () =
-    Assert.Equal("'()", feeri(Seq [ ] |> node))
+    Assert.Equal("; Unspecified value", feeri(Seq [ ] |> node))
 
 [<Fact>]
 let ``Evaluate lambdas returns`` () =
