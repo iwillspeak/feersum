@@ -3,7 +3,6 @@
 open Options
 open Syntax
 open System
-open Interpret
 open Eval
 open Compile
 open Argu.ArguAttributes
@@ -16,7 +15,6 @@ open System.IO
 type CliArguments =
     | Version
     | Configuration of BuildConfiguration
-    | Interpret
     | OutputType of OutputType
     | [<AltCommandLine("-o")>] Output of string
     | [<MainCommand>] Sources of source_file:string list
@@ -27,7 +25,6 @@ type CliArguments =
             | OutputType _ -> "The output type (Lib / Exe / Script)."
             | Configuration _ -> "The build configuration (Debug / Release)."
             | Version -> "Print the program version and exit."
-            | Interpret -> "Use the legacy interpreter in the REPL."
             | Sources _ -> "Scheme source files for compilation."
             | Output _ -> "The output path to write compilation results to."
 
@@ -48,13 +45,9 @@ let rec read (): AstNode =
         diagnostics |> dumpDiagnostics
         read()
 
-/// Print a value out to the console
-let print value =
-    value |> externalRepr |> printfn "]= %s"
-
 /// Print an object out to the console. Used to serialise the external
 /// representation form an eval
-let printObj value =
+let print value =
     value |> cilExternalRepr |> printfn "}= %s"
 
 /// Read, Execute, Print Loop
@@ -82,14 +75,10 @@ let private compileSingle options output sourcePath =
         dumpDiagnostics(diagnostics)
         List.length diagnostics
 
-/// Run the REPL, using either the reflection-based evaluator, or the tree
-/// walk interpreter.
-let private runRepl interpret =
+/// Run the REPL, using either the reflection-based evaluator.
+let private runRepl =
     ReadLine.HistoryEnabled <- true
-    if interpret then
-        execute >> Result.map print
-    else
-        eval >> Result.map printObj
+    eval >> Result.map print
     |> repl
 
 /// Get the version string for the compiler.
@@ -126,7 +115,7 @@ let main argv =
 
     match args.GetResult(Sources, defaultValue = []) with
     | [] ->
-        runRepl (args.Contains Interpret)
+        runRepl
         0
     | files ->
         Seq.sumBy (compileSingle options (args.TryGetResult Output)) files
