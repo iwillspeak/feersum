@@ -76,7 +76,7 @@ let private compileSingle options output sourcePath =
         List.length diagnostics
 
 /// Run the REPL, using either the reflection-based evaluator.
-let private runRepl =
+let private runRepl () =
     ReadLine.HistoryEnabled <- true
     eval >> Result.map print
     |> repl
@@ -115,7 +115,7 @@ let main argv =
 
     match args.GetResult(Sources, defaultValue = []) with
     | [] ->
-        runRepl
+        runRepl()
         0
     | files ->
         Seq.sumBy (compileSingle options (args.TryGetResult Output)) files
