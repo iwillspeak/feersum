@@ -48,7 +48,7 @@
             "type": "shell",
             "dependsOn": "build",
             "args": [
-                "${workspaceFolder}/src/Feersum/bin/Debug/netcoreapp3.1/Feersum.dll",
+                "${workspaceFolder}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
                 "--configuration", "Debug",
                 "-o", "${workspaceFolder}/spec/bin/",
                 "${workspaceFolder}/spec/iterfact.scm"

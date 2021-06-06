@@ -357,8 +357,8 @@ and private bindForm ctx (form: AstNode list) node =
             let storage = BinderCtx.addBinding ctx id
             BoundExpr.Store(storage, None)        
         | [{ Kind = AstNodeKind.Ident id };value] ->
-            let value = bindInContext ctx value
             let storage = BinderCtx.addBinding ctx id
+            let value = bindInContext ctx value
             BoundExpr.Store(storage, Some(value))
         | ({ Kind = AstNodeKind.Form ({ Kind = AstNodeKind.Ident id}::formals) })::body ->
             // Add the binding for this lambda to the scope _before_ lowering

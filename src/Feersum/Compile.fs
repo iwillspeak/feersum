@@ -537,7 +537,11 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
             VariableDebugInformation(env, "capture-environment")
             |> scope.Variables.Add)
 
-        // TODO: Flesh out this scope with the local variable names + environment
+        ctx.Locals
+        |> List.iteri (fun idx var ->
+            VariableDebugInformation(var, sprintf "local%d" idx)
+            |> scope.Variables.Add)
+
         methodDecl.DebugInformation.Scope <- scope
 
     // Emit a 'thunk' that unpacks the arguments to our method
