@@ -1093,9 +1093,9 @@
 ;; (test 1 (exact 1.0))
 ;; (test #t (exact? (exact 1.0)))
 
-;; (test 100 (string->number "100"))
-;; (test 256 (string->number "100" 16))
-;; (test 100.0 (string->number "1e2"))
+(test 100 (string->number "100"))
+(test 256 (string->number "100" 16))
+(test 100.0 (string->number "1e2"))
 
 (test-end)
 
@@ -1138,38 +1138,39 @@
 ;;   (set-cdr! x x)
 ;;   (test #f (list? x)))
 
-;; (test #t (pair? '(a . b)))
-;; (test #t (pair? '(a b c)))
-;; (test #f (pair? '()))
-;; (test #f (pair? '#(a b)))
+(test #t (pair? '(a . b)))
+(test #t (pair? '(a b c)))
+(test #f (pair? '()))
+(test #f (pair? '#(a b)))
 
-;; (test '(a) (cons 'a '()))
-;; (test '((a) b c d) (cons '(a) '(b c d)))
-;; (test '("a" b c) (cons "a" '(b c)))
+(test '(a) (cons 'a '()))
+(test '((a) b c d) (cons '(a) '(b c d)))
+(test '("a" b c) (cons "a" '(b c)))
+;;; FIXME: Quoting of dotted forms
 ;; (test '(a . 3) (cons 'a 3))
 ;; (test '((a b) . c) (cons '(a b) 'c))
 
-;; (test 'a (car '(a b c)))
-;; (test '(a) (car '((a) b c d)))
-;; (test 1 (car '(1 . 2)))
+(test 'a (car '(a b c)))
+(test '(a) (car '((a) b c d)))
+(test 1 (car '(1 . 2)))
 
-;; (test '(b c d) (cdr '((a) b c d)))
-;; (test 2 (cdr '(1 . 2)))
-;; (define (g) '(constant-list))
+(test '(b c d) (cdr '((a) b c d)))
+;; (test 2 (cdr '(1 . 2)))  ; FIXME: Quoting of dotted forms
+(define (g) '(constant-list))
 
-;; (test #t (list? '(a b c)))
-;; (test #t (list? '()))
-;; (test #f (list? '(a . b)))
+(test #t (list? '(a b c)))
+(test #t (list? '()))
+;; (test #f (list? '(a . b)))  ; FIXME: Quoting of dotted forms
 ;; (test #f (let ((x (list 'a))) (set-cdr! x x) (list? x)))
 
-;; (test '(3 3) (make-list 2 3))
+(test '(3 3) (make-list 2 3))
 
-;; (test '(a 7 c) (list 'a (+ 3 4) 'c))
-;; (test '() (list))
+(test '(a 7 c) (list 'a (+ 3 4) 'c))
+(test '() (list))
 
-;; (test 3 (length '(a b c)))
-;; (test 3 (length '(a (b) (c d e))))
-;; (test 0 (length '()))
+(test 3 (length '(a b c)))
+(test 3 (length '(a (b) (c d e))))
+(test 0 (length '()))
 
 ;; (test '(x y) (append '(x) '(y)))
 ;; (test '(a b c d) (append '(a) '(b c d)))
