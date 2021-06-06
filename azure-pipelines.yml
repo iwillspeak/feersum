@@ -18,6 +18,7 @@ steps:
       dotnet test --no-build --configuration $(configuration) --logger 'trx' --logger 'console;verbosity=normal'
       dotnet pack --no-build --configuration $(configuration) --output=$(Build.ArtifactStagingDirectory)
   - task: PublishTestResults@2
+    condition: always()
     inputs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '**/TestResults/*.trx'
