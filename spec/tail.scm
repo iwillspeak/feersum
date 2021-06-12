@@ -18,3 +18,17 @@
             x
             (ping (- x 1))))))
   (ping 100000)))
+
+
+(newline)
+
+; Tail context should flow into `and` and `or` macros
+(display
+  (letrec
+    ((foo (lambda (x)
+       (and #t
+         (or #f
+           (if (> 0 x)
+             #t
+             (foo (- x 1))))))))
+   (foo 100000)))
