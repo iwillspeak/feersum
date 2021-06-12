@@ -174,8 +174,8 @@ let private writeToEnv ctx (temp: VariableDefinition) (idx: int) =
 ///
 /// Emits the code for a single function into the given assembly. For some more
 /// complex expression types it delegates to the mutually-recursive `emit*`s
-let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
-    let recurse = emitExpression ctx
+let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
+    let recurse = emitExpression ctx tail
     match expr with
     | BoundExpr.Error -> failwith "ICE: Attempt to lower an error expression"
     | BoundExpr.SequencePoint(inner, location) ->
@@ -200,15 +200,15 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
             point.EndColumn <- int e.Column
             ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
     | BoundExpr.Literal l -> emitLiteral ctx l
-    | BoundExpr.Seq s -> emitSequence ctx s
-    | BoundExpr.Application(ap, args) -> emitApplication ctx ap args
+    | BoundExpr.Seq s -> emitSequence ctx tail s
+    | BoundExpr.Application(ap, args) -> emitApplication ctx tail ap args
     | BoundExpr.Store(storage, maybeVal) ->
         // TODO: Could we just elide the whole definition if there is no value.
         //       If we have nothing to store it would save a lot of code. In the
         //       case we are storing to a field we _might_ need to call
         //       `emitField` still.
         match maybeVal with
-        | Some(expr) -> recurse expr
+        | Some(expr) -> emitExpression ctx false expr
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
         ctx.IL.Emit(OpCodes.Dup)
         writeTo ctx storage
@@ -218,7 +218,18 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         let lblNotBool = ctx.IL.Create(OpCodes.Nop)
         let lblEnd = ctx.IL.Create(OpCodes.Nop)
 
-        recurse cond
+        // ILAAA       : <expression for cond>
+        // ILBBB       : dup
+        // ILBBB       : isinst bool
+        // ILBBB       : brfalse ILlblNotBool
+        // ILBBB       : brtrue ILlblTrue
+        // ILCCC       : <false expression>
+        // ILXXX       : br ILlblEnd ; or just `ret` for tail calls
+        // ILlblNotBool: pop
+        // ILlblTrue   : <true expression>
+        // ILlblEnd    : nop ; only if not tail call
+
+        emitExpression ctx false cond
 
         ctx.IL.Emit(OpCodes.Dup)
         ctx.IL.Emit(OpCodes.Isinst, ctx.Assm.MainModule.TypeSystem.Boolean)
@@ -230,16 +241,30 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         match maybeIfFalse with
         | Some ifFalse -> recurse ifFalse
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
-        ctx.IL.Emit(OpCodes.Br, lblEnd)
+        if tail then
+            // If we are in a tail context the JIT expects to see something like
+            // the following:
+            //
+            // ILXZZ: tail.
+            // ILXXX: callvirt Func<object[], Object>.Invoke()
+            // ILXXX: ret
+            //
+            // WE know the target of the branch to `lblEnd` will be a `ret` so
+            // cut out the middle man and just return here.
+            ctx.IL.Emit(OpCodes.Ret)
+        else
+            ctx.IL.Emit(OpCodes.Br, lblEnd)
 
         ctx.IL.Append(lblNotBool)
         ctx.IL.Emit(OpCodes.Pop)
         ctx.IL.Append(lblTrue)
         recurse ifTrue
 
-        // TODO: Could do with another sequence point here at the join block. Or
-        //       stop using `nops` all over the place as labels and instead.
-        ctx.IL.Append(lblEnd)
+        // We only need the branch target here if we emitted a jump to it above.
+        if not tail then
+            // TODO: Could do with another sequence point here at the join block. Or
+            //       stop using `nops` all over the place as labels and instead.
+            ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, locals, captured, envSize, body) ->
         emitLambda ctx formals locals captured envSize body
     | BoundExpr.Quoted quoted ->
@@ -392,14 +417,14 @@ and readFrom ctx storage =
     ///
     /// Emits each expression in the sequence, and pops any intermediate values
     /// from the stack. Emits the unspecified value if the sequence is empty.
-and emitSequence ctx seq =
+and emitSequence ctx tail seq =
     match seq with
     | [one] ->
-        emitExpression ctx one
+        emitExpression ctx tail one
     | head::rest ->
-        emitExpression ctx head
+        emitExpression ctx false head
         ctx.IL.Emit(OpCodes.Pop)
-        emitSequence ctx rest
+        emitSequence ctx tail rest
     | _ -> emitUnspecified ctx
 
     /// Emit a Function application
@@ -411,8 +436,8 @@ and emitSequence ctx seq =
     /// 
     /// Arguments are passed to a callable instnace as an array. This means that
     /// all callable values are `Func<obj[],obj>`.
-and emitApplication ctx ap args =
-    emitExpression ctx ap
+and emitApplication ctx tail ap args =
+    emitExpression ctx false ap
 
     // Emit the arguments array
     ctx.IL.Emit(OpCodes.Ldc_I4, List.length args)
@@ -420,13 +445,15 @@ and emitApplication ctx ap args =
     List.fold (fun (idx: int) e -> 
         ctx.IL.Emit(OpCodes.Dup)
         ctx.IL.Emit(OpCodes.Ldc_I4, idx)
-        emitExpression ctx e
+        emitExpression ctx false e
         ctx.IL.Emit(OpCodes.Stelem_Ref)
         idx + 1) 0 args |> ignore
     
     let funcInvoke = typeof<Func<obj[], obj>>.GetMethod("Invoke",
                                                         [| typeof<obj[]> |])
     let funcInvoke = ctx.Assm.MainModule.ImportReference(funcInvoke)
+    if tail then
+        ctx.IL.Emit(OpCodes.Tail)
     ctx.IL.Emit(OpCodes.Callvirt, funcInvoke)
 
     /// Emit a Lambda Reference
@@ -521,7 +548,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
             | _ -> ())
     | None -> ()
 
-    emitExpression ctx body
+    emitExpression ctx true body
     ctx.IL.Emit(OpCodes.Ret)
     methodDecl.Body.Optimize()
 
