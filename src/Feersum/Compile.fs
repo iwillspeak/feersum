@@ -686,6 +686,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
 
 /// Emit the body of a library definition
 and emitLibrary ctx name body =
+    /// TODO: lower the body of libraries to separate class types per library
     emitUnspecified ctx
 
 /// Emit the `Main` Method Epilogue
