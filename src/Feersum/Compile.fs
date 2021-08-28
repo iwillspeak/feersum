@@ -267,6 +267,8 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
             ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, locals, captured, envSize, body) ->
         emitLambda ctx formals locals captured envSize body
+    | BoundExpr.Library(name, body) ->
+        emitLibrary ctx name body
     | BoundExpr.Quoted quoted ->
         emitQuoted ctx quoted
 
@@ -681,6 +683,10 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
 
     markAsCompilerGenerated thunkDecl
     methodDecl, thunkDecl
+
+/// Emit the body of a library definition
+and emitLibrary ctx name body =
+    emitUnspecified ctx
 
 /// Emit the `Main` Method Epilogue
 ///
