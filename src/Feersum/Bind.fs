@@ -6,6 +6,7 @@ open Diagnostics
 open Syntax
 open Macros
 open Scope
+open Utils
 
 /// Storage Reference
 ///
@@ -28,6 +29,7 @@ type BoundFormals =
     | List of string list
     | DottedList of string list * string
 
+/// Literal or Constant Value
 type BoundLiteral =
     | Boolean of bool
     | Character of char
@@ -43,7 +45,34 @@ with
         | SyntaxConstant.Character c -> BoundLiteral.Character c
         | SyntaxConstant.Boolean b -> BoundLiteral.Boolean b
         | SyntaxConstant.Str s -> BoundLiteral.Str s
-    
+
+/// The rename of a single element exported or imported from a library
+type BoundRename =
+    | Rename of string * string
+
+/// A single export from a library declration
+type BoundExportSet =
+    | Plain of string
+    | Renamed of BoundRename
+    | Error
+
+/// A single import from a library declration
+type BoundImportSet =
+    | Plain of string list
+    | Only of BoundImportSet * string list
+    | Except of BoundImportSet * string list
+    | Prefix of BoundImportSet * string
+    | Renamed of BoundImportSet * BoundRename list
+    | Error
+
+/// Library Declarations
+/// 
+/// A library is made up of a collection of library declarations
+type BoundLibraryDeclaration =
+    | Export of BoundExportSet list
+    | Import of BoundImportSet list
+    | Error
+
 /// Bound Expression Type
 ///
 /// Bound expressions represent the syntax of a program with all identifier
@@ -58,6 +87,7 @@ type BoundExpr =
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
     | Lambda of BoundFormals * int * StorageRef list * StorageRef list option * BoundExpr
+    | Library of string list * BoundLibraryDeclaration list
     | Error
 
 /// Root type returned by the binder.
@@ -220,6 +250,113 @@ let private bindFormals ctx formals =
         |> ctx.Diagnostics.Emit formals.Location
         BoundFormals.List([])
 
+/// Recognise a list of strings as a library name
+let private parseLibraryName name =
+    let parseNameElement element =
+        match element.Kind with
+        | AstNodeKind.Constant(SyntaxConstant.Number(namePart)) ->
+            Ok(namePart |> sprintf "%g")
+        | AstNodeKind.Ident(namePart) -> Ok(namePart)
+        | _ -> Result.Error(Diagnostic(element.Location, "Invalid library name part"))
+    match name.Kind with
+    | AstNodeKind.Form x ->
+        x |> List.map (parseNameElement) |> ResultEx.collect
+    | _ -> Result.Error(Diagnostic(name.Location, "Expected library name"))
+
+/// Try and parse a node as an identifier
+let private parseIdentifier = function
+    | { Kind = AstNodeKind.Ident(id) } -> Ok(id)
+    | node -> Result.Error(Diagnostic(node.Location, "Expected identifier"))
+
+/// Bind a list of identifiers into a list of strings
+let private parseIdnetifierList idents =
+    idents
+    |> List.map parseIdentifier
+    |> ResultEx.collect
+
+/// Bind a library declaration form
+let rec private bindLibraryDeclaration ctx declaration =
+    match declaration.Kind with
+    | AstNodeKind.Form({ Kind = AstNodeKind.Ident(special)}::body) ->
+        bindLibraryDeclarationForm ctx declaration.Location special body
+    | _ ->
+        ctx.Diagnostics.Emit declaration.Location "Expected library declaration"
+        BoundLibraryDeclaration.Error
+
+and private bindLibraryDeclarationForm ctx position special body =
+    match special with
+    | "export"  ->
+        body
+        |> List.map (bindExportDeclaration ctx)
+        |> BoundLibraryDeclaration.Export
+    | "import" ->
+        body
+        |> List.map (bindImportDeclration ctx)
+        |> BoundLibraryDeclaration.Import
+    | "begin" ->
+        // TODO: Handle library bodies
+        BoundLibraryDeclaration.Export []
+    | s ->
+        sprintf "Unrecognised library declaration %s" s
+        |> ctx.Diagnostics.Emit position
+        BoundLibraryDeclaration.Error
+
+and private tryParseRename rename =
+    match rename with
+    | [{ Kind = AstNodeKind.Ident(int) };{ Kind = AstNodeKind.Ident(ext) }] ->
+        Ok(BoundRename.Rename(int, ext))
+    | _ -> Result.Error("invalid rename")
+
+and private bindExportDeclaration ctx export =
+    match export.Kind with
+    | AstNodeKind.Ident(plain) -> BoundExportSet.Plain plain
+    | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename")}::rename) ->
+        match rename |> tryParseRename with
+        | Result.Ok(renamed) -> BoundExportSet.Renamed renamed
+        | Result.Error(e) ->
+            ctx.Diagnostics.Emit export.Location e
+            BoundExportSet.Error
+    | _ ->
+        ctx.Diagnostics.Emit export.Location "Invalid export element" 
+        BoundExportSet.Error
+
+and private bindImportDeclration ctx import =
+    let bindImportForm binder fromSet body resultCollector =
+        match binder body with
+        | Ok(bound) ->
+            resultCollector(bindImportDeclration ctx fromSet, bound)
+        | Result.Error(diag) ->
+            ctx.Diagnostics.Add(diag)
+            BoundImportSet.Error
+
+    match import.Kind with
+    | AstNodeKind.Form({ Kind = AstNodeKind.Ident("only")}::(fromSet::filters)) ->
+        bindImportForm (parseIdnetifierList) fromSet filters BoundImportSet.Only
+    | AstNodeKind.Form({ Kind = AstNodeKind.Ident("except")}::(fromSet::filters)) ->
+        bindImportForm (parseIdnetifierList) fromSet filters BoundImportSet.Except
+    | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename")}::(fromSet::renames)) ->
+        let parseRenames renames =
+            let parseRename node =
+                match node with
+                | { Kind = AstNodeKind.Form(f) } ->
+                    tryParseRename(f)
+                    |> Result.mapError (function x -> Diagnostic(node.Location, x))
+                | _ -> Result.Error(Diagnostic(node.Location, "Expected rename"))
+            renames
+            |> List.map parseRename
+            |> ResultEx.collect
+        
+        bindImportForm (parseRenames) fromSet renames BoundImportSet.Renamed
+    | AstNodeKind.Form([{ Kind = AstNodeKind.Ident("prefix")};fromSet;prefix]) ->
+        bindImportForm (parseIdentifier) fromSet prefix BoundImportSet.Prefix
+    | _ -> 
+        match parseLibraryName import with
+        | Ok(name) -> BoundImportSet.Plain name
+        | Result.Error(e) -> 
+            ctx.Diagnostics.Add e
+            BoundImportSet.Error
+
+
 /// Recognise a given form as a list of let binding specifications. This expects
 /// the `node` to be a form `()`, or `((id init) ...)`.
 let private parseBindingSpecs ctx node =
@@ -324,6 +461,14 @@ and private bindLambdaBody ctx formals body =
         else
             None
     BoundExpr.Lambda(formals, lambdaCtx.LocalCount, lambdaCtx.Captures, env, boundBody)
+
+and private bindLibraryBody ctx name body =
+    let binder = bindLibraryDeclaration ctx
+    let boundBody =
+        body
+        |> List.map binder
+
+    BoundExpr.Library(name, boundBody)
     
 and private bindLet ctx name body location declBinder =
     match body with
@@ -454,6 +599,16 @@ and private bindForm ctx (form: AstNode list) node =
                 ctx.Diagnostics.Add e
                 BoundExpr.Error
         | _ -> illFormed "define-syntax"
+    | { Kind = AstNodeKind.Ident("define-library")}::body ->
+        match body with
+        | name::body ->
+            match parseLibraryName name with
+            | Ok(boundName) ->
+                bindLibraryBody ctx boundName body
+            | Result.Error(e) ->
+                ctx.Diagnostics.Add e
+                BoundExpr.Error
+        | _ -> illFormed "define-library"
     | { Kind = AstNodeKind.Ident("cond") }::body ->
         failwith "Condition expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("case") }::body ->
