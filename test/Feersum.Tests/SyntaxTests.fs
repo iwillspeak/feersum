@@ -9,9 +9,11 @@ open SyntaxFactory
 // TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
 //       invalid hex escapes, bad identifiers and so on.
 
+let sanitise = sanitiseNodeWith (function _ -> dummyLocation)
+
 [<Fact>]
 let ``parse seqs`` () =
-    Assert.Equal(Seq [ Number 1.0 |> Constant |> node; Number 23.0  |> Constant|> node] |> node, readMany "1 23" |> sanitise)
+    Assert.Equal(Seq [ Number 1.0 |> Constant |> node; Number 23.0  |> Constant |> node] |> node, readMany "1 23" |> sanitise)
     Assert.Equal(Seq [ Boolean true  |> Constant |> node] |> node, readMany "#t" |> sanitise)
     Assert.Equal(Seq [ ] |> node, readMany "" |> sanitise)
     Assert.Equal(Seq [ Form [ Ident "+" |> node; Number 12.0 |> Constant |> node; Number 34.0  |> Constant|> node ] |> node; Boolean false |> Constant |> node] |> node, readMany "(+ 12 34) #f" |> sanitise)
