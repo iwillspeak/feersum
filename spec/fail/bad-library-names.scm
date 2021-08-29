@@ -1,3 +1,5 @@
 (define-library "hello")
 (define-library .)
+(define-library (scheme |silly'chars|))
 (define-library (some 't))
+(define-library (srfi trust me))

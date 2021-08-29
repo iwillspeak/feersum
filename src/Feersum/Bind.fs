@@ -251,16 +251,38 @@ let private bindFormals ctx formals =
         BoundFormals.List([])
 
 /// Recognise a list of strings as a library name
-let private parseLibraryName name =
+let private bindLibraryName ctx name =
+    let isInvalidChar = function
+        | '|' | '\\' | '?' | '*'
+        | '<' | '"' | ':' | '>'
+        | '+' | '[' | ']' | '/' | '\'' -> true
+        | _ -> false
+    let checkReservedNames = function
+        | start::rest ->
+            if start = "scheme" || start = "srfi" then
+                start
+                |> sprintf "The name prefix %s is reserved"
+                |> Diagnostic.CreateWarning name.Location
+                |> ctx.Diagnostics.Add
+            start::rest
+        | [] -> []
     let parseNameElement element =
         match element.Kind with
         | AstNodeKind.Constant(SyntaxConstant.Number(namePart)) ->
             Ok(namePart |> sprintf "%g")
-        | AstNodeKind.Ident(namePart) -> Ok(namePart)
+        | AstNodeKind.Ident(namePart) ->
+            if Seq.exists (isInvalidChar) (namePart.ToCharArray()) then
+                "Library names should not contain complex characters"
+                |> Diagnostic.CreateWarning element.Location
+                |> ctx.Diagnostics.Add
+            Ok(namePart)
         | _ -> Result.Error(Diagnostic.Create element.Location "Invalid library name part")
     match name.Kind with
     | AstNodeKind.Form x ->
-        x |> List.map (parseNameElement) |> ResultEx.collect
+        x
+        |> List.map (parseNameElement)
+        |> ResultEx.collect
+        |> Result.map (checkReservedNames)
     | _ -> Result.Error(Diagnostic.Create name.Location "Expected library name")
 
 /// Try and parse a node as an identifier
@@ -350,7 +372,7 @@ and private bindImportDeclration ctx import =
     | AstNodeKind.Form([{ Kind = AstNodeKind.Ident("prefix")};fromSet;prefix]) ->
         bindImportForm (parseIdentifier) fromSet prefix BoundImportSet.Prefix
     | _ -> 
-        match parseLibraryName import with
+        match bindLibraryName ctx import with
         | Ok(name) -> BoundImportSet.Plain name
         | Result.Error(e) -> 
             ctx.Diagnostics.Add e
@@ -602,7 +624,7 @@ and private bindForm ctx (form: AstNode list) node =
     | { Kind = AstNodeKind.Ident("define-library")}::body ->
         match body with
         | name::body ->
-            match parseLibraryName name with
+            match bindLibraryName ctx name with
             | Ok(boundName) ->
                 bindLibraryBody ctx boundName body
             | Result.Error(e) ->
