@@ -4,7 +4,7 @@ open Options
 open Xunit
 
 [<Fact>]
-let defaultExtensionsForOutputTypes =
+let ``default extensions for output type`` () =
     let checkOutputType outputType expected =
         let options =
             { Configuration = Debug

@@ -256,7 +256,10 @@
           }
         ]
       },
-      "Message": "Missing closing '|'"
+      "Message": "Missing closing '|'",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
       "Location": {
@@ -270,7 +273,10 @@
           }
         ]
       },
-      "Message": "Expected ';'"
+      "Message": "Expected ';'",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
       "Location": {
@@ -284,7 +290,10 @@
           }
         ]
       },
-      "Message": "Expected hex character literal"
+      "Message": "Expected hex character literal",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
       "Location": {
@@ -298,7 +307,10 @@
           }
         ]
       },
-      "Message": "Expected hex character literal"
+      "Message": "Expected hex character literal",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
       "Location": {
@@ -312,7 +324,10 @@
           }
         ]
       },
-      "Message": "Invalid code unit"
+      "Message": "Invalid code unit",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
       "Location": {
@@ -326,7 +341,10 @@
           }
         ]
       },
-      "Message": "Invalid code unit"
+      "Message": "Invalid code unit",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
       "Location": {
@@ -340,7 +358,10 @@
           }
         ]
       },
-      "Message": "Expected ';'"
+      "Message": "Expected ';'",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
       "Location": {
@@ -354,7 +375,10 @@
           }
         ]
       },
-      "Message": "Expected hex character literal"
+      "Message": "Expected hex character literal",
+      "Level": {
+        "Case": "Error"
+      }
     }
   ]
 }

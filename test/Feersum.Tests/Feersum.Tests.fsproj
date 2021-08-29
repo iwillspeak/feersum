@@ -6,6 +6,7 @@
     <ProjectReference Include="..\..\src\Feersum\Feersum.fsproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiagnosticsTests.fs" />
     <Compile Include="OptionsTests.fs" />
     <Compile Include="SyntaxUtils.fs" />
     <Compile Include="EvalTests.fs" />
