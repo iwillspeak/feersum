@@ -52,8 +52,8 @@ let public fixedLocaiton path = sanitiseLocationWith (fixedStreamName path)
 let public basedLocation basePath = sanitiseLocationWith (basedStreamName basePath)
 
 /// Transform a syntax node with the given Location Re-Writer
-let rec public sanitiseNodeWith rewriter node =
-    { Kind = node.Kind |> sanitiseKind rewriter; Location = node.Location |> rewriter }
+let rec public sanitiseNodeWith rewriter (node: AstNode) =
+    { AstNode.Kind = node.Kind |> sanitiseKind rewriter; Location = node.Location |> rewriter }
 
 and private sanitiseKind rewriter = function
     | Form(f) -> List.map (sanitiseNodeWith rewriter) f |> Form

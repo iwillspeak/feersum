@@ -29,15 +29,34 @@ with
         | Point p -> p
         | Missing -> missingPos
 
+/// Level of diagnostic. Used to tell warnings from errors.
+type DiagnosticLevel =
+    /// The diagnostic represents an error. Compilation should not continue.
+    | Error
+    /// THe diagnostic represents a warning. Compilation may continue but the
+    /// result may be unexpected or invalid.
+    | Warning
+
 /// Diagnostics indicate problems with our source code at a given position.
 type Diagnostic = { Location: TextLocation
-                  ; Message: string }
+                  ; Message: string
+                  ; Level: DiagnosticLevel }
 with
 
-    /// Create a new error diagnostic at the given location
+    /// Create a new error diagnostic at the given `location`.`
     static member Create location message =
-        { Location = location; Message = message }
-        
+        Diagnostic.CreateWithKind DiagnosticLevel.Error location message
+
+    /// Create a new warning diagnostic at the given `location`.`
+    static member CreateWarning location message =
+        Diagnostic.CreateWithKind DiagnosticLevel.Warning location message
+    
+    /// Create a new diagnostic with the given `kind` and `location`.
+    static member CreateWithKind kind location message =
+        { Level = kind
+        ; Location = location
+        ; Message = message }
+
     /// Format the diagnostic for output.
     override d.ToString() =
         let pos = d.Location.Start
@@ -62,6 +81,11 @@ with
     static member Empty =
         { Diagnostics = [] }
 
+/// Returns true if the diagnostic should be considered an error
+let public isError = function
+    | { Level = DiagnosticLevel.Error } -> true
+    | _ -> false
+
 /// Test if a given diagnostics collection contains any errors.
 let public hasErrors (diagnostics: Diagnostic seq): bool =
-    not (Seq.isEmpty diagnostics)
+    Seq.exists (isError) diagnostics
