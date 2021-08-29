@@ -64,8 +64,8 @@ and private sanitiseKind rewriter = function
 
 /// Transofrm a diagnostics list with the given Location Re-Writer `rewriter`
 let public sanitiseDiagnosticsWith rewriter (diags: Diagnostic list) =
-    let sanitiseDiag = function
-        | Diagnostic(l, m) -> Diagnostic(l |> rewriter, m)
+    let sanitiseDiag d =
+        { d with Diagnostic.Location = rewriter(d.Location) }
     List.map (sanitiseDiag) diags
 
 /// Read a single expression node from the input string

@@ -30,26 +30,26 @@ with
         | Missing -> missingPos
 
 /// Diagnostics indicate problems with our source code at a given position.
-type Diagnostic = Diagnostic of TextLocation * string
+type Diagnostic = { Location: TextLocation
+                  ; Message: string }
 with
-    /// Helper to retrieve the message for this diagnostic.
-    member d.Message =
-        match d with
-        | Diagnostic(_, message) -> message
+
+    /// Create a new error diagnostic at the given location
+    static member Create location message =
+        { Location = location; Message = message }
         
     /// Format the diagnostic for output.
     override d.ToString() =
-        match d with
-        | Diagnostic(loc, message) ->
-            let pos = loc.Start
-            sprintf "%s:%d:%d: %s" pos.StreamName pos.Line pos.Column message
+        let pos = d.Location.Start
+        sprintf "%s:%d:%d: %s" pos.StreamName pos.Line pos.Column d.Message
 
 /// A collection of diagnostics being built by a compiler phase.
 type DiagnosticBag = { mutable Diagnostics: Diagnostic list }
 with
     /// Buffer a diagnostic into the bag.
     member b.Emit pos message =
-        Diagnostic(pos, message) |> b.Add
+        Diagnostic.Create pos message
+        |> b.Add
 
     /// Add a diagnostic to the bag.
     member b.Add diag =
