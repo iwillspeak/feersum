@@ -257,16 +257,16 @@ let private parseLibraryName name =
         | AstNodeKind.Constant(SyntaxConstant.Number(namePart)) ->
             Ok(namePart |> sprintf "%g")
         | AstNodeKind.Ident(namePart) -> Ok(namePart)
-        | _ -> Result.Error(Diagnostic(element.Location, "Invalid library name part"))
+        | _ -> Result.Error(Diagnostic.Create element.Location "Invalid library name part")
     match name.Kind with
     | AstNodeKind.Form x ->
         x |> List.map (parseNameElement) |> ResultEx.collect
-    | _ -> Result.Error(Diagnostic(name.Location, "Expected library name"))
+    | _ -> Result.Error(Diagnostic.Create name.Location "Expected library name")
 
 /// Try and parse a node as an identifier
 let private parseIdentifier = function
     | { Kind = AstNodeKind.Ident(id) } -> Ok(id)
-    | node -> Result.Error(Diagnostic(node.Location, "Expected identifier"))
+    | node -> Result.Error(Diagnostic.Create node.Location "Expected identifier")
 
 /// Bind a list of identifiers into a list of strings
 let private parseIdnetifierList idents =
@@ -340,8 +340,8 @@ and private bindImportDeclration ctx import =
                 match node with
                 | { Kind = AstNodeKind.Form(f) } ->
                     tryParseRename(f)
-                    |> Result.mapError (function x -> Diagnostic(node.Location, x))
-                | _ -> Result.Error(Diagnostic(node.Location, "Expected rename"))
+                    |> Result.mapError (Diagnostic.Create node.Location)
+                | _ -> Result.Error(Diagnostic.Create node.Location "Expected rename")
             renames
             |> List.map parseRename
             |> ResultEx.collect
