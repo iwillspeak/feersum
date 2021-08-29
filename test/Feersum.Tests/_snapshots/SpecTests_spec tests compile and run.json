@@ -436,14 +436,37 @@
           "Case": "Span",
           "Fields": [
             {
-              "Index": 66,
-              "Line": 3,
+              "Index": 127,
+              "Line": 5,
+              "Column": 17,
+              "StreamName": "fail/bad-library-names.scm"
+            },
+            {
+              "Index": 142,
+              "Line": 5,
+              "Column": 32,
+              "StreamName": "fail/bad-library-names.scm"
+            }
+          ]
+        },
+        "Message": "The name prefix srfi is reserved",
+        "Level": {
+          "Case": "Warning"
+        }
+      },
+      {
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Index": 106,
+              "Line": 4,
               "Column": 23,
               "StreamName": "fail/bad-library-names.scm"
             },
             {
-              "Index": 68,
-              "Line": 3,
+              "Index": 108,
+              "Line": 4,
               "Column": 25,
               "StreamName": "fail/bad-library-names.scm"
             }
@@ -452,6 +475,52 @@
         "Message": "Invalid library name part",
         "Level": {
           "Case": "Error"
+        }
+      },
+      {
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Index": 60,
+              "Line": 3,
+              "Column": 17,
+              "StreamName": "fail/bad-library-names.scm"
+            },
+            {
+              "Index": 82,
+              "Line": 3,
+              "Column": 39,
+              "StreamName": "fail/bad-library-names.scm"
+            }
+          ]
+        },
+        "Message": "The name prefix scheme is reserved",
+        "Level": {
+          "Case": "Warning"
+        }
+      },
+      {
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Index": 68,
+              "Line": 3,
+              "Column": 25,
+              "StreamName": "fail/bad-library-names.scm"
+            },
+            {
+              "Index": 81,
+              "Line": 3,
+              "Column": 38,
+              "StreamName": "fail/bad-library-names.scm"
+            }
+          ]
+        },
+        "Message": "Library names should not contain complex characters",
+        "Level": {
+          "Case": "Warning"
         }
       },
       {

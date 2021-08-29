@@ -197,7 +197,7 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "some"
+                                "scheme"
                               ]
                             },
                             "Location": {
@@ -210,8 +210,135 @@
                                   "StreamName": "fail/bad-library-names.scm"
                                 },
                                 {
-                                  "Index": 65,
+                                  "Index": 67,
                                   "Line": 3,
+                                  "Column": 24,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "silly'chars"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 68,
+                                  "Line": 3,
+                                  "Column": 25,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 81,
+                                  "Line": 3,
+                                  "Column": 38,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 60,
+                          "Line": 3,
+                          "Column": 17,
+                          "StreamName": "fail/bad-library-names.scm"
+                        },
+                        {
+                          "Index": 82,
+                          "Line": 3,
+                          "Column": 39,
+                          "StreamName": "fail/bad-library-names.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 44,
+                  "Line": 3,
+                  "Column": 1,
+                  "StreamName": "fail/bad-library-names.scm"
+                },
+                {
+                  "Index": 83,
+                  "Line": 3,
+                  "Column": 40,
+                  "StreamName": "fail/bad-library-names.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define-library"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 85,
+                          "Line": 4,
+                          "Column": 2,
+                          "StreamName": "fail/bad-library-names.scm"
+                        },
+                        {
+                          "Index": 99,
+                          "Line": 4,
+                          "Column": 16,
+                          "StreamName": "fail/bad-library-names.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "some"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 101,
+                                  "Line": 4,
+                                  "Column": 18,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 105,
+                                  "Line": 4,
                                   "Column": 22,
                                   "StreamName": "fail/bad-library-names.scm"
                                 }
@@ -233,14 +360,14 @@
                                     "Case": "Span",
                                     "Fields": [
                                       {
-                                        "Index": 67,
-                                        "Line": 3,
+                                        "Index": 107,
+                                        "Line": 4,
                                         "Column": 24,
                                         "StreamName": "fail/bad-library-names.scm"
                                       },
                                       {
-                                        "Index": 68,
-                                        "Line": 3,
+                                        "Index": 108,
+                                        "Line": 4,
                                         "Column": 25,
                                         "StreamName": "fail/bad-library-names.scm"
                                       }
@@ -253,14 +380,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 66,
-                                  "Line": 3,
+                                  "Index": 106,
+                                  "Line": 4,
                                   "Column": 23,
                                   "StreamName": "fail/bad-library-names.scm"
                                 },
                                 {
-                                  "Index": 68,
-                                  "Line": 3,
+                                  "Index": 108,
+                                  "Line": 4,
                                   "Column": 25,
                                   "StreamName": "fail/bad-library-names.scm"
                                 }
@@ -274,14 +401,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 60,
-                          "Line": 3,
+                          "Index": 100,
+                          "Line": 4,
                           "Column": 17,
                           "StreamName": "fail/bad-library-names.scm"
                         },
                         {
-                          "Index": 69,
-                          "Line": 3,
+                          "Index": 109,
+                          "Line": 4,
                           "Column": 26,
                           "StreamName": "fail/bad-library-names.scm"
                         }
@@ -295,15 +422,167 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 44,
-                  "Line": 3,
+                  "Index": 84,
+                  "Line": 4,
                   "Column": 1,
                   "StreamName": "fail/bad-library-names.scm"
                 },
                 {
-                  "Index": 70,
-                  "Line": 3,
+                  "Index": 110,
+                  "Line": 4,
                   "Column": 27,
+                  "StreamName": "fail/bad-library-names.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define-library"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 112,
+                          "Line": 5,
+                          "Column": 2,
+                          "StreamName": "fail/bad-library-names.scm"
+                        },
+                        {
+                          "Index": 126,
+                          "Line": 5,
+                          "Column": 16,
+                          "StreamName": "fail/bad-library-names.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "srfi"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 128,
+                                  "Line": 5,
+                                  "Column": 18,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 132,
+                                  "Line": 5,
+                                  "Column": 22,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "trust"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 133,
+                                  "Line": 5,
+                                  "Column": 23,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 138,
+                                  "Line": 5,
+                                  "Column": 28,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "me"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 139,
+                                  "Line": 5,
+                                  "Column": 29,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 141,
+                                  "Line": 5,
+                                  "Column": 31,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 127,
+                          "Line": 5,
+                          "Column": 17,
+                          "StreamName": "fail/bad-library-names.scm"
+                        },
+                        {
+                          "Index": 142,
+                          "Line": 5,
+                          "Column": 32,
+                          "StreamName": "fail/bad-library-names.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 111,
+                  "Line": 5,
+                  "Column": 1,
+                  "StreamName": "fail/bad-library-names.scm"
+                },
+                {
+                  "Index": 143,
+                  "Line": 5,
+                  "Column": 33,
                   "StreamName": "fail/bad-library-names.scm"
                 }
               ]
@@ -322,9 +601,9 @@
           "StreamName": "fail/bad-library-names.scm"
         },
         {
-          "Index": 70,
-          "Line": 3,
-          "Column": 27,
+          "Index": 143,
+          "Line": 5,
+          "Column": 33,
           "StreamName": "fail/bad-library-names.scm"
         }
       ]
