@@ -482,29 +482,6 @@
           "Case": "Span",
           "Fields": [
             {
-              "Index": 60,
-              "Line": 3,
-              "Column": 17,
-              "StreamName": "fail/bad-library-names.scm"
-            },
-            {
-              "Index": 82,
-              "Line": 3,
-              "Column": 39,
-              "StreamName": "fail/bad-library-names.scm"
-            }
-          ]
-        },
-        "Message": "The name prefix scheme is reserved",
-        "Level": {
-          "Case": "Warning"
-        }
-      },
-      {
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
               "Index": 68,
               "Line": 3,
               "Column": 25,
@@ -519,6 +496,29 @@
           ]
         },
         "Message": "Library names should not contain complex characters",
+        "Level": {
+          "Case": "Warning"
+        }
+      },
+      {
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Index": 60,
+              "Line": 3,
+              "Column": 17,
+              "StreamName": "fail/bad-library-names.scm"
+            },
+            {
+              "Index": 82,
+              "Line": 3,
+              "Column": 39,
+              "StreamName": "fail/bad-library-names.scm"
+            }
+          ]
+        },
+        "Message": "The name prefix scheme is reserved",
         "Level": {
           "Case": "Warning"
         }
