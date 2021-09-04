@@ -74,6 +74,11 @@ with
     member b.Add diag =
         b.Diagnostics <- diag::b.Diagnostics
 
+    /// Append a collection of diagnostics to this bag.
+    member b.Append diags =
+        for d in diags do
+            b.Add d
+
     /// Finalise the bag by taking the diagnostics from it.
     member b.Take = b.Diagnostics
 
