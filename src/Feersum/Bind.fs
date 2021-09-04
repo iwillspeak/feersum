@@ -60,6 +60,7 @@ type BoundExpr =
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
     | Lambda of BoundFormals * int * StorageRef list * StorageRef list option * BoundExpr
+    | Library of string list * BoundExpr list
     | Error
 
 /// Root type returned by the binder.
@@ -342,6 +343,23 @@ and private bindLet ctx name body location declBinder =
         BoundExpr.Seq(List.append decls boundBody)
     | _ -> illFormedInCtx ctx location name
 
+and private bindLibrary ctx (library: Libraries.LibraryDefinition) =
+    // TODO: `libCtx` should be seeded based on the `(import ...)` deflarations
+    let libCtx =
+        Map.empty |> BinderCtx.createForGlobalScope
+    let boundBodies =
+        List.foldBack (fun body state ->
+                        match body with
+                        | Libraries.LibraryDeclaration.Begin block ->
+                            let boundBegin =
+                                block
+                                |> List.map (bindInContext libCtx)
+                                |> BoundExpr.Seq
+                            boundBegin::state
+                        | _ -> state) library.Declarations []
+    // TODO: `ctx` should store some reference to this library.
+    BoundExpr.Library(library.LibraryName, boundBodies)
+
 and private bindForm ctx (form: AstNode list) node =
     let illFormed formName = illFormedInCtx ctx node.Location formName
     match form with
@@ -459,11 +477,10 @@ and private bindForm ctx (form: AstNode list) node =
     | { Kind = AstNodeKind.Ident("define-library")}::body ->
         match body with
         | name::body ->
-            match Libraries.parseLibraryDeclaration name body with
+            match Libraries.parseLibraryDefinition name body with
             | Ok(library, diags) ->
                 ctx.Diagnostics.Append diags
-                // FIXME: bind library
-                BoundExpr.Seq []
+                bindLibrary ctx library
             | Result.Error diags ->
                 ctx.Diagnostics.Append diags
                 BoundExpr.Error

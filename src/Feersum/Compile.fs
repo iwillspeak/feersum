@@ -267,9 +267,8 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
             ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, locals, captured, envSize, body) ->
         emitLambda ctx formals locals captured envSize body
-    // FIXME: Libraries
-    // | BoundExpr.Library(name, body) ->
-    //     emitLibrary ctx name body
+    | BoundExpr.Library(name, body) ->
+        emitLibrary ctx name body
     | BoundExpr.Quoted quoted ->
         emitQuoted ctx quoted
 
