@@ -28,12 +28,15 @@ type ImportSet =
 type LibraryDeclaration =
     | Export of ExportSet list
     | Import of ImportSet list
+    | Begin of AstNode list
     | Error
 
 /// Library Definition
 /// 
 /// Represents the parsed body of a `(define-library)` form.
-type LibraryDefinition = Library of string list * LibraryDeclaration list
+type LibraryDefinition = 
+    { LibraryName: string list
+    ; Declarations: LibraryDeclaration list }
 
 /// Recognise a list of strings as a library name
 let private parseLibraryName (diags: DiagnosticBag) name =
@@ -79,34 +82,33 @@ let private parseIdentifier = function
     | { Kind = AstNodeKind.Ident(id) } -> Ok(id)
     | node -> Result.Error(Diagnostic.Create node.Location "Expected identifier")
 
-/// Bind a list of identifiers into a list of strings
+/// Parse a list of identifiers into a list of strings
 let private parseIdentifierList idents =
     idents
     |> List.map parseIdentifier
     |> ResultEx.collect
 
-/// Bind a library declaration form
-let rec private bindLibraryDeclaration (diags: DiagnosticBag) declaration =
+/// Parse a library declaration form
+let rec private parseLibraryDeclaration (diags: DiagnosticBag) declaration =
     match declaration.Kind with
     | AstNodeKind.Form({ Kind = AstNodeKind.Ident(special)}::body) ->
-        bindLibraryDeclarationForm diags declaration.Location special body
+        parseLibraryDeclarationForm diags declaration.Location special body
     | _ ->
         diags.Emit declaration.Location "Expected library declaration"
         LibraryDeclaration.Error
 
-and private bindLibraryDeclarationForm diags position special body =
+and private parseLibraryDeclarationForm diags position special body =
     match special with
     | "export"  ->
         body
-        |> List.map (bindExportDeclaration diags)
+        |> List.map (parseExportDeclaration diags)
         |> LibraryDeclaration.Export
     | "import" ->
         body
-        |> List.map (bindImportDeclration diags)
+        |> List.map (parseImportDeclaration diags)
         |> LibraryDeclaration.Import
     | "begin" ->
-        // TODO: Handle library bodies
-        LibraryDeclaration.Export []
+        LibraryDeclaration.Begin body
     | s ->
         sprintf "Unrecognised library declaration %s" s
         |> diags.Emit position
@@ -118,7 +120,7 @@ and private tryParseRename rename =
         Ok(SymbolRename.Rename(int, ext))
     | _ -> Result.Error("invalid rename")
 
-and private bindExportDeclaration diags export =
+and private parseExportDeclaration diags export =
     match export.Kind with
     | AstNodeKind.Ident(plain) -> ExportSet.Plain plain
     | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename")}::rename) ->
@@ -131,20 +133,20 @@ and private bindExportDeclaration diags export =
         diags.Emit export.Location "Invalid export element" 
         ExportSet.Error
 
-and private bindImportDeclration diags import =
-    let bindImportForm binder fromSet body resultCollector =
-        match binder body with
+and private parseImportDeclaration diags import =
+    let parseImportForm parser fromSet body resultCollector =
+        match parser body with
         | Ok(bound) ->
-            resultCollector(bindImportDeclration diags fromSet, bound)
+            resultCollector(parseImportDeclaration diags fromSet, bound)
         | Result.Error(diag) ->
             diags.Add(diag)
             ImportSet.Error
 
     match import.Kind with
     | AstNodeKind.Form({ Kind = AstNodeKind.Ident("only")}::(fromSet::filters)) ->
-        bindImportForm (parseIdentifierList) fromSet filters ImportSet.Only
+        parseImportForm (parseIdentifierList) fromSet filters ImportSet.Only
     | AstNodeKind.Form({ Kind = AstNodeKind.Ident("except")}::(fromSet::filters)) ->
-        bindImportForm (parseIdentifierList) fromSet filters ImportSet.Except
+        parseImportForm (parseIdentifierList) fromSet filters ImportSet.Except
     | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename")}::(fromSet::renames)) ->
         let parseRenames renames =
             let parseRename node =
@@ -157,28 +159,28 @@ and private bindImportDeclration diags import =
             |> List.map parseRename
             |> ResultEx.collect
         
-        bindImportForm (parseRenames) fromSet renames ImportSet.Renamed
+        parseImportForm (parseRenames) fromSet renames ImportSet.Renamed
     | AstNodeKind.Form([{ Kind = AstNodeKind.Ident("prefix")};fromSet;prefix]) ->
-        bindImportForm (parseIdentifier) fromSet prefix ImportSet.Prefix
+        parseImportForm (parseIdentifier) fromSet prefix ImportSet.Prefix
     | _ -> 
         match parseLibraryName diags import with
         | Ok(name) -> ImportSet.Plain name
         | Result.Error _ -> ImportSet.Error
 
 
-let private bindLibraryBody ctx name body =
-    let binder = bindLibraryDeclaration ctx
-    let boundBody =
+let private parseLibraryBody ctx name body =
+    let parser = parseLibraryDeclaration ctx
+    let parsedBodies =
         body
-        |> List.map binder
+        |> List.map parser
 
-    LibraryDefinition.Library(name, boundBody)
+    { LibraryName = name; Declarations = parsedBodies }
 
 // -------------------- Public Libraries API ---------------------
 
-let public parseLibraryDeclaration name body =
+let public parseLibraryDefinition name body =
     let diags = DiagnosticBag.Empty
     parseLibraryName diags name
-    |> Result.map (fun boundName -> bindLibraryBody diags boundName body)
+    |> Result.map (fun boundName -> parseLibraryBody diags boundName body)
     |> Result.map (fun lib -> (lib, diags.Take))
     |> Result.mapError (fun _ -> diags.Take)
