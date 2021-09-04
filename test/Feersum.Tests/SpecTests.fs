@@ -15,15 +15,14 @@ type TestExecutionResult =
     ; Error: string
     ; Exit: int }
 
-// [<assembly: UpdateSnapshots>]
-// ()
-
 let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
 let specBin = Path.Join(specDir, "bin")
 let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
 
 let nodeSanitiser = sanitiseNodeWith (basedLocation specDir)
-let diagSanitiser = sanitiseDiagnosticsWith (basedLocation specDir)
+let diagSanitiser =
+    sanitiseDiagnosticsWith (basedLocation specDir)
+    >> List.sortByDescending (fun x -> x.Location.Start)
 
 let listSpecs =
     Directory.GetFiles(specDir, "*.scm", SearchOption.AllDirectories)
