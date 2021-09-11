@@ -32,7 +32,7 @@ type CliArguments =
 let private dumpDiagnostics diags =
     diags
     |> List.rev
-    |> Seq.iter (fun x -> eprintfn "Error: %s" (x.ToString()))
+    |> Seq.iter (fun x -> eprintfn "%s" (x.ToString()))
 
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
