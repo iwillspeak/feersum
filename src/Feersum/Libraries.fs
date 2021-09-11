@@ -5,7 +5,9 @@ open Syntax
 open Utils
 
 /// The rename of a single element exported or imported from a library
-type SymbolRename = Rename of string * string
+type SymbolRename =
+    { From: string
+    ; To: string }
 
 /// A single export from a library declration
 type ExportSet =
@@ -106,7 +108,7 @@ and private parseLibraryDeclarationForm diags position special body =
 and private tryParseRename rename =
     match rename with
     | [{ Kind = AstNodeKind.Ident(int) };{ Kind = AstNodeKind.Ident(ext) }] ->
-        Ok(SymbolRename.Rename(int, ext))
+        Ok({From = int; To = ext})
     | _ -> Result.Error("invalid rename")
 
 and private parseExportDeclaration diags export =
@@ -167,10 +169,23 @@ let private parseLibraryBody ctx name body =
 
 // -------------------- Public Libraries API ---------------------
 
+/// Prettify a library name for printing
+let public prettifyLibraryName name =
+    String.concat " " name |> sprintf "(%s)"
+
+/// Recursively check a library name matches
+let rec public matchLibraryName left right =
+    match (left, right) with
+    | (l::lrest, r::rrest) ->
+        if l = r then
+            matchLibraryName lrest rrest
+        else
+            false
+    | ([], []) -> true
+    | _ -> false
+
 /// Parse the body of an import form
-let public parseImport diags body =
-    body
-    |> List.map (parseImportDeclaration diags)
+let public parseImport = parseImportDeclaration
 
 /// Parse a `(define-library ...)` form
 let public parseLibraryDefinition name body =

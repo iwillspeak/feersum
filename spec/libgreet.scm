@@ -8,6 +8,6 @@
 			(display #\!)
 			(newline))))
 
-(import (only (test greeter) greet))
+(import (prefix (only (test greeter) greet) grt/))
 
-(greet "world")
+(grt/greet "world")
