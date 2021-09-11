@@ -76,6 +76,7 @@ type BoundSyntaxTree = { Root: BoundExpr
 type private BinderCtx =
     { mutable Scope: Scope<StorageRef>
     ; mutable OuterScopes: Scope<StorageRef> list
+    ; mutable Libraries: (string list * (string * StorageRef) list) list
     ; mutable LocalCount: int
     ; mutable Captures: StorageRef list
     ; mutable HasDynamicEnv: bool
@@ -94,6 +95,7 @@ module private BinderCtx =
     let createForGlobalScope scope =
         { Scope = scope |> Scope.fromMap
         ; OuterScopes = []
+        ; Libraries = []
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = DiagnosticBag.Empty
@@ -104,6 +106,7 @@ module private BinderCtx =
     let createWithParent parent =
         { Scope = Scope.empty
         ; OuterScopes = []
+        ; Libraries = []
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = parent.Diagnostics
@@ -154,6 +157,10 @@ module private BinderCtx =
                 StorageRef.Local(getNextLocal ctx)
         ctx.Scope <- Scope.insert ctx.Scope id storage
         storage
+
+    /// Add a library declaration to the current context
+    let addLibrary ctx name exports =
+        ctx.Libraries <- (name, exports)::ctx.Libraries
 
     /// Add a new level to the scopes
     let pushScope ctx =
@@ -348,15 +355,28 @@ and private bindLibrary ctx (library: Libraries.LibraryDefinition) =
     let libCtx =
         Map.empty |> BinderCtx.createForGlobalScope
     let boundBodies =
-        List.foldBack (fun body state ->
-                        match body with
-                        | Libraries.LibraryDeclaration.Begin block ->
-                            let boundBegin =
-                                block
-                                |> List.map (bindInContext libCtx)
-                                |> BoundExpr.Seq
-                            boundBegin::state
-                        | _ -> state) library.Declarations []
+        List.choose (function
+        | Libraries.LibraryDeclaration.Begin block ->
+            block
+            |> List.map (bindInContext libCtx)
+            |> BoundExpr.Seq
+            |> Some
+        | _ -> None) library.Declarations
+    let exports =
+        library.Declarations
+        |> List.choose (function
+            | Libraries.LibraryDeclaration.Export exp ->
+                exp
+                |> List.map (function
+                    | Libraries.ExportSet.Plain p -> (p, StorageRef.Global(p))
+                    | Libraries.ExportSet.Renamed (Libraries.SymbolRename.Rename (from, into)) ->
+                        (into, StorageRef.Global(from)))
+                |> Some
+            | _ -> None) 
+        |> List.concat
+    
+    BinderCtx.addLibrary ctx library.LibraryName exports
+
     // TODO: `ctx` should store some reference to this library.
     BoundExpr.Library(library.LibraryName, boundBodies)
 
