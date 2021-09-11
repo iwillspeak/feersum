@@ -163,17 +163,40 @@ module private BinderCtx =
     let addLibrary ctx name exports =
         ctx.Libraries <- (name, exports)::ctx.Libraries
 
+    // TODO: add unit tests for this method
     /// Recursively find the bindings for the given import set
-    let private findBindings ctx importSet =
-        // FIXME: This just imports the first library in our context
-        let (name, bindings) = List.head ctx.Libraries
-        bindings
+    let rec private findBindings ctx = function
+        | Libraries.ImportSet.Error -> Result.Error "invalid import set"
+        | Libraries.ImportSet.Except(inner, except) ->
+            findBindings ctx inner
+            |> Result.map (List.filter (fun (id, _) -> List.contains id except |> not))
+        | Libraries.ImportSet.Only(inner, only) ->
+            findBindings ctx inner
+            |> Result.map (List.filter (fun (id, _) -> List.contains id only))
+        | Libraries.ImportSet.Plain lib ->
+            match Seq.tryFind (fun (name, _) -> Libraries.matchLibraryName lib name) ctx.Libraries with
+            | Some (_, exports) -> Ok(exports)
+            | _ ->
+                lib
+                |> Libraries.prettifyLibraryName
+                |> sprintf "Could not find library %s"
+                |> Result.Error
+        | Libraries.ImportSet.Prefix(inner, prefix) ->
+            findBindings ctx inner
+            |> Result.map (List.map (fun (name, storage) -> (prefix + name, storage)))
+        | Libraries.ImportSet.Renamed(inner, renames) ->
+            let processRenames (name, storage) =
+                match List.tryFind (fun (x: Libraries.SymbolRename) -> x.From = name) renames with
+                | Some rename -> (rename.To, storage)
+                | _ -> (name, storage)
+            findBindings ctx inner
+            |> Result.map (List.map (processRenames))
 
     /// Add all the bindings from a given import set into the current scope
     let addImportsFromSet ctx (importSet: Libraries.ImportSet) =
         findBindings ctx importSet
-        |> List.iter (fun (id, storage) -> 
-            ctx.Scope <- Scope.insert ctx.Scope id storage)
+        |> Result.map (List.iter (fun (id, storage) -> 
+                ctx.Scope <- Scope.insert ctx.Scope id storage))
 
     /// Add a new level to the scopes
     let pushScope ctx =
@@ -391,8 +414,8 @@ and private bindLibrary ctx (library: Libraries.LibraryDefinition) =
                 exp
                 |> List.map (function
                     | Libraries.ExportSet.Plain p -> (p, StorageRef.Global(p))
-                    | Libraries.ExportSet.Renamed (Libraries.SymbolRename.Rename (from, into)) ->
-                        (into, StorageRef.Global(from)))
+                    | Libraries.ExportSet.Renamed rename ->
+                        (rename.To, StorageRef.Global(rename.From)))
                 |> Some
             | _ -> None) 
         |> List.concat
@@ -528,8 +551,12 @@ and private bindForm ctx (form: AstNode list) node =
                 BoundExpr.Error
         | _ -> illFormed "define-library"
     | { Kind = AstNodeKind.Ident("import") }::body ->
-        Libraries.parseImport ctx.Diagnostics body
-        |> List.iter (BinderCtx.addImportsFromSet ctx)
+        body
+        |> List.iter (fun item ->
+            Libraries.parseImport ctx.Diagnostics item
+            |> BinderCtx.addImportsFromSet ctx
+            |> Result.mapError (ctx.Diagnostics.Emit item.Location)
+            |> ignore)
         BoundExpr.Nop
     | { Kind = AstNodeKind.Ident("cond") }::body ->
         failwith "Condition expressions not yet implemented"

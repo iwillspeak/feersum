@@ -840,7 +840,7 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "only"
+                                "prefix"
                               ]
                             },
                             "Location": {
@@ -853,9 +853,9 @@
                                   "StreamName": "libgreet.scm"
                                 },
                                 {
-                                  "Index": 193,
+                                  "Index": 195,
                                   "Line": 11,
-                                  "Column": 14,
+                                  "Column": 16,
                                   "StreamName": "libgreet.scm"
                                 }
                               ]
@@ -870,22 +870,98 @@
                                     "Kind": {
                                       "Case": "Ident",
                                       "Fields": [
-                                        "test"
+                                        "only"
                                       ]
                                     },
                                     "Location": {
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 195,
+                                          "Index": 197,
                                           "Line": 11,
-                                          "Column": 16,
+                                          "Column": 18,
                                           "StreamName": "libgreet.scm"
                                         },
                                         {
-                                          "Index": 199,
+                                          "Index": 201,
                                           "Line": 11,
-                                          "Column": 20,
+                                          "Column": 22,
+                                          "StreamName": "libgreet.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "test"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 203,
+                                                  "Line": 11,
+                                                  "Column": 24,
+                                                  "StreamName": "libgreet.scm"
+                                                },
+                                                {
+                                                  "Index": 207,
+                                                  "Line": 11,
+                                                  "Column": 28,
+                                                  "StreamName": "libgreet.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "greeter"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 208,
+                                                  "Line": 11,
+                                                  "Column": 29,
+                                                  "StreamName": "libgreet.scm"
+                                                },
+                                                {
+                                                  "Index": 215,
+                                                  "Line": 11,
+                                                  "Column": 36,
+                                                  "StreamName": "libgreet.scm"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 202,
+                                          "Line": 11,
+                                          "Column": 23,
+                                          "StreamName": "libgreet.scm"
+                                        },
+                                        {
+                                          "Index": 216,
+                                          "Line": 11,
+                                          "Column": 37,
                                           "StreamName": "libgreet.scm"
                                         }
                                       ]
@@ -895,22 +971,22 @@
                                     "Kind": {
                                       "Case": "Ident",
                                       "Fields": [
-                                        "greeter"
+                                        "greet"
                                       ]
                                     },
                                     "Location": {
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 200,
+                                          "Index": 217,
                                           "Line": 11,
-                                          "Column": 21,
+                                          "Column": 38,
                                           "StreamName": "libgreet.scm"
                                         },
                                         {
-                                          "Index": 207,
+                                          "Index": 222,
                                           "Line": 11,
-                                          "Column": 28,
+                                          "Column": 43,
                                           "StreamName": "libgreet.scm"
                                         }
                                       ]
@@ -923,15 +999,15 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 194,
+                                  "Index": 196,
                                   "Line": 11,
-                                  "Column": 15,
+                                  "Column": 17,
                                   "StreamName": "libgreet.scm"
                                 },
                                 {
-                                  "Index": 208,
+                                  "Index": 223,
                                   "Line": 11,
-                                  "Column": 29,
+                                  "Column": 44,
                                   "StreamName": "libgreet.scm"
                                 }
                               ]
@@ -941,22 +1017,22 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "greet"
+                                "grt/"
                               ]
                             },
                             "Location": {
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 209,
+                                  "Index": 224,
                                   "Line": 11,
-                                  "Column": 30,
+                                  "Column": 45,
                                   "StreamName": "libgreet.scm"
                                 },
                                 {
-                                  "Index": 214,
+                                  "Index": 228,
                                   "Line": 11,
-                                  "Column": 35,
+                                  "Column": 49,
                                   "StreamName": "libgreet.scm"
                                 }
                               ]
@@ -975,9 +1051,9 @@
                           "StreamName": "libgreet.scm"
                         },
                         {
-                          "Index": 215,
+                          "Index": 229,
                           "Line": 11,
-                          "Column": 36,
+                          "Column": 50,
                           "StreamName": "libgreet.scm"
                         }
                       ]
@@ -996,9 +1072,9 @@
                   "StreamName": "libgreet.scm"
                 },
                 {
-                  "Index": 216,
+                  "Index": 230,
                   "Line": 11,
-                  "Column": 37,
+                  "Column": 51,
                   "StreamName": "libgreet.scm"
                 }
               ]
@@ -1013,22 +1089,22 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "greet"
+                        "grt/greet"
                       ]
                     },
                     "Location": {
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 219,
+                          "Index": 233,
                           "Line": 13,
                           "Column": 2,
                           "StreamName": "libgreet.scm"
                         },
                         {
-                          "Index": 224,
+                          "Index": 242,
                           "Line": 13,
-                          "Column": 7,
+                          "Column": 11,
                           "StreamName": "libgreet.scm"
                         }
                       ]
@@ -1050,15 +1126,15 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 225,
+                          "Index": 243,
                           "Line": 13,
-                          "Column": 8,
+                          "Column": 12,
                           "StreamName": "libgreet.scm"
                         },
                         {
-                          "Index": 232,
+                          "Index": 250,
                           "Line": 13,
-                          "Column": 15,
+                          "Column": 19,
                           "StreamName": "libgreet.scm"
                         }
                       ]
@@ -1071,15 +1147,15 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 218,
+                  "Index": 232,
                   "Line": 13,
                   "Column": 1,
                   "StreamName": "libgreet.scm"
                 },
                 {
-                  "Index": 233,
+                  "Index": 251,
                   "Line": 13,
-                  "Column": 16,
+                  "Column": 20,
                   "StreamName": "libgreet.scm"
                 }
               ]
@@ -1098,9 +1174,9 @@
           "StreamName": "libgreet.scm"
         },
         {
-          "Index": 233,
+          "Index": 251,
           "Line": 13,
-          "Column": 16,
+          "Column": 20,
           "StreamName": "libgreet.scm"
         }
       ]
