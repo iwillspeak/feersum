@@ -45,15 +45,6 @@ let private parseLibraryName (diags: DiagnosticBag) name =
         | '<' | '"' | ':' | '>'
         | '+' | '[' | ']' | '/' | '\'' -> true
         | _ -> false
-    let checkReservedNames = function
-        | start::rest ->
-            if start = "scheme" || start = "srfi" then
-                start
-                |> sprintf "The name prefix %s is reserved"
-                |> Diagnostic.CreateWarning name.Location
-                |> diags.Add
-            start::rest
-        | [] -> []
     let parseNameElement element =
         match element.Kind with
         | AstNodeKind.Constant(SyntaxConstant.Number(namePart)) ->
@@ -72,7 +63,6 @@ let private parseLibraryName (diags: DiagnosticBag) name =
         x
         |> List.map (parseNameElement)
         |> ResultEx.collect
-        |> Result.map (checkReservedNames)
     | _ -> 
         diags.Emit name.Location "Expected library name"
         Result.Error(())
@@ -180,7 +170,17 @@ let private parseLibraryBody ctx name body =
 
 let public parseLibraryDefinition name body =
     let diags = DiagnosticBag.Empty
+    let checkReservedNames = function
+        | start::rest ->
+            if start = "scheme" || start = "srfi" then
+                start
+                |> sprintf "The name prefix %s is reserved"
+                |> Diagnostic.CreateWarning name.Location
+                |> diags.Add
+            start::rest
+        | [] -> []
     parseLibraryName diags name
+    |> Result.map checkReservedNames
     |> Result.map (fun boundName -> parseLibraryBody diags boundName body)
     |> Result.map (fun lib -> (lib, diags.Take))
     |> Result.mapError (fun _ -> diags.Take)
