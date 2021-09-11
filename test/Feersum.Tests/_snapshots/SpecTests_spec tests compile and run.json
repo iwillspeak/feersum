@@ -70,7 +70,7 @@
     "Exit": 0
   },
   "display.scm": {
-    "Output": "\n'()\n123\nHello World#\\!\n",
+    "Output": "\n'()\n123\nHello World!\n(\"I \\\" need \\x000b; some \\x0000; escaping\")\n",
     "Error": "",
     "Exit": 0
   },
@@ -302,7 +302,7 @@
     ]
   },
   "vectors.scm": {
-    "Output": "(#(1 2 3) #(#\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a) #(0 (2 2 2 2) Anna) #t #t #f 3 test 8 #(0 (Sue Sue) Anna))",
+    "Output": "(#(1 2 3) #(#\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a #\\a) #(0 (2 2 2 2) \"Anna\") #t #t #f 3 \"test\" 8 #(0 (\"Sue\" \"Sue\") \"Anna\"))",
     "Error": "",
     "Exit": 0
   },
@@ -322,7 +322,7 @@
     "Exit": 0
   },
   "user-macros.scm": {
-    "Output": "((1 2 3) bar)\n(foobar bizbaz)\n(inner foo)\n(1 2 3)\n",
+    "Output": "((1 2 3) \"bar\")\n(\"foobar\" \"bizbaz\")\n(inner foo)\n(1 2 3)\n",
     "Error": "",
     "Exit": 0
   },
@@ -405,7 +405,7 @@
     "Exit": 0
   },
   "symbols.scm": {
-    "Output": "(#t #t #f #t #f #f)\n(#t #f)\n(flying-fish Martin Malvina mISSISSIppi #t #t #t)\n",
+    "Output": "(#t #t #f #t #f #f)\n(#t #f)\n(\"flying-fish\" \"Martin\" \"Malvina\" mISSISSIppi #t #t #t)\n",
     "Error": "",
     "Exit": 0
   },
@@ -572,7 +572,7 @@
     ]
   },
   "libgreet.scm": {
-    "Output": "Hello world#\\!\n",
+    "Output": "Hello world!\n",
     "Error": "",
     "Exit": 0
   },

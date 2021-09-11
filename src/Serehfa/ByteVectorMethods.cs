@@ -45,7 +45,7 @@ namespace Serehfa
             return vec;
         }
 
-        internal static string GetDisplayRepresentation(byte[] bytes)
+        internal static string GetExternalRepresentation(byte[] bytes)
         {
             var sb = new StringBuilder();
             sb.Append("#u8(");

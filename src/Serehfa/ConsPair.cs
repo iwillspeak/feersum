@@ -23,7 +23,7 @@ namespace Serehfa
             var current = this;
             while (current != null)
             {
-                sb.Append(Write.GetDisplayRepresentation(current._car));
+                sb.Append(Write.GetExternalRepresentation(current._car));
                 if (current._cdr is ConsPair tail)
                 {
                     sb.Append(" ");
