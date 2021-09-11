@@ -167,6 +167,12 @@ let private parseLibraryBody ctx name body =
 
 // -------------------- Public Libraries API ---------------------
 
+/// Parse the body of an import form
+let public parseImport diags body =
+    body
+    |> List.map (parseImportDeclaration diags)
+
+/// Parse a `(define-library ...)` form
 let public parseLibraryDefinition name body =
     let diags = DiagnosticBag.Empty
     let checkReservedNames = function
