@@ -60,7 +60,7 @@ with
     /// Format the diagnostic for output.
     override d.ToString() =
         let pos = d.Location.Start
-        sprintf "%s:%d:%d: %s" pos.StreamName pos.Line pos.Column d.Message
+        sprintf "%A: %s:%d:%d: %s" d.Level pos.StreamName pos.Line pos.Column d.Message
 
 /// A collection of diagnostics being built by a compiler phase.
 type DiagnosticBag = { mutable Diagnostics: Diagnostic list }
