@@ -59,8 +59,16 @@ with
 
     /// Format the diagnostic for output.
     override d.ToString() =
-        let pos = d.Location.Start
-        sprintf "%A: %s:%d:%d: %s" d.Level pos.StreamName pos.Line pos.Column d.Message
+        match d.Location with
+        | Missing -> sprintf "%s: %s" d.MessagePrefix d.Message 
+        | Point p -> sprintf "%s:%d:%d: %s: %s" p.StreamName p.Line p.Column d.MessagePrefix d.Message 
+        | Span(s, e) -> sprintf "%s:%d:%d,%d:%d: %s: %s" s.StreamName s.Line s.Column e.Line e.Column d.MessagePrefix d.Message 
+
+    /// Prefix for the message. Used to summarise the diagnostic kind.
+    member private d.MessagePrefix =
+        match d.Level with
+        | Warning -> "warning"
+        | Error -> "error"
 
 /// A collection of diagnostics being built by a compiler phase.
 type DiagnosticBag = { mutable Diagnostics: Diagnostic list }

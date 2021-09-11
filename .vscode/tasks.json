@@ -43,7 +43,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "builditerfact",
+            "label": "runcompiler",
             "command": "dotnet",
             "type": "shell",
             "dependsOn": "build",
@@ -51,7 +51,7 @@
                 "${workspaceFolder}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
                 "--configuration", "Debug",
                 "-o", "${workspaceFolder}/spec/bin/",
-                "${workspaceFolder}/spec/iterfact.scm"
+                "${input:scmToCompile}"
             ],
             "group": "build",
             "presentation": {
@@ -94,6 +94,13 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        }
+    ],
+    "inputs": [
+        {
+            "type": "promptString",
+            "description": "Scheme file to compile",
+            "id": "scmToCompile"
         }
     ]
 }
