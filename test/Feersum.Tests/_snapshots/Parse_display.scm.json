@@ -394,6 +394,219 @@
                 }
               ]
             }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 88,
+                          "Line": 4,
+                          "Column": 2,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 95,
+                          "Line": 4,
+                          "Column": 9,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Str",
+                          "Fields": [
+                            "Hello World"
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 96,
+                          "Line": 4,
+                          "Column": 10,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 109,
+                          "Line": 4,
+                          "Column": 23,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 87,
+                  "Line": 4,
+                  "Column": 1,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 110,
+                  "Line": 4,
+                  "Column": 24,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 111,
+                          "Line": 4,
+                          "Column": 25,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 118,
+                          "Line": 4,
+                          "Column": 32,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Character",
+                          "Fields": [
+                            "!"
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 119,
+                          "Line": 4,
+                          "Column": 33,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 122,
+                          "Line": 4,
+                          "Column": 36,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 110,
+                  "Line": 4,
+                  "Column": 24,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 123,
+                  "Line": 4,
+                  "Column": 37,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 124,
+                          "Line": 4,
+                          "Column": 38,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 131,
+                          "Line": 4,
+                          "Column": 45,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 123,
+                  "Line": 4,
+                  "Column": 37,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 132,
+                  "Line": 4,
+                  "Column": 46,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
           }
         ]
       ]
@@ -408,9 +621,9 @@
           "StreamName": "display.scm"
         },
         {
-          "Index": 87,
+          "Index": 150,
           "Line": 4,
-          "Column": 1,
+          "Column": 64,
           "StreamName": "display.scm"
         }
       ]
