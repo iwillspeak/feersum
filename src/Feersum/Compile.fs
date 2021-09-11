@@ -177,6 +177,7 @@ let private writeToEnv ctx (temp: VariableDefinition) (idx: int) =
 let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
     let recurse = emitExpression ctx tail
     match expr with
+    | BoundExpr.Nop -> emitUnspecified ctx
     | BoundExpr.Error -> failwith "ICE: Attempt to lower an error expression"
     | BoundExpr.SequencePoint(inner, location) ->
         let pos = ctx.IL.Body.Instructions.Count
@@ -686,8 +687,9 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
 
 /// Emit the body of a library definition
 and emitLibrary ctx name body =
-    /// TODO: lower the body of libraries to separate class types per library
-    emitUnspecified ctx
+    // FIXME: Library bodies should be emitted into their own types
+    body
+    |> emitSequence ctx false
 
 /// Emit the `Main` Method Epilogue
 ///

@@ -61,6 +61,7 @@ type BoundExpr =
     | Seq of BoundExpr list
     | Lambda of BoundFormals * int * StorageRef list * StorageRef list option * BoundExpr
     | Library of string list * BoundExpr list
+    | Nop
     | Error
 
 /// Root type returned by the binder.
@@ -161,6 +162,18 @@ module private BinderCtx =
     /// Add a library declaration to the current context
     let addLibrary ctx name exports =
         ctx.Libraries <- (name, exports)::ctx.Libraries
+
+    /// Recursively find the bindings for the given import set
+    let private findBindings ctx importSet =
+        // FIXME: This just imports the first library in our context
+        let (name, bindings) = List.head ctx.Libraries
+        bindings
+
+    /// Add all the bindings from a given import set into the current scope
+    let addImportsFromSet ctx (importSet: Libraries.ImportSet) =
+        findBindings ctx importSet
+        |> List.iter (fun (id, storage) -> 
+            ctx.Scope <- Scope.insert ctx.Scope id storage)
 
     /// Add a new level to the scopes
     let pushScope ctx =
@@ -351,9 +364,18 @@ and private bindLet ctx name body location declBinder =
     | _ -> illFormedInCtx ctx location name
 
 and private bindLibrary ctx (library: Libraries.LibraryDefinition) =
+    let haxx =
+        let builtinProcs =
+            Builtins.coreProcNames
+            |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
+        let builtinMacros =
+            Builtins.coreMacros
+            |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m)))
+        Seq.append builtinProcs builtinMacros
+        |> Map.ofSeq
     // TODO: `libCtx` should be seeded based on the `(import ...)` deflarations
     let libCtx =
-        Map.empty |> BinderCtx.createForGlobalScope
+        haxx |> BinderCtx.createForGlobalScope
     let boundBodies =
         List.choose (function
         | Libraries.LibraryDeclaration.Begin block ->
@@ -376,8 +398,8 @@ and private bindLibrary ctx (library: Libraries.LibraryDefinition) =
         |> List.concat
     
     BinderCtx.addLibrary ctx library.LibraryName exports
+    ctx.Diagnostics.Append libCtx.Diagnostics.Take
 
-    // TODO: `ctx` should store some reference to this library.
     BoundExpr.Library(library.LibraryName, boundBodies)
 
 and private bindForm ctx (form: AstNode list) node =
@@ -505,6 +527,10 @@ and private bindForm ctx (form: AstNode list) node =
                 ctx.Diagnostics.Append diags
                 BoundExpr.Error
         | _ -> illFormed "define-library"
+    | { Kind = AstNodeKind.Ident("import") }::body ->
+        Libraries.parseImport ctx.Diagnostics body
+        |> List.iter (BinderCtx.addImportsFromSet ctx)
+        BoundExpr.Nop
     | { Kind = AstNodeKind.Ident("cond") }::body ->
         failwith "Condition expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("case") }::body ->
