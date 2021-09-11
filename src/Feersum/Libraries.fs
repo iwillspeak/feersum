@@ -11,7 +11,6 @@ type SymbolRename = Rename of string * string
 type ExportSet =
     | Plain of string
     | Renamed of SymbolRename
-    | Error
 
 /// A single import from a library declration
 type ImportSet =
@@ -91,7 +90,7 @@ and private parseLibraryDeclarationForm diags position special body =
     match special with
     | "export"  ->
         body
-        |> List.map (parseExportDeclaration diags)
+        |> List.choose (parseExportDeclaration diags)
         |> LibraryDeclaration.Export
     | "import" ->
         body
@@ -112,16 +111,16 @@ and private tryParseRename rename =
 
 and private parseExportDeclaration diags export =
     match export.Kind with
-    | AstNodeKind.Ident(plain) -> ExportSet.Plain plain
+    | AstNodeKind.Ident(plain) -> Some(ExportSet.Plain plain)
     | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename")}::rename) ->
         match rename |> tryParseRename with
-        | Result.Ok(renamed) -> ExportSet.Renamed renamed
-        | Result.Error(e) ->
+        | Ok renamed -> Some(ExportSet.Renamed renamed)
+        | Result.Error e ->
             diags.Emit export.Location e
-            ExportSet.Error
+            None
     | _ ->
-        diags.Emit export.Location "Invalid export element" 
-        ExportSet.Error
+        diags.Emit export.Location "Invalid export element"
+        None
 
 and private parseImportDeclaration diags import =
     let parseImportForm parser fromSet body resultCollector =
