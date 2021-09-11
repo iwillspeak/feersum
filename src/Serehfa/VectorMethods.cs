@@ -60,7 +60,7 @@ namespace Serehfa
             return vec;
         }
 
-        internal static string GetDisplayRepresentation(object[] v)
+        internal static string GetExternalRepresentation(object[] v)
         {
             var sb = new StringBuilder();
             sb.Append("#(");
@@ -71,7 +71,7 @@ namespace Serehfa
                 {
                     sb.Append(" ");
                 }
-                sb.Append(Write.GetDisplayRepresentation(o));
+                sb.Append(Write.GetExternalRepresentation(o));
                 first = false;
             }
 
