@@ -61,7 +61,21 @@ let rec private rewriteExpression ctx = function
     | Store(s, v) -> Store(rewriteStorage ctx s, Option.map (rewriteExpression ctx) v)
     | Application(app, args) -> Application(rewriteExpression ctx app, List.map (rewriteExpression ctx) args)
     | If(cond, cons, els) -> If(rewriteExpression ctx cond, rewriteExpression ctx cons, Option.map (rewriteExpression ctx) els)
-    | Seq(exprs) -> Seq(List.map (rewriteExpression ctx) exprs)
+    | Seq(exprs) ->
+        // This pair of functions allows us to flatten out nested sequences into
+        // a simpler representation.
+        let consolidate = function
+            | [] -> Nop
+            | [ single ] -> single
+            | other -> Seq(other)
+        let unfurl = function
+            | Seq inner -> inner
+            | Nop -> []
+            | o -> [ o ]
+        exprs
+        |> Seq.map ((rewriteExpression ctx) >> unfurl)
+        |> List.concat
+        |> consolidate
     | Lambda(formals, root) ->
         Lambda(formals, (rewriteRoot (Some(ctx)) root))
     | SequencePoint(inner, location) ->
@@ -69,6 +83,10 @@ let rec private rewriteExpression ctx = function
     | Library(name, body) ->
         Library(name, rewriteRoot None body)
     | e -> e
+
+/// Re-write an expression tree root. This node represents a top level
+/// context that will eventually be emitted as a method body. Exmaples
+/// include script bodies, library bodies, and lambda bodies.
 and private rewriteRoot parent root =
     // First re-write our free variables. This is in reference to the parent
     // context so needs to be done before we create a derived `ctx`.
