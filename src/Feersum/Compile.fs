@@ -84,7 +84,8 @@ let private emitUnspecified ctx =
     ctx.IL.Emit(OpCodes.Call, ctx.Core.UndefinedInstance)
 
 /// Ensure a field exists on the program type to be used as a global variable
-let private ensureField ctx id =
+let private ensureField ctx mangledPrefix id =
+    let id = (mangledPrefix + "<" + id + ">")
     let pred (field: FieldDefinition) =
         field.Name = id
     match Seq.tryFind pred ctx.ProgramTy.Fields with
@@ -372,8 +373,8 @@ and writeTo ctx storage =
         failwithf "Can't re-define builtin %s" id
     | StorageRef.Macro m ->
         failwithf "Can't re-define macro %s" m.Name
-    | StorageRef.Global id ->
-        let field = ensureField ctx id
+    | StorageRef.Global(mangledPrefix, id) ->
+        let field = ensureField ctx mangledPrefix id
         ctx.IL.Emit(OpCodes.Stsfld, field)
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
@@ -401,8 +402,8 @@ and readFrom ctx storage =
     | StorageRef.Builtin id ->
         let meth = ctx.Core.Builtins.[id]
         emitMethodToFunc ctx meth
-    | StorageRef.Global id ->
-        let field = ensureField ctx id
+    | StorageRef.Global(mangledPrefix, id) ->
+        let field = ensureField ctx mangledPrefix id
         ctx.IL.Emit(OpCodes.Ldsfld, field)
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)

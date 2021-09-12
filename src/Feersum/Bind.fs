@@ -16,7 +16,7 @@ type StorageRef =
     | Macro of Macro
     | Builtin of string
     | Local of int
-    | Global of string
+    | Global of string * string
     | Arg of int
     | Environment of int * StorageRef
     | Captured of StorageRef
@@ -79,8 +79,10 @@ type private BinderCtx =
     ; mutable OuterScopes: Scope<StorageRef> list
     ; mutable Libraries: (string list * (string * StorageRef) list) list
     ; mutable LocalCount: int
+    ; mutable Mangles: int
     ; mutable Captures: StorageRef list
     ; mutable HasDynamicEnv: bool
+    ; MangledName: string
     ; Diagnostics: DiagnosticBag
     ; Parent: BinderCtx option }
 
@@ -89,28 +91,40 @@ let private incEnvSize = function
     | None -> Some(1)
     | Some(size) -> Some(size + 1)
 
+/// Transofmr the name to make it safe for .NET.
+let private mangleName = id
+
 /// Methods for manipulating the bind context
 module private BinderCtx =
 
     /// Create a new binder context for the given root scope
-    let createForGlobalScope scope =
+    let createForGlobalScope scope name =
         // FIXME: This `(scheme base)` thing is a massif hack.
         let baseLib =
             (["scheme";"base"], scope |> Map.toList)
         { Scope = scope |> Scope.fromMap
         ; OuterScopes = []
         ; Libraries = [baseLib]
+        ; Mangles = 0
+        ; MangledName = name |> mangleName
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = DiagnosticBag.Empty
         ; HasDynamicEnv = false
         ; Parent = None }
     
+    let private nextMangledName ctx =
+        let next = ctx.Mangles
+        ctx.Mangles <- next + 1
+        sprintf "%s::Lambda_%d" ctx.MangledName next
+
     /// Create a new binder context for a child scope
     let createWithParent parent =
         { Scope = Scope.empty
         ; OuterScopes = []
         ; Libraries = []
+        ; Mangles = 0
+        ; MangledName = nextMangledName parent
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = parent.Diagnostics
@@ -159,7 +173,7 @@ module private BinderCtx =
     let addBinding ctx id =
         let storage =
             if ctx.Parent.IsNone && ctx.OuterScopes.IsEmpty then
-                StorageRef.Global(id)
+                StorageRef.Global(ctx.MangledName, id)
             else
                 StorageRef.Local(getNextLocal ctx)
         scopeInsert ctx id storage
@@ -394,7 +408,10 @@ and private bindLet ctx name body location declBinder =
 
 and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
     // Process `(import ...)`
-    let libCtx = BinderCtx.createForGlobalScope Map.empty
+    let libCtx =
+        library.LibraryName
+        |> String.concat "::"
+        |> BinderCtx.createForGlobalScope Map.empty
     library.Declarations
     |> List.iter (function
         | Libraries.LibraryDeclaration.Import i ->
@@ -606,7 +623,7 @@ let createRootScope =
 /// Walks the parse tree and computes semantic information. The result of this
 /// call can be passed to the `Compile` or `Emit` API to be lowered to IL.
 let bind scope node: BoundSyntaxTree =
-    let ctx = BinderCtx.createForGlobalScope scope
+    let ctx = BinderCtx.createForGlobalScope scope "$SchemeLibrary"
     let bound = bindInContext ctx node
     { Root = bound
     ; LocalsCount = ctx.LocalCount
