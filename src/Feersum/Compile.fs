@@ -273,8 +273,8 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
             // TODO: Could do with another sequence point here at the join block. Or
             //       stop using `nops` all over the place as labels and instead.
             ctx.IL.Append(lblEnd)
-    | BoundExpr.Lambda(formals, locals, captured, envSize, body) ->
-        emitLambda ctx formals locals captured envSize body
+    | BoundExpr.Lambda(formals, body) ->
+        emitLambda ctx formals body
     | BoundExpr.Library(name, body) ->
         emitLibrary ctx name body
     | BoundExpr.Import name ->
@@ -477,12 +477,12 @@ and emitApplication ctx tail ap args =
     /// on the stack. This first defers to `emitNamedLambda` to write out the
     /// lambda's body and then creates a new `Func<obj[],obj>` instance that
     /// wraps a call to the lambda using the lambda's 'thunk'.
-and emitLambda ctx formals locals captured envSize body =
+and emitLambda ctx formals body =
 
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
-    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals locals envSize body
+    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
     let method = thunk :> MethodReference
 
     // Create a `Func` instance with the appropriate `this` pointer.
@@ -504,7 +504,7 @@ and emitLambda ctx formals locals captured envSize body =
     /// the function we are calling. A future optimisation may be to transform
     /// the bound tree and lower some calls in the case we _can_ be sure of the
     /// parameters. 
-and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
+and emitNamedLambda (ctx: EmitCtx) name formals root =
 
     let attrs = 
         if ctx.EnvSize.IsSome then
@@ -532,7 +532,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
         addParam dotted
     
     let mutable locals = []
-    for _ = 1 to localCount do
+    for _ = 1 to root.Locals do
         let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
         methodDecl.Body.Variables.Add(local)
         locals <- local::locals
@@ -542,13 +542,13 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
     let ctx = { ctx with NextLambda = 0;
                          Locals = locals;
                          Parameters = List.rev parameters;
-                         EnvSize = envSizeForMappings envMappings
+                         EnvSize = envSizeForMappings root.EnvMappings
                          ParentEnvSize = ctx.EnvSize
                          Environment = None
                          IL = methodDecl.Body.GetILProcessor();
                          ScopePrefix = name }
 
-    match envMappings with
+    match root.EnvMappings with
     | Some m ->
         createEnvironment ctx (Option.defaultValue 0 ctx.EnvSize)
         // Hoist any arguments into the environment
@@ -563,7 +563,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
             | _ -> ())
     | None -> ()
 
-    emitExpression ctx true body
+    emitExpression ctx true root.Body
     ctx.IL.Emit(OpCodes.Ret)
     methodDecl.Body.Optimize()
 
@@ -721,7 +721,7 @@ and emitLibrary ctx name body =
                               ; Environment = None
                               ; ScopePrefix = "$ROOT" }
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda libEmitCtx "$LibraryBody" bodyParams 0 None body
+    let bodyMethod, _ = emitNamedLambda libEmitCtx "$LibraryBody" bodyParams body
 
     ctx.Initialisers <- Map.add name (bodyMethod :> MethodReference) ctx.Initialisers
 
@@ -799,7 +799,7 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.LocalsCount bound.EnvMappings bound.Root
+    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.Root
 
     if options.OutputType = OutputType.Exe then
         // The `Main` method is the entry point of the program. It calls
