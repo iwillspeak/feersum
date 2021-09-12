@@ -94,9 +94,12 @@ module private BinderCtx =
 
     /// Create a new binder context for the given root scope
     let createForGlobalScope scope =
+        // FIXME: This `(scheme base)` thing is a massif hack.
+        let baseLib =
+            (["scheme";"base"], scope |> Map.toList)
         { Scope = scope |> Scope.fromMap
         ; OuterScopes = []
-        ; Libraries = []
+        ; Libraries = [baseLib]
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = DiagnosticBag.Empty
@@ -140,14 +143,17 @@ module private BinderCtx =
             | None -> None
         | None -> None
 
+    /// Insert an element directly into the current scope.
+    let scopeInsert ctx id storage =
+        ctx.Scope <- Scope.insert ctx.Scope id storage
     
-    /// Introduce a binding for the given formal argument
+    /// Introduce a binding for the given formal argument.
     let addArgumentBinding ctx id idx =
-        ctx.Scope <- Scope.insert ctx.Scope id (StorageRef.Arg idx)
+        scopeInsert ctx id (StorageRef.Arg idx)
 
     /// Adds a macro definition to the current scope.
     let addMacro ctx id macro =
-        ctx.Scope <- Scope.insert ctx.Scope id (StorageRef.Macro macro)
+        scopeInsert ctx id (StorageRef.Macro macro)
 
     /// Add a new entry to the current scope
     let addBinding ctx id =
@@ -156,7 +162,7 @@ module private BinderCtx =
                 StorageRef.Global(id)
             else
                 StorageRef.Local(getNextLocal ctx)
-        ctx.Scope <- Scope.insert ctx.Scope id storage
+        scopeInsert ctx id storage
         storage
 
     /// Add a library declaration to the current context
@@ -165,7 +171,7 @@ module private BinderCtx =
 
     // TODO: add unit tests for this method
     /// Recursively find the bindings for the given import set
-    let rec private findBindings ctx = function
+    let rec findBindings ctx = function
         | Libraries.ImportSet.Error -> Result.Error "invalid import set"
         | Libraries.ImportSet.Except(inner, except) ->
             findBindings ctx inner
@@ -196,7 +202,7 @@ module private BinderCtx =
     let addImportsFromSet ctx (importSet: Libraries.ImportSet) =
         findBindings ctx importSet
         |> Result.map (List.iter (fun (id, storage) -> 
-                ctx.Scope <- Scope.insert ctx.Scope id storage))
+                scopeInsert ctx id storage))
 
     /// Add a new level to the scopes
     let pushScope ctx =
@@ -386,19 +392,21 @@ and private bindLet ctx name body location declBinder =
         BoundExpr.Seq(List.append decls boundBody)
     | _ -> illFormedInCtx ctx location name
 
-and private bindLibrary ctx (library: Libraries.LibraryDefinition) =
-    let haxx =
-        let builtinProcs =
-            Builtins.coreProcNames
-            |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
-        let builtinMacros =
-            Builtins.coreMacros
-            |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m)))
-        Seq.append builtinProcs builtinMacros
-        |> Map.ofSeq
-    // TODO: `libCtx` should be seeded based on the `(import ...)` deflarations
-    let libCtx =
-        haxx |> BinderCtx.createForGlobalScope
+and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
+    // Process `(import ...)`
+    let libCtx = BinderCtx.createForGlobalScope Map.empty
+    library.Declarations
+    |> List.iter (function
+        | Libraries.LibraryDeclaration.Import i ->
+            i
+            |> List.iter (fun i ->
+                BinderCtx.findBindings ctx i
+                |> Result.map (List.iter (fun (id, storage) -> BinderCtx.scopeInsert libCtx id storage))
+                |> Result.mapError (libCtx.Diagnostics.Emit location)
+                |> ignore)
+        | _ -> ())
+
+    // Process the bodies of the library.
     let boundBodies =
         List.choose (function
         | Libraries.LibraryDeclaration.Begin block ->
@@ -407,6 +415,8 @@ and private bindLibrary ctx (library: Libraries.LibraryDefinition) =
             |> BoundExpr.Seq
             |> Some
         | _ -> None) library.Declarations
+
+    // Process `(export ...)` declarations.
     let exports =
         library.Declarations
         |> List.choose (function
@@ -545,7 +555,7 @@ and private bindForm ctx (form: AstNode list) node =
             match Libraries.parseLibraryDefinition name body with
             | Ok(library, diags) ->
                 ctx.Diagnostics.Append diags
-                bindLibrary ctx library
+                bindLibrary ctx node.Location library
             | Result.Error diags ->
                 ctx.Diagnostics.Append diags
                 BoundExpr.Error
