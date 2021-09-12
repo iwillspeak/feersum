@@ -1,8 +1,7 @@
 (=)  ; => #t
 (> 5 4) ; => #t
 (< 5 4) ; => #f
-; FIXME: can't have an if here as conditions aren't lowered properly
-;(if 
+(if 
     (>= 1) ; => #t
     (+
         (+ 1 2 4 88) ; => 95
@@ -14,4 +13,4 @@
         (* 8 5) ; => 40
         (* 76) ; => 76
     ) ; => 200
-;    (* 8 9))
+    (* 8 9))

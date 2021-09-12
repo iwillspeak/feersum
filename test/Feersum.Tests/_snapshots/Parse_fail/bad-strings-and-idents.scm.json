@@ -23,13 +23,13 @@
                   "Index": 0,
                   "Line": 1,
                   "Column": 1,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 },
                 {
                   "Index": 5,
                   "Line": 1,
                   "Column": 6,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 }
               ]
             }
@@ -53,13 +53,13 @@
                   "Index": 6,
                   "Line": 2,
                   "Column": 1,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 },
                 {
                   "Index": 12,
                   "Line": 2,
                   "Column": 7,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 }
               ]
             }
@@ -83,13 +83,13 @@
                   "Index": 13,
                   "Line": 3,
                   "Column": 1,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 },
                 {
                   "Index": 28,
                   "Line": 4,
                   "Column": 4,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 }
               ]
             }
@@ -113,13 +113,13 @@
                   "Index": 29,
                   "Line": 5,
                   "Column": 1,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 },
                 {
                   "Index": 37,
                   "Line": 5,
                   "Column": 9,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 }
               ]
             }
@@ -142,13 +142,13 @@
                         "Index": 39,
                         "Line": 6,
                         "Column": 2,
-                        "StreamName": "dummy"
+                        "StreamName": "fail/bad-strings-and-idents.scm"
                       },
                       {
                         "Index": 44,
                         "Line": 6,
                         "Column": 7,
-                        "StreamName": "dummy"
+                        "StreamName": "fail/bad-strings-and-idents.scm"
                       }
                     ]
                   }
@@ -162,13 +162,13 @@
                   "Index": 38,
                   "Line": 6,
                   "Column": 1,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 },
                 {
                   "Index": 45,
                   "Line": 7,
                   "Column": 1,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 }
               ]
             }
@@ -191,13 +191,13 @@
                         "Index": 46,
                         "Line": 7,
                         "Column": 2,
-                        "StreamName": "dummy"
+                        "StreamName": "fail/bad-strings-and-idents.scm"
                       },
                       {
                         "Index": 49,
                         "Line": 7,
                         "Column": 5,
-                        "StreamName": "dummy"
+                        "StreamName": "fail/bad-strings-and-idents.scm"
                       }
                     ]
                   }
@@ -211,13 +211,13 @@
                   "Index": 45,
                   "Line": 7,
                   "Column": 1,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 },
                 {
                   "Index": 49,
                   "Line": 7,
                   "Column": 5,
-                  "StreamName": "dummy"
+                  "StreamName": "fail/bad-strings-and-idents.scm"
                 }
               ]
             }
@@ -232,153 +232,153 @@
           "Index": 0,
           "Line": 1,
           "Column": 1,
-          "StreamName": "dummy"
+          "StreamName": "fail/bad-strings-and-idents.scm"
         },
         {
           "Index": 49,
           "Line": 7,
           "Column": 5,
-          "StreamName": "dummy"
+          "StreamName": "fail/bad-strings-and-idents.scm"
         }
       ]
     }
   },
   "Item2": [
     {
-      "Case": "Diagnostic",
-      "Fields": [
-        {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Index": 49,
-              "Line": 7,
-              "Column": 5,
-              "StreamName": "fail/bad-strings-and-idents.scm"
-            }
-          ]
-        },
-        "Missing closing '|'"
-      ]
+      "Location": {
+        "Case": "Point",
+        "Fields": [
+          {
+            "Index": 49,
+            "Line": 7,
+            "Column": 5,
+            "StreamName": "fail/bad-strings-and-idents.scm"
+          }
+        ]
+      },
+      "Message": "Missing closing '|'",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
-      "Case": "Diagnostic",
-      "Fields": [
-        {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Index": 49,
-              "Line": 7,
-              "Column": 5,
-              "StreamName": "fail/bad-strings-and-idents.scm"
-            }
-          ]
-        },
-        "Expected ';'"
-      ]
+      "Location": {
+        "Case": "Point",
+        "Fields": [
+          {
+            "Index": 49,
+            "Line": 7,
+            "Column": 5,
+            "StreamName": "fail/bad-strings-and-idents.scm"
+          }
+        ]
+      },
+      "Message": "Expected ';'",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
-      "Case": "Diagnostic",
-      "Fields": [
-        {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Index": 49,
-              "Line": 7,
-              "Column": 5,
-              "StreamName": "fail/bad-strings-and-idents.scm"
-            }
-          ]
-        },
-        "Expected hex character literal"
-      ]
+      "Location": {
+        "Case": "Point",
+        "Fields": [
+          {
+            "Index": 49,
+            "Line": 7,
+            "Column": 5,
+            "StreamName": "fail/bad-strings-and-idents.scm"
+          }
+        ]
+      },
+      "Message": "Expected hex character literal",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
-      "Case": "Diagnostic",
-      "Fields": [
-        {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Index": 42,
-              "Line": 6,
-              "Column": 5,
-              "StreamName": "fail/bad-strings-and-idents.scm"
-            }
-          ]
-        },
-        "Expected hex character literal"
-      ]
+      "Location": {
+        "Case": "Point",
+        "Fields": [
+          {
+            "Index": 42,
+            "Line": 6,
+            "Column": 5,
+            "StreamName": "fail/bad-strings-and-idents.scm"
+          }
+        ]
+      },
+      "Message": "Expected hex character literal",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
-      "Case": "Diagnostic",
-      "Fields": [
-        {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Index": 32,
-              "Line": 5,
-              "Column": 4,
-              "StreamName": "fail/bad-strings-and-idents.scm"
-            }
-          ]
-        },
-        "Invalid code unit"
-      ]
+      "Location": {
+        "Case": "Point",
+        "Fields": [
+          {
+            "Index": 32,
+            "Line": 5,
+            "Column": 4,
+            "StreamName": "fail/bad-strings-and-idents.scm"
+          }
+        ]
+      },
+      "Message": "Invalid code unit",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
-      "Case": "Diagnostic",
-      "Fields": [
-        {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Index": 16,
-              "Line": 3,
-              "Column": 4,
-              "StreamName": "fail/bad-strings-and-idents.scm"
-            }
-          ]
-        },
-        "Invalid code unit"
-      ]
+      "Location": {
+        "Case": "Point",
+        "Fields": [
+          {
+            "Index": 16,
+            "Line": 3,
+            "Column": 4,
+            "StreamName": "fail/bad-strings-and-idents.scm"
+          }
+        ]
+      },
+      "Message": "Invalid code unit",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
-      "Case": "Diagnostic",
-      "Fields": [
-        {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Index": 11,
-              "Line": 2,
-              "Column": 6,
-              "StreamName": "fail/bad-strings-and-idents.scm"
-            }
-          ]
-        },
-        "Expected ';'"
-      ]
+      "Location": {
+        "Case": "Point",
+        "Fields": [
+          {
+            "Index": 11,
+            "Line": 2,
+            "Column": 6,
+            "StreamName": "fail/bad-strings-and-idents.scm"
+          }
+        ]
+      },
+      "Message": "Expected ';'",
+      "Level": {
+        "Case": "Error"
+      }
     },
     {
-      "Case": "Diagnostic",
-      "Fields": [
-        {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Index": 3,
-              "Line": 1,
-              "Column": 4,
-              "StreamName": "fail/bad-strings-and-idents.scm"
-            }
-          ]
-        },
-        "Expected hex character literal"
-      ]
+      "Location": {
+        "Case": "Point",
+        "Fields": [
+          {
+            "Index": 3,
+            "Line": 1,
+            "Column": 4,
+            "StreamName": "fail/bad-strings-and-idents.scm"
+          }
+        ]
+      },
+      "Message": "Expected hex character literal",
+      "Level": {
+        "Case": "Error"
+      }
     }
   ]
 }

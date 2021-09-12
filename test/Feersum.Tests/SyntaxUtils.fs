@@ -5,6 +5,7 @@ open Diagnostics
 open System.IO
 open FParsec
 
+/// Helpers for fabricating syntax elements
 module SyntaxFactory =
 
     /// a fabricated location
@@ -15,63 +16,70 @@ module SyntaxFactory =
     let node kind =
         { Kind = kind; Location = dummyLocation }
 
+    /// Create a syntax node from a constant value
     let constant c =
         c
         |> AstNodeKind.Constant
         |> node
 
+    /// Create a syntax node from a given number
     let number n =
         n
         |> SyntaxConstant.Number
         |> constant
 
-let normalisePaths (p: Position) =
-    Position("dummy", p.Index, p.Line, p.Column)
+/// Transform the StreamName in a Position
+///
+/// Re-writes the path in a given `Position` with a given `reWriter`.
+let public sanitiseStreamNameWith reWriter (p: Position) =
+    Position(p.StreamName |> reWriter, p.Index, p.Line, p.Column)
 
-let useDummyPoints l =
-    SyntaxFactory.dummyLocation
+/// Path Re-Writer that returns a fixed stream name
+let public fixedStreamName name = sanitiseStreamNameWith (function _ -> name)
+/// Path Re-Writer that normalises paths relative to `base`
+let public basedStreamName basePath =
+    sanitiseStreamNameWith (function path -> Path.GetRelativePath(basePath, path))
 
-let sanitiseLocation = function
-    | Point(p) -> Point(normalisePaths p)
-    | Span(s, e) -> Span(normalisePaths s, normalisePaths e)
+/// Transform a location with the given Path Re-Writer
+let public sanitiseLocationWith rewriter = function
+    | Point(p) -> Point(rewriter p)
+    | Span(s, e) -> Span(rewriter s, rewriter e)
     | Missing -> Missing
 
-let rec sanitise node =
-    sanitiseWith useDummyPoints node
-and sanitiseWithPosition node =
-    sanitiseWith sanitiseLocation node 
-and sanitiseWith rewriter node =
-    { Kind = node.Kind |> sanitiseKind rewriter; Location = node.Location |> rewriter }
-and sanitiseKind rewriter = function
-    | Form(f) -> List.map (sanitiseWith rewriter) f |> Form
-    | Seq(s) -> List.map (sanitiseWith rewriter) s |> Seq
-    | Quoted(q) -> sanitiseWith rewriter q |> Quoted
-    | Vector(v) -> List.map (sanitiseWith rewriter) v |> Vector 
+/// Location Re-writer that uses the `fixedStreamName` Path Re-writer
+let public fixedLocaiton path = sanitiseLocationWith (fixedStreamName path)
+/// Location Re-writer that uses the `basedStreamName` Path Re-writer
+let public basedLocation basePath = sanitiseLocationWith (basedStreamName basePath)
+
+/// Transform a syntax node with the given Location Re-Writer
+let rec public sanitiseNodeWith rewriter (node: AstNode) =
+    { AstNode.Kind = node.Kind |> sanitiseKind rewriter; Location = node.Location |> rewriter }
+
+and private sanitiseKind rewriter = function
+    | Form(f) -> List.map (sanitiseNodeWith rewriter) f |> Form
+    | Seq(s) -> List.map (sanitiseNodeWith rewriter) s |> Seq
+    | Quoted(q) -> sanitiseNodeWith rewriter q |> Quoted
+    | Vector(v) -> List.map (sanitiseNodeWith rewriter) v |> Vector 
     | other -> other
 
-let sanitiseDiagnostics (b: string) (diags: Diagnostic list) =
-    let sanitisePoint (p: FParsec.Position) =
-        FParsec.Position(Path.GetRelativePath(b, p.StreamName), p.Index, p.Line, p.Column)
-    let santiseLocation l =
-        match l with
-        | Point p -> sanitisePoint p |> Point
-        | Span(s, e) -> Span(sanitisePoint s, sanitisePoint e)
-        | Missing -> Missing
+/// Transofrm a diagnostics list with the given Location Re-Writer `rewriter`
+let public sanitiseDiagnosticsWith rewriter (diags: Diagnostic list) =
     let sanitiseDiag d =
-        match d with
-        | Diagnostic(l, m) -> Diagnostic(l |> santiseLocation, m)
+        { d with Diagnostic.Location = rewriter(d.Location) }
     List.map (sanitiseDiag) diags
 
-let readSingleNode input =
+/// Read a single expression node from the input string
+let public readSingleNode input =
     match readExpr input with
     | ({ Kind = Seq exprs }, []) -> (List.exactlyOne exprs)
     | (expr, []) -> expr
     | (_, diag) -> failwithf "Expected single expression but got: %A" diag
 
-let readSingle input =
+/// Helper to read a single AST kind from the given `input`
+let public readSingle input =
     (readSingleNode input).Kind
 
-let readMany input =
+let public readMany input =
     match readExpr input with
     | (read, []) -> read
     | (_, diag) -> failwithf "Expected one or more expressions but got: %A" diag

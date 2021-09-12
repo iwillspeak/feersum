@@ -1,6 +1,6 @@
 module Macros
-open Syntax
 open Diagnostics
+open Syntax
 open Utils
 
 /// The macro pattern type. Used in syntax cases to define the form that a
@@ -63,7 +63,7 @@ with
 
 /// Create an error result with a diagnostic at `location`
 let private errAt location message =
-    Diagnostic(location, message)
+    Diagnostic.Create location message
     |> Result.Error
 
 /// Parse a (a ... . b) or (a ...) form. This is used to parse both patterns and
@@ -230,7 +230,7 @@ let macroApply (macro: Macro) syntax =
         | [] -> Result.Error "No pattern matched the syntax"
 
     macroTryApply macro.Transformers
-    |> Result.mapError (fun e -> Diagnostic(syntax.Location, e))
+    |> Result.mapError (Diagnostic.Create syntax.Location)
 
 /// Try to parse a pattern from the given syntax.
 let rec public parsePattern elipsis literals syntax =

@@ -14,10 +14,7 @@ open Options
 ///
 /// Returns the external representation for a CIL type.
 let cilExternalRepr (object: Object) =
-    match object with
-    | :? string as s -> sprintf "%A" s
-    | other -> Write.GetDisplayRepresentation(other)
-
+    Write.GetExternalRepresentation(object)
 
 /// Take a syntax tree and evaluate it in-process
 ///

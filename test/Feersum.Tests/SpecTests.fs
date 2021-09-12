@@ -15,12 +15,14 @@ type TestExecutionResult =
     ; Error: string
     ; Exit: int }
 
-// [<assembly: UpdateSnapshots>]
-// ()
-
 let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
 let specBin = Path.Join(specDir, "bin")
 let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
+
+let nodeSanitiser = sanitiseNodeWith (basedLocation specDir)
+let diagSanitiser =
+    sanitiseDiagnosticsWith (basedLocation specDir)
+    >> List.sortByDescending (fun x -> x.Location.Start)
 
 let listSpecs =
     Directory.GetFiles(specDir, "*.scm", SearchOption.AllDirectories)
@@ -63,13 +65,13 @@ let ``spec tests compile and run`` s =
     | diags ->
         if not shouldFail then
             failwithf "Compilation error: %A" diags
-        (diags |> sanitiseDiagnostics specDir).ShouldMatchChildSnapshot(s)
+        (diags |> diagSanitiser).ShouldMatchChildSnapshot(s)
 
 [<Theory>]
 [<MemberDataAttribute("listSpecs")>]
 let ``spec tests parse result`` s =
     let node, diagnostics = parseFile (Path.Join(specDir, s))
-    let tree = (node |> sanitiseWithPosition, diagnostics |> sanitiseDiagnostics specDir)
+    let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
     tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s))
 
 [<Fact>]

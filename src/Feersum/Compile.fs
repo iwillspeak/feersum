@@ -26,6 +26,8 @@ type EmitCtx =
     ; mutable Environment: VariableDefinition option
     ; ParentEnvSize: int option
     ; ProgramTy: TypeDefinition
+    ; mutable Initialisers: Map<string, MethodReference>
+    ; mutable Libraries: Map<string, TypeDefinition>
     ; Core: Builtins.CoreTypes }
 
 
@@ -84,14 +86,19 @@ let private emitUnspecified ctx =
     ctx.IL.Emit(OpCodes.Call, ctx.Core.UndefinedInstance)
 
 /// Ensure a field exists on the program type to be used as a global variable
-let private ensureField ctx id =
+let private ensureField ctx mangledPrefix id =
     let pred (field: FieldDefinition) =
         field.Name = id
-    match Seq.tryFind pred ctx.ProgramTy.Fields with
+
+    let ty =
+        Map.tryFind mangledPrefix ctx.Libraries
+        |> Option.get
+    
+    match Seq.tryFind pred ty.Fields with
     | Some(found) -> found
     | None ->
         let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
-        ctx.ProgramTy.Fields.Add(newField)
+        ty.Fields.Add(newField)
         newField
 
 /// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
@@ -174,9 +181,10 @@ let private writeToEnv ctx (temp: VariableDefinition) (idx: int) =
 ///
 /// Emits the code for a single function into the given assembly. For some more
 /// complex expression types it delegates to the mutually-recursive `emit*`s
-let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
-    let recurse = emitExpression ctx
+let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
+    let recurse = emitExpression ctx tail
     match expr with
+    | BoundExpr.Nop -> emitUnspecified ctx
     | BoundExpr.Error -> failwith "ICE: Attempt to lower an error expression"
     | BoundExpr.SequencePoint(inner, location) ->
         let pos = ctx.IL.Body.Instructions.Count
@@ -200,15 +208,15 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
             point.EndColumn <- int e.Column
             ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
     | BoundExpr.Literal l -> emitLiteral ctx l
-    | BoundExpr.Seq s -> emitSequence ctx s
-    | BoundExpr.Application(ap, args) -> emitApplication ctx ap args
+    | BoundExpr.Seq s -> emitSequence ctx tail s
+    | BoundExpr.Application(ap, args) -> emitApplication ctx tail ap args
     | BoundExpr.Store(storage, maybeVal) ->
         // TODO: Could we just elide the whole definition if there is no value.
         //       If we have nothing to store it would save a lot of code. In the
         //       case we are storing to a field we _might_ need to call
         //       `emitField` still.
         match maybeVal with
-        | Some(expr) -> recurse expr
+        | Some(expr) -> emitExpression ctx false expr
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
         ctx.IL.Emit(OpCodes.Dup)
         writeTo ctx storage
@@ -218,7 +226,18 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         let lblNotBool = ctx.IL.Create(OpCodes.Nop)
         let lblEnd = ctx.IL.Create(OpCodes.Nop)
 
-        recurse cond
+        // ILAAA       : <expression for cond>
+        // ILBBB       : dup
+        // ILBBB       : isinst bool
+        // ILBBB       : brfalse ILlblNotBool
+        // ILBBB       : brtrue ILlblTrue
+        // ILCCC       : <false expression>
+        // ILXXX       : br ILlblEnd ; or just `ret` for tail calls
+        // ILlblNotBool: pop
+        // ILlblTrue   : <true expression>
+        // ILlblEnd    : nop ; only if not tail call
+
+        emitExpression ctx false cond
 
         ctx.IL.Emit(OpCodes.Dup)
         ctx.IL.Emit(OpCodes.Isinst, ctx.Assm.MainModule.TypeSystem.Boolean)
@@ -230,18 +249,39 @@ let rec private emitExpression (ctx: EmitCtx) (expr: BoundExpr) =
         match maybeIfFalse with
         | Some ifFalse -> recurse ifFalse
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
-        ctx.IL.Emit(OpCodes.Br, lblEnd)
+        if tail then
+            // If we are in a tail context the JIT expects to see something like
+            // the following:
+            //
+            // ILXZZ: tail.
+            // ILXXX: callvirt Func<object[], Object>.Invoke()
+            // ILXXX: ret
+            //
+            // WE know the target of the branch to `lblEnd` will be a `ret` so
+            // cut out the middle man and just return here.
+            ctx.IL.Emit(OpCodes.Ret)
+        else
+            ctx.IL.Emit(OpCodes.Br, lblEnd)
 
         ctx.IL.Append(lblNotBool)
         ctx.IL.Emit(OpCodes.Pop)
         ctx.IL.Append(lblTrue)
         recurse ifTrue
 
-        // TODO: Could do with another sequence point here at the join block. Or
-        //       stop using `nops` all over the place as labels and instead.
-        ctx.IL.Append(lblEnd)
-    | BoundExpr.Lambda(formals, locals, captured, envSize, body) ->
-        emitLambda ctx formals locals captured envSize body
+        // We only need the branch target here if we emitted a jump to it above.
+        if not tail then
+            // TODO: Could do with another sequence point here at the join block. Or
+            //       stop using `nops` all over the place as labels and instead.
+            ctx.IL.Append(lblEnd)
+    | BoundExpr.Lambda(formals, body) ->
+        emitLambda ctx formals body
+    | BoundExpr.Library(name, body) ->
+        emitLibrary ctx name body
+    | BoundExpr.Import name ->
+        match Map.tryFind name ctx.Initialisers with
+        | Some(initialiser) ->
+            ctx.IL.Emit(OpCodes.Call, initialiser)
+        | None -> emitUnspecified ctx
     | BoundExpr.Quoted quoted ->
         emitQuoted ctx quoted
 
@@ -344,8 +384,8 @@ and writeTo ctx storage =
         failwithf "Can't re-define builtin %s" id
     | StorageRef.Macro m ->
         failwithf "Can't re-define macro %s" m.Name
-    | StorageRef.Global id ->
-        let field = ensureField ctx id
+    | StorageRef.Global(mangledPrefix, id) ->
+        let field = ensureField ctx mangledPrefix id
         ctx.IL.Emit(OpCodes.Stsfld, field)
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
@@ -373,8 +413,8 @@ and readFrom ctx storage =
     | StorageRef.Builtin id ->
         let meth = ctx.Core.Builtins.[id]
         emitMethodToFunc ctx meth
-    | StorageRef.Global id ->
-        let field = ensureField ctx id
+    | StorageRef.Global(mangledPrefix, id) ->
+        let field = ensureField ctx mangledPrefix id
         ctx.IL.Emit(OpCodes.Ldsfld, field)
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)
@@ -392,14 +432,14 @@ and readFrom ctx storage =
     ///
     /// Emits each expression in the sequence, and pops any intermediate values
     /// from the stack. Emits the unspecified value if the sequence is empty.
-and emitSequence ctx seq =
+and emitSequence ctx tail seq =
     match seq with
     | [one] ->
-        emitExpression ctx one
+        emitExpression ctx tail one
     | head::rest ->
-        emitExpression ctx head
+        emitExpression ctx false head
         ctx.IL.Emit(OpCodes.Pop)
-        emitSequence ctx rest
+        emitSequence ctx tail rest
     | _ -> emitUnspecified ctx
 
     /// Emit a Function application
@@ -411,8 +451,8 @@ and emitSequence ctx seq =
     /// 
     /// Arguments are passed to a callable instnace as an array. This means that
     /// all callable values are `Func<obj[],obj>`.
-and emitApplication ctx ap args =
-    emitExpression ctx ap
+and emitApplication ctx tail ap args =
+    emitExpression ctx false ap
 
     // Emit the arguments array
     ctx.IL.Emit(OpCodes.Ldc_I4, List.length args)
@@ -420,13 +460,15 @@ and emitApplication ctx ap args =
     List.fold (fun (idx: int) e -> 
         ctx.IL.Emit(OpCodes.Dup)
         ctx.IL.Emit(OpCodes.Ldc_I4, idx)
-        emitExpression ctx e
+        emitExpression ctx false e
         ctx.IL.Emit(OpCodes.Stelem_Ref)
         idx + 1) 0 args |> ignore
     
     let funcInvoke = typeof<Func<obj[], obj>>.GetMethod("Invoke",
                                                         [| typeof<obj[]> |])
     let funcInvoke = ctx.Assm.MainModule.ImportReference(funcInvoke)
+    if tail then
+        ctx.IL.Emit(OpCodes.Tail)
     ctx.IL.Emit(OpCodes.Callvirt, funcInvoke)
 
     /// Emit a Lambda Reference
@@ -435,12 +477,12 @@ and emitApplication ctx ap args =
     /// on the stack. This first defers to `emitNamedLambda` to write out the
     /// lambda's body and then creates a new `Func<obj[],obj>` instance that
     /// wraps a call to the lambda using the lambda's 'thunk'.
-and emitLambda ctx formals locals captured envSize body =
+and emitLambda ctx formals body =
 
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
-    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals locals envSize body
+    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
     let method = thunk :> MethodReference
 
     // Create a `Func` instance with the appropriate `this` pointer.
@@ -462,7 +504,7 @@ and emitLambda ctx formals locals captured envSize body =
     /// the function we are calling. A future optimisation may be to transform
     /// the bound tree and lower some calls in the case we _can_ be sure of the
     /// parameters. 
-and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
+and emitNamedLambda (ctx: EmitCtx) name formals root =
 
     let attrs = 
         if ctx.EnvSize.IsSome then
@@ -490,7 +532,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
         addParam dotted
     
     let mutable locals = []
-    for _ = 1 to localCount do
+    for _ = 1 to root.Locals do
         let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
         methodDecl.Body.Variables.Add(local)
         locals <- local::locals
@@ -500,13 +542,13 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
     let ctx = { ctx with NextLambda = 0;
                          Locals = locals;
                          Parameters = List.rev parameters;
-                         EnvSize = envSizeForMappings envMappings
+                         EnvSize = envSizeForMappings root.EnvMappings
                          ParentEnvSize = ctx.EnvSize
                          Environment = None
                          IL = methodDecl.Body.GetILProcessor();
                          ScopePrefix = name }
 
-    match envMappings with
+    match root.EnvMappings with
     | Some m ->
         createEnvironment ctx (Option.defaultValue 0 ctx.EnvSize)
         // Hoist any arguments into the environment
@@ -521,7 +563,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
             | _ -> ())
     | None -> ()
 
-    emitExpression ctx body
+    emitExpression ctx true root.Body
     ctx.IL.Emit(OpCodes.Ret)
     methodDecl.Body.Optimize()
 
@@ -537,7 +579,11 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
             VariableDebugInformation(env, "capture-environment")
             |> scope.Variables.Add)
 
-        // TODO: Flesh out this scope with the local variable names + environment
+        ctx.Locals
+        |> List.iteri (fun idx var ->
+            VariableDebugInformation(var, sprintf "local%d" idx)
+            |> scope.Variables.Add)
+
         methodDecl.DebugInformation.Scope <- scope
 
     // Emit a 'thunk' that unpacks the arguments to our method
@@ -651,6 +697,36 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
     markAsCompilerGenerated thunkDecl
     methodDecl, thunkDecl
 
+/// Emit the body of a library definition
+and emitLibrary ctx name body =
+
+    // Genreate a nominal type to contain the methods for this library.
+    let libTy = TypeDefinition(ctx.ProgramTy.Namespace,
+                                name,
+                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                                ctx.Assm.MainModule.TypeSystem.Object)
+    ctx.Assm.MainModule.Types.Add libTy
+    libTy.Methods.Add <| createEmptyCtor ctx.Assm
+    ctx.Libraries <- Map.add name libTy ctx.Libraries
+
+    // Emit the body of the script to a separate method so that the `Eval`
+    // module can call it directly
+    let libEmitCtx  = { ctx with IL = null
+                              ; ProgramTy = libTy
+                              ; NextLambda = 0
+                              ; Locals = []
+                              ; Parameters = []
+                              ; EnvSize = None
+                              ; ParentEnvSize = None
+                              ; Environment = None
+                              ; ScopePrefix = "$ROOT" }
+    let bodyParams = BoundFormals.List([])
+    let bodyMethod, _ = emitNamedLambda libEmitCtx "$LibraryBody" bodyParams body
+
+    ctx.Initialisers <- Map.add name (bodyMethod :> MethodReference) ctx.Initialisers
+
+    emitUnspecified ctx
+
 /// Emit the `Main` Method Epilogue
 ///
 /// This sequence of instructions is added at the end of the main method to
@@ -697,7 +773,7 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 
     // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName,
-                                "LispProgram",
+                                bound.MangledName,
                                 TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
                                 assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
@@ -710,6 +786,8 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
     let rootEmitCtx = { IL = null
                       ; DebugDocuments = Dictionary()
                       ; ProgramTy = progTy
+                      ; Libraries = Map.add bound.MangledName progTy Map.empty
+                      ; Initialisers = Map.empty
                       ; Core = coreTypes
                       ; NextLambda = 0
                       ; Locals = []
@@ -721,7 +799,7 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
                       ; ScopePrefix = "$ROOT"
                       ; Assm = assm }
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.LocalsCount bound.EnvMappings bound.Root
+    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.Root
 
     if options.OutputType = OutputType.Exe then
         // The `Main` method is the entry point of the program. It calls
@@ -762,13 +840,11 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 let compile options outputStream outputName symbolStream node =
     let scope = createRootScope
     let bound = bind scope node
-    if Diagnostics.hasErrors bound.Diagnostics then
-        bound.Diagnostics
-    else
+    if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound
         |> Lower.lower
         |> emit options outputStream outputName symbolStream
-        []
+    bound.Diagnostics
 
 /// Read a File and Compile
 ///

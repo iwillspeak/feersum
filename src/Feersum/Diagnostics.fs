@@ -29,31 +29,63 @@ with
         | Point p -> p
         | Missing -> missingPos
 
+/// Level of diagnostic. Used to tell warnings from errors.
+type DiagnosticLevel =
+    /// The diagnostic represents an error. Compilation should not continue.
+    | Error
+    /// THe diagnostic represents a warning. Compilation may continue but the
+    /// result may be unexpected or invalid.
+    | Warning
+
 /// Diagnostics indicate problems with our source code at a given position.
-type Diagnostic = Diagnostic of TextLocation * string
+type Diagnostic = { Location: TextLocation
+                  ; Message: string
+                  ; Level: DiagnosticLevel }
 with
-    /// Helper to retrieve the message for this diagnostic.
-    member d.Message =
-        match d with
-        | Diagnostic(_, message) -> message
-        
+
+    /// Create a new error diagnostic at the given `location`.`
+    static member Create location message =
+        Diagnostic.CreateWithKind DiagnosticLevel.Error location message
+
+    /// Create a new warning diagnostic at the given `location`.`
+    static member CreateWarning location message =
+        Diagnostic.CreateWithKind DiagnosticLevel.Warning location message
+    
+    /// Create a new diagnostic with the given `kind` and `location`.
+    static member CreateWithKind kind location message =
+        { Level = kind
+        ; Location = location
+        ; Message = message }
+
     /// Format the diagnostic for output.
     override d.ToString() =
-        match d with
-        | Diagnostic(loc, message) ->
-            let pos = loc.Start
-            sprintf "%s:%d:%d: %s" pos.StreamName pos.Line pos.Column message
+        match d.Location with
+        | Missing -> sprintf "%s: %s" d.MessagePrefix d.Message 
+        | Point p -> sprintf "%s:%d:%d: %s: %s" p.StreamName p.Line p.Column d.MessagePrefix d.Message 
+        | Span(s, e) -> sprintf "%s:%d:%d,%d:%d: %s: %s" s.StreamName s.Line s.Column e.Line e.Column d.MessagePrefix d.Message 
+
+    /// Prefix for the message. Used to summarise the diagnostic kind.
+    member private d.MessagePrefix =
+        match d.Level with
+        | Warning -> "warning"
+        | Error -> "error"
 
 /// A collection of diagnostics being built by a compiler phase.
 type DiagnosticBag = { mutable Diagnostics: Diagnostic list }
 with
     /// Buffer a diagnostic into the bag.
     member b.Emit pos message =
-        Diagnostic(pos, message) |> b.Add
+        Diagnostic.Create pos message
+        |> b.Add
 
     /// Add a diagnostic to the bag.
     member b.Add diag =
         b.Diagnostics <- diag::b.Diagnostics
+
+    /// Append a collection of diagnostics to this bag.
+    member b.Append diags =
+        for d in diags do
+            b.Add d
 
     /// Finalise the bag by taking the diagnostics from it.
     member b.Take = b.Diagnostics
@@ -62,6 +94,11 @@ with
     static member Empty =
         { Diagnostics = [] }
 
+/// Returns true if the diagnostic should be considered an error
+let public isError = function
+    | { Level = DiagnosticLevel.Error } -> true
+    | _ -> false
+
 /// Test if a given diagnostics collection contains any errors.
 let public hasErrors (diagnostics: Diagnostic seq): bool =
-    not (Seq.isEmpty diagnostics)
+    Seq.exists (isError) diagnostics

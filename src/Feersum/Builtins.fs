@@ -123,8 +123,8 @@ let private macroOr =
         ((or) #f)
         ((or test) test)
         ((or test1 test2 ...)
-            (let ((x test1))
-                (if x x (or test2 ...)))))"
+            (let ((|90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| test1))
+                (if |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| (or test2 ...)))))"
     |> parseBuiltinMacro "or" 
 
 /// Builtin `when` Macro

@@ -32,7 +32,7 @@ type CliArguments =
 let private dumpDiagnostics diags =
     diags
     |> List.rev
-    |> Seq.iter (fun x -> eprintfn "Error: %s" (x.ToString()))
+    |> Seq.iter (fun x -> eprintfn "%s" (x.ToString()))
 
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
@@ -75,12 +75,6 @@ let private compileSingle options output sourcePath =
         dumpDiagnostics(diagnostics)
         List.length diagnostics
 
-/// Run the REPL, using either the reflection-based evaluator.
-let private runRepl () =
-    ReadLine.HistoryEnabled <- true
-    eval >> Result.map print
-    |> repl
-
 /// Get the version string for the compiler.
 let private versionString =
     let assm = Assembly.GetExecutingAssembly()
@@ -91,6 +85,17 @@ let private versionString =
     | null -> simpleVersion.ToString()
     | attr -> attr.InformationalVersion
 
+/// Print out the compiler's version string
+let private printVersion () =
+    printfn "Feersum Scheme Compiler - %s" versionString
+
+/// Run the REPL, using the reflection-based evaluator.
+let private runRepl () =
+    ReadLine.HistoryEnabled <- true
+    printVersion()
+    eval >> Result.map print
+    |> repl
+
 [<EntryPoint>]
 let main argv =
     let errorHandler = ProcessExiter(colorizer = function ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)
@@ -98,7 +103,7 @@ let main argv =
     let args = parser.Parse(argv)
     
     if args.Contains Version then
-        printfn "Feersum Scheme Compiler - %s" versionString
+        printVersion()
         exit 0
 
     let buildConfig =

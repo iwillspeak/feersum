@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "define"
+                        "define-library"
                       ]
                     },
                     "Location": {
@@ -23,13 +23,13 @@
                           "Index": 1,
                           "Line": 1,
                           "Column": 2,
-                          "StreamName": "locals.scm"
+                          "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 7,
+                          "Index": 15,
                           "Line": 1,
-                          "Column": 8,
-                          "StreamName": "locals.scm"
+                          "Column": 16,
+                          "StreamName": "libcapture.scm"
                         }
                       ]
                     }
@@ -43,23 +43,23 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "fact"
+                                "lib"
                               ]
                             },
                             "Location": {
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 9,
+                                  "Index": 17,
                                   "Line": 1,
-                                  "Column": 10,
-                                  "StreamName": "locals.scm"
+                                  "Column": 18,
+                                  "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 13,
+                                  "Index": 20,
                                   "Line": 1,
-                                  "Column": 14,
-                                  "StreamName": "locals.scm"
+                                  "Column": 21,
+                                  "StreamName": "libcapture.scm"
                                 }
                               ]
                             }
@@ -68,23 +68,23 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "n"
+                                "capture"
                               ]
                             },
                             "Location": {
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 14,
+                                  "Index": 21,
                                   "Line": 1,
-                                  "Column": 15,
-                                  "StreamName": "locals.scm"
+                                  "Column": 22,
+                                  "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 15,
+                                  "Index": 28,
                                   "Line": 1,
-                                  "Column": 16,
-                                  "StreamName": "locals.scm"
+                                  "Column": 29,
+                                  "StreamName": "libcapture.scm"
                                 }
                               ]
                             }
@@ -96,16 +96,16 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 8,
-                          "Line": 1,
-                          "Column": 9,
-                          "StreamName": "locals.scm"
-                        },
-                        {
                           "Index": 16,
                           "Line": 1,
                           "Column": 17,
-                          "StreamName": "locals.scm"
+                          "StreamName": "libcapture.scm"
+                        },
+                        {
+                          "Index": 29,
+                          "Line": 1,
+                          "Column": 30,
+                          "StreamName": "libcapture.scm"
                         }
                       ]
                     }
@@ -119,23 +119,99 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "if"
+                                "export"
                               ]
                             },
                             "Location": {
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 22,
+                                  "Index": 35,
                                   "Line": 2,
                                   "Column": 6,
-                                  "StreamName": "locals.scm"
+                                  "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 24,
+                                  "Index": 41,
                                   "Line": 2,
-                                  "Column": 8,
-                                  "StreamName": "locals.scm"
+                                  "Column": 12,
+                                  "StreamName": "libcapture.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "testit"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 42,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "libcapture.scm"
+                                },
+                                {
+                                  "Index": 48,
+                                  "Line": 2,
+                                  "Column": 19,
+                                  "StreamName": "libcapture.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 34,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "libcapture.scm"
+                        },
+                        {
+                          "Index": 49,
+                          "Line": 2,
+                          "Column": 20,
+                          "StreamName": "libcapture.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "begin"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 55,
+                                  "Line": 3,
+                                  "Column": 6,
+                                  "StreamName": "libcapture.scm"
+                                },
+                                {
+                                  "Index": 60,
+                                  "Line": 3,
+                                  "Column": 11,
+                                  "StreamName": "libcapture.scm"
                                 }
                               ]
                             }
@@ -149,23 +225,23 @@
                                     "Kind": {
                                       "Case": "Ident",
                                       "Fields": [
-                                        "="
+                                        "define"
                                       ]
                                     },
                                     "Location": {
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 26,
-                                          "Line": 2,
+                                          "Index": 70,
+                                          "Line": 4,
                                           "Column": 10,
-                                          "StreamName": "locals.scm"
+                                          "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 27,
-                                          "Line": 2,
-                                          "Column": 11,
-                                          "StreamName": "locals.scm"
+                                          "Index": 76,
+                                          "Line": 4,
+                                          "Column": 16,
+                                          "StreamName": "libcapture.scm"
                                         }
                                       ]
                                     }
@@ -174,23 +250,23 @@
                                     "Kind": {
                                       "Case": "Ident",
                                       "Fields": [
-                                        "n"
+                                        "testit"
                                       ]
                                     },
                                     "Location": {
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 28,
-                                          "Line": 2,
-                                          "Column": 12,
-                                          "StreamName": "locals.scm"
+                                          "Index": 77,
+                                          "Line": 4,
+                                          "Column": 17,
+                                          "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 29,
-                                          "Line": 2,
-                                          "Column": 13,
-                                          "StreamName": "locals.scm"
+                                          "Index": 83,
+                                          "Line": 4,
+                                          "Column": 23,
+                                          "StreamName": "libcapture.scm"
                                         }
                                       ]
                                     }
@@ -200,9 +276,9 @@
                                       "Case": "Constant",
                                       "Fields": [
                                         {
-                                          "Case": "Number",
+                                          "Case": "Str",
                                           "Fields": [
-                                            0.0
+                                            "broken"
                                           ]
                                         }
                                       ]
@@ -211,16 +287,16 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 30,
-                                          "Line": 2,
-                                          "Column": 14,
-                                          "StreamName": "locals.scm"
+                                          "Index": 84,
+                                          "Line": 4,
+                                          "Column": 24,
+                                          "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 31,
-                                          "Line": 2,
-                                          "Column": 15,
-                                          "StreamName": "locals.scm"
+                                          "Index": 92,
+                                          "Line": 4,
+                                          "Column": 32,
+                                          "StreamName": "libcapture.scm"
                                         }
                                       ]
                                     }
@@ -232,46 +308,16 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 25,
-                                  "Line": 2,
+                                  "Index": 69,
+                                  "Line": 4,
                                   "Column": 9,
-                                  "StreamName": "locals.scm"
+                                  "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 32,
-                                  "Line": 2,
-                                  "Column": 16,
-                                  "StreamName": "locals.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Constant",
-                              "Fields": [
-                                {
-                                  "Case": "Number",
-                                  "Fields": [
-                                    1.0
-                                  ]
-                                }
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 41,
-                                  "Line": 3,
-                                  "Column": 9,
-                                  "StreamName": "locals.scm"
-                                },
-                                {
-                                  "Index": 42,
-                                  "Line": 3,
-                                  "Column": 10,
-                                  "StreamName": "locals.scm"
+                                  "Index": 93,
+                                  "Line": 4,
+                                  "Column": 33,
+                                  "StreamName": "libcapture.scm"
                                 }
                               ]
                             }
@@ -285,23 +331,23 @@
                                     "Kind": {
                                       "Case": "Ident",
                                       "Fields": [
-                                        "begin"
+                                        "let"
                                       ]
                                     },
                                     "Location": {
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 52,
-                                          "Line": 4,
+                                          "Index": 103,
+                                          "Line": 5,
                                           "Column": 10,
-                                          "StreamName": "locals.scm"
+                                          "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 57,
-                                          "Line": 4,
-                                          "Column": 15,
-                                          "StreamName": "locals.scm"
+                                          "Index": 106,
+                                          "Line": 5,
+                                          "Column": 13,
+                                          "StreamName": "libcapture.scm"
                                         }
                                       ]
                                     }
@@ -313,56 +359,6 @@
                                         [
                                           {
                                             "Kind": {
-                                              "Case": "Ident",
-                                              "Fields": [
-                                                "define"
-                                              ]
-                                            },
-                                            "Location": {
-                                              "Case": "Span",
-                                              "Fields": [
-                                                {
-                                                  "Index": 71,
-                                                  "Line": 5,
-                                                  "Column": 14,
-                                                  "StreamName": "locals.scm"
-                                                },
-                                                {
-                                                  "Index": 77,
-                                                  "Line": 5,
-                                                  "Column": 20,
-                                                  "StreamName": "locals.scm"
-                                                }
-                                              ]
-                                            }
-                                          },
-                                          {
-                                            "Kind": {
-                                              "Case": "Ident",
-                                              "Fields": [
-                                                "m"
-                                              ]
-                                            },
-                                            "Location": {
-                                              "Case": "Span",
-                                              "Fields": [
-                                                {
-                                                  "Index": 78,
-                                                  "Line": 5,
-                                                  "Column": 21,
-                                                  "StreamName": "locals.scm"
-                                                },
-                                                {
-                                                  "Index": 79,
-                                                  "Line": 5,
-                                                  "Column": 22,
-                                                  "StreamName": "locals.scm"
-                                                }
-                                              ]
-                                            }
-                                          },
-                                          {
-                                            "Kind": {
                                               "Case": "Form",
                                               "Fields": [
                                                 [
@@ -370,48 +366,23 @@
                                                     "Kind": {
                                                       "Case": "Ident",
                                                       "Fields": [
-                                                        "-"
+                                                        "replacement"
                                                       ]
                                                     },
                                                     "Location": {
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 81,
+                                                          "Index": 109,
                                                           "Line": 5,
-                                                          "Column": 24,
-                                                          "StreamName": "locals.scm"
+                                                          "Column": 16,
+                                                          "StreamName": "libcapture.scm"
                                                         },
                                                         {
-                                                          "Index": 82,
-                                                          "Line": 5,
-                                                          "Column": 25,
-                                                          "StreamName": "locals.scm"
-                                                        }
-                                                      ]
-                                                    }
-                                                  },
-                                                  {
-                                                    "Kind": {
-                                                      "Case": "Ident",
-                                                      "Fields": [
-                                                        "n"
-                                                      ]
-                                                    },
-                                                    "Location": {
-                                                      "Case": "Span",
-                                                      "Fields": [
-                                                        {
-                                                          "Index": 83,
-                                                          "Line": 5,
-                                                          "Column": 26,
-                                                          "StreamName": "locals.scm"
-                                                        },
-                                                        {
-                                                          "Index": 84,
+                                                          "Index": 120,
                                                           "Line": 5,
                                                           "Column": 27,
-                                                          "StreamName": "locals.scm"
+                                                          "StreamName": "libcapture.scm"
                                                         }
                                                       ]
                                                     }
@@ -421,9 +392,9 @@
                                                       "Case": "Constant",
                                                       "Fields": [
                                                         {
-                                                          "Case": "Number",
+                                                          "Case": "Str",
                                                           "Fields": [
-                                                            1.0
+                                                            "pass"
                                                           ]
                                                         }
                                                       ]
@@ -432,16 +403,16 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 85,
+                                                          "Index": 121,
                                                           "Line": 5,
                                                           "Column": 28,
-                                                          "StreamName": "locals.scm"
+                                                          "StreamName": "libcapture.scm"
                                                         },
                                                         {
-                                                          "Index": 86,
+                                                          "Index": 127,
                                                           "Line": 5,
-                                                          "Column": 29,
-                                                          "StreamName": "locals.scm"
+                                                          "Column": 34,
+                                                          "StreamName": "libcapture.scm"
                                                         }
                                                       ]
                                                     }
@@ -453,16 +424,16 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 80,
+                                                  "Index": 108,
                                                   "Line": 5,
-                                                  "Column": 23,
-                                                  "StreamName": "locals.scm"
+                                                  "Column": 15,
+                                                  "StreamName": "libcapture.scm"
                                                 },
                                                 {
-                                                  "Index": 87,
+                                                  "Index": 128,
                                                   "Line": 5,
-                                                  "Column": 30,
-                                                  "StreamName": "locals.scm"
+                                                  "Column": 35,
+                                                  "StreamName": "libcapture.scm"
                                                 }
                                               ]
                                             }
@@ -474,16 +445,16 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 70,
+                                          "Index": 107,
                                           "Line": 5,
-                                          "Column": 13,
-                                          "StreamName": "locals.scm"
+                                          "Column": 14,
+                                          "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 88,
+                                          "Index": 129,
                                           "Line": 5,
-                                          "Column": 31,
-                                          "StreamName": "locals.scm"
+                                          "Column": 36,
+                                          "StreamName": "libcapture.scm"
                                         }
                                       ]
                                     }
@@ -497,23 +468,23 @@
                                             "Kind": {
                                               "Case": "Ident",
                                               "Fields": [
-                                                "*"
+                                                "set!"
                                               ]
                                             },
                                             "Location": {
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 102,
+                                                  "Index": 143,
                                                   "Line": 6,
                                                   "Column": 14,
-                                                  "StreamName": "locals.scm"
+                                                  "StreamName": "libcapture.scm"
                                                 },
                                                 {
-                                                  "Index": 103,
+                                                  "Index": 147,
                                                   "Line": 6,
-                                                  "Column": 15,
-                                                  "StreamName": "locals.scm"
+                                                  "Column": 18,
+                                                  "StreamName": "libcapture.scm"
                                                 }
                                               ]
                                             }
@@ -522,99 +493,48 @@
                                             "Kind": {
                                               "Case": "Ident",
                                               "Fields": [
-                                                "n"
+                                                "testit"
                                               ]
                                             },
                                             "Location": {
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 104,
+                                                  "Index": 148,
                                                   "Line": 6,
-                                                  "Column": 16,
-                                                  "StreamName": "locals.scm"
+                                                  "Column": 19,
+                                                  "StreamName": "libcapture.scm"
                                                 },
                                                 {
-                                                  "Index": 105,
+                                                  "Index": 154,
                                                   "Line": 6,
-                                                  "Column": 17,
-                                                  "StreamName": "locals.scm"
+                                                  "Column": 25,
+                                                  "StreamName": "libcapture.scm"
                                                 }
                                               ]
                                             }
                                           },
                                           {
                                             "Kind": {
-                                              "Case": "Form",
+                                              "Case": "Ident",
                                               "Fields": [
-                                                [
-                                                  {
-                                                    "Kind": {
-                                                      "Case": "Ident",
-                                                      "Fields": [
-                                                        "fact"
-                                                      ]
-                                                    },
-                                                    "Location": {
-                                                      "Case": "Span",
-                                                      "Fields": [
-                                                        {
-                                                          "Index": 107,
-                                                          "Line": 6,
-                                                          "Column": 19,
-                                                          "StreamName": "locals.scm"
-                                                        },
-                                                        {
-                                                          "Index": 111,
-                                                          "Line": 6,
-                                                          "Column": 23,
-                                                          "StreamName": "locals.scm"
-                                                        }
-                                                      ]
-                                                    }
-                                                  },
-                                                  {
-                                                    "Kind": {
-                                                      "Case": "Ident",
-                                                      "Fields": [
-                                                        "m"
-                                                      ]
-                                                    },
-                                                    "Location": {
-                                                      "Case": "Span",
-                                                      "Fields": [
-                                                        {
-                                                          "Index": 112,
-                                                          "Line": 6,
-                                                          "Column": 24,
-                                                          "StreamName": "locals.scm"
-                                                        },
-                                                        {
-                                                          "Index": 113,
-                                                          "Line": 6,
-                                                          "Column": 25,
-                                                          "StreamName": "locals.scm"
-                                                        }
-                                                      ]
-                                                    }
-                                                  }
-                                                ]
+                                                "replacement"
                                               ]
                                             },
                                             "Location": {
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 106,
-                                                  "Line": 6,
-                                                  "Column": 18,
-                                                  "StreamName": "locals.scm"
-                                                },
-                                                {
-                                                  "Index": 114,
+                                                  "Index": 155,
                                                   "Line": 6,
                                                   "Column": 26,
-                                                  "StreamName": "locals.scm"
+                                                  "StreamName": "libcapture.scm"
+                                                },
+                                                {
+                                                  "Index": 166,
+                                                  "Line": 6,
+                                                  "Column": 37,
+                                                  "StreamName": "libcapture.scm"
                                                 }
                                               ]
                                             }
@@ -626,16 +546,16 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 101,
+                                          "Index": 142,
                                           "Line": 6,
                                           "Column": 13,
-                                          "StreamName": "locals.scm"
+                                          "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 115,
+                                          "Index": 167,
                                           "Line": 6,
-                                          "Column": 27,
-                                          "StreamName": "locals.scm"
+                                          "Column": 38,
+                                          "StreamName": "libcapture.scm"
                                         }
                                       ]
                                     }
@@ -647,16 +567,16 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 51,
-                                  "Line": 4,
+                                  "Index": 102,
+                                  "Line": 5,
                                   "Column": 9,
-                                  "StreamName": "locals.scm"
+                                  "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 116,
+                                  "Index": 168,
                                   "Line": 6,
-                                  "Column": 28,
-                                  "StreamName": "locals.scm"
+                                  "Column": 39,
+                                  "StreamName": "libcapture.scm"
                                 }
                               ]
                             }
@@ -668,16 +588,16 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 21,
-                          "Line": 2,
+                          "Index": 54,
+                          "Line": 3,
                           "Column": 5,
-                          "StreamName": "locals.scm"
+                          "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 117,
+                          "Index": 169,
                           "Line": 6,
-                          "Column": 29,
-                          "StreamName": "locals.scm"
+                          "Column": 40,
+                          "StreamName": "libcapture.scm"
                         }
                       ]
                     }
@@ -692,13 +612,140 @@
                   "Index": 0,
                   "Line": 1,
                   "Column": 1,
-                  "StreamName": "locals.scm"
+                  "StreamName": "libcapture.scm"
                 },
                 {
-                  "Index": 118,
+                  "Index": 170,
                   "Line": 6,
-                  "Column": 30,
-                  "StreamName": "locals.scm"
+                  "Column": 41,
+                  "StreamName": "libcapture.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "import"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 172,
+                          "Line": 7,
+                          "Column": 2,
+                          "StreamName": "libcapture.scm"
+                        },
+                        {
+                          "Index": 178,
+                          "Line": 7,
+                          "Column": 8,
+                          "StreamName": "libcapture.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "lib"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 180,
+                                  "Line": 7,
+                                  "Column": 10,
+                                  "StreamName": "libcapture.scm"
+                                },
+                                {
+                                  "Index": 183,
+                                  "Line": 7,
+                                  "Column": 13,
+                                  "StreamName": "libcapture.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "capture"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 184,
+                                  "Line": 7,
+                                  "Column": 14,
+                                  "StreamName": "libcapture.scm"
+                                },
+                                {
+                                  "Index": 191,
+                                  "Line": 7,
+                                  "Column": 21,
+                                  "StreamName": "libcapture.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 179,
+                          "Line": 7,
+                          "Column": 9,
+                          "StreamName": "libcapture.scm"
+                        },
+                        {
+                          "Index": 192,
+                          "Line": 7,
+                          "Column": 22,
+                          "StreamName": "libcapture.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 171,
+                  "Line": 7,
+                  "Column": 1,
+                  "StreamName": "libcapture.scm"
+                },
+                {
+                  "Index": 193,
+                  "Line": 7,
+                  "Column": 23,
+                  "StreamName": "libcapture.scm"
                 }
               ]
             }
@@ -719,97 +766,41 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 121,
+                          "Index": 195,
                           "Line": 8,
                           "Column": 2,
-                          "StreamName": "locals.scm"
+                          "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 128,
+                          "Index": 202,
                           "Line": 8,
                           "Column": 9,
-                          "StreamName": "locals.scm"
+                          "StreamName": "libcapture.scm"
                         }
                       ]
                     }
                   },
                   {
                     "Kind": {
-                      "Case": "Form",
+                      "Case": "Ident",
                       "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "fact"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 130,
-                                  "Line": 8,
-                                  "Column": 11,
-                                  "StreamName": "locals.scm"
-                                },
-                                {
-                                  "Index": 134,
-                                  "Line": 8,
-                                  "Column": 15,
-                                  "StreamName": "locals.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Constant",
-                              "Fields": [
-                                {
-                                  "Case": "Number",
-                                  "Fields": [
-                                    5.0
-                                  ]
-                                }
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 135,
-                                  "Line": 8,
-                                  "Column": 16,
-                                  "StreamName": "locals.scm"
-                                },
-                                {
-                                  "Index": 136,
-                                  "Line": 8,
-                                  "Column": 17,
-                                  "StreamName": "locals.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
+                        "testit"
                       ]
                     },
                     "Location": {
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 129,
+                          "Index": 203,
                           "Line": 8,
                           "Column": 10,
-                          "StreamName": "locals.scm"
+                          "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 137,
+                          "Index": 209,
                           "Line": 8,
-                          "Column": 18,
-                          "StreamName": "locals.scm"
+                          "Column": 16,
+                          "StreamName": "libcapture.scm"
                         }
                       ]
                     }
@@ -821,16 +812,67 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 120,
+                  "Index": 194,
                   "Line": 8,
                   "Column": 1,
-                  "StreamName": "locals.scm"
+                  "StreamName": "libcapture.scm"
                 },
                 {
-                  "Index": 138,
+                  "Index": 210,
                   "Line": 8,
-                  "Column": 19,
-                  "StreamName": "locals.scm"
+                  "Column": 17,
+                  "StreamName": "libcapture.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 211,
+                          "Line": 8,
+                          "Column": 18,
+                          "StreamName": "libcapture.scm"
+                        },
+                        {
+                          "Index": 218,
+                          "Line": 8,
+                          "Column": 25,
+                          "StreamName": "libcapture.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 210,
+                  "Line": 8,
+                  "Column": 17,
+                  "StreamName": "libcapture.scm"
+                },
+                {
+                  "Index": 219,
+                  "Line": 8,
+                  "Column": 26,
+                  "StreamName": "libcapture.scm"
                 }
               ]
             }
@@ -845,13 +887,13 @@
           "Index": 0,
           "Line": 1,
           "Column": 1,
-          "StreamName": "locals.scm"
+          "StreamName": "libcapture.scm"
         },
         {
-          "Index": 139,
+          "Index": 219,
           "Line": 8,
-          "Column": 20,
-          "StreamName": "locals.scm"
+          "Column": 26,
+          "StreamName": "libcapture.scm"
         }
       ]
     }
