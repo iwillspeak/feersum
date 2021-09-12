@@ -60,7 +60,8 @@ type BoundExpr =
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
     | Lambda of BoundFormals * int * StorageRef list * StorageRef list option * BoundExpr
-    | Library of string list * BoundExpr list
+    | Library of string * BoundExpr
+    | Import of string
     | Nop
     | Error
 
@@ -68,6 +69,7 @@ type BoundExpr =
 type BoundSyntaxTree = { Root: BoundExpr
                        ; LocalsCount: int
                        ; EnvMappings: StorageRef list option
+                       ; MangledName: string
                        ; Diagnostics: Diagnostic list }
 
 /// Binder Context Type
@@ -92,7 +94,11 @@ let private incEnvSize = function
     | Some(size) -> Some(size + 1)
 
 /// Transofmr the name to make it safe for .NET.
-let private mangleName = id
+let private mangleName name =
+    let mangleNamePart = id
+    name
+    |> Seq.map (mangleNamePart)
+    |> String.concat "::"
 
 /// Methods for manipulating the bind context
 module private BinderCtx =
@@ -189,13 +195,17 @@ module private BinderCtx =
         | Libraries.ImportSet.Error -> Result.Error "invalid import set"
         | Libraries.ImportSet.Except(inner, except) ->
             findBindings ctx inner
-            |> Result.map (List.filter (fun (id, _) -> List.contains id except |> not))
+            |> Result.map (fun (name, exports) ->
+                (name, exports
+                       |> List.filter (fun (id, _) -> List.contains id except |> not)))
         | Libraries.ImportSet.Only(inner, only) ->
             findBindings ctx inner
-            |> Result.map (List.filter (fun (id, _) -> List.contains id only))
+            |> Result.map (fun (name, exports) ->
+                (name, exports
+                       |> List.filter (fun (id, _) -> List.contains id only)))
         | Libraries.ImportSet.Plain lib ->
             match Seq.tryFind (fun (name, _) -> Libraries.matchLibraryName lib name) ctx.Libraries with
-            | Some (_, exports) -> Ok(exports)
+            | Some (_, exports) -> Ok((lib, exports))
             | _ ->
                 lib
                 |> Libraries.prettifyLibraryName
@@ -203,20 +213,22 @@ module private BinderCtx =
                 |> Result.Error
         | Libraries.ImportSet.Prefix(inner, prefix) ->
             findBindings ctx inner
-            |> Result.map (List.map (fun (name, storage) -> (prefix + name, storage)))
+            |> Result.map (fun (name, exports) ->
+                (name, exports |> List.map (fun (name, storage) -> (prefix + name, storage))))
         | Libraries.ImportSet.Renamed(inner, renames) ->
             let processRenames (name, storage) =
                 match List.tryFind (fun (x: Libraries.SymbolRename) -> x.From = name) renames with
                 | Some rename -> (rename.To, storage)
                 | _ -> (name, storage)
             findBindings ctx inner
-            |> Result.map (List.map (processRenames))
+            |> Result.map (fun (name, exports) -> (name, exports |> List.map (processRenames)))
 
     /// Add all the bindings from a given import set into the current scope
     let addImportsFromSet ctx (importSet: Libraries.ImportSet) =
         findBindings ctx importSet
-        |> Result.map (List.iter (fun (id, storage) -> 
-                scopeInsert ctx id storage))
+        |> Result.map (fun (name, exports) ->
+            List.iter (fun (id, storage) -> scopeInsert ctx id storage) exports
+            name |> mangleName)
 
     /// Add a new level to the scopes
     let pushScope ctx =
@@ -410,18 +422,22 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
     // Process `(import ...)`
     let libCtx =
         library.LibraryName
-        |> String.concat "::"
         |> BinderCtx.createForGlobalScope Map.empty
-    library.Declarations
-    |> List.iter (function
-        | Libraries.LibraryDeclaration.Import i ->
-            i
-            |> List.iter (fun i ->
-                BinderCtx.findBindings ctx i
-                |> Result.map (List.iter (fun (id, storage) -> BinderCtx.scopeInsert libCtx id storage))
-                |> Result.mapError (libCtx.Diagnostics.Emit location)
-                |> ignore)
-        | _ -> ())
+    let imports =
+        library.Declarations
+        |> List.choose (function
+            | Libraries.LibraryDeclaration.Import i ->
+                i
+                |> List.choose (fun i ->
+                    BinderCtx.findBindings ctx i
+                    |> Result.map (fun (name, exports) ->
+                        List.iter (fun (id, storage) -> BinderCtx.scopeInsert libCtx id storage) exports
+                        name |> mangleName |> BoundExpr.Import)
+                    |> Result.mapError (libCtx.Diagnostics.Emit location)
+                    |> OptionEx.ofResult)
+                |> BoundExpr.Seq
+                |> Some
+            | _ -> None)
 
     // Process the bodies of the library.
     let boundBodies =
@@ -460,7 +476,9 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
     BinderCtx.addLibrary ctx library.LibraryName exports
     ctx.Diagnostics.Append libCtx.Diagnostics.Take
 
-    BoundExpr.Library(library.LibraryName, boundBodies)
+    BoundExpr.Library(
+        library.LibraryName |> mangleName,
+        List.append imports boundBodies |> BoundExpr.Seq)
 
 and private bindForm ctx (form: AstNode list) node =
     let illFormed formName = illFormedInCtx ctx node.Location formName
@@ -589,12 +607,13 @@ and private bindForm ctx (form: AstNode list) node =
         | _ -> illFormed "define-library"
     | { Kind = AstNodeKind.Ident("import") }::body ->
         body
-        |> List.iter (fun item ->
+        |> List.map (fun item ->
             Libraries.parseImport ctx.Diagnostics item
             |> BinderCtx.addImportsFromSet ctx
             |> Result.mapError (ctx.Diagnostics.Emit item.Location)
-            |> ignore)
-        BoundExpr.Nop
+            |> Result.map BoundExpr.Import
+            |> ResultEx.okOr BoundExpr.Error)
+        |> BoundExpr.Seq
     | { Kind = AstNodeKind.Ident("cond") }::body ->
         failwith "Condition expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("case") }::body ->
@@ -623,9 +642,10 @@ let createRootScope =
 /// Walks the parse tree and computes semantic information. The result of this
 /// call can be passed to the `Compile` or `Emit` API to be lowered to IL.
 let bind scope node: BoundSyntaxTree =
-    let ctx = BinderCtx.createForGlobalScope scope "$SchemeLibrary"
+    let ctx = BinderCtx.createForGlobalScope scope ["LispProgram"]
     let bound = bindInContext ctx node
     { Root = bound
     ; LocalsCount = ctx.LocalCount
     ; EnvMappings = None
+    ; MangledName = ctx.MangledName
     ; Diagnostics = ctx.Diagnostics.Take }
