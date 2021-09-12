@@ -7,16 +7,11 @@
 	(begin
 		(define fiz 100)
 		(define buz 100)
-		(define hidden-name 100)
+		(define hidden-name 101)
 		(define not-exported 100)))
-
 (define-library (test greeter)
+	(import (prefix (example grid) grid/))
 	(export greet)
-	; (import (scheme base))
-	; (begin
-	; 	(define (greet person)
-	; 		(display "Hello ")
-	; 		(display person)
-	; 		(display #\!)
-	; 		(newline)))
-			)
+	(begin (define greet grid/external-name)))
+(import (only (test greeter) greet))
+(display greet)

@@ -416,16 +416,26 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
             |> Some
         | _ -> None) library.Declarations
 
+    let lookupExport id extId =
+        match BinderCtx.tryFindBinding libCtx id with
+        | Some(x) -> Some((extId, x))
+        | _ ->
+            sprintf "Could not find exported item %s" id
+            |> Diagnostic.CreateWarning location
+            |> libCtx.Diagnostics.Add  
+            None
+
     // Process `(export ...)` declarations.
     let exports =
         library.Declarations
         |> List.choose (function
             | Libraries.LibraryDeclaration.Export exp ->
                 exp
-                |> List.map (function
-                    | Libraries.ExportSet.Plain p -> (p, StorageRef.Global(p))
+                |> List.choose (function
+                    | Libraries.ExportSet.Plain p ->
+                        lookupExport p p
                     | Libraries.ExportSet.Renamed rename ->
-                        (rename.To, StorageRef.Global(rename.From)))
+                        lookupExport rename.From rename.To)
                 |> Some
             | _ -> None) 
         |> List.concat
