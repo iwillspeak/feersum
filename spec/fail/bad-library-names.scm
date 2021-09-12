@@ -3,3 +3,5 @@
 (define-library (scheme |silly'chars|))
 (define-library (some 't))
 (define-library (srfi trust me))
+(define-library (missing export)
+    (export we |don't| exist))

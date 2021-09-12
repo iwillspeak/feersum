@@ -802,13 +802,11 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 let compile options outputStream outputName symbolStream node =
     let scope = createRootScope
     let bound = bind scope node
-    if Diagnostics.hasErrors bound.Diagnostics then
-        bound.Diagnostics
-    else
+    if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound
         |> Lower.lower
         |> emit options outputStream outputName symbolStream
-        []
+    bound.Diagnostics
 
 /// Read a File and Compile
 ///

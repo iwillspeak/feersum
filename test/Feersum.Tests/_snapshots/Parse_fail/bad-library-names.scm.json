@@ -587,6 +587,259 @@
                 }
               ]
             }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define-library"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 145,
+                          "Line": 6,
+                          "Column": 2,
+                          "StreamName": "fail/bad-library-names.scm"
+                        },
+                        {
+                          "Index": 159,
+                          "Line": 6,
+                          "Column": 16,
+                          "StreamName": "fail/bad-library-names.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "missing"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 161,
+                                  "Line": 6,
+                                  "Column": 18,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 168,
+                                  "Line": 6,
+                                  "Column": 25,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "export"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 169,
+                                  "Line": 6,
+                                  "Column": 26,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 175,
+                                  "Line": 6,
+                                  "Column": 32,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 160,
+                          "Line": 6,
+                          "Column": 17,
+                          "StreamName": "fail/bad-library-names.scm"
+                        },
+                        {
+                          "Index": 176,
+                          "Line": 6,
+                          "Column": 33,
+                          "StreamName": "fail/bad-library-names.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "export"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 182,
+                                  "Line": 7,
+                                  "Column": 6,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 188,
+                                  "Line": 7,
+                                  "Column": 12,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "we"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 189,
+                                  "Line": 7,
+                                  "Column": 13,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 191,
+                                  "Line": 7,
+                                  "Column": 15,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "don't"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 192,
+                                  "Line": 7,
+                                  "Column": 16,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 199,
+                                  "Line": 7,
+                                  "Column": 23,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "exist"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 200,
+                                  "Line": 7,
+                                  "Column": 24,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                },
+                                {
+                                  "Index": 205,
+                                  "Line": 7,
+                                  "Column": 29,
+                                  "StreamName": "fail/bad-library-names.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 181,
+                          "Line": 7,
+                          "Column": 5,
+                          "StreamName": "fail/bad-library-names.scm"
+                        },
+                        {
+                          "Index": 206,
+                          "Line": 7,
+                          "Column": 30,
+                          "StreamName": "fail/bad-library-names.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 144,
+                  "Line": 6,
+                  "Column": 1,
+                  "StreamName": "fail/bad-library-names.scm"
+                },
+                {
+                  "Index": 207,
+                  "Line": 7,
+                  "Column": 31,
+                  "StreamName": "fail/bad-library-names.scm"
+                }
+              ]
+            }
           }
         ]
       ]
@@ -601,9 +854,9 @@
           "StreamName": "fail/bad-library-names.scm"
         },
         {
-          "Index": 143,
-          "Line": 5,
-          "Column": 33,
+          "Index": 207,
+          "Line": 7,
+          "Column": 31,
           "StreamName": "fail/bad-library-names.scm"
         }
       ]
