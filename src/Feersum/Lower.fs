@@ -16,12 +16,11 @@ let rec private findCaptured = function
         |> List.append (Option.map findCaptured els |> Option.defaultValue [])
     | Seq(exprs) ->
         List.collect findCaptured exprs
-    | Lambda(formals, locals, captures, env, body) ->
+    | Lambda(formals, body) ->
         let isFree = function
             | Arg _ | Local _ -> true
             | _ -> false
-        captures
-        |> List.filter isFree
+        body.Captures |> List.filter isFree
     | Store(_, v) -> Option.map findCaptured v |> Option.defaultValue []
     | SequencePoint(inner, _) -> findCaptured inner
     | e -> []
@@ -63,27 +62,30 @@ let rec private rewriteExpression ctx = function
     | Application(app, args) -> Application(rewriteExpression ctx app, List.map (rewriteExpression ctx) args)
     | If(cond, cons, els) -> If(rewriteExpression ctx cond, rewriteExpression ctx cons, Option.map (rewriteExpression ctx) els)
     | Seq(exprs) -> Seq(List.map (rewriteExpression ctx) exprs)
-    | Lambda(formals, locals, captures, env, body) ->
-        // First re-write our free variables. This is in reference to the parent
-        // context so needs to be done before we create a derived `ctx`.
-        let captures = List.map (rewriteStorage ctx) captures
-        // find out what is captured
-        let ctx = { Parent = Some(ctx); Mappings = mappingsForExpr body }
-        /// Update our environment size if captures were found
-        let env = rewriteEnv env ctx.Mappings
-        // re-write the body
-        Lambda(formals, locals, captures, env, (rewriteExpression ctx body))
+    | Lambda(formals, root) ->
+        Lambda(formals, (rewriteRoot (Some(ctx)) root))
     | SequencePoint(inner, location) ->
         SequencePoint((rewriteExpression ctx inner), location)
     | Library(name, body) ->
-        let ctx = { Parent = None
-                  ; Mappings = mappingsForExpr body }
-        Library(name, rewriteExpression ctx body)
+        Library(name, rewriteRoot None body)
     | e -> e
+and private rewriteRoot parent root =
+    // First re-write our free variables. This is in reference to the parent
+    // context so needs to be done before we create a derived `ctx`.
+    let captures =
+        match parent with
+        | Some(ctx) -> List.map (rewriteStorage ctx) root.Captures
+        | _ -> root.Captures
+    // find out what is captured
+    let ctx = { Parent = parent; Mappings = mappingsForExpr root.Body }
+    /// Update our environment size if captures were found
+    let env = rewriteEnv root.EnvMappings ctx.Mappings
+    // re-constitute
+    { Body = (rewriteExpression ctx root.Body)
+    ; Locals = root.Locals
+    ; Captures = captures
+    ; EnvMappings = env }
 
 /// Lower a bound tree to a form better suited for the emit phase.
 let lower (ast: BoundSyntaxTree) =
-    let ctx = { Parent = None
-              ; Mappings = mappingsForExpr ast.Root }
-    { ast with Root = rewriteExpression ctx ast.Root
-             ; EnvMappings = rewriteEnv ast.EnvMappings ctx.Mappings }
+    { ast with Root = rewriteRoot None ast.Root }

@@ -59,16 +59,18 @@ type BoundExpr =
     | Application of BoundExpr * BoundExpr list
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
-    | Lambda of BoundFormals * int * StorageRef list * StorageRef list option * BoundExpr
-    | Library of string * BoundExpr
+    | Lambda of BoundFormals * BoundBody
+    | Library of string * BoundBody
     | Import of string
     | Nop
     | Error
+and BoundBody = { Body: BoundExpr
+                ; Locals: int
+                ; Captures: StorageRef list
+                ; EnvMappings: StorageRef list option }
 
 /// Root type returned by the binder.
-type BoundSyntaxTree = { Root: BoundExpr
-                       ; LocalsCount: int
-                       ; EnvMappings: StorageRef list option
+type BoundSyntaxTree = { Root: BoundBody
                        ; MangledName: string
                        ; Diagnostics: Diagnostic list }
 
@@ -233,6 +235,18 @@ module private BinderCtx =
         | [] ->
             failwith "ICE: Unbalanced scope pop"
 
+    // Convert the binder context into a bound root around the given expression
+    let intoRoot ctx expr =
+        let env =
+            if ctx.HasDynamicEnv then
+                Some([])
+            else
+                None
+        { Body = expr
+        ; Locals = ctx.LocalCount
+        ; Captures = ctx.Captures
+        ; EnvMappings = env }
+
 /// Bind a Formals List Pattern
 ///
 /// This binds the formals list pattern as supported by `(define .. )` forms,
@@ -385,13 +399,12 @@ and private bindLambdaBody ctx formals body =
     | BoundFormals.DottedList(fmls, dotted) ->
         let nextFormal = (List.fold addFormal 0 fmls)
         addFormal nextFormal dotted |> ignore
-    let boundBody = bindSequence lambdaCtx body
-    let env =
-        if lambdaCtx.HasDynamicEnv then
-            Some([])
-        else
-            None
-    BoundExpr.Lambda(formals, lambdaCtx.LocalCount, lambdaCtx.Captures, env, boundBody)
+
+    let boundBody =
+        bindSequence lambdaCtx body
+        |> BinderCtx.intoRoot lambdaCtx
+    
+    BoundExpr.Lambda(formals, boundBody)
     
 and private bindLet ctx name body location declBinder =
     match body with
@@ -434,8 +447,7 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
         List.choose (function
         | Libraries.LibraryDeclaration.Begin block ->
             block
-            |> List.map (bindInContext libCtx)
-            |> BoundExpr.Seq
+            |> bindSequence libCtx
             |> Some
         | _ -> None) library.Declarations
 
@@ -468,7 +480,7 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
 
     BoundExpr.Library(
         library.LibraryName |> mangleName,
-        List.append imports boundBodies |> BoundExpr.Seq)
+        List.append imports boundBodies |> BoundExpr.Seq |> BinderCtx.intoRoot libCtx)
 
 and private bindForm ctx (form: AstNode list) node =
     let illFormed formName = illFormedInCtx ctx node.Location formName
@@ -633,9 +645,7 @@ let createRootScope =
 /// call can be passed to the `Compile` or `Emit` API to be lowered to IL.
 let bind scope node: BoundSyntaxTree =
     let ctx = BinderCtx.createForGlobalScope scope ["LispProgram"]
-    let bound = bindInContext ctx node
+    let bound = bindInContext ctx node |> BinderCtx.intoRoot ctx
     { Root = bound
-    ; LocalsCount = ctx.LocalCount
-    ; EnvMappings = None
     ; MangledName = ctx.MangledName
     ; Diagnostics = ctx.Diagnostics.Take }
