@@ -39,6 +39,9 @@ type LibraryDefinition =
     { LibraryName: string list
     ; Declarations: LibraryDeclaration list }
 
+/// Map the exports in a given library signature
+let private mapExports mapper (name, exports) = (name, exports |> mapper)
+
 /// Recognise a list of strings as a library name
 let private parseLibraryName (diags: DiagnosticBag) name =
     let isInvalidChar = function
@@ -160,12 +163,8 @@ and private parseImportDeclaration diags import =
 
 
 let private parseLibraryBody ctx name body =
-    let parser = parseLibraryDeclaration ctx
-    let parsedBodies =
-        body
-        |> List.map parser
-
-    { LibraryName = name; Declarations = parsedBodies }
+    { LibraryName = name
+    ; Declarations = body |> List.map (parseLibraryDeclaration ctx) }
 
 // -------------------- Public Libraries API ---------------------
 
@@ -183,6 +182,34 @@ let rec public matchLibraryName left right =
             false
     | ([], []) -> true
     | _ -> false
+
+/// Resolve a library import
+let rec public resolveImport libraries = function
+    | ImportSet.Error -> Result.Error "invalid import set"
+    | ImportSet.Except(inner, except) ->
+        resolveImport libraries inner
+        |> Result.map (mapExports (List.filter (fun (id, _) -> List.contains id except |> not)))
+    | ImportSet.Only(inner, only) ->
+        resolveImport libraries inner
+        |> Result.map (mapExports (List.filter (fun (id, _) -> List.contains id only)))
+    | ImportSet.Plain lib ->
+        match Seq.tryFind (fun (name, _) -> matchLibraryName lib name) libraries with
+        | Some (_, exports) -> Ok((lib, exports))
+        | _ ->
+            lib
+            |> prettifyLibraryName
+            |> sprintf "Could not find library %s"
+            |> Result.Error
+    | ImportSet.Prefix(inner, prefix) ->
+        resolveImport libraries inner
+        |> Result.map (mapExports (List.map (fun (name, storage) -> (prefix + name, storage))))
+    | ImportSet.Renamed(inner, renames) ->
+        let processRenames (name, storage) =
+            match List.tryFind (fun (x: SymbolRename) -> x.From = name) renames with
+            | Some rename -> (rename.To, storage)
+            | _ -> (name, storage)
+        resolveImport libraries inner
+        |> Result.map (mapExports (List.map (processRenames)))
 
 /// Parse the body of an import form
 let public parseImport = parseImportDeclaration
