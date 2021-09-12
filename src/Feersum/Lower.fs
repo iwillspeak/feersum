@@ -44,12 +44,10 @@ let rec private rewriteStorage ctx = function
         | None ->
             failwith "Internal compiler error: Capture chain does not match nesting"
     | s ->
-        match Map.tryFind s ctx.Mappings with
-        | Some mapped -> mapped
-        | None -> s
+        Map.tryFind s ctx.Mappings |> Option.defaultValue s
 
-/// RE-write the environment size, if needed.
-let private rewriteEnvSize env mappings =
+/// Re-write the environment size, if needed.
+let private rewriteEnv env mappings =
     if Map.isEmpty mappings then
         env
     else
@@ -72,7 +70,7 @@ let rec private rewriteExpression ctx = function
         // find out what is captured
         let ctx = { Parent = Some(ctx); Mappings = mappingsForExpr body }
         /// Update our environment size if captures were found
-        let env = rewriteEnvSize env ctx.Mappings
+        let env = rewriteEnv env ctx.Mappings
         // re-write the body
         Lambda(formals, locals, captures, env, (rewriteExpression ctx body))
     | SequencePoint(inner, location) ->
@@ -88,4 +86,4 @@ let lower (ast: BoundSyntaxTree) =
     let ctx = { Parent = None
               ; Mappings = mappingsForExpr ast.Root }
     { ast with Root = rewriteExpression ctx ast.Root
-             ; EnvMappings = rewriteEnvSize ast.EnvMappings ctx.Mappings }
+             ; EnvMappings = rewriteEnv ast.EnvMappings ctx.Mappings }
