@@ -33,6 +33,10 @@ module ResultEx =
         | Some e -> Result.Error e
         | None -> Result.Ok results    
 
+    let okOr fallback = function
+        | Ok o -> o
+        | Error _ -> fallback
+
 module OptionEx =
 
     /// Unwrap an option into the inner value. Useful for testing, or in cases
@@ -40,3 +44,8 @@ module OptionEx =
     let unwrap = function
         | Some s -> s
         | None -> failwith "Called unwrap on a `None`."
+
+    /// Turn a result with a unit error into an option
+    let ofResult = function
+        | Result.Ok o -> Some(o)
+        | Error () -> None

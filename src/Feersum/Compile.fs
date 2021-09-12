@@ -26,6 +26,8 @@ type EmitCtx =
     ; mutable Environment: VariableDefinition option
     ; ParentEnvSize: int option
     ; ProgramTy: TypeDefinition
+    ; mutable Initialisers: Map<string, MethodReference>
+    ; mutable Libraries: Map<string, TypeDefinition>
     ; Core: Builtins.CoreTypes }
 
 
@@ -85,14 +87,18 @@ let private emitUnspecified ctx =
 
 /// Ensure a field exists on the program type to be used as a global variable
 let private ensureField ctx mangledPrefix id =
-    let id = (mangledPrefix + "<" + id + ">")
     let pred (field: FieldDefinition) =
         field.Name = id
-    match Seq.tryFind pred ctx.ProgramTy.Fields with
+
+    let ty =
+        Map.tryFind mangledPrefix ctx.Libraries
+        |> Option.get
+    
+    match Seq.tryFind pred ty.Fields with
     | Some(found) -> found
     | None ->
         let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
-        ctx.ProgramTy.Fields.Add(newField)
+        ty.Fields.Add(newField)
         newField
 
 /// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
@@ -271,6 +277,11 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
         emitLambda ctx formals locals captured envSize body
     | BoundExpr.Library(name, body) ->
         emitLibrary ctx name body
+    | BoundExpr.Import name ->
+        match Map.tryFind name ctx.Initialisers with
+        | Some(initialiser) ->
+            ctx.IL.Emit(OpCodes.Call, initialiser)
+        | None -> emitUnspecified ctx
     | BoundExpr.Quoted quoted ->
         emitQuoted ctx quoted
 
@@ -688,9 +699,33 @@ and emitNamedLambda (ctx: EmitCtx) name formals localCount envMappings body =
 
 /// Emit the body of a library definition
 and emitLibrary ctx name body =
-    // FIXME: Library bodies should be emitted into their own types
-    body
-    |> emitSequence ctx false
+
+    // Genreate a nominal type to contain the methods for this library.
+    let libTy = TypeDefinition(ctx.ProgramTy.Namespace,
+                                name,
+                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                                ctx.Assm.MainModule.TypeSystem.Object)
+    ctx.Assm.MainModule.Types.Add libTy
+    libTy.Methods.Add <| createEmptyCtor ctx.Assm
+    ctx.Libraries <- Map.add name libTy ctx.Libraries
+
+    // Emit the body of the script to a separate method so that the `Eval`
+    // module can call it directly
+    let libEmitCtx  = { ctx with IL = null
+                              ; ProgramTy = libTy
+                              ; NextLambda = 0
+                              ; Locals = []
+                              ; Parameters = []
+                              ; EnvSize = None
+                              ; ParentEnvSize = None
+                              ; Environment = None
+                              ; ScopePrefix = "$ROOT" }
+    let bodyParams = BoundFormals.List([])
+    let bodyMethod, _ = emitNamedLambda libEmitCtx "$LibraryBody" bodyParams 0 None body
+
+    ctx.Initialisers <- Map.add name (bodyMethod :> MethodReference) ctx.Initialisers
+
+    emitUnspecified ctx
 
 /// Emit the `Main` Method Epilogue
 ///
@@ -738,7 +773,7 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 
     // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName,
-                                "LispProgram",
+                                bound.MangledName,
                                 TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
                                 assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
@@ -751,6 +786,8 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
     let rootEmitCtx = { IL = null
                       ; DebugDocuments = Dictionary()
                       ; ProgramTy = progTy
+                      ; Libraries = Map.add bound.MangledName progTy Map.empty
+                      ; Initialisers = Map.empty
                       ; Core = coreTypes
                       ; NextLambda = 0
                       ; Locals = []
