@@ -181,20 +181,20 @@ module private BinderCtx =
     let addLibrary ctx name exports =
         ctx.Libraries <- (name, exports)::ctx.Libraries
 
+    /// Transform the exports from a library signature with the given `mapper`
+    let private mapExportsResult mapper =
+        Result.map (fun (name, exports) -> (name, exports |> mapper)) 
+
     // TODO: add unit tests for this method
     /// Recursively find the bindings for the given import set
     let rec findBindings ctx = function
         | Libraries.ImportSet.Error -> Result.Error "invalid import set"
         | Libraries.ImportSet.Except(inner, except) ->
             findBindings ctx inner
-            |> Result.map (fun (name, exports) ->
-                (name, exports
-                       |> List.filter (fun (id, _) -> List.contains id except |> not)))
+            |> mapExportsResult (List.filter (fun (id, _) -> List.contains id except |> not))
         | Libraries.ImportSet.Only(inner, only) ->
             findBindings ctx inner
-            |> Result.map (fun (name, exports) ->
-                (name, exports
-                       |> List.filter (fun (id, _) -> List.contains id only)))
+            |> mapExportsResult (List.filter (fun (id, _) -> List.contains id only))
         | Libraries.ImportSet.Plain lib ->
             match Seq.tryFind (fun (name, _) -> Libraries.matchLibraryName lib name) ctx.Libraries with
             | Some (_, exports) -> Ok((lib, exports))
@@ -205,22 +205,20 @@ module private BinderCtx =
                 |> Result.Error
         | Libraries.ImportSet.Prefix(inner, prefix) ->
             findBindings ctx inner
-            |> Result.map (fun (name, exports) ->
-                (name, exports |> List.map (fun (name, storage) -> (prefix + name, storage))))
+            |> mapExportsResult (List.map (fun (name, storage) -> (prefix + name, storage)))
         | Libraries.ImportSet.Renamed(inner, renames) ->
             let processRenames (name, storage) =
                 match List.tryFind (fun (x: Libraries.SymbolRename) -> x.From = name) renames with
                 | Some rename -> (rename.To, storage)
                 | _ -> (name, storage)
             findBindings ctx inner
-            |> Result.map (fun (name, exports) -> (name, exports |> List.map (processRenames)))
+            |> mapExportsResult (List.map (processRenames))
 
     /// Add all the bindings from a given import set into the current scope
     let addImportsFromSet ctx (importSet: Libraries.ImportSet) =
         findBindings ctx importSet
-        |> Result.map (fun (name, exports) ->
-            List.iter (fun (id, storage) -> scopeInsert ctx id storage) exports
-            name |> mangleName)
+        |> mapExportsResult (List.iter (fun (id, storage) -> scopeInsert ctx id storage))
+        |> Result.map (fun (name, _) -> name |> mangleName)
 
     /// Add a new level to the scopes
     let pushScope ctx =
@@ -441,6 +439,7 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
             |> Some
         | _ -> None) library.Declarations
 
+    // Process `(export ...)` declarations.
     let lookupExport id extId =
         match BinderCtx.tryFindBinding libCtx id with
         | Some(x) -> Some((extId, x))
@@ -450,7 +449,6 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
             |> libCtx.Diagnostics.Add  
             None
 
-    // Process `(export ...)` declarations.
     let exports =
         library.Declarations
         |> List.choose (function

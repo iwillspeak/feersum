@@ -77,6 +77,10 @@ let rec private rewriteExpression ctx = function
         Lambda(formals, locals, captures, env, (rewriteExpression ctx body))
     | SequencePoint(inner, location) ->
         SequencePoint((rewriteExpression ctx inner), location)
+    | Library(name, body) ->
+        let ctx = { Parent = None
+                  ; Mappings = mappingsForExpr body }
+        Library(name, rewriteExpression ctx body)
     | e -> e
 
 /// Lower a bound tree to a form better suited for the emit phase.
