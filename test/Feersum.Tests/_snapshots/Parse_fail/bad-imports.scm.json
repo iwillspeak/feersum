@@ -256,6 +256,311 @@
                 }
               ]
             }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define-library"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 49,
+                          "Line": 3,
+                          "Column": 2,
+                          "StreamName": "fail/bad-imports.scm"
+                        },
+                        {
+                          "Index": 63,
+                          "Line": 3,
+                          "Column": 16,
+                          "StreamName": "fail/bad-imports.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 65,
+                                  "Line": 3,
+                                  "Column": 18,
+                                  "StreamName": "fail/bad-imports.scm"
+                                },
+                                {
+                                  "Index": 69,
+                                  "Line": 3,
+                                  "Column": 22,
+                                  "StreamName": "fail/bad-imports.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 64,
+                          "Line": 3,
+                          "Column": 17,
+                          "StreamName": "fail/bad-imports.scm"
+                        },
+                        {
+                          "Index": 70,
+                          "Line": 3,
+                          "Column": 23,
+                          "StreamName": "fail/bad-imports.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "import"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 76,
+                                  "Line": 4,
+                                  "Column": 6,
+                                  "StreamName": "fail/bad-imports.scm"
+                                },
+                                {
+                                  "Index": 82,
+                                  "Line": 4,
+                                  "Column": 12,
+                                  "StreamName": "fail/bad-imports.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "only"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 84,
+                                          "Line": 4,
+                                          "Column": 14,
+                                          "StreamName": "fail/bad-imports.scm"
+                                        },
+                                        {
+                                          "Index": 88,
+                                          "Line": 4,
+                                          "Column": 18,
+                                          "StreamName": "fail/bad-imports.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "test"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 90,
+                                                  "Line": 4,
+                                                  "Column": 20,
+                                                  "StreamName": "fail/bad-imports.scm"
+                                                },
+                                                {
+                                                  "Index": 94,
+                                                  "Line": 4,
+                                                  "Column": 24,
+                                                  "StreamName": "fail/bad-imports.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "greeter"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 95,
+                                                  "Line": 4,
+                                                  "Column": 25,
+                                                  "StreamName": "fail/bad-imports.scm"
+                                                },
+                                                {
+                                                  "Index": 102,
+                                                  "Line": 4,
+                                                  "Column": 32,
+                                                  "StreamName": "fail/bad-imports.scm"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 89,
+                                          "Line": 4,
+                                          "Column": 19,
+                                          "StreamName": "fail/bad-imports.scm"
+                                        },
+                                        {
+                                          "Index": 103,
+                                          "Line": 4,
+                                          "Column": 33,
+                                          "StreamName": "fail/bad-imports.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "greet"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 104,
+                                          "Line": 4,
+                                          "Column": 34,
+                                          "StreamName": "fail/bad-imports.scm"
+                                        },
+                                        {
+                                          "Index": 109,
+                                          "Line": 4,
+                                          "Column": 39,
+                                          "StreamName": "fail/bad-imports.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 83,
+                                  "Line": 4,
+                                  "Column": 13,
+                                  "StreamName": "fail/bad-imports.scm"
+                                },
+                                {
+                                  "Index": 110,
+                                  "Line": 4,
+                                  "Column": 40,
+                                  "StreamName": "fail/bad-imports.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 75,
+                          "Line": 4,
+                          "Column": 5,
+                          "StreamName": "fail/bad-imports.scm"
+                        },
+                        {
+                          "Index": 111,
+                          "Line": 4,
+                          "Column": 41,
+                          "StreamName": "fail/bad-imports.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 48,
+                  "Line": 3,
+                  "Column": 1,
+                  "StreamName": "fail/bad-imports.scm"
+                },
+                {
+                  "Index": 112,
+                  "Line": 4,
+                  "Column": 42,
+                  "StreamName": "fail/bad-imports.scm"
+                }
+              ]
+            }
           }
         ]
       ]
@@ -270,9 +575,9 @@
           "StreamName": "fail/bad-imports.scm"
         },
         {
-          "Index": 47,
-          "Line": 2,
-          "Column": 18,
+          "Index": 112,
+          "Line": 4,
+          "Column": 42,
           "StreamName": "fail/bad-imports.scm"
         }
       ]

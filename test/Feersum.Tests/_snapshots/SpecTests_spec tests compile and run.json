@@ -583,6 +583,29 @@
           "Case": "Span",
           "Fields": [
             {
+              "Index": 48,
+              "Line": 3,
+              "Column": 1,
+              "StreamName": "fail/bad-imports.scm"
+            },
+            {
+              "Index": 112,
+              "Line": 4,
+              "Column": 42,
+              "StreamName": "fail/bad-imports.scm"
+            }
+          ]
+        },
+        "Message": "Could not find library (test greeter)",
+        "Level": {
+          "Case": "Error"
+        }
+      },
+      {
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
               "Index": 38,
               "Line": 2,
               "Column": 9,
