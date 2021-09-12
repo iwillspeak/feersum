@@ -183,44 +183,11 @@ module private BinderCtx =
     let addLibrary ctx name exports =
         ctx.Libraries <- (name, exports)::ctx.Libraries
 
-    /// Transform the exports from a library signature with the given `mapper`
-    let private mapExportsResult mapper =
-        Result.map (fun (name, exports) -> (name, exports |> mapper)) 
-
-    // TODO: add unit tests for this method
-    /// Recursively find the bindings for the given import set
-    let rec findBindings ctx = function
-        | Libraries.ImportSet.Error -> Result.Error "invalid import set"
-        | Libraries.ImportSet.Except(inner, except) ->
-            findBindings ctx inner
-            |> mapExportsResult (List.filter (fun (id, _) -> List.contains id except |> not))
-        | Libraries.ImportSet.Only(inner, only) ->
-            findBindings ctx inner
-            |> mapExportsResult (List.filter (fun (id, _) -> List.contains id only))
-        | Libraries.ImportSet.Plain lib ->
-            match Seq.tryFind (fun (name, _) -> Libraries.matchLibraryName lib name) ctx.Libraries with
-            | Some (_, exports) -> Ok((lib, exports))
-            | _ ->
-                lib
-                |> Libraries.prettifyLibraryName
-                |> sprintf "Could not find library %s"
-                |> Result.Error
-        | Libraries.ImportSet.Prefix(inner, prefix) ->
-            findBindings ctx inner
-            |> mapExportsResult (List.map (fun (name, storage) -> (prefix + name, storage)))
-        | Libraries.ImportSet.Renamed(inner, renames) ->
-            let processRenames (name, storage) =
-                match List.tryFind (fun (x: Libraries.SymbolRename) -> x.From = name) renames with
-                | Some rename -> (rename.To, storage)
-                | _ -> (name, storage)
-            findBindings ctx inner
-            |> mapExportsResult (List.map (processRenames))
-
-    /// Add all the bindings from a given import set into the current scope
-    let addImportsFromSet ctx (importSet: Libraries.ImportSet) =
-        findBindings ctx importSet
-        |> mapExportsResult (List.iter (fun (id, storage) -> scopeInsert ctx id storage))
-        |> Result.map (fun (name, _) -> name |> mangleName)
+    /// Import the bindings from a given libraryto the binder context
+    let importLibrary ctx library =
+        let (name, exports) = library
+        List.iter (fun (id, storage) -> scopeInsert ctx id storage) exports
+        name |> mangleName
 
     /// Add a new level to the scopes
     let pushScope ctx =
@@ -431,13 +398,11 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
         |> List.choose (function
             | Libraries.LibraryDeclaration.Import i ->
                 i
-                |> List.choose (fun i ->
-                    BinderCtx.findBindings ctx i
-                    |> Result.map (fun (name, exports) ->
-                        List.iter (fun (id, storage) -> BinderCtx.scopeInsert libCtx id storage) exports
-                        name |> mangleName |> BoundExpr.Import)
-                    |> Result.mapError (libCtx.Diagnostics.Emit location)
-                    |> OptionEx.ofResult)
+                |> List.choose (
+                    Libraries.resolveImport ctx.Libraries
+                    >> Result.map (BinderCtx.importLibrary libCtx >> BoundExpr.Import)
+                    >> Result.mapError (libCtx.Diagnostics.Emit location)
+                    >> OptionEx.ofResult)
                 |> BoundExpr.Seq
                 |> Some
             | _ -> None)
@@ -611,9 +576,9 @@ and private bindForm ctx (form: AstNode list) node =
         body
         |> List.map (fun item ->
             Libraries.parseImport ctx.Diagnostics item
-            |> BinderCtx.addImportsFromSet ctx
+            |> Libraries.resolveImport ctx.Libraries
             |> Result.mapError (ctx.Diagnostics.Emit item.Location)
-            |> Result.map BoundExpr.Import
+            |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
             |> ResultEx.okOr BoundExpr.Error)
         |> BoundExpr.Seq
     | { Kind = AstNodeKind.Ident("cond") }::body ->
