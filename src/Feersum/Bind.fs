@@ -81,7 +81,6 @@ type private BinderCtx =
     ; mutable OuterScopes: Scope<StorageRef> list
     ; mutable Libraries: (string list * (string * StorageRef) list) list
     ; mutable LocalCount: int
-    ; mutable Mangles: int
     ; mutable Captures: StorageRef list
     ; mutable HasDynamicEnv: bool
     ; MangledName: string
@@ -111,26 +110,19 @@ module private BinderCtx =
         { Scope = scope |> Scope.fromMap
         ; OuterScopes = []
         ; Libraries = [baseLib]
-        ; Mangles = 0
         ; MangledName = name |> mangleName
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = DiagnosticBag.Empty
         ; HasDynamicEnv = false
         ; Parent = None }
-    
-    let private nextMangledName ctx =
-        let next = ctx.Mangles
-        ctx.Mangles <- next + 1
-        sprintf "%s::Lambda_%d" ctx.MangledName next
 
     /// Create a new binder context for a child scope
     let createWithParent parent =
         { Scope = Scope.empty
         ; OuterScopes = []
         ; Libraries = []
-        ; Mangles = 0
-        ; MangledName = nextMangledName parent
+        ; MangledName = parent.MangledName
         ; LocalCount = 0
         ; Captures = []
         ; Diagnostics = parent.Diagnostics
