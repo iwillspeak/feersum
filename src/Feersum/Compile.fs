@@ -91,8 +91,9 @@ let private ensureField ctx mangledPrefix id =
         field.Name = id
 
     let ty =
-        Map.tryFind mangledPrefix ctx.Libraries
-        |> Option.get
+        match Map.tryFind mangledPrefix ctx.Libraries with
+        | Some prefix -> prefix
+        | None -> failwithf "ICE: Attempt to access field on '%s', which is not yet defined" mangledPrefix
     
     match Seq.tryFind pred ty.Fields with
     | Some(found) -> found
