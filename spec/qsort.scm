@@ -20,12 +20,24 @@
                         (cons (car rest)
                             (cons current (cdr rest)))))))
 
-        ;; Append the `rigth` list to the `left` one.
+        ;; Append the `right` list to the `left` one.
+        ;
+        ; This function uses two helpers to tail-recursively reconstruct a list.
+        ; The `append-helper` first recurses moving elements from the `left`
+        ; list into the accumuulator. Once the left list is empty the base case
+        ; uses `rebuild` to tail-recursively construct the final list.
         (define (append left right)
-            (if (null? left)
-                right
-                (cons (car left)
-                    (append (cdr left) right))))
+            (define (rebuild acc right)
+                (if (null? acc)
+                    right
+                    (rebuild (cdr acc) (cons (car acc) right))))
+            (define (append-helper acc left right)
+                (if (null? left)
+                    (rebuild acc right)
+                    (append-helper (cons (car left) acc)
+                        (cdr left)
+                        right)))
+            (append-helper '() left right))
 
         ;; Recursive quicksort implementation.
         ;
