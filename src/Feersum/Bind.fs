@@ -105,14 +105,10 @@ let private mangleName name =
 module private BinderCtx =
 
     /// Create a new binder context for the given root scope
-    let createForGlobalScope scope name =
-        // FIXME: This `(scheme base)` thing is a massif hack.
-        let baseLib =
-            { Libraries.LibrarySignature.LibraryName = ["scheme";"base"]
-            ; Libraries.LibrarySignature.Exports = scope |> Map.toList }
+    let createForGlobalScope scope libs name =
         { Scope = scope |> Scope.fromMap
         ; OuterScopes = []
-        ; Libraries = [baseLib]
+        ; Libraries = libs
         ; MangledName = name |> mangleName
         ; LocalCount = 0
         ; Captures = []
@@ -395,7 +391,7 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
     // Process `(import ...)`
     let libCtx =
         library.LibraryName
-        |> BinderCtx.createForGlobalScope Map.empty
+        |> BinderCtx.createForGlobalScope Map.empty ctx.Libraries
     let imports =
         library.Declarations
         |> List.choose (function
@@ -597,22 +593,20 @@ and private bindForm ctx (form: AstNode list) node =
 /// Create a New Root Scope
 /// 
 /// The root scope contains the global functions available to the program.
-let createRootScope =
-    let builtinProcs =
-        Builtins.coreProcNames
-        |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
-    let builtinMacros =
-        Builtins.coreMacros
-        |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m)))
-    Seq.append builtinProcs builtinMacros
+let scopeFromLibraries (libs: seq<Libraries.LibrarySignature<StorageRef>>) =
+    libs
+    |> Seq.collect (fun lib -> lib.Exports)
     |> Map.ofSeq
+
+/// The empty scope
+let emptyScope = Map.empty
 
 /// Bind a syntax node in a given scope
 /// 
 /// Walks the parse tree and computes semantic information. The result of this
 /// call can be passed to the `Compile` or `Emit` API to be lowered to IL.
-let bind scope node: BoundSyntaxTree =
-    let ctx = BinderCtx.createForGlobalScope scope ["LispProgram"]
+let bind scope libraries node: BoundSyntaxTree =
+    let ctx = BinderCtx.createForGlobalScope scope libraries ["LispProgram"]
     let bound = bindInContext ctx node |> BinderCtx.intoRoot ctx
     { Root = bound
     ; MangledName = ctx.MangledName

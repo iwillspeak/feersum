@@ -8,8 +8,9 @@ open Mono.Cecil.Cil
 open Macros
 open System
 open Syntax
-open Diagnostics
 open Utils
+open Bind
+open Libraries
 
 /// Core Types Used by the Compiler at Runtime
 type CoreTypes =
@@ -149,18 +150,24 @@ let private macroUnless =
 
 let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
 
-// ------------------------ Public Builtins API --------------------------------
-
 /// The list of builtin procedure names
-let public coreProcNames =
+let coreProcedures =
     findBuiltinMethods serehfaAssm
-    |> Seq.map (fun (a, _) -> a.Name)
+    |> Seq.map (fun (a, _) -> (a.Name, StorageRef.Builtin(a.Name)))
 
 /// The list of builtin macros
-let public coreMacros =
+let coreMacros =
     [ macroAnd ; macroOr; macroWhen; macroUnless ]
+    |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m)))
+
+// ------------------------ Public Builtins API --------------------------------
+
+/// The core library signature
+let public loadCoreSignature =
+    { LibraryName = ["scheme";"base"]
+    ; Exports = Seq.append coreProcedures coreMacros |> List.ofSeq }
 
 /// Load the core types into the given assembly
-let loadCore (assm: AssemblyDefinition) =
+let importCore (assm: AssemblyDefinition) =
     let builtins = loadExternBuiltins assm serehfaAssm
     { loadCoreTypes assm serehfaAssm with EnvTy = addEnvDecls assm; Builtins = builtins }
