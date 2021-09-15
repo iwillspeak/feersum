@@ -39,8 +39,14 @@ type LibraryDefinition =
     { LibraryName: string list
     ; Declarations: LibraryDeclaration list }
 
+/// Exported API signature of a given library
+type LibrarySignature<'a> =
+    { LibraryName: string list
+    ; Exports: (string * 'a) list}
+
 /// Map the exports in a given library signature
-let private mapExports mapper (name, exports) = (name, exports |> mapper)
+let private mapExports mapper signature =
+    { signature with Exports = signature.Exports |> mapper }
 
 /// Recognise a list of strings as a library name
 let private parseLibraryName (diags: DiagnosticBag) name =
@@ -193,8 +199,8 @@ let rec public resolveImport libraries = function
         resolveImport libraries inner
         |> Result.map (mapExports (List.filter (fun (id, _) -> List.contains id only)))
     | ImportSet.Plain lib ->
-        match Seq.tryFind (fun (name, _) -> matchLibraryName lib name) libraries with
-        | Some (_, exports) -> Ok((lib, exports))
+        match Seq.tryFind (fun signature -> matchLibraryName lib signature.LibraryName) libraries with
+        | Some (signature) -> Ok(signature)
         | _ ->
             lib
             |> prettifyLibraryName
