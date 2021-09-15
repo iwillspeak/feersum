@@ -1,3 +1,4 @@
+(import (scheme base))
 ((lambda (a)
     (display
         (if #f

@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "define-syntax"
+                        "import"
                       ]
                     },
                     "Location": {
@@ -26,8 +26,135 @@
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 14,
+                          "Index": 7,
                           "Line": 1,
+                          "Column": 8,
+                          "StreamName": "fail/macrofails.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "fail/macrofails.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "fail/macrofails.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 16,
+                                  "Line": 1,
+                                  "Column": 17,
+                                  "StreamName": "fail/macrofails.scm"
+                                },
+                                {
+                                  "Index": 20,
+                                  "Line": 1,
+                                  "Column": 21,
+                                  "StreamName": "fail/macrofails.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 8,
+                          "Line": 1,
+                          "Column": 9,
+                          "StreamName": "fail/macrofails.scm"
+                        },
+                        {
+                          "Index": 21,
+                          "Line": 1,
+                          "Column": 22,
+                          "StreamName": "fail/macrofails.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "fail/macrofails.scm"
+                },
+                {
+                  "Index": 22,
+                  "Line": 1,
+                  "Column": 23,
+                  "StreamName": "fail/macrofails.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define-syntax"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 24,
+                          "Line": 2,
+                          "Column": 2,
+                          "StreamName": "fail/macrofails.scm"
+                        },
+                        {
+                          "Index": 37,
+                          "Line": 2,
                           "Column": 15,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -45,14 +172,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 15,
-                          "Line": 1,
+                          "Index": 38,
+                          "Line": 2,
                           "Column": 16,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 25,
-                          "Line": 1,
+                          "Index": 48,
+                          "Line": 2,
                           "Column": 26,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -75,14 +202,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 31,
-                                  "Line": 2,
+                                  "Index": 54,
+                                  "Line": 3,
                                   "Column": 6,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 43,
-                                  "Line": 2,
+                                  "Index": 66,
+                                  "Line": 3,
                                   "Column": 18,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -100,14 +227,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 44,
-                                  "Line": 2,
+                                  "Index": 67,
+                                  "Line": 3,
                                   "Column": 19,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 47,
-                                  "Line": 2,
+                                  "Index": 70,
+                                  "Line": 3,
                                   "Column": 22,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -130,14 +257,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 49,
-                                          "Line": 2,
+                                          "Index": 72,
+                                          "Line": 3,
                                           "Column": 24,
                                           "StreamName": "fail/macrofails.scm"
                                         },
                                         {
-                                          "Index": 53,
-                                          "Line": 2,
+                                          "Index": 76,
+                                          "Line": 3,
                                           "Column": 28,
                                           "StreamName": "fail/macrofails.scm"
                                         }
@@ -151,14 +278,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 48,
-                                  "Line": 2,
+                                  "Index": 71,
+                                  "Line": 3,
                                   "Column": 23,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 54,
-                                  "Line": 2,
+                                  "Index": 77,
+                                  "Line": 3,
                                   "Column": 29,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -186,14 +313,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 65,
-                                                  "Line": 3,
+                                                  "Index": 88,
+                                                  "Line": 4,
                                                   "Column": 11,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 66,
-                                                  "Line": 3,
+                                                  "Index": 89,
+                                                  "Line": 4,
                                                   "Column": 12,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -207,14 +334,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 64,
-                                          "Line": 3,
+                                          "Index": 87,
+                                          "Line": 4,
                                           "Column": 10,
                                           "StreamName": "fail/macrofails.scm"
                                         },
                                         {
-                                          "Index": 67,
-                                          "Line": 3,
+                                          "Index": 90,
+                                          "Line": 4,
                                           "Column": 13,
                                           "StreamName": "fail/macrofails.scm"
                                         }
@@ -236,14 +363,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 69,
-                                                "Line": 3,
+                                                "Index": 92,
+                                                "Line": 4,
                                                 "Column": 15,
                                                 "StreamName": "fail/macrofails.scm"
                                               },
                                               {
-                                                "Index": 73,
-                                                "Line": 3,
+                                                "Index": 96,
+                                                "Line": 4,
                                                 "Column": 19,
                                                 "StreamName": "fail/macrofails.scm"
                                               }
@@ -256,14 +383,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 68,
-                                          "Line": 3,
+                                          "Index": 91,
+                                          "Line": 4,
                                           "Column": 14,
                                           "StreamName": "fail/macrofails.scm"
                                         },
                                         {
-                                          "Index": 73,
-                                          "Line": 3,
+                                          "Index": 96,
+                                          "Line": 4,
                                           "Column": 19,
                                           "StreamName": "fail/macrofails.scm"
                                         }
@@ -277,14 +404,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 63,
-                                  "Line": 3,
+                                  "Index": 86,
+                                  "Line": 4,
                                   "Column": 9,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 74,
-                                  "Line": 3,
+                                  "Index": 97,
+                                  "Line": 4,
                                   "Column": 20,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -312,14 +439,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 85,
-                                                  "Line": 4,
+                                                  "Index": 108,
+                                                  "Line": 5,
                                                   "Column": 11,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 86,
-                                                  "Line": 4,
+                                                  "Index": 109,
+                                                  "Line": 5,
                                                   "Column": 12,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -337,14 +464,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 87,
-                                                  "Line": 4,
+                                                  "Index": 110,
+                                                  "Line": 5,
                                                   "Column": 13,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 91,
-                                                  "Line": 4,
+                                                  "Index": 114,
+                                                  "Line": 5,
                                                   "Column": 17,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -362,14 +489,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 92,
-                                                  "Line": 4,
+                                                  "Index": 115,
+                                                  "Line": 5,
                                                   "Column": 18,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 98,
-                                                  "Line": 4,
+                                                  "Index": 121,
+                                                  "Line": 5,
                                                   "Column": 24,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -387,14 +514,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 99,
-                                                  "Line": 4,
+                                                  "Index": 122,
+                                                  "Line": 5,
                                                   "Column": 25,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 102,
-                                                  "Line": 4,
+                                                  "Index": 125,
+                                                  "Line": 5,
                                                   "Column": 28,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -408,14 +535,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 84,
-                                          "Line": 4,
+                                          "Index": 107,
+                                          "Line": 5,
                                           "Column": 10,
                                           "StreamName": "fail/macrofails.scm"
                                         },
                                         {
-                                          "Index": 103,
-                                          "Line": 4,
+                                          "Index": 126,
+                                          "Line": 5,
                                           "Column": 29,
                                           "StreamName": "fail/macrofails.scm"
                                         }
@@ -438,14 +565,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 105,
-                                                  "Line": 4,
+                                                  "Index": 128,
+                                                  "Line": 5,
                                                   "Column": 31,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 109,
-                                                  "Line": 4,
+                                                  "Index": 132,
+                                                  "Line": 5,
                                                   "Column": 35,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -463,14 +590,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 110,
-                                                  "Line": 4,
+                                                  "Index": 133,
+                                                  "Line": 5,
                                                   "Column": 36,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 116,
-                                                  "Line": 4,
+                                                  "Index": 139,
+                                                  "Line": 5,
                                                   "Column": 42,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -488,14 +615,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 117,
-                                                  "Line": 4,
+                                                  "Index": 140,
+                                                  "Line": 5,
                                                   "Column": 43,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 120,
-                                                  "Line": 4,
+                                                  "Index": 143,
+                                                  "Line": 5,
                                                   "Column": 46,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -509,14 +636,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 104,
-                                          "Line": 4,
+                                          "Index": 127,
+                                          "Line": 5,
                                           "Column": 30,
                                           "StreamName": "fail/macrofails.scm"
                                         },
                                         {
-                                          "Index": 121,
-                                          "Line": 4,
+                                          "Index": 144,
+                                          "Line": 5,
                                           "Column": 47,
                                           "StreamName": "fail/macrofails.scm"
                                         }
@@ -530,14 +657,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 83,
-                                  "Line": 4,
+                                  "Index": 106,
+                                  "Line": 5,
                                   "Column": 9,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 122,
-                                  "Line": 4,
+                                  "Index": 145,
+                                  "Line": 5,
                                   "Column": 48,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -551,14 +678,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 30,
-                          "Line": 2,
+                          "Index": 53,
+                          "Line": 3,
                           "Column": 5,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 123,
-                          "Line": 4,
+                          "Index": 146,
+                          "Line": 5,
                           "Column": 49,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -572,14 +699,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 0,
-                  "Line": 1,
+                  "Index": 23,
+                  "Line": 2,
                   "Column": 1,
                   "StreamName": "fail/macrofails.scm"
                 },
                 {
-                  "Index": 124,
-                  "Line": 4,
+                  "Index": 147,
+                  "Line": 5,
                   "Column": 50,
                   "StreamName": "fail/macrofails.scm"
                 }
@@ -602,14 +729,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 127,
-                          "Line": 6,
+                          "Index": 150,
+                          "Line": 7,
                           "Column": 2,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 137,
-                          "Line": 6,
+                          "Index": 160,
+                          "Line": 7,
                           "Column": 12,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -623,14 +750,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 126,
-                  "Line": 6,
+                  "Index": 149,
+                  "Line": 7,
                   "Column": 1,
                   "StreamName": "fail/macrofails.scm"
                 },
                 {
-                  "Index": 138,
-                  "Line": 6,
+                  "Index": 161,
+                  "Line": 7,
                   "Column": 13,
                   "StreamName": "fail/macrofails.scm"
                 }
@@ -653,14 +780,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 140,
-                          "Line": 7,
+                          "Index": 163,
+                          "Line": 8,
                           "Column": 2,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 150,
-                          "Line": 7,
+                          "Index": 173,
+                          "Line": 8,
                           "Column": 12,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -678,14 +805,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 151,
-                          "Line": 7,
+                          "Index": 174,
+                          "Line": 8,
                           "Column": 13,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 155,
-                          "Line": 7,
+                          "Index": 178,
+                          "Line": 8,
                           "Column": 17,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -708,14 +835,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 156,
-                          "Line": 7,
+                          "Index": 179,
+                          "Line": 8,
                           "Column": 18,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 157,
-                          "Line": 7,
+                          "Index": 180,
+                          "Line": 8,
                           "Column": 19,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -738,14 +865,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 158,
-                          "Line": 7,
+                          "Index": 181,
+                          "Line": 8,
                           "Column": 20,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 159,
-                          "Line": 7,
+                          "Index": 182,
+                          "Line": 8,
                           "Column": 21,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -768,14 +895,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 160,
-                          "Line": 7,
+                          "Index": 183,
+                          "Line": 8,
                           "Column": 22,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 161,
-                          "Line": 7,
+                          "Index": 184,
+                          "Line": 8,
                           "Column": 23,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -789,14 +916,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 139,
-                  "Line": 7,
+                  "Index": 162,
+                  "Line": 8,
                   "Column": 1,
                   "StreamName": "fail/macrofails.scm"
                 },
                 {
-                  "Index": 162,
-                  "Line": 7,
+                  "Index": 185,
+                  "Line": 8,
                   "Column": 24,
                   "StreamName": "fail/macrofails.scm"
                 }
@@ -819,14 +946,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 164,
-                          "Line": 8,
+                          "Index": 187,
+                          "Line": 9,
                           "Column": 2,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 174,
-                          "Line": 8,
+                          "Index": 197,
+                          "Line": 9,
                           "Column": 12,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -844,14 +971,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 175,
-                          "Line": 8,
+                          "Index": 198,
+                          "Line": 9,
                           "Column": 13,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 179,
-                          "Line": 8,
+                          "Index": 202,
+                          "Line": 9,
                           "Column": 17,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -869,14 +996,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 180,
-                          "Line": 8,
+                          "Index": 203,
+                          "Line": 9,
                           "Column": 18,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 184,
-                          "Line": 8,
+                          "Index": 207,
+                          "Line": 9,
                           "Column": 22,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -894,14 +1021,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 185,
-                          "Line": 8,
+                          "Index": 208,
+                          "Line": 9,
                           "Column": 23,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 188,
-                          "Line": 8,
+                          "Index": 211,
+                          "Line": 9,
                           "Column": 26,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -915,14 +1042,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 163,
-                  "Line": 8,
+                  "Index": 186,
+                  "Line": 9,
                   "Column": 1,
                   "StreamName": "fail/macrofails.scm"
                 },
                 {
-                  "Index": 189,
-                  "Line": 8,
+                  "Index": 212,
+                  "Line": 9,
                   "Column": 27,
                   "StreamName": "fail/macrofails.scm"
                 }
@@ -945,14 +1072,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 192,
-                          "Line": 10,
+                          "Index": 215,
+                          "Line": 11,
                           "Column": 2,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 202,
-                          "Line": 10,
+                          "Index": 225,
+                          "Line": 11,
                           "Column": 12,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -980,14 +1107,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 209,
-                                          "Line": 11,
+                                          "Index": 232,
+                                          "Line": 12,
                                           "Column": 7,
                                           "StreamName": "fail/macrofails.scm"
                                         },
                                         {
-                                          "Index": 216,
-                                          "Line": 11,
+                                          "Index": 239,
+                                          "Line": 12,
                                           "Column": 14,
                                           "StreamName": "fail/macrofails.scm"
                                         }
@@ -1010,14 +1137,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 218,
-                                                  "Line": 11,
+                                                  "Index": 241,
+                                                  "Line": 12,
                                                   "Column": 16,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 230,
-                                                  "Line": 11,
+                                                  "Index": 253,
+                                                  "Line": 12,
                                                   "Column": 28,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -1035,14 +1162,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 231,
-                                                  "Line": 11,
+                                                  "Index": 254,
+                                                  "Line": 12,
                                                   "Column": 29,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 233,
-                                                  "Line": 11,
+                                                  "Index": 256,
+                                                  "Line": 12,
                                                   "Column": 31,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -1070,14 +1197,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 244,
-                                                                  "Line": 12,
+                                                                  "Index": 267,
+                                                                  "Line": 13,
                                                                   "Column": 11,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 245,
-                                                                  "Line": 12,
+                                                                  "Index": 268,
+                                                                  "Line": 13,
                                                                   "Column": 12,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 }
@@ -1095,14 +1222,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 246,
-                                                                  "Line": 12,
+                                                                  "Index": 269,
+                                                                  "Line": 13,
                                                                   "Column": 13,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 247,
-                                                                  "Line": 12,
+                                                                  "Index": 270,
+                                                                  "Line": 13,
                                                                   "Column": 14,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 }
@@ -1120,14 +1247,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 248,
-                                                                  "Line": 12,
+                                                                  "Index": 271,
+                                                                  "Line": 13,
                                                                   "Column": 15,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 251,
-                                                                  "Line": 12,
+                                                                  "Index": 274,
+                                                                  "Line": 13,
                                                                   "Column": 18,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 }
@@ -1141,14 +1268,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 243,
-                                                          "Line": 12,
+                                                          "Index": 266,
+                                                          "Line": 13,
                                                           "Column": 10,
                                                           "StreamName": "fail/macrofails.scm"
                                                         },
                                                         {
-                                                          "Index": 252,
-                                                          "Line": 12,
+                                                          "Index": 275,
+                                                          "Line": 13,
                                                           "Column": 19,
                                                           "StreamName": "fail/macrofails.scm"
                                                         }
@@ -1175,14 +1302,14 @@
                                                                     "Case": "Span",
                                                                     "Fields": [
                                                                       {
-                                                                        "Index": 255,
-                                                                        "Line": 12,
+                                                                        "Index": 278,
+                                                                        "Line": 13,
                                                                         "Column": 22,
                                                                         "StreamName": "fail/macrofails.scm"
                                                                       },
                                                                       {
-                                                                        "Index": 256,
-                                                                        "Line": 12,
+                                                                        "Index": 279,
+                                                                        "Line": 13,
                                                                         "Column": 23,
                                                                         "StreamName": "fail/macrofails.scm"
                                                                       }
@@ -1200,14 +1327,14 @@
                                                                     "Case": "Span",
                                                                     "Fields": [
                                                                       {
-                                                                        "Index": 257,
-                                                                        "Line": 12,
+                                                                        "Index": 280,
+                                                                        "Line": 13,
                                                                         "Column": 24,
                                                                         "StreamName": "fail/macrofails.scm"
                                                                       },
                                                                       {
-                                                                        "Index": 260,
-                                                                        "Line": 12,
+                                                                        "Index": 283,
+                                                                        "Line": 13,
                                                                         "Column": 27,
                                                                         "StreamName": "fail/macrofails.scm"
                                                                       }
@@ -1221,14 +1348,14 @@
                                                             "Case": "Span",
                                                             "Fields": [
                                                               {
-                                                                "Index": 254,
-                                                                "Line": 12,
+                                                                "Index": 277,
+                                                                "Line": 13,
                                                                 "Column": 21,
                                                                 "StreamName": "fail/macrofails.scm"
                                                               },
                                                               {
-                                                                "Index": 261,
-                                                                "Line": 12,
+                                                                "Index": 284,
+                                                                "Line": 13,
                                                                 "Column": 28,
                                                                 "StreamName": "fail/macrofails.scm"
                                                               }
@@ -1241,14 +1368,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 253,
-                                                          "Line": 12,
+                                                          "Index": 276,
+                                                          "Line": 13,
                                                           "Column": 20,
                                                           "StreamName": "fail/macrofails.scm"
                                                         },
                                                         {
-                                                          "Index": 261,
-                                                          "Line": 12,
+                                                          "Index": 284,
+                                                          "Line": 13,
                                                           "Column": 28,
                                                           "StreamName": "fail/macrofails.scm"
                                                         }
@@ -1262,14 +1389,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 242,
-                                                  "Line": 12,
+                                                  "Index": 265,
+                                                  "Line": 13,
                                                   "Column": 9,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 262,
-                                                  "Line": 12,
+                                                  "Index": 285,
+                                                  "Line": 13,
                                                   "Column": 29,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -1294,14 +1421,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 354,
-                                                                  "Line": 15,
+                                                                  "Index": 377,
+                                                                  "Line": 16,
                                                                   "Column": 11,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 355,
-                                                                  "Line": 15,
+                                                                  "Index": 378,
+                                                                  "Line": 16,
                                                                   "Column": 12,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 }
@@ -1319,14 +1446,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 356,
-                                                                  "Line": 15,
+                                                                  "Index": 379,
+                                                                  "Line": 16,
                                                                   "Column": 13,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 357,
-                                                                  "Line": 15,
+                                                                  "Index": 380,
+                                                                  "Line": 16,
                                                                   "Column": 14,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 }
@@ -1340,14 +1467,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 353,
-                                                          "Line": 15,
+                                                          "Index": 376,
+                                                          "Line": 16,
                                                           "Column": 10,
                                                           "StreamName": "fail/macrofails.scm"
                                                         },
                                                         {
-                                                          "Index": 358,
-                                                          "Line": 15,
+                                                          "Index": 381,
+                                                          "Line": 16,
                                                           "Column": 15,
                                                           "StreamName": "fail/macrofails.scm"
                                                         }
@@ -1367,14 +1494,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 360,
-                                                                  "Line": 15,
+                                                                  "Index": 383,
+                                                                  "Line": 16,
                                                                   "Column": 17,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 361,
-                                                                  "Line": 15,
+                                                                  "Index": 384,
+                                                                  "Line": 16,
                                                                   "Column": 18,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 }
@@ -1397,14 +1524,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 362,
-                                                                  "Line": 15,
+                                                                  "Index": 385,
+                                                                  "Line": 16,
                                                                   "Column": 19,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 368,
-                                                                  "Line": 15,
+                                                                  "Index": 391,
+                                                                  "Line": 16,
                                                                   "Column": 25,
                                                                   "StreamName": "fail/macrofails.scm"
                                                                 }
@@ -1418,14 +1545,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 359,
-                                                          "Line": 15,
+                                                          "Index": 382,
+                                                          "Line": 16,
                                                           "Column": 16,
                                                           "StreamName": "fail/macrofails.scm"
                                                         },
                                                         {
-                                                          "Index": 369,
-                                                          "Line": 15,
+                                                          "Index": 392,
+                                                          "Line": 16,
                                                           "Column": 26,
                                                           "StreamName": "fail/macrofails.scm"
                                                         }
@@ -1439,14 +1566,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 352,
-                                                  "Line": 15,
+                                                  "Index": 375,
+                                                  "Line": 16,
                                                   "Column": 9,
                                                   "StreamName": "fail/macrofails.scm"
                                                 },
                                                 {
-                                                  "Index": 370,
-                                                  "Line": 15,
+                                                  "Index": 393,
+                                                  "Line": 16,
                                                   "Column": 27,
                                                   "StreamName": "fail/macrofails.scm"
                                                 }
@@ -1460,14 +1587,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 217,
-                                          "Line": 11,
+                                          "Index": 240,
+                                          "Line": 12,
                                           "Column": 15,
                                           "StreamName": "fail/macrofails.scm"
                                         },
                                         {
-                                          "Index": 380,
-                                          "Line": 16,
+                                          "Index": 403,
+                                          "Line": 17,
                                           "Column": 10,
                                           "StreamName": "fail/macrofails.scm"
                                         }
@@ -1481,14 +1608,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 208,
-                                  "Line": 11,
+                                  "Index": 231,
+                                  "Line": 12,
                                   "Column": 6,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 381,
-                                  "Line": 16,
+                                  "Index": 404,
+                                  "Line": 17,
                                   "Column": 11,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -1502,14 +1629,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 207,
-                          "Line": 11,
+                          "Index": 230,
+                          "Line": 12,
                           "Column": 5,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 382,
-                          "Line": 16,
+                          "Index": 405,
+                          "Line": 17,
                           "Column": 12,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -1532,14 +1659,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 388,
-                                  "Line": 17,
+                                  "Index": 411,
+                                  "Line": 18,
                                   "Column": 6,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 395,
-                                  "Line": 17,
+                                  "Index": 418,
+                                  "Line": 18,
                                   "Column": 13,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -1562,14 +1689,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 396,
-                                  "Line": 17,
+                                  "Index": 419,
+                                  "Line": 18,
                                   "Column": 14,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 397,
-                                  "Line": 17,
+                                  "Index": 420,
+                                  "Line": 18,
                                   "Column": 15,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -1592,14 +1719,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 398,
-                                  "Line": 17,
+                                  "Index": 421,
+                                  "Line": 18,
                                   "Column": 16,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 399,
-                                  "Line": 17,
+                                  "Index": 422,
+                                  "Line": 18,
                                   "Column": 17,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -1622,14 +1749,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 400,
-                                  "Line": 17,
+                                  "Index": 423,
+                                  "Line": 18,
                                   "Column": 18,
                                   "StreamName": "fail/macrofails.scm"
                                 },
                                 {
-                                  "Index": 401,
-                                  "Line": 17,
+                                  "Index": 424,
+                                  "Line": 18,
                                   "Column": 19,
                                   "StreamName": "fail/macrofails.scm"
                                 }
@@ -1643,14 +1770,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 387,
-                          "Line": 17,
+                          "Index": 410,
+                          "Line": 18,
                           "Column": 5,
                           "StreamName": "fail/macrofails.scm"
                         },
                         {
-                          "Index": 402,
-                          "Line": 17,
+                          "Index": 425,
+                          "Line": 18,
                           "Column": 20,
                           "StreamName": "fail/macrofails.scm"
                         }
@@ -1664,14 +1791,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 191,
-                  "Line": 10,
+                  "Index": 214,
+                  "Line": 11,
                   "Column": 1,
                   "StreamName": "fail/macrofails.scm"
                 },
                 {
-                  "Index": 403,
-                  "Line": 17,
+                  "Index": 426,
+                  "Line": 18,
                   "Column": 21,
                   "StreamName": "fail/macrofails.scm"
                 }
@@ -1691,8 +1818,8 @@
           "StreamName": "fail/macrofails.scm"
         },
         {
-          "Index": 403,
-          "Line": 17,
+          "Index": 426,
+          "Line": 18,
           "Column": 21,
           "StreamName": "fail/macrofails.scm"
         }

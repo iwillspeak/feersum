@@ -840,7 +840,11 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
     let coreLib = Builtins.loadCoreSignature
-    let scope = scopeFromLibraries (Seq.singleton coreLib) 
+    let scope =
+        if options.OutputType = OutputType.Script then
+            scopeFromLibraries (Seq.singleton coreLib) 
+        else
+            emptyScope
     let bound = bind scope [coreLib] node
     if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound

@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "display"
+                        "import"
                       ]
                     },
                     "Location": {
@@ -26,9 +26,9 @@
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 8,
+                          "Index": 7,
                           "Line": 1,
-                          "Column": 9,
+                          "Column": 8,
                           "StreamName": "display.scm"
                         }
                       ]
@@ -36,29 +36,75 @@
                   },
                   {
                     "Kind": {
-                      "Case": "Constant",
+                      "Case": "Form",
                       "Fields": [
-                        {
-                          "Case": "Str",
-                          "Fields": [
-                            ""
-                          ]
-                        }
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "display.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "display.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 16,
+                                  "Line": 1,
+                                  "Column": 17,
+                                  "StreamName": "display.scm"
+                                },
+                                {
+                                  "Index": 20,
+                                  "Line": 1,
+                                  "Column": 21,
+                                  "StreamName": "display.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       ]
                     },
                     "Location": {
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 9,
+                          "Index": 8,
                           "Line": 1,
-                          "Column": 10,
+                          "Column": 9,
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 11,
+                          "Index": 21,
                           "Line": 1,
-                          "Column": 12,
+                          "Column": 22,
                           "StreamName": "display.scm"
                         }
                       ]
@@ -77,318 +123,8 @@
                   "StreamName": "display.scm"
                 },
                 {
-                  "Index": 12,
+                  "Index": 22,
                   "Line": 1,
-                  "Column": 13,
-                  "StreamName": "display.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "newline"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 13,
-                          "Line": 1,
-                          "Column": 14,
-                          "StreamName": "display.scm"
-                        },
-                        {
-                          "Index": 20,
-                          "Line": 1,
-                          "Column": 21,
-                          "StreamName": "display.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 12,
-                  "Line": 1,
-                  "Column": 13,
-                  "StreamName": "display.scm"
-                },
-                {
-                  "Index": 21,
-                  "Line": 1,
-                  "Column": 22,
-                  "StreamName": "display.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "display"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 29,
-                          "Line": 2,
-                          "Column": 2,
-                          "StreamName": "display.scm"
-                        },
-                        {
-                          "Index": 36,
-                          "Line": 2,
-                          "Column": 9,
-                          "StreamName": "display.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        []
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 37,
-                          "Line": 2,
-                          "Column": 10,
-                          "StreamName": "display.scm"
-                        },
-                        {
-                          "Index": 39,
-                          "Line": 2,
-                          "Column": 12,
-                          "StreamName": "display.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 28,
-                  "Line": 2,
-                  "Column": 1,
-                  "StreamName": "display.scm"
-                },
-                {
-                  "Index": 40,
-                  "Line": 2,
-                  "Column": 13,
-                  "StreamName": "display.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "newline"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 41,
-                          "Line": 2,
-                          "Column": 14,
-                          "StreamName": "display.scm"
-                        },
-                        {
-                          "Index": 48,
-                          "Line": 2,
-                          "Column": 21,
-                          "StreamName": "display.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 40,
-                  "Line": 2,
-                  "Column": 13,
-                  "StreamName": "display.scm"
-                },
-                {
-                  "Index": 49,
-                  "Line": 2,
-                  "Column": 22,
-                  "StreamName": "display.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "display"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 56,
-                          "Line": 3,
-                          "Column": 2,
-                          "StreamName": "display.scm"
-                        },
-                        {
-                          "Index": 63,
-                          "Line": 3,
-                          "Column": 9,
-                          "StreamName": "display.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Constant",
-                      "Fields": [
-                        {
-                          "Case": "Number",
-                          "Fields": [
-                            123.0
-                          ]
-                        }
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 64,
-                          "Line": 3,
-                          "Column": 10,
-                          "StreamName": "display.scm"
-                        },
-                        {
-                          "Index": 67,
-                          "Line": 3,
-                          "Column": 13,
-                          "StreamName": "display.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 55,
-                  "Line": 3,
-                  "Column": 1,
-                  "StreamName": "display.scm"
-                },
-                {
-                  "Index": 68,
-                  "Line": 3,
-                  "Column": 14,
-                  "StreamName": "display.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "newline"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 69,
-                          "Line": 3,
-                          "Column": 15,
-                          "StreamName": "display.scm"
-                        },
-                        {
-                          "Index": 76,
-                          "Line": 3,
-                          "Column": 22,
-                          "StreamName": "display.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 68,
-                  "Line": 3,
-                  "Column": 14,
-                  "StreamName": "display.scm"
-                },
-                {
-                  "Index": 77,
-                  "Line": 3,
                   "Column": 23,
                   "StreamName": "display.scm"
                 }
@@ -411,14 +147,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 88,
-                          "Line": 4,
+                          "Index": 24,
+                          "Line": 2,
                           "Column": 2,
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 95,
-                          "Line": 4,
+                          "Index": 31,
+                          "Line": 2,
                           "Column": 9,
                           "StreamName": "display.scm"
                         }
@@ -432,7 +168,7 @@
                         {
                           "Case": "Str",
                           "Fields": [
-                            "Hello World"
+                            ""
                           ]
                         }
                       ]
@@ -441,15 +177,15 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 96,
-                          "Line": 4,
+                          "Index": 32,
+                          "Line": 2,
                           "Column": 10,
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 109,
-                          "Line": 4,
-                          "Column": 23,
+                          "Index": 34,
+                          "Line": 2,
+                          "Column": 12,
                           "StreamName": "display.scm"
                         }
                       ]
@@ -462,15 +198,325 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 87,
+                  "Index": 23,
+                  "Line": 2,
+                  "Column": 1,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 35,
+                  "Line": 2,
+                  "Column": 13,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 36,
+                          "Line": 2,
+                          "Column": 14,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 43,
+                          "Line": 2,
+                          "Column": 21,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 35,
+                  "Line": 2,
+                  "Column": 13,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 44,
+                  "Line": 2,
+                  "Column": 22,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 52,
+                          "Line": 3,
+                          "Column": 2,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 59,
+                          "Line": 3,
+                          "Column": 9,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        []
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 60,
+                          "Line": 3,
+                          "Column": 10,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 62,
+                          "Line": 3,
+                          "Column": 12,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 51,
+                  "Line": 3,
+                  "Column": 1,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 63,
+                  "Line": 3,
+                  "Column": 13,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 64,
+                          "Line": 3,
+                          "Column": 14,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 71,
+                          "Line": 3,
+                          "Column": 21,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 63,
+                  "Line": 3,
+                  "Column": 13,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 72,
+                  "Line": 3,
+                  "Column": 22,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 79,
+                          "Line": 4,
+                          "Column": 2,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 86,
+                          "Line": 4,
+                          "Column": 9,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Number",
+                          "Fields": [
+                            123.0
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 87,
+                          "Line": 4,
+                          "Column": 10,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 90,
+                          "Line": 4,
+                          "Column": 13,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 78,
                   "Line": 4,
                   "Column": 1,
                   "StreamName": "display.scm"
                 },
                 {
-                  "Index": 110,
+                  "Index": 91,
                   "Line": 4,
-                  "Column": 24,
+                  "Column": 14,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 92,
+                          "Line": 4,
+                          "Column": 15,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 99,
+                          "Line": 4,
+                          "Column": 22,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 91,
+                  "Line": 4,
+                  "Column": 14,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 100,
+                  "Line": 4,
+                  "Column": 23,
                   "StreamName": "display.scm"
                 }
               ]
@@ -493,13 +539,94 @@
                       "Fields": [
                         {
                           "Index": 111,
-                          "Line": 4,
-                          "Column": 25,
+                          "Line": 5,
+                          "Column": 2,
                           "StreamName": "display.scm"
                         },
                         {
                           "Index": 118,
-                          "Line": 4,
+                          "Line": 5,
+                          "Column": 9,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Str",
+                          "Fields": [
+                            "Hello World"
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 119,
+                          "Line": 5,
+                          "Column": 10,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 132,
+                          "Line": 5,
+                          "Column": 23,
+                          "StreamName": "display.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 110,
+                  "Line": 5,
+                  "Column": 1,
+                  "StreamName": "display.scm"
+                },
+                {
+                  "Index": 133,
+                  "Line": 5,
+                  "Column": 24,
+                  "StreamName": "display.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 134,
+                          "Line": 5,
+                          "Column": 25,
+                          "StreamName": "display.scm"
+                        },
+                        {
+                          "Index": 141,
+                          "Line": 5,
                           "Column": 32,
                           "StreamName": "display.scm"
                         }
@@ -522,14 +649,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 119,
-                          "Line": 4,
+                          "Index": 142,
+                          "Line": 5,
                           "Column": 33,
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 122,
-                          "Line": 4,
+                          "Index": 145,
+                          "Line": 5,
                           "Column": 36,
                           "StreamName": "display.scm"
                         }
@@ -543,14 +670,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 110,
-                  "Line": 4,
+                  "Index": 133,
+                  "Line": 5,
                   "Column": 24,
                   "StreamName": "display.scm"
                 },
                 {
-                  "Index": 123,
-                  "Line": 4,
+                  "Index": 146,
+                  "Line": 5,
                   "Column": 37,
                   "StreamName": "display.scm"
                 }
@@ -573,14 +700,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 124,
-                          "Line": 4,
+                          "Index": 147,
+                          "Line": 5,
                           "Column": 38,
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 131,
-                          "Line": 4,
+                          "Index": 154,
+                          "Line": 5,
                           "Column": 45,
                           "StreamName": "display.scm"
                         }
@@ -594,14 +721,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 123,
-                  "Line": 4,
+                  "Index": 146,
+                  "Line": 5,
                   "Column": 37,
                   "StreamName": "display.scm"
                 },
                 {
-                  "Index": 132,
-                  "Line": 4,
+                  "Index": 155,
+                  "Line": 5,
                   "Column": 46,
                   "StreamName": "display.scm"
                 }
@@ -624,14 +751,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 152,
-                          "Line": 5,
+                          "Index": 175,
+                          "Line": 6,
                           "Column": 2,
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 159,
-                          "Line": 5,
+                          "Index": 182,
+                          "Line": 6,
                           "Column": 9,
                           "StreamName": "display.scm"
                         }
@@ -663,14 +790,14 @@
                                     "Case": "Span",
                                     "Fields": [
                                       {
-                                        "Index": 162,
-                                        "Line": 5,
+                                        "Index": 185,
+                                        "Line": 6,
                                         "Column": 12,
                                         "StreamName": "display.scm"
                                       },
                                       {
-                                        "Index": 196,
-                                        "Line": 5,
+                                        "Index": 219,
+                                        "Line": 6,
                                         "Column": 46,
                                         "StreamName": "display.scm"
                                       }
@@ -684,14 +811,14 @@
                             "Case": "Span",
                             "Fields": [
                               {
-                                "Index": 161,
-                                "Line": 5,
+                                "Index": 184,
+                                "Line": 6,
                                 "Column": 11,
                                 "StreamName": "display.scm"
                               },
                               {
-                                "Index": 197,
-                                "Line": 5,
+                                "Index": 220,
+                                "Line": 6,
                                 "Column": 47,
                                 "StreamName": "display.scm"
                               }
@@ -704,14 +831,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 160,
-                          "Line": 5,
+                          "Index": 183,
+                          "Line": 6,
                           "Column": 10,
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 197,
-                          "Line": 5,
+                          "Index": 220,
+                          "Line": 6,
                           "Column": 47,
                           "StreamName": "display.scm"
                         }
@@ -725,14 +852,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 151,
-                  "Line": 5,
+                  "Index": 174,
+                  "Line": 6,
                   "Column": 1,
                   "StreamName": "display.scm"
                 },
                 {
-                  "Index": 198,
-                  "Line": 5,
+                  "Index": 221,
+                  "Line": 6,
                   "Column": 48,
                   "StreamName": "display.scm"
                 }
@@ -755,14 +882,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 199,
-                          "Line": 5,
+                          "Index": 222,
+                          "Line": 6,
                           "Column": 49,
                           "StreamName": "display.scm"
                         },
                         {
-                          "Index": 206,
-                          "Line": 5,
+                          "Index": 229,
+                          "Line": 6,
                           "Column": 56,
                           "StreamName": "display.scm"
                         }
@@ -776,14 +903,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 198,
-                  "Line": 5,
+                  "Index": 221,
+                  "Line": 6,
                   "Column": 48,
                   "StreamName": "display.scm"
                 },
                 {
-                  "Index": 207,
-                  "Line": 5,
+                  "Index": 230,
+                  "Line": 6,
                   "Column": 57,
                   "StreamName": "display.scm"
                 }
@@ -803,8 +930,8 @@
           "StreamName": "display.scm"
         },
         {
-          "Index": 213,
-          "Line": 5,
+          "Index": 236,
+          "Line": 6,
           "Column": 63,
           "StreamName": "display.scm"
         }

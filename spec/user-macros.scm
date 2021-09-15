@@ -1,3 +1,5 @@
+(import (scheme base))
+
 (define-syntax foo
     (syntax-rules ()
         ((_ 123) '(1 2 3))

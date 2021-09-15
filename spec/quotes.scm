@@ -1,3 +1,4 @@
+(import (scheme base))
 (display '1)(newline)
 (display '"hello world")(newline)
 (display '())(newline)

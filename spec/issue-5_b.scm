@@ -1,3 +1,4 @@
+(import (scheme base))
 (define (check n)
     (letrec ((odd? (lambda (m)
                 (if (= m 0)

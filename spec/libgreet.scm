@@ -1,3 +1,4 @@
+(import (scheme base))
 (define-library (test greeter)
 	(export greet)
 	(import (scheme base))

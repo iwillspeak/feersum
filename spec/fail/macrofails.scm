@@ -1,3 +1,4 @@
+(import (scheme base))
 (define-syntax test-macro
     (syntax-rules ::: (test)
         ((_) 'nowt)
