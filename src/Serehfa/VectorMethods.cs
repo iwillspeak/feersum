@@ -8,8 +8,9 @@ namespace Serehfa
 
     /// <summary>
     ///  Methods to interact with Scheme vectors. Our scheme vector
-    ///  implementation uses the .NET <see cref="List" />.
+    ///  implementation uses the .NET <see cref="List{T}" />.
     /// </summary>
+    [LispLibrary(new [] {"scheme", "base"})]
     public static class VectorMethods
     {
         [LispBuiltin("vector")]

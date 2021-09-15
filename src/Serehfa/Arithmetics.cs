@@ -107,7 +107,7 @@ namespace Serehfa
 
         /// <summary>
         /// Comparator Builtin. Builds a method which uses the given
-        /// <paramref name="comarator" /> compare all arguments and returns a
+        /// <paramref name="comparator" /> compare all arguments and returns a
         /// boolean result. If 0 or 1 elements are  given the method will always
         /// return <c>#t</c>.
         /// </summary>
