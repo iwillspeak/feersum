@@ -81,7 +81,7 @@ type BoundSyntaxTree = { Root: BoundBody
 type private BinderCtx =
     { mutable Scope: Scope<StorageRef>
     ; mutable OuterScopes: Scope<StorageRef> list
-    ; mutable Libraries: (string list * (string * StorageRef) list) list
+    ; mutable Libraries: Libraries.LibrarySignature<StorageRef> list
     ; mutable LocalCount: int
     ; mutable Captures: StorageRef list
     ; mutable HasDynamicEnv: bool
@@ -108,7 +108,8 @@ module private BinderCtx =
     let createForGlobalScope scope name =
         // FIXME: This `(scheme base)` thing is a massif hack.
         let baseLib =
-            (["scheme";"base"], scope |> Map.toList)
+            { Libraries.LibrarySignature.LibraryName = ["scheme";"base"]
+            ; Libraries.LibrarySignature.Exports = scope |> Map.toList }
         { Scope = scope |> Scope.fromMap
         ; OuterScopes = []
         ; Libraries = [baseLib]
@@ -181,13 +182,15 @@ module private BinderCtx =
 
     /// Add a library declaration to the current context
     let addLibrary ctx name exports =
-        ctx.Libraries <- (name, exports)::ctx.Libraries
+        let signature =
+            { Libraries.LibrarySignature.LibraryName = name
+            ; Libraries.LibrarySignature.Exports = exports }
+        ctx.Libraries <- signature::ctx.Libraries
 
     /// Import the bindings from a given libraryto the binder context
-    let importLibrary ctx library =
-        let (name, exports) = library
-        List.iter (fun (id, storage) -> scopeInsert ctx id storage) exports
-        name |> mangleName
+    let importLibrary ctx (library: Libraries.LibrarySignature<StorageRef>) =
+        List.iter (fun (id, storage) -> scopeInsert ctx id storage) library.Exports
+        library.LibraryName |> mangleName
 
     /// Add a new level to the scopes
     let pushScope ctx =

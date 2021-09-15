@@ -21,14 +21,17 @@ let ``pretty names`` () =
 
 [<Fact>]
 let ``resolve exported bindings`` () =
-    let libs = [(["test";"lib"],[("foo", StorageRef.Global("Mock", "foo-internal"))])]
+    let libs = [
+        { LibraryName = ["test";"lib"]
+        ; Exports = [("foo", StorageRef.Global("Mock", "foo-internal"))] }
+        ]
 
     let checkImported import expectedId expected =
         let result = resolveImport libs import
         Assert.True (ResultEx.isOk result)
-        let (id, exports) = ResultEx.unwrap result
-        Assert.Equal<string>(expectedId, id)
-        Assert.Equal<string>(expected, (exports |> List.map (fun (id, _) -> id)))
+        let signature = ResultEx.unwrap result
+        Assert.Equal<string>(expectedId, signature.LibraryName)
+        Assert.Equal<string>(expected, (signature.Exports |> List.map (fun (id, _) -> id)))
 
     Assert.True (ResultEx.isError (resolveImport libs (ImportSet.Plain(["not";"valid"]))))
     checkImported (ImportSet.Plain(["test";"lib"])) ["test";"lib"] ["foo"]
