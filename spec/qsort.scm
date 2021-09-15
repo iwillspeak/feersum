@@ -48,7 +48,7 @@
         (define (qsort nums)
             (if (or (null? nums) (null? (cdr nums)))
                 nums
-                (letrec ((pivot (car nums))
+                (let* ((pivot (car nums))
                         (partitioned (partition pivot (cdr nums))))
                     (append (qsort (car partitioned))
                         (cons pivot (qsort (cdr partitioned)))))))
