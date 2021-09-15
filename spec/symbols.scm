@@ -1,3 +1,4 @@
+(import (scheme base))
 (display (list
     (symbol? ’foo) ; -> #t
     (symbol? (car ’(a b))) ; -> #t

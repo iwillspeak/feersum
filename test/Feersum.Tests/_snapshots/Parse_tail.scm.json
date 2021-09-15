@@ -13,6 +13,133 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
+                        "import"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "tail.scm"
+                        },
+                        {
+                          "Index": 7,
+                          "Line": 1,
+                          "Column": 8,
+                          "StreamName": "tail.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "tail.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "tail.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 16,
+                                  "Line": 1,
+                                  "Column": 17,
+                                  "StreamName": "tail.scm"
+                                },
+                                {
+                                  "Index": 20,
+                                  "Line": 1,
+                                  "Column": 21,
+                                  "StreamName": "tail.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 8,
+                          "Line": 1,
+                          "Column": 9,
+                          "StreamName": "tail.scm"
+                        },
+                        {
+                          "Index": 21,
+                          "Line": 1,
+                          "Column": 22,
+                          "StreamName": "tail.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "tail.scm"
+                },
+                {
+                  "Index": 22,
+                  "Line": 1,
+                  "Column": 23,
+                  "StreamName": "tail.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
                         "display"
                       ]
                     },
@@ -20,14 +147,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 381,
-                          "Line": 13,
+                          "Index": 405,
+                          "Line": 15,
                           "Column": 2,
                           "StreamName": "tail.scm"
                         },
                         {
-                          "Index": 388,
-                          "Line": 13,
+                          "Index": 412,
+                          "Line": 15,
                           "Column": 9,
                           "StreamName": "tail.scm"
                         }
@@ -50,14 +177,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 393,
-                                  "Line": 14,
+                                  "Index": 417,
+                                  "Line": 16,
                                   "Column": 4,
                                   "StreamName": "tail.scm"
                                 },
                                 {
-                                  "Index": 399,
-                                  "Line": 14,
+                                  "Index": 423,
+                                  "Line": 16,
                                   "Column": 10,
                                   "StreamName": "tail.scm"
                                 }
@@ -85,14 +212,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 402,
-                                                  "Line": 14,
+                                                  "Index": 426,
+                                                  "Line": 16,
                                                   "Column": 13,
                                                   "StreamName": "tail.scm"
                                                 },
                                                 {
-                                                  "Index": 406,
-                                                  "Line": 14,
+                                                  "Index": 430,
+                                                  "Line": 16,
                                                   "Column": 17,
                                                   "StreamName": "tail.scm"
                                                 }
@@ -115,14 +242,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 408,
-                                                          "Line": 14,
+                                                          "Index": 432,
+                                                          "Line": 16,
                                                           "Column": 19,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 414,
-                                                          "Line": 14,
+                                                          "Index": 438,
+                                                          "Line": 16,
                                                           "Column": 25,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -145,14 +272,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 416,
-                                                                  "Line": 14,
+                                                                  "Index": 440,
+                                                                  "Line": 16,
                                                                   "Column": 27,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 417,
-                                                                  "Line": 14,
+                                                                  "Index": 441,
+                                                                  "Line": 16,
                                                                   "Column": 28,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -166,14 +293,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 415,
-                                                          "Line": 14,
+                                                          "Index": 439,
+                                                          "Line": 16,
                                                           "Column": 26,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 418,
-                                                          "Line": 14,
+                                                          "Index": 442,
+                                                          "Line": 16,
                                                           "Column": 29,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -196,14 +323,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 422,
-                                                                  "Line": 15,
+                                                                  "Index": 446,
+                                                                  "Line": 17,
                                                                   "Column": 4,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 426,
-                                                                  "Line": 15,
+                                                                  "Index": 450,
+                                                                  "Line": 17,
                                                                   "Column": 8,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -221,14 +348,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 427,
-                                                                  "Line": 15,
+                                                                  "Index": 451,
+                                                                  "Line": 17,
                                                                   "Column": 9,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 428,
-                                                                  "Line": 15,
+                                                                  "Index": 452,
+                                                                  "Line": 17,
                                                                   "Column": 10,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -242,14 +369,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 421,
-                                                          "Line": 15,
+                                                          "Index": 445,
+                                                          "Line": 17,
                                                           "Column": 3,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 429,
-                                                          "Line": 15,
+                                                          "Index": 453,
+                                                          "Line": 17,
                                                           "Column": 11,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -263,14 +390,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 407,
-                                                  "Line": 14,
+                                                  "Index": 431,
+                                                  "Line": 16,
                                                   "Column": 18,
                                                   "StreamName": "tail.scm"
                                                 },
                                                 {
-                                                  "Index": 430,
-                                                  "Line": 15,
+                                                  "Index": 454,
+                                                  "Line": 17,
                                                   "Column": 12,
                                                   "StreamName": "tail.scm"
                                                 }
@@ -284,14 +411,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 401,
-                                          "Line": 14,
+                                          "Index": 425,
+                                          "Line": 16,
                                           "Column": 12,
                                           "StreamName": "tail.scm"
                                         },
                                         {
-                                          "Index": 431,
-                                          "Line": 15,
+                                          "Index": 455,
+                                          "Line": 17,
                                           "Column": 13,
                                           "StreamName": "tail.scm"
                                         }
@@ -314,14 +441,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 442,
-                                                  "Line": 16,
+                                                  "Index": 466,
+                                                  "Line": 18,
                                                   "Column": 11,
                                                   "StreamName": "tail.scm"
                                                 },
                                                 {
-                                                  "Index": 446,
-                                                  "Line": 16,
+                                                  "Index": 470,
+                                                  "Line": 18,
                                                   "Column": 15,
                                                   "StreamName": "tail.scm"
                                                 }
@@ -344,14 +471,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 448,
-                                                          "Line": 16,
+                                                          "Index": 472,
+                                                          "Line": 18,
                                                           "Column": 17,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 454,
-                                                          "Line": 16,
+                                                          "Index": 478,
+                                                          "Line": 18,
                                                           "Column": 23,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -374,14 +501,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 456,
-                                                                  "Line": 16,
+                                                                  "Index": 480,
+                                                                  "Line": 18,
                                                                   "Column": 25,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 457,
-                                                                  "Line": 16,
+                                                                  "Index": 481,
+                                                                  "Line": 18,
                                                                   "Column": 26,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -395,14 +522,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 455,
-                                                          "Line": 16,
+                                                          "Index": 479,
+                                                          "Line": 18,
                                                           "Column": 24,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 458,
-                                                          "Line": 16,
+                                                          "Index": 482,
+                                                          "Line": 18,
                                                           "Column": 27,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -425,14 +552,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 470,
-                                                                  "Line": 17,
+                                                                  "Index": 494,
+                                                                  "Line": 19,
                                                                   "Column": 12,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 472,
-                                                                  "Line": 17,
+                                                                  "Index": 496,
+                                                                  "Line": 19,
                                                                   "Column": 14,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -455,14 +582,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 474,
-                                                                          "Line": 17,
+                                                                          "Index": 498,
+                                                                          "Line": 19,
                                                                           "Column": 16,
                                                                           "StreamName": "tail.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 475,
-                                                                          "Line": 17,
+                                                                          "Index": 499,
+                                                                          "Line": 19,
                                                                           "Column": 17,
                                                                           "StreamName": "tail.scm"
                                                                         }
@@ -485,14 +612,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 476,
-                                                                          "Line": 17,
+                                                                          "Index": 500,
+                                                                          "Line": 19,
                                                                           "Column": 18,
                                                                           "StreamName": "tail.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 477,
-                                                                          "Line": 17,
+                                                                          "Index": 501,
+                                                                          "Line": 19,
                                                                           "Column": 19,
                                                                           "StreamName": "tail.scm"
                                                                         }
@@ -510,14 +637,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 478,
-                                                                          "Line": 17,
+                                                                          "Index": 502,
+                                                                          "Line": 19,
                                                                           "Column": 20,
                                                                           "StreamName": "tail.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 479,
-                                                                          "Line": 17,
+                                                                          "Index": 503,
+                                                                          "Line": 19,
                                                                           "Column": 21,
                                                                           "StreamName": "tail.scm"
                                                                         }
@@ -531,14 +658,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 473,
-                                                                  "Line": 17,
+                                                                  "Index": 497,
+                                                                  "Line": 19,
                                                                   "Column": 15,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 480,
-                                                                  "Line": 17,
+                                                                  "Index": 504,
+                                                                  "Line": 19,
                                                                   "Column": 22,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -556,14 +683,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 493,
-                                                                  "Line": 18,
+                                                                  "Index": 517,
+                                                                  "Line": 20,
                                                                   "Column": 13,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 494,
-                                                                  "Line": 18,
+                                                                  "Index": 518,
+                                                                  "Line": 20,
                                                                   "Column": 14,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -586,14 +713,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 508,
-                                                                          "Line": 19,
+                                                                          "Index": 532,
+                                                                          "Line": 21,
                                                                           "Column": 14,
                                                                           "StreamName": "tail.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 512,
-                                                                          "Line": 19,
+                                                                          "Index": 536,
+                                                                          "Line": 21,
                                                                           "Column": 18,
                                                                           "StreamName": "tail.scm"
                                                                         }
@@ -616,14 +743,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 514,
-                                                                                  "Line": 19,
+                                                                                  "Index": 538,
+                                                                                  "Line": 21,
                                                                                   "Column": 20,
                                                                                   "StreamName": "tail.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 515,
-                                                                                  "Line": 19,
+                                                                                  "Index": 539,
+                                                                                  "Line": 21,
                                                                                   "Column": 21,
                                                                                   "StreamName": "tail.scm"
                                                                                 }
@@ -641,14 +768,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 516,
-                                                                                  "Line": 19,
+                                                                                  "Index": 540,
+                                                                                  "Line": 21,
                                                                                   "Column": 22,
                                                                                   "StreamName": "tail.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 517,
-                                                                                  "Line": 19,
+                                                                                  "Index": 541,
+                                                                                  "Line": 21,
                                                                                   "Column": 23,
                                                                                   "StreamName": "tail.scm"
                                                                                 }
@@ -671,14 +798,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 518,
-                                                                                  "Line": 19,
+                                                                                  "Index": 542,
+                                                                                  "Line": 21,
                                                                                   "Column": 24,
                                                                                   "StreamName": "tail.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 519,
-                                                                                  "Line": 19,
+                                                                                  "Index": 543,
+                                                                                  "Line": 21,
                                                                                   "Column": 25,
                                                                                   "StreamName": "tail.scm"
                                                                                 }
@@ -692,14 +819,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 513,
-                                                                          "Line": 19,
+                                                                          "Index": 537,
+                                                                          "Line": 21,
                                                                           "Column": 19,
                                                                           "StreamName": "tail.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 520,
-                                                                          "Line": 19,
+                                                                          "Index": 544,
+                                                                          "Line": 21,
                                                                           "Column": 26,
                                                                           "StreamName": "tail.scm"
                                                                         }
@@ -713,14 +840,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 507,
-                                                                  "Line": 19,
+                                                                  "Index": 531,
+                                                                  "Line": 21,
                                                                   "Column": 13,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 521,
-                                                                  "Line": 19,
+                                                                  "Index": 545,
+                                                                  "Line": 21,
                                                                   "Column": 27,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -734,14 +861,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 469,
-                                                          "Line": 17,
+                                                          "Index": 493,
+                                                          "Line": 19,
                                                           "Column": 11,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 522,
-                                                          "Line": 19,
+                                                          "Index": 546,
+                                                          "Line": 21,
                                                           "Column": 28,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -755,14 +882,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 447,
-                                                  "Line": 16,
+                                                  "Index": 471,
+                                                  "Line": 18,
                                                   "Column": 16,
                                                   "StreamName": "tail.scm"
                                                 },
                                                 {
-                                                  "Index": 523,
-                                                  "Line": 19,
+                                                  "Index": 547,
+                                                  "Line": 21,
                                                   "Column": 29,
                                                   "StreamName": "tail.scm"
                                                 }
@@ -776,14 +903,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 441,
-                                          "Line": 16,
+                                          "Index": 465,
+                                          "Line": 18,
                                           "Column": 10,
                                           "StreamName": "tail.scm"
                                         },
                                         {
-                                          "Index": 524,
-                                          "Line": 19,
+                                          "Index": 548,
+                                          "Line": 21,
                                           "Column": 30,
                                           "StreamName": "tail.scm"
                                         }
@@ -797,14 +924,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 400,
-                                  "Line": 14,
+                                  "Index": 424,
+                                  "Line": 16,
                                   "Column": 11,
                                   "StreamName": "tail.scm"
                                 },
                                 {
-                                  "Index": 525,
-                                  "Line": 19,
+                                  "Index": 549,
+                                  "Line": 21,
                                   "Column": 31,
                                   "StreamName": "tail.scm"
                                 }
@@ -827,14 +954,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 529,
-                                          "Line": 20,
+                                          "Index": 553,
+                                          "Line": 22,
                                           "Column": 4,
                                           "StreamName": "tail.scm"
                                         },
                                         {
-                                          "Index": 533,
-                                          "Line": 20,
+                                          "Index": 557,
+                                          "Line": 22,
                                           "Column": 8,
                                           "StreamName": "tail.scm"
                                         }
@@ -857,14 +984,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 534,
-                                          "Line": 20,
+                                          "Index": 558,
+                                          "Line": 22,
                                           "Column": 9,
                                           "StreamName": "tail.scm"
                                         },
                                         {
-                                          "Index": 540,
-                                          "Line": 20,
+                                          "Index": 564,
+                                          "Line": 22,
                                           "Column": 15,
                                           "StreamName": "tail.scm"
                                         }
@@ -878,14 +1005,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 528,
-                                  "Line": 20,
+                                  "Index": 552,
+                                  "Line": 22,
                                   "Column": 3,
                                   "StreamName": "tail.scm"
                                 },
                                 {
-                                  "Index": 541,
-                                  "Line": 20,
+                                  "Index": 565,
+                                  "Line": 22,
                                   "Column": 16,
                                   "StreamName": "tail.scm"
                                 }
@@ -899,14 +1026,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 392,
-                          "Line": 14,
+                          "Index": 416,
+                          "Line": 16,
                           "Column": 3,
                           "StreamName": "tail.scm"
                         },
                         {
-                          "Index": 542,
-                          "Line": 20,
+                          "Index": 566,
+                          "Line": 22,
                           "Column": 17,
                           "StreamName": "tail.scm"
                         }
@@ -920,14 +1047,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 380,
-                  "Line": 13,
+                  "Index": 404,
+                  "Line": 15,
                   "Column": 1,
                   "StreamName": "tail.scm"
                 },
                 {
-                  "Index": 543,
-                  "Line": 20,
+                  "Index": 567,
+                  "Line": 22,
                   "Column": 18,
                   "StreamName": "tail.scm"
                 }
@@ -950,14 +1077,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 547,
-                          "Line": 23,
+                          "Index": 571,
+                          "Line": 25,
                           "Column": 2,
                           "StreamName": "tail.scm"
                         },
                         {
-                          "Index": 554,
-                          "Line": 23,
+                          "Index": 578,
+                          "Line": 25,
                           "Column": 9,
                           "StreamName": "tail.scm"
                         }
@@ -971,14 +1098,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 546,
-                  "Line": 23,
+                  "Index": 570,
+                  "Line": 25,
                   "Column": 1,
                   "StreamName": "tail.scm"
                 },
                 {
-                  "Index": 555,
-                  "Line": 23,
+                  "Index": 579,
+                  "Line": 25,
                   "Column": 10,
                   "StreamName": "tail.scm"
                 }
@@ -1001,14 +1128,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 612,
-                          "Line": 26,
+                          "Index": 636,
+                          "Line": 28,
                           "Column": 2,
                           "StreamName": "tail.scm"
                         },
                         {
-                          "Index": 619,
-                          "Line": 26,
+                          "Index": 643,
+                          "Line": 28,
                           "Column": 9,
                           "StreamName": "tail.scm"
                         }
@@ -1031,14 +1158,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 623,
-                                  "Line": 27,
+                                  "Index": 647,
+                                  "Line": 29,
                                   "Column": 4,
                                   "StreamName": "tail.scm"
                                 },
                                 {
-                                  "Index": 629,
-                                  "Line": 27,
+                                  "Index": 653,
+                                  "Line": 29,
                                   "Column": 10,
                                   "StreamName": "tail.scm"
                                 }
@@ -1066,14 +1193,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 636,
-                                                  "Line": 28,
+                                                  "Index": 660,
+                                                  "Line": 30,
                                                   "Column": 7,
                                                   "StreamName": "tail.scm"
                                                 },
                                                 {
-                                                  "Index": 639,
-                                                  "Line": 28,
+                                                  "Index": 663,
+                                                  "Line": 30,
                                                   "Column": 10,
                                                   "StreamName": "tail.scm"
                                                 }
@@ -1096,14 +1223,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 641,
-                                                          "Line": 28,
+                                                          "Index": 665,
+                                                          "Line": 30,
                                                           "Column": 12,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 647,
-                                                          "Line": 28,
+                                                          "Index": 671,
+                                                          "Line": 30,
                                                           "Column": 18,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -1126,14 +1253,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 649,
-                                                                  "Line": 28,
+                                                                  "Index": 673,
+                                                                  "Line": 30,
                                                                   "Column": 20,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 650,
-                                                                  "Line": 28,
+                                                                  "Index": 674,
+                                                                  "Line": 30,
                                                                   "Column": 21,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -1147,14 +1274,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 648,
-                                                          "Line": 28,
+                                                          "Index": 672,
+                                                          "Line": 30,
                                                           "Column": 19,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 651,
-                                                          "Line": 28,
+                                                          "Index": 675,
+                                                          "Line": 30,
                                                           "Column": 22,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -1177,14 +1304,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 660,
-                                                                  "Line": 29,
+                                                                  "Index": 684,
+                                                                  "Line": 31,
                                                                   "Column": 9,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 663,
-                                                                  "Line": 29,
+                                                                  "Index": 687,
+                                                                  "Line": 31,
                                                                   "Column": 12,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -1207,14 +1334,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 664,
-                                                                  "Line": 29,
+                                                                  "Index": 688,
+                                                                  "Line": 31,
                                                                   "Column": 13,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 666,
-                                                                  "Line": 29,
+                                                                  "Index": 690,
+                                                                  "Line": 31,
                                                                   "Column": 15,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -1237,14 +1364,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 677,
-                                                                          "Line": 30,
+                                                                          "Index": 701,
+                                                                          "Line": 32,
                                                                           "Column": 11,
                                                                           "StreamName": "tail.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 679,
-                                                                          "Line": 30,
+                                                                          "Index": 703,
+                                                                          "Line": 32,
                                                                           "Column": 13,
                                                                           "StreamName": "tail.scm"
                                                                         }
@@ -1267,14 +1394,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 680,
-                                                                          "Line": 30,
+                                                                          "Index": 704,
+                                                                          "Line": 32,
                                                                           "Column": 14,
                                                                           "StreamName": "tail.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 682,
-                                                                          "Line": 30,
+                                                                          "Index": 706,
+                                                                          "Line": 32,
                                                                           "Column": 16,
                                                                           "StreamName": "tail.scm"
                                                                         }
@@ -1297,14 +1424,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 695,
-                                                                                  "Line": 31,
+                                                                                  "Index": 719,
+                                                                                  "Line": 33,
                                                                                   "Column": 13,
                                                                                   "StreamName": "tail.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 697,
-                                                                                  "Line": 31,
+                                                                                  "Index": 721,
+                                                                                  "Line": 33,
                                                                                   "Column": 15,
                                                                                   "StreamName": "tail.scm"
                                                                                 }
@@ -1327,14 +1454,14 @@
                                                                                       "Case": "Span",
                                                                                       "Fields": [
                                                                                         {
-                                                                                          "Index": 699,
-                                                                                          "Line": 31,
+                                                                                          "Index": 723,
+                                                                                          "Line": 33,
                                                                                           "Column": 17,
                                                                                           "StreamName": "tail.scm"
                                                                                         },
                                                                                         {
-                                                                                          "Index": 700,
-                                                                                          "Line": 31,
+                                                                                          "Index": 724,
+                                                                                          "Line": 33,
                                                                                           "Column": 18,
                                                                                           "StreamName": "tail.scm"
                                                                                         }
@@ -1357,14 +1484,14 @@
                                                                                       "Case": "Span",
                                                                                       "Fields": [
                                                                                         {
-                                                                                          "Index": 701,
-                                                                                          "Line": 31,
+                                                                                          "Index": 725,
+                                                                                          "Line": 33,
                                                                                           "Column": 19,
                                                                                           "StreamName": "tail.scm"
                                                                                         },
                                                                                         {
-                                                                                          "Index": 702,
-                                                                                          "Line": 31,
+                                                                                          "Index": 726,
+                                                                                          "Line": 33,
                                                                                           "Column": 20,
                                                                                           "StreamName": "tail.scm"
                                                                                         }
@@ -1382,14 +1509,14 @@
                                                                                       "Case": "Span",
                                                                                       "Fields": [
                                                                                         {
-                                                                                          "Index": 703,
-                                                                                          "Line": 31,
+                                                                                          "Index": 727,
+                                                                                          "Line": 33,
                                                                                           "Column": 21,
                                                                                           "StreamName": "tail.scm"
                                                                                         },
                                                                                         {
-                                                                                          "Index": 704,
-                                                                                          "Line": 31,
+                                                                                          "Index": 728,
+                                                                                          "Line": 33,
                                                                                           "Column": 22,
                                                                                           "StreamName": "tail.scm"
                                                                                         }
@@ -1403,14 +1530,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 698,
-                                                                                  "Line": 31,
+                                                                                  "Index": 722,
+                                                                                  "Line": 33,
                                                                                   "Column": 16,
                                                                                   "StreamName": "tail.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 705,
-                                                                                  "Line": 31,
+                                                                                  "Index": 729,
+                                                                                  "Line": 33,
                                                                                   "Column": 23,
                                                                                   "StreamName": "tail.scm"
                                                                                 }
@@ -1433,14 +1560,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 719,
-                                                                                  "Line": 32,
+                                                                                  "Index": 743,
+                                                                                  "Line": 34,
                                                                                   "Column": 14,
                                                                                   "StreamName": "tail.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 721,
-                                                                                  "Line": 32,
+                                                                                  "Index": 745,
+                                                                                  "Line": 34,
                                                                                   "Column": 16,
                                                                                   "StreamName": "tail.scm"
                                                                                 }
@@ -1463,14 +1590,14 @@
                                                                                       "Case": "Span",
                                                                                       "Fields": [
                                                                                         {
-                                                                                          "Index": 736,
-                                                                                          "Line": 33,
+                                                                                          "Index": 760,
+                                                                                          "Line": 35,
                                                                                           "Column": 15,
                                                                                           "StreamName": "tail.scm"
                                                                                         },
                                                                                         {
-                                                                                          "Index": 739,
-                                                                                          "Line": 33,
+                                                                                          "Index": 763,
+                                                                                          "Line": 35,
                                                                                           "Column": 18,
                                                                                           "StreamName": "tail.scm"
                                                                                         }
@@ -1493,14 +1620,14 @@
                                                                                               "Case": "Span",
                                                                                               "Fields": [
                                                                                                 {
-                                                                                                  "Index": 741,
-                                                                                                  "Line": 33,
+                                                                                                  "Index": 765,
+                                                                                                  "Line": 35,
                                                                                                   "Column": 20,
                                                                                                   "StreamName": "tail.scm"
                                                                                                 },
                                                                                                 {
-                                                                                                  "Index": 742,
-                                                                                                  "Line": 33,
+                                                                                                  "Index": 766,
+                                                                                                  "Line": 35,
                                                                                                   "Column": 21,
                                                                                                   "StreamName": "tail.scm"
                                                                                                 }
@@ -1518,14 +1645,14 @@
                                                                                               "Case": "Span",
                                                                                               "Fields": [
                                                                                                 {
-                                                                                                  "Index": 743,
-                                                                                                  "Line": 33,
+                                                                                                  "Index": 767,
+                                                                                                  "Line": 35,
                                                                                                   "Column": 22,
                                                                                                   "StreamName": "tail.scm"
                                                                                                 },
                                                                                                 {
-                                                                                                  "Index": 744,
-                                                                                                  "Line": 33,
+                                                                                                  "Index": 768,
+                                                                                                  "Line": 35,
                                                                                                   "Column": 23,
                                                                                                   "StreamName": "tail.scm"
                                                                                                 }
@@ -1548,14 +1675,14 @@
                                                                                               "Case": "Span",
                                                                                               "Fields": [
                                                                                                 {
-                                                                                                  "Index": 745,
-                                                                                                  "Line": 33,
+                                                                                                  "Index": 769,
+                                                                                                  "Line": 35,
                                                                                                   "Column": 24,
                                                                                                   "StreamName": "tail.scm"
                                                                                                 },
                                                                                                 {
-                                                                                                  "Index": 746,
-                                                                                                  "Line": 33,
+                                                                                                  "Index": 770,
+                                                                                                  "Line": 35,
                                                                                                   "Column": 25,
                                                                                                   "StreamName": "tail.scm"
                                                                                                 }
@@ -1569,14 +1696,14 @@
                                                                                       "Case": "Span",
                                                                                       "Fields": [
                                                                                         {
-                                                                                          "Index": 740,
-                                                                                          "Line": 33,
+                                                                                          "Index": 764,
+                                                                                          "Line": 35,
                                                                                           "Column": 19,
                                                                                           "StreamName": "tail.scm"
                                                                                         },
                                                                                         {
-                                                                                          "Index": 747,
-                                                                                          "Line": 33,
+                                                                                          "Index": 771,
+                                                                                          "Line": 35,
                                                                                           "Column": 26,
                                                                                           "StreamName": "tail.scm"
                                                                                         }
@@ -1590,14 +1717,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 735,
-                                                                                  "Line": 33,
+                                                                                  "Index": 759,
+                                                                                  "Line": 35,
                                                                                   "Column": 14,
                                                                                   "StreamName": "tail.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 748,
-                                                                                  "Line": 33,
+                                                                                  "Index": 772,
+                                                                                  "Line": 35,
                                                                                   "Column": 27,
                                                                                   "StreamName": "tail.scm"
                                                                                 }
@@ -1611,14 +1738,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 694,
-                                                                          "Line": 31,
+                                                                          "Index": 718,
+                                                                          "Line": 33,
                                                                           "Column": 12,
                                                                           "StreamName": "tail.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 749,
-                                                                          "Line": 33,
+                                                                          "Index": 773,
+                                                                          "Line": 35,
                                                                           "Column": 28,
                                                                           "StreamName": "tail.scm"
                                                                         }
@@ -1632,14 +1759,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 676,
-                                                                  "Line": 30,
+                                                                  "Index": 700,
+                                                                  "Line": 32,
                                                                   "Column": 10,
                                                                   "StreamName": "tail.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 750,
-                                                                  "Line": 33,
+                                                                  "Index": 774,
+                                                                  "Line": 35,
                                                                   "Column": 29,
                                                                   "StreamName": "tail.scm"
                                                                 }
@@ -1653,14 +1780,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 659,
-                                                          "Line": 29,
+                                                          "Index": 683,
+                                                          "Line": 31,
                                                           "Column": 8,
                                                           "StreamName": "tail.scm"
                                                         },
                                                         {
-                                                          "Index": 751,
-                                                          "Line": 33,
+                                                          "Index": 775,
+                                                          "Line": 35,
                                                           "Column": 30,
                                                           "StreamName": "tail.scm"
                                                         }
@@ -1674,14 +1801,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 640,
-                                                  "Line": 28,
+                                                  "Index": 664,
+                                                  "Line": 30,
                                                   "Column": 11,
                                                   "StreamName": "tail.scm"
                                                 },
                                                 {
-                                                  "Index": 752,
-                                                  "Line": 33,
+                                                  "Index": 776,
+                                                  "Line": 35,
                                                   "Column": 31,
                                                   "StreamName": "tail.scm"
                                                 }
@@ -1695,14 +1822,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 635,
-                                          "Line": 28,
+                                          "Index": 659,
+                                          "Line": 30,
                                           "Column": 6,
                                           "StreamName": "tail.scm"
                                         },
                                         {
-                                          "Index": 753,
-                                          "Line": 33,
+                                          "Index": 777,
+                                          "Line": 35,
                                           "Column": 32,
                                           "StreamName": "tail.scm"
                                         }
@@ -1716,14 +1843,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 634,
-                                  "Line": 28,
+                                  "Index": 658,
+                                  "Line": 30,
                                   "Column": 5,
                                   "StreamName": "tail.scm"
                                 },
                                 {
-                                  "Index": 754,
-                                  "Line": 33,
+                                  "Index": 778,
+                                  "Line": 35,
                                   "Column": 33,
                                   "StreamName": "tail.scm"
                                 }
@@ -1746,14 +1873,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 759,
-                                          "Line": 34,
+                                          "Index": 783,
+                                          "Line": 36,
                                           "Column": 5,
                                           "StreamName": "tail.scm"
                                         },
                                         {
-                                          "Index": 762,
-                                          "Line": 34,
+                                          "Index": 786,
+                                          "Line": 36,
                                           "Column": 8,
                                           "StreamName": "tail.scm"
                                         }
@@ -1776,14 +1903,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 763,
-                                          "Line": 34,
+                                          "Index": 787,
+                                          "Line": 36,
                                           "Column": 9,
                                           "StreamName": "tail.scm"
                                         },
                                         {
-                                          "Index": 769,
-                                          "Line": 34,
+                                          "Index": 793,
+                                          "Line": 36,
                                           "Column": 15,
                                           "StreamName": "tail.scm"
                                         }
@@ -1797,14 +1924,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 758,
-                                  "Line": 34,
+                                  "Index": 782,
+                                  "Line": 36,
                                   "Column": 4,
                                   "StreamName": "tail.scm"
                                 },
                                 {
-                                  "Index": 770,
-                                  "Line": 34,
+                                  "Index": 794,
+                                  "Line": 36,
                                   "Column": 16,
                                   "StreamName": "tail.scm"
                                 }
@@ -1818,14 +1945,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 622,
-                          "Line": 27,
+                          "Index": 646,
+                          "Line": 29,
                           "Column": 3,
                           "StreamName": "tail.scm"
                         },
                         {
-                          "Index": 771,
-                          "Line": 34,
+                          "Index": 795,
+                          "Line": 36,
                           "Column": 17,
                           "StreamName": "tail.scm"
                         }
@@ -1839,14 +1966,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 611,
-                  "Line": 26,
+                  "Index": 635,
+                  "Line": 28,
                   "Column": 1,
                   "StreamName": "tail.scm"
                 },
                 {
-                  "Index": 772,
-                  "Line": 34,
+                  "Index": 796,
+                  "Line": 36,
                   "Column": 18,
                   "StreamName": "tail.scm"
                 }
@@ -1866,8 +1993,8 @@
           "StreamName": "tail.scm"
         },
         {
-          "Index": 772,
-          "Line": 34,
+          "Index": 796,
+          "Line": 36,
           "Column": 18,
           "StreamName": "tail.scm"
         }

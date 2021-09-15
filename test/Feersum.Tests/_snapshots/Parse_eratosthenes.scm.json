@@ -13,6 +13,133 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
+                        "import"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "eratosthenes.scm"
+                        },
+                        {
+                          "Index": 7,
+                          "Line": 1,
+                          "Column": 8,
+                          "StreamName": "eratosthenes.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "eratosthenes.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "eratosthenes.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 16,
+                                  "Line": 1,
+                                  "Column": 17,
+                                  "StreamName": "eratosthenes.scm"
+                                },
+                                {
+                                  "Index": 20,
+                                  "Line": 1,
+                                  "Column": 21,
+                                  "StreamName": "eratosthenes.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 8,
+                          "Line": 1,
+                          "Column": 9,
+                          "StreamName": "eratosthenes.scm"
+                        },
+                        {
+                          "Index": 21,
+                          "Line": 1,
+                          "Column": 22,
+                          "StreamName": "eratosthenes.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "eratosthenes.scm"
+                },
+                {
+                  "Index": 22,
+                  "Line": 1,
+                  "Column": 23,
+                  "StreamName": "eratosthenes.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
                         "define"
                       ]
                     },
@@ -20,14 +147,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 103,
-                          "Line": 3,
+                          "Index": 126,
+                          "Line": 4,
                           "Column": 2,
                           "StreamName": "eratosthenes.scm"
                         },
                         {
-                          "Index": 109,
-                          "Line": 3,
+                          "Index": 132,
+                          "Line": 4,
                           "Column": 8,
                           "StreamName": "eratosthenes.scm"
                         }
@@ -50,14 +177,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 111,
-                                  "Line": 3,
+                                  "Index": 134,
+                                  "Line": 4,
                                   "Column": 10,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 123,
-                                  "Line": 3,
+                                  "Index": 146,
+                                  "Line": 4,
                                   "Column": 22,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -75,14 +202,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 124,
-                                  "Line": 3,
+                                  "Index": 147,
+                                  "Line": 4,
                                   "Column": 23,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 125,
-                                  "Line": 3,
+                                  "Index": 148,
+                                  "Line": 4,
                                   "Column": 24,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -96,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 110,
-                          "Line": 3,
+                          "Index": 133,
+                          "Line": 4,
                           "Column": 9,
                           "StreamName": "eratosthenes.scm"
                         },
                         {
-                          "Index": 126,
-                          "Line": 3,
+                          "Index": 149,
+                          "Line": 4,
                           "Column": 25,
                           "StreamName": "eratosthenes.scm"
                         }
@@ -126,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 187,
-                                  "Line": 5,
+                                  "Index": 210,
+                                  "Line": 6,
                                   "Column": 6,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 193,
-                                  "Line": 5,
+                                  "Index": 216,
+                                  "Line": 6,
                                   "Column": 12,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -156,14 +283,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 195,
-                                          "Line": 5,
+                                          "Index": 218,
+                                          "Line": 6,
                                           "Column": 14,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 209,
-                                          "Line": 5,
+                                          "Index": 232,
+                                          "Line": 6,
                                           "Column": 28,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -181,14 +308,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 210,
-                                          "Line": 5,
+                                          "Index": 233,
+                                          "Line": 6,
                                           "Column": 29,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 211,
-                                          "Line": 5,
+                                          "Index": 234,
+                                          "Line": 6,
                                           "Column": 30,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -206,14 +333,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 212,
-                                          "Line": 5,
+                                          "Index": 235,
+                                          "Line": 6,
                                           "Column": 31,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 218,
-                                          "Line": 5,
+                                          "Index": 241,
+                                          "Line": 6,
                                           "Column": 37,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -227,14 +354,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 194,
-                                  "Line": 5,
+                                  "Index": 217,
+                                  "Line": 6,
                                   "Column": 13,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 219,
-                                  "Line": 5,
+                                  "Index": 242,
+                                  "Line": 6,
                                   "Column": 38,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -257,14 +384,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 229,
-                                          "Line": 6,
+                                          "Index": 252,
+                                          "Line": 7,
                                           "Column": 10,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 235,
-                                          "Line": 6,
+                                          "Index": 258,
+                                          "Line": 7,
                                           "Column": 16,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -287,14 +414,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 237,
-                                                  "Line": 6,
+                                                  "Index": 260,
+                                                  "Line": 7,
                                                   "Column": 18,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 254,
-                                                  "Line": 6,
+                                                  "Index": 277,
+                                                  "Line": 7,
                                                   "Column": 35,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -312,14 +439,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 255,
-                                                  "Line": 6,
+                                                  "Index": 278,
+                                                  "Line": 7,
                                                   "Column": 36,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 256,
-                                                  "Line": 6,
+                                                  "Index": 279,
+                                                  "Line": 7,
                                                   "Column": 37,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -337,14 +464,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 257,
-                                                  "Line": 6,
+                                                  "Index": 280,
+                                                  "Line": 7,
                                                   "Column": 38,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 258,
-                                                  "Line": 6,
+                                                  "Index": 281,
+                                                  "Line": 7,
                                                   "Column": 39,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -362,14 +489,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 259,
-                                                  "Line": 6,
+                                                  "Index": 282,
+                                                  "Line": 7,
                                                   "Column": 40,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 265,
-                                                  "Line": 6,
+                                                  "Index": 288,
+                                                  "Line": 7,
                                                   "Column": 46,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -383,14 +510,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 236,
-                                          "Line": 6,
+                                          "Index": 259,
+                                          "Line": 7,
                                           "Column": 17,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 266,
-                                          "Line": 6,
+                                          "Index": 289,
+                                          "Line": 7,
                                           "Column": 47,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -413,14 +540,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 280,
-                                                  "Line": 7,
+                                                  "Index": 303,
+                                                  "Line": 8,
                                                   "Column": 14,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 282,
-                                                  "Line": 7,
+                                                  "Index": 305,
+                                                  "Line": 8,
                                                   "Column": 16,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -443,14 +570,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 284,
-                                                          "Line": 7,
+                                                          "Index": 307,
+                                                          "Line": 8,
                                                           "Column": 18,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 286,
-                                                          "Line": 7,
+                                                          "Index": 309,
+                                                          "Line": 8,
                                                           "Column": 20,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -468,14 +595,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 287,
-                                                          "Line": 7,
+                                                          "Index": 310,
+                                                          "Line": 8,
                                                           "Column": 21,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 288,
-                                                          "Line": 7,
+                                                          "Index": 311,
+                                                          "Line": 8,
                                                           "Column": 22,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -498,14 +625,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 290,
-                                                                  "Line": 7,
+                                                                  "Index": 313,
+                                                                  "Line": 8,
                                                                   "Column": 24,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 303,
-                                                                  "Line": 7,
+                                                                  "Index": 326,
+                                                                  "Line": 8,
                                                                   "Column": 37,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -523,14 +650,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 304,
-                                                                  "Line": 7,
+                                                                  "Index": 327,
+                                                                  "Line": 8,
                                                                   "Column": 38,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 310,
-                                                                  "Line": 7,
+                                                                  "Index": 333,
+                                                                  "Line": 8,
                                                                   "Column": 44,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -544,14 +671,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 289,
-                                                          "Line": 7,
+                                                          "Index": 312,
+                                                          "Line": 8,
                                                           "Column": 23,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 311,
-                                                          "Line": 7,
+                                                          "Index": 334,
+                                                          "Line": 8,
                                                           "Column": 45,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -565,14 +692,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 283,
-                                                  "Line": 7,
+                                                  "Index": 306,
+                                                  "Line": 8,
                                                   "Column": 17,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 312,
-                                                  "Line": 7,
+                                                  "Index": 335,
+                                                  "Line": 8,
                                                   "Column": 46,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -590,14 +717,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 329,
-                                                  "Line": 8,
+                                                  "Index": 352,
+                                                  "Line": 9,
                                                   "Column": 17,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 335,
-                                                  "Line": 8,
+                                                  "Index": 358,
+                                                  "Line": 9,
                                                   "Column": 23,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -620,14 +747,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 353,
-                                                          "Line": 9,
+                                                          "Index": 376,
+                                                          "Line": 10,
                                                           "Column": 18,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 358,
-                                                          "Line": 9,
+                                                          "Index": 381,
+                                                          "Line": 10,
                                                           "Column": 23,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -650,14 +777,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 380,
-                                                                  "Line": 10,
+                                                                  "Index": 403,
+                                                                  "Line": 11,
                                                                   "Column": 22,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 391,
-                                                                  "Line": 10,
+                                                                  "Index": 414,
+                                                                  "Line": 11,
                                                                   "Column": 33,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -675,14 +802,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 392,
-                                                                  "Line": 10,
+                                                                  "Index": 415,
+                                                                  "Line": 11,
                                                                   "Column": 34,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 398,
-                                                                  "Line": 10,
+                                                                  "Index": 421,
+                                                                  "Line": 11,
                                                                   "Column": 40,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -700,14 +827,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 399,
-                                                                  "Line": 10,
+                                                                  "Index": 422,
+                                                                  "Line": 11,
                                                                   "Column": 41,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 400,
-                                                                  "Line": 10,
+                                                                  "Index": 423,
+                                                                  "Line": 11,
                                                                   "Column": 42,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -730,14 +857,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 401,
-                                                                  "Line": 10,
+                                                                  "Index": 424,
+                                                                  "Line": 11,
                                                                   "Column": 43,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 403,
-                                                                  "Line": 10,
+                                                                  "Index": 426,
+                                                                  "Line": 11,
                                                                   "Column": 45,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -751,14 +878,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 379,
-                                                          "Line": 10,
+                                                          "Index": 402,
+                                                          "Line": 11,
                                                           "Column": 21,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 404,
-                                                          "Line": 10,
+                                                          "Index": 427,
+                                                          "Line": 11,
                                                           "Column": 46,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -781,14 +908,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 426,
-                                                                  "Line": 11,
+                                                                  "Index": 449,
+                                                                  "Line": 12,
                                                                   "Column": 22,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 443,
-                                                                  "Line": 11,
+                                                                  "Index": 466,
+                                                                  "Line": 12,
                                                                   "Column": 39,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -806,14 +933,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 444,
-                                                                  "Line": 11,
+                                                                  "Index": 467,
+                                                                  "Line": 12,
                                                                   "Column": 40,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 445,
-                                                                  "Line": 11,
+                                                                  "Index": 468,
+                                                                  "Line": 12,
                                                                   "Column": 41,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -836,14 +963,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 447,
-                                                                          "Line": 11,
+                                                                          "Index": 470,
+                                                                          "Line": 12,
                                                                           "Column": 43,
                                                                           "StreamName": "eratosthenes.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 448,
-                                                                          "Line": 11,
+                                                                          "Index": 471,
+                                                                          "Line": 12,
                                                                           "Column": 44,
                                                                           "StreamName": "eratosthenes.scm"
                                                                         }
@@ -861,14 +988,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 449,
-                                                                          "Line": 11,
+                                                                          "Index": 472,
+                                                                          "Line": 12,
                                                                           "Column": 45,
                                                                           "StreamName": "eratosthenes.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 450,
-                                                                          "Line": 11,
+                                                                          "Index": 473,
+                                                                          "Line": 12,
                                                                           "Column": 46,
                                                                           "StreamName": "eratosthenes.scm"
                                                                         }
@@ -886,14 +1013,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 451,
-                                                                          "Line": 11,
+                                                                          "Index": 474,
+                                                                          "Line": 12,
                                                                           "Column": 47,
                                                                           "StreamName": "eratosthenes.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 452,
-                                                                          "Line": 11,
+                                                                          "Index": 475,
+                                                                          "Line": 12,
                                                                           "Column": 48,
                                                                           "StreamName": "eratosthenes.scm"
                                                                         }
@@ -907,14 +1034,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 446,
-                                                                  "Line": 11,
+                                                                  "Index": 469,
+                                                                  "Line": 12,
                                                                   "Column": 42,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 453,
-                                                                  "Line": 11,
+                                                                  "Index": 476,
+                                                                  "Line": 12,
                                                                   "Column": 49,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -932,14 +1059,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 454,
-                                                                  "Line": 11,
+                                                                  "Index": 477,
+                                                                  "Line": 12,
                                                                   "Column": 50,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 460,
-                                                                  "Line": 11,
+                                                                  "Index": 483,
+                                                                  "Line": 12,
                                                                   "Column": 56,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -953,14 +1080,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 425,
-                                                          "Line": 11,
+                                                          "Index": 448,
+                                                          "Line": 12,
                                                           "Column": 21,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 461,
-                                                          "Line": 11,
+                                                          "Index": 484,
+                                                          "Line": 12,
                                                           "Column": 57,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -974,14 +1101,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 352,
-                                                  "Line": 9,
+                                                  "Index": 375,
+                                                  "Line": 10,
                                                   "Column": 17,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 462,
-                                                  "Line": 11,
+                                                  "Index": 485,
+                                                  "Line": 12,
                                                   "Column": 58,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -995,14 +1122,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 279,
-                                          "Line": 7,
+                                          "Index": 302,
+                                          "Line": 8,
                                           "Column": 13,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 463,
-                                          "Line": 11,
+                                          "Index": 486,
+                                          "Line": 12,
                                           "Column": 59,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1016,14 +1143,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 228,
-                                  "Line": 6,
+                                  "Index": 251,
+                                  "Line": 7,
                                   "Column": 9,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 464,
-                                  "Line": 11,
+                                  "Index": 487,
+                                  "Line": 12,
                                   "Column": 60,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -1046,14 +1173,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 474,
-                                          "Line": 12,
+                                          "Index": 497,
+                                          "Line": 13,
                                           "Column": 10,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 491,
-                                          "Line": 12,
+                                          "Index": 514,
+                                          "Line": 13,
                                           "Column": 27,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1071,14 +1198,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 492,
-                                          "Line": 12,
+                                          "Index": 515,
+                                          "Line": 13,
                                           "Column": 28,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 493,
-                                          "Line": 12,
+                                          "Index": 516,
+                                          "Line": 13,
                                           "Column": 29,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1101,14 +1228,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 495,
-                                                  "Line": 12,
+                                                  "Index": 518,
+                                                  "Line": 13,
                                                   "Column": 31,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 496,
-                                                  "Line": 12,
+                                                  "Index": 519,
+                                                  "Line": 13,
                                                   "Column": 32,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1126,14 +1253,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 497,
-                                                  "Line": 12,
+                                                  "Index": 520,
+                                                  "Line": 13,
                                                   "Column": 33,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 498,
-                                                  "Line": 12,
+                                                  "Index": 521,
+                                                  "Line": 13,
                                                   "Column": 34,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1151,14 +1278,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 499,
-                                                  "Line": 12,
+                                                  "Index": 522,
+                                                  "Line": 13,
                                                   "Column": 35,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 500,
-                                                  "Line": 12,
+                                                  "Index": 523,
+                                                  "Line": 13,
                                                   "Column": 36,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1172,14 +1299,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 494,
-                                          "Line": 12,
+                                          "Index": 517,
+                                          "Line": 13,
                                           "Column": 30,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 501,
-                                          "Line": 12,
+                                          "Index": 524,
+                                          "Line": 13,
                                           "Column": 37,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1197,14 +1324,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 502,
-                                          "Line": 12,
+                                          "Index": 525,
+                                          "Line": 13,
                                           "Column": 38,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 508,
-                                          "Line": 12,
+                                          "Index": 531,
+                                          "Line": 13,
                                           "Column": 44,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1218,14 +1345,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 473,
-                                  "Line": 12,
+                                  "Index": 496,
+                                  "Line": 13,
                                   "Column": 9,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 509,
-                                  "Line": 12,
+                                  "Index": 532,
+                                  "Line": 13,
                                   "Column": 45,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -1239,14 +1366,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 186,
-                          "Line": 5,
+                          "Index": 209,
+                          "Line": 6,
                           "Column": 5,
                           "StreamName": "eratosthenes.scm"
                         },
                         {
-                          "Index": 510,
-                          "Line": 12,
+                          "Index": 533,
+                          "Line": 13,
                           "Column": 46,
                           "StreamName": "eratosthenes.scm"
                         }
@@ -1269,14 +1396,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 631,
-                                  "Line": 15,
+                                  "Index": 654,
+                                  "Line": 16,
                                   "Column": 6,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 637,
-                                  "Line": 15,
+                                  "Index": 660,
+                                  "Line": 16,
                                   "Column": 12,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -1299,14 +1426,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 639,
-                                          "Line": 15,
+                                          "Index": 662,
+                                          "Line": 16,
                                           "Column": 14,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 642,
-                                          "Line": 15,
+                                          "Index": 665,
+                                          "Line": 16,
                                           "Column": 17,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1324,14 +1451,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 643,
-                                          "Line": 15,
+                                          "Index": 666,
+                                          "Line": 16,
                                           "Column": 18,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 644,
-                                          "Line": 15,
+                                          "Index": 667,
+                                          "Line": 16,
                                           "Column": 19,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1349,14 +1476,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 645,
-                                          "Line": 15,
+                                          "Index": 668,
+                                          "Line": 16,
                                           "Column": 20,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 651,
-                                          "Line": 15,
+                                          "Index": 674,
+                                          "Line": 16,
                                           "Column": 26,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1374,14 +1501,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 652,
-                                          "Line": 15,
+                                          "Index": 675,
+                                          "Line": 16,
                                           "Column": 27,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 658,
-                                          "Line": 15,
+                                          "Index": 681,
+                                          "Line": 16,
                                           "Column": 33,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1395,14 +1522,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 638,
-                                  "Line": 15,
+                                  "Index": 661,
+                                  "Line": 16,
                                   "Column": 13,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 659,
-                                  "Line": 15,
+                                  "Index": 682,
+                                  "Line": 16,
                                   "Column": 34,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -1425,14 +1552,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 669,
-                                          "Line": 16,
+                                          "Index": 692,
+                                          "Line": 17,
                                           "Column": 10,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 671,
-                                          "Line": 16,
+                                          "Index": 694,
+                                          "Line": 17,
                                           "Column": 12,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1455,14 +1582,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 673,
-                                                  "Line": 16,
+                                                  "Index": 696,
+                                                  "Line": 17,
                                                   "Column": 14,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 675,
-                                                  "Line": 16,
+                                                  "Index": 698,
+                                                  "Line": 17,
                                                   "Column": 16,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1480,14 +1607,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 676,
-                                                  "Line": 16,
+                                                  "Index": 699,
+                                                  "Line": 17,
                                                   "Column": 17,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 677,
-                                                  "Line": 16,
+                                                  "Index": 700,
+                                                  "Line": 17,
                                                   "Column": 18,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1510,14 +1637,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 679,
-                                                          "Line": 16,
+                                                          "Index": 702,
+                                                          "Line": 17,
                                                           "Column": 20,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 692,
-                                                          "Line": 16,
+                                                          "Index": 715,
+                                                          "Line": 17,
                                                           "Column": 33,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1535,14 +1662,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 693,
-                                                          "Line": 16,
+                                                          "Index": 716,
+                                                          "Line": 17,
                                                           "Column": 34,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 699,
-                                                          "Line": 16,
+                                                          "Index": 722,
+                                                          "Line": 17,
                                                           "Column": 40,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1556,14 +1683,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 678,
-                                                  "Line": 16,
+                                                  "Index": 701,
+                                                  "Line": 17,
                                                   "Column": 19,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 700,
-                                                  "Line": 16,
+                                                  "Index": 723,
+                                                  "Line": 17,
                                                   "Column": 41,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1577,14 +1704,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 672,
-                                          "Line": 16,
+                                          "Index": 695,
+                                          "Line": 17,
                                           "Column": 13,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 701,
-                                          "Line": 16,
+                                          "Index": 724,
+                                          "Line": 17,
                                           "Column": 42,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1602,14 +1729,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 714,
-                                          "Line": 17,
+                                          "Index": 737,
+                                          "Line": 18,
                                           "Column": 13,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 720,
-                                          "Line": 17,
+                                          "Index": 743,
+                                          "Line": 18,
                                           "Column": 19,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -1632,14 +1759,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 810,
-                                                  "Line": 19,
+                                                  "Index": 833,
+                                                  "Line": 20,
                                                   "Column": 14,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 812,
-                                                  "Line": 19,
+                                                  "Index": 835,
+                                                  "Line": 20,
                                                   "Column": 16,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1662,14 +1789,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 814,
-                                                          "Line": 19,
+                                                          "Index": 837,
+                                                          "Line": 20,
                                                           "Column": 18,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 824,
-                                                          "Line": 19,
+                                                          "Index": 847,
+                                                          "Line": 20,
                                                           "Column": 28,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1687,14 +1814,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 825,
-                                                          "Line": 19,
+                                                          "Index": 848,
+                                                          "Line": 20,
                                                           "Column": 29,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 831,
-                                                          "Line": 19,
+                                                          "Index": 854,
+                                                          "Line": 20,
                                                           "Column": 35,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1712,14 +1839,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 832,
-                                                          "Line": 19,
+                                                          "Index": 855,
+                                                          "Line": 20,
                                                           "Column": 36,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 833,
-                                                          "Line": 19,
+                                                          "Index": 856,
+                                                          "Line": 20,
                                                           "Column": 37,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1733,14 +1860,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 813,
-                                                  "Line": 19,
+                                                  "Index": 836,
+                                                  "Line": 20,
                                                   "Column": 17,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 834,
-                                                  "Line": 19,
+                                                  "Index": 857,
+                                                  "Line": 20,
                                                   "Column": 38,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1763,14 +1890,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 852,
-                                                          "Line": 20,
+                                                          "Index": 875,
+                                                          "Line": 21,
                                                           "Column": 18,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 855,
-                                                          "Line": 20,
+                                                          "Index": 878,
+                                                          "Line": 21,
                                                           "Column": 21,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1793,14 +1920,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 857,
-                                                                  "Line": 20,
+                                                                  "Index": 880,
+                                                                  "Line": 21,
                                                                   "Column": 23,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 858,
-                                                                  "Line": 20,
+                                                                  "Index": 881,
+                                                                  "Line": 21,
                                                                   "Column": 24,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -1823,14 +1950,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 859,
-                                                                  "Line": 20,
+                                                                  "Index": 882,
+                                                                  "Line": 21,
                                                                   "Column": 25,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 860,
-                                                                  "Line": 20,
+                                                                  "Index": 883,
+                                                                  "Line": 21,
                                                                   "Column": 26,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -1848,14 +1975,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 861,
-                                                                  "Line": 20,
+                                                                  "Index": 884,
+                                                                  "Line": 21,
                                                                   "Column": 27,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 862,
-                                                                  "Line": 20,
+                                                                  "Index": 885,
+                                                                  "Line": 21,
                                                                   "Column": 28,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -1869,14 +1996,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 856,
-                                                          "Line": 20,
+                                                          "Index": 879,
+                                                          "Line": 21,
                                                           "Column": 22,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 863,
-                                                          "Line": 20,
+                                                          "Index": 886,
+                                                          "Line": 21,
                                                           "Column": 29,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1894,14 +2021,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 864,
-                                                          "Line": 20,
+                                                          "Index": 887,
+                                                          "Line": 21,
                                                           "Column": 30,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 870,
-                                                          "Line": 20,
+                                                          "Index": 893,
+                                                          "Line": 21,
                                                           "Column": 36,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1919,14 +2046,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 871,
-                                                          "Line": 20,
+                                                          "Index": 894,
+                                                          "Line": 21,
                                                           "Column": 37,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 877,
-                                                          "Line": 20,
+                                                          "Index": 900,
+                                                          "Line": 21,
                                                           "Column": 43,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -1940,14 +2067,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 851,
-                                                  "Line": 20,
+                                                  "Index": 874,
+                                                  "Line": 21,
                                                   "Column": 17,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 878,
-                                                  "Line": 20,
+                                                  "Index": 901,
+                                                  "Line": 21,
                                                   "Column": 44,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -1970,14 +2097,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 896,
-                                                          "Line": 21,
+                                                          "Index": 919,
+                                                          "Line": 22,
                                                           "Column": 18,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 899,
-                                                          "Line": 21,
+                                                          "Index": 922,
+                                                          "Line": 22,
                                                           "Column": 21,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -2000,14 +2127,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 901,
-                                                                  "Line": 21,
+                                                                  "Index": 924,
+                                                                  "Line": 22,
                                                                   "Column": 23,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 902,
-                                                                  "Line": 21,
+                                                                  "Index": 925,
+                                                                  "Line": 22,
                                                                   "Column": 24,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2030,14 +2157,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 903,
-                                                                  "Line": 21,
+                                                                  "Index": 926,
+                                                                  "Line": 22,
                                                                   "Column": 25,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 904,
-                                                                  "Line": 21,
+                                                                  "Index": 927,
+                                                                  "Line": 22,
                                                                   "Column": 26,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2055,14 +2182,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 905,
-                                                                  "Line": 21,
+                                                                  "Index": 928,
+                                                                  "Line": 22,
                                                                   "Column": 27,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 906,
-                                                                  "Line": 21,
+                                                                  "Index": 929,
+                                                                  "Line": 22,
                                                                   "Column": 28,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2076,14 +2203,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 900,
-                                                          "Line": 21,
+                                                          "Index": 923,
+                                                          "Line": 22,
                                                           "Column": 22,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 907,
-                                                          "Line": 21,
+                                                          "Index": 930,
+                                                          "Line": 22,
                                                           "Column": 29,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -2106,14 +2233,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 909,
-                                                                  "Line": 21,
+                                                                  "Index": 932,
+                                                                  "Line": 22,
                                                                   "Column": 31,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 923,
-                                                                  "Line": 21,
+                                                                  "Index": 946,
+                                                                  "Line": 22,
                                                                   "Column": 45,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2131,14 +2258,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 924,
-                                                                  "Line": 21,
+                                                                  "Index": 947,
+                                                                  "Line": 22,
                                                                   "Column": 46,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 925,
-                                                                  "Line": 21,
+                                                                  "Index": 948,
+                                                                  "Line": 22,
                                                                   "Column": 47,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2156,14 +2283,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 926,
-                                                                  "Line": 21,
+                                                                  "Index": 949,
+                                                                  "Line": 22,
                                                                   "Column": 48,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 932,
-                                                                  "Line": 21,
+                                                                  "Index": 955,
+                                                                  "Line": 22,
                                                                   "Column": 54,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2177,14 +2304,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 908,
-                                                          "Line": 21,
+                                                          "Index": 931,
+                                                          "Line": 22,
                                                           "Column": 30,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 933,
-                                                          "Line": 21,
+                                                          "Index": 956,
+                                                          "Line": 22,
                                                           "Column": 55,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -2207,14 +2334,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 935,
-                                                                  "Line": 21,
+                                                                  "Index": 958,
+                                                                  "Line": 22,
                                                                   "Column": 57,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 939,
-                                                                  "Line": 21,
+                                                                  "Index": 962,
+                                                                  "Line": 22,
                                                                   "Column": 61,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2232,14 +2359,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 940,
-                                                                  "Line": 21,
+                                                                  "Index": 963,
+                                                                  "Line": 22,
                                                                   "Column": 62,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 941,
-                                                                  "Line": 21,
+                                                                  "Index": 964,
+                                                                  "Line": 22,
                                                                   "Column": 63,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2257,14 +2384,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 942,
-                                                                  "Line": 21,
+                                                                  "Index": 965,
+                                                                  "Line": 22,
                                                                   "Column": 64,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 948,
-                                                                  "Line": 21,
+                                                                  "Index": 971,
+                                                                  "Line": 22,
                                                                   "Column": 70,
                                                                   "StreamName": "eratosthenes.scm"
                                                                 }
@@ -2278,14 +2405,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 934,
-                                                          "Line": 21,
+                                                          "Index": 957,
+                                                          "Line": 22,
                                                           "Column": 56,
                                                           "StreamName": "eratosthenes.scm"
                                                         },
                                                         {
-                                                          "Index": 949,
-                                                          "Line": 21,
+                                                          "Index": 972,
+                                                          "Line": 22,
                                                           "Column": 71,
                                                           "StreamName": "eratosthenes.scm"
                                                         }
@@ -2299,14 +2426,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 895,
-                                                  "Line": 21,
+                                                  "Index": 918,
+                                                  "Line": 22,
                                                   "Column": 17,
                                                   "StreamName": "eratosthenes.scm"
                                                 },
                                                 {
-                                                  "Index": 950,
-                                                  "Line": 21,
+                                                  "Index": 973,
+                                                  "Line": 22,
                                                   "Column": 72,
                                                   "StreamName": "eratosthenes.scm"
                                                 }
@@ -2320,14 +2447,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 809,
-                                          "Line": 19,
+                                          "Index": 832,
+                                          "Line": 20,
                                           "Column": 13,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 951,
-                                          "Line": 21,
+                                          "Index": 974,
+                                          "Line": 22,
                                           "Column": 73,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -2341,14 +2468,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 668,
-                                  "Line": 16,
+                                  "Index": 691,
+                                  "Line": 17,
                                   "Column": 9,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 952,
-                                  "Line": 21,
+                                  "Index": 975,
+                                  "Line": 22,
                                   "Column": 74,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -2362,14 +2489,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 630,
-                          "Line": 15,
+                          "Index": 653,
+                          "Line": 16,
                           "Column": 5,
                           "StreamName": "eratosthenes.scm"
                         },
                         {
-                          "Index": 953,
-                          "Line": 21,
+                          "Index": 976,
+                          "Line": 22,
                           "Column": 75,
                           "StreamName": "eratosthenes.scm"
                         }
@@ -2392,14 +2519,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 959,
-                                  "Line": 22,
+                                  "Index": 982,
+                                  "Line": 23,
                                   "Column": 6,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 962,
-                                  "Line": 22,
+                                  "Index": 985,
+                                  "Line": 23,
                                   "Column": 9,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -2422,14 +2549,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 963,
-                                  "Line": 22,
+                                  "Index": 986,
+                                  "Line": 23,
                                   "Column": 10,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 964,
-                                  "Line": 22,
+                                  "Index": 987,
+                                  "Line": 23,
                                   "Column": 11,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -2452,14 +2579,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 966,
-                                          "Line": 22,
+                                          "Index": 989,
+                                          "Line": 23,
                                           "Column": 13,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 977,
-                                          "Line": 22,
+                                          "Index": 1000,
+                                          "Line": 23,
                                           "Column": 24,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -2477,14 +2604,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 978,
-                                          "Line": 22,
+                                          "Index": 1001,
+                                          "Line": 23,
                                           "Column": 25,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 979,
-                                          "Line": 22,
+                                          "Index": 1002,
+                                          "Line": 23,
                                           "Column": 26,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -2507,14 +2634,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 980,
-                                          "Line": 22,
+                                          "Index": 1003,
+                                          "Line": 23,
                                           "Column": 27,
                                           "StreamName": "eratosthenes.scm"
                                         },
                                         {
-                                          "Index": 982,
-                                          "Line": 22,
+                                          "Index": 1005,
+                                          "Line": 23,
                                           "Column": 29,
                                           "StreamName": "eratosthenes.scm"
                                         }
@@ -2528,14 +2655,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 965,
-                                  "Line": 22,
+                                  "Index": 988,
+                                  "Line": 23,
                                   "Column": 12,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 983,
-                                  "Line": 22,
+                                  "Index": 1006,
+                                  "Line": 23,
                                   "Column": 30,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -2553,14 +2680,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 984,
-                                  "Line": 22,
+                                  "Index": 1007,
+                                  "Line": 23,
                                   "Column": 31,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 986,
-                                  "Line": 22,
+                                  "Index": 1009,
+                                  "Line": 23,
                                   "Column": 33,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -2574,14 +2701,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 958,
-                          "Line": 22,
+                          "Index": 981,
+                          "Line": 23,
                           "Column": 5,
                           "StreamName": "eratosthenes.scm"
                         },
                         {
-                          "Index": 987,
-                          "Line": 22,
+                          "Index": 1010,
+                          "Line": 23,
                           "Column": 34,
                           "StreamName": "eratosthenes.scm"
                         }
@@ -2595,14 +2722,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 102,
-                  "Line": 3,
+                  "Index": 125,
+                  "Line": 4,
                   "Column": 1,
                   "StreamName": "eratosthenes.scm"
                 },
                 {
-                  "Index": 988,
-                  "Line": 22,
+                  "Index": 1011,
+                  "Line": 23,
                   "Column": 35,
                   "StreamName": "eratosthenes.scm"
                 }
@@ -2625,14 +2752,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 1064,
-                          "Line": 26,
+                          "Index": 1087,
+                          "Line": 27,
                           "Column": 2,
                           "StreamName": "eratosthenes.scm"
                         },
                         {
-                          "Index": 1071,
-                          "Line": 26,
+                          "Index": 1094,
+                          "Line": 27,
                           "Column": 9,
                           "StreamName": "eratosthenes.scm"
                         }
@@ -2655,14 +2782,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 1073,
-                                  "Line": 26,
+                                  "Index": 1096,
+                                  "Line": 27,
                                   "Column": 11,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 1085,
-                                  "Line": 26,
+                                  "Index": 1108,
+                                  "Line": 27,
                                   "Column": 23,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -2685,14 +2812,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 1086,
-                                  "Line": 26,
+                                  "Index": 1109,
+                                  "Line": 27,
                                   "Column": 24,
                                   "StreamName": "eratosthenes.scm"
                                 },
                                 {
-                                  "Index": 1091,
-                                  "Line": 26,
+                                  "Index": 1114,
+                                  "Line": 27,
                                   "Column": 29,
                                   "StreamName": "eratosthenes.scm"
                                 }
@@ -2706,14 +2833,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 1072,
-                          "Line": 26,
+                          "Index": 1095,
+                          "Line": 27,
                           "Column": 10,
                           "StreamName": "eratosthenes.scm"
                         },
                         {
-                          "Index": 1092,
-                          "Line": 26,
+                          "Index": 1115,
+                          "Line": 27,
                           "Column": 30,
                           "StreamName": "eratosthenes.scm"
                         }
@@ -2727,14 +2854,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 1063,
-                  "Line": 26,
+                  "Index": 1086,
+                  "Line": 27,
                   "Column": 1,
                   "StreamName": "eratosthenes.scm"
                 },
                 {
-                  "Index": 1093,
-                  "Line": 26,
+                  "Index": 1116,
+                  "Line": 27,
                   "Column": 31,
                   "StreamName": "eratosthenes.scm"
                 }
@@ -2754,8 +2881,8 @@
           "StreamName": "eratosthenes.scm"
         },
         {
-          "Index": 1094,
-          "Line": 27,
+          "Index": 1117,
+          "Line": 28,
           "Column": 1,
           "StreamName": "eratosthenes.scm"
         }

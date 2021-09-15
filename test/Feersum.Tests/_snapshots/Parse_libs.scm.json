@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "define-library"
+                        "import"
                       ]
                     },
                     "Location": {
@@ -26,8 +26,135 @@
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 15,
+                          "Index": 7,
                           "Line": 1,
+                          "Column": 8,
+                          "StreamName": "libs.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "libs.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "libs.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 16,
+                                  "Line": 1,
+                                  "Column": 17,
+                                  "StreamName": "libs.scm"
+                                },
+                                {
+                                  "Index": 20,
+                                  "Line": 1,
+                                  "Column": 21,
+                                  "StreamName": "libs.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 8,
+                          "Line": 1,
+                          "Column": 9,
+                          "StreamName": "libs.scm"
+                        },
+                        {
+                          "Index": 21,
+                          "Line": 1,
+                          "Column": 22,
+                          "StreamName": "libs.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "libs.scm"
+                },
+                {
+                  "Index": 22,
+                  "Line": 1,
+                  "Column": 23,
+                  "StreamName": "libs.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define-library"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 24,
+                          "Line": 2,
+                          "Column": 2,
+                          "StreamName": "libs.scm"
+                        },
+                        {
+                          "Index": 38,
+                          "Line": 2,
                           "Column": 16,
                           "StreamName": "libs.scm"
                         }
@@ -50,14 +177,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 17,
-                                  "Line": 1,
+                                  "Index": 40,
+                                  "Line": 2,
                                   "Column": 18,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 19,
-                                  "Line": 1,
+                                  "Index": 42,
+                                  "Line": 2,
                                   "Column": 20,
                                   "StreamName": "libs.scm"
                                 }
@@ -75,14 +202,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 20,
-                                  "Line": 1,
+                                  "Index": 43,
+                                  "Line": 2,
                                   "Column": 21,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 26,
-                                  "Line": 1,
+                                  "Index": 49,
+                                  "Line": 2,
                                   "Column": 27,
                                   "StreamName": "libs.scm"
                                 }
@@ -105,14 +232,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 27,
-                                  "Line": 1,
+                                  "Index": 50,
+                                  "Line": 2,
                                   "Column": 28,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 30,
-                                  "Line": 1,
+                                  "Index": 53,
+                                  "Line": 2,
                                   "Column": 31,
                                   "StreamName": "libs.scm"
                                 }
@@ -130,14 +257,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 31,
-                                  "Line": 1,
+                                  "Index": 54,
+                                  "Line": 2,
                                   "Column": 32,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 38,
-                                  "Line": 1,
+                                  "Index": 61,
+                                  "Line": 2,
                                   "Column": 39,
                                   "StreamName": "libs.scm"
                                 }
@@ -160,14 +287,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 39,
-                                  "Line": 1,
+                                  "Index": 62,
+                                  "Line": 2,
                                   "Column": 40,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 42,
-                                  "Line": 1,
+                                  "Index": 65,
+                                  "Line": 2,
                                   "Column": 43,
                                   "StreamName": "libs.scm"
                                 }
@@ -185,14 +312,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 43,
-                                  "Line": 1,
+                                  "Index": 66,
+                                  "Line": 2,
                                   "Column": 44,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 50,
-                                  "Line": 1,
+                                  "Index": 73,
+                                  "Line": 2,
                                   "Column": 51,
                                   "StreamName": "libs.scm"
                                 }
@@ -206,14 +333,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 16,
-                          "Line": 1,
+                          "Index": 39,
+                          "Line": 2,
                           "Column": 17,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 51,
-                          "Line": 1,
+                          "Index": 74,
+                          "Line": 2,
                           "Column": 52,
                           "StreamName": "libs.scm"
                         }
@@ -227,14 +354,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 0,
-                  "Line": 1,
+                  "Index": 23,
+                  "Line": 2,
                   "Column": 1,
                   "StreamName": "libs.scm"
                 },
                 {
-                  "Index": 52,
-                  "Line": 1,
+                  "Index": 75,
+                  "Line": 2,
                   "Column": 53,
                   "StreamName": "libs.scm"
                 }
@@ -257,14 +384,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 54,
-                          "Line": 2,
+                          "Index": 77,
+                          "Line": 3,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 68,
-                          "Line": 2,
+                          "Index": 91,
+                          "Line": 3,
                           "Column": 16,
                           "StreamName": "libs.scm"
                         }
@@ -287,14 +414,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 70,
-                                  "Line": 2,
+                                  "Index": 93,
+                                  "Line": 3,
                                   "Column": 18,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 74,
-                                  "Line": 2,
+                                  "Index": 97,
+                                  "Line": 3,
                                   "Column": 22,
                                   "StreamName": "libs.scm"
                                 }
@@ -312,14 +439,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 75,
-                                  "Line": 2,
+                                  "Index": 98,
+                                  "Line": 3,
                                   "Column": 23,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 85,
-                                  "Line": 2,
+                                  "Index": 108,
+                                  "Line": 3,
                                   "Column": 33,
                                   "StreamName": "libs.scm"
                                 }
@@ -333,14 +460,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 69,
-                          "Line": 2,
+                          "Index": 92,
+                          "Line": 3,
                           "Column": 17,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 86,
-                          "Line": 2,
+                          "Index": 109,
+                          "Line": 3,
                           "Column": 34,
                           "StreamName": "libs.scm"
                         }
@@ -354,14 +481,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 53,
-                  "Line": 2,
+                  "Index": 76,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "libs.scm"
                 },
                 {
-                  "Index": 87,
-                  "Line": 2,
+                  "Index": 110,
+                  "Line": 3,
                   "Column": 35,
                   "StreamName": "libs.scm"
                 }
@@ -384,14 +511,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 89,
-                          "Line": 3,
+                          "Index": 112,
+                          "Line": 4,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 103,
-                          "Line": 3,
+                          "Index": 126,
+                          "Line": 4,
                           "Column": 16,
                           "StreamName": "libs.scm"
                         }
@@ -414,14 +541,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 105,
-                                  "Line": 3,
+                                  "Index": 128,
+                                  "Line": 4,
                                   "Column": 18,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 112,
-                                  "Line": 3,
+                                  "Index": 135,
+                                  "Line": 4,
                                   "Column": 25,
                                   "StreamName": "libs.scm"
                                 }
@@ -439,14 +566,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 113,
-                                  "Line": 3,
+                                  "Index": 136,
+                                  "Line": 4,
                                   "Column": 26,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 117,
-                                  "Line": 3,
+                                  "Index": 140,
+                                  "Line": 4,
                                   "Column": 30,
                                   "StreamName": "libs.scm"
                                 }
@@ -460,14 +587,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 104,
-                          "Line": 3,
+                          "Index": 127,
+                          "Line": 4,
                           "Column": 17,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 118,
-                          "Line": 3,
+                          "Index": 141,
+                          "Line": 4,
                           "Column": 31,
                           "StreamName": "libs.scm"
                         }
@@ -490,14 +617,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 121,
-                                  "Line": 4,
+                                  "Index": 144,
+                                  "Line": 5,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 127,
-                                  "Line": 4,
+                                  "Index": 150,
+                                  "Line": 5,
                                   "Column": 9,
                                   "StreamName": "libs.scm"
                                 }
@@ -515,14 +642,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 128,
-                                  "Line": 4,
+                                  "Index": 151,
+                                  "Line": 5,
                                   "Column": 10,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 131,
-                                  "Line": 4,
+                                  "Index": 154,
+                                  "Line": 5,
                                   "Column": 13,
                                   "StreamName": "libs.scm"
                                 }
@@ -540,14 +667,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 132,
-                                  "Line": 4,
+                                  "Index": 155,
+                                  "Line": 5,
                                   "Column": 14,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 135,
-                                  "Line": 4,
+                                  "Index": 158,
+                                  "Line": 5,
                                   "Column": 17,
                                   "StreamName": "libs.scm"
                                 }
@@ -570,14 +697,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 139,
-                                          "Line": 5,
+                                          "Index": 162,
+                                          "Line": 6,
                                           "Column": 4,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 145,
-                                          "Line": 5,
+                                          "Index": 168,
+                                          "Line": 6,
                                           "Column": 10,
                                           "StreamName": "libs.scm"
                                         }
@@ -595,14 +722,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 146,
-                                          "Line": 5,
+                                          "Index": 169,
+                                          "Line": 6,
                                           "Column": 11,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 157,
-                                          "Line": 5,
+                                          "Index": 180,
+                                          "Line": 6,
                                           "Column": 22,
                                           "StreamName": "libs.scm"
                                         }
@@ -620,14 +747,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 158,
-                                          "Line": 5,
+                                          "Index": 181,
+                                          "Line": 6,
                                           "Column": 23,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 171,
-                                          "Line": 5,
+                                          "Index": 194,
+                                          "Line": 6,
                                           "Column": 36,
                                           "StreamName": "libs.scm"
                                         }
@@ -641,14 +768,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 138,
-                                  "Line": 5,
+                                  "Index": 161,
+                                  "Line": 6,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 172,
-                                  "Line": 5,
+                                  "Index": 195,
+                                  "Line": 6,
                                   "Column": 37,
                                   "StreamName": "libs.scm"
                                 }
@@ -662,14 +789,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 120,
-                          "Line": 4,
+                          "Index": 143,
+                          "Line": 5,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 173,
-                          "Line": 5,
+                          "Index": 196,
+                          "Line": 6,
                           "Column": 38,
                           "StreamName": "libs.scm"
                         }
@@ -692,14 +819,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 176,
-                                  "Line": 6,
+                                  "Index": 199,
+                                  "Line": 7,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 182,
-                                  "Line": 6,
+                                  "Index": 205,
+                                  "Line": 7,
                                   "Column": 9,
                                   "StreamName": "libs.scm"
                                 }
@@ -722,14 +849,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 184,
-                                          "Line": 6,
+                                          "Index": 207,
+                                          "Line": 7,
                                           "Column": 11,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 188,
-                                          "Line": 6,
+                                          "Index": 211,
+                                          "Line": 7,
                                           "Column": 15,
                                           "StreamName": "libs.scm"
                                         }
@@ -747,14 +874,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 189,
-                                          "Line": 6,
+                                          "Index": 212,
+                                          "Line": 7,
                                           "Column": 16,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 199,
-                                          "Line": 6,
+                                          "Index": 222,
+                                          "Line": 7,
                                           "Column": 26,
                                           "StreamName": "libs.scm"
                                         }
@@ -768,14 +895,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 183,
-                                  "Line": 6,
+                                  "Index": 206,
+                                  "Line": 7,
                                   "Column": 10,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 200,
-                                  "Line": 6,
+                                  "Index": 223,
+                                  "Line": 7,
                                   "Column": 27,
                                   "StreamName": "libs.scm"
                                 }
@@ -789,14 +916,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 175,
-                          "Line": 6,
+                          "Index": 198,
+                          "Line": 7,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 201,
-                          "Line": 6,
+                          "Index": 224,
+                          "Line": 7,
                           "Column": 28,
                           "StreamName": "libs.scm"
                         }
@@ -819,14 +946,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 204,
-                                  "Line": 7,
+                                  "Index": 227,
+                                  "Line": 8,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 209,
-                                  "Line": 7,
+                                  "Index": 232,
+                                  "Line": 8,
                                   "Column": 8,
                                   "StreamName": "libs.scm"
                                 }
@@ -849,14 +976,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 213,
-                                          "Line": 8,
+                                          "Index": 236,
+                                          "Line": 9,
                                           "Column": 4,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 219,
-                                          "Line": 8,
+                                          "Index": 242,
+                                          "Line": 9,
                                           "Column": 10,
                                           "StreamName": "libs.scm"
                                         }
@@ -874,14 +1001,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 220,
-                                          "Line": 8,
+                                          "Index": 243,
+                                          "Line": 9,
                                           "Column": 11,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 223,
-                                          "Line": 8,
+                                          "Index": 246,
+                                          "Line": 9,
                                           "Column": 14,
                                           "StreamName": "libs.scm"
                                         }
@@ -904,14 +1031,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 224,
-                                          "Line": 8,
+                                          "Index": 247,
+                                          "Line": 9,
                                           "Column": 15,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 227,
-                                          "Line": 8,
+                                          "Index": 250,
+                                          "Line": 9,
                                           "Column": 18,
                                           "StreamName": "libs.scm"
                                         }
@@ -925,14 +1052,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 212,
-                                  "Line": 8,
+                                  "Index": 235,
+                                  "Line": 9,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 228,
-                                  "Line": 8,
+                                  "Index": 251,
+                                  "Line": 9,
                                   "Column": 19,
                                   "StreamName": "libs.scm"
                                 }
@@ -955,14 +1082,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 232,
-                                          "Line": 9,
+                                          "Index": 255,
+                                          "Line": 10,
                                           "Column": 4,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 238,
-                                          "Line": 9,
+                                          "Index": 261,
+                                          "Line": 10,
                                           "Column": 10,
                                           "StreamName": "libs.scm"
                                         }
@@ -980,14 +1107,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 239,
-                                          "Line": 9,
+                                          "Index": 262,
+                                          "Line": 10,
                                           "Column": 11,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 242,
-                                          "Line": 9,
+                                          "Index": 265,
+                                          "Line": 10,
                                           "Column": 14,
                                           "StreamName": "libs.scm"
                                         }
@@ -1010,14 +1137,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 243,
-                                          "Line": 9,
+                                          "Index": 266,
+                                          "Line": 10,
                                           "Column": 15,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 246,
-                                          "Line": 9,
+                                          "Index": 269,
+                                          "Line": 10,
                                           "Column": 18,
                                           "StreamName": "libs.scm"
                                         }
@@ -1031,14 +1158,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 231,
-                                  "Line": 9,
+                                  "Index": 254,
+                                  "Line": 10,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 247,
-                                  "Line": 9,
+                                  "Index": 270,
+                                  "Line": 10,
                                   "Column": 19,
                                   "StreamName": "libs.scm"
                                 }
@@ -1061,14 +1188,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 251,
-                                          "Line": 10,
+                                          "Index": 274,
+                                          "Line": 11,
                                           "Column": 4,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 257,
-                                          "Line": 10,
+                                          "Index": 280,
+                                          "Line": 11,
                                           "Column": 10,
                                           "StreamName": "libs.scm"
                                         }
@@ -1086,14 +1213,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 258,
-                                          "Line": 10,
+                                          "Index": 281,
+                                          "Line": 11,
                                           "Column": 11,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 269,
-                                          "Line": 10,
+                                          "Index": 292,
+                                          "Line": 11,
                                           "Column": 22,
                                           "StreamName": "libs.scm"
                                         }
@@ -1116,14 +1243,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 270,
-                                          "Line": 10,
+                                          "Index": 293,
+                                          "Line": 11,
                                           "Column": 23,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 273,
-                                          "Line": 10,
+                                          "Index": 296,
+                                          "Line": 11,
                                           "Column": 26,
                                           "StreamName": "libs.scm"
                                         }
@@ -1137,14 +1264,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 250,
-                                  "Line": 10,
+                                  "Index": 273,
+                                  "Line": 11,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 274,
-                                  "Line": 10,
+                                  "Index": 297,
+                                  "Line": 11,
                                   "Column": 27,
                                   "StreamName": "libs.scm"
                                 }
@@ -1167,14 +1294,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 278,
-                                          "Line": 11,
+                                          "Index": 301,
+                                          "Line": 12,
                                           "Column": 4,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 284,
-                                          "Line": 11,
+                                          "Index": 307,
+                                          "Line": 12,
                                           "Column": 10,
                                           "StreamName": "libs.scm"
                                         }
@@ -1192,14 +1319,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 285,
-                                          "Line": 11,
+                                          "Index": 308,
+                                          "Line": 12,
                                           "Column": 11,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 297,
-                                          "Line": 11,
+                                          "Index": 320,
+                                          "Line": 12,
                                           "Column": 23,
                                           "StreamName": "libs.scm"
                                         }
@@ -1222,14 +1349,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 298,
-                                          "Line": 11,
+                                          "Index": 321,
+                                          "Line": 12,
                                           "Column": 24,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 301,
-                                          "Line": 11,
+                                          "Index": 324,
+                                          "Line": 12,
                                           "Column": 27,
                                           "StreamName": "libs.scm"
                                         }
@@ -1243,14 +1370,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 277,
-                                  "Line": 11,
+                                  "Index": 300,
+                                  "Line": 12,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 302,
-                                  "Line": 11,
+                                  "Index": 325,
+                                  "Line": 12,
                                   "Column": 28,
                                   "StreamName": "libs.scm"
                                 }
@@ -1264,14 +1391,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 203,
-                          "Line": 7,
+                          "Index": 226,
+                          "Line": 8,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 303,
-                          "Line": 11,
+                          "Index": 326,
+                          "Line": 12,
                           "Column": 29,
                           "StreamName": "libs.scm"
                         }
@@ -1285,14 +1412,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 88,
-                  "Line": 3,
+                  "Index": 111,
+                  "Line": 4,
                   "Column": 1,
                   "StreamName": "libs.scm"
                 },
                 {
-                  "Index": 304,
-                  "Line": 11,
+                  "Index": 327,
+                  "Line": 12,
                   "Column": 30,
                   "StreamName": "libs.scm"
                 }
@@ -1315,14 +1442,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 306,
-                          "Line": 12,
+                          "Index": 329,
+                          "Line": 13,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 320,
-                          "Line": 12,
+                          "Index": 343,
+                          "Line": 13,
                           "Column": 16,
                           "StreamName": "libs.scm"
                         }
@@ -1345,14 +1472,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 322,
-                                  "Line": 12,
+                                  "Index": 345,
+                                  "Line": 13,
                                   "Column": 18,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 326,
-                                  "Line": 12,
+                                  "Index": 349,
+                                  "Line": 13,
                                   "Column": 22,
                                   "StreamName": "libs.scm"
                                 }
@@ -1370,14 +1497,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 327,
-                                  "Line": 12,
+                                  "Index": 350,
+                                  "Line": 13,
                                   "Column": 23,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 334,
-                                  "Line": 12,
+                                  "Index": 357,
+                                  "Line": 13,
                                   "Column": 30,
                                   "StreamName": "libs.scm"
                                 }
@@ -1391,14 +1518,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 321,
-                          "Line": 12,
+                          "Index": 344,
+                          "Line": 13,
                           "Column": 17,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 335,
-                          "Line": 12,
+                          "Index": 358,
+                          "Line": 13,
                           "Column": 31,
                           "StreamName": "libs.scm"
                         }
@@ -1421,14 +1548,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 338,
-                                  "Line": 13,
+                                  "Index": 361,
+                                  "Line": 14,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 344,
-                                  "Line": 13,
+                                  "Index": 367,
+                                  "Line": 14,
                                   "Column": 9,
                                   "StreamName": "libs.scm"
                                 }
@@ -1451,14 +1578,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 346,
-                                          "Line": 13,
+                                          "Index": 369,
+                                          "Line": 14,
                                           "Column": 11,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 352,
-                                          "Line": 13,
+                                          "Index": 375,
+                                          "Line": 14,
                                           "Column": 17,
                                           "StreamName": "libs.scm"
                                         }
@@ -1481,14 +1608,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 354,
-                                                  "Line": 13,
+                                                  "Index": 377,
+                                                  "Line": 14,
                                                   "Column": 19,
                                                   "StreamName": "libs.scm"
                                                 },
                                                 {
-                                                  "Index": 361,
-                                                  "Line": 13,
+                                                  "Index": 384,
+                                                  "Line": 14,
                                                   "Column": 26,
                                                   "StreamName": "libs.scm"
                                                 }
@@ -1506,14 +1633,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 362,
-                                                  "Line": 13,
+                                                  "Index": 385,
+                                                  "Line": 14,
                                                   "Column": 27,
                                                   "StreamName": "libs.scm"
                                                 },
                                                 {
-                                                  "Index": 366,
-                                                  "Line": 13,
+                                                  "Index": 389,
+                                                  "Line": 14,
                                                   "Column": 31,
                                                   "StreamName": "libs.scm"
                                                 }
@@ -1527,14 +1654,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 353,
-                                          "Line": 13,
+                                          "Index": 376,
+                                          "Line": 14,
                                           "Column": 18,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 367,
-                                          "Line": 13,
+                                          "Index": 390,
+                                          "Line": 14,
                                           "Column": 32,
                                           "StreamName": "libs.scm"
                                         }
@@ -1552,14 +1679,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 368,
-                                          "Line": 13,
+                                          "Index": 391,
+                                          "Line": 14,
                                           "Column": 33,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 373,
-                                          "Line": 13,
+                                          "Index": 396,
+                                          "Line": 14,
                                           "Column": 38,
                                           "StreamName": "libs.scm"
                                         }
@@ -1573,14 +1700,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 345,
-                                  "Line": 13,
+                                  "Index": 368,
+                                  "Line": 14,
                                   "Column": 10,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 374,
-                                  "Line": 13,
+                                  "Index": 397,
+                                  "Line": 14,
                                   "Column": 39,
                                   "StreamName": "libs.scm"
                                 }
@@ -1594,14 +1721,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 337,
-                          "Line": 13,
+                          "Index": 360,
+                          "Line": 14,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 375,
-                          "Line": 13,
+                          "Index": 398,
+                          "Line": 14,
                           "Column": 40,
                           "StreamName": "libs.scm"
                         }
@@ -1624,14 +1751,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 378,
-                                  "Line": 14,
+                                  "Index": 401,
+                                  "Line": 15,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 384,
-                                  "Line": 14,
+                                  "Index": 407,
+                                  "Line": 15,
                                   "Column": 9,
                                   "StreamName": "libs.scm"
                                 }
@@ -1649,14 +1776,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 385,
-                                  "Line": 14,
+                                  "Index": 408,
+                                  "Line": 15,
                                   "Column": 10,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 390,
-                                  "Line": 14,
+                                  "Index": 413,
+                                  "Line": 15,
                                   "Column": 15,
                                   "StreamName": "libs.scm"
                                 }
@@ -1670,14 +1797,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 377,
-                          "Line": 14,
+                          "Index": 400,
+                          "Line": 15,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 391,
-                          "Line": 14,
+                          "Index": 414,
+                          "Line": 15,
                           "Column": 16,
                           "StreamName": "libs.scm"
                         }
@@ -1700,14 +1827,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 394,
-                                  "Line": 15,
+                                  "Index": 417,
+                                  "Line": 16,
                                   "Column": 3,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 399,
-                                  "Line": 15,
+                                  "Index": 422,
+                                  "Line": 16,
                                   "Column": 8,
                                   "StreamName": "libs.scm"
                                 }
@@ -1730,14 +1857,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 401,
-                                          "Line": 15,
+                                          "Index": 424,
+                                          "Line": 16,
                                           "Column": 10,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 407,
-                                          "Line": 15,
+                                          "Index": 430,
+                                          "Line": 16,
                                           "Column": 16,
                                           "StreamName": "libs.scm"
                                         }
@@ -1755,14 +1882,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 408,
-                                          "Line": 15,
+                                          "Index": 431,
+                                          "Line": 16,
                                           "Column": 17,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 413,
-                                          "Line": 15,
+                                          "Index": 436,
+                                          "Line": 16,
                                           "Column": 22,
                                           "StreamName": "libs.scm"
                                         }
@@ -1780,14 +1907,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 414,
-                                          "Line": 15,
+                                          "Index": 437,
+                                          "Line": 16,
                                           "Column": 23,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 432,
-                                          "Line": 15,
+                                          "Index": 455,
+                                          "Line": 16,
                                           "Column": 41,
                                           "StreamName": "libs.scm"
                                         }
@@ -1801,14 +1928,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 400,
-                                  "Line": 15,
+                                  "Index": 423,
+                                  "Line": 16,
                                   "Column": 9,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 433,
-                                  "Line": 15,
+                                  "Index": 456,
+                                  "Line": 16,
                                   "Column": 42,
                                   "StreamName": "libs.scm"
                                 }
@@ -1822,14 +1949,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 393,
-                          "Line": 15,
+                          "Index": 416,
+                          "Line": 16,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 434,
-                          "Line": 15,
+                          "Index": 457,
+                          "Line": 16,
                           "Column": 43,
                           "StreamName": "libs.scm"
                         }
@@ -1843,14 +1970,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 305,
-                  "Line": 12,
+                  "Index": 328,
+                  "Line": 13,
                   "Column": 1,
                   "StreamName": "libs.scm"
                 },
                 {
-                  "Index": 435,
-                  "Line": 15,
+                  "Index": 458,
+                  "Line": 16,
                   "Column": 44,
                   "StreamName": "libs.scm"
                 }
@@ -1873,14 +2000,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 437,
-                          "Line": 16,
+                          "Index": 460,
+                          "Line": 17,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 443,
-                          "Line": 16,
+                          "Index": 466,
+                          "Line": 17,
                           "Column": 8,
                           "StreamName": "libs.scm"
                         }
@@ -1903,14 +2030,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 445,
-                                  "Line": 16,
+                                  "Index": 468,
+                                  "Line": 17,
                                   "Column": 10,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 449,
-                                  "Line": 16,
+                                  "Index": 472,
+                                  "Line": 17,
                                   "Column": 14,
                                   "StreamName": "libs.scm"
                                 }
@@ -1933,14 +2060,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 451,
-                                          "Line": 16,
+                                          "Index": 474,
+                                          "Line": 17,
                                           "Column": 16,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 455,
-                                          "Line": 16,
+                                          "Index": 478,
+                                          "Line": 17,
                                           "Column": 20,
                                           "StreamName": "libs.scm"
                                         }
@@ -1958,14 +2085,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 456,
-                                          "Line": 16,
+                                          "Index": 479,
+                                          "Line": 17,
                                           "Column": 21,
                                           "StreamName": "libs.scm"
                                         },
                                         {
-                                          "Index": 463,
-                                          "Line": 16,
+                                          "Index": 486,
+                                          "Line": 17,
                                           "Column": 28,
                                           "StreamName": "libs.scm"
                                         }
@@ -1979,14 +2106,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 450,
-                                  "Line": 16,
+                                  "Index": 473,
+                                  "Line": 17,
                                   "Column": 15,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 464,
-                                  "Line": 16,
+                                  "Index": 487,
+                                  "Line": 17,
                                   "Column": 29,
                                   "StreamName": "libs.scm"
                                 }
@@ -2004,14 +2131,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 465,
-                                  "Line": 16,
+                                  "Index": 488,
+                                  "Line": 17,
                                   "Column": 30,
                                   "StreamName": "libs.scm"
                                 },
                                 {
-                                  "Index": 470,
-                                  "Line": 16,
+                                  "Index": 493,
+                                  "Line": 17,
                                   "Column": 35,
                                   "StreamName": "libs.scm"
                                 }
@@ -2025,14 +2152,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 444,
-                          "Line": 16,
+                          "Index": 467,
+                          "Line": 17,
                           "Column": 9,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 471,
-                          "Line": 16,
+                          "Index": 494,
+                          "Line": 17,
                           "Column": 36,
                           "StreamName": "libs.scm"
                         }
@@ -2046,14 +2173,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 436,
-                  "Line": 16,
+                  "Index": 459,
+                  "Line": 17,
                   "Column": 1,
                   "StreamName": "libs.scm"
                 },
                 {
-                  "Index": 472,
-                  "Line": 16,
+                  "Index": 495,
+                  "Line": 17,
                   "Column": 37,
                   "StreamName": "libs.scm"
                 }
@@ -2076,14 +2203,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 474,
-                          "Line": 17,
+                          "Index": 497,
+                          "Line": 18,
                           "Column": 2,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 481,
-                          "Line": 17,
+                          "Index": 504,
+                          "Line": 18,
                           "Column": 9,
                           "StreamName": "libs.scm"
                         }
@@ -2101,14 +2228,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 482,
-                          "Line": 17,
+                          "Index": 505,
+                          "Line": 18,
                           "Column": 10,
                           "StreamName": "libs.scm"
                         },
                         {
-                          "Index": 487,
-                          "Line": 17,
+                          "Index": 510,
+                          "Line": 18,
                           "Column": 15,
                           "StreamName": "libs.scm"
                         }
@@ -2122,14 +2249,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 473,
-                  "Line": 17,
+                  "Index": 496,
+                  "Line": 18,
                   "Column": 1,
                   "StreamName": "libs.scm"
                 },
                 {
-                  "Index": 488,
-                  "Line": 17,
+                  "Index": 511,
+                  "Line": 18,
                   "Column": 16,
                   "StreamName": "libs.scm"
                 }
@@ -2149,8 +2276,8 @@
           "StreamName": "libs.scm"
         },
         {
-          "Index": 488,
-          "Line": 17,
+          "Index": 511,
+          "Line": 18,
           "Column": 16,
           "StreamName": "libs.scm"
         }

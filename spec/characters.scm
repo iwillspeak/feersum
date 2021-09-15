@@ -1,3 +1,5 @@
+(import (scheme base))
+
 (display (boolean=?
     #t
     

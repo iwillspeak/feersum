@@ -1,4 +1,5 @@
 ;; Tests for the Equivalence Predicates (section 6.1 of R7RS).
+(import (scheme base))
 
 ;; Trivial equivalence
 (display (list
