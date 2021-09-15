@@ -780,7 +780,7 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
 
-    let coreTypes = Builtins.loadCore assm
+    let coreTypes = Builtins.importCore assm
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
@@ -839,8 +839,9 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
-    let scope = createRootScope
-    let bound = bind scope node
+    let coreLib = Builtins.loadCoreSignature
+    let scope = scopeFromLibraries (Seq.singleton coreLib) 
+    let bound = bind scope [coreLib] node
     if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound
         |> Lower.lower
