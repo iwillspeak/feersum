@@ -201,7 +201,7 @@ module private BinderCtx =
         | [] ->
             failwith "ICE: Unbalanced scope pop"
 
-    // Convert the binder context into a bound root around the given expression
+    /// Convert the binder context into a bound root around the given expression
     let intoRoot ctx expr =
         let env =
             if ctx.HasDynamicEnv then

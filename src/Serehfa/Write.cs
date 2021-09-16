@@ -1,9 +1,12 @@
+using System;
+using System.Text;
+using Serehfa.Attributes;
+
 namespace Serehfa
 {
-    using System;
-    using System.Text;
     using static ArgHelpers;
 
+    [LispLibrary("scheme", "write")]
     public static class Write
     {
         /// <summary>
@@ -72,8 +75,8 @@ namespace Serehfa
                 @"#\" + c : $@"#\x{Convert.ToUInt32(c):x4}",
             null => "'()",
             Func<object[], object> f => $"#<compiledProcedure {f.Method}>",
-            object[] v => VectorMethods.GetExternalRepresentation(v),
-            byte[] v => ByteVectorMethods.GetExternalRepresentation(v),
+            object[] v => Vectors.GetExternalRepresentation(v),
+            byte[] v => ByteVectors.GetExternalRepresentation(v),
             _ => o.ToString(),
         };
 

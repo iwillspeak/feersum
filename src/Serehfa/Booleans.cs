@@ -1,8 +1,11 @@
+using Serehfa.Attributes;
+
 namespace Serehfa
 {
     using static ArgHelpers;
 
-    public static class BooleanMethods
+    [LispLibrary("scheme", "base")]
+    public static class Booleans
     {
         [LispBuiltin("not")]
         public static object Not(object[] args)
