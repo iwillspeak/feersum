@@ -1,10 +1,12 @@
 using System;
 using System.Runtime.CompilerServices;
+using Serehfa.Attributes;
 
 namespace Serehfa
 {
     using static ArgHelpers;
 
+    [LispLibrary("scheme", "base")]
     public static class Arithmetics
     {
         [LispBuiltin("zero?")]

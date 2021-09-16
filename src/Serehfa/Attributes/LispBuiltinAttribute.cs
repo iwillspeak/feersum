@@ -1,6 +1,6 @@
 using System;
 
-namespace Serehfa
+namespace Serehfa.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class LispBuiltinAttribute : Attribute

@@ -58,7 +58,7 @@ let private addEnvDecls (assm: AssemblyDefinition) =
 let private findBuiltinMethods (externAssm: Assembly) =
     let findBuiltinMethodsForTy (ty: Type) =
             ty.GetMethods(BindingFlags.Public ||| BindingFlags.Static)
-            |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.LispBuiltinAttribute>(), m))
+            |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.Attributes.LispBuiltinAttribute>(), m))
             |> Seq.where (fun (attr, _) -> not (isNull attr))
     externAssm.ExportedTypes
     |> Seq.collect findBuiltinMethodsForTy

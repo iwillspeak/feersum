@@ -1,9 +1,12 @@
+using System;
+using Serehfa.Attributes;
+
 namespace Serehfa
 {
-    using System;
     using static ArgHelpers;
 
-    public static class CharacterMethods
+    [LispLibrary("scheme", "base")]
+    public static class Characters
     {
         [LispBuiltin("char?")]
         public static object IsChar(object[] args)

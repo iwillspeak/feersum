@@ -914,6 +914,6 @@ let compileFile options (output: string) (source: string) =
                 """ getTfm version.Major version.Minor version
             File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), config)
             // FIXME: Copying the core assembly like this is a bit of a hack.
-            let corePath = typeof<Serehfa.LispBuiltinAttribute>.Assembly.Location
+            let corePath = typeof<Serehfa.ConsPair>.Assembly.Location
             File.Copy(corePath, Path.Join(outDir, Path.GetFileName(corePath)), true)
         diags

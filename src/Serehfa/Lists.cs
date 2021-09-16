@@ -1,8 +1,11 @@
+using Serehfa.Attributes;
+
 namespace Serehfa
 {
     using static ArgHelpers;
 
-    public class ListMethods
+    [LispLibrary("scheme", "base")]
+    public class Lists
     {
         [LispBuiltin("null?")]
         public static object NullCheck(object[] args)

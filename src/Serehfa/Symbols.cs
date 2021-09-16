@@ -1,8 +1,11 @@
+using Serehfa.Attributes;
+
 namespace Serehfa
 {
     using static ArgHelpers;
 
-    public static class SymbolMethods
+    [LispLibrary("scheme", "base")]
+    public static class Symbols
     {
         [LispBuiltin("symbol?")]
         public static object IsSymbol(object[] args)

@@ -1,11 +1,13 @@
 using System;
 using System.Text;
+using Serehfa.Attributes;
 
 namespace Serehfa
 {
     using static ArgHelpers;
 
-    public static class ByteVectorMethods
+    [LispLibrary("scheme", "base")]
+    public static class ByteVectors
     {
         [LispBuiltin("bytevector?")]
         public static object IsBytevector(object[] args)
