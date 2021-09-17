@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "define"
+                        "import"
                       ]
                     },
                     "Location": {
@@ -43,7 +43,7 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "foo"
+                                "scheme"
                               ]
                             },
                             "Location": {
@@ -56,9 +56,9 @@
                                   "StreamName": "let.scm"
                                 },
                                 {
-                                  "Index": 12,
+                                  "Index": 15,
                                   "Line": 1,
-                                  "Column": 13,
+                                  "Column": 16,
                                   "StreamName": "let.scm"
                                 }
                               ]
@@ -68,22 +68,22 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "a"
+                                "base"
                               ]
                             },
                             "Location": {
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 13,
+                                  "Index": 16,
                                   "Line": 1,
-                                  "Column": 14,
+                                  "Column": 17,
                                   "StreamName": "let.scm"
                                 },
                                 {
-                                  "Index": 14,
+                                  "Index": 20,
                                   "Line": 1,
-                                  "Column": 15,
+                                  "Column": 21,
                                   "StreamName": "let.scm"
                                 }
                               ]
@@ -102,8 +102,211 @@
                           "StreamName": "let.scm"
                         },
                         {
-                          "Index": 15,
+                          "Index": 21,
                           "Line": 1,
+                          "Column": 22,
+                          "StreamName": "let.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "let.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "let.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "let.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "let.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "let.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "let.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "let.scm"
+                },
+                {
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
+                  "StreamName": "let.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 43,
+                          "Line": 3,
+                          "Column": 2,
+                          "StreamName": "let.scm"
+                        },
+                        {
+                          "Index": 49,
+                          "Line": 3,
+                          "Column": 8,
+                          "StreamName": "let.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "foo"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 51,
+                                  "Line": 3,
+                                  "Column": 10,
+                                  "StreamName": "let.scm"
+                                },
+                                {
+                                  "Index": 54,
+                                  "Line": 3,
+                                  "Column": 13,
+                                  "StreamName": "let.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "a"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 55,
+                                  "Line": 3,
+                                  "Column": 14,
+                                  "StreamName": "let.scm"
+                                },
+                                {
+                                  "Index": 56,
+                                  "Line": 3,
+                                  "Column": 15,
+                                  "StreamName": "let.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 50,
+                          "Line": 3,
+                          "Column": 9,
+                          "StreamName": "let.scm"
+                        },
+                        {
+                          "Index": 57,
+                          "Line": 3,
                           "Column": 16,
                           "StreamName": "let.scm"
                         }
@@ -126,14 +329,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 21,
-                                  "Line": 2,
+                                  "Index": 63,
+                                  "Line": 4,
                                   "Column": 6,
                                   "StreamName": "let.scm"
                                 },
                                 {
-                                  "Index": 24,
-                                  "Line": 2,
+                                  "Index": 66,
+                                  "Line": 4,
                                   "Column": 9,
                                   "StreamName": "let.scm"
                                 }
@@ -161,14 +364,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 27,
-                                                  "Line": 2,
+                                                  "Index": 69,
+                                                  "Line": 4,
                                                   "Column": 12,
                                                   "StreamName": "let.scm"
                                                 },
                                                 {
-                                                  "Index": 28,
-                                                  "Line": 2,
+                                                  "Index": 70,
+                                                  "Line": 4,
                                                   "Column": 13,
                                                   "StreamName": "let.scm"
                                                 }
@@ -186,14 +389,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 29,
-                                                  "Line": 2,
+                                                  "Index": 71,
+                                                  "Line": 4,
                                                   "Column": 14,
                                                   "StreamName": "let.scm"
                                                 },
                                                 {
-                                                  "Index": 30,
-                                                  "Line": 2,
+                                                  "Index": 72,
+                                                  "Line": 4,
                                                   "Column": 15,
                                                   "StreamName": "let.scm"
                                                 }
@@ -207,14 +410,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 26,
-                                          "Line": 2,
+                                          "Index": 68,
+                                          "Line": 4,
                                           "Column": 11,
                                           "StreamName": "let.scm"
                                         },
                                         {
-                                          "Index": 31,
-                                          "Line": 2,
+                                          "Index": 73,
+                                          "Line": 4,
                                           "Column": 16,
                                           "StreamName": "let.scm"
                                         }
@@ -237,14 +440,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 41,
-                                                  "Line": 3,
+                                                  "Index": 83,
+                                                  "Line": 5,
                                                   "Column": 10,
                                                   "StreamName": "let.scm"
                                                 },
                                                 {
-                                                  "Index": 42,
-                                                  "Line": 3,
+                                                  "Index": 84,
+                                                  "Line": 5,
                                                   "Column": 11,
                                                   "StreamName": "let.scm"
                                                 }
@@ -267,14 +470,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 43,
-                                                  "Line": 3,
+                                                  "Index": 85,
+                                                  "Line": 5,
                                                   "Column": 12,
                                                   "StreamName": "let.scm"
                                                 },
                                                 {
-                                                  "Index": 46,
-                                                  "Line": 3,
+                                                  "Index": 88,
+                                                  "Line": 5,
                                                   "Column": 15,
                                                   "StreamName": "let.scm"
                                                 }
@@ -288,14 +491,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 40,
-                                          "Line": 3,
+                                          "Index": 82,
+                                          "Line": 5,
                                           "Column": 9,
                                           "StreamName": "let.scm"
                                         },
                                         {
-                                          "Index": 47,
-                                          "Line": 3,
+                                          "Index": 89,
+                                          "Line": 5,
                                           "Column": 16,
                                           "StreamName": "let.scm"
                                         }
@@ -309,14 +512,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 25,
-                                  "Line": 2,
+                                  "Index": 67,
+                                  "Line": 4,
                                   "Column": 10,
                                   "StreamName": "let.scm"
                                 },
                                 {
-                                  "Index": 48,
-                                  "Line": 3,
+                                  "Index": 90,
+                                  "Line": 5,
                                   "Column": 17,
                                   "StreamName": "let.scm"
                                 }
@@ -339,14 +542,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 58,
-                                          "Line": 4,
+                                          "Index": 100,
+                                          "Line": 6,
                                           "Column": 10,
                                           "StreamName": "let.scm"
                                         },
                                         {
-                                          "Index": 65,
-                                          "Line": 4,
+                                          "Index": 107,
+                                          "Line": 6,
                                           "Column": 17,
                                           "StreamName": "let.scm"
                                         }
@@ -369,14 +572,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 67,
-                                                  "Line": 4,
+                                                  "Index": 109,
+                                                  "Line": 6,
                                                   "Column": 19,
                                                   "StreamName": "let.scm"
                                                 },
                                                 {
-                                                  "Index": 68,
-                                                  "Line": 4,
+                                                  "Index": 110,
+                                                  "Line": 6,
                                                   "Column": 20,
                                                   "StreamName": "let.scm"
                                                 }
@@ -394,14 +597,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 69,
-                                                  "Line": 4,
+                                                  "Index": 111,
+                                                  "Line": 6,
                                                   "Column": 21,
                                                   "StreamName": "let.scm"
                                                 },
                                                 {
-                                                  "Index": 70,
-                                                  "Line": 4,
+                                                  "Index": 112,
+                                                  "Line": 6,
                                                   "Column": 22,
                                                   "StreamName": "let.scm"
                                                 }
@@ -419,14 +622,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 71,
-                                                  "Line": 4,
+                                                  "Index": 113,
+                                                  "Line": 6,
                                                   "Column": 23,
                                                   "StreamName": "let.scm"
                                                 },
                                                 {
-                                                  "Index": 72,
-                                                  "Line": 4,
+                                                  "Index": 114,
+                                                  "Line": 6,
                                                   "Column": 24,
                                                   "StreamName": "let.scm"
                                                 }
@@ -440,14 +643,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 66,
-                                          "Line": 4,
+                                          "Index": 108,
+                                          "Line": 6,
                                           "Column": 18,
                                           "StreamName": "let.scm"
                                         },
                                         {
-                                          "Index": 73,
-                                          "Line": 4,
+                                          "Index": 115,
+                                          "Line": 6,
                                           "Column": 25,
                                           "StreamName": "let.scm"
                                         }
@@ -461,14 +664,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 57,
-                                  "Line": 4,
+                                  "Index": 99,
+                                  "Line": 6,
                                   "Column": 9,
                                   "StreamName": "let.scm"
                                 },
                                 {
-                                  "Index": 74,
-                                  "Line": 4,
+                                  "Index": 116,
+                                  "Line": 6,
                                   "Column": 26,
                                   "StreamName": "let.scm"
                                 }
@@ -491,14 +694,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 84,
-                                          "Line": 5,
+                                          "Index": 126,
+                                          "Line": 7,
                                           "Column": 10,
                                           "StreamName": "let.scm"
                                         },
                                         {
-                                          "Index": 85,
-                                          "Line": 5,
+                                          "Index": 127,
+                                          "Line": 7,
                                           "Column": 11,
                                           "StreamName": "let.scm"
                                         }
@@ -516,14 +719,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 86,
-                                          "Line": 5,
+                                          "Index": 128,
+                                          "Line": 7,
                                           "Column": 12,
                                           "StreamName": "let.scm"
                                         },
                                         {
-                                          "Index": 87,
-                                          "Line": 5,
+                                          "Index": 129,
+                                          "Line": 7,
                                           "Column": 13,
                                           "StreamName": "let.scm"
                                         }
@@ -541,14 +744,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 88,
-                                          "Line": 5,
+                                          "Index": 130,
+                                          "Line": 7,
                                           "Column": 14,
                                           "StreamName": "let.scm"
                                         },
                                         {
-                                          "Index": 89,
-                                          "Line": 5,
+                                          "Index": 131,
+                                          "Line": 7,
                                           "Column": 15,
                                           "StreamName": "let.scm"
                                         }
@@ -562,14 +765,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 83,
-                                  "Line": 5,
+                                  "Index": 125,
+                                  "Line": 7,
                                   "Column": 9,
                                   "StreamName": "let.scm"
                                 },
                                 {
-                                  "Index": 90,
-                                  "Line": 5,
+                                  "Index": 132,
+                                  "Line": 7,
                                   "Column": 16,
                                   "StreamName": "let.scm"
                                 }
@@ -583,14 +786,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 20,
-                          "Line": 2,
+                          "Index": 62,
+                          "Line": 4,
                           "Column": 5,
                           "StreamName": "let.scm"
                         },
                         {
-                          "Index": 91,
-                          "Line": 5,
+                          "Index": 133,
+                          "Line": 7,
                           "Column": 17,
                           "StreamName": "let.scm"
                         }
@@ -604,14 +807,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 0,
-                  "Line": 1,
+                  "Index": 42,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "let.scm"
                 },
                 {
-                  "Index": 92,
-                  "Line": 5,
+                  "Index": 134,
+                  "Line": 7,
                   "Column": 18,
                   "StreamName": "let.scm"
                 }
@@ -634,14 +837,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 94,
-                          "Line": 6,
+                          "Index": 136,
+                          "Line": 8,
                           "Column": 2,
                           "StreamName": "let.scm"
                         },
                         {
-                          "Index": 97,
-                          "Line": 6,
+                          "Index": 139,
+                          "Line": 8,
                           "Column": 5,
                           "StreamName": "let.scm"
                         }
@@ -664,14 +867,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 98,
-                          "Line": 6,
+                          "Index": 140,
+                          "Line": 8,
                           "Column": 6,
                           "StreamName": "let.scm"
                         },
                         {
-                          "Index": 101,
-                          "Line": 6,
+                          "Index": 143,
+                          "Line": 8,
                           "Column": 9,
                           "StreamName": "let.scm"
                         }
@@ -685,14 +888,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 93,
-                  "Line": 6,
+                  "Index": 135,
+                  "Line": 8,
                   "Column": 1,
                   "StreamName": "let.scm"
                 },
                 {
-                  "Index": 102,
-                  "Line": 6,
+                  "Index": 144,
+                  "Line": 8,
                   "Column": 10,
                   "StreamName": "let.scm"
                 }
@@ -712,8 +915,8 @@
           "StreamName": "let.scm"
         },
         {
-          "Index": 110,
-          "Line": 6,
+          "Index": 152,
+          "Line": 8,
           "Column": 18,
           "StreamName": "let.scm"
         }

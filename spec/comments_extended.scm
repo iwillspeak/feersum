@@ -1,3 +1,6 @@
+(import (scheme base)
+    (scheme write))
+
 #|
     The FACT procedure computes the factorial of a non-negative integer.
 |#

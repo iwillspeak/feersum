@@ -1,3 +1,5 @@
+(import (scheme base)
+    (scheme write))
 ;; Boolean literals and truthiness
 (display (list
     #f

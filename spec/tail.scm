@@ -1,3 +1,6 @@
+(import (scheme base)
+    (scheme write))
+
 ;; Without proper tail recursion this will overflow the stack:
 ;
 ; ! stack overflow

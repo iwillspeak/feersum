@@ -1,3 +1,4 @@
+(import (scheme base))
 (=)  ; => #t
 (> 5 4) ; => #t
 (< 5 4) ; => #f

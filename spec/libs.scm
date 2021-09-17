@@ -1,3 +1,5 @@
+(import (scheme base)
+    (scheme write))
 (define-library (it should 100 support 202 numbers))
 (define-library (test dependency))
 (define-library (example grid)

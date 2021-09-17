@@ -1,3 +1,6 @@
+(import (scheme base)
+    (scheme write))
+
 (define (fact n)
     (if (= n 0)
         1

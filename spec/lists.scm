@@ -1,3 +1,6 @@
+(import (scheme base)
+    (scheme write))
+
 (display (list
     (list 12 34 56)                            ; (12 34 56)
     (cdr (cdr (list "a" #\B #f 4.0)))          ; -> (#f 4.0)

@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "define-syntax"
+                        "import"
                       ]
                     },
                     "Location": {
@@ -26,8 +26,211 @@
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 14,
+                          "Index": 7,
                           "Line": 1,
+                          "Column": 8,
+                          "StreamName": "user-macros.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "user-macros.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "user-macros.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 16,
+                                  "Line": 1,
+                                  "Column": 17,
+                                  "StreamName": "user-macros.scm"
+                                },
+                                {
+                                  "Index": 20,
+                                  "Line": 1,
+                                  "Column": 21,
+                                  "StreamName": "user-macros.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 8,
+                          "Line": 1,
+                          "Column": 9,
+                          "StreamName": "user-macros.scm"
+                        },
+                        {
+                          "Index": 21,
+                          "Line": 1,
+                          "Column": 22,
+                          "StreamName": "user-macros.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "user-macros.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "user-macros.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "user-macros.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "user-macros.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "user-macros.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "user-macros.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "user-macros.scm"
+                },
+                {
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
+                  "StreamName": "user-macros.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define-syntax"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 44,
+                          "Line": 4,
+                          "Column": 2,
+                          "StreamName": "user-macros.scm"
+                        },
+                        {
+                          "Index": 57,
+                          "Line": 4,
                           "Column": 15,
                           "StreamName": "user-macros.scm"
                         }
@@ -45,14 +248,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 15,
-                          "Line": 1,
+                          "Index": 58,
+                          "Line": 4,
                           "Column": 16,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 18,
-                          "Line": 1,
+                          "Index": 61,
+                          "Line": 4,
                           "Column": 19,
                           "StreamName": "user-macros.scm"
                         }
@@ -75,14 +278,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 24,
-                                  "Line": 2,
+                                  "Index": 67,
+                                  "Line": 5,
                                   "Column": 6,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 36,
-                                  "Line": 2,
+                                  "Index": 79,
+                                  "Line": 5,
                                   "Column": 18,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -100,14 +303,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 37,
-                                  "Line": 2,
+                                  "Index": 80,
+                                  "Line": 5,
                                   "Column": 19,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 39,
-                                  "Line": 2,
+                                  "Index": 82,
+                                  "Line": 5,
                                   "Column": 21,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -135,14 +338,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 50,
-                                                  "Line": 3,
+                                                  "Index": 93,
+                                                  "Line": 6,
                                                   "Column": 11,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 51,
-                                                  "Line": 3,
+                                                  "Index": 94,
+                                                  "Line": 6,
                                                   "Column": 12,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -165,14 +368,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 52,
-                                                  "Line": 3,
+                                                  "Index": 95,
+                                                  "Line": 6,
                                                   "Column": 13,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 55,
-                                                  "Line": 3,
+                                                  "Index": 98,
+                                                  "Line": 6,
                                                   "Column": 16,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -186,14 +389,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 49,
-                                          "Line": 3,
+                                          "Index": 92,
+                                          "Line": 6,
                                           "Column": 10,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 56,
-                                          "Line": 3,
+                                          "Index": 99,
+                                          "Line": 6,
                                           "Column": 17,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -225,14 +428,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 59,
-                                                        "Line": 3,
+                                                        "Index": 102,
+                                                        "Line": 6,
                                                         "Column": 20,
                                                         "StreamName": "user-macros.scm"
                                                       },
                                                       {
-                                                        "Index": 60,
-                                                        "Line": 3,
+                                                        "Index": 103,
+                                                        "Line": 6,
                                                         "Column": 21,
                                                         "StreamName": "user-macros.scm"
                                                       }
@@ -255,14 +458,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 61,
-                                                        "Line": 3,
+                                                        "Index": 104,
+                                                        "Line": 6,
                                                         "Column": 22,
                                                         "StreamName": "user-macros.scm"
                                                       },
                                                       {
-                                                        "Index": 62,
-                                                        "Line": 3,
+                                                        "Index": 105,
+                                                        "Line": 6,
                                                         "Column": 23,
                                                         "StreamName": "user-macros.scm"
                                                       }
@@ -285,14 +488,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 63,
-                                                        "Line": 3,
+                                                        "Index": 106,
+                                                        "Line": 6,
                                                         "Column": 24,
                                                         "StreamName": "user-macros.scm"
                                                       },
                                                       {
-                                                        "Index": 64,
-                                                        "Line": 3,
+                                                        "Index": 107,
+                                                        "Line": 6,
                                                         "Column": 25,
                                                         "StreamName": "user-macros.scm"
                                                       }
@@ -306,14 +509,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 58,
-                                                "Line": 3,
+                                                "Index": 101,
+                                                "Line": 6,
                                                 "Column": 19,
                                                 "StreamName": "user-macros.scm"
                                               },
                                               {
-                                                "Index": 65,
-                                                "Line": 3,
+                                                "Index": 108,
+                                                "Line": 6,
                                                 "Column": 26,
                                                 "StreamName": "user-macros.scm"
                                               }
@@ -326,14 +529,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 57,
-                                          "Line": 3,
+                                          "Index": 100,
+                                          "Line": 6,
                                           "Column": 18,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 65,
-                                          "Line": 3,
+                                          "Index": 108,
+                                          "Line": 6,
                                           "Column": 26,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -347,14 +550,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 48,
-                                  "Line": 3,
+                                  "Index": 91,
+                                  "Line": 6,
                                   "Column": 9,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 66,
-                                  "Line": 3,
+                                  "Index": 109,
+                                  "Line": 6,
                                   "Column": 27,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -382,14 +585,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 77,
-                                                  "Line": 4,
+                                                  "Index": 120,
+                                                  "Line": 7,
                                                   "Column": 11,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 78,
-                                                  "Line": 4,
+                                                  "Index": 121,
+                                                  "Line": 7,
                                                   "Column": 12,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -403,14 +606,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 76,
-                                          "Line": 4,
+                                          "Index": 119,
+                                          "Line": 7,
                                           "Column": 10,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 79,
-                                          "Line": 4,
+                                          "Index": 122,
+                                          "Line": 7,
                                           "Column": 13,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -433,14 +636,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 80,
-                                          "Line": 4,
+                                          "Index": 123,
+                                          "Line": 7,
                                           "Column": 14,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 85,
-                                          "Line": 4,
+                                          "Index": 128,
+                                          "Line": 7,
                                           "Column": 19,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -454,14 +657,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 75,
-                                  "Line": 4,
+                                  "Index": 118,
+                                  "Line": 7,
                                   "Column": 9,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 86,
-                                  "Line": 4,
+                                  "Index": 129,
+                                  "Line": 7,
                                   "Column": 20,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -475,14 +678,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 23,
-                          "Line": 2,
+                          "Index": 66,
+                          "Line": 5,
                           "Column": 5,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 87,
-                          "Line": 4,
+                          "Index": 130,
+                          "Line": 7,
                           "Column": 21,
                           "StreamName": "user-macros.scm"
                         }
@@ -496,14 +699,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 0,
-                  "Line": 1,
+                  "Index": 43,
+                  "Line": 4,
                   "Column": 1,
                   "StreamName": "user-macros.scm"
                 },
                 {
-                  "Index": 88,
-                  "Line": 4,
+                  "Index": 131,
+                  "Line": 7,
                   "Column": 22,
                   "StreamName": "user-macros.scm"
                 }
@@ -526,14 +729,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 90,
-                          "Line": 5,
+                          "Index": 133,
+                          "Line": 8,
                           "Column": 2,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 97,
-                          "Line": 5,
+                          "Index": 140,
+                          "Line": 8,
                           "Column": 9,
                           "StreamName": "user-macros.scm"
                         }
@@ -556,14 +759,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 99,
-                                  "Line": 5,
+                                  "Index": 142,
+                                  "Line": 8,
                                   "Column": 11,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 103,
-                                  "Line": 5,
+                                  "Index": 146,
+                                  "Line": 8,
                                   "Column": 15,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -586,14 +789,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 109,
-                                          "Line": 6,
+                                          "Index": 152,
+                                          "Line": 9,
                                           "Column": 6,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 112,
-                                          "Line": 6,
+                                          "Index": 155,
+                                          "Line": 9,
                                           "Column": 9,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -616,14 +819,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 113,
-                                          "Line": 6,
+                                          "Index": 156,
+                                          "Line": 9,
                                           "Column": 10,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 116,
-                                          "Line": 6,
+                                          "Index": 159,
+                                          "Line": 9,
                                           "Column": 13,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -637,14 +840,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 108,
-                                  "Line": 6,
+                                  "Index": 151,
+                                  "Line": 9,
                                   "Column": 5,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 117,
-                                  "Line": 6,
+                                  "Index": 160,
+                                  "Line": 9,
                                   "Column": 14,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -667,14 +870,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 123,
-                                          "Line": 7,
+                                          "Index": 166,
+                                          "Line": 10,
                                           "Column": 6,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 126,
-                                          "Line": 7,
+                                          "Index": 169,
+                                          "Line": 10,
                                           "Column": 9,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -688,14 +891,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 122,
-                                  "Line": 7,
+                                  "Index": 165,
+                                  "Line": 10,
                                   "Column": 5,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 127,
-                                  "Line": 7,
+                                  "Index": 170,
+                                  "Line": 10,
                                   "Column": 10,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -709,14 +912,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 98,
-                          "Line": 5,
+                          "Index": 141,
+                          "Line": 8,
                           "Column": 10,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 128,
-                          "Line": 7,
+                          "Index": 171,
+                          "Line": 10,
                           "Column": 11,
                           "StreamName": "user-macros.scm"
                         }
@@ -730,14 +933,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 89,
-                  "Line": 5,
+                  "Index": 132,
+                  "Line": 8,
                   "Column": 1,
                   "StreamName": "user-macros.scm"
                 },
                 {
-                  "Index": 129,
-                  "Line": 7,
+                  "Index": 172,
+                  "Line": 10,
                   "Column": 12,
                   "StreamName": "user-macros.scm"
                 }
@@ -760,14 +963,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 131,
-                          "Line": 8,
+                          "Index": 174,
+                          "Line": 11,
                           "Column": 2,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 138,
-                          "Line": 8,
+                          "Index": 181,
+                          "Line": 11,
                           "Column": 9,
                           "StreamName": "user-macros.scm"
                         }
@@ -781,14 +984,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 130,
-                  "Line": 8,
+                  "Index": 173,
+                  "Line": 11,
                   "Column": 1,
                   "StreamName": "user-macros.scm"
                 },
                 {
-                  "Index": 139,
-                  "Line": 8,
+                  "Index": 182,
+                  "Line": 11,
                   "Column": 10,
                   "StreamName": "user-macros.scm"
                 }
@@ -811,14 +1014,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 142,
-                          "Line": 10,
+                          "Index": 185,
+                          "Line": 13,
                           "Column": 2,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 145,
-                          "Line": 10,
+                          "Index": 188,
+                          "Line": 13,
                           "Column": 5,
                           "StreamName": "user-macros.scm"
                         }
@@ -836,14 +1039,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 146,
-                          "Line": 10,
+                          "Index": 189,
+                          "Line": 13,
                           "Column": 6,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 148,
-                          "Line": 10,
+                          "Index": 191,
+                          "Line": 13,
                           "Column": 8,
                           "StreamName": "user-macros.scm"
                         }
@@ -866,14 +1069,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 154,
-                                  "Line": 11,
+                                  "Index": 197,
+                                  "Line": 14,
                                   "Column": 6,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 167,
-                                  "Line": 11,
+                                  "Index": 210,
+                                  "Line": 14,
                                   "Column": 19,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -891,14 +1094,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 168,
-                                  "Line": 11,
+                                  "Index": 211,
+                                  "Line": 14,
                                   "Column": 20,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 171,
-                                  "Line": 11,
+                                  "Index": 214,
+                                  "Line": 14,
                                   "Column": 23,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -921,14 +1124,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 181,
-                                          "Line": 12,
+                                          "Index": 224,
+                                          "Line": 15,
                                           "Column": 10,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 193,
-                                          "Line": 12,
+                                          "Index": 236,
+                                          "Line": 15,
                                           "Column": 22,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -951,14 +1154,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 195,
-                                                  "Line": 12,
+                                                  "Index": 238,
+                                                  "Line": 15,
                                                   "Column": 24,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 198,
-                                                  "Line": 12,
+                                                  "Index": 241,
+                                                  "Line": 15,
                                                   "Column": 27,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -972,14 +1175,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 194,
-                                          "Line": 12,
+                                          "Index": 237,
+                                          "Line": 15,
                                           "Column": 23,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 199,
-                                          "Line": 12,
+                                          "Index": 242,
+                                          "Line": 15,
                                           "Column": 28,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -1007,14 +1210,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 214,
-                                                          "Line": 13,
+                                                          "Index": 257,
+                                                          "Line": 16,
                                                           "Column": 15,
                                                           "StreamName": "user-macros.scm"
                                                         },
                                                         {
-                                                          "Index": 215,
-                                                          "Line": 13,
+                                                          "Index": 258,
+                                                          "Line": 16,
                                                           "Column": 16,
                                                           "StreamName": "user-macros.scm"
                                                         }
@@ -1032,14 +1235,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 216,
-                                                          "Line": 13,
+                                                          "Index": 259,
+                                                          "Line": 16,
                                                           "Column": 17,
                                                           "StreamName": "user-macros.scm"
                                                         },
                                                         {
-                                                          "Index": 219,
-                                                          "Line": 13,
+                                                          "Index": 262,
+                                                          "Line": 16,
                                                           "Column": 20,
                                                           "StreamName": "user-macros.scm"
                                                         }
@@ -1053,14 +1256,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 213,
-                                                  "Line": 13,
+                                                  "Index": 256,
+                                                  "Line": 16,
                                                   "Column": 14,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 220,
-                                                  "Line": 13,
+                                                  "Index": 263,
+                                                  "Line": 16,
                                                   "Column": 21,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1083,14 +1286,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 221,
-                                                  "Line": 13,
+                                                  "Index": 264,
+                                                  "Line": 16,
                                                   "Column": 22,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 229,
-                                                  "Line": 13,
+                                                  "Index": 272,
+                                                  "Line": 16,
                                                   "Column": 30,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1104,14 +1307,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 212,
-                                          "Line": 13,
+                                          "Index": 255,
+                                          "Line": 16,
                                           "Column": 13,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 230,
-                                          "Line": 13,
+                                          "Index": 273,
+                                          "Line": 16,
                                           "Column": 31,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -1139,14 +1342,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 245,
-                                                          "Line": 14,
+                                                          "Index": 288,
+                                                          "Line": 17,
                                                           "Column": 15,
                                                           "StreamName": "user-macros.scm"
                                                         },
                                                         {
-                                                          "Index": 246,
-                                                          "Line": 14,
+                                                          "Index": 289,
+                                                          "Line": 17,
                                                           "Column": 16,
                                                           "StreamName": "user-macros.scm"
                                                         }
@@ -1164,14 +1367,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 247,
-                                                          "Line": 14,
+                                                          "Index": 290,
+                                                          "Line": 17,
                                                           "Column": 17,
                                                           "StreamName": "user-macros.scm"
                                                         },
                                                         {
-                                                          "Index": 250,
-                                                          "Line": 14,
+                                                          "Index": 293,
+                                                          "Line": 17,
                                                           "Column": 20,
                                                           "StreamName": "user-macros.scm"
                                                         }
@@ -1185,14 +1388,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 244,
-                                                  "Line": 14,
+                                                  "Index": 287,
+                                                  "Line": 17,
                                                   "Column": 14,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 251,
-                                                  "Line": 14,
+                                                  "Index": 294,
+                                                  "Line": 17,
                                                   "Column": 21,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1215,14 +1418,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 252,
-                                                  "Line": 14,
+                                                  "Index": 295,
+                                                  "Line": 17,
                                                   "Column": 22,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 260,
-                                                  "Line": 14,
+                                                  "Index": 303,
+                                                  "Line": 17,
                                                   "Column": 30,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1236,14 +1439,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 243,
-                                          "Line": 14,
+                                          "Index": 286,
+                                          "Line": 17,
                                           "Column": 13,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 261,
-                                          "Line": 14,
+                                          "Index": 304,
+                                          "Line": 17,
                                           "Column": 31,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -1257,14 +1460,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 180,
-                                  "Line": 12,
+                                  "Index": 223,
+                                  "Line": 15,
                                   "Column": 9,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 262,
-                                  "Line": 14,
+                                  "Index": 305,
+                                  "Line": 17,
                                   "Column": 32,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -1278,14 +1481,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 153,
-                          "Line": 11,
+                          "Index": 196,
+                          "Line": 14,
                           "Column": 5,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 263,
-                          "Line": 14,
+                          "Index": 306,
+                          "Line": 17,
                           "Column": 33,
                           "StreamName": "user-macros.scm"
                         }
@@ -1308,14 +1511,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 269,
-                                  "Line": 15,
+                                  "Index": 312,
+                                  "Line": 18,
                                   "Column": 6,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 276,
-                                  "Line": 15,
+                                  "Index": 319,
+                                  "Line": 18,
                                   "Column": 13,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -1338,14 +1541,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 278,
-                                          "Line": 15,
+                                          "Index": 321,
+                                          "Line": 18,
                                           "Column": 15,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 282,
-                                          "Line": 15,
+                                          "Index": 325,
+                                          "Line": 18,
                                           "Column": 19,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -1368,14 +1571,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 284,
-                                                  "Line": 15,
+                                                  "Index": 327,
+                                                  "Line": 18,
                                                   "Column": 21,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 287,
-                                                  "Line": 15,
+                                                  "Index": 330,
+                                                  "Line": 18,
                                                   "Column": 24,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1393,14 +1596,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 288,
-                                                  "Line": 15,
+                                                  "Index": 331,
+                                                  "Line": 18,
                                                   "Column": 25,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 291,
-                                                  "Line": 15,
+                                                  "Index": 334,
+                                                  "Line": 18,
                                                   "Column": 28,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1414,14 +1617,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 283,
-                                          "Line": 15,
+                                          "Index": 326,
+                                          "Line": 18,
                                           "Column": 20,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 292,
-                                          "Line": 15,
+                                          "Index": 335,
+                                          "Line": 18,
                                           "Column": 29,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -1444,14 +1647,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 294,
-                                                  "Line": 15,
+                                                  "Index": 337,
+                                                  "Line": 18,
                                                   "Column": 31,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 297,
-                                                  "Line": 15,
+                                                  "Index": 340,
+                                                  "Line": 18,
                                                   "Column": 34,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1469,14 +1672,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 298,
-                                                  "Line": 15,
+                                                  "Index": 341,
+                                                  "Line": 18,
                                                   "Column": 35,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 299,
-                                                  "Line": 15,
+                                                  "Index": 342,
+                                                  "Line": 18,
                                                   "Column": 36,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1490,14 +1693,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 293,
-                                          "Line": 15,
+                                          "Index": 336,
+                                          "Line": 18,
                                           "Column": 30,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 300,
-                                          "Line": 15,
+                                          "Index": 343,
+                                          "Line": 18,
                                           "Column": 37,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -1511,14 +1714,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 277,
-                                  "Line": 15,
+                                  "Index": 320,
+                                  "Line": 18,
                                   "Column": 14,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 301,
-                                  "Line": 15,
+                                  "Index": 344,
+                                  "Line": 18,
                                   "Column": 38,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -1532,14 +1735,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 268,
-                          "Line": 15,
+                          "Index": 311,
+                          "Line": 18,
                           "Column": 5,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 302,
-                          "Line": 15,
+                          "Index": 345,
+                          "Line": 18,
                           "Column": 39,
                           "StreamName": "user-macros.scm"
                         }
@@ -1562,14 +1765,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 308,
-                                  "Line": 16,
+                                  "Index": 351,
+                                  "Line": 19,
                                   "Column": 6,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 315,
-                                  "Line": 16,
+                                  "Index": 358,
+                                  "Line": 19,
                                   "Column": 13,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -1583,14 +1786,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 307,
-                          "Line": 16,
+                          "Index": 350,
+                          "Line": 19,
                           "Column": 5,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 316,
-                          "Line": 16,
+                          "Index": 359,
+                          "Line": 19,
                           "Column": 14,
                           "StreamName": "user-macros.scm"
                         }
@@ -1604,14 +1807,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 141,
-                  "Line": 10,
+                  "Index": 184,
+                  "Line": 13,
                   "Column": 1,
                   "StreamName": "user-macros.scm"
                 },
                 {
-                  "Index": 317,
-                  "Line": 16,
+                  "Index": 360,
+                  "Line": 19,
                   "Column": 15,
                   "StreamName": "user-macros.scm"
                 }
@@ -1634,14 +1837,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 320,
-                          "Line": 18,
+                          "Index": 363,
+                          "Line": 21,
                           "Column": 2,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 327,
-                          "Line": 18,
+                          "Index": 370,
+                          "Line": 21,
                           "Column": 9,
                           "StreamName": "user-macros.scm"
                         }
@@ -1664,14 +1867,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 333,
-                                  "Line": 19,
+                                  "Index": 376,
+                                  "Line": 22,
                                   "Column": 6,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 343,
-                                  "Line": 19,
+                                  "Index": 386,
+                                  "Line": 22,
                                   "Column": 16,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -1699,14 +1902,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 354,
-                                                  "Line": 20,
+                                                  "Index": 397,
+                                                  "Line": 23,
                                                   "Column": 11,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 357,
-                                                  "Line": 20,
+                                                  "Index": 400,
+                                                  "Line": 23,
                                                   "Column": 14,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1729,14 +1932,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 359,
-                                                          "Line": 20,
+                                                          "Index": 402,
+                                                          "Line": 23,
                                                           "Column": 16,
                                                           "StreamName": "user-macros.scm"
                                                         },
                                                         {
-                                                          "Index": 371,
-                                                          "Line": 20,
+                                                          "Index": 414,
+                                                          "Line": 23,
                                                           "Column": 28,
                                                           "StreamName": "user-macros.scm"
                                                         }
@@ -1754,14 +1957,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 372,
-                                                          "Line": 20,
+                                                          "Index": 415,
+                                                          "Line": 23,
                                                           "Column": 29,
                                                           "StreamName": "user-macros.scm"
                                                         },
                                                         {
-                                                          "Index": 374,
-                                                          "Line": 20,
+                                                          "Index": 417,
+                                                          "Line": 23,
                                                           "Column": 31,
                                                           "StreamName": "user-macros.scm"
                                                         }
@@ -1789,14 +1992,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 389,
-                                                                          "Line": 21,
+                                                                          "Index": 432,
+                                                                          "Line": 24,
                                                                           "Column": 15,
                                                                           "StreamName": "user-macros.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 392,
-                                                                          "Line": 21,
+                                                                          "Index": 435,
+                                                                          "Line": 24,
                                                                           "Column": 18,
                                                                           "StreamName": "user-macros.scm"
                                                                         }
@@ -1814,14 +2017,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 393,
-                                                                          "Line": 21,
+                                                                          "Index": 436,
+                                                                          "Line": 24,
                                                                           "Column": 19,
                                                                           "StreamName": "user-macros.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 394,
-                                                                          "Line": 21,
+                                                                          "Index": 437,
+                                                                          "Line": 24,
                                                                           "Column": 20,
                                                                           "StreamName": "user-macros.scm"
                                                                         }
@@ -1835,14 +2038,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 388,
-                                                                  "Line": 21,
+                                                                  "Index": 431,
+                                                                  "Line": 24,
                                                                   "Column": 14,
                                                                   "StreamName": "user-macros.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 395,
-                                                                  "Line": 21,
+                                                                  "Index": 438,
+                                                                  "Line": 24,
                                                                   "Column": 21,
                                                                   "StreamName": "user-macros.scm"
                                                                 }
@@ -1869,14 +2072,14 @@
                                                                             "Case": "Span",
                                                                             "Fields": [
                                                                               {
-                                                                                "Index": 398,
-                                                                                "Line": 21,
+                                                                                "Index": 441,
+                                                                                "Line": 24,
                                                                                 "Column": 24,
                                                                                 "StreamName": "user-macros.scm"
                                                                               },
                                                                               {
-                                                                                "Index": 403,
-                                                                                "Line": 21,
+                                                                                "Index": 446,
+                                                                                "Line": 24,
                                                                                 "Column": 29,
                                                                                 "StreamName": "user-macros.scm"
                                                                               }
@@ -1894,14 +2097,14 @@
                                                                             "Case": "Span",
                                                                             "Fields": [
                                                                               {
-                                                                                "Index": 404,
-                                                                                "Line": 21,
+                                                                                "Index": 447,
+                                                                                "Line": 24,
                                                                                 "Column": 30,
                                                                                 "StreamName": "user-macros.scm"
                                                                               },
                                                                               {
-                                                                                "Index": 407,
-                                                                                "Line": 21,
+                                                                                "Index": 450,
+                                                                                "Line": 24,
                                                                                 "Column": 33,
                                                                                 "StreamName": "user-macros.scm"
                                                                               }
@@ -1915,14 +2118,14 @@
                                                                     "Case": "Span",
                                                                     "Fields": [
                                                                       {
-                                                                        "Index": 397,
-                                                                        "Line": 21,
+                                                                        "Index": 440,
+                                                                        "Line": 24,
                                                                         "Column": 23,
                                                                         "StreamName": "user-macros.scm"
                                                                       },
                                                                       {
-                                                                        "Index": 408,
-                                                                        "Line": 21,
+                                                                        "Index": 451,
+                                                                        "Line": 24,
                                                                         "Column": 34,
                                                                         "StreamName": "user-macros.scm"
                                                                       }
@@ -1935,14 +2138,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 396,
-                                                                  "Line": 21,
+                                                                  "Index": 439,
+                                                                  "Line": 24,
                                                                   "Column": 22,
                                                                   "StreamName": "user-macros.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 408,
-                                                                  "Line": 21,
+                                                                  "Index": 451,
+                                                                  "Line": 24,
                                                                   "Column": 34,
                                                                   "StreamName": "user-macros.scm"
                                                                 }
@@ -1956,14 +2159,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 387,
-                                                          "Line": 21,
+                                                          "Index": 430,
+                                                          "Line": 24,
                                                           "Column": 13,
                                                           "StreamName": "user-macros.scm"
                                                         },
                                                         {
-                                                          "Index": 409,
-                                                          "Line": 21,
+                                                          "Index": 452,
+                                                          "Line": 24,
                                                           "Column": 35,
                                                           "StreamName": "user-macros.scm"
                                                         }
@@ -1977,14 +2180,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 358,
-                                                  "Line": 20,
+                                                  "Index": 401,
+                                                  "Line": 23,
                                                   "Column": 15,
                                                   "StreamName": "user-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 410,
-                                                  "Line": 21,
+                                                  "Index": 453,
+                                                  "Line": 24,
                                                   "Column": 36,
                                                   "StreamName": "user-macros.scm"
                                                 }
@@ -1998,14 +2201,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 353,
-                                          "Line": 20,
+                                          "Index": 396,
+                                          "Line": 23,
                                           "Column": 10,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 411,
-                                          "Line": 21,
+                                          "Index": 454,
+                                          "Line": 24,
                                           "Column": 37,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -2019,14 +2222,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 352,
-                                  "Line": 20,
+                                  "Index": 395,
+                                  "Line": 23,
                                   "Column": 9,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 412,
-                                  "Line": 21,
+                                  "Index": 455,
+                                  "Line": 24,
                                   "Column": 38,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -2049,14 +2252,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 422,
-                                          "Line": 22,
+                                          "Index": 465,
+                                          "Line": 25,
                                           "Column": 10,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 425,
-                                          "Line": 22,
+                                          "Index": 468,
+                                          "Line": 25,
                                           "Column": 13,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -2079,14 +2282,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 426,
-                                          "Line": 22,
+                                          "Index": 469,
+                                          "Line": 25,
                                           "Column": 14,
                                           "StreamName": "user-macros.scm"
                                         },
                                         {
-                                          "Index": 431,
-                                          "Line": 22,
+                                          "Index": 474,
+                                          "Line": 25,
                                           "Column": 19,
                                           "StreamName": "user-macros.scm"
                                         }
@@ -2100,14 +2303,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 421,
-                                  "Line": 22,
+                                  "Index": 464,
+                                  "Line": 25,
                                   "Column": 9,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 432,
-                                  "Line": 22,
+                                  "Index": 475,
+                                  "Line": 25,
                                   "Column": 20,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -2121,14 +2324,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 332,
-                          "Line": 19,
+                          "Index": 375,
+                          "Line": 22,
                           "Column": 5,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 433,
-                          "Line": 22,
+                          "Index": 476,
+                          "Line": 25,
                           "Column": 21,
                           "StreamName": "user-macros.scm"
                         }
@@ -2142,14 +2345,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 319,
-                  "Line": 18,
+                  "Index": 362,
+                  "Line": 21,
                   "Column": 1,
                   "StreamName": "user-macros.scm"
                 },
                 {
-                  "Index": 434,
-                  "Line": 22,
+                  "Index": 477,
+                  "Line": 25,
                   "Column": 22,
                   "StreamName": "user-macros.scm"
                 }
@@ -2172,14 +2375,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 435,
-                          "Line": 22,
+                          "Index": 478,
+                          "Line": 25,
                           "Column": 23,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 442,
-                          "Line": 22,
+                          "Index": 485,
+                          "Line": 25,
                           "Column": 30,
                           "StreamName": "user-macros.scm"
                         }
@@ -2193,14 +2396,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 434,
-                  "Line": 22,
+                  "Index": 477,
+                  "Line": 25,
                   "Column": 22,
                   "StreamName": "user-macros.scm"
                 },
                 {
-                  "Index": 443,
-                  "Line": 22,
+                  "Index": 486,
+                  "Line": 25,
                   "Column": 31,
                   "StreamName": "user-macros.scm"
                 }
@@ -2223,14 +2426,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 483,
-                          "Line": 25,
+                          "Index": 526,
+                          "Line": 28,
                           "Column": 2,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 490,
-                          "Line": 25,
+                          "Index": 533,
+                          "Line": 28,
                           "Column": 9,
                           "StreamName": "user-macros.scm"
                         }
@@ -2253,14 +2456,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 492,
-                                  "Line": 25,
+                                  "Index": 535,
+                                  "Line": 28,
                                   "Column": 11,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 495,
-                                  "Line": 25,
+                                  "Index": 538,
+                                  "Line": 28,
                                   "Column": 14,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -2283,14 +2486,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 496,
-                                  "Line": 25,
+                                  "Index": 539,
+                                  "Line": 28,
                                   "Column": 15,
                                   "StreamName": "user-macros.scm"
                                 },
                                 {
-                                  "Index": 499,
-                                  "Line": 25,
+                                  "Index": 542,
+                                  "Line": 28,
                                   "Column": 18,
                                   "StreamName": "user-macros.scm"
                                 }
@@ -2304,14 +2507,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 491,
-                          "Line": 25,
+                          "Index": 534,
+                          "Line": 28,
                           "Column": 10,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 500,
-                          "Line": 25,
+                          "Index": 543,
+                          "Line": 28,
                           "Column": 19,
                           "StreamName": "user-macros.scm"
                         }
@@ -2325,14 +2528,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 482,
-                  "Line": 25,
+                  "Index": 525,
+                  "Line": 28,
                   "Column": 1,
                   "StreamName": "user-macros.scm"
                 },
                 {
-                  "Index": 501,
-                  "Line": 25,
+                  "Index": 544,
+                  "Line": 28,
                   "Column": 20,
                   "StreamName": "user-macros.scm"
                 }
@@ -2355,14 +2558,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 502,
-                          "Line": 25,
+                          "Index": 545,
+                          "Line": 28,
                           "Column": 21,
                           "StreamName": "user-macros.scm"
                         },
                         {
-                          "Index": 509,
-                          "Line": 25,
+                          "Index": 552,
+                          "Line": 28,
                           "Column": 28,
                           "StreamName": "user-macros.scm"
                         }
@@ -2376,14 +2579,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 501,
-                  "Line": 25,
+                  "Index": 544,
+                  "Line": 28,
                   "Column": 20,
                   "StreamName": "user-macros.scm"
                 },
                 {
-                  "Index": 510,
-                  "Line": 25,
+                  "Index": 553,
+                  "Line": 28,
                   "Column": 29,
                   "StreamName": "user-macros.scm"
                 }
@@ -2403,8 +2606,8 @@
           "StreamName": "user-macros.scm"
         },
         {
-          "Index": 512,
-          "Line": 27,
+          "Index": 555,
+          "Line": 30,
           "Column": 1,
           "StreamName": "user-macros.scm"
         }

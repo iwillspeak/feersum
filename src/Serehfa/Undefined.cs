@@ -10,8 +10,13 @@ namespace Serehfa
     public class Undefined
     {
         private static Lazy<Undefined> s_Instance = new Lazy<Undefined>();
+
+        /// <summary>Shared instance of the undefined type. References to this
+        /// are emitted by the compiler when an undefined value is required.
+        /// </summary>
         public static Undefined Instance => s_Instance.Value;
 
+        /// <inheritdoc />
         public override string ToString() => "; Unspecified value";
 
         /// <summary>
@@ -19,6 +24,7 @@ namespace Serehfa
         /// </summary>
         public override bool Equals(object obj) => false;
 
+        /// <inheritdoc />
         public override int GetHashCode() => base.GetHashCode();
     }
 }

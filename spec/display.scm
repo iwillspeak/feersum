@@ -1,3 +1,5 @@
+(import (scheme base)
+    (scheme write))
 (display "")(newline) ; => 
 (display ())(newline) ; =>
 (display 123)(newline) ; => 123

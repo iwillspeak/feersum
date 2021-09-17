@@ -6,10 +6,10 @@ open Compile
 open Syntax
 open System.IO
 open Snapper
-open Snapper.Attributes
 open System.Diagnostics
 open SyntaxUtils
 
+// This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
     { Output: string
     ; Error: string
@@ -33,6 +33,7 @@ let private runExample exePath =
     p.StartInfo <- ProcessStartInfo("dotnet")
     p.StartInfo.ArgumentList.Add(exePath)
     p.StartInfo.UseShellExecute <- false
+    // TODO: support spec tests with `.input` files.
     // p.StartInfo.RedirectStandardInput <- true
     p.StartInfo.RedirectStandardOutput <- true
     p.StartInfo.RedirectStandardError <- true

@@ -4,5 +4,6 @@
         (define testit "broken")
         (let ((replacement "pass"))
             (set! testit replacement))))
-(import (lib capture))
+(import (lib capture)
+    (scheme write))
 (display testit)(newline)

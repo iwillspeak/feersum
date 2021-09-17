@@ -1,3 +1,5 @@
+(import (scheme base)
+    (scheme write))
 (define (foo a)
     (let ((b a)
         (c 100))

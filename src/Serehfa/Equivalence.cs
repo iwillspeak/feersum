@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
+using Serehfa.Attributes;
+    
 namespace Serehfa
 {
-    using System;
-    using System.Collections.Generic;
     using static ArgHelpers;
 
+    [LispLibrary("scheme", "base")]
     public static class Equivalence
     {
         /// <summary>

@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "display"
+                        "import"
                       ]
                     },
                     "Location": {
@@ -26,8 +26,211 @@
                           "StreamName": "symbols.scm"
                         },
                         {
+                          "Index": 7,
+                          "Line": 1,
+                          "Column": 8,
+                          "StreamName": "symbols.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "symbols.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "symbols.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 16,
+                                  "Line": 1,
+                                  "Column": 17,
+                                  "StreamName": "symbols.scm"
+                                },
+                                {
+                                  "Index": 20,
+                                  "Line": 1,
+                                  "Column": 21,
+                                  "StreamName": "symbols.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
                           "Index": 8,
                           "Line": 1,
+                          "Column": 9,
+                          "StreamName": "symbols.scm"
+                        },
+                        {
+                          "Index": 21,
+                          "Line": 1,
+                          "Column": 22,
+                          "StreamName": "symbols.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "symbols.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "symbols.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "symbols.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "symbols.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "symbols.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "symbols.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "symbols.scm"
+                },
+                {
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
+                  "StreamName": "symbols.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 43,
+                          "Line": 3,
+                          "Column": 2,
+                          "StreamName": "symbols.scm"
+                        },
+                        {
+                          "Index": 50,
+                          "Line": 3,
                           "Column": 9,
                           "StreamName": "symbols.scm"
                         }
@@ -50,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 10,
-                                  "Line": 1,
+                                  "Index": 52,
+                                  "Line": 3,
                                   "Column": 11,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 14,
-                                  "Line": 1,
+                                  "Index": 56,
+                                  "Line": 3,
                                   "Column": 15,
                                   "StreamName": "symbols.scm"
                                 }
@@ -80,14 +283,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 20,
-                                          "Line": 2,
+                                          "Index": 62,
+                                          "Line": 4,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 27,
-                                          "Line": 2,
+                                          "Index": 69,
+                                          "Line": 4,
                                           "Column": 13,
                                           "StreamName": "symbols.scm"
                                         }
@@ -109,14 +312,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 29,
-                                                "Line": 2,
+                                                "Index": 71,
+                                                "Line": 4,
                                                 "Column": 15,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 32,
-                                                "Line": 2,
+                                                "Index": 74,
+                                                "Line": 4,
                                                 "Column": 18,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -129,14 +332,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 28,
-                                          "Line": 2,
+                                          "Index": 70,
+                                          "Line": 4,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 32,
-                                          "Line": 2,
+                                          "Index": 74,
+                                          "Line": 4,
                                           "Column": 18,
                                           "StreamName": "symbols.scm"
                                         }
@@ -150,14 +353,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 19,
-                                  "Line": 2,
+                                  "Index": 61,
+                                  "Line": 4,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 33,
-                                  "Line": 2,
+                                  "Index": 75,
+                                  "Line": 4,
                                   "Column": 19,
                                   "StreamName": "symbols.scm"
                                 }
@@ -180,14 +383,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 47,
-                                          "Line": 3,
+                                          "Index": 89,
+                                          "Line": 5,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 54,
-                                          "Line": 3,
+                                          "Index": 96,
+                                          "Line": 5,
                                           "Column": 13,
                                           "StreamName": "symbols.scm"
                                         }
@@ -210,14 +413,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 56,
-                                                  "Line": 3,
+                                                  "Index": 98,
+                                                  "Line": 5,
                                                   "Column": 15,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 59,
-                                                  "Line": 3,
+                                                  "Index": 101,
+                                                  "Line": 5,
                                                   "Column": 18,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -244,14 +447,14 @@
                                                             "Case": "Span",
                                                             "Fields": [
                                                               {
-                                                                "Index": 62,
-                                                                "Line": 3,
+                                                                "Index": 104,
+                                                                "Line": 5,
                                                                 "Column": 21,
                                                                 "StreamName": "symbols.scm"
                                                               },
                                                               {
-                                                                "Index": 63,
-                                                                "Line": 3,
+                                                                "Index": 105,
+                                                                "Line": 5,
                                                                 "Column": 22,
                                                                 "StreamName": "symbols.scm"
                                                               }
@@ -269,14 +472,14 @@
                                                             "Case": "Span",
                                                             "Fields": [
                                                               {
-                                                                "Index": 64,
-                                                                "Line": 3,
+                                                                "Index": 106,
+                                                                "Line": 5,
                                                                 "Column": 23,
                                                                 "StreamName": "symbols.scm"
                                                               },
                                                               {
-                                                                "Index": 65,
-                                                                "Line": 3,
+                                                                "Index": 107,
+                                                                "Line": 5,
                                                                 "Column": 24,
                                                                 "StreamName": "symbols.scm"
                                                               }
@@ -290,14 +493,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 61,
-                                                        "Line": 3,
+                                                        "Index": 103,
+                                                        "Line": 5,
                                                         "Column": 20,
                                                         "StreamName": "symbols.scm"
                                                       },
                                                       {
-                                                        "Index": 66,
-                                                        "Line": 3,
+                                                        "Index": 108,
+                                                        "Line": 5,
                                                         "Column": 25,
                                                         "StreamName": "symbols.scm"
                                                       }
@@ -310,14 +513,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 60,
-                                                  "Line": 3,
+                                                  "Index": 102,
+                                                  "Line": 5,
                                                   "Column": 19,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 66,
-                                                  "Line": 3,
+                                                  "Index": 108,
+                                                  "Line": 5,
                                                   "Column": 25,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -331,14 +534,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 55,
-                                          "Line": 3,
+                                          "Index": 97,
+                                          "Line": 5,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 67,
-                                          "Line": 3,
+                                          "Index": 109,
+                                          "Line": 5,
                                           "Column": 26,
                                           "StreamName": "symbols.scm"
                                         }
@@ -352,14 +555,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 46,
-                                  "Line": 3,
+                                  "Index": 88,
+                                  "Line": 5,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 68,
-                                  "Line": 3,
+                                  "Index": 110,
+                                  "Line": 5,
                                   "Column": 27,
                                   "StreamName": "symbols.scm"
                                 }
@@ -382,14 +585,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 82,
-                                          "Line": 4,
+                                          "Index": 124,
+                                          "Line": 6,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 89,
-                                          "Line": 4,
+                                          "Index": 131,
+                                          "Line": 6,
                                           "Column": 13,
                                           "StreamName": "symbols.scm"
                                         }
@@ -412,14 +615,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 90,
-                                          "Line": 4,
+                                          "Index": 132,
+                                          "Line": 6,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 95,
-                                          "Line": 4,
+                                          "Index": 137,
+                                          "Line": 6,
                                           "Column": 19,
                                           "StreamName": "symbols.scm"
                                         }
@@ -433,14 +636,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 81,
-                                  "Line": 4,
+                                  "Index": 123,
+                                  "Line": 6,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 96,
-                                  "Line": 4,
+                                  "Index": 138,
+                                  "Line": 6,
                                   "Column": 20,
                                   "StreamName": "symbols.scm"
                                 }
@@ -463,14 +666,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 110,
-                                          "Line": 5,
+                                          "Index": 152,
+                                          "Line": 7,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 117,
-                                          "Line": 5,
+                                          "Index": 159,
+                                          "Line": 7,
                                           "Column": 13,
                                           "StreamName": "symbols.scm"
                                         }
@@ -492,14 +695,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 119,
-                                                "Line": 5,
+                                                "Index": 161,
+                                                "Line": 7,
                                                 "Column": 15,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 122,
-                                                "Line": 5,
+                                                "Index": 164,
+                                                "Line": 7,
                                                 "Column": 18,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -512,14 +715,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 118,
-                                          "Line": 5,
+                                          "Index": 160,
+                                          "Line": 7,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 122,
-                                          "Line": 5,
+                                          "Index": 164,
+                                          "Line": 7,
                                           "Column": 18,
                                           "StreamName": "symbols.scm"
                                         }
@@ -533,14 +736,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 109,
-                                  "Line": 5,
+                                  "Index": 151,
+                                  "Line": 7,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 123,
-                                  "Line": 5,
+                                  "Index": 165,
+                                  "Line": 7,
                                   "Column": 19,
                                   "StreamName": "symbols.scm"
                                 }
@@ -563,14 +766,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 137,
-                                          "Line": 6,
+                                          "Index": 179,
+                                          "Line": 8,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 144,
-                                          "Line": 6,
+                                          "Index": 186,
+                                          "Line": 8,
                                           "Column": 13,
                                           "StreamName": "symbols.scm"
                                         }
@@ -592,14 +795,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 146,
-                                                "Line": 6,
+                                                "Index": 188,
+                                                "Line": 8,
                                                 "Column": 15,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 148,
-                                                "Line": 6,
+                                                "Index": 190,
+                                                "Line": 8,
                                                 "Column": 17,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -612,14 +815,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 145,
-                                          "Line": 6,
+                                          "Index": 187,
+                                          "Line": 8,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 148,
-                                          "Line": 6,
+                                          "Index": 190,
+                                          "Line": 8,
                                           "Column": 17,
                                           "StreamName": "symbols.scm"
                                         }
@@ -633,14 +836,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 136,
-                                  "Line": 6,
+                                  "Index": 178,
+                                  "Line": 8,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 149,
-                                  "Line": 6,
+                                  "Index": 191,
+                                  "Line": 8,
                                   "Column": 18,
                                   "StreamName": "symbols.scm"
                                 }
@@ -663,14 +866,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 163,
-                                          "Line": 7,
+                                          "Index": 205,
+                                          "Line": 9,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 170,
-                                          "Line": 7,
+                                          "Index": 212,
+                                          "Line": 9,
                                           "Column": 13,
                                           "StreamName": "symbols.scm"
                                         }
@@ -693,14 +896,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 171,
-                                          "Line": 7,
+                                          "Index": 213,
+                                          "Line": 9,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 173,
-                                          "Line": 7,
+                                          "Index": 215,
+                                          "Line": 9,
                                           "Column": 16,
                                           "StreamName": "symbols.scm"
                                         }
@@ -714,14 +917,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 162,
-                                  "Line": 7,
+                                  "Index": 204,
+                                  "Line": 9,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 174,
-                                  "Line": 7,
+                                  "Index": 216,
+                                  "Line": 9,
                                   "Column": 17,
                                   "StreamName": "symbols.scm"
                                 }
@@ -735,14 +938,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 9,
-                          "Line": 1,
+                          "Index": 51,
+                          "Line": 3,
                           "Column": 10,
                           "StreamName": "symbols.scm"
                         },
                         {
-                          "Index": 188,
-                          "Line": 8,
+                          "Index": 230,
+                          "Line": 10,
                           "Column": 6,
                           "StreamName": "symbols.scm"
                         }
@@ -756,14 +959,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 0,
-                  "Line": 1,
+                  "Index": 42,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "symbols.scm"
                 },
                 {
-                  "Index": 189,
-                  "Line": 8,
+                  "Index": 231,
+                  "Line": 10,
                   "Column": 7,
                   "StreamName": "symbols.scm"
                 }
@@ -786,14 +989,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 190,
-                          "Line": 8,
+                          "Index": 232,
+                          "Line": 10,
                           "Column": 8,
                           "StreamName": "symbols.scm"
                         },
                         {
-                          "Index": 197,
-                          "Line": 8,
+                          "Index": 239,
+                          "Line": 10,
                           "Column": 15,
                           "StreamName": "symbols.scm"
                         }
@@ -807,14 +1010,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 189,
-                  "Line": 8,
+                  "Index": 231,
+                  "Line": 10,
                   "Column": 7,
                   "StreamName": "symbols.scm"
                 },
                 {
-                  "Index": 198,
-                  "Line": 8,
+                  "Index": 240,
+                  "Line": 10,
                   "Column": 16,
                   "StreamName": "symbols.scm"
                 }
@@ -837,14 +1040,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 200,
-                          "Line": 9,
+                          "Index": 242,
+                          "Line": 11,
                           "Column": 2,
                           "StreamName": "symbols.scm"
                         },
                         {
-                          "Index": 207,
-                          "Line": 9,
+                          "Index": 249,
+                          "Line": 11,
                           "Column": 9,
                           "StreamName": "symbols.scm"
                         }
@@ -867,14 +1070,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 209,
-                                  "Line": 9,
+                                  "Index": 251,
+                                  "Line": 11,
                                   "Column": 11,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 213,
-                                  "Line": 9,
+                                  "Index": 255,
+                                  "Line": 11,
                                   "Column": 15,
                                   "StreamName": "symbols.scm"
                                 }
@@ -897,14 +1100,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 219,
-                                          "Line": 10,
+                                          "Index": 261,
+                                          "Line": 12,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 227,
-                                          "Line": 10,
+                                          "Index": 269,
+                                          "Line": 12,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         }
@@ -926,14 +1129,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 229,
-                                                "Line": 10,
+                                                "Index": 271,
+                                                "Line": 12,
                                                 "Column": 16,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 234,
-                                                "Line": 10,
+                                                "Index": 276,
+                                                "Line": 12,
                                                 "Column": 21,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -946,14 +1149,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 228,
-                                          "Line": 10,
+                                          "Index": 270,
+                                          "Line": 12,
                                           "Column": 15,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 235,
-                                          "Line": 10,
+                                          "Index": 277,
+                                          "Line": 12,
                                           "Column": 22,
                                           "StreamName": "symbols.scm"
                                         }
@@ -975,14 +1178,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 236,
-                                                "Line": 10,
+                                                "Index": 278,
+                                                "Line": 12,
                                                 "Column": 23,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 241,
-                                                "Line": 10,
+                                                "Index": 283,
+                                                "Line": 12,
                                                 "Column": 28,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -995,14 +1198,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 235,
-                                          "Line": 10,
+                                          "Index": 277,
+                                          "Line": 12,
                                           "Column": 22,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 242,
-                                          "Line": 10,
+                                          "Index": 284,
+                                          "Line": 12,
                                           "Column": 29,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1024,14 +1227,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 243,
-                                                "Line": 10,
+                                                "Index": 285,
+                                                "Line": 12,
                                                 "Column": 30,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 248,
-                                                "Line": 10,
+                                                "Index": 290,
+                                                "Line": 12,
                                                 "Column": 35,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -1044,14 +1247,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 242,
-                                          "Line": 10,
+                                          "Index": 284,
+                                          "Line": 12,
                                           "Column": 29,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 248,
-                                          "Line": 10,
+                                          "Index": 290,
+                                          "Line": 12,
                                           "Column": 35,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1065,14 +1268,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 218,
-                                  "Line": 10,
+                                  "Index": 260,
+                                  "Line": 12,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 249,
-                                  "Line": 10,
+                                  "Index": 291,
+                                  "Line": 12,
                                   "Column": 36,
                                   "StreamName": "symbols.scm"
                                 }
@@ -1095,14 +1298,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 255,
-                                          "Line": 11,
+                                          "Index": 297,
+                                          "Line": 13,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 263,
-                                          "Line": 11,
+                                          "Index": 305,
+                                          "Line": 13,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1125,14 +1328,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 264,
-                                          "Line": 11,
+                                          "Index": 306,
+                                          "Line": 13,
                                           "Column": 15,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 270,
-                                          "Line": 11,
+                                          "Index": 312,
+                                          "Line": 13,
                                           "Column": 21,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1154,14 +1357,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 272,
-                                                "Line": 11,
+                                                "Index": 314,
+                                                "Line": 13,
                                                 "Column": 23,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 276,
-                                                "Line": 11,
+                                                "Index": 318,
+                                                "Line": 13,
                                                 "Column": 27,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -1174,14 +1377,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 271,
-                                          "Line": 11,
+                                          "Index": 313,
+                                          "Line": 13,
                                           "Column": 22,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 276,
-                                          "Line": 11,
+                                          "Index": 318,
+                                          "Line": 13,
                                           "Column": 27,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1195,14 +1398,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 254,
-                                  "Line": 11,
+                                  "Index": 296,
+                                  "Line": 13,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 277,
-                                  "Line": 11,
+                                  "Index": 319,
+                                  "Line": 13,
                                   "Column": 28,
                                   "StreamName": "symbols.scm"
                                 }
@@ -1216,14 +1419,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 208,
-                          "Line": 9,
+                          "Index": 250,
+                          "Line": 11,
                           "Column": 10,
                           "StreamName": "symbols.scm"
                         },
                         {
-                          "Index": 283,
-                          "Line": 12,
+                          "Index": 325,
+                          "Line": 14,
                           "Column": 6,
                           "StreamName": "symbols.scm"
                         }
@@ -1237,14 +1440,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 199,
-                  "Line": 9,
+                  "Index": 241,
+                  "Line": 11,
                   "Column": 1,
                   "StreamName": "symbols.scm"
                 },
                 {
-                  "Index": 284,
-                  "Line": 12,
+                  "Index": 326,
+                  "Line": 14,
                   "Column": 7,
                   "StreamName": "symbols.scm"
                 }
@@ -1267,14 +1470,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 285,
-                          "Line": 12,
+                          "Index": 327,
+                          "Line": 14,
                           "Column": 8,
                           "StreamName": "symbols.scm"
                         },
                         {
-                          "Index": 292,
-                          "Line": 12,
+                          "Index": 334,
+                          "Line": 14,
                           "Column": 15,
                           "StreamName": "symbols.scm"
                         }
@@ -1288,14 +1491,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 284,
-                  "Line": 12,
+                  "Index": 326,
+                  "Line": 14,
                   "Column": 7,
                   "StreamName": "symbols.scm"
                 },
                 {
-                  "Index": 293,
-                  "Line": 12,
+                  "Index": 335,
+                  "Line": 14,
                   "Column": 16,
                   "StreamName": "symbols.scm"
                 }
@@ -1318,14 +1521,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 295,
-                          "Line": 13,
+                          "Index": 337,
+                          "Line": 15,
                           "Column": 2,
                           "StreamName": "symbols.scm"
                         },
                         {
-                          "Index": 302,
-                          "Line": 13,
+                          "Index": 344,
+                          "Line": 15,
                           "Column": 9,
                           "StreamName": "symbols.scm"
                         }
@@ -1348,14 +1551,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 304,
-                                  "Line": 13,
+                                  "Index": 346,
+                                  "Line": 15,
                                   "Column": 11,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 308,
-                                  "Line": 13,
+                                  "Index": 350,
+                                  "Line": 15,
                                   "Column": 15,
                                   "StreamName": "symbols.scm"
                                 }
@@ -1378,14 +1581,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 314,
-                                          "Line": 14,
+                                          "Index": 356,
+                                          "Line": 16,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 328,
-                                          "Line": 14,
+                                          "Index": 370,
+                                          "Line": 16,
                                           "Column": 20,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1407,14 +1610,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 330,
-                                                "Line": 14,
+                                                "Index": 372,
+                                                "Line": 16,
                                                 "Column": 22,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 341,
-                                                "Line": 14,
+                                                "Index": 383,
+                                                "Line": 16,
                                                 "Column": 33,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -1427,14 +1630,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 329,
-                                          "Line": 14,
+                                          "Index": 371,
+                                          "Line": 16,
                                           "Column": 21,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 341,
-                                          "Line": 14,
+                                          "Index": 383,
+                                          "Line": 16,
                                           "Column": 33,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1448,14 +1651,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 313,
-                                  "Line": 14,
+                                  "Index": 355,
+                                  "Line": 16,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 342,
-                                  "Line": 14,
+                                  "Index": 384,
+                                  "Line": 16,
                                   "Column": 34,
                                   "StreamName": "symbols.scm"
                                 }
@@ -1478,14 +1681,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 367,
-                                          "Line": 15,
+                                          "Index": 409,
+                                          "Line": 17,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 381,
-                                          "Line": 15,
+                                          "Index": 423,
+                                          "Line": 17,
                                           "Column": 20,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1507,14 +1710,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 383,
-                                                "Line": 15,
+                                                "Index": 425,
+                                                "Line": 17,
                                                 "Column": 22,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 389,
-                                                "Line": 15,
+                                                "Index": 431,
+                                                "Line": 17,
                                                 "Column": 28,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -1527,14 +1730,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 382,
-                                          "Line": 15,
+                                          "Index": 424,
+                                          "Line": 17,
                                           "Column": 21,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 389,
-                                          "Line": 15,
+                                          "Index": 431,
+                                          "Line": 17,
                                           "Column": 28,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1548,14 +1751,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 366,
-                                  "Line": 15,
+                                  "Index": 408,
+                                  "Line": 17,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 390,
-                                  "Line": 15,
+                                  "Index": 432,
+                                  "Line": 17,
                                   "Column": 29,
                                   "StreamName": "symbols.scm"
                                 }
@@ -1578,14 +1781,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 410,
-                                          "Line": 16,
+                                          "Index": 452,
+                                          "Line": 18,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 424,
-                                          "Line": 16,
+                                          "Index": 466,
+                                          "Line": 18,
                                           "Column": 20,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1608,14 +1811,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 426,
-                                                  "Line": 16,
+                                                  "Index": 468,
+                                                  "Line": 18,
                                                   "Column": 22,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 440,
-                                                  "Line": 16,
+                                                  "Index": 482,
+                                                  "Line": 18,
                                                   "Column": 36,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -1638,14 +1841,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 441,
-                                                  "Line": 16,
+                                                  "Index": 483,
+                                                  "Line": 18,
                                                   "Column": 37,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 450,
-                                                  "Line": 16,
+                                                  "Index": 492,
+                                                  "Line": 18,
                                                   "Column": 46,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -1659,14 +1862,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 425,
-                                          "Line": 16,
+                                          "Index": 467,
+                                          "Line": 18,
                                           "Column": 21,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 451,
-                                          "Line": 16,
+                                          "Index": 493,
+                                          "Line": 18,
                                           "Column": 47,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1680,14 +1883,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 409,
-                                  "Line": 16,
+                                  "Index": 451,
+                                  "Line": 18,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 452,
-                                  "Line": 16,
+                                  "Index": 494,
+                                  "Line": 18,
                                   "Column": 48,
                                   "StreamName": "symbols.scm"
                                 }
@@ -1710,14 +1913,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 473,
-                                          "Line": 17,
+                                          "Index": 515,
+                                          "Line": 19,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 487,
-                                          "Line": 17,
+                                          "Index": 529,
+                                          "Line": 19,
                                           "Column": 20,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1740,14 +1943,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 488,
-                                          "Line": 17,
+                                          "Index": 530,
+                                          "Line": 19,
                                           "Column": 21,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 501,
-                                          "Line": 17,
+                                          "Index": 543,
+                                          "Line": 19,
                                           "Column": 34,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1761,14 +1964,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 472,
-                                  "Line": 17,
+                                  "Index": 514,
+                                  "Line": 19,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 502,
-                                  "Line": 17,
+                                  "Index": 544,
+                                  "Line": 19,
                                   "Column": 35,
                                   "StreamName": "symbols.scm"
                                 }
@@ -1791,14 +1994,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 525,
-                                          "Line": 18,
+                                          "Index": 567,
+                                          "Line": 20,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 529,
-                                          "Line": 18,
+                                          "Index": 571,
+                                          "Line": 20,
                                           "Column": 10,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1820,14 +2023,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 531,
-                                                "Line": 18,
+                                                "Index": 573,
+                                                "Line": 20,
                                                 "Column": 12,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 537,
-                                                "Line": 18,
+                                                "Index": 579,
+                                                "Line": 20,
                                                 "Column": 18,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -1840,14 +2043,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 530,
-                                          "Line": 18,
+                                          "Index": 572,
+                                          "Line": 20,
                                           "Column": 11,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 538,
-                                          "Line": 18,
+                                          "Index": 580,
+                                          "Line": 20,
                                           "Column": 19,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1870,14 +2073,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 539,
-                                                  "Line": 18,
+                                                  "Index": 581,
+                                                  "Line": 20,
                                                   "Column": 20,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 553,
-                                                  "Line": 18,
+                                                  "Index": 595,
+                                                  "Line": 20,
                                                   "Column": 34,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -1900,14 +2103,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 554,
-                                                  "Line": 18,
+                                                  "Index": 596,
+                                                  "Line": 20,
                                                   "Column": 35,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 562,
-                                                  "Line": 18,
+                                                  "Index": 604,
+                                                  "Line": 20,
                                                   "Column": 43,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -1921,14 +2124,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 538,
-                                          "Line": 18,
+                                          "Index": 580,
+                                          "Line": 20,
                                           "Column": 19,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 563,
-                                          "Line": 18,
+                                          "Index": 605,
+                                          "Line": 20,
                                           "Column": 44,
                                           "StreamName": "symbols.scm"
                                         }
@@ -1942,14 +2145,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 524,
-                                  "Line": 18,
+                                  "Index": 566,
+                                  "Line": 20,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 564,
-                                  "Line": 18,
+                                  "Index": 606,
+                                  "Line": 20,
                                   "Column": 45,
                                   "StreamName": "symbols.scm"
                                 }
@@ -1972,14 +2175,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 578,
-                                          "Line": 19,
+                                          "Index": 620,
+                                          "Line": 21,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 582,
-                                          "Line": 19,
+                                          "Index": 624,
+                                          "Line": 21,
                                           "Column": 10,
                                           "StreamName": "symbols.scm"
                                         }
@@ -2001,14 +2204,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 584,
-                                                "Line": 19,
+                                                "Index": 626,
+                                                "Line": 21,
                                                 "Column": 12,
                                                 "StreamName": "symbols.scm"
                                               },
                                               {
-                                                "Index": 592,
-                                                "Line": 19,
+                                                "Index": 634,
+                                                "Line": 21,
                                                 "Column": 20,
                                                 "StreamName": "symbols.scm"
                                               }
@@ -2021,14 +2224,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 583,
-                                          "Line": 19,
+                                          "Index": 625,
+                                          "Line": 21,
                                           "Column": 11,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 592,
-                                          "Line": 19,
+                                          "Index": 634,
+                                          "Line": 21,
                                           "Column": 20,
                                           "StreamName": "symbols.scm"
                                         }
@@ -2051,14 +2254,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 593,
-                                                  "Line": 19,
+                                                  "Index": 635,
+                                                  "Line": 21,
                                                   "Column": 21,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 607,
-                                                  "Line": 19,
+                                                  "Index": 649,
+                                                  "Line": 21,
                                                   "Column": 35,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -2081,14 +2284,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 608,
-                                                          "Line": 19,
+                                                          "Index": 650,
+                                                          "Line": 21,
                                                           "Column": 36,
                                                           "StreamName": "symbols.scm"
                                                         },
                                                         {
-                                                          "Index": 622,
-                                                          "Line": 19,
+                                                          "Index": 664,
+                                                          "Line": 21,
                                                           "Column": 50,
                                                           "StreamName": "symbols.scm"
                                                         }
@@ -2110,14 +2313,14 @@
                                                             "Case": "Span",
                                                             "Fields": [
                                                               {
-                                                                "Index": 624,
-                                                                "Line": 19,
+                                                                "Index": 666,
+                                                                "Line": 21,
                                                                 "Column": 52,
                                                                 "StreamName": "symbols.scm"
                                                               },
                                                               {
-                                                                "Index": 632,
-                                                                "Line": 19,
+                                                                "Index": 674,
+                                                                "Line": 21,
                                                                 "Column": 60,
                                                                 "StreamName": "symbols.scm"
                                                               }
@@ -2130,14 +2333,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 623,
-                                                          "Line": 19,
+                                                          "Index": 665,
+                                                          "Line": 21,
                                                           "Column": 51,
                                                           "StreamName": "symbols.scm"
                                                         },
                                                         {
-                                                          "Index": 632,
-                                                          "Line": 19,
+                                                          "Index": 674,
+                                                          "Line": 21,
                                                           "Column": 60,
                                                           "StreamName": "symbols.scm"
                                                         }
@@ -2151,14 +2354,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 607,
-                                                  "Line": 19,
+                                                  "Index": 649,
+                                                  "Line": 21,
                                                   "Column": 35,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 633,
-                                                  "Line": 19,
+                                                  "Index": 675,
+                                                  "Line": 21,
                                                   "Column": 61,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -2172,14 +2375,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 592,
-                                          "Line": 19,
+                                          "Index": 634,
+                                          "Line": 21,
                                           "Column": 20,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 634,
-                                          "Line": 19,
+                                          "Index": 676,
+                                          "Line": 21,
                                           "Column": 62,
                                           "StreamName": "symbols.scm"
                                         }
@@ -2193,14 +2396,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 577,
-                                  "Line": 19,
+                                  "Index": 619,
+                                  "Line": 21,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 635,
-                                  "Line": 19,
+                                  "Index": 677,
+                                  "Line": 21,
                                   "Column": 63,
                                   "StreamName": "symbols.scm"
                                 }
@@ -2223,14 +2426,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 649,
-                                          "Line": 20,
+                                          "Index": 691,
+                                          "Line": 22,
                                           "Column": 6,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 657,
-                                          "Line": 20,
+                                          "Index": 699,
+                                          "Line": 22,
                                           "Column": 14,
                                           "StreamName": "symbols.scm"
                                         }
@@ -2253,14 +2456,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 658,
-                                          "Line": 20,
+                                          "Index": 700,
+                                          "Line": 22,
                                           "Column": 15,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 675,
-                                          "Line": 20,
+                                          "Index": 717,
+                                          "Line": 22,
                                           "Column": 32,
                                           "StreamName": "symbols.scm"
                                         }
@@ -2283,14 +2486,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 676,
-                                                  "Line": 20,
+                                                  "Index": 718,
+                                                  "Line": 22,
                                                   "Column": 33,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 690,
-                                                  "Line": 20,
+                                                  "Index": 732,
+                                                  "Line": 22,
                                                   "Column": 47,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -2313,14 +2516,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 691,
-                                                          "Line": 20,
+                                                          "Index": 733,
+                                                          "Line": 22,
                                                           "Column": 48,
                                                           "StreamName": "symbols.scm"
                                                         },
                                                         {
-                                                          "Index": 705,
-                                                          "Line": 20,
+                                                          "Index": 747,
+                                                          "Line": 22,
                                                           "Column": 62,
                                                           "StreamName": "symbols.scm"
                                                         }
@@ -2343,14 +2546,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 706,
-                                                          "Line": 20,
+                                                          "Index": 748,
+                                                          "Line": 22,
                                                           "Column": 63,
                                                           "StreamName": "symbols.scm"
                                                         },
                                                         {
-                                                          "Index": 723,
-                                                          "Line": 20,
+                                                          "Index": 765,
+                                                          "Line": 22,
                                                           "Column": 80,
                                                           "StreamName": "symbols.scm"
                                                         }
@@ -2364,14 +2567,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 690,
-                                                  "Line": 20,
+                                                  "Index": 732,
+                                                  "Line": 22,
                                                   "Column": 47,
                                                   "StreamName": "symbols.scm"
                                                 },
                                                 {
-                                                  "Index": 724,
-                                                  "Line": 20,
+                                                  "Index": 766,
+                                                  "Line": 22,
                                                   "Column": 81,
                                                   "StreamName": "symbols.scm"
                                                 }
@@ -2385,14 +2588,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 675,
-                                          "Line": 20,
+                                          "Index": 717,
+                                          "Line": 22,
                                           "Column": 32,
                                           "StreamName": "symbols.scm"
                                         },
                                         {
-                                          "Index": 725,
-                                          "Line": 20,
+                                          "Index": 767,
+                                          "Line": 22,
                                           "Column": 82,
                                           "StreamName": "symbols.scm"
                                         }
@@ -2406,14 +2609,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 648,
-                                  "Line": 20,
+                                  "Index": 690,
+                                  "Line": 22,
                                   "Column": 5,
                                   "StreamName": "symbols.scm"
                                 },
                                 {
-                                  "Index": 726,
-                                  "Line": 20,
+                                  "Index": 768,
+                                  "Line": 22,
                                   "Column": 83,
                                   "StreamName": "symbols.scm"
                                 }
@@ -2427,14 +2630,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 303,
-                          "Line": 13,
+                          "Index": 345,
+                          "Line": 15,
                           "Column": 10,
                           "StreamName": "symbols.scm"
                         },
                         {
-                          "Index": 740,
-                          "Line": 21,
+                          "Index": 782,
+                          "Line": 23,
                           "Column": 6,
                           "StreamName": "symbols.scm"
                         }
@@ -2448,14 +2651,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 294,
-                  "Line": 13,
+                  "Index": 336,
+                  "Line": 15,
                   "Column": 1,
                   "StreamName": "symbols.scm"
                 },
                 {
-                  "Index": 741,
-                  "Line": 21,
+                  "Index": 783,
+                  "Line": 23,
                   "Column": 7,
                   "StreamName": "symbols.scm"
                 }
@@ -2478,14 +2681,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 742,
-                          "Line": 21,
+                          "Index": 784,
+                          "Line": 23,
                           "Column": 8,
                           "StreamName": "symbols.scm"
                         },
                         {
-                          "Index": 749,
-                          "Line": 21,
+                          "Index": 791,
+                          "Line": 23,
                           "Column": 15,
                           "StreamName": "symbols.scm"
                         }
@@ -2499,14 +2702,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 741,
-                  "Line": 21,
+                  "Index": 783,
+                  "Line": 23,
                   "Column": 7,
                   "StreamName": "symbols.scm"
                 },
                 {
-                  "Index": 750,
-                  "Line": 21,
+                  "Index": 792,
+                  "Line": 23,
                   "Column": 16,
                   "StreamName": "symbols.scm"
                 }
@@ -2526,8 +2729,8 @@
           "StreamName": "symbols.scm"
         },
         {
-          "Index": 750,
-          "Line": 21,
+          "Index": 792,
+          "Line": 23,
           "Column": 16,
           "StreamName": "symbols.scm"
         }

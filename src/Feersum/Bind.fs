@@ -1,7 +1,5 @@
 module Bind
 
-open System.Collections.Generic
-
 open Diagnostics
 open Syntax
 open Macros
@@ -81,7 +79,7 @@ type BoundSyntaxTree = { Root: BoundBody
 type private BinderCtx =
     { mutable Scope: Scope<StorageRef>
     ; mutable OuterScopes: Scope<StorageRef> list
-    ; mutable Libraries: (string list * (string * StorageRef) list) list
+    ; mutable Libraries: Libraries.LibrarySignature<StorageRef> list
     ; mutable LocalCount: int
     ; mutable Captures: StorageRef list
     ; mutable HasDynamicEnv: bool
@@ -105,13 +103,10 @@ let private mangleName name =
 module private BinderCtx =
 
     /// Create a new binder context for the given root scope
-    let createForGlobalScope scope name =
-        // FIXME: This `(scheme base)` thing is a massif hack.
-        let baseLib =
-            (["scheme";"base"], scope |> Map.toList)
+    let createForGlobalScope scope libs name =
         { Scope = scope |> Scope.fromMap
         ; OuterScopes = []
-        ; Libraries = [baseLib]
+        ; Libraries = libs
         ; MangledName = name |> mangleName
         ; LocalCount = 0
         ; Captures = []
@@ -181,13 +176,15 @@ module private BinderCtx =
 
     /// Add a library declaration to the current context
     let addLibrary ctx name exports =
-        ctx.Libraries <- (name, exports)::ctx.Libraries
+        let signature =
+            { Libraries.LibrarySignature.LibraryName = name
+            ; Libraries.LibrarySignature.Exports = exports }
+        ctx.Libraries <- signature::ctx.Libraries
 
     /// Import the bindings from a given libraryto the binder context
-    let importLibrary ctx library =
-        let (name, exports) = library
-        List.iter (fun (id, storage) -> scopeInsert ctx id storage) exports
-        name |> mangleName
+    let importLibrary ctx (library: Libraries.LibrarySignature<StorageRef>) =
+        List.iter (fun (id, storage) -> scopeInsert ctx id storage) library.Exports
+        library.LibraryName |> mangleName
 
     /// Add a new level to the scopes
     let pushScope ctx =
@@ -202,7 +199,7 @@ module private BinderCtx =
         | [] ->
             failwith "ICE: Unbalanced scope pop"
 
-    // Convert the binder context into a bound root around the given expression
+    /// Convert the binder context into a bound root around the given expression
     let intoRoot ctx expr =
         let env =
             if ctx.HasDynamicEnv then
@@ -392,7 +389,7 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
     // Process `(import ...)`
     let libCtx =
         library.LibraryName
-        |> BinderCtx.createForGlobalScope Map.empty
+        |> BinderCtx.createForGlobalScope Map.empty ctx.Libraries
     let imports =
         library.Declarations
         |> List.choose (function
@@ -594,22 +591,20 @@ and private bindForm ctx (form: AstNode list) node =
 /// Create a New Root Scope
 /// 
 /// The root scope contains the global functions available to the program.
-let createRootScope =
-    let builtinProcs =
-        Builtins.coreProcNames
-        |> Seq.map (fun s -> (s, StorageRef.Builtin(s)))
-    let builtinMacros =
-        Builtins.coreMacros
-        |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m)))
-    Seq.append builtinProcs builtinMacros
+let scopeFromLibraries (libs: seq<Libraries.LibrarySignature<StorageRef>>) =
+    libs
+    |> Seq.collect (fun lib -> lib.Exports)
     |> Map.ofSeq
+
+/// The empty scope
+let emptyScope = Map.empty
 
 /// Bind a syntax node in a given scope
 /// 
 /// Walks the parse tree and computes semantic information. The result of this
 /// call can be passed to the `Compile` or `Emit` API to be lowered to IL.
-let bind scope node: BoundSyntaxTree =
-    let ctx = BinderCtx.createForGlobalScope scope ["LispProgram"]
+let bind scope libraries node: BoundSyntaxTree =
+    let ctx = BinderCtx.createForGlobalScope scope libraries ["LispProgram"]
     let bound = bindInContext ctx node |> BinderCtx.intoRoot ctx
     { Root = bound
     ; MangledName = ctx.MangledName

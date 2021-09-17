@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Serehfa.Attributes;
 
 namespace Serehfa
 {
@@ -8,9 +9,10 @@ namespace Serehfa
 
     /// <summary>
     ///  Methods to interact with Scheme vectors. Our scheme vector
-    ///  implementation uses the .NET <see cref="List" />.
+    ///  implementation uses the .NET <see cref="List{T}" />.
     /// </summary>
-    public static class VectorMethods
+    [LispLibrary("scheme", "base")]
+    public static class Vectors
     {
         [LispBuiltin("vector")]
         public static object VectorNew(object[] args)

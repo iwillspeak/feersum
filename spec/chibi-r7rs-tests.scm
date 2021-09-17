@@ -29,13 +29,15 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ; THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-;; (import (scheme base) (scheme char) (scheme lazy)
+(import (scheme base)
+;;      (scheme char) (scheme lazy)
 ;;         (scheme inexact) (scheme complex) (scheme time)
-;;         (scheme file) (scheme read) (scheme write)
+;;         (scheme file) (scheme read)
+  (scheme write)
 ;;         (scheme eval) (scheme process-context) (scheme case-lambda)
 ;;         (scheme r5rs)
 ;;         (chibi test)  ; or (srfi 64)
-;;         )
+        )
 
 ;; R7RS test suite.  Covers all procedures and syntax in the small
 ;; language except `delete-file'.  Currently assumes full-unicode

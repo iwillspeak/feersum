@@ -1,4 +1,4 @@
-module Utils
+namespace Utils
 
 module ResultEx =
 
@@ -33,6 +33,7 @@ module ResultEx =
         | Some e -> Result.Error e
         | None -> Result.Ok results    
 
+    /// Extract the value from a result, or fallback to a default value.
     let okOr fallback = function
         | Ok o -> o
         | Error _ -> fallback

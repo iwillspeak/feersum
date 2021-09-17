@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "define"
+                        "import"
                       ]
                     },
                     "Location": {
@@ -43,7 +43,7 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "make-counter"
+                                "scheme"
                               ]
                             },
                             "Location": {
@@ -56,9 +56,9 @@
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 21,
+                                  "Index": 15,
                                   "Line": 1,
-                                  "Column": 22,
+                                  "Column": 16,
                                   "StreamName": "issue-4.scm"
                                 }
                               ]
@@ -68,22 +68,22 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "n"
+                                "base"
                               ]
                             },
                             "Location": {
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 22,
+                                  "Index": 16,
                                   "Line": 1,
-                                  "Column": 23,
+                                  "Column": 17,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 23,
+                                  "Index": 20,
                                   "Line": 1,
-                                  "Column": 24,
+                                  "Column": 21,
                                   "StreamName": "issue-4.scm"
                                 }
                               ]
@@ -102,8 +102,211 @@
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 24,
+                          "Index": 21,
                           "Line": 1,
+                          "Column": 22,
+                          "StreamName": "issue-4.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "issue-4.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "issue-4.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "issue-4.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "issue-4.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "issue-4.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "issue-4.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "issue-4.scm"
+                },
+                {
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
+                  "StreamName": "issue-4.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 43,
+                          "Line": 3,
+                          "Column": 2,
+                          "StreamName": "issue-4.scm"
+                        },
+                        {
+                          "Index": 49,
+                          "Line": 3,
+                          "Column": 8,
+                          "StreamName": "issue-4.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "make-counter"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 51,
+                                  "Line": 3,
+                                  "Column": 10,
+                                  "StreamName": "issue-4.scm"
+                                },
+                                {
+                                  "Index": 63,
+                                  "Line": 3,
+                                  "Column": 22,
+                                  "StreamName": "issue-4.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "n"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 64,
+                                  "Line": 3,
+                                  "Column": 23,
+                                  "StreamName": "issue-4.scm"
+                                },
+                                {
+                                  "Index": 65,
+                                  "Line": 3,
+                                  "Column": 24,
+                                  "StreamName": "issue-4.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 50,
+                          "Line": 3,
+                          "Column": 9,
+                          "StreamName": "issue-4.scm"
+                        },
+                        {
+                          "Index": 66,
+                          "Line": 3,
                           "Column": 25,
                           "StreamName": "issue-4.scm"
                         }
@@ -126,14 +329,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 30,
-                                  "Line": 2,
+                                  "Index": 72,
+                                  "Line": 4,
                                   "Column": 6,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 36,
-                                  "Line": 2,
+                                  "Index": 78,
+                                  "Line": 4,
                                   "Column": 12,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -151,14 +354,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 37,
-                                  "Line": 2,
+                                  "Index": 79,
+                                  "Line": 4,
                                   "Column": 13,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 39,
-                                  "Line": 2,
+                                  "Index": 81,
+                                  "Line": 4,
                                   "Column": 15,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -181,14 +384,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 49,
-                                          "Line": 3,
+                                          "Index": 91,
+                                          "Line": 5,
                                           "Column": 10,
                                           "StreamName": "issue-4.scm"
                                         },
                                         {
-                                          "Index": 53,
-                                          "Line": 3,
+                                          "Index": 95,
+                                          "Line": 5,
                                           "Column": 14,
                                           "StreamName": "issue-4.scm"
                                         }
@@ -206,14 +409,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 54,
-                                          "Line": 3,
+                                          "Index": 96,
+                                          "Line": 5,
                                           "Column": 15,
                                           "StreamName": "issue-4.scm"
                                         },
                                         {
-                                          "Index": 55,
-                                          "Line": 3,
+                                          "Index": 97,
+                                          "Line": 5,
                                           "Column": 16,
                                           "StreamName": "issue-4.scm"
                                         }
@@ -236,14 +439,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 57,
-                                                  "Line": 3,
+                                                  "Index": 99,
+                                                  "Line": 5,
                                                   "Column": 18,
                                                   "StreamName": "issue-4.scm"
                                                 },
                                                 {
-                                                  "Index": 58,
-                                                  "Line": 3,
+                                                  "Index": 100,
+                                                  "Line": 5,
                                                   "Column": 19,
                                                   "StreamName": "issue-4.scm"
                                                 }
@@ -266,14 +469,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 59,
-                                                  "Line": 3,
+                                                  "Index": 101,
+                                                  "Line": 5,
                                                   "Column": 20,
                                                   "StreamName": "issue-4.scm"
                                                 },
                                                 {
-                                                  "Index": 60,
-                                                  "Line": 3,
+                                                  "Index": 102,
+                                                  "Line": 5,
                                                   "Column": 21,
                                                   "StreamName": "issue-4.scm"
                                                 }
@@ -291,14 +494,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 61,
-                                                  "Line": 3,
+                                                  "Index": 103,
+                                                  "Line": 5,
                                                   "Column": 22,
                                                   "StreamName": "issue-4.scm"
                                                 },
                                                 {
-                                                  "Index": 62,
-                                                  "Line": 3,
+                                                  "Index": 104,
+                                                  "Line": 5,
                                                   "Column": 23,
                                                   "StreamName": "issue-4.scm"
                                                 }
@@ -312,14 +515,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 56,
-                                          "Line": 3,
+                                          "Index": 98,
+                                          "Line": 5,
                                           "Column": 17,
                                           "StreamName": "issue-4.scm"
                                         },
                                         {
-                                          "Index": 63,
-                                          "Line": 3,
+                                          "Index": 105,
+                                          "Line": 5,
                                           "Column": 24,
                                           "StreamName": "issue-4.scm"
                                         }
@@ -333,14 +536,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 48,
-                                  "Line": 3,
+                                  "Index": 90,
+                                  "Line": 5,
                                   "Column": 9,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 64,
-                                  "Line": 3,
+                                  "Index": 106,
+                                  "Line": 5,
                                   "Column": 25,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -358,14 +561,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 73,
-                                  "Line": 4,
+                                  "Index": 115,
+                                  "Line": 6,
                                   "Column": 9,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 74,
-                                  "Line": 4,
+                                  "Index": 116,
+                                  "Line": 6,
                                   "Column": 10,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -379,14 +582,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 29,
-                          "Line": 2,
+                          "Index": 71,
+                          "Line": 4,
                           "Column": 5,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 75,
-                          "Line": 4,
+                          "Index": 117,
+                          "Line": 6,
                           "Column": 11,
                           "StreamName": "issue-4.scm"
                         }
@@ -400,14 +603,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 0,
-                  "Line": 1,
+                  "Index": 42,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "issue-4.scm"
                 },
                 {
-                  "Index": 76,
-                  "Line": 4,
+                  "Index": 118,
+                  "Line": 6,
                   "Column": 12,
                   "StreamName": "issue-4.scm"
                 }
@@ -430,14 +633,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 78,
-                          "Line": 5,
+                          "Index": 120,
+                          "Line": 7,
                           "Column": 2,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 84,
-                          "Line": 5,
+                          "Index": 126,
+                          "Line": 7,
                           "Column": 8,
                           "StreamName": "issue-4.scm"
                         }
@@ -455,14 +658,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 85,
-                          "Line": 5,
+                          "Index": 127,
+                          "Line": 7,
                           "Column": 9,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 93,
-                          "Line": 5,
+                          "Index": 135,
+                          "Line": 7,
                           "Column": 17,
                           "StreamName": "issue-4.scm"
                         }
@@ -485,14 +688,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 95,
-                                  "Line": 5,
+                                  "Index": 137,
+                                  "Line": 7,
                                   "Column": 19,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 107,
-                                  "Line": 5,
+                                  "Index": 149,
+                                  "Line": 7,
                                   "Column": 31,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -515,14 +718,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 108,
-                                  "Line": 5,
+                                  "Index": 150,
+                                  "Line": 7,
                                   "Column": 32,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 110,
-                                  "Line": 5,
+                                  "Index": 152,
+                                  "Line": 7,
                                   "Column": 34,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -536,14 +739,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 94,
-                          "Line": 5,
+                          "Index": 136,
+                          "Line": 7,
                           "Column": 18,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 111,
-                          "Line": 5,
+                          "Index": 153,
+                          "Line": 7,
                           "Column": 35,
                           "StreamName": "issue-4.scm"
                         }
@@ -557,14 +760,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 77,
-                  "Line": 5,
+                  "Index": 119,
+                  "Line": 7,
                   "Column": 1,
                   "StreamName": "issue-4.scm"
                 },
                 {
-                  "Index": 112,
-                  "Line": 5,
+                  "Index": 154,
+                  "Line": 7,
                   "Column": 36,
                   "StreamName": "issue-4.scm"
                 }
@@ -587,14 +790,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 114,
-                          "Line": 6,
+                          "Index": 156,
+                          "Line": 8,
                           "Column": 2,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 120,
-                          "Line": 6,
+                          "Index": 162,
+                          "Line": 8,
                           "Column": 8,
                           "StreamName": "issue-4.scm"
                         }
@@ -612,14 +815,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 121,
-                          "Line": 6,
+                          "Index": 163,
+                          "Line": 8,
                           "Column": 9,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 129,
-                          "Line": 6,
+                          "Index": 171,
+                          "Line": 8,
                           "Column": 17,
                           "StreamName": "issue-4.scm"
                         }
@@ -642,14 +845,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 131,
-                                  "Line": 6,
+                                  "Index": 173,
+                                  "Line": 8,
                                   "Column": 19,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 143,
-                                  "Line": 6,
+                                  "Index": 185,
+                                  "Line": 8,
                                   "Column": 31,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -672,14 +875,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 144,
-                                  "Line": 6,
+                                  "Index": 186,
+                                  "Line": 8,
                                   "Column": 32,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 147,
-                                  "Line": 6,
+                                  "Index": 189,
+                                  "Line": 8,
                                   "Column": 35,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -693,14 +896,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 130,
-                          "Line": 6,
+                          "Index": 172,
+                          "Line": 8,
                           "Column": 18,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 148,
-                          "Line": 6,
+                          "Index": 190,
+                          "Line": 8,
                           "Column": 36,
                           "StreamName": "issue-4.scm"
                         }
@@ -714,14 +917,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 113,
-                  "Line": 6,
+                  "Index": 155,
+                  "Line": 8,
                   "Column": 1,
                   "StreamName": "issue-4.scm"
                 },
                 {
-                  "Index": 149,
-                  "Line": 6,
+                  "Index": 191,
+                  "Line": 8,
                   "Column": 37,
                   "StreamName": "issue-4.scm"
                 }
@@ -744,14 +947,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 152,
-                          "Line": 8,
+                          "Index": 194,
+                          "Line": 10,
                           "Column": 2,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 159,
-                          "Line": 8,
+                          "Index": 201,
+                          "Line": 10,
                           "Column": 9,
                           "StreamName": "issue-4.scm"
                         }
@@ -774,14 +977,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 161,
-                                  "Line": 8,
+                                  "Index": 203,
+                                  "Line": 10,
                                   "Column": 11,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 169,
-                                  "Line": 8,
+                                  "Index": 211,
+                                  "Line": 10,
                                   "Column": 19,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -795,14 +998,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 160,
-                          "Line": 8,
+                          "Index": 202,
+                          "Line": 10,
                           "Column": 10,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 170,
-                          "Line": 8,
+                          "Index": 212,
+                          "Line": 10,
                           "Column": 20,
                           "StreamName": "issue-4.scm"
                         }
@@ -816,14 +1019,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 151,
-                  "Line": 8,
+                  "Index": 193,
+                  "Line": 10,
                   "Column": 1,
                   "StreamName": "issue-4.scm"
                 },
                 {
-                  "Index": 171,
-                  "Line": 8,
+                  "Index": 213,
+                  "Line": 10,
                   "Column": 21,
                   "StreamName": "issue-4.scm"
                 }
@@ -846,14 +1049,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 173,
-                          "Line": 9,
+                          "Index": 215,
+                          "Line": 11,
                           "Column": 2,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 180,
-                          "Line": 9,
+                          "Index": 222,
+                          "Line": 11,
                           "Column": 9,
                           "StreamName": "issue-4.scm"
                         }
@@ -876,14 +1079,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 182,
-                                  "Line": 9,
+                                  "Index": 224,
+                                  "Line": 11,
                                   "Column": 11,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 190,
-                                  "Line": 9,
+                                  "Index": 232,
+                                  "Line": 11,
                                   "Column": 19,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -897,14 +1100,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 181,
-                          "Line": 9,
+                          "Index": 223,
+                          "Line": 11,
                           "Column": 10,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 191,
-                          "Line": 9,
+                          "Index": 233,
+                          "Line": 11,
                           "Column": 20,
                           "StreamName": "issue-4.scm"
                         }
@@ -918,14 +1121,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 172,
-                  "Line": 9,
+                  "Index": 214,
+                  "Line": 11,
                   "Column": 1,
                   "StreamName": "issue-4.scm"
                 },
                 {
-                  "Index": 192,
-                  "Line": 9,
+                  "Index": 234,
+                  "Line": 11,
                   "Column": 21,
                   "StreamName": "issue-4.scm"
                 }
@@ -948,14 +1151,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 226,
-                          "Line": 12,
+                          "Index": 268,
+                          "Line": 14,
                           "Column": 2,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 233,
-                          "Line": 12,
+                          "Index": 275,
+                          "Line": 14,
                           "Column": 9,
                           "StreamName": "issue-4.scm"
                         }
@@ -978,14 +1181,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 235,
-                                  "Line": 12,
+                                  "Index": 277,
+                                  "Line": 14,
                                   "Column": 11,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 236,
-                                  "Line": 12,
+                                  "Index": 278,
+                                  "Line": 14,
                                   "Column": 12,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -1008,14 +1211,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 238,
-                                          "Line": 12,
+                                          "Index": 280,
+                                          "Line": 14,
                                           "Column": 14,
                                           "StreamName": "issue-4.scm"
                                         },
                                         {
-                                          "Index": 246,
-                                          "Line": 12,
+                                          "Index": 288,
+                                          "Line": 14,
                                           "Column": 22,
                                           "StreamName": "issue-4.scm"
                                         }
@@ -1029,14 +1232,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 237,
-                                  "Line": 12,
+                                  "Index": 279,
+                                  "Line": 14,
                                   "Column": 13,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 247,
-                                  "Line": 12,
+                                  "Index": 289,
+                                  "Line": 14,
                                   "Column": 23,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -1059,14 +1262,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 249,
-                                          "Line": 12,
+                                          "Index": 291,
+                                          "Line": 14,
                                           "Column": 25,
                                           "StreamName": "issue-4.scm"
                                         },
                                         {
-                                          "Index": 257,
-                                          "Line": 12,
+                                          "Index": 299,
+                                          "Line": 14,
                                           "Column": 33,
                                           "StreamName": "issue-4.scm"
                                         }
@@ -1080,14 +1283,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 248,
-                                  "Line": 12,
+                                  "Index": 290,
+                                  "Line": 14,
                                   "Column": 24,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 258,
-                                  "Line": 12,
+                                  "Index": 300,
+                                  "Line": 14,
                                   "Column": 34,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -1101,14 +1304,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 234,
-                          "Line": 12,
+                          "Index": 276,
+                          "Line": 14,
                           "Column": 10,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 259,
-                          "Line": 12,
+                          "Index": 301,
+                          "Line": 14,
                           "Column": 35,
                           "StreamName": "issue-4.scm"
                         }
@@ -1122,14 +1325,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 225,
-                  "Line": 12,
+                  "Index": 267,
+                  "Line": 14,
                   "Column": 1,
                   "StreamName": "issue-4.scm"
                 },
                 {
-                  "Index": 260,
-                  "Line": 12,
+                  "Index": 302,
+                  "Line": 14,
                   "Column": 36,
                   "StreamName": "issue-4.scm"
                 }
@@ -1152,14 +1355,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 262,
-                          "Line": 13,
+                          "Index": 304,
+                          "Line": 15,
                           "Column": 2,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 263,
-                          "Line": 13,
+                          "Index": 305,
+                          "Line": 15,
                           "Column": 3,
                           "StreamName": "issue-4.scm"
                         }
@@ -1182,14 +1385,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 265,
-                                  "Line": 13,
+                                  "Index": 307,
+                                  "Line": 15,
                                   "Column": 5,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 273,
-                                  "Line": 13,
+                                  "Index": 315,
+                                  "Line": 15,
                                   "Column": 13,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -1203,14 +1406,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 264,
-                          "Line": 13,
+                          "Index": 306,
+                          "Line": 15,
                           "Column": 4,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 274,
-                          "Line": 13,
+                          "Index": 316,
+                          "Line": 15,
                           "Column": 14,
                           "StreamName": "issue-4.scm"
                         }
@@ -1233,14 +1436,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 276,
-                                  "Line": 13,
+                                  "Index": 318,
+                                  "Line": 15,
                                   "Column": 16,
                                   "StreamName": "issue-4.scm"
                                 },
                                 {
-                                  "Index": 284,
-                                  "Line": 13,
+                                  "Index": 326,
+                                  "Line": 15,
                                   "Column": 24,
                                   "StreamName": "issue-4.scm"
                                 }
@@ -1254,14 +1457,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 275,
-                          "Line": 13,
+                          "Index": 317,
+                          "Line": 15,
                           "Column": 15,
                           "StreamName": "issue-4.scm"
                         },
                         {
-                          "Index": 285,
-                          "Line": 13,
+                          "Index": 327,
+                          "Line": 15,
                           "Column": 25,
                           "StreamName": "issue-4.scm"
                         }
@@ -1275,14 +1478,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 261,
-                  "Line": 13,
+                  "Index": 303,
+                  "Line": 15,
                   "Column": 1,
                   "StreamName": "issue-4.scm"
                 },
                 {
-                  "Index": 286,
-                  "Line": 13,
+                  "Index": 328,
+                  "Line": 15,
                   "Column": 26,
                   "StreamName": "issue-4.scm"
                 }
@@ -1302,8 +1505,8 @@
           "StreamName": "issue-4.scm"
         },
         {
-          "Index": 286,
-          "Line": 13,
+          "Index": 328,
+          "Line": 15,
           "Column": 26,
           "StreamName": "issue-4.scm"
         }

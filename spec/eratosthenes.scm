@@ -1,3 +1,5 @@
+(import (scheme base)
+    (scheme write))
 ;; Implementation of the Sieve of Eratosthenes
 ;; https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
 (define (eratosthenes n)

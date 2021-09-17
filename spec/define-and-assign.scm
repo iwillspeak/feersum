@@ -1,3 +1,5 @@
+(import (scheme base)
+    (scheme write))
 (define x 2)
 (display (+ x 1)) ; => 3
 (set! x 4)

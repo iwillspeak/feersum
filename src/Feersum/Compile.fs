@@ -1,9 +1,5 @@
 module Compile
 
-open Options
-open Bind
-open Syntax
-open IlHelpers
 open System
 open System.IO
 open Mono.Cecil
@@ -11,6 +7,11 @@ open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 open System.Collections.Generic
 open System.Runtime.InteropServices
+
+open Options
+open Bind
+open Syntax
+open IlHelpers
 
 /// Type to Hold Context While Emitting IL
 type EmitCtx = 
@@ -91,8 +92,9 @@ let private ensureField ctx mangledPrefix id =
         field.Name = id
 
     let ty =
-        Map.tryFind mangledPrefix ctx.Libraries
-        |> Option.get
+        match Map.tryFind mangledPrefix ctx.Libraries with
+        | Some prefix -> prefix
+        | None -> failwithf "ICE: Attempt to access field on '%s', which is not yet defined" mangledPrefix
     
     match Seq.tryFind pred ty.Fields with
     | Some(found) -> found
@@ -201,7 +203,7 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
                 doc.LanguageVendor <- DocumentLanguageVendor.Other
                 doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
                 ctx.DebugDocuments.[s.StreamName] <- doc
-            let point = SequencePoint(ins, doc)
+            let point = Cil.SequencePoint(ins, doc)
             point.StartLine <- int s.Line
             point.StartColumn <- int s.Column
             point.EndLine <- int e.Line
@@ -779,7 +781,7 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
 
-    let coreTypes = Builtins.loadCore assm
+    let coreTypes = Builtins.importCore assm
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
@@ -838,8 +840,13 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
-    let scope = createRootScope
-    let bound = bind scope node
+    let coreLibs = Builtins.loadCoreSignatures
+    let scope =
+        if options.OutputType = OutputType.Script then
+            scopeFromLibraries coreLibs
+        else
+            emptyScope
+    let bound = bind scope coreLibs node
     if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound
         |> Lower.lower
@@ -908,6 +915,6 @@ let compileFile options (output: string) (source: string) =
                 """ getTfm version.Major version.Minor version
             File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), config)
             // FIXME: Copying the core assembly like this is a bit of a hack.
-            let corePath = typeof<Serehfa.LispBuiltinAttribute>.Assembly.Location
+            let corePath = typeof<Serehfa.ConsPair>.Assembly.Location
             File.Copy(corePath, Path.Join(outDir, Path.GetFileName(corePath)), true)
         diags

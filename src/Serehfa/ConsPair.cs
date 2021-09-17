@@ -36,7 +36,7 @@ namespace Serehfa
                 else
                 {
                     sb.Append(" . ");
-                    sb.Append(current._cdr.ToString());
+                    sb.Append(Write.GetExternalRepresentation(current._cdr));
                     break;
                 }
             }

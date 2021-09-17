@@ -1,6 +1,7 @@
 (define-library (test greeter)
 	(export greet)
-	(import (scheme base))
+	(import (scheme base)
+		(scheme write))
 	(begin
 		(define (greet person)
 			(display "Hello ")

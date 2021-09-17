@@ -1,3 +1,5 @@
+(import (scheme base)
+    (scheme write))
 (display (list 
 
     ;; byte vector literals

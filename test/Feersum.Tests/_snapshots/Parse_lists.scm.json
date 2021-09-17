@@ -13,7 +13,7 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
-                        "display"
+                        "import"
                       ]
                     },
                     "Location": {
@@ -26,8 +26,211 @@
                           "StreamName": "lists.scm"
                         },
                         {
+                          "Index": 7,
+                          "Line": 1,
+                          "Column": 8,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 9,
+                                  "Line": 1,
+                                  "Column": 10,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 15,
+                                  "Line": 1,
+                                  "Column": 16,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 16,
+                                  "Line": 1,
+                                  "Column": 17,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 20,
+                                  "Line": 1,
+                                  "Column": 21,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
                           "Index": 8,
                           "Line": 1,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 21,
+                          "Line": 1,
+                          "Column": 22,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 44,
+                          "Line": 4,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 51,
+                          "Line": 4,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         }
@@ -50,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 10,
-                                  "Line": 1,
+                                  "Index": 53,
+                                  "Line": 4,
                                   "Column": 11,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 14,
-                                  "Line": 1,
+                                  "Index": 57,
+                                  "Line": 4,
                                   "Column": 15,
                                   "StreamName": "lists.scm"
                                 }
@@ -80,14 +283,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 20,
-                                          "Line": 2,
+                                          "Index": 63,
+                                          "Line": 5,
                                           "Column": 6,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 24,
-                                          "Line": 2,
+                                          "Index": 67,
+                                          "Line": 5,
                                           "Column": 10,
                                           "StreamName": "lists.scm"
                                         }
@@ -110,14 +313,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 25,
-                                          "Line": 2,
+                                          "Index": 68,
+                                          "Line": 5,
                                           "Column": 11,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 27,
-                                          "Line": 2,
+                                          "Index": 70,
+                                          "Line": 5,
                                           "Column": 13,
                                           "StreamName": "lists.scm"
                                         }
@@ -140,14 +343,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 28,
-                                          "Line": 2,
+                                          "Index": 71,
+                                          "Line": 5,
                                           "Column": 14,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 30,
-                                          "Line": 2,
+                                          "Index": 73,
+                                          "Line": 5,
                                           "Column": 16,
                                           "StreamName": "lists.scm"
                                         }
@@ -170,14 +373,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 31,
-                                          "Line": 2,
+                                          "Index": 74,
+                                          "Line": 5,
                                           "Column": 17,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 33,
-                                          "Line": 2,
+                                          "Index": 76,
+                                          "Line": 5,
                                           "Column": 19,
                                           "StreamName": "lists.scm"
                                         }
@@ -191,14 +394,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 19,
-                                  "Line": 2,
+                                  "Index": 62,
+                                  "Line": 5,
                                   "Column": 5,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 34,
-                                  "Line": 2,
+                                  "Index": 77,
+                                  "Line": 5,
                                   "Column": 20,
                                   "StreamName": "lists.scm"
                                 }
@@ -221,14 +424,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 80,
-                                          "Line": 3,
+                                          "Index": 123,
+                                          "Line": 6,
                                           "Column": 6,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 83,
-                                          "Line": 3,
+                                          "Index": 126,
+                                          "Line": 6,
                                           "Column": 9,
                                           "StreamName": "lists.scm"
                                         }
@@ -251,14 +454,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 85,
-                                                  "Line": 3,
+                                                  "Index": 128,
+                                                  "Line": 6,
                                                   "Column": 11,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 88,
-                                                  "Line": 3,
+                                                  "Index": 131,
+                                                  "Line": 6,
                                                   "Column": 14,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -281,14 +484,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 90,
-                                                          "Line": 3,
+                                                          "Index": 133,
+                                                          "Line": 6,
                                                           "Column": 16,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 94,
-                                                          "Line": 3,
+                                                          "Index": 137,
+                                                          "Line": 6,
                                                           "Column": 20,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -311,14 +514,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 95,
-                                                          "Line": 3,
+                                                          "Index": 138,
+                                                          "Line": 6,
                                                           "Column": 21,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 98,
-                                                          "Line": 3,
+                                                          "Index": 141,
+                                                          "Line": 6,
                                                           "Column": 24,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -341,14 +544,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 99,
-                                                          "Line": 3,
+                                                          "Index": 142,
+                                                          "Line": 6,
                                                           "Column": 25,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 102,
-                                                          "Line": 3,
+                                                          "Index": 145,
+                                                          "Line": 6,
                                                           "Column": 28,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -371,14 +574,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 103,
-                                                          "Line": 3,
+                                                          "Index": 146,
+                                                          "Line": 6,
                                                           "Column": 29,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 105,
-                                                          "Line": 3,
+                                                          "Index": 148,
+                                                          "Line": 6,
                                                           "Column": 31,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -401,14 +604,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 106,
-                                                          "Line": 3,
+                                                          "Index": 149,
+                                                          "Line": 6,
                                                           "Column": 32,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 109,
-                                                          "Line": 3,
+                                                          "Index": 152,
+                                                          "Line": 6,
                                                           "Column": 35,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -422,14 +625,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 89,
-                                                  "Line": 3,
+                                                  "Index": 132,
+                                                  "Line": 6,
                                                   "Column": 15,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 110,
-                                                  "Line": 3,
+                                                  "Index": 153,
+                                                  "Line": 6,
                                                   "Column": 36,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -443,14 +646,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 84,
-                                          "Line": 3,
+                                          "Index": 127,
+                                          "Line": 6,
                                           "Column": 10,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 111,
-                                          "Line": 3,
+                                          "Index": 154,
+                                          "Line": 6,
                                           "Column": 37,
                                           "StreamName": "lists.scm"
                                         }
@@ -464,14 +667,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 79,
-                                  "Line": 3,
+                                  "Index": 122,
+                                  "Line": 6,
                                   "Column": 5,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 112,
-                                  "Line": 3,
+                                  "Index": 155,
+                                  "Line": 6,
                                   "Column": 38,
                                   "StreamName": "lists.scm"
                                 }
@@ -494,14 +697,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 141,
-                                          "Line": 4,
+                                          "Index": 184,
+                                          "Line": 7,
                                           "Column": 6,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 144,
-                                          "Line": 4,
+                                          "Index": 187,
+                                          "Line": 7,
                                           "Column": 9,
                                           "StreamName": "lists.scm"
                                         }
@@ -524,14 +727,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 146,
-                                                  "Line": 4,
+                                                  "Index": 189,
+                                                  "Line": 7,
                                                   "Column": 11,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 149,
-                                                  "Line": 4,
+                                                  "Index": 192,
+                                                  "Line": 7,
                                                   "Column": 14,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -554,14 +757,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 151,
-                                                          "Line": 4,
+                                                          "Index": 194,
+                                                          "Line": 7,
                                                           "Column": 16,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 154,
-                                                          "Line": 4,
+                                                          "Index": 197,
+                                                          "Line": 7,
                                                           "Column": 19,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -584,14 +787,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 156,
-                                                                  "Line": 4,
+                                                                  "Index": 199,
+                                                                  "Line": 7,
                                                                   "Column": 21,
                                                                   "StreamName": "lists.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 160,
-                                                                  "Line": 4,
+                                                                  "Index": 203,
+                                                                  "Line": 7,
                                                                   "Column": 25,
                                                                   "StreamName": "lists.scm"
                                                                 }
@@ -614,14 +817,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 162,
-                                                                          "Line": 4,
+                                                                          "Index": 205,
+                                                                          "Line": 7,
                                                                           "Column": 27,
                                                                           "StreamName": "lists.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 166,
-                                                                          "Line": 4,
+                                                                          "Index": 209,
+                                                                          "Line": 7,
                                                                           "Column": 31,
                                                                           "StreamName": "lists.scm"
                                                                         }
@@ -644,14 +847,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 167,
-                                                                          "Line": 4,
+                                                                          "Index": 210,
+                                                                          "Line": 7,
                                                                           "Column": 32,
                                                                           "StreamName": "lists.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 168,
-                                                                          "Line": 4,
+                                                                          "Index": 211,
+                                                                          "Line": 7,
                                                                           "Column": 33,
                                                                           "StreamName": "lists.scm"
                                                                         }
@@ -674,14 +877,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 169,
-                                                                          "Line": 4,
+                                                                          "Index": 212,
+                                                                          "Line": 7,
                                                                           "Column": 34,
                                                                           "StreamName": "lists.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 170,
-                                                                          "Line": 4,
+                                                                          "Index": 213,
+                                                                          "Line": 7,
                                                                           "Column": 35,
                                                                           "StreamName": "lists.scm"
                                                                         }
@@ -704,14 +907,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 171,
-                                                                          "Line": 4,
+                                                                          "Index": 214,
+                                                                          "Line": 7,
                                                                           "Column": 36,
                                                                           "StreamName": "lists.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 172,
-                                                                          "Line": 4,
+                                                                          "Index": 215,
+                                                                          "Line": 7,
                                                                           "Column": 37,
                                                                           "StreamName": "lists.scm"
                                                                         }
@@ -725,14 +928,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 161,
-                                                                  "Line": 4,
+                                                                  "Index": 204,
+                                                                  "Line": 7,
                                                                   "Column": 26,
                                                                   "StreamName": "lists.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 173,
-                                                                  "Line": 4,
+                                                                  "Index": 216,
+                                                                  "Line": 7,
                                                                   "Column": 38,
                                                                   "StreamName": "lists.scm"
                                                                 }
@@ -755,14 +958,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 174,
-                                                                  "Line": 4,
+                                                                  "Index": 217,
+                                                                  "Line": 7,
                                                                   "Column": 39,
                                                                   "StreamName": "lists.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 175,
-                                                                  "Line": 4,
+                                                                  "Index": 218,
+                                                                  "Line": 7,
                                                                   "Column": 40,
                                                                   "StreamName": "lists.scm"
                                                                 }
@@ -785,14 +988,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 176,
-                                                                  "Line": 4,
+                                                                  "Index": 219,
+                                                                  "Line": 7,
                                                                   "Column": 41,
                                                                   "StreamName": "lists.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 177,
-                                                                  "Line": 4,
+                                                                  "Index": 220,
+                                                                  "Line": 7,
                                                                   "Column": 42,
                                                                   "StreamName": "lists.scm"
                                                                 }
@@ -806,14 +1009,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 155,
-                                                          "Line": 4,
+                                                          "Index": 198,
+                                                          "Line": 7,
                                                           "Column": 20,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 178,
-                                                          "Line": 4,
+                                                          "Index": 221,
+                                                          "Line": 7,
                                                           "Column": 43,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -827,14 +1030,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 150,
-                                                  "Line": 4,
+                                                  "Index": 193,
+                                                  "Line": 7,
                                                   "Column": 15,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 179,
-                                                  "Line": 4,
+                                                  "Index": 222,
+                                                  "Line": 7,
                                                   "Column": 44,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -848,14 +1051,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 145,
-                                          "Line": 4,
+                                          "Index": 188,
+                                          "Line": 7,
                                           "Column": 10,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 180,
-                                          "Line": 4,
+                                          "Index": 223,
+                                          "Line": 7,
                                           "Column": 45,
                                           "StreamName": "lists.scm"
                                         }
@@ -869,14 +1072,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 140,
-                                  "Line": 4,
+                                  "Index": 183,
+                                  "Line": 7,
                                   "Column": 5,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 181,
-                                  "Line": 4,
+                                  "Index": 224,
+                                  "Line": 7,
                                   "Column": 46,
                                   "StreamName": "lists.scm"
                                 }
@@ -890,14 +1093,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 9,
-                          "Line": 1,
+                          "Index": 52,
+                          "Line": 4,
                           "Column": 10,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 195,
-                          "Line": 5,
+                          "Index": 238,
+                          "Line": 8,
                           "Column": 6,
                           "StreamName": "lists.scm"
                         }
@@ -911,14 +1114,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 0,
-                  "Line": 1,
+                  "Index": 43,
+                  "Line": 4,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 196,
-                  "Line": 5,
+                  "Index": 239,
+                  "Line": 8,
                   "Column": 7,
                   "StreamName": "lists.scm"
                 }
@@ -941,14 +1144,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 198,
-                          "Line": 6,
+                          "Index": 241,
+                          "Line": 9,
                           "Column": 2,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 205,
-                          "Line": 6,
+                          "Index": 248,
+                          "Line": 9,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         }
@@ -962,14 +1165,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 197,
-                  "Line": 6,
+                  "Index": 240,
+                  "Line": 9,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 206,
-                  "Line": 6,
+                  "Index": 249,
+                  "Line": 9,
                   "Column": 10,
                   "StreamName": "lists.scm"
                 }
@@ -992,14 +1195,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 209,
-                          "Line": 8,
+                          "Index": 252,
+                          "Line": 11,
                           "Column": 2,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 215,
-                          "Line": 8,
+                          "Index": 258,
+                          "Line": 11,
                           "Column": 8,
                           "StreamName": "lists.scm"
                         }
@@ -1022,14 +1225,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 217,
-                                  "Line": 8,
+                                  "Index": 260,
+                                  "Line": 11,
                                   "Column": 10,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 220,
-                                  "Line": 8,
+                                  "Index": 263,
+                                  "Line": 11,
                                   "Column": 13,
                                   "StreamName": "lists.scm"
                                 }
@@ -1047,14 +1250,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 221,
-                                  "Line": 8,
+                                  "Index": 264,
+                                  "Line": 11,
                                   "Column": 14,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 225,
-                                  "Line": 8,
+                                  "Index": 268,
+                                  "Line": 11,
                                   "Column": 18,
                                   "StreamName": "lists.scm"
                                 }
@@ -1068,14 +1271,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 216,
-                          "Line": 8,
+                          "Index": 259,
+                          "Line": 11,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 226,
-                          "Line": 8,
+                          "Index": 269,
+                          "Line": 11,
                           "Column": 19,
                           "StreamName": "lists.scm"
                         }
@@ -1098,14 +1301,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 232,
-                                  "Line": 9,
+                                  "Index": 275,
+                                  "Line": 12,
                                   "Column": 6,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 238,
-                                  "Line": 9,
+                                  "Index": 281,
+                                  "Line": 12,
                                   "Column": 12,
                                   "StreamName": "lists.scm"
                                 }
@@ -1128,14 +1331,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 240,
-                                          "Line": 9,
+                                          "Index": 283,
+                                          "Line": 12,
                                           "Column": 14,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 252,
-                                          "Line": 9,
+                                          "Index": 295,
+                                          "Line": 12,
                                           "Column": 26,
                                           "StreamName": "lists.scm"
                                         }
@@ -1153,14 +1356,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 253,
-                                          "Line": 9,
+                                          "Index": 296,
+                                          "Line": 12,
                                           "Column": 27,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 257,
-                                          "Line": 9,
+                                          "Index": 300,
+                                          "Line": 12,
                                           "Column": 31,
                                           "StreamName": "lists.scm"
                                         }
@@ -1178,14 +1381,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 258,
-                                          "Line": 9,
+                                          "Index": 301,
+                                          "Line": 12,
                                           "Column": 32,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 261,
-                                          "Line": 9,
+                                          "Index": 304,
+                                          "Line": 12,
                                           "Column": 35,
                                           "StreamName": "lists.scm"
                                         }
@@ -1199,14 +1402,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 239,
-                                  "Line": 9,
+                                  "Index": 282,
+                                  "Line": 12,
                                   "Column": 13,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 262,
-                                  "Line": 9,
+                                  "Index": 305,
+                                  "Line": 12,
                                   "Column": 36,
                                   "StreamName": "lists.scm"
                                 }
@@ -1229,14 +1432,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 272,
-                                          "Line": 10,
+                                          "Index": 315,
+                                          "Line": 13,
                                           "Column": 10,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 274,
-                                          "Line": 10,
+                                          "Index": 317,
+                                          "Line": 13,
                                           "Column": 12,
                                           "StreamName": "lists.scm"
                                         }
@@ -1259,14 +1462,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 276,
-                                                  "Line": 10,
+                                                  "Index": 319,
+                                                  "Line": 13,
                                                   "Column": 14,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 281,
-                                                  "Line": 10,
+                                                  "Index": 324,
+                                                  "Line": 13,
                                                   "Column": 19,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -1284,14 +1487,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 282,
-                                                  "Line": 10,
+                                                  "Index": 325,
+                                                  "Line": 13,
                                                   "Column": 20,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 286,
-                                                  "Line": 10,
+                                                  "Index": 329,
+                                                  "Line": 13,
                                                   "Column": 24,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -1305,14 +1508,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 275,
-                                          "Line": 10,
+                                          "Index": 318,
+                                          "Line": 13,
                                           "Column": 13,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 287,
-                                          "Line": 10,
+                                          "Index": 330,
+                                          "Line": 13,
                                           "Column": 25,
                                           "StreamName": "lists.scm"
                                         }
@@ -1330,14 +1533,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 300,
-                                          "Line": 11,
+                                          "Index": 343,
+                                          "Line": 14,
                                           "Column": 13,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 303,
-                                          "Line": 11,
+                                          "Index": 346,
+                                          "Line": 14,
                                           "Column": 16,
                                           "StreamName": "lists.scm"
                                         }
@@ -1360,14 +1563,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 317,
-                                                  "Line": 12,
+                                                  "Index": 360,
+                                                  "Line": 15,
                                                   "Column": 14,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 329,
-                                                  "Line": 12,
+                                                  "Index": 372,
+                                                  "Line": 15,
                                                   "Column": 26,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -1390,14 +1593,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 331,
-                                                          "Line": 12,
+                                                          "Index": 374,
+                                                          "Line": 15,
                                                           "Column": 28,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 334,
-                                                          "Line": 12,
+                                                          "Index": 377,
+                                                          "Line": 15,
                                                           "Column": 31,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -1415,14 +1618,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 335,
-                                                          "Line": 12,
+                                                          "Index": 378,
+                                                          "Line": 15,
                                                           "Column": 32,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 339,
-                                                          "Line": 12,
+                                                          "Index": 382,
+                                                          "Line": 15,
                                                           "Column": 36,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -1436,14 +1639,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 330,
-                                                  "Line": 12,
+                                                  "Index": 373,
+                                                  "Line": 15,
                                                   "Column": 27,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 340,
-                                                  "Line": 12,
+                                                  "Index": 383,
+                                                  "Line": 15,
                                                   "Column": 37,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -1466,14 +1669,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 342,
-                                                          "Line": 12,
+                                                          "Index": 385,
+                                                          "Line": 15,
                                                           "Column": 39,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 346,
-                                                          "Line": 12,
+                                                          "Index": 389,
+                                                          "Line": 15,
                                                           "Column": 43,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -1496,14 +1699,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 348,
-                                                                  "Line": 12,
+                                                                  "Index": 391,
+                                                                  "Line": 15,
                                                                   "Column": 45,
                                                                   "StreamName": "lists.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 351,
-                                                                  "Line": 12,
+                                                                  "Index": 394,
+                                                                  "Line": 15,
                                                                   "Column": 48,
                                                                   "StreamName": "lists.scm"
                                                                 }
@@ -1521,14 +1724,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 352,
-                                                                  "Line": 12,
+                                                                  "Index": 395,
+                                                                  "Line": 15,
                                                                   "Column": 49,
                                                                   "StreamName": "lists.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 356,
-                                                                  "Line": 12,
+                                                                  "Index": 399,
+                                                                  "Line": 15,
                                                                   "Column": 53,
                                                                   "StreamName": "lists.scm"
                                                                 }
@@ -1542,14 +1745,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 347,
-                                                          "Line": 12,
+                                                          "Index": 390,
+                                                          "Line": 15,
                                                           "Column": 44,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 357,
-                                                          "Line": 12,
+                                                          "Index": 400,
+                                                          "Line": 15,
                                                           "Column": 54,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -1567,14 +1770,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 358,
-                                                          "Line": 12,
+                                                          "Index": 401,
+                                                          "Line": 15,
                                                           "Column": 55,
                                                           "StreamName": "lists.scm"
                                                         },
                                                         {
-                                                          "Index": 361,
-                                                          "Line": 12,
+                                                          "Index": 404,
+                                                          "Line": 15,
                                                           "Column": 58,
                                                           "StreamName": "lists.scm"
                                                         }
@@ -1588,14 +1791,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 341,
-                                                  "Line": 12,
+                                                  "Index": 384,
+                                                  "Line": 15,
                                                   "Column": 38,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 362,
-                                                  "Line": 12,
+                                                  "Index": 405,
+                                                  "Line": 15,
                                                   "Column": 59,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -1609,14 +1812,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 316,
-                                          "Line": 12,
+                                          "Index": 359,
+                                          "Line": 15,
                                           "Column": 13,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 363,
-                                          "Line": 12,
+                                          "Index": 406,
+                                          "Line": 15,
                                           "Column": 60,
                                           "StreamName": "lists.scm"
                                         }
@@ -1630,14 +1833,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 271,
-                                  "Line": 10,
+                                  "Index": 314,
+                                  "Line": 13,
                                   "Column": 9,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 364,
-                                  "Line": 12,
+                                  "Index": 407,
+                                  "Line": 15,
                                   "Column": 61,
                                   "StreamName": "lists.scm"
                                 }
@@ -1651,14 +1854,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 231,
-                          "Line": 9,
+                          "Index": 274,
+                          "Line": 12,
                           "Column": 5,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 365,
-                          "Line": 12,
+                          "Index": 408,
+                          "Line": 15,
                           "Column": 62,
                           "StreamName": "lists.scm"
                         }
@@ -1681,14 +1884,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 371,
-                                  "Line": 13,
+                                  "Index": 414,
+                                  "Line": 16,
                                   "Column": 6,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 383,
-                                  "Line": 13,
+                                  "Index": 426,
+                                  "Line": 16,
                                   "Column": 18,
                                   "StreamName": "lists.scm"
                                 }
@@ -1706,14 +1909,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 384,
-                                  "Line": 13,
+                                  "Index": 427,
+                                  "Line": 16,
                                   "Column": 19,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 388,
-                                  "Line": 13,
+                                  "Index": 431,
+                                  "Line": 16,
                                   "Column": 23,
                                   "StreamName": "lists.scm"
                                 }
@@ -1731,14 +1934,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 389,
-                                  "Line": 13,
+                                  "Index": 432,
+                                  "Line": 16,
                                   "Column": 24,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 391,
-                                  "Line": 13,
+                                  "Index": 434,
+                                  "Line": 16,
                                   "Column": 26,
                                   "StreamName": "lists.scm"
                                 }
@@ -1752,14 +1955,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 370,
-                          "Line": 13,
+                          "Index": 413,
+                          "Line": 16,
                           "Column": 5,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 392,
-                          "Line": 13,
+                          "Index": 435,
+                          "Line": 16,
                           "Column": 27,
                           "StreamName": "lists.scm"
                         }
@@ -1773,14 +1976,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 208,
-                  "Line": 8,
+                  "Index": 251,
+                  "Line": 11,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 393,
-                  "Line": 13,
+                  "Index": 436,
+                  "Line": 16,
                   "Column": 28,
                   "StreamName": "lists.scm"
                 }
@@ -1803,14 +2006,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 396,
-                          "Line": 15,
+                          "Index": 439,
+                          "Line": 18,
                           "Column": 2,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 403,
-                          "Line": 15,
+                          "Index": 446,
+                          "Line": 18,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         }
@@ -1833,14 +2036,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 405,
-                                  "Line": 15,
+                                  "Index": 448,
+                                  "Line": 18,
                                   "Column": 11,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 408,
-                                  "Line": 15,
+                                  "Index": 451,
+                                  "Line": 18,
                                   "Column": 14,
                                   "StreamName": "lists.scm"
                                 }
@@ -1863,14 +2066,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 410,
-                                          "Line": 15,
+                                          "Index": 453,
+                                          "Line": 18,
                                           "Column": 16,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 414,
-                                          "Line": 15,
+                                          "Index": 457,
+                                          "Line": 18,
                                           "Column": 20,
                                           "StreamName": "lists.scm"
                                         }
@@ -1893,14 +2096,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 415,
-                                          "Line": 15,
+                                          "Index": 458,
+                                          "Line": 18,
                                           "Column": 21,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 416,
-                                          "Line": 15,
+                                          "Index": 459,
+                                          "Line": 18,
                                           "Column": 22,
                                           "StreamName": "lists.scm"
                                         }
@@ -1923,14 +2126,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 417,
-                                          "Line": 15,
+                                          "Index": 460,
+                                          "Line": 18,
                                           "Column": 23,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 418,
-                                          "Line": 15,
+                                          "Index": 461,
+                                          "Line": 18,
                                           "Column": 24,
                                           "StreamName": "lists.scm"
                                         }
@@ -1953,14 +2156,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 419,
-                                          "Line": 15,
+                                          "Index": 462,
+                                          "Line": 18,
                                           "Column": 25,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 420,
-                                          "Line": 15,
+                                          "Index": 463,
+                                          "Line": 18,
                                           "Column": 26,
                                           "StreamName": "lists.scm"
                                         }
@@ -1983,14 +2186,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 421,
-                                          "Line": 15,
+                                          "Index": 464,
+                                          "Line": 18,
                                           "Column": 27,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 422,
-                                          "Line": 15,
+                                          "Index": 465,
+                                          "Line": 18,
                                           "Column": 28,
                                           "StreamName": "lists.scm"
                                         }
@@ -2013,14 +2216,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 423,
-                                          "Line": 15,
+                                          "Index": 466,
+                                          "Line": 18,
                                           "Column": 29,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 424,
-                                          "Line": 15,
+                                          "Index": 467,
+                                          "Line": 18,
                                           "Column": 30,
                                           "StreamName": "lists.scm"
                                         }
@@ -2034,14 +2237,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 409,
-                                  "Line": 15,
+                                  "Index": 452,
+                                  "Line": 18,
                                   "Column": 15,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 425,
-                                  "Line": 15,
+                                  "Index": 468,
+                                  "Line": 18,
                                   "Column": 31,
                                   "StreamName": "lists.scm"
                                 }
@@ -2055,14 +2258,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 404,
-                          "Line": 15,
+                          "Index": 447,
+                          "Line": 18,
                           "Column": 10,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 426,
-                          "Line": 15,
+                          "Index": 469,
+                          "Line": 18,
                           "Column": 32,
                           "StreamName": "lists.scm"
                         }
@@ -2076,14 +2279,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 395,
-                  "Line": 15,
+                  "Index": 438,
+                  "Line": 18,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 427,
-                  "Line": 15,
+                  "Index": 470,
+                  "Line": 18,
                   "Column": 33,
                   "StreamName": "lists.scm"
                 }
@@ -2106,14 +2309,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 429,
-                          "Line": 16,
+                          "Index": 472,
+                          "Line": 19,
                           "Column": 2,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 436,
-                          "Line": 16,
+                          "Index": 479,
+                          "Line": 19,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         }
@@ -2127,14 +2330,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 428,
-                  "Line": 16,
+                  "Index": 471,
+                  "Line": 19,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 437,
-                  "Line": 16,
+                  "Index": 480,
+                  "Line": 19,
                   "Column": 10,
                   "StreamName": "lists.scm"
                 }
@@ -2157,14 +2360,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 440,
-                          "Line": 18,
+                          "Index": 483,
+                          "Line": 21,
                           "Column": 2,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 447,
-                          "Line": 18,
+                          "Index": 490,
+                          "Line": 21,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         }
@@ -2187,14 +2390,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 449,
-                                  "Line": 18,
+                                  "Index": 492,
+                                  "Line": 21,
                                   "Column": 11,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 454,
-                                  "Line": 18,
+                                  "Index": 497,
+                                  "Line": 21,
                                   "Column": 16,
                                   "StreamName": "lists.scm"
                                 }
@@ -2217,14 +2420,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 456,
-                                          "Line": 18,
+                                          "Index": 499,
+                                          "Line": 21,
                                           "Column": 18,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 460,
-                                          "Line": 18,
+                                          "Index": 503,
+                                          "Line": 21,
                                           "Column": 22,
                                           "StreamName": "lists.scm"
                                         }
@@ -2247,14 +2450,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 461,
-                                          "Line": 18,
+                                          "Index": 504,
+                                          "Line": 21,
                                           "Column": 23,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 464,
-                                          "Line": 18,
+                                          "Index": 507,
+                                          "Line": 21,
                                           "Column": 26,
                                           "StreamName": "lists.scm"
                                         }
@@ -2272,14 +2475,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 465,
-                                          "Line": 18,
+                                          "Index": 508,
+                                          "Line": 21,
                                           "Column": 27,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 467,
-                                          "Line": 18,
+                                          "Index": 510,
+                                          "Line": 21,
                                           "Column": 29,
                                           "StreamName": "lists.scm"
                                         }
@@ -2293,14 +2496,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 455,
-                                  "Line": 18,
+                                  "Index": 498,
+                                  "Line": 21,
                                   "Column": 17,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 468,
-                                  "Line": 18,
+                                  "Index": 511,
+                                  "Line": 21,
                                   "Column": 30,
                                   "StreamName": "lists.scm"
                                 }
@@ -2314,14 +2517,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 448,
-                          "Line": 18,
+                          "Index": 491,
+                          "Line": 21,
                           "Column": 10,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 469,
-                          "Line": 18,
+                          "Index": 512,
+                          "Line": 21,
                           "Column": 31,
                           "StreamName": "lists.scm"
                         }
@@ -2335,14 +2538,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 439,
-                  "Line": 18,
+                  "Index": 482,
+                  "Line": 21,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 470,
-                  "Line": 18,
+                  "Index": 513,
+                  "Line": 21,
                   "Column": 32,
                   "StreamName": "lists.scm"
                 }
@@ -2365,14 +2568,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 480,
-                          "Line": 19,
+                          "Index": 523,
+                          "Line": 22,
                           "Column": 2,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 487,
-                          "Line": 19,
+                          "Index": 530,
+                          "Line": 22,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         }
@@ -2395,14 +2598,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 489,
-                                  "Line": 19,
+                                  "Index": 532,
+                                  "Line": 22,
                                   "Column": 11,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 494,
-                                  "Line": 19,
+                                  "Index": 537,
+                                  "Line": 22,
                                   "Column": 16,
                                   "StreamName": "lists.scm"
                                 }
@@ -2425,14 +2628,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 496,
-                                          "Line": 19,
+                                          "Index": 539,
+                                          "Line": 22,
                                           "Column": 18,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 500,
-                                          "Line": 19,
+                                          "Index": 543,
+                                          "Line": 22,
                                           "Column": 22,
                                           "StreamName": "lists.scm"
                                         }
@@ -2455,14 +2658,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 501,
-                                          "Line": 19,
+                                          "Index": 544,
+                                          "Line": 22,
                                           "Column": 23,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 504,
-                                          "Line": 19,
+                                          "Index": 547,
+                                          "Line": 22,
                                           "Column": 26,
                                           "StreamName": "lists.scm"
                                         }
@@ -2485,14 +2688,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 506,
-                                                  "Line": 19,
+                                                  "Index": 549,
+                                                  "Line": 22,
                                                   "Column": 28,
                                                   "StreamName": "lists.scm"
                                                 },
                                                 {
-                                                  "Index": 510,
-                                                  "Line": 19,
+                                                  "Index": 553,
+                                                  "Line": 22,
                                                   "Column": 32,
                                                   "StreamName": "lists.scm"
                                                 }
@@ -2506,14 +2709,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 505,
-                                          "Line": 19,
+                                          "Index": 548,
+                                          "Line": 22,
                                           "Column": 27,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 511,
-                                          "Line": 19,
+                                          "Index": 554,
+                                          "Line": 22,
                                           "Column": 33,
                                           "StreamName": "lists.scm"
                                         }
@@ -2527,14 +2730,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 495,
-                                  "Line": 19,
+                                  "Index": 538,
+                                  "Line": 22,
                                   "Column": 17,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 512,
-                                  "Line": 19,
+                                  "Index": 555,
+                                  "Line": 22,
                                   "Column": 34,
                                   "StreamName": "lists.scm"
                                 }
@@ -2548,14 +2751,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 488,
-                          "Line": 19,
+                          "Index": 531,
+                          "Line": 22,
                           "Column": 10,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 513,
-                          "Line": 19,
+                          "Index": 556,
+                          "Line": 22,
                           "Column": 35,
                           "StreamName": "lists.scm"
                         }
@@ -2569,14 +2772,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 479,
-                  "Line": 19,
+                  "Index": 522,
+                  "Line": 22,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 514,
-                  "Line": 19,
+                  "Index": 557,
+                  "Line": 22,
                   "Column": 36,
                   "StreamName": "lists.scm"
                 }
@@ -2599,14 +2802,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 524,
-                          "Line": 20,
+                          "Index": 567,
+                          "Line": 23,
                           "Column": 2,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 531,
-                          "Line": 20,
+                          "Index": 574,
+                          "Line": 23,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         }
@@ -2629,14 +2832,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 533,
-                                  "Line": 20,
+                                  "Index": 576,
+                                  "Line": 23,
                                   "Column": 11,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 538,
-                                  "Line": 20,
+                                  "Index": 581,
+                                  "Line": 23,
                                   "Column": 16,
                                   "StreamName": "lists.scm"
                                 }
@@ -2659,14 +2862,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 540,
-                                          "Line": 20,
+                                          "Index": 583,
+                                          "Line": 23,
                                           "Column": 18,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 544,
-                                          "Line": 20,
+                                          "Index": 587,
+                                          "Line": 23,
                                           "Column": 22,
                                           "StreamName": "lists.scm"
                                         }
@@ -2689,14 +2892,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 545,
-                                          "Line": 20,
+                                          "Index": 588,
+                                          "Line": 23,
                                           "Column": 23,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 548,
-                                          "Line": 20,
+                                          "Index": 591,
+                                          "Line": 23,
                                           "Column": 26,
                                           "StreamName": "lists.scm"
                                         }
@@ -2713,210 +2916,6 @@
                                             "b"
                                           ]
                                         }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 549,
-                                          "Line": 20,
-                                          "Column": 27,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 552,
-                                          "Line": 20,
-                                          "Column": 30,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 539,
-                                  "Line": 20,
-                                  "Column": 17,
-                                  "StreamName": "lists.scm"
-                                },
-                                {
-                                  "Index": 553,
-                                  "Line": 20,
-                                  "Column": 31,
-                                  "StreamName": "lists.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 532,
-                          "Line": 20,
-                          "Column": 10,
-                          "StreamName": "lists.scm"
-                        },
-                        {
-                          "Index": 554,
-                          "Line": 20,
-                          "Column": 32,
-                          "StreamName": "lists.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 523,
-                  "Line": 20,
-                  "Column": 1,
-                  "StreamName": "lists.scm"
-                },
-                {
-                  "Index": 555,
-                  "Line": 20,
-                  "Column": 33,
-                  "StreamName": "lists.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "newline"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 565,
-                          "Line": 21,
-                          "Column": 2,
-                          "StreamName": "lists.scm"
-                        },
-                        {
-                          "Index": 572,
-                          "Line": 21,
-                          "Column": 9,
-                          "StreamName": "lists.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 564,
-                  "Line": 21,
-                  "Column": 1,
-                  "StreamName": "lists.scm"
-                },
-                {
-                  "Index": 573,
-                  "Line": 21,
-                  "Column": 10,
-                  "StreamName": "lists.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "display"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 576,
-                          "Line": 23,
-                          "Column": 2,
-                          "StreamName": "lists.scm"
-                        },
-                        {
-                          "Index": 583,
-                          "Line": 23,
-                          "Column": 9,
-                          "StreamName": "lists.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "pair?"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 585,
-                                  "Line": 23,
-                                  "Column": 11,
-                                  "StreamName": "lists.scm"
-                                },
-                                {
-                                  "Index": 590,
-                                  "Line": 23,
-                                  "Column": 16,
-                                  "StreamName": "lists.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "cons"
                                       ]
                                     },
                                     "Location": {
@@ -2925,514 +2924,12 @@
                                         {
                                           "Index": 592,
                                           "Line": 23,
-                                          "Column": 18,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 596,
-                                          "Line": 23,
-                                          "Column": 22,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Str",
-                                          "Fields": [
-                                            "a"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 597,
-                                          "Line": 23,
-                                          "Column": 23,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 600,
-                                          "Line": 23,
-                                          "Column": 26,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Form",
-                                      "Fields": [
-                                        []
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 601,
-                                          "Line": 23,
                                           "Column": 27,
                                           "StreamName": "lists.scm"
                                         },
                                         {
-                                          "Index": 603,
+                                          "Index": 595,
                                           "Line": 23,
-                                          "Column": 29,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 591,
-                                  "Line": 23,
-                                  "Column": 17,
-                                  "StreamName": "lists.scm"
-                                },
-                                {
-                                  "Index": 604,
-                                  "Line": 23,
-                                  "Column": 30,
-                                  "StreamName": "lists.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 584,
-                          "Line": 23,
-                          "Column": 10,
-                          "StreamName": "lists.scm"
-                        },
-                        {
-                          "Index": 605,
-                          "Line": 23,
-                          "Column": 31,
-                          "StreamName": "lists.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 575,
-                  "Line": 23,
-                  "Column": 1,
-                  "StreamName": "lists.scm"
-                },
-                {
-                  "Index": 606,
-                  "Line": 23,
-                  "Column": 32,
-                  "StreamName": "lists.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "display"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 616,
-                          "Line": 24,
-                          "Column": 2,
-                          "StreamName": "lists.scm"
-                        },
-                        {
-                          "Index": 623,
-                          "Line": 24,
-                          "Column": 9,
-                          "StreamName": "lists.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "pair?"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 625,
-                                  "Line": 24,
-                                  "Column": 11,
-                                  "StreamName": "lists.scm"
-                                },
-                                {
-                                  "Index": 630,
-                                  "Line": 24,
-                                  "Column": 16,
-                                  "StreamName": "lists.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "cons"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 632,
-                                          "Line": 24,
-                                          "Column": 18,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 636,
-                                          "Line": 24,
-                                          "Column": 22,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Str",
-                                          "Fields": [
-                                            "a"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 637,
-                                          "Line": 24,
-                                          "Column": 23,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 640,
-                                          "Line": 24,
-                                          "Column": 26,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Form",
-                                      "Fields": [
-                                        [
-                                          {
-                                            "Kind": {
-                                              "Case": "Ident",
-                                              "Fields": [
-                                                "list"
-                                              ]
-                                            },
-                                            "Location": {
-                                              "Case": "Span",
-                                              "Fields": [
-                                                {
-                                                  "Index": 642,
-                                                  "Line": 24,
-                                                  "Column": 28,
-                                                  "StreamName": "lists.scm"
-                                                },
-                                                {
-                                                  "Index": 646,
-                                                  "Line": 24,
-                                                  "Column": 32,
-                                                  "StreamName": "lists.scm"
-                                                }
-                                              ]
-                                            }
-                                          }
-                                        ]
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 641,
-                                          "Line": 24,
-                                          "Column": 27,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 647,
-                                          "Line": 24,
-                                          "Column": 33,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 631,
-                                  "Line": 24,
-                                  "Column": 17,
-                                  "StreamName": "lists.scm"
-                                },
-                                {
-                                  "Index": 648,
-                                  "Line": 24,
-                                  "Column": 34,
-                                  "StreamName": "lists.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 624,
-                          "Line": 24,
-                          "Column": 10,
-                          "StreamName": "lists.scm"
-                        },
-                        {
-                          "Index": 649,
-                          "Line": 24,
-                          "Column": 35,
-                          "StreamName": "lists.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 615,
-                  "Line": 24,
-                  "Column": 1,
-                  "StreamName": "lists.scm"
-                },
-                {
-                  "Index": 650,
-                  "Line": 24,
-                  "Column": 36,
-                  "StreamName": "lists.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "display"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 660,
-                          "Line": 25,
-                          "Column": 2,
-                          "StreamName": "lists.scm"
-                        },
-                        {
-                          "Index": 667,
-                          "Line": 25,
-                          "Column": 9,
-                          "StreamName": "lists.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "pair?"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 669,
-                                  "Line": 25,
-                                  "Column": 11,
-                                  "StreamName": "lists.scm"
-                                },
-                                {
-                                  "Index": 674,
-                                  "Line": 25,
-                                  "Column": 16,
-                                  "StreamName": "lists.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "cons"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 676,
-                                          "Line": 25,
-                                          "Column": 18,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 680,
-                                          "Line": 25,
-                                          "Column": 22,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Str",
-                                          "Fields": [
-                                            "a"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 681,
-                                          "Line": 25,
-                                          "Column": 23,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 684,
-                                          "Line": 25,
-                                          "Column": 26,
-                                          "StreamName": "lists.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Str",
-                                          "Fields": [
-                                            "b"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 685,
-                                          "Line": 25,
-                                          "Column": 27,
-                                          "StreamName": "lists.scm"
-                                        },
-                                        {
-                                          "Index": 688,
-                                          "Line": 25,
                                           "Column": 30,
                                           "StreamName": "lists.scm"
                                         }
@@ -3446,14 +2943,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 675,
-                                  "Line": 25,
+                                  "Index": 582,
+                                  "Line": 23,
                                   "Column": 17,
                                   "StreamName": "lists.scm"
                                 },
                                 {
-                                  "Index": 689,
-                                  "Line": 25,
+                                  "Index": 596,
+                                  "Line": 23,
                                   "Column": 31,
                                   "StreamName": "lists.scm"
                                 }
@@ -3467,14 +2964,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 668,
-                          "Line": 25,
+                          "Index": 575,
+                          "Line": 23,
                           "Column": 10,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 690,
-                          "Line": 25,
+                          "Index": 597,
+                          "Line": 23,
                           "Column": 32,
                           "StreamName": "lists.scm"
                         }
@@ -3488,14 +2985,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 659,
-                  "Line": 25,
+                  "Index": 566,
+                  "Line": 23,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 691,
-                  "Line": 25,
+                  "Index": 598,
+                  "Line": 23,
                   "Column": 33,
                   "StreamName": "lists.scm"
                 }
@@ -3518,14 +3015,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 701,
-                          "Line": 26,
+                          "Index": 608,
+                          "Line": 24,
                           "Column": 2,
                           "StreamName": "lists.scm"
                         },
                         {
-                          "Index": 708,
-                          "Line": 26,
+                          "Index": 615,
+                          "Line": 24,
                           "Column": 9,
                           "StreamName": "lists.scm"
                         }
@@ -3539,14 +3036,720 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 700,
+                  "Index": 607,
+                  "Line": 24,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 616,
+                  "Line": 24,
+                  "Column": 10,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 619,
+                          "Line": 26,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 626,
+                          "Line": 26,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "pair?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 628,
+                                  "Line": 26,
+                                  "Column": 11,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 633,
+                                  "Line": 26,
+                                  "Column": 16,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "cons"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 635,
+                                          "Line": 26,
+                                          "Column": 18,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 639,
+                                          "Line": 26,
+                                          "Column": 22,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "a"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 640,
+                                          "Line": 26,
+                                          "Column": 23,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 643,
+                                          "Line": 26,
+                                          "Column": 26,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        []
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 644,
+                                          "Line": 26,
+                                          "Column": 27,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 646,
+                                          "Line": 26,
+                                          "Column": 29,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 634,
+                                  "Line": 26,
+                                  "Column": 17,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 647,
+                                  "Line": 26,
+                                  "Column": 30,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 627,
+                          "Line": 26,
+                          "Column": 10,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 648,
+                          "Line": 26,
+                          "Column": 31,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 618,
                   "Line": 26,
                   "Column": 1,
                   "StreamName": "lists.scm"
                 },
                 {
-                  "Index": 709,
+                  "Index": 649,
                   "Line": 26,
+                  "Column": 32,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 659,
+                          "Line": 27,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 666,
+                          "Line": 27,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "pair?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 668,
+                                  "Line": 27,
+                                  "Column": 11,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 673,
+                                  "Line": 27,
+                                  "Column": 16,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "cons"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 675,
+                                          "Line": 27,
+                                          "Column": 18,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 679,
+                                          "Line": 27,
+                                          "Column": 22,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "a"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 680,
+                                          "Line": 27,
+                                          "Column": 23,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 683,
+                                          "Line": 27,
+                                          "Column": 26,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "list"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 685,
+                                                  "Line": 27,
+                                                  "Column": 28,
+                                                  "StreamName": "lists.scm"
+                                                },
+                                                {
+                                                  "Index": 689,
+                                                  "Line": 27,
+                                                  "Column": 32,
+                                                  "StreamName": "lists.scm"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 684,
+                                          "Line": 27,
+                                          "Column": 27,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 690,
+                                          "Line": 27,
+                                          "Column": 33,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 674,
+                                  "Line": 27,
+                                  "Column": 17,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 691,
+                                  "Line": 27,
+                                  "Column": 34,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 667,
+                          "Line": 27,
+                          "Column": 10,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 692,
+                          "Line": 27,
+                          "Column": 35,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 658,
+                  "Line": 27,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 693,
+                  "Line": 27,
+                  "Column": 36,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 703,
+                          "Line": 28,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 710,
+                          "Line": 28,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "pair?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 712,
+                                  "Line": 28,
+                                  "Column": 11,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 717,
+                                  "Line": 28,
+                                  "Column": 16,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "cons"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 719,
+                                          "Line": 28,
+                                          "Column": 18,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 723,
+                                          "Line": 28,
+                                          "Column": 22,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "a"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 724,
+                                          "Line": 28,
+                                          "Column": 23,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 727,
+                                          "Line": 28,
+                                          "Column": 26,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Str",
+                                          "Fields": [
+                                            "b"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 728,
+                                          "Line": 28,
+                                          "Column": 27,
+                                          "StreamName": "lists.scm"
+                                        },
+                                        {
+                                          "Index": 731,
+                                          "Line": 28,
+                                          "Column": 30,
+                                          "StreamName": "lists.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 718,
+                                  "Line": 28,
+                                  "Column": 17,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 732,
+                                  "Line": 28,
+                                  "Column": 31,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 711,
+                          "Line": 28,
+                          "Column": 10,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 733,
+                          "Line": 28,
+                          "Column": 32,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 702,
+                  "Line": 28,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 734,
+                  "Line": 28,
+                  "Column": 33,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 744,
+                          "Line": 29,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 751,
+                          "Line": 29,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 743,
+                  "Line": 29,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 752,
+                  "Line": 29,
                   "Column": 10,
                   "StreamName": "lists.scm"
                 }
@@ -3566,8 +3769,8 @@
           "StreamName": "lists.scm"
         },
         {
-          "Index": 710,
-          "Line": 27,
+          "Index": 753,
+          "Line": 30,
           "Column": 1,
           "StreamName": "lists.scm"
         }

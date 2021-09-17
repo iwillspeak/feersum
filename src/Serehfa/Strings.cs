@@ -1,10 +1,12 @@
 using System;
+using Serehfa.Attributes;
 
 namespace Serehfa
 {
     using static ArgHelpers;
 
-    public static class StringMethods
+    [LispLibrary("scheme", "base")]
+    public static class Strings
     {
         [LispBuiltin("string=?")]
         public static object StringEquals(object[] args)

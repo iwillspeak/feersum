@@ -1,15 +1,17 @@
 module Builtins
 
-open IlHelpers
 open System.Reflection
 open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
+
+open IlHelpers
 open Macros
 open System
 open Syntax
-open Diagnostics
 open Utils
+open Bind
+open Libraries
 
 /// Core Types Used by the Compiler at Runtime
 type CoreTypes =
@@ -57,13 +59,17 @@ let private addEnvDecls (assm: AssemblyDefinition) =
 let private findBuiltinMethods (externAssm: Assembly) =
     let findBuiltinMethodsForTy (ty: Type) =
             ty.GetMethods(BindingFlags.Public ||| BindingFlags.Static)
-            |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.LispBuiltinAttribute>(), m))
+            |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.Attributes.LispBuiltinAttribute>(), m))
             |> Seq.where (fun (attr, _) -> not (isNull attr))
     externAssm.ExportedTypes
-    |> Seq.collect findBuiltinMethodsForTy
+    |> Seq.choose (fun ty ->
+        ty.GetCustomAttribute<Serehfa.Attributes.LispLibraryAttribute>()
+        |> Option.ofObj
+        |> Option.map (fun n -> (List.ofSeq n.Name, findBuiltinMethodsForTy ty)))
 
 let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
     findBuiltinMethods externAssm
+    |> Seq.collect (fun (_, m) -> m)
     |> Seq.map (fun (a, m) -> (a.Name, lispAssm.MainModule.ImportReference(m)))
     |> Map.ofSeq
 
@@ -149,18 +155,29 @@ let private macroUnless =
 
 let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
 
-// ------------------------ Public Builtins API --------------------------------
-
 /// The list of builtin procedure names
-let public coreProcNames =
+let private coreProcedures =
     findBuiltinMethods serehfaAssm
-    |> Seq.map (fun (a, _) -> a.Name)
+    |> Seq.map (fun (name, exports) ->
+        (name, exports |> Seq.map (fun (a, exports) -> (a.Name, StorageRef.Builtin(a.Name)))))
 
 /// The list of builtin macros
-let public coreMacros =
-    [ macroAnd ; macroOr; macroWhen; macroUnless ]
+let private coreMacros =
+    (["scheme";"base"], [ macroAnd ; macroOr; macroWhen; macroUnless ] |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m))))
+    |> Seq.singleton
+
+// ------------------------ Public Builtins API --------------------------------
+
+/// The core library signature
+let public loadCoreSignatures =
+    Seq.append coreProcedures coreMacros
+    |> Seq.groupBy (fun (n, _) -> n)
+    |> Seq.map (fun (name, parts) ->
+        let bodies = Seq.collect (fun (n, body) -> body) parts
+        { LibraryName = name; Exports = bodies |> List.ofSeq})
+    |> List.ofSeq
 
 /// Load the core types into the given assembly
-let loadCore (assm: AssemblyDefinition) =
+let importCore (assm: AssemblyDefinition) =
     let builtins = loadExternBuiltins assm serehfaAssm
     { loadCoreTypes assm serehfaAssm with EnvTy = addEnvDecls assm; Builtins = builtins }
