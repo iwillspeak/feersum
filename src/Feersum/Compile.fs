@@ -839,13 +839,13 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
-    let coreLib = Builtins.loadCoreSignature
+    let coreLibs = Builtins.loadCoreSignatures
     let scope =
         if options.OutputType = OutputType.Script then
-            scopeFromLibraries (Seq.singleton coreLib) 
+            scopeFromLibraries coreLibs
         else
             emptyScope
-    let bound = bind scope [coreLib] node
+    let bound = bind scope coreLibs node
     if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound
         |> Lower.lower

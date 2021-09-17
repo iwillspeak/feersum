@@ -4785,7 +4785,7 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
-                                "sort"
+                                "scheme"
                               ]
                             },
                             "Location": {
@@ -4798,9 +4798,34 @@
                                   "StreamName": "qsort.scm"
                                 },
                                 {
-                                  "Index": 2386,
+                                  "Index": 2388,
                                   "Line": 59,
-                                  "Column": 10,
+                                  "Column": 12,
+                                  "StreamName": "qsort.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 2389,
+                                  "Line": 59,
+                                  "Column": 13,
+                                  "StreamName": "qsort.scm"
+                                },
+                                {
+                                  "Index": 2394,
+                                  "Line": 59,
+                                  "Column": 18,
                                   "StreamName": "qsort.scm"
                                 }
                               ]
@@ -4819,8 +4844,59 @@
                           "StreamName": "qsort.scm"
                         },
                         {
-                          "Index": 2387,
+                          "Index": 2395,
                           "Line": 59,
+                          "Column": 19,
+                          "StreamName": "qsort.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "sort"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 2401,
+                                  "Line": 60,
+                                  "Column": 6,
+                                  "StreamName": "qsort.scm"
+                                },
+                                {
+                                  "Index": 2405,
+                                  "Line": 60,
+                                  "Column": 10,
+                                  "StreamName": "qsort.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 2400,
+                          "Line": 60,
+                          "Column": 5,
+                          "StreamName": "qsort.scm"
+                        },
+                        {
+                          "Index": 2406,
+                          "Line": 60,
                           "Column": 11,
                           "StreamName": "qsort.scm"
                         }
@@ -4840,8 +4916,8 @@
                   "StreamName": "qsort.scm"
                 },
                 {
-                  "Index": 2388,
-                  "Line": 59,
+                  "Index": 2407,
+                  "Line": 60,
                   "Column": 12,
                   "StreamName": "qsort.scm"
                 }
@@ -4864,14 +4940,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 2391,
-                          "Line": 61,
+                          "Index": 2410,
+                          "Line": 62,
                           "Column": 2,
                           "StreamName": "qsort.scm"
                         },
                         {
-                          "Index": 2398,
-                          "Line": 61,
+                          "Index": 2417,
+                          "Line": 62,
                           "Column": 9,
                           "StreamName": "qsort.scm"
                         }
@@ -4894,14 +4970,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 2400,
-                                  "Line": 61,
+                                  "Index": 2419,
+                                  "Line": 62,
                                   "Column": 11,
                                   "StreamName": "qsort.scm"
                                 },
                                 {
-                                  "Index": 2405,
-                                  "Line": 61,
+                                  "Index": 2424,
+                                  "Line": 62,
                                   "Column": 16,
                                   "StreamName": "qsort.scm"
                                 }
@@ -4933,14 +5009,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2408,
-                                                "Line": 61,
+                                                "Index": 2427,
+                                                "Line": 62,
                                                 "Column": 19,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2410,
-                                                "Line": 61,
+                                                "Index": 2429,
+                                                "Line": 62,
                                                 "Column": 21,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -4963,14 +5039,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2411,
-                                                "Line": 61,
+                                                "Index": 2430,
+                                                "Line": 62,
                                                 "Column": 22,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2413,
-                                                "Line": 61,
+                                                "Index": 2432,
+                                                "Line": 62,
                                                 "Column": 24,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -4993,14 +5069,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2414,
-                                                "Line": 61,
+                                                "Index": 2433,
+                                                "Line": 62,
                                                 "Column": 25,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2416,
-                                                "Line": 61,
+                                                "Index": 2435,
+                                                "Line": 62,
                                                 "Column": 27,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5023,14 +5099,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2417,
-                                                "Line": 61,
+                                                "Index": 2436,
+                                                "Line": 62,
                                                 "Column": 28,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2418,
-                                                "Line": 61,
+                                                "Index": 2437,
+                                                "Line": 62,
                                                 "Column": 29,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5053,14 +5129,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2419,
-                                                "Line": 61,
+                                                "Index": 2438,
+                                                "Line": 62,
                                                 "Column": 30,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2420,
-                                                "Line": 61,
+                                                "Index": 2439,
+                                                "Line": 62,
                                                 "Column": 31,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5074,14 +5150,14 @@
                                     "Case": "Span",
                                     "Fields": [
                                       {
-                                        "Index": 2407,
-                                        "Line": 61,
+                                        "Index": 2426,
+                                        "Line": 62,
                                         "Column": 18,
                                         "StreamName": "qsort.scm"
                                       },
                                       {
-                                        "Index": 2421,
-                                        "Line": 61,
+                                        "Index": 2440,
+                                        "Line": 62,
                                         "Column": 32,
                                         "StreamName": "qsort.scm"
                                       }
@@ -5094,14 +5170,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 2406,
-                                  "Line": 61,
+                                  "Index": 2425,
+                                  "Line": 62,
                                   "Column": 17,
                                   "StreamName": "qsort.scm"
                                 },
                                 {
-                                  "Index": 2421,
-                                  "Line": 61,
+                                  "Index": 2440,
+                                  "Line": 62,
                                   "Column": 32,
                                   "StreamName": "qsort.scm"
                                 }
@@ -5115,14 +5191,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 2399,
-                          "Line": 61,
+                          "Index": 2418,
+                          "Line": 62,
                           "Column": 10,
                           "StreamName": "qsort.scm"
                         },
                         {
-                          "Index": 2422,
-                          "Line": 61,
+                          "Index": 2441,
+                          "Line": 62,
                           "Column": 33,
                           "StreamName": "qsort.scm"
                         }
@@ -5136,14 +5212,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 2390,
-                  "Line": 61,
+                  "Index": 2409,
+                  "Line": 62,
                   "Column": 1,
                   "StreamName": "qsort.scm"
                 },
                 {
-                  "Index": 2423,
-                  "Line": 61,
+                  "Index": 2442,
+                  "Line": 62,
                   "Column": 34,
                   "StreamName": "qsort.scm"
                 }
@@ -5166,14 +5242,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 2424,
-                          "Line": 61,
+                          "Index": 2443,
+                          "Line": 62,
                           "Column": 35,
                           "StreamName": "qsort.scm"
                         },
                         {
-                          "Index": 2431,
-                          "Line": 61,
+                          "Index": 2450,
+                          "Line": 62,
                           "Column": 42,
                           "StreamName": "qsort.scm"
                         }
@@ -5187,14 +5263,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 2423,
-                  "Line": 61,
+                  "Index": 2442,
+                  "Line": 62,
                   "Column": 34,
                   "StreamName": "qsort.scm"
                 },
                 {
-                  "Index": 2432,
-                  "Line": 61,
+                  "Index": 2451,
+                  "Line": 62,
                   "Column": 43,
                   "StreamName": "qsort.scm"
                 }
@@ -5217,14 +5293,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 2434,
-                          "Line": 62,
+                          "Index": 2453,
+                          "Line": 63,
                           "Column": 2,
                           "StreamName": "qsort.scm"
                         },
                         {
-                          "Index": 2441,
-                          "Line": 62,
+                          "Index": 2460,
+                          "Line": 63,
                           "Column": 9,
                           "StreamName": "qsort.scm"
                         }
@@ -5247,14 +5323,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 2443,
-                                  "Line": 62,
+                                  "Index": 2462,
+                                  "Line": 63,
                                   "Column": 11,
                                   "StreamName": "qsort.scm"
                                 },
                                 {
-                                  "Index": 2448,
-                                  "Line": 62,
+                                  "Index": 2467,
+                                  "Line": 63,
                                   "Column": 16,
                                   "StreamName": "qsort.scm"
                                 }
@@ -5286,14 +5362,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2451,
-                                                "Line": 62,
+                                                "Index": 2470,
+                                                "Line": 63,
                                                 "Column": 19,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2452,
-                                                "Line": 62,
+                                                "Index": 2471,
+                                                "Line": 63,
                                                 "Column": 20,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5316,14 +5392,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2453,
-                                                "Line": 62,
+                                                "Index": 2472,
+                                                "Line": 63,
                                                 "Column": 21,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2454,
-                                                "Line": 62,
+                                                "Index": 2473,
+                                                "Line": 63,
                                                 "Column": 22,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5346,14 +5422,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2455,
-                                                "Line": 62,
+                                                "Index": 2474,
+                                                "Line": 63,
                                                 "Column": 23,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2456,
-                                                "Line": 62,
+                                                "Index": 2475,
+                                                "Line": 63,
                                                 "Column": 24,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5376,14 +5452,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2457,
-                                                "Line": 62,
+                                                "Index": 2476,
+                                                "Line": 63,
                                                 "Column": 25,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2458,
-                                                "Line": 62,
+                                                "Index": 2477,
+                                                "Line": 63,
                                                 "Column": 26,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5406,14 +5482,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2459,
-                                                "Line": 62,
+                                                "Index": 2478,
+                                                "Line": 63,
                                                 "Column": 27,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2460,
-                                                "Line": 62,
+                                                "Index": 2479,
+                                                "Line": 63,
                                                 "Column": 28,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5436,14 +5512,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2461,
-                                                "Line": 62,
+                                                "Index": 2480,
+                                                "Line": 63,
                                                 "Column": 29,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2462,
-                                                "Line": 62,
+                                                "Index": 2481,
+                                                "Line": 63,
                                                 "Column": 30,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5466,14 +5542,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2463,
-                                                "Line": 62,
+                                                "Index": 2482,
+                                                "Line": 63,
                                                 "Column": 31,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2464,
-                                                "Line": 62,
+                                                "Index": 2483,
+                                                "Line": 63,
                                                 "Column": 32,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5496,14 +5572,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2465,
-                                                "Line": 62,
+                                                "Index": 2484,
+                                                "Line": 63,
                                                 "Column": 33,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2466,
-                                                "Line": 62,
+                                                "Index": 2485,
+                                                "Line": 63,
                                                 "Column": 34,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5526,14 +5602,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2467,
-                                                "Line": 62,
+                                                "Index": 2486,
+                                                "Line": 63,
                                                 "Column": 35,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2468,
-                                                "Line": 62,
+                                                "Index": 2487,
+                                                "Line": 63,
                                                 "Column": 36,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5556,14 +5632,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2469,
-                                                "Line": 62,
+                                                "Index": 2488,
+                                                "Line": 63,
                                                 "Column": 37,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2470,
-                                                "Line": 62,
+                                                "Index": 2489,
+                                                "Line": 63,
                                                 "Column": 38,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5586,14 +5662,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2471,
-                                                "Line": 62,
+                                                "Index": 2490,
+                                                "Line": 63,
                                                 "Column": 39,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2472,
-                                                "Line": 62,
+                                                "Index": 2491,
+                                                "Line": 63,
                                                 "Column": 40,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5616,14 +5692,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2473,
-                                                "Line": 62,
+                                                "Index": 2492,
+                                                "Line": 63,
                                                 "Column": 41,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2474,
-                                                "Line": 62,
+                                                "Index": 2493,
+                                                "Line": 63,
                                                 "Column": 42,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5646,14 +5722,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2475,
-                                                "Line": 62,
+                                                "Index": 2494,
+                                                "Line": 63,
                                                 "Column": 43,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2476,
-                                                "Line": 62,
+                                                "Index": 2495,
+                                                "Line": 63,
                                                 "Column": 44,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5676,14 +5752,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2477,
-                                                "Line": 62,
+                                                "Index": 2496,
+                                                "Line": 63,
                                                 "Column": 45,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2478,
-                                                "Line": 62,
+                                                "Index": 2497,
+                                                "Line": 63,
                                                 "Column": 46,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5706,14 +5782,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2479,
-                                                "Line": 62,
+                                                "Index": 2498,
+                                                "Line": 63,
                                                 "Column": 47,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2480,
-                                                "Line": 62,
+                                                "Index": 2499,
+                                                "Line": 63,
                                                 "Column": 48,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5736,14 +5812,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2481,
-                                                "Line": 62,
+                                                "Index": 2500,
+                                                "Line": 63,
                                                 "Column": 49,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2482,
-                                                "Line": 62,
+                                                "Index": 2501,
+                                                "Line": 63,
                                                 "Column": 50,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5766,14 +5842,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2483,
-                                                "Line": 62,
+                                                "Index": 2502,
+                                                "Line": 63,
                                                 "Column": 51,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2484,
-                                                "Line": 62,
+                                                "Index": 2503,
+                                                "Line": 63,
                                                 "Column": 52,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5796,14 +5872,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2485,
-                                                "Line": 62,
+                                                "Index": 2504,
+                                                "Line": 63,
                                                 "Column": 53,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2486,
-                                                "Line": 62,
+                                                "Index": 2505,
+                                                "Line": 63,
                                                 "Column": 54,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5826,14 +5902,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2487,
-                                                "Line": 62,
+                                                "Index": 2506,
+                                                "Line": 63,
                                                 "Column": 55,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2488,
-                                                "Line": 62,
+                                                "Index": 2507,
+                                                "Line": 63,
                                                 "Column": 56,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5856,14 +5932,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 2489,
-                                                "Line": 62,
+                                                "Index": 2508,
+                                                "Line": 63,
                                                 "Column": 57,
                                                 "StreamName": "qsort.scm"
                                               },
                                               {
-                                                "Index": 2490,
-                                                "Line": 62,
+                                                "Index": 2509,
+                                                "Line": 63,
                                                 "Column": 58,
                                                 "StreamName": "qsort.scm"
                                               }
@@ -5877,14 +5953,14 @@
                                     "Case": "Span",
                                     "Fields": [
                                       {
-                                        "Index": 2450,
-                                        "Line": 62,
+                                        "Index": 2469,
+                                        "Line": 63,
                                         "Column": 18,
                                         "StreamName": "qsort.scm"
                                       },
                                       {
-                                        "Index": 2491,
-                                        "Line": 62,
+                                        "Index": 2510,
+                                        "Line": 63,
                                         "Column": 59,
                                         "StreamName": "qsort.scm"
                                       }
@@ -5897,14 +5973,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 2449,
-                                  "Line": 62,
+                                  "Index": 2468,
+                                  "Line": 63,
                                   "Column": 17,
                                   "StreamName": "qsort.scm"
                                 },
                                 {
-                                  "Index": 2491,
-                                  "Line": 62,
+                                  "Index": 2510,
+                                  "Line": 63,
                                   "Column": 59,
                                   "StreamName": "qsort.scm"
                                 }
@@ -5918,14 +5994,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 2442,
-                          "Line": 62,
+                          "Index": 2461,
+                          "Line": 63,
                           "Column": 10,
                           "StreamName": "qsort.scm"
                         },
                         {
-                          "Index": 2492,
-                          "Line": 62,
+                          "Index": 2511,
+                          "Line": 63,
                           "Column": 60,
                           "StreamName": "qsort.scm"
                         }
@@ -5939,14 +6015,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 2433,
-                  "Line": 62,
+                  "Index": 2452,
+                  "Line": 63,
                   "Column": 1,
                   "StreamName": "qsort.scm"
                 },
                 {
-                  "Index": 2493,
-                  "Line": 62,
+                  "Index": 2512,
+                  "Line": 63,
                   "Column": 61,
                   "StreamName": "qsort.scm"
                 }
@@ -5969,14 +6045,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 2494,
-                          "Line": 62,
+                          "Index": 2513,
+                          "Line": 63,
                           "Column": 62,
                           "StreamName": "qsort.scm"
                         },
                         {
-                          "Index": 2501,
-                          "Line": 62,
+                          "Index": 2520,
+                          "Line": 63,
                           "Column": 69,
                           "StreamName": "qsort.scm"
                         }
@@ -5990,14 +6066,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 2493,
-                  "Line": 62,
+                  "Index": 2512,
+                  "Line": 63,
                   "Column": 61,
                   "StreamName": "qsort.scm"
                 },
                 {
-                  "Index": 2502,
-                  "Line": 62,
+                  "Index": 2521,
+                  "Line": 63,
                   "Column": 70,
                   "StreamName": "qsort.scm"
                 }
@@ -6017,8 +6093,8 @@
           "StreamName": "qsort.scm"
         },
         {
-          "Index": 2502,
-          "Line": 62,
+          "Index": 2521,
+          "Line": 63,
           "Column": 70,
           "StreamName": "qsort.scm"
         }

@@ -1,4 +1,5 @@
-(import (scheme base))
+(import (scheme base)
+    (scheme write))
 (display
     (list
         (and (= 2 2) (> 2 1)) ; -> #t

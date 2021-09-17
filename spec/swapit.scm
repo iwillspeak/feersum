@@ -1,4 +1,5 @@
-(import (scheme base))
+(import (scheme base)
+    (scheme write))
 
 (define (swap me you)
     (let ((me you)

@@ -109,6 +109,82 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "issue-5_b.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "issue-5_b.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "issue-5_b.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "issue-5_b.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "issue-5_b.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "issue-5_b.scm"
+                        }
+                      ]
+                    }
                   }
                 ]
               ]
@@ -123,9 +199,9 @@
                   "StreamName": "issue-5_b.scm"
                 },
                 {
-                  "Index": 22,
-                  "Line": 1,
-                  "Column": 23,
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
                   "StreamName": "issue-5_b.scm"
                 }
               ]
@@ -147,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 24,
-                          "Line": 2,
+                          "Index": 43,
+                          "Line": 3,
                           "Column": 2,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 30,
-                          "Line": 2,
+                          "Index": 49,
+                          "Line": 3,
                           "Column": 8,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -177,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 32,
-                                  "Line": 2,
+                                  "Index": 51,
+                                  "Line": 3,
                                   "Column": 10,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 37,
-                                  "Line": 2,
+                                  "Index": 56,
+                                  "Line": 3,
                                   "Column": 15,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -202,14 +278,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 38,
-                                  "Line": 2,
+                                  "Index": 57,
+                                  "Line": 3,
                                   "Column": 16,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 39,
-                                  "Line": 2,
+                                  "Index": 58,
+                                  "Line": 3,
                                   "Column": 17,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -223,14 +299,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 31,
-                          "Line": 2,
+                          "Index": 50,
+                          "Line": 3,
                           "Column": 9,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 40,
-                          "Line": 2,
+                          "Index": 59,
+                          "Line": 3,
                           "Column": 18,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -253,14 +329,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 46,
-                                  "Line": 3,
+                                  "Index": 65,
+                                  "Line": 4,
                                   "Column": 6,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 52,
-                                  "Line": 3,
+                                  "Index": 71,
+                                  "Line": 4,
                                   "Column": 12,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -288,14 +364,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 55,
-                                                  "Line": 3,
+                                                  "Index": 74,
+                                                  "Line": 4,
                                                   "Column": 15,
                                                   "StreamName": "issue-5_b.scm"
                                                 },
                                                 {
-                                                  "Index": 59,
-                                                  "Line": 3,
+                                                  "Index": 78,
+                                                  "Line": 4,
                                                   "Column": 19,
                                                   "StreamName": "issue-5_b.scm"
                                                 }
@@ -318,14 +394,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 61,
-                                                          "Line": 3,
+                                                          "Index": 80,
+                                                          "Line": 4,
                                                           "Column": 21,
                                                           "StreamName": "issue-5_b.scm"
                                                         },
                                                         {
-                                                          "Index": 67,
-                                                          "Line": 3,
+                                                          "Index": 86,
+                                                          "Line": 4,
                                                           "Column": 27,
                                                           "StreamName": "issue-5_b.scm"
                                                         }
@@ -348,14 +424,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 69,
-                                                                  "Line": 3,
+                                                                  "Index": 88,
+                                                                  "Line": 4,
                                                                   "Column": 29,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 70,
-                                                                  "Line": 3,
+                                                                  "Index": 89,
+                                                                  "Line": 4,
                                                                   "Column": 30,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -369,14 +445,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 68,
-                                                          "Line": 3,
+                                                          "Index": 87,
+                                                          "Line": 4,
                                                           "Column": 28,
                                                           "StreamName": "issue-5_b.scm"
                                                         },
                                                         {
-                                                          "Index": 71,
-                                                          "Line": 3,
+                                                          "Index": 90,
+                                                          "Line": 4,
                                                           "Column": 31,
                                                           "StreamName": "issue-5_b.scm"
                                                         }
@@ -399,14 +475,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 89,
-                                                                  "Line": 4,
+                                                                  "Index": 108,
+                                                                  "Line": 5,
                                                                   "Column": 18,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 91,
-                                                                  "Line": 4,
+                                                                  "Index": 110,
+                                                                  "Line": 5,
                                                                   "Column": 20,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -429,14 +505,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 93,
-                                                                          "Line": 4,
+                                                                          "Index": 112,
+                                                                          "Line": 5,
                                                                           "Column": 22,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 94,
-                                                                          "Line": 4,
+                                                                          "Index": 113,
+                                                                          "Line": 5,
                                                                           "Column": 23,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -454,14 +530,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 95,
-                                                                          "Line": 4,
+                                                                          "Index": 114,
+                                                                          "Line": 5,
                                                                           "Column": 24,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 96,
-                                                                          "Line": 4,
+                                                                          "Index": 115,
+                                                                          "Line": 5,
                                                                           "Column": 25,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -484,14 +560,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 97,
-                                                                          "Line": 4,
+                                                                          "Index": 116,
+                                                                          "Line": 5,
                                                                           "Column": 26,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 98,
-                                                                          "Line": 4,
+                                                                          "Index": 117,
+                                                                          "Line": 5,
                                                                           "Column": 27,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -505,14 +581,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 92,
-                                                                  "Line": 4,
+                                                                  "Index": 111,
+                                                                  "Line": 5,
                                                                   "Column": 21,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 99,
-                                                                  "Line": 4,
+                                                                  "Index": 118,
+                                                                  "Line": 5,
                                                                   "Column": 28,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -535,14 +611,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 120,
-                                                                  "Line": 5,
+                                                                  "Index": 139,
+                                                                  "Line": 6,
                                                                   "Column": 21,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 122,
-                                                                  "Line": 5,
+                                                                  "Index": 141,
+                                                                  "Line": 6,
                                                                   "Column": 23,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -565,14 +641,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 144,
-                                                                          "Line": 6,
+                                                                          "Index": 163,
+                                                                          "Line": 7,
                                                                           "Column": 22,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 149,
-                                                                          "Line": 6,
+                                                                          "Index": 168,
+                                                                          "Line": 7,
                                                                           "Column": 27,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -595,14 +671,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 151,
-                                                                                  "Line": 6,
+                                                                                  "Index": 170,
+                                                                                  "Line": 7,
                                                                                   "Column": 29,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 152,
-                                                                                  "Line": 6,
+                                                                                  "Index": 171,
+                                                                                  "Line": 7,
                                                                                   "Column": 30,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 }
@@ -620,14 +696,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 153,
-                                                                                  "Line": 6,
+                                                                                  "Index": 172,
+                                                                                  "Line": 7,
                                                                                   "Column": 31,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 154,
-                                                                                  "Line": 6,
+                                                                                  "Index": 173,
+                                                                                  "Line": 7,
                                                                                   "Column": 32,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 }
@@ -650,14 +726,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 155,
-                                                                                  "Line": 6,
+                                                                                  "Index": 174,
+                                                                                  "Line": 7,
                                                                                   "Column": 33,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 156,
-                                                                                  "Line": 6,
+                                                                                  "Index": 175,
+                                                                                  "Line": 7,
                                                                                   "Column": 34,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 }
@@ -671,14 +747,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 150,
-                                                                          "Line": 6,
+                                                                          "Index": 169,
+                                                                          "Line": 7,
                                                                           "Column": 28,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 157,
-                                                                          "Line": 6,
+                                                                          "Index": 176,
+                                                                          "Line": 7,
                                                                           "Column": 35,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -692,14 +768,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 143,
-                                                                  "Line": 6,
+                                                                  "Index": 162,
+                                                                  "Line": 7,
                                                                   "Column": 21,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 158,
-                                                                  "Line": 6,
+                                                                  "Index": 177,
+                                                                  "Line": 7,
                                                                   "Column": 36,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -713,14 +789,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 88,
-                                                          "Line": 4,
+                                                          "Index": 107,
+                                                          "Line": 5,
                                                           "Column": 17,
                                                           "StreamName": "issue-5_b.scm"
                                                         },
                                                         {
-                                                          "Index": 159,
-                                                          "Line": 6,
+                                                          "Index": 178,
+                                                          "Line": 7,
                                                           "Column": 37,
                                                           "StreamName": "issue-5_b.scm"
                                                         }
@@ -734,14 +810,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 60,
-                                                  "Line": 3,
+                                                  "Index": 79,
+                                                  "Line": 4,
                                                   "Column": 20,
                                                   "StreamName": "issue-5_b.scm"
                                                 },
                                                 {
-                                                  "Index": 160,
-                                                  "Line": 6,
+                                                  "Index": 179,
+                                                  "Line": 7,
                                                   "Column": 38,
                                                   "StreamName": "issue-5_b.scm"
                                                 }
@@ -755,14 +831,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 54,
-                                          "Line": 3,
+                                          "Index": 73,
+                                          "Line": 4,
                                           "Column": 14,
                                           "StreamName": "issue-5_b.scm"
                                         },
                                         {
-                                          "Index": 161,
-                                          "Line": 6,
+                                          "Index": 180,
+                                          "Line": 7,
                                           "Column": 39,
                                           "StreamName": "issue-5_b.scm"
                                         }
@@ -785,14 +861,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 175,
-                                                  "Line": 7,
+                                                  "Index": 194,
+                                                  "Line": 8,
                                                   "Column": 14,
                                                   "StreamName": "issue-5_b.scm"
                                                 },
                                                 {
-                                                  "Index": 180,
-                                                  "Line": 7,
+                                                  "Index": 199,
+                                                  "Line": 8,
                                                   "Column": 19,
                                                   "StreamName": "issue-5_b.scm"
                                                 }
@@ -815,14 +891,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 182,
-                                                          "Line": 7,
+                                                          "Index": 201,
+                                                          "Line": 8,
                                                           "Column": 21,
                                                           "StreamName": "issue-5_b.scm"
                                                         },
                                                         {
-                                                          "Index": 188,
-                                                          "Line": 7,
+                                                          "Index": 207,
+                                                          "Line": 8,
                                                           "Column": 27,
                                                           "StreamName": "issue-5_b.scm"
                                                         }
@@ -845,14 +921,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 190,
-                                                                  "Line": 7,
+                                                                  "Index": 209,
+                                                                  "Line": 8,
                                                                   "Column": 29,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 191,
-                                                                  "Line": 7,
+                                                                  "Index": 210,
+                                                                  "Line": 8,
                                                                   "Column": 30,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -866,14 +942,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 189,
-                                                          "Line": 7,
+                                                          "Index": 208,
+                                                          "Line": 8,
                                                           "Column": 28,
                                                           "StreamName": "issue-5_b.scm"
                                                         },
                                                         {
-                                                          "Index": 192,
-                                                          "Line": 7,
+                                                          "Index": 211,
+                                                          "Line": 8,
                                                           "Column": 31,
                                                           "StreamName": "issue-5_b.scm"
                                                         }
@@ -896,14 +972,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 210,
-                                                                  "Line": 8,
+                                                                  "Index": 229,
+                                                                  "Line": 9,
                                                                   "Column": 18,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 212,
-                                                                  "Line": 8,
+                                                                  "Index": 231,
+                                                                  "Line": 9,
                                                                   "Column": 20,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -926,14 +1002,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 214,
-                                                                          "Line": 8,
+                                                                          "Index": 233,
+                                                                          "Line": 9,
                                                                           "Column": 22,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 215,
-                                                                          "Line": 8,
+                                                                          "Index": 234,
+                                                                          "Line": 9,
                                                                           "Column": 23,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -951,14 +1027,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 216,
-                                                                          "Line": 8,
+                                                                          "Index": 235,
+                                                                          "Line": 9,
                                                                           "Column": 24,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 217,
-                                                                          "Line": 8,
+                                                                          "Index": 236,
+                                                                          "Line": 9,
                                                                           "Column": 25,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -981,14 +1057,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 218,
-                                                                          "Line": 8,
+                                                                          "Index": 237,
+                                                                          "Line": 9,
                                                                           "Column": 26,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 219,
-                                                                          "Line": 8,
+                                                                          "Index": 238,
+                                                                          "Line": 9,
                                                                           "Column": 27,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -1002,14 +1078,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 213,
-                                                                  "Line": 8,
+                                                                  "Index": 232,
+                                                                  "Line": 9,
                                                                   "Column": 21,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 220,
-                                                                  "Line": 8,
+                                                                  "Index": 239,
+                                                                  "Line": 9,
                                                                   "Column": 28,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -1032,14 +1108,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 241,
-                                                                  "Line": 9,
+                                                                  "Index": 260,
+                                                                  "Line": 10,
                                                                   "Column": 21,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 243,
-                                                                  "Line": 9,
+                                                                  "Index": 262,
+                                                                  "Line": 10,
                                                                   "Column": 23,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -1062,14 +1138,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 265,
-                                                                          "Line": 10,
+                                                                          "Index": 284,
+                                                                          "Line": 11,
                                                                           "Column": 22,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 269,
-                                                                          "Line": 10,
+                                                                          "Index": 288,
+                                                                          "Line": 11,
                                                                           "Column": 26,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -1092,14 +1168,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 271,
-                                                                                  "Line": 10,
+                                                                                  "Index": 290,
+                                                                                  "Line": 11,
                                                                                   "Column": 28,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 272,
-                                                                                  "Line": 10,
+                                                                                  "Index": 291,
+                                                                                  "Line": 11,
                                                                                   "Column": 29,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 }
@@ -1117,14 +1193,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 273,
-                                                                                  "Line": 10,
+                                                                                  "Index": 292,
+                                                                                  "Line": 11,
                                                                                   "Column": 30,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 274,
-                                                                                  "Line": 10,
+                                                                                  "Index": 293,
+                                                                                  "Line": 11,
                                                                                   "Column": 31,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 }
@@ -1147,14 +1223,14 @@
                                                                               "Case": "Span",
                                                                               "Fields": [
                                                                                 {
-                                                                                  "Index": 275,
-                                                                                  "Line": 10,
+                                                                                  "Index": 294,
+                                                                                  "Line": 11,
                                                                                   "Column": 32,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 },
                                                                                 {
-                                                                                  "Index": 276,
-                                                                                  "Line": 10,
+                                                                                  "Index": 295,
+                                                                                  "Line": 11,
                                                                                   "Column": 33,
                                                                                   "StreamName": "issue-5_b.scm"
                                                                                 }
@@ -1168,14 +1244,14 @@
                                                                       "Case": "Span",
                                                                       "Fields": [
                                                                         {
-                                                                          "Index": 270,
-                                                                          "Line": 10,
+                                                                          "Index": 289,
+                                                                          "Line": 11,
                                                                           "Column": 27,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         },
                                                                         {
-                                                                          "Index": 277,
-                                                                          "Line": 10,
+                                                                          "Index": 296,
+                                                                          "Line": 11,
                                                                           "Column": 34,
                                                                           "StreamName": "issue-5_b.scm"
                                                                         }
@@ -1189,14 +1265,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 264,
-                                                                  "Line": 10,
+                                                                  "Index": 283,
+                                                                  "Line": 11,
                                                                   "Column": 21,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 278,
-                                                                  "Line": 10,
+                                                                  "Index": 297,
+                                                                  "Line": 11,
                                                                   "Column": 35,
                                                                   "StreamName": "issue-5_b.scm"
                                                                 }
@@ -1210,14 +1286,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 209,
-                                                          "Line": 8,
+                                                          "Index": 228,
+                                                          "Line": 9,
                                                           "Column": 17,
                                                           "StreamName": "issue-5_b.scm"
                                                         },
                                                         {
-                                                          "Index": 279,
-                                                          "Line": 10,
+                                                          "Index": 298,
+                                                          "Line": 11,
                                                           "Column": 36,
                                                           "StreamName": "issue-5_b.scm"
                                                         }
@@ -1231,14 +1307,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 181,
-                                                  "Line": 7,
+                                                  "Index": 200,
+                                                  "Line": 8,
                                                   "Column": 20,
                                                   "StreamName": "issue-5_b.scm"
                                                 },
                                                 {
-                                                  "Index": 280,
-                                                  "Line": 10,
+                                                  "Index": 299,
+                                                  "Line": 11,
                                                   "Column": 37,
                                                   "StreamName": "issue-5_b.scm"
                                                 }
@@ -1252,14 +1328,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 174,
-                                          "Line": 7,
+                                          "Index": 193,
+                                          "Line": 8,
                                           "Column": 13,
                                           "StreamName": "issue-5_b.scm"
                                         },
                                         {
-                                          "Index": 281,
-                                          "Line": 10,
+                                          "Index": 300,
+                                          "Line": 11,
                                           "Column": 38,
                                           "StreamName": "issue-5_b.scm"
                                         }
@@ -1273,14 +1349,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 53,
-                                  "Line": 3,
+                                  "Index": 72,
+                                  "Line": 4,
                                   "Column": 13,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 282,
-                                  "Line": 10,
+                                  "Index": 301,
+                                  "Line": 11,
                                   "Column": 39,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -1303,14 +1379,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 292,
-                                          "Line": 11,
+                                          "Index": 311,
+                                          "Line": 12,
                                           "Column": 10,
                                           "StreamName": "issue-5_b.scm"
                                         },
                                         {
-                                          "Index": 297,
-                                          "Line": 11,
+                                          "Index": 316,
+                                          "Line": 12,
                                           "Column": 15,
                                           "StreamName": "issue-5_b.scm"
                                         }
@@ -1328,14 +1404,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 298,
-                                          "Line": 11,
+                                          "Index": 317,
+                                          "Line": 12,
                                           "Column": 16,
                                           "StreamName": "issue-5_b.scm"
                                         },
                                         {
-                                          "Index": 299,
-                                          "Line": 11,
+                                          "Index": 318,
+                                          "Line": 12,
                                           "Column": 17,
                                           "StreamName": "issue-5_b.scm"
                                         }
@@ -1349,14 +1425,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 291,
-                                  "Line": 11,
+                                  "Index": 310,
+                                  "Line": 12,
                                   "Column": 9,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 300,
-                                  "Line": 11,
+                                  "Index": 319,
+                                  "Line": 12,
                                   "Column": 18,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -1370,14 +1446,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 45,
-                          "Line": 3,
+                          "Index": 64,
+                          "Line": 4,
                           "Column": 5,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 301,
-                          "Line": 11,
+                          "Index": 320,
+                          "Line": 12,
                           "Column": 19,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1391,14 +1467,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 23,
-                  "Line": 2,
+                  "Index": 42,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "issue-5_b.scm"
                 },
                 {
-                  "Index": 302,
-                  "Line": 11,
+                  "Index": 321,
+                  "Line": 12,
                   "Column": 20,
                   "StreamName": "issue-5_b.scm"
                 }
@@ -1421,14 +1497,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 305,
-                          "Line": 13,
+                          "Index": 324,
+                          "Line": 14,
                           "Column": 2,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 312,
-                          "Line": 13,
+                          "Index": 331,
+                          "Line": 14,
                           "Column": 9,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1451,14 +1527,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 314,
-                                  "Line": 13,
+                                  "Index": 333,
+                                  "Line": 14,
                                   "Column": 11,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 319,
-                                  "Line": 13,
+                                  "Index": 338,
+                                  "Line": 14,
                                   "Column": 16,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -1481,14 +1557,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 320,
-                                  "Line": 13,
+                                  "Index": 339,
+                                  "Line": 14,
                                   "Column": 17,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 322,
-                                  "Line": 13,
+                                  "Index": 341,
+                                  "Line": 14,
                                   "Column": 19,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -1502,14 +1578,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 313,
-                          "Line": 13,
+                          "Index": 332,
+                          "Line": 14,
                           "Column": 10,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 323,
-                          "Line": 13,
+                          "Index": 342,
+                          "Line": 14,
                           "Column": 20,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1523,14 +1599,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 304,
-                  "Line": 13,
+                  "Index": 323,
+                  "Line": 14,
                   "Column": 1,
                   "StreamName": "issue-5_b.scm"
                 },
                 {
-                  "Index": 324,
-                  "Line": 13,
+                  "Index": 343,
+                  "Line": 14,
                   "Column": 21,
                   "StreamName": "issue-5_b.scm"
                 }
@@ -1553,14 +1629,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 325,
-                          "Line": 13,
+                          "Index": 344,
+                          "Line": 14,
                           "Column": 22,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 332,
-                          "Line": 13,
+                          "Index": 351,
+                          "Line": 14,
                           "Column": 29,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1574,14 +1650,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 324,
-                  "Line": 13,
+                  "Index": 343,
+                  "Line": 14,
                   "Column": 21,
                   "StreamName": "issue-5_b.scm"
                 },
                 {
-                  "Index": 333,
-                  "Line": 13,
+                  "Index": 352,
+                  "Line": 14,
                   "Column": 30,
                   "StreamName": "issue-5_b.scm"
                 }
@@ -1604,14 +1680,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 335,
-                          "Line": 14,
+                          "Index": 354,
+                          "Line": 15,
                           "Column": 2,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 342,
-                          "Line": 14,
+                          "Index": 361,
+                          "Line": 15,
                           "Column": 9,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1634,14 +1710,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 344,
-                                  "Line": 14,
+                                  "Index": 363,
+                                  "Line": 15,
                                   "Column": 11,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 349,
-                                  "Line": 14,
+                                  "Index": 368,
+                                  "Line": 15,
                                   "Column": 16,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -1664,14 +1740,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 350,
-                                  "Line": 14,
+                                  "Index": 369,
+                                  "Line": 15,
                                   "Column": 17,
                                   "StreamName": "issue-5_b.scm"
                                 },
                                 {
-                                  "Index": 351,
-                                  "Line": 14,
+                                  "Index": 370,
+                                  "Line": 15,
                                   "Column": 18,
                                   "StreamName": "issue-5_b.scm"
                                 }
@@ -1685,14 +1761,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 343,
-                          "Line": 14,
+                          "Index": 362,
+                          "Line": 15,
                           "Column": 10,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 352,
-                          "Line": 14,
+                          "Index": 371,
+                          "Line": 15,
                           "Column": 19,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1706,14 +1782,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 334,
-                  "Line": 14,
+                  "Index": 353,
+                  "Line": 15,
                   "Column": 1,
                   "StreamName": "issue-5_b.scm"
                 },
                 {
-                  "Index": 353,
-                  "Line": 14,
+                  "Index": 372,
+                  "Line": 15,
                   "Column": 20,
                   "StreamName": "issue-5_b.scm"
                 }
@@ -1736,14 +1812,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 354,
-                          "Line": 14,
+                          "Index": 373,
+                          "Line": 15,
                           "Column": 21,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 361,
-                          "Line": 14,
+                          "Index": 380,
+                          "Line": 15,
                           "Column": 28,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1757,14 +1833,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 353,
-                  "Line": 14,
+                  "Index": 372,
+                  "Line": 15,
                   "Column": 20,
                   "StreamName": "issue-5_b.scm"
                 },
                 {
-                  "Index": 362,
-                  "Line": 14,
+                  "Index": 381,
+                  "Line": 15,
                   "Column": 29,
                   "StreamName": "issue-5_b.scm"
                 }
@@ -1787,14 +1863,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 364,
-                          "Line": 15,
+                          "Index": 383,
+                          "Line": 16,
                           "Column": 2,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 369,
-                          "Line": 15,
+                          "Index": 388,
+                          "Line": 16,
                           "Column": 7,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1817,14 +1893,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 370,
-                          "Line": 15,
+                          "Index": 389,
+                          "Line": 16,
                           "Column": 8,
                           "StreamName": "issue-5_b.scm"
                         },
                         {
-                          "Index": 373,
-                          "Line": 15,
+                          "Index": 392,
+                          "Line": 16,
                           "Column": 11,
                           "StreamName": "issue-5_b.scm"
                         }
@@ -1838,14 +1914,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 363,
-                  "Line": 15,
+                  "Index": 382,
+                  "Line": 16,
                   "Column": 1,
                   "StreamName": "issue-5_b.scm"
                 },
                 {
-                  "Index": 374,
-                  "Line": 15,
+                  "Index": 393,
+                  "Line": 16,
                   "Column": 12,
                   "StreamName": "issue-5_b.scm"
                 }
@@ -1865,8 +1941,8 @@
           "StreamName": "issue-5_b.scm"
         },
         {
-          "Index": 374,
-          "Line": 15,
+          "Index": 393,
+          "Line": 16,
           "Column": 12,
           "StreamName": "issue-5_b.scm"
         }

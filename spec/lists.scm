@@ -1,4 +1,5 @@
-(import (scheme base))
+(import (scheme base)
+    (scheme write))
 
 (display (list
     (list 12 34 56)                            ; (12 34 56)

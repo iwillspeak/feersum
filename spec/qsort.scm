@@ -56,6 +56,7 @@
 
 (import
     (scheme base)
+    (scheme write)
     (sort))
 
 (display (qsort '(79 23 45 6 9)))(newline)

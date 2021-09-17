@@ -109,6 +109,82 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "libcapture.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "libcapture.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "libcapture.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "libcapture.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "libcapture.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "libcapture.scm"
+                        }
+                      ]
+                    }
                   }
                 ]
               ]
@@ -123,9 +199,9 @@
                   "StreamName": "libcapture.scm"
                 },
                 {
-                  "Index": 22,
-                  "Line": 1,
-                  "Column": 23,
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
                   "StreamName": "libcapture.scm"
                 }
               ]
@@ -147,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 24,
-                          "Line": 2,
+                          "Index": 43,
+                          "Line": 3,
                           "Column": 2,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 38,
-                          "Line": 2,
+                          "Index": 57,
+                          "Line": 3,
                           "Column": 16,
                           "StreamName": "libcapture.scm"
                         }
@@ -177,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 40,
-                                  "Line": 2,
+                                  "Index": 59,
+                                  "Line": 3,
                                   "Column": 18,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 43,
-                                  "Line": 2,
+                                  "Index": 62,
+                                  "Line": 3,
                                   "Column": 21,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -202,14 +278,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 44,
-                                  "Line": 2,
+                                  "Index": 63,
+                                  "Line": 3,
                                   "Column": 22,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 51,
-                                  "Line": 2,
+                                  "Index": 70,
+                                  "Line": 3,
                                   "Column": 29,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -223,14 +299,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 39,
-                          "Line": 2,
+                          "Index": 58,
+                          "Line": 3,
                           "Column": 17,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 52,
-                          "Line": 2,
+                          "Index": 71,
+                          "Line": 3,
                           "Column": 30,
                           "StreamName": "libcapture.scm"
                         }
@@ -253,14 +329,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 58,
-                                  "Line": 3,
+                                  "Index": 77,
+                                  "Line": 4,
                                   "Column": 6,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 64,
-                                  "Line": 3,
+                                  "Index": 83,
+                                  "Line": 4,
                                   "Column": 12,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -278,14 +354,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 65,
-                                  "Line": 3,
+                                  "Index": 84,
+                                  "Line": 4,
                                   "Column": 13,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 71,
-                                  "Line": 3,
+                                  "Index": 90,
+                                  "Line": 4,
                                   "Column": 19,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -299,14 +375,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 57,
-                          "Line": 3,
+                          "Index": 76,
+                          "Line": 4,
                           "Column": 5,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 72,
-                          "Line": 3,
+                          "Index": 91,
+                          "Line": 4,
                           "Column": 20,
                           "StreamName": "libcapture.scm"
                         }
@@ -329,14 +405,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 78,
-                                  "Line": 4,
+                                  "Index": 97,
+                                  "Line": 5,
                                   "Column": 6,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 83,
-                                  "Line": 4,
+                                  "Index": 102,
+                                  "Line": 5,
                                   "Column": 11,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -359,14 +435,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 93,
-                                          "Line": 5,
+                                          "Index": 112,
+                                          "Line": 6,
                                           "Column": 10,
                                           "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 99,
-                                          "Line": 5,
+                                          "Index": 118,
+                                          "Line": 6,
                                           "Column": 16,
                                           "StreamName": "libcapture.scm"
                                         }
@@ -384,14 +460,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 100,
-                                          "Line": 5,
+                                          "Index": 119,
+                                          "Line": 6,
                                           "Column": 17,
                                           "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 106,
-                                          "Line": 5,
+                                          "Index": 125,
+                                          "Line": 6,
                                           "Column": 23,
                                           "StreamName": "libcapture.scm"
                                         }
@@ -414,14 +490,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 107,
-                                          "Line": 5,
+                                          "Index": 126,
+                                          "Line": 6,
                                           "Column": 24,
                                           "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 115,
-                                          "Line": 5,
+                                          "Index": 134,
+                                          "Line": 6,
                                           "Column": 32,
                                           "StreamName": "libcapture.scm"
                                         }
@@ -435,14 +511,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 92,
-                                  "Line": 5,
+                                  "Index": 111,
+                                  "Line": 6,
                                   "Column": 9,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 116,
-                                  "Line": 5,
+                                  "Index": 135,
+                                  "Line": 6,
                                   "Column": 33,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -465,14 +541,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 126,
-                                          "Line": 6,
+                                          "Index": 145,
+                                          "Line": 7,
                                           "Column": 10,
                                           "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 129,
-                                          "Line": 6,
+                                          "Index": 148,
+                                          "Line": 7,
                                           "Column": 13,
                                           "StreamName": "libcapture.scm"
                                         }
@@ -500,14 +576,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 132,
-                                                          "Line": 6,
+                                                          "Index": 151,
+                                                          "Line": 7,
                                                           "Column": 16,
                                                           "StreamName": "libcapture.scm"
                                                         },
                                                         {
-                                                          "Index": 143,
-                                                          "Line": 6,
+                                                          "Index": 162,
+                                                          "Line": 7,
                                                           "Column": 27,
                                                           "StreamName": "libcapture.scm"
                                                         }
@@ -530,14 +606,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 144,
-                                                          "Line": 6,
+                                                          "Index": 163,
+                                                          "Line": 7,
                                                           "Column": 28,
                                                           "StreamName": "libcapture.scm"
                                                         },
                                                         {
-                                                          "Index": 150,
-                                                          "Line": 6,
+                                                          "Index": 169,
+                                                          "Line": 7,
                                                           "Column": 34,
                                                           "StreamName": "libcapture.scm"
                                                         }
@@ -551,14 +627,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 131,
-                                                  "Line": 6,
+                                                  "Index": 150,
+                                                  "Line": 7,
                                                   "Column": 15,
                                                   "StreamName": "libcapture.scm"
                                                 },
                                                 {
-                                                  "Index": 151,
-                                                  "Line": 6,
+                                                  "Index": 170,
+                                                  "Line": 7,
                                                   "Column": 35,
                                                   "StreamName": "libcapture.scm"
                                                 }
@@ -572,14 +648,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 130,
-                                          "Line": 6,
+                                          "Index": 149,
+                                          "Line": 7,
                                           "Column": 14,
                                           "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 152,
-                                          "Line": 6,
+                                          "Index": 171,
+                                          "Line": 7,
                                           "Column": 36,
                                           "StreamName": "libcapture.scm"
                                         }
@@ -602,14 +678,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 166,
-                                                  "Line": 7,
+                                                  "Index": 185,
+                                                  "Line": 8,
                                                   "Column": 14,
                                                   "StreamName": "libcapture.scm"
                                                 },
                                                 {
-                                                  "Index": 170,
-                                                  "Line": 7,
+                                                  "Index": 189,
+                                                  "Line": 8,
                                                   "Column": 18,
                                                   "StreamName": "libcapture.scm"
                                                 }
@@ -627,14 +703,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 171,
-                                                  "Line": 7,
+                                                  "Index": 190,
+                                                  "Line": 8,
                                                   "Column": 19,
                                                   "StreamName": "libcapture.scm"
                                                 },
                                                 {
-                                                  "Index": 177,
-                                                  "Line": 7,
+                                                  "Index": 196,
+                                                  "Line": 8,
                                                   "Column": 25,
                                                   "StreamName": "libcapture.scm"
                                                 }
@@ -652,14 +728,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 178,
-                                                  "Line": 7,
+                                                  "Index": 197,
+                                                  "Line": 8,
                                                   "Column": 26,
                                                   "StreamName": "libcapture.scm"
                                                 },
                                                 {
-                                                  "Index": 189,
-                                                  "Line": 7,
+                                                  "Index": 208,
+                                                  "Line": 8,
                                                   "Column": 37,
                                                   "StreamName": "libcapture.scm"
                                                 }
@@ -673,14 +749,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 165,
-                                          "Line": 7,
+                                          "Index": 184,
+                                          "Line": 8,
                                           "Column": 13,
                                           "StreamName": "libcapture.scm"
                                         },
                                         {
-                                          "Index": 190,
-                                          "Line": 7,
+                                          "Index": 209,
+                                          "Line": 8,
                                           "Column": 38,
                                           "StreamName": "libcapture.scm"
                                         }
@@ -694,14 +770,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 125,
-                                  "Line": 6,
+                                  "Index": 144,
+                                  "Line": 7,
                                   "Column": 9,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 191,
-                                  "Line": 7,
+                                  "Index": 210,
+                                  "Line": 8,
                                   "Column": 39,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -715,14 +791,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 77,
-                          "Line": 4,
+                          "Index": 96,
+                          "Line": 5,
                           "Column": 5,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 192,
-                          "Line": 7,
+                          "Index": 211,
+                          "Line": 8,
                           "Column": 40,
                           "StreamName": "libcapture.scm"
                         }
@@ -736,14 +812,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 23,
-                  "Line": 2,
+                  "Index": 42,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "libcapture.scm"
                 },
                 {
-                  "Index": 193,
-                  "Line": 7,
+                  "Index": 212,
+                  "Line": 8,
                   "Column": 41,
                   "StreamName": "libcapture.scm"
                 }
@@ -766,14 +842,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 195,
-                          "Line": 8,
+                          "Index": 214,
+                          "Line": 9,
                           "Column": 2,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 201,
-                          "Line": 8,
+                          "Index": 220,
+                          "Line": 9,
                           "Column": 8,
                           "StreamName": "libcapture.scm"
                         }
@@ -796,14 +872,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 203,
-                                  "Line": 8,
+                                  "Index": 222,
+                                  "Line": 9,
                                   "Column": 10,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 206,
-                                  "Line": 8,
+                                  "Index": 225,
+                                  "Line": 9,
                                   "Column": 13,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -821,14 +897,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 207,
-                                  "Line": 8,
+                                  "Index": 226,
+                                  "Line": 9,
                                   "Column": 14,
                                   "StreamName": "libcapture.scm"
                                 },
                                 {
-                                  "Index": 214,
-                                  "Line": 8,
+                                  "Index": 233,
+                                  "Line": 9,
                                   "Column": 21,
                                   "StreamName": "libcapture.scm"
                                 }
@@ -842,14 +918,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 202,
-                          "Line": 8,
+                          "Index": 221,
+                          "Line": 9,
                           "Column": 9,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 215,
-                          "Line": 8,
+                          "Index": 234,
+                          "Line": 9,
                           "Column": 22,
                           "StreamName": "libcapture.scm"
                         }
@@ -863,14 +939,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 194,
-                  "Line": 8,
+                  "Index": 213,
+                  "Line": 9,
                   "Column": 1,
                   "StreamName": "libcapture.scm"
                 },
                 {
-                  "Index": 216,
-                  "Line": 8,
+                  "Index": 235,
+                  "Line": 9,
                   "Column": 23,
                   "StreamName": "libcapture.scm"
                 }
@@ -893,14 +969,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 218,
-                          "Line": 9,
+                          "Index": 237,
+                          "Line": 10,
                           "Column": 2,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 225,
-                          "Line": 9,
+                          "Index": 244,
+                          "Line": 10,
                           "Column": 9,
                           "StreamName": "libcapture.scm"
                         }
@@ -918,14 +994,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 226,
-                          "Line": 9,
+                          "Index": 245,
+                          "Line": 10,
                           "Column": 10,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 232,
-                          "Line": 9,
+                          "Index": 251,
+                          "Line": 10,
                           "Column": 16,
                           "StreamName": "libcapture.scm"
                         }
@@ -939,14 +1015,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 217,
-                  "Line": 9,
+                  "Index": 236,
+                  "Line": 10,
                   "Column": 1,
                   "StreamName": "libcapture.scm"
                 },
                 {
-                  "Index": 233,
-                  "Line": 9,
+                  "Index": 252,
+                  "Line": 10,
                   "Column": 17,
                   "StreamName": "libcapture.scm"
                 }
@@ -969,14 +1045,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 234,
-                          "Line": 9,
+                          "Index": 253,
+                          "Line": 10,
                           "Column": 18,
                           "StreamName": "libcapture.scm"
                         },
                         {
-                          "Index": 241,
-                          "Line": 9,
+                          "Index": 260,
+                          "Line": 10,
                           "Column": 25,
                           "StreamName": "libcapture.scm"
                         }
@@ -990,14 +1066,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 233,
-                  "Line": 9,
+                  "Index": 252,
+                  "Line": 10,
                   "Column": 17,
                   "StreamName": "libcapture.scm"
                 },
                 {
-                  "Index": 242,
-                  "Line": 9,
+                  "Index": 261,
+                  "Line": 10,
                   "Column": 26,
                   "StreamName": "libcapture.scm"
                 }
@@ -1017,8 +1093,8 @@
           "StreamName": "libcapture.scm"
         },
         {
-          "Index": 242,
-          "Line": 9,
+          "Index": 261,
+          "Line": 10,
           "Column": 26,
           "StreamName": "libcapture.scm"
         }
