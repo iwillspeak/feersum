@@ -1,3 +1,4 @@
+using System;
 using Serehfa.Attributes;
 
 namespace Serehfa
@@ -23,6 +24,18 @@ namespace Serehfa
                 }
             }
             return true;
+        }
+
+        [LispBuiltin("string->number")]
+        public static object StringToNumber(object[] args)
+        {
+            if (args.Length == 1)
+            {
+                return double.Parse(UnpackArgs<string>(args));
+            }
+
+            var (input, bae) = UnpackArgs<string, double>(args);
+            return (double)Convert.ToUInt64(input, (int)bae);
         }
     }
 }

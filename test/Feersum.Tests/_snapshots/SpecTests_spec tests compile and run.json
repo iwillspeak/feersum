@@ -409,6 +409,11 @@
     "Error": "",
     "Exit": 0
   },
+  "chibi-r7rs-tests.scm": {
+    "Output": "### (\"R7RS\")\n\t### (\"4.1 Primitive expression types\")\n\t\t...........................\n\t### (\"4.2 Derived expression types\")\n\t\t............\n\t### (\"4.3 Macros\")\n\t\t.\nFAIL: expr: expected outer but got inner\n.\nFAIL: expr: expected |...| but got (|...| |...|)\n\nFAIL: expr: expected (100 |...|) but got (|...| (x |...|))\n\nFAIL: expr: expected (|...| 100 200) but got (|...| (|...| x y))\n....\nFAIL: expr: expected (2 0 fail fail) but got (2 0 2 fail)\n..\nFAIL: expr: expected x but got y\n.\nFAIL: expr: expected |bound-identifier=?| but got |free-identifier=?|\n\nFAIL: expr: expected (100 |...|) but got (x |...|)\n\n\t### (\"5 Program structure\")\n\t\t..\n\t### (\"6.1 Equivalence Predicates\")\n\t\t.........................\n\t### (\"6.2 Numbers\")\n\t\t...\n\t### (\"6.3 Booleans\")\n\t\t..................\n\t### (\"6.4 Lists\")\n\t\t...................\n\t### (\"6.5 Symbols\")\n\t\t.................\n\t### (\"6.6 Characters\")\n\t\t...............................................................................\n\t### (\"6.7 Strings\")\n\t\t\n\t### (\"6.8 Vectors\")\n\t\t\n\t### (\"6.9 Bytevectors\")\n\t\t\n\t### (\"6.10 Control Features\")\n\t\t\n\t### (\"6.11 Exceptions\")\n\t\t\n\t### (\"6.12 Environments and evaluation\")\n\t\t\n\t### (\"6.13 Input and output\")\n\t\t### (\"Read syntax\")\n\t\t\t\n\t\t### (\"Numeric syntax\")\n\t\t\t\n\t\t\n\t### (\"6.14 System interface\")\n\t\t\n\t\n----------------------\nTotal: 219\nFails: 8\n",
+    "Error": "",
+    "Exit": 8
+  },
   "conditions.scm": {
     "Output": "(3 '() yarp '())",
     "Error": "",

@@ -31,6 +31,30 @@ namespace Serehfa
             return ret;
         }
 
+        [LispBuiltin("make-list")]
+        public static object MakeList(object[] args)
+        {
+            object fill = null;
+            double length;
+            if (args.Length == 1)
+            {
+                length = UnpackArgs<double>(args);
+            }
+            else
+            {
+                (length, fill) = UnpackArgs<double, object>(args);
+            }
+
+            ConsPair tail = null;
+
+            for (int i = 0; i < length; i++)
+            {
+                tail = new ConsPair(fill, tail);
+            }
+
+            return tail;
+        }
+
         [LispBuiltin("pair?")]
         public static object IsPair(object[] args)
         {
@@ -42,7 +66,12 @@ namespace Serehfa
         public static object IsList(object[] args)
         {
             var toTest = UnpackArgs<object>(args);
-            return toTest is ConsPair pair && (pair.Cdr == null || pair.Cdr is ConsPair);
+            return toTest switch
+            {
+                null => true,
+                ConsPair pair => (pair.Cdr == null || pair.Cdr is ConsPair),
+                _ => false,
+            };
         }
 
         [LispBuiltin("car")]
@@ -57,6 +86,26 @@ namespace Serehfa
         {
             var list = UnpackArgs<ConsPair>(args);
             return list.Cdr;
+        }
+
+        [LispBuiltin("length")]
+        public static object Length(object[] args)
+        {
+            var list = UnpackArgs<ConsPair>(args);
+            var length = 0;
+            while (list != null)
+            {
+                length++;
+                if (list.Cdr is ConsPair tail)
+                {
+                    list = tail;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return (double)length;
         }
     }
 }
