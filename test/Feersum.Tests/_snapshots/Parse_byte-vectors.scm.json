@@ -109,6 +109,82 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
                   }
                 ]
               ]
@@ -123,9 +199,9 @@
                   "StreamName": "byte-vectors.scm"
                 },
                 {
-                  "Index": 22,
-                  "Line": 1,
-                  "Column": 23,
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
                   "StreamName": "byte-vectors.scm"
                 }
               ]
@@ -147,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 24,
-                          "Line": 2,
+                          "Index": 43,
+                          "Line": 3,
                           "Column": 2,
                           "StreamName": "byte-vectors.scm"
                         },
                         {
-                          "Index": 31,
-                          "Line": 2,
+                          "Index": 50,
+                          "Line": 3,
                           "Column": 9,
                           "StreamName": "byte-vectors.scm"
                         }
@@ -177,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 33,
-                                  "Line": 2,
+                                  "Index": 52,
+                                  "Line": 3,
                                   "Column": 11,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 37,
-                                  "Line": 2,
+                                  "Index": 56,
+                                  "Line": 3,
                                   "Column": 15,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -202,14 +278,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 72,
-                                  "Line": 5,
+                                  "Index": 91,
+                                  "Line": 6,
                                   "Column": 5,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 77,
-                                  "Line": 5,
+                                  "Index": 96,
+                                  "Line": 6,
                                   "Column": 10,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -229,14 +305,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 82,
-                                  "Line": 6,
+                                  "Index": 101,
+                                  "Line": 7,
                                   "Column": 5,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 90,
-                                  "Line": 6,
+                                  "Index": 109,
+                                  "Line": 7,
                                   "Column": 13,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -258,14 +334,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 95,
-                                  "Line": 7,
+                                  "Index": 114,
+                                  "Line": 8,
                                   "Column": 5,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 107,
-                                  "Line": 7,
+                                  "Index": 126,
+                                  "Line": 8,
                                   "Column": 17,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -288,14 +364,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 114,
-                                          "Line": 9,
+                                          "Index": 133,
+                                          "Line": 10,
                                           "Column": 6,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 125,
-                                          "Line": 9,
+                                          "Index": 144,
+                                          "Line": 10,
                                           "Column": 17,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -313,14 +389,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 126,
-                                          "Line": 9,
+                                          "Index": 145,
+                                          "Line": 10,
                                           "Column": 18,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 131,
-                                          "Line": 9,
+                                          "Index": 150,
+                                          "Line": 10,
                                           "Column": 23,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -334,14 +410,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 113,
-                                  "Line": 9,
+                                  "Index": 132,
+                                  "Line": 10,
                                   "Column": 5,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 132,
-                                  "Line": 9,
+                                  "Index": 151,
+                                  "Line": 10,
                                   "Column": 24,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -364,14 +440,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 138,
-                                          "Line": 10,
+                                          "Index": 157,
+                                          "Line": 11,
                                           "Column": 6,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 149,
-                                          "Line": 10,
+                                          "Index": 168,
+                                          "Line": 11,
                                           "Column": 17,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -393,14 +469,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 150,
-                                          "Line": 10,
+                                          "Index": 169,
+                                          "Line": 11,
                                           "Column": 18,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 166,
-                                          "Line": 10,
+                                          "Index": 185,
+                                          "Line": 11,
                                           "Column": 34,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -414,14 +490,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 137,
-                                  "Line": 10,
+                                  "Index": 156,
+                                  "Line": 11,
                                   "Column": 5,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 167,
-                                  "Line": 10,
+                                  "Index": 186,
+                                  "Line": 11,
                                   "Column": 35,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -444,14 +520,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 205,
-                                          "Line": 13,
+                                          "Index": 224,
+                                          "Line": 14,
                                           "Column": 6,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 215,
-                                          "Line": 13,
+                                          "Index": 234,
+                                          "Line": 14,
                                           "Column": 16,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -465,14 +541,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 204,
-                                  "Line": 13,
+                                  "Index": 223,
+                                  "Line": 14,
                                   "Column": 5,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 216,
-                                  "Line": 13,
+                                  "Index": 235,
+                                  "Line": 14,
                                   "Column": 17,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -495,14 +571,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 222,
-                                          "Line": 14,
+                                          "Index": 241,
+                                          "Line": 15,
                                           "Column": 6,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 232,
-                                          "Line": 14,
+                                          "Index": 251,
+                                          "Line": 15,
                                           "Column": 16,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -525,14 +601,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 233,
-                                          "Line": 14,
+                                          "Index": 252,
+                                          "Line": 15,
                                           "Column": 17,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 234,
-                                          "Line": 14,
+                                          "Index": 253,
+                                          "Line": 15,
                                           "Column": 18,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -555,14 +631,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 235,
-                                          "Line": 14,
+                                          "Index": 254,
+                                          "Line": 15,
                                           "Column": 19,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 236,
-                                          "Line": 14,
+                                          "Index": 255,
+                                          "Line": 15,
                                           "Column": 20,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -585,14 +661,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 237,
-                                          "Line": 14,
+                                          "Index": 256,
+                                          "Line": 15,
                                           "Column": 21,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 238,
-                                          "Line": 14,
+                                          "Index": 257,
+                                          "Line": 15,
                                           "Column": 22,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -615,14 +691,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 239,
-                                          "Line": 14,
+                                          "Index": 258,
+                                          "Line": 15,
                                           "Column": 23,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 240,
-                                          "Line": 14,
+                                          "Index": 259,
+                                          "Line": 15,
                                           "Column": 24,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -636,14 +712,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 221,
-                                  "Line": 14,
+                                  "Index": 240,
+                                  "Line": 15,
                                   "Column": 5,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 241,
-                                  "Line": 14,
+                                  "Index": 260,
+                                  "Line": 15,
                                   "Column": 25,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -666,14 +742,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 247,
-                                          "Line": 15,
+                                          "Index": 266,
+                                          "Line": 16,
                                           "Column": 6,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 262,
-                                          "Line": 15,
+                                          "Index": 281,
+                                          "Line": 16,
                                           "Column": 21,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -696,14 +772,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 263,
-                                          "Line": 15,
+                                          "Index": 282,
+                                          "Line": 16,
                                           "Column": 22,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 265,
-                                          "Line": 15,
+                                          "Index": 284,
+                                          "Line": 16,
                                           "Column": 24,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -726,14 +802,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 266,
-                                          "Line": 15,
+                                          "Index": 285,
+                                          "Line": 16,
                                           "Column": 25,
                                           "StreamName": "byte-vectors.scm"
                                         },
                                         {
-                                          "Index": 268,
-                                          "Line": 15,
+                                          "Index": 287,
+                                          "Line": 16,
                                           "Column": 27,
                                           "StreamName": "byte-vectors.scm"
                                         }
@@ -747,14 +823,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 246,
-                                  "Line": 15,
+                                  "Index": 265,
+                                  "Line": 16,
                                   "Column": 5,
                                   "StreamName": "byte-vectors.scm"
                                 },
                                 {
-                                  "Index": 269,
-                                  "Line": 15,
+                                  "Index": 288,
+                                  "Line": 16,
                                   "Column": 28,
                                   "StreamName": "byte-vectors.scm"
                                 }
@@ -768,14 +844,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 32,
-                          "Line": 2,
+                          "Index": 51,
+                          "Line": 3,
                           "Column": 10,
                           "StreamName": "byte-vectors.scm"
                         },
                         {
-                          "Index": 276,
-                          "Line": 17,
+                          "Index": 295,
+                          "Line": 18,
                           "Column": 6,
                           "StreamName": "byte-vectors.scm"
                         }
@@ -789,14 +865,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 23,
-                  "Line": 2,
+                  "Index": 42,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "byte-vectors.scm"
                 },
                 {
-                  "Index": 277,
-                  "Line": 17,
+                  "Index": 296,
+                  "Line": 18,
                   "Column": 7,
                   "StreamName": "byte-vectors.scm"
                 }
@@ -816,8 +892,8 @@
           "StreamName": "byte-vectors.scm"
         },
         {
-          "Index": 277,
-          "Line": 17,
+          "Index": 296,
+          "Line": 18,
           "Column": 7,
           "StreamName": "byte-vectors.scm"
         }

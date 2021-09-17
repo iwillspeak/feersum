@@ -109,6 +109,82 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "vectors.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "vectors.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "vectors.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "vectors.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "vectors.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "vectors.scm"
+                        }
+                      ]
+                    }
                   }
                 ]
               ]
@@ -123,9 +199,9 @@
                   "StreamName": "vectors.scm"
                 },
                 {
-                  "Index": 22,
-                  "Line": 1,
-                  "Column": 23,
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
                   "StreamName": "vectors.scm"
                 }
               ]
@@ -147,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 24,
-                          "Line": 2,
+                          "Index": 43,
+                          "Line": 3,
                           "Column": 2,
                           "StreamName": "vectors.scm"
                         },
                         {
-                          "Index": 31,
-                          "Line": 2,
+                          "Index": 50,
+                          "Line": 3,
                           "Column": 9,
                           "StreamName": "vectors.scm"
                         }
@@ -177,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 33,
-                                  "Line": 2,
+                                  "Index": 52,
+                                  "Line": 3,
                                   "Column": 11,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 37,
-                                  "Line": 2,
+                                  "Index": 56,
+                                  "Line": 3,
                                   "Column": 15,
                                   "StreamName": "vectors.scm"
                                 }
@@ -207,14 +283,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 66,
-                                          "Line": 5,
+                                          "Index": 85,
+                                          "Line": 6,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 72,
-                                          "Line": 5,
+                                          "Index": 91,
+                                          "Line": 6,
                                           "Column": 12,
                                           "StreamName": "vectors.scm"
                                         }
@@ -237,14 +313,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 73,
-                                          "Line": 5,
+                                          "Index": 92,
+                                          "Line": 6,
                                           "Column": 13,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 74,
-                                          "Line": 5,
+                                          "Index": 93,
+                                          "Line": 6,
                                           "Column": 14,
                                           "StreamName": "vectors.scm"
                                         }
@@ -267,14 +343,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 75,
-                                          "Line": 5,
+                                          "Index": 94,
+                                          "Line": 6,
                                           "Column": 15,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 76,
-                                          "Line": 5,
+                                          "Index": 95,
+                                          "Line": 6,
                                           "Column": 16,
                                           "StreamName": "vectors.scm"
                                         }
@@ -297,14 +373,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 77,
-                                          "Line": 5,
+                                          "Index": 96,
+                                          "Line": 6,
                                           "Column": 17,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 78,
-                                          "Line": 5,
+                                          "Index": 97,
+                                          "Line": 6,
                                           "Column": 18,
                                           "StreamName": "vectors.scm"
                                         }
@@ -318,14 +394,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 65,
-                                  "Line": 5,
+                                  "Index": 84,
+                                  "Line": 6,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 79,
-                                  "Line": 5,
+                                  "Index": 98,
+                                  "Line": 6,
                                   "Column": 19,
                                   "StreamName": "vectors.scm"
                                 }
@@ -348,14 +424,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 85,
-                                          "Line": 6,
+                                          "Index": 104,
+                                          "Line": 7,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 96,
-                                          "Line": 6,
+                                          "Index": 115,
+                                          "Line": 7,
                                           "Column": 17,
                                           "StreamName": "vectors.scm"
                                         }
@@ -378,14 +454,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 97,
-                                          "Line": 6,
+                                          "Index": 116,
+                                          "Line": 7,
                                           "Column": 18,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 99,
-                                          "Line": 6,
+                                          "Index": 118,
+                                          "Line": 7,
                                           "Column": 20,
                                           "StreamName": "vectors.scm"
                                         }
@@ -408,14 +484,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 100,
-                                          "Line": 6,
+                                          "Index": 119,
+                                          "Line": 7,
                                           "Column": 21,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 103,
-                                          "Line": 6,
+                                          "Index": 122,
+                                          "Line": 7,
                                           "Column": 24,
                                           "StreamName": "vectors.scm"
                                         }
@@ -429,14 +505,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 84,
-                                  "Line": 6,
+                                  "Index": 103,
+                                  "Line": 7,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 104,
-                                  "Line": 6,
+                                  "Index": 123,
+                                  "Line": 7,
                                   "Column": 25,
                                   "StreamName": "vectors.scm"
                                 }
@@ -464,14 +540,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 135,
-                                          "Line": 9,
+                                          "Index": 154,
+                                          "Line": 10,
                                           "Column": 7,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 136,
-                                          "Line": 9,
+                                          "Index": 155,
+                                          "Line": 10,
                                           "Column": 8,
                                           "StreamName": "vectors.scm"
                                         }
@@ -499,14 +575,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 138,
-                                                  "Line": 9,
+                                                  "Index": 157,
+                                                  "Line": 10,
                                                   "Column": 10,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 139,
-                                                  "Line": 9,
+                                                  "Index": 158,
+                                                  "Line": 10,
                                                   "Column": 11,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -529,14 +605,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 140,
-                                                  "Line": 9,
+                                                  "Index": 159,
+                                                  "Line": 10,
                                                   "Column": 12,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 141,
-                                                  "Line": 9,
+                                                  "Index": 160,
+                                                  "Line": 10,
                                                   "Column": 13,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -559,14 +635,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 142,
-                                                  "Line": 9,
+                                                  "Index": 161,
+                                                  "Line": 10,
                                                   "Column": 14,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 143,
-                                                  "Line": 9,
+                                                  "Index": 162,
+                                                  "Line": 10,
                                                   "Column": 15,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -589,14 +665,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 144,
-                                                  "Line": 9,
+                                                  "Index": 163,
+                                                  "Line": 10,
                                                   "Column": 16,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 145,
-                                                  "Line": 9,
+                                                  "Index": 164,
+                                                  "Line": 10,
                                                   "Column": 17,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -610,14 +686,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 137,
-                                          "Line": 9,
+                                          "Index": 156,
+                                          "Line": 10,
                                           "Column": 9,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 146,
-                                          "Line": 9,
+                                          "Index": 165,
+                                          "Line": 10,
                                           "Column": 18,
                                           "StreamName": "vectors.scm"
                                         }
@@ -640,14 +716,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 147,
-                                          "Line": 9,
+                                          "Index": 166,
+                                          "Line": 10,
                                           "Column": 19,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 153,
-                                          "Line": 9,
+                                          "Index": 172,
+                                          "Line": 10,
                                           "Column": 25,
                                           "StreamName": "vectors.scm"
                                         }
@@ -661,14 +737,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 133,
-                                  "Line": 9,
+                                  "Index": 152,
+                                  "Line": 10,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 154,
-                                  "Line": 9,
+                                  "Index": 173,
+                                  "Line": 10,
                                   "Column": 26,
                                   "StreamName": "vectors.scm"
                                 }
@@ -691,14 +767,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 186,
-                                          "Line": 12,
+                                          "Index": 205,
+                                          "Line": 13,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 193,
-                                          "Line": 12,
+                                          "Index": 212,
+                                          "Line": 13,
                                           "Column": 13,
                                           "StreamName": "vectors.scm"
                                         }
@@ -716,14 +792,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 194,
-                                          "Line": 12,
+                                          "Index": 213,
+                                          "Line": 13,
                                           "Column": 14,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 197,
-                                          "Line": 12,
+                                          "Index": 216,
+                                          "Line": 13,
                                           "Column": 17,
                                           "StreamName": "vectors.scm"
                                         }
@@ -737,14 +813,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 185,
-                                  "Line": 12,
+                                  "Index": 204,
+                                  "Line": 13,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 198,
-                                  "Line": 12,
+                                  "Index": 217,
+                                  "Line": 13,
                                   "Column": 18,
                                   "StreamName": "vectors.scm"
                                 }
@@ -767,14 +843,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 204,
-                                          "Line": 13,
+                                          "Index": 223,
+                                          "Line": 14,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 211,
-                                          "Line": 13,
+                                          "Index": 230,
+                                          "Line": 14,
                                           "Column": 13,
                                           "StreamName": "vectors.scm"
                                         }
@@ -802,14 +878,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 214,
-                                                  "Line": 13,
+                                                  "Index": 233,
+                                                  "Line": 14,
                                                   "Column": 16,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 215,
-                                                  "Line": 13,
+                                                  "Index": 234,
+                                                  "Line": 14,
                                                   "Column": 17,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -832,14 +908,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 216,
-                                                  "Line": 13,
+                                                  "Index": 235,
+                                                  "Line": 14,
                                                   "Column": 18,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 217,
-                                                  "Line": 13,
+                                                  "Index": 236,
+                                                  "Line": 14,
                                                   "Column": 19,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -862,14 +938,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 218,
-                                                  "Line": 13,
+                                                  "Index": 237,
+                                                  "Line": 14,
                                                   "Column": 20,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 219,
-                                                  "Line": 13,
+                                                  "Index": 238,
+                                                  "Line": 14,
                                                   "Column": 21,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -883,14 +959,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 212,
-                                          "Line": 13,
+                                          "Index": 231,
+                                          "Line": 14,
                                           "Column": 14,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 220,
-                                          "Line": 13,
+                                          "Index": 239,
+                                          "Line": 14,
                                           "Column": 22,
                                           "StreamName": "vectors.scm"
                                         }
@@ -904,14 +980,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 203,
-                                  "Line": 13,
+                                  "Index": 222,
+                                  "Line": 14,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 221,
-                                  "Line": 13,
+                                  "Index": 240,
+                                  "Line": 14,
                                   "Column": 23,
                                   "StreamName": "vectors.scm"
                                 }
@@ -934,14 +1010,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 227,
-                                          "Line": 14,
+                                          "Index": 246,
+                                          "Line": 15,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 234,
-                                          "Line": 14,
+                                          "Index": 253,
+                                          "Line": 15,
                                           "Column": 13,
                                           "StreamName": "vectors.scm"
                                         }
@@ -964,14 +1040,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 235,
-                                          "Line": 14,
+                                          "Index": 254,
+                                          "Line": 15,
                                           "Column": 14,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 241,
-                                          "Line": 14,
+                                          "Index": 260,
+                                          "Line": 15,
                                           "Column": 20,
                                           "StreamName": "vectors.scm"
                                         }
@@ -985,14 +1061,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 226,
-                                  "Line": 14,
+                                  "Index": 245,
+                                  "Line": 15,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 242,
-                                  "Line": 14,
+                                  "Index": 261,
+                                  "Line": 15,
                                   "Column": 21,
                                   "StreamName": "vectors.scm"
                                 }
@@ -1015,14 +1091,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 278,
-                                          "Line": 17,
+                                          "Index": 297,
+                                          "Line": 18,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 291,
-                                          "Line": 17,
+                                          "Index": 310,
+                                          "Line": 18,
                                           "Column": 19,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1050,14 +1126,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 294,
-                                                  "Line": 17,
+                                                  "Index": 313,
+                                                  "Line": 18,
                                                   "Column": 22,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 297,
-                                                  "Line": 17,
+                                                  "Index": 316,
+                                                  "Line": 18,
                                                   "Column": 25,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -1080,14 +1156,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 298,
-                                                  "Line": 17,
+                                                  "Index": 317,
+                                                  "Line": 18,
                                                   "Column": 26,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 301,
-                                                  "Line": 17,
+                                                  "Index": 320,
+                                                  "Line": 18,
                                                   "Column": 29,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -1110,14 +1186,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 302,
-                                                  "Line": 17,
+                                                  "Index": 321,
+                                                  "Line": 18,
                                                   "Column": 30,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 305,
-                                                  "Line": 17,
+                                                  "Index": 324,
+                                                  "Line": 18,
                                                   "Column": 33,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -1131,14 +1207,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 292,
-                                          "Line": 17,
+                                          "Index": 311,
+                                          "Line": 18,
                                           "Column": 20,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 306,
-                                          "Line": 17,
+                                          "Index": 325,
+                                          "Line": 18,
                                           "Column": 34,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1152,14 +1228,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 277,
-                                  "Line": 17,
+                                  "Index": 296,
+                                  "Line": 18,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 307,
-                                  "Line": 17,
+                                  "Index": 326,
+                                  "Line": 18,
                                   "Column": 35,
                                   "StreamName": "vectors.scm"
                                 }
@@ -1182,14 +1258,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 313,
-                                          "Line": 18,
+                                          "Index": 332,
+                                          "Line": 19,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 323,
-                                          "Line": 18,
+                                          "Index": 342,
+                                          "Line": 19,
                                           "Column": 16,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1212,14 +1288,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 326,
-                                                  "Line": 18,
+                                                  "Index": 345,
+                                                  "Line": 19,
                                                   "Column": 19,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 327,
-                                                  "Line": 18,
+                                                  "Index": 346,
+                                                  "Line": 19,
                                                   "Column": 20,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -1242,14 +1318,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 328,
-                                                  "Line": 18,
+                                                  "Index": 347,
+                                                  "Line": 19,
                                                   "Column": 21,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 330,
-                                                  "Line": 18,
+                                                  "Index": 349,
+                                                  "Line": 19,
                                                   "Column": 23,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -1272,14 +1348,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 331,
-                                                  "Line": 18,
+                                                  "Index": 350,
+                                                  "Line": 19,
                                                   "Column": 24,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 337,
-                                                  "Line": 18,
+                                                  "Index": 356,
+                                                  "Line": 19,
                                                   "Column": 30,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -1293,14 +1369,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 324,
-                                          "Line": 18,
+                                          "Index": 343,
+                                          "Line": 19,
                                           "Column": 17,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 338,
-                                          "Line": 18,
+                                          "Index": 357,
+                                          "Line": 19,
                                           "Column": 31,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1323,14 +1399,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 339,
-                                          "Line": 18,
+                                          "Index": 358,
+                                          "Line": 19,
                                           "Column": 32,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 340,
-                                          "Line": 18,
+                                          "Index": 359,
+                                          "Line": 19,
                                           "Column": 33,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1344,14 +1420,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 312,
-                                  "Line": 18,
+                                  "Index": 331,
+                                  "Line": 19,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 341,
-                                  "Line": 18,
+                                  "Index": 360,
+                                  "Line": 19,
                                   "Column": 34,
                                   "StreamName": "vectors.scm"
                                 }
@@ -1374,14 +1450,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 347,
-                                          "Line": 19,
+                                          "Index": 366,
+                                          "Line": 20,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 357,
-                                          "Line": 19,
+                                          "Index": 376,
+                                          "Line": 20,
                                           "Column": 16,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1413,14 +1489,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 361,
-                                                        "Line": 19,
+                                                        "Index": 380,
+                                                        "Line": 20,
                                                         "Column": 20,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 362,
-                                                        "Line": 19,
+                                                        "Index": 381,
+                                                        "Line": 20,
                                                         "Column": 21,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -1443,14 +1519,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 363,
-                                                        "Line": 19,
+                                                        "Index": 382,
+                                                        "Line": 20,
                                                         "Column": 22,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 364,
-                                                        "Line": 19,
+                                                        "Index": 383,
+                                                        "Line": 20,
                                                         "Column": 23,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -1473,14 +1549,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 365,
-                                                        "Line": 19,
+                                                        "Index": 384,
+                                                        "Line": 20,
                                                         "Column": 24,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 366,
-                                                        "Line": 19,
+                                                        "Index": 385,
+                                                        "Line": 20,
                                                         "Column": 25,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -1503,14 +1579,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 367,
-                                                        "Line": 19,
+                                                        "Index": 386,
+                                                        "Line": 20,
                                                         "Column": 26,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 368,
-                                                        "Line": 19,
+                                                        "Index": 387,
+                                                        "Line": 20,
                                                         "Column": 27,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -1533,14 +1609,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 369,
-                                                        "Line": 19,
+                                                        "Index": 388,
+                                                        "Line": 20,
                                                         "Column": 28,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 370,
-                                                        "Line": 19,
+                                                        "Index": 389,
+                                                        "Line": 20,
                                                         "Column": 29,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -1563,14 +1639,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 371,
-                                                        "Line": 19,
+                                                        "Index": 390,
+                                                        "Line": 20,
                                                         "Column": 30,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 372,
-                                                        "Line": 19,
+                                                        "Index": 391,
+                                                        "Line": 20,
                                                         "Column": 31,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -1593,14 +1669,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 373,
-                                                        "Line": 19,
+                                                        "Index": 392,
+                                                        "Line": 20,
                                                         "Column": 32,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 375,
-                                                        "Line": 19,
+                                                        "Index": 394,
+                                                        "Line": 20,
                                                         "Column": 34,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -1623,14 +1699,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 376,
-                                                        "Line": 19,
+                                                        "Index": 395,
+                                                        "Line": 20,
                                                         "Column": 35,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 378,
-                                                        "Line": 19,
+                                                        "Index": 397,
+                                                        "Line": 20,
                                                         "Column": 37,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -1644,14 +1720,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 359,
-                                                "Line": 19,
+                                                "Index": 378,
+                                                "Line": 20,
                                                 "Column": 18,
                                                 "StreamName": "vectors.scm"
                                               },
                                               {
-                                                "Index": 379,
-                                                "Line": 19,
+                                                "Index": 398,
+                                                "Line": 20,
                                                 "Column": 38,
                                                 "StreamName": "vectors.scm"
                                               }
@@ -1664,14 +1740,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 358,
-                                          "Line": 19,
+                                          "Index": 377,
+                                          "Line": 20,
                                           "Column": 17,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 380,
-                                          "Line": 19,
+                                          "Index": 399,
+                                          "Line": 20,
                                           "Column": 39,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1694,14 +1770,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 380,
-                                          "Line": 19,
+                                          "Index": 399,
+                                          "Line": 20,
                                           "Column": 39,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 381,
-                                          "Line": 19,
+                                          "Index": 400,
+                                          "Line": 20,
                                           "Column": 40,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1715,14 +1791,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 346,
-                                  "Line": 19,
+                                  "Index": 365,
+                                  "Line": 20,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 382,
-                                  "Line": 19,
+                                  "Index": 401,
+                                  "Line": 20,
                                   "Column": 41,
                                   "StreamName": "vectors.scm"
                                 }
@@ -1745,14 +1821,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 388,
-                                          "Line": 20,
+                                          "Index": 407,
+                                          "Line": 21,
                                           "Column": 6,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 391,
-                                          "Line": 20,
+                                          "Index": 410,
+                                          "Line": 21,
                                           "Column": 9,
                                           "StreamName": "vectors.scm"
                                         }
@@ -1780,14 +1856,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 394,
-                                                          "Line": 20,
+                                                          "Index": 413,
+                                                          "Line": 21,
                                                           "Column": 12,
                                                           "StreamName": "vectors.scm"
                                                         },
                                                         {
-                                                          "Index": 397,
-                                                          "Line": 20,
+                                                          "Index": 416,
+                                                          "Line": 21,
                                                           "Column": 15,
                                                           "StreamName": "vectors.scm"
                                                         }
@@ -1810,14 +1886,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 399,
-                                                                  "Line": 20,
+                                                                  "Index": 418,
+                                                                  "Line": 21,
                                                                   "Column": 17,
                                                                   "StreamName": "vectors.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 405,
-                                                                  "Line": 20,
+                                                                  "Index": 424,
+                                                                  "Line": 21,
                                                                   "Column": 23,
                                                                   "StreamName": "vectors.scm"
                                                                 }
@@ -1840,14 +1916,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 406,
-                                                                  "Line": 20,
+                                                                  "Index": 425,
+                                                                  "Line": 21,
                                                                   "Column": 24,
                                                                   "StreamName": "vectors.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 407,
-                                                                  "Line": 20,
+                                                                  "Index": 426,
+                                                                  "Line": 21,
                                                                   "Column": 25,
                                                                   "StreamName": "vectors.scm"
                                                                 }
@@ -1879,14 +1955,14 @@
                                                                             "Case": "Span",
                                                                             "Fields": [
                                                                               {
-                                                                                "Index": 410,
-                                                                                "Line": 20,
+                                                                                "Index": 429,
+                                                                                "Line": 21,
                                                                                 "Column": 28,
                                                                                 "StreamName": "vectors.scm"
                                                                               },
                                                                               {
-                                                                                "Index": 411,
-                                                                                "Line": 20,
+                                                                                "Index": 430,
+                                                                                "Line": 21,
                                                                                 "Column": 29,
                                                                                 "StreamName": "vectors.scm"
                                                                               }
@@ -1909,14 +1985,14 @@
                                                                             "Case": "Span",
                                                                             "Fields": [
                                                                               {
-                                                                                "Index": 412,
-                                                                                "Line": 20,
+                                                                                "Index": 431,
+                                                                                "Line": 21,
                                                                                 "Column": 30,
                                                                                 "StreamName": "vectors.scm"
                                                                               },
                                                                               {
-                                                                                "Index": 413,
-                                                                                "Line": 20,
+                                                                                "Index": 432,
+                                                                                "Line": 21,
                                                                                 "Column": 31,
                                                                                 "StreamName": "vectors.scm"
                                                                               }
@@ -1939,14 +2015,14 @@
                                                                             "Case": "Span",
                                                                             "Fields": [
                                                                               {
-                                                                                "Index": 414,
-                                                                                "Line": 20,
+                                                                                "Index": 433,
+                                                                                "Line": 21,
                                                                                 "Column": 32,
                                                                                 "StreamName": "vectors.scm"
                                                                               },
                                                                               {
-                                                                                "Index": 415,
-                                                                                "Line": 20,
+                                                                                "Index": 434,
+                                                                                "Line": 21,
                                                                                 "Column": 33,
                                                                                 "StreamName": "vectors.scm"
                                                                               }
@@ -1969,14 +2045,14 @@
                                                                             "Case": "Span",
                                                                             "Fields": [
                                                                               {
-                                                                                "Index": 416,
-                                                                                "Line": 20,
+                                                                                "Index": 435,
+                                                                                "Line": 21,
                                                                                 "Column": 34,
                                                                                 "StreamName": "vectors.scm"
                                                                               },
                                                                               {
-                                                                                "Index": 417,
-                                                                                "Line": 20,
+                                                                                "Index": 436,
+                                                                                "Line": 21,
                                                                                 "Column": 35,
                                                                                 "StreamName": "vectors.scm"
                                                                               }
@@ -1990,14 +2066,14 @@
                                                                     "Case": "Span",
                                                                     "Fields": [
                                                                       {
-                                                                        "Index": 409,
-                                                                        "Line": 20,
+                                                                        "Index": 428,
+                                                                        "Line": 21,
                                                                         "Column": 27,
                                                                         "StreamName": "vectors.scm"
                                                                       },
                                                                       {
-                                                                        "Index": 418,
-                                                                        "Line": 20,
+                                                                        "Index": 437,
+                                                                        "Line": 21,
                                                                         "Column": 36,
                                                                         "StreamName": "vectors.scm"
                                                                       }
@@ -2010,14 +2086,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 408,
-                                                                  "Line": 20,
+                                                                  "Index": 427,
+                                                                  "Line": 21,
                                                                   "Column": 26,
                                                                   "StreamName": "vectors.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 419,
-                                                                  "Line": 20,
+                                                                  "Index": 438,
+                                                                  "Line": 21,
                                                                   "Column": 37,
                                                                   "StreamName": "vectors.scm"
                                                                 }
@@ -2040,14 +2116,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 419,
-                                                                  "Line": 20,
+                                                                  "Index": 438,
+                                                                  "Line": 21,
                                                                   "Column": 37,
                                                                   "StreamName": "vectors.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 425,
-                                                                  "Line": 20,
+                                                                  "Index": 444,
+                                                                  "Line": 21,
                                                                   "Column": 43,
                                                                   "StreamName": "vectors.scm"
                                                                 }
@@ -2061,14 +2137,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 398,
-                                                          "Line": 20,
+                                                          "Index": 417,
+                                                          "Line": 21,
                                                           "Column": 16,
                                                           "StreamName": "vectors.scm"
                                                         },
                                                         {
-                                                          "Index": 426,
-                                                          "Line": 20,
+                                                          "Index": 445,
+                                                          "Line": 21,
                                                           "Column": 44,
                                                           "StreamName": "vectors.scm"
                                                         }
@@ -2082,14 +2158,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 393,
-                                                  "Line": 20,
+                                                  "Index": 412,
+                                                  "Line": 21,
                                                   "Column": 11,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 427,
-                                                  "Line": 20,
+                                                  "Index": 446,
+                                                  "Line": 21,
                                                   "Column": 45,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -2103,14 +2179,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 392,
-                                          "Line": 20,
+                                          "Index": 411,
+                                          "Line": 21,
                                           "Column": 10,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 428,
-                                          "Line": 20,
+                                          "Index": 447,
+                                          "Line": 21,
                                           "Column": 46,
                                           "StreamName": "vectors.scm"
                                         }
@@ -2133,14 +2209,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 438,
-                                                  "Line": 21,
+                                                  "Index": 457,
+                                                  "Line": 22,
                                                   "Column": 10,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 449,
-                                                  "Line": 21,
+                                                  "Index": 468,
+                                                  "Line": 22,
                                                   "Column": 21,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -2158,14 +2234,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 450,
-                                                  "Line": 21,
+                                                  "Index": 469,
+                                                  "Line": 22,
                                                   "Column": 22,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 453,
-                                                  "Line": 21,
+                                                  "Index": 472,
+                                                  "Line": 22,
                                                   "Column": 25,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -2188,14 +2264,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 454,
-                                                  "Line": 21,
+                                                  "Index": 473,
+                                                  "Line": 22,
                                                   "Column": 26,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 455,
-                                                  "Line": 21,
+                                                  "Index": 474,
+                                                  "Line": 22,
                                                   "Column": 27,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -2227,14 +2303,14 @@
                                                             "Case": "Span",
                                                             "Fields": [
                                                               {
-                                                                "Index": 458,
-                                                                "Line": 21,
+                                                                "Index": 477,
+                                                                "Line": 22,
                                                                 "Column": 30,
                                                                 "StreamName": "vectors.scm"
                                                               },
                                                               {
-                                                                "Index": 463,
-                                                                "Line": 21,
+                                                                "Index": 482,
+                                                                "Line": 22,
                                                                 "Column": 35,
                                                                 "StreamName": "vectors.scm"
                                                               }
@@ -2257,14 +2333,14 @@
                                                             "Case": "Span",
                                                             "Fields": [
                                                               {
-                                                                "Index": 464,
-                                                                "Line": 21,
+                                                                "Index": 483,
+                                                                "Line": 22,
                                                                 "Column": 36,
                                                                 "StreamName": "vectors.scm"
                                                               },
                                                               {
-                                                                "Index": 469,
-                                                                "Line": 21,
+                                                                "Index": 488,
+                                                                "Line": 22,
                                                                 "Column": 41,
                                                                 "StreamName": "vectors.scm"
                                                               }
@@ -2278,14 +2354,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 457,
-                                                        "Line": 21,
+                                                        "Index": 476,
+                                                        "Line": 22,
                                                         "Column": 29,
                                                         "StreamName": "vectors.scm"
                                                       },
                                                       {
-                                                        "Index": 470,
-                                                        "Line": 21,
+                                                        "Index": 489,
+                                                        "Line": 22,
                                                         "Column": 42,
                                                         "StreamName": "vectors.scm"
                                                       }
@@ -2298,14 +2374,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 456,
-                                                  "Line": 21,
+                                                  "Index": 475,
+                                                  "Line": 22,
                                                   "Column": 28,
                                                   "StreamName": "vectors.scm"
                                                 },
                                                 {
-                                                  "Index": 470,
-                                                  "Line": 21,
+                                                  "Index": 489,
+                                                  "Line": 22,
                                                   "Column": 42,
                                                   "StreamName": "vectors.scm"
                                                 }
@@ -2319,14 +2395,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 437,
-                                          "Line": 21,
+                                          "Index": 456,
+                                          "Line": 22,
                                           "Column": 9,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 471,
-                                          "Line": 21,
+                                          "Index": 490,
+                                          "Line": 22,
                                           "Column": 43,
                                           "StreamName": "vectors.scm"
                                         }
@@ -2344,14 +2420,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 480,
-                                          "Line": 22,
+                                          "Index": 499,
+                                          "Line": 23,
                                           "Column": 9,
                                           "StreamName": "vectors.scm"
                                         },
                                         {
-                                          "Index": 483,
-                                          "Line": 22,
+                                          "Index": 502,
+                                          "Line": 23,
                                           "Column": 12,
                                           "StreamName": "vectors.scm"
                                         }
@@ -2365,14 +2441,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 387,
-                                  "Line": 20,
+                                  "Index": 406,
+                                  "Line": 21,
                                   "Column": 5,
                                   "StreamName": "vectors.scm"
                                 },
                                 {
-                                  "Index": 484,
-                                  "Line": 22,
+                                  "Index": 503,
+                                  "Line": 23,
                                   "Column": 13,
                                   "StreamName": "vectors.scm"
                                 }
@@ -2386,14 +2462,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 32,
-                          "Line": 2,
+                          "Index": 51,
+                          "Line": 3,
                           "Column": 10,
                           "StreamName": "vectors.scm"
                         },
                         {
-                          "Index": 491,
-                          "Line": 24,
+                          "Index": 510,
+                          "Line": 25,
                           "Column": 6,
                           "StreamName": "vectors.scm"
                         }
@@ -2407,14 +2483,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 23,
-                  "Line": 2,
+                  "Index": 42,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "vectors.scm"
                 },
                 {
-                  "Index": 492,
-                  "Line": 24,
+                  "Index": 511,
+                  "Line": 25,
                   "Column": 7,
                   "StreamName": "vectors.scm"
                 }
@@ -2434,8 +2510,8 @@
           "StreamName": "vectors.scm"
         },
         {
-          "Index": 492,
-          "Line": 24,
+          "Index": 511,
+          "Line": 25,
           "Column": 7,
           "StreamName": "vectors.scm"
         }

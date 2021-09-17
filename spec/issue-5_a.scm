@@ -1,4 +1,5 @@
-(import (scheme base))
+(import (scheme base)
+    (scheme write))
 ((lambda (a)
     (display
         (if #f

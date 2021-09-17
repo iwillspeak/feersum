@@ -1,5 +1,6 @@
 (define-library (dragon)
-    (import (scheme base))
+    (import (scheme base)
+    (scheme write))
     (export dragon)
     (begin
 

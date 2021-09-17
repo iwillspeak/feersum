@@ -61,10 +61,14 @@ let private findBuiltinMethods (externAssm: Assembly) =
             |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.Attributes.LispBuiltinAttribute>(), m))
             |> Seq.where (fun (attr, _) -> not (isNull attr))
     externAssm.ExportedTypes
-    |> Seq.collect findBuiltinMethodsForTy
+    |> Seq.choose (fun ty ->
+        ty.GetCustomAttribute<Serehfa.Attributes.LispLibraryAttribute>()
+        |> Option.ofObj
+        |> Option.map (fun n -> (List.ofSeq n.Name, findBuiltinMethodsForTy ty)))
 
 let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
     findBuiltinMethods externAssm
+    |> Seq.collect (fun (_, m) -> m)
     |> Seq.map (fun (a, m) -> (a.Name, lispAssm.MainModule.ImportReference(m)))
     |> Map.ofSeq
 
@@ -151,21 +155,26 @@ let private macroUnless =
 let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
 
 /// The list of builtin procedure names
-let coreProcedures =
+let private coreProcedures =
     findBuiltinMethods serehfaAssm
-    |> Seq.map (fun (a, _) -> (a.Name, StorageRef.Builtin(a.Name)))
+    |> Seq.map (fun (name, exports) ->
+        (name, exports |> Seq.map (fun (a, exports) -> (a.Name, StorageRef.Builtin(a.Name)))))
 
 /// The list of builtin macros
-let coreMacros =
-    [ macroAnd ; macroOr; macroWhen; macroUnless ]
-    |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m)))
+let private coreMacros =
+    (["scheme";"base"], [ macroAnd ; macroOr; macroWhen; macroUnless ] |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m))))
+    |> Seq.singleton
 
 // ------------------------ Public Builtins API --------------------------------
 
 /// The core library signature
-let public loadCoreSignature =
-    { LibraryName = ["scheme";"base"]
-    ; Exports = Seq.append coreProcedures coreMacros |> List.ofSeq }
+let public loadCoreSignatures =
+    Seq.append coreProcedures coreMacros
+    |> Seq.groupBy (fun (n, _) -> n)
+    |> Seq.map (fun (name, parts) ->
+        let bodies = Seq.collect (fun (n, body) -> body) parts
+        { LibraryName = name; Exports = bodies |> List.ofSeq})
+    |> List.ofSeq
 
 /// Load the core types into the given assembly
 let importCore (assm: AssemblyDefinition) =

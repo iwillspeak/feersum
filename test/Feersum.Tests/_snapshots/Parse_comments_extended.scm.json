@@ -109,6 +109,82 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "comments_extended.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "comments_extended.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "comments_extended.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "comments_extended.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "comments_extended.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "comments_extended.scm"
+                        }
+                      ]
+                    }
                   }
                 ]
               ]
@@ -123,9 +199,9 @@
                   "StreamName": "comments_extended.scm"
                 },
                 {
-                  "Index": 22,
-                  "Line": 1,
-                  "Column": 23,
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
                   "StreamName": "comments_extended.scm"
                 }
               ]
@@ -147,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 104,
-                          "Line": 6,
+                          "Index": 123,
+                          "Line": 7,
                           "Column": 2,
                           "StreamName": "comments_extended.scm"
                         },
                         {
-                          "Index": 110,
-                          "Line": 6,
+                          "Index": 129,
+                          "Line": 7,
                           "Column": 8,
                           "StreamName": "comments_extended.scm"
                         }
@@ -172,14 +248,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 111,
-                          "Line": 6,
+                          "Index": 130,
+                          "Line": 7,
                           "Column": 9,
                           "StreamName": "comments_extended.scm"
                         },
                         {
-                          "Index": 115,
-                          "Line": 6,
+                          "Index": 134,
+                          "Line": 7,
                           "Column": 13,
                           "StreamName": "comments_extended.scm"
                         }
@@ -202,14 +278,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 121,
-                                  "Line": 7,
+                                  "Index": 140,
+                                  "Line": 8,
                                   "Column": 6,
                                   "StreamName": "comments_extended.scm"
                                 },
                                 {
-                                  "Index": 127,
-                                  "Line": 7,
+                                  "Index": 146,
+                                  "Line": 8,
                                   "Column": 12,
                                   "StreamName": "comments_extended.scm"
                                 }
@@ -232,14 +308,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 129,
-                                          "Line": 7,
+                                          "Index": 148,
+                                          "Line": 8,
                                           "Column": 14,
                                           "StreamName": "comments_extended.scm"
                                         },
                                         {
-                                          "Index": 130,
-                                          "Line": 7,
+                                          "Index": 149,
+                                          "Line": 8,
                                           "Column": 15,
                                           "StreamName": "comments_extended.scm"
                                         }
@@ -253,14 +329,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 128,
-                                  "Line": 7,
+                                  "Index": 147,
+                                  "Line": 8,
                                   "Column": 13,
                                   "StreamName": "comments_extended.scm"
                                 },
                                 {
-                                  "Index": 131,
-                                  "Line": 7,
+                                  "Index": 150,
+                                  "Line": 8,
                                   "Column": 16,
                                   "StreamName": "comments_extended.scm"
                                 }
@@ -283,14 +359,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 378,
-                                          "Line": 15,
+                                          "Index": 397,
+                                          "Line": 16,
                                           "Column": 10,
                                           "StreamName": "comments_extended.scm"
                                         },
                                         {
-                                          "Index": 380,
-                                          "Line": 15,
+                                          "Index": 399,
+                                          "Line": 16,
                                           "Column": 12,
                                           "StreamName": "comments_extended.scm"
                                         }
@@ -313,14 +389,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 382,
-                                                  "Line": 15,
+                                                  "Index": 401,
+                                                  "Line": 16,
                                                   "Column": 14,
                                                   "StreamName": "comments_extended.scm"
                                                 },
                                                 {
-                                                  "Index": 383,
-                                                  "Line": 15,
+                                                  "Index": 402,
+                                                  "Line": 16,
                                                   "Column": 15,
                                                   "StreamName": "comments_extended.scm"
                                                 }
@@ -338,14 +414,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 384,
-                                                  "Line": 15,
+                                                  "Index": 403,
+                                                  "Line": 16,
                                                   "Column": 16,
                                                   "StreamName": "comments_extended.scm"
                                                 },
                                                 {
-                                                  "Index": 385,
-                                                  "Line": 15,
+                                                  "Index": 404,
+                                                  "Line": 16,
                                                   "Column": 17,
                                                   "StreamName": "comments_extended.scm"
                                                 }
@@ -368,14 +444,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 386,
-                                                  "Line": 15,
+                                                  "Index": 405,
+                                                  "Line": 16,
                                                   "Column": 18,
                                                   "StreamName": "comments_extended.scm"
                                                 },
                                                 {
-                                                  "Index": 387,
-                                                  "Line": 15,
+                                                  "Index": 406,
+                                                  "Line": 16,
                                                   "Column": 19,
                                                   "StreamName": "comments_extended.scm"
                                                 }
@@ -389,14 +465,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 381,
-                                          "Line": 15,
+                                          "Index": 400,
+                                          "Line": 16,
                                           "Column": 13,
                                           "StreamName": "comments_extended.scm"
                                         },
                                         {
-                                          "Index": 388,
-                                          "Line": 15,
+                                          "Index": 407,
+                                          "Line": 16,
                                           "Column": 20,
                                           "StreamName": "comments_extended.scm"
                                         }
@@ -419,14 +495,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 423,
-                                          "Line": 17,
+                                          "Index": 442,
+                                          "Line": 18,
                                           "Column": 13,
                                           "StreamName": "comments_extended.scm"
                                         },
                                         {
-                                          "Index": 424,
-                                          "Line": 17,
+                                          "Index": 443,
+                                          "Line": 18,
                                           "Column": 14,
                                           "StreamName": "comments_extended.scm"
                                         }
@@ -449,14 +525,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 466,
-                                                  "Line": 18,
+                                                  "Index": 485,
+                                                  "Line": 19,
                                                   "Column": 14,
                                                   "StreamName": "comments_extended.scm"
                                                 },
                                                 {
-                                                  "Index": 467,
-                                                  "Line": 18,
+                                                  "Index": 486,
+                                                  "Line": 19,
                                                   "Column": 15,
                                                   "StreamName": "comments_extended.scm"
                                                 }
@@ -474,14 +550,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 468,
-                                                  "Line": 18,
+                                                  "Index": 487,
+                                                  "Line": 19,
                                                   "Column": 16,
                                                   "StreamName": "comments_extended.scm"
                                                 },
                                                 {
-                                                  "Index": 469,
-                                                  "Line": 18,
+                                                  "Index": 488,
+                                                  "Line": 19,
                                                   "Column": 17,
                                                   "StreamName": "comments_extended.scm"
                                                 }
@@ -504,14 +580,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 471,
-                                                          "Line": 18,
+                                                          "Index": 490,
+                                                          "Line": 19,
                                                           "Column": 19,
                                                           "StreamName": "comments_extended.scm"
                                                         },
                                                         {
-                                                          "Index": 475,
-                                                          "Line": 18,
+                                                          "Index": 494,
+                                                          "Line": 19,
                                                           "Column": 23,
                                                           "StreamName": "comments_extended.scm"
                                                         }
@@ -534,14 +610,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 477,
-                                                                  "Line": 18,
+                                                                  "Index": 496,
+                                                                  "Line": 19,
                                                                   "Column": 25,
                                                                   "StreamName": "comments_extended.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 478,
-                                                                  "Line": 18,
+                                                                  "Index": 497,
+                                                                  "Line": 19,
                                                                   "Column": 26,
                                                                   "StreamName": "comments_extended.scm"
                                                                 }
@@ -559,14 +635,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 479,
-                                                                  "Line": 18,
+                                                                  "Index": 498,
+                                                                  "Line": 19,
                                                                   "Column": 27,
                                                                   "StreamName": "comments_extended.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 480,
-                                                                  "Line": 18,
+                                                                  "Index": 499,
+                                                                  "Line": 19,
                                                                   "Column": 28,
                                                                   "StreamName": "comments_extended.scm"
                                                                 }
@@ -589,14 +665,14 @@
                                                               "Case": "Span",
                                                               "Fields": [
                                                                 {
-                                                                  "Index": 481,
-                                                                  "Line": 18,
+                                                                  "Index": 500,
+                                                                  "Line": 19,
                                                                   "Column": 29,
                                                                   "StreamName": "comments_extended.scm"
                                                                 },
                                                                 {
-                                                                  "Index": 482,
-                                                                  "Line": 18,
+                                                                  "Index": 501,
+                                                                  "Line": 19,
                                                                   "Column": 30,
                                                                   "StreamName": "comments_extended.scm"
                                                                 }
@@ -610,14 +686,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 476,
-                                                          "Line": 18,
+                                                          "Index": 495,
+                                                          "Line": 19,
                                                           "Column": 24,
                                                           "StreamName": "comments_extended.scm"
                                                         },
                                                         {
-                                                          "Index": 483,
-                                                          "Line": 18,
+                                                          "Index": 502,
+                                                          "Line": 19,
                                                           "Column": 31,
                                                           "StreamName": "comments_extended.scm"
                                                         }
@@ -631,14 +707,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 470,
-                                                  "Line": 18,
+                                                  "Index": 489,
+                                                  "Line": 19,
                                                   "Column": 18,
                                                   "StreamName": "comments_extended.scm"
                                                 },
                                                 {
-                                                  "Index": 484,
-                                                  "Line": 18,
+                                                  "Index": 503,
+                                                  "Line": 19,
                                                   "Column": 32,
                                                   "StreamName": "comments_extended.scm"
                                                 }
@@ -652,14 +728,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 465,
-                                          "Line": 18,
+                                          "Index": 484,
+                                          "Line": 19,
                                           "Column": 13,
                                           "StreamName": "comments_extended.scm"
                                         },
                                         {
-                                          "Index": 485,
-                                          "Line": 18,
+                                          "Index": 504,
+                                          "Line": 19,
                                           "Column": 33,
                                           "StreamName": "comments_extended.scm"
                                         }
@@ -673,14 +749,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 377,
-                                  "Line": 15,
+                                  "Index": 396,
+                                  "Line": 16,
                                   "Column": 9,
                                   "StreamName": "comments_extended.scm"
                                 },
                                 {
-                                  "Index": 486,
-                                  "Line": 18,
+                                  "Index": 505,
+                                  "Line": 19,
                                   "Column": 34,
                                   "StreamName": "comments_extended.scm"
                                 }
@@ -694,14 +770,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 120,
-                          "Line": 7,
+                          "Index": 139,
+                          "Line": 8,
                           "Column": 5,
                           "StreamName": "comments_extended.scm"
                         },
                         {
-                          "Index": 487,
-                          "Line": 18,
+                          "Index": 506,
+                          "Line": 19,
                           "Column": 35,
                           "StreamName": "comments_extended.scm"
                         }
@@ -715,14 +791,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 103,
-                  "Line": 6,
+                  "Index": 122,
+                  "Line": 7,
                   "Column": 1,
                   "StreamName": "comments_extended.scm"
                 },
                 {
-                  "Index": 488,
-                  "Line": 18,
+                  "Index": 507,
+                  "Line": 19,
                   "Column": 36,
                   "StreamName": "comments_extended.scm"
                 }
@@ -745,14 +821,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 491,
-                          "Line": 20,
+                          "Index": 510,
+                          "Line": 21,
                           "Column": 2,
                           "StreamName": "comments_extended.scm"
                         },
                         {
-                          "Index": 498,
-                          "Line": 20,
+                          "Index": 517,
+                          "Line": 21,
                           "Column": 9,
                           "StreamName": "comments_extended.scm"
                         }
@@ -775,14 +851,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 500,
-                                  "Line": 20,
+                                  "Index": 519,
+                                  "Line": 21,
                                   "Column": 11,
                                   "StreamName": "comments_extended.scm"
                                 },
                                 {
-                                  "Index": 504,
-                                  "Line": 20,
+                                  "Index": 523,
+                                  "Line": 21,
                                   "Column": 15,
                                   "StreamName": "comments_extended.scm"
                                 }
@@ -805,14 +881,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 505,
-                                  "Line": 20,
+                                  "Index": 524,
+                                  "Line": 21,
                                   "Column": 16,
                                   "StreamName": "comments_extended.scm"
                                 },
                                 {
-                                  "Index": 506,
-                                  "Line": 20,
+                                  "Index": 525,
+                                  "Line": 21,
                                   "Column": 17,
                                   "StreamName": "comments_extended.scm"
                                 }
@@ -826,14 +902,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 499,
-                          "Line": 20,
+                          "Index": 518,
+                          "Line": 21,
                           "Column": 10,
                           "StreamName": "comments_extended.scm"
                         },
                         {
-                          "Index": 507,
-                          "Line": 20,
+                          "Index": 526,
+                          "Line": 21,
                           "Column": 18,
                           "StreamName": "comments_extended.scm"
                         }
@@ -847,14 +923,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 490,
-                  "Line": 20,
+                  "Index": 509,
+                  "Line": 21,
                   "Column": 1,
                   "StreamName": "comments_extended.scm"
                 },
                 {
-                  "Index": 508,
-                  "Line": 20,
+                  "Index": 527,
+                  "Line": 21,
                   "Column": 19,
                   "StreamName": "comments_extended.scm"
                 }
@@ -874,8 +950,8 @@
           "StreamName": "comments_extended.scm"
         },
         {
-          "Index": 515,
-          "Line": 20,
+          "Index": 534,
+          "Line": 21,
           "Column": 26,
           "StreamName": "comments_extended.scm"
         }

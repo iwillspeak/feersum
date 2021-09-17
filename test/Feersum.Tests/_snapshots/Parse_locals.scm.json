@@ -109,6 +109,82 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "locals.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "locals.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "locals.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "locals.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "locals.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "locals.scm"
+                        }
+                      ]
+                    }
                   }
                 ]
               ]
@@ -123,9 +199,9 @@
                   "StreamName": "locals.scm"
                 },
                 {
-                  "Index": 22,
-                  "Line": 1,
-                  "Column": 23,
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
                   "StreamName": "locals.scm"
                 }
               ]
@@ -147,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 25,
-                          "Line": 3,
+                          "Index": 44,
+                          "Line": 4,
                           "Column": 2,
                           "StreamName": "locals.scm"
                         },
                         {
-                          "Index": 31,
-                          "Line": 3,
+                          "Index": 50,
+                          "Line": 4,
                           "Column": 8,
                           "StreamName": "locals.scm"
                         }
@@ -177,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 33,
-                                  "Line": 3,
+                                  "Index": 52,
+                                  "Line": 4,
                                   "Column": 10,
                                   "StreamName": "locals.scm"
                                 },
                                 {
-                                  "Index": 37,
-                                  "Line": 3,
+                                  "Index": 56,
+                                  "Line": 4,
                                   "Column": 14,
                                   "StreamName": "locals.scm"
                                 }
@@ -202,14 +278,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 38,
-                                  "Line": 3,
+                                  "Index": 57,
+                                  "Line": 4,
                                   "Column": 15,
                                   "StreamName": "locals.scm"
                                 },
                                 {
-                                  "Index": 39,
-                                  "Line": 3,
+                                  "Index": 58,
+                                  "Line": 4,
                                   "Column": 16,
                                   "StreamName": "locals.scm"
                                 }
@@ -223,14 +299,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 32,
-                          "Line": 3,
+                          "Index": 51,
+                          "Line": 4,
                           "Column": 9,
                           "StreamName": "locals.scm"
                         },
                         {
-                          "Index": 40,
-                          "Line": 3,
+                          "Index": 59,
+                          "Line": 4,
                           "Column": 17,
                           "StreamName": "locals.scm"
                         }
@@ -253,14 +329,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 46,
-                                  "Line": 4,
+                                  "Index": 65,
+                                  "Line": 5,
                                   "Column": 6,
                                   "StreamName": "locals.scm"
                                 },
                                 {
-                                  "Index": 48,
-                                  "Line": 4,
+                                  "Index": 67,
+                                  "Line": 5,
                                   "Column": 8,
                                   "StreamName": "locals.scm"
                                 }
@@ -283,14 +359,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 50,
-                                          "Line": 4,
+                                          "Index": 69,
+                                          "Line": 5,
                                           "Column": 10,
                                           "StreamName": "locals.scm"
                                         },
                                         {
-                                          "Index": 51,
-                                          "Line": 4,
+                                          "Index": 70,
+                                          "Line": 5,
                                           "Column": 11,
                                           "StreamName": "locals.scm"
                                         }
@@ -308,14 +384,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 52,
-                                          "Line": 4,
+                                          "Index": 71,
+                                          "Line": 5,
                                           "Column": 12,
                                           "StreamName": "locals.scm"
                                         },
                                         {
-                                          "Index": 53,
-                                          "Line": 4,
+                                          "Index": 72,
+                                          "Line": 5,
                                           "Column": 13,
                                           "StreamName": "locals.scm"
                                         }
@@ -338,14 +414,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 54,
-                                          "Line": 4,
+                                          "Index": 73,
+                                          "Line": 5,
                                           "Column": 14,
                                           "StreamName": "locals.scm"
                                         },
                                         {
-                                          "Index": 55,
-                                          "Line": 4,
+                                          "Index": 74,
+                                          "Line": 5,
                                           "Column": 15,
                                           "StreamName": "locals.scm"
                                         }
@@ -359,14 +435,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 49,
-                                  "Line": 4,
+                                  "Index": 68,
+                                  "Line": 5,
                                   "Column": 9,
                                   "StreamName": "locals.scm"
                                 },
                                 {
-                                  "Index": 56,
-                                  "Line": 4,
+                                  "Index": 75,
+                                  "Line": 5,
                                   "Column": 16,
                                   "StreamName": "locals.scm"
                                 }
@@ -389,14 +465,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 65,
-                                  "Line": 5,
+                                  "Index": 84,
+                                  "Line": 6,
                                   "Column": 9,
                                   "StreamName": "locals.scm"
                                 },
                                 {
-                                  "Index": 66,
-                                  "Line": 5,
+                                  "Index": 85,
+                                  "Line": 6,
                                   "Column": 10,
                                   "StreamName": "locals.scm"
                                 }
@@ -419,14 +495,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 76,
-                                          "Line": 6,
+                                          "Index": 95,
+                                          "Line": 7,
                                           "Column": 10,
                                           "StreamName": "locals.scm"
                                         },
                                         {
-                                          "Index": 81,
-                                          "Line": 6,
+                                          "Index": 100,
+                                          "Line": 7,
                                           "Column": 15,
                                           "StreamName": "locals.scm"
                                         }
@@ -449,14 +525,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 95,
-                                                  "Line": 7,
+                                                  "Index": 114,
+                                                  "Line": 8,
                                                   "Column": 14,
                                                   "StreamName": "locals.scm"
                                                 },
                                                 {
-                                                  "Index": 101,
-                                                  "Line": 7,
+                                                  "Index": 120,
+                                                  "Line": 8,
                                                   "Column": 20,
                                                   "StreamName": "locals.scm"
                                                 }
@@ -474,14 +550,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 102,
-                                                  "Line": 7,
+                                                  "Index": 121,
+                                                  "Line": 8,
                                                   "Column": 21,
                                                   "StreamName": "locals.scm"
                                                 },
                                                 {
-                                                  "Index": 103,
-                                                  "Line": 7,
+                                                  "Index": 122,
+                                                  "Line": 8,
                                                   "Column": 22,
                                                   "StreamName": "locals.scm"
                                                 }
@@ -504,14 +580,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 105,
-                                                          "Line": 7,
+                                                          "Index": 124,
+                                                          "Line": 8,
                                                           "Column": 24,
                                                           "StreamName": "locals.scm"
                                                         },
                                                         {
-                                                          "Index": 106,
-                                                          "Line": 7,
+                                                          "Index": 125,
+                                                          "Line": 8,
                                                           "Column": 25,
                                                           "StreamName": "locals.scm"
                                                         }
@@ -529,14 +605,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 107,
-                                                          "Line": 7,
+                                                          "Index": 126,
+                                                          "Line": 8,
                                                           "Column": 26,
                                                           "StreamName": "locals.scm"
                                                         },
                                                         {
-                                                          "Index": 108,
-                                                          "Line": 7,
+                                                          "Index": 127,
+                                                          "Line": 8,
                                                           "Column": 27,
                                                           "StreamName": "locals.scm"
                                                         }
@@ -559,14 +635,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 109,
-                                                          "Line": 7,
+                                                          "Index": 128,
+                                                          "Line": 8,
                                                           "Column": 28,
                                                           "StreamName": "locals.scm"
                                                         },
                                                         {
-                                                          "Index": 110,
-                                                          "Line": 7,
+                                                          "Index": 129,
+                                                          "Line": 8,
                                                           "Column": 29,
                                                           "StreamName": "locals.scm"
                                                         }
@@ -580,14 +656,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 104,
-                                                  "Line": 7,
+                                                  "Index": 123,
+                                                  "Line": 8,
                                                   "Column": 23,
                                                   "StreamName": "locals.scm"
                                                 },
                                                 {
-                                                  "Index": 111,
-                                                  "Line": 7,
+                                                  "Index": 130,
+                                                  "Line": 8,
                                                   "Column": 30,
                                                   "StreamName": "locals.scm"
                                                 }
@@ -601,14 +677,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 94,
-                                          "Line": 7,
+                                          "Index": 113,
+                                          "Line": 8,
                                           "Column": 13,
                                           "StreamName": "locals.scm"
                                         },
                                         {
-                                          "Index": 112,
-                                          "Line": 7,
+                                          "Index": 131,
+                                          "Line": 8,
                                           "Column": 31,
                                           "StreamName": "locals.scm"
                                         }
@@ -631,14 +707,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 126,
-                                                  "Line": 8,
+                                                  "Index": 145,
+                                                  "Line": 9,
                                                   "Column": 14,
                                                   "StreamName": "locals.scm"
                                                 },
                                                 {
-                                                  "Index": 127,
-                                                  "Line": 8,
+                                                  "Index": 146,
+                                                  "Line": 9,
                                                   "Column": 15,
                                                   "StreamName": "locals.scm"
                                                 }
@@ -656,14 +732,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 128,
-                                                  "Line": 8,
+                                                  "Index": 147,
+                                                  "Line": 9,
                                                   "Column": 16,
                                                   "StreamName": "locals.scm"
                                                 },
                                                 {
-                                                  "Index": 129,
-                                                  "Line": 8,
+                                                  "Index": 148,
+                                                  "Line": 9,
                                                   "Column": 17,
                                                   "StreamName": "locals.scm"
                                                 }
@@ -686,14 +762,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 131,
-                                                          "Line": 8,
+                                                          "Index": 150,
+                                                          "Line": 9,
                                                           "Column": 19,
                                                           "StreamName": "locals.scm"
                                                         },
                                                         {
-                                                          "Index": 135,
-                                                          "Line": 8,
+                                                          "Index": 154,
+                                                          "Line": 9,
                                                           "Column": 23,
                                                           "StreamName": "locals.scm"
                                                         }
@@ -711,14 +787,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 136,
-                                                          "Line": 8,
+                                                          "Index": 155,
+                                                          "Line": 9,
                                                           "Column": 24,
                                                           "StreamName": "locals.scm"
                                                         },
                                                         {
-                                                          "Index": 137,
-                                                          "Line": 8,
+                                                          "Index": 156,
+                                                          "Line": 9,
                                                           "Column": 25,
                                                           "StreamName": "locals.scm"
                                                         }
@@ -732,14 +808,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 130,
-                                                  "Line": 8,
+                                                  "Index": 149,
+                                                  "Line": 9,
                                                   "Column": 18,
                                                   "StreamName": "locals.scm"
                                                 },
                                                 {
-                                                  "Index": 138,
-                                                  "Line": 8,
+                                                  "Index": 157,
+                                                  "Line": 9,
                                                   "Column": 26,
                                                   "StreamName": "locals.scm"
                                                 }
@@ -753,14 +829,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 125,
-                                          "Line": 8,
+                                          "Index": 144,
+                                          "Line": 9,
                                           "Column": 13,
                                           "StreamName": "locals.scm"
                                         },
                                         {
-                                          "Index": 139,
-                                          "Line": 8,
+                                          "Index": 158,
+                                          "Line": 9,
                                           "Column": 27,
                                           "StreamName": "locals.scm"
                                         }
@@ -774,14 +850,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 75,
-                                  "Line": 6,
+                                  "Index": 94,
+                                  "Line": 7,
                                   "Column": 9,
                                   "StreamName": "locals.scm"
                                 },
                                 {
-                                  "Index": 140,
-                                  "Line": 8,
+                                  "Index": 159,
+                                  "Line": 9,
                                   "Column": 28,
                                   "StreamName": "locals.scm"
                                 }
@@ -795,14 +871,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 45,
-                          "Line": 4,
+                          "Index": 64,
+                          "Line": 5,
                           "Column": 5,
                           "StreamName": "locals.scm"
                         },
                         {
-                          "Index": 141,
-                          "Line": 8,
+                          "Index": 160,
+                          "Line": 9,
                           "Column": 29,
                           "StreamName": "locals.scm"
                         }
@@ -816,14 +892,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 24,
-                  "Line": 3,
+                  "Index": 43,
+                  "Line": 4,
                   "Column": 1,
                   "StreamName": "locals.scm"
                 },
                 {
-                  "Index": 142,
-                  "Line": 8,
+                  "Index": 161,
+                  "Line": 9,
                   "Column": 30,
                   "StreamName": "locals.scm"
                 }
@@ -846,14 +922,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 145,
-                          "Line": 10,
+                          "Index": 164,
+                          "Line": 11,
                           "Column": 2,
                           "StreamName": "locals.scm"
                         },
                         {
-                          "Index": 152,
-                          "Line": 10,
+                          "Index": 171,
+                          "Line": 11,
                           "Column": 9,
                           "StreamName": "locals.scm"
                         }
@@ -876,14 +952,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 154,
-                                  "Line": 10,
+                                  "Index": 173,
+                                  "Line": 11,
                                   "Column": 11,
                                   "StreamName": "locals.scm"
                                 },
                                 {
-                                  "Index": 158,
-                                  "Line": 10,
+                                  "Index": 177,
+                                  "Line": 11,
                                   "Column": 15,
                                   "StreamName": "locals.scm"
                                 }
@@ -906,14 +982,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 159,
-                                  "Line": 10,
+                                  "Index": 178,
+                                  "Line": 11,
                                   "Column": 16,
                                   "StreamName": "locals.scm"
                                 },
                                 {
-                                  "Index": 160,
-                                  "Line": 10,
+                                  "Index": 179,
+                                  "Line": 11,
                                   "Column": 17,
                                   "StreamName": "locals.scm"
                                 }
@@ -927,14 +1003,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 153,
-                          "Line": 10,
+                          "Index": 172,
+                          "Line": 11,
                           "Column": 10,
                           "StreamName": "locals.scm"
                         },
                         {
-                          "Index": 161,
-                          "Line": 10,
+                          "Index": 180,
+                          "Line": 11,
                           "Column": 18,
                           "StreamName": "locals.scm"
                         }
@@ -948,14 +1024,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 144,
-                  "Line": 10,
+                  "Index": 163,
+                  "Line": 11,
                   "Column": 1,
                   "StreamName": "locals.scm"
                 },
                 {
-                  "Index": 162,
-                  "Line": 10,
+                  "Index": 181,
+                  "Line": 11,
                   "Column": 19,
                   "StreamName": "locals.scm"
                 }
@@ -975,8 +1051,8 @@
           "StreamName": "locals.scm"
         },
         {
-          "Index": 163,
-          "Line": 10,
+          "Index": 182,
+          "Line": 11,
           "Column": 20,
           "StreamName": "locals.scm"
         }

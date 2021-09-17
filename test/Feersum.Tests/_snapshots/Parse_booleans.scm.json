@@ -109,6 +109,82 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "booleans.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "booleans.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "booleans.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "booleans.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "booleans.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "booleans.scm"
+                        }
+                      ]
+                    }
                   }
                 ]
               ]
@@ -123,9 +199,9 @@
                   "StreamName": "booleans.scm"
                 },
                 {
-                  "Index": 22,
-                  "Line": 1,
-                  "Column": 23,
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
                   "StreamName": "booleans.scm"
                 }
               ]
@@ -147,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 59,
-                          "Line": 3,
+                          "Index": 78,
+                          "Line": 4,
                           "Column": 2,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 66,
-                          "Line": 3,
+                          "Index": 85,
+                          "Line": 4,
                           "Column": 9,
                           "StreamName": "booleans.scm"
                         }
@@ -177,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 68,
-                                  "Line": 3,
+                                  "Index": 87,
+                                  "Line": 4,
                                   "Column": 11,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 72,
-                                  "Line": 3,
+                                  "Index": 91,
+                                  "Line": 4,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -207,14 +283,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 77,
-                                  "Line": 4,
+                                  "Index": 96,
+                                  "Line": 5,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 79,
-                                  "Line": 4,
+                                  "Index": 98,
+                                  "Line": 5,
                                   "Column": 7,
                                   "StreamName": "booleans.scm"
                                 }
@@ -237,14 +313,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 84,
-                                  "Line": 5,
+                                  "Index": 103,
+                                  "Line": 6,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 90,
-                                  "Line": 5,
+                                  "Index": 109,
+                                  "Line": 6,
                                   "Column": 11,
                                   "StreamName": "booleans.scm"
                                 }
@@ -267,14 +343,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 95,
-                                  "Line": 6,
+                                  "Index": 114,
+                                  "Line": 7,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 97,
-                                  "Line": 6,
+                                  "Index": 116,
+                                  "Line": 7,
                                   "Column": 7,
                                   "StreamName": "booleans.scm"
                                 }
@@ -297,14 +373,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 102,
-                                  "Line": 7,
+                                  "Index": 121,
+                                  "Line": 8,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 107,
-                                  "Line": 7,
+                                  "Index": 126,
+                                  "Line": 8,
                                   "Column": 10,
                                   "StreamName": "booleans.scm"
                                 }
@@ -327,14 +403,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 113,
-                                          "Line": 8,
+                                          "Index": 132,
+                                          "Line": 9,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 116,
-                                          "Line": 8,
+                                          "Index": 135,
+                                          "Line": 9,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -357,14 +433,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 117,
-                                          "Line": 8,
+                                          "Index": 136,
+                                          "Line": 9,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 119,
-                                          "Line": 8,
+                                          "Index": 138,
+                                          "Line": 9,
                                           "Column": 12,
                                           "StreamName": "booleans.scm"
                                         }
@@ -387,14 +463,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 120,
-                                          "Line": 8,
+                                          "Index": 139,
+                                          "Line": 9,
                                           "Column": 13,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 125,
-                                          "Line": 8,
+                                          "Index": 144,
+                                          "Line": 9,
                                           "Column": 18,
                                           "StreamName": "booleans.scm"
                                         }
@@ -408,14 +484,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 112,
-                                  "Line": 8,
+                                  "Index": 131,
+                                  "Line": 9,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 126,
-                                  "Line": 8,
+                                  "Index": 145,
+                                  "Line": 9,
                                   "Column": 19,
                                   "StreamName": "booleans.scm"
                                 }
@@ -438,14 +514,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 132,
-                                          "Line": 9,
+                                          "Index": 151,
+                                          "Line": 10,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 136,
-                                          "Line": 9,
+                                          "Index": 155,
+                                          "Line": 10,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         }
@@ -468,96 +544,15 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 137,
-                                          "Line": 9,
-                                          "Column": 11,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 139,
-                                          "Line": 9,
-                                          "Column": 13,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Boolean",
-                                          "Fields": [
-                                            true
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 140,
-                                          "Line": 9,
-                                          "Column": 14,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 145,
-                                          "Line": 9,
-                                          "Column": 19,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 131,
-                                  "Line": 9,
-                                  "Column": 5,
-                                  "StreamName": "booleans.scm"
-                                },
-                                {
-                                  "Index": 146,
-                                  "Line": 9,
-                                  "Column": 20,
-                                  "StreamName": "booleans.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "equal?"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 152,
+                                          "Index": 156,
                                           "Line": 10,
-                                          "Column": 6,
+                                          "Column": 11,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
                                           "Index": 158,
                                           "Line": 10,
-                                          "Column": 12,
+                                          "Column": 13,
                                           "StreamName": "booleans.scm"
                                         }
                                       ]
@@ -581,12 +576,93 @@
                                         {
                                           "Index": 159,
                                           "Line": 10,
+                                          "Column": 14,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 164,
+                                          "Line": 10,
+                                          "Column": 19,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 150,
+                                  "Line": 10,
+                                  "Column": 5,
+                                  "StreamName": "booleans.scm"
+                                },
+                                {
+                                  "Index": 165,
+                                  "Line": 10,
+                                  "Column": 20,
+                                  "StreamName": "booleans.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "equal?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 171,
+                                          "Line": 11,
+                                          "Column": 6,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 177,
+                                          "Line": 11,
+                                          "Column": 12,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Boolean",
+                                          "Fields": [
+                                            true
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 178,
+                                          "Line": 11,
                                           "Column": 13,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 161,
-                                          "Line": 10,
+                                          "Index": 180,
+                                          "Line": 11,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
                                         }
@@ -609,14 +685,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 162,
-                                          "Line": 10,
+                                          "Index": 181,
+                                          "Line": 11,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 167,
-                                          "Line": 10,
+                                          "Index": 186,
+                                          "Line": 11,
                                           "Column": 21,
                                           "StreamName": "booleans.scm"
                                         }
@@ -630,14 +706,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 151,
-                                  "Line": 10,
+                                  "Index": 170,
+                                  "Line": 11,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 168,
-                                  "Line": 10,
+                                  "Index": 187,
+                                  "Line": 11,
                                   "Column": 22,
                                   "StreamName": "booleans.scm"
                                 }
@@ -660,14 +736,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 174,
-                                          "Line": 11,
+                                          "Index": 193,
+                                          "Line": 12,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 177,
-                                          "Line": 11,
+                                          "Index": 196,
+                                          "Line": 12,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -690,14 +766,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 178,
-                                          "Line": 11,
+                                          "Index": 197,
+                                          "Line": 12,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 180,
-                                          "Line": 11,
+                                          "Index": 199,
+                                          "Line": 12,
                                           "Column": 12,
                                           "StreamName": "booleans.scm"
                                         }
@@ -720,14 +796,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 181,
-                                          "Line": 11,
+                                          "Index": 200,
+                                          "Line": 12,
                                           "Column": 13,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 187,
-                                          "Line": 11,
+                                          "Index": 206,
+                                          "Line": 12,
                                           "Column": 19,
                                           "StreamName": "booleans.scm"
                                         }
@@ -741,14 +817,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 173,
-                                  "Line": 11,
+                                  "Index": 192,
+                                  "Line": 12,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 188,
-                                  "Line": 11,
+                                  "Index": 207,
+                                  "Line": 12,
                                   "Column": 20,
                                   "StreamName": "booleans.scm"
                                 }
@@ -771,14 +847,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 194,
-                                          "Line": 12,
+                                          "Index": 213,
+                                          "Line": 13,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 198,
-                                          "Line": 12,
+                                          "Index": 217,
+                                          "Line": 13,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         }
@@ -801,14 +877,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 199,
-                                          "Line": 12,
+                                          "Index": 218,
+                                          "Line": 13,
                                           "Column": 11,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 201,
-                                          "Line": 12,
+                                          "Index": 220,
+                                          "Line": 13,
                                           "Column": 13,
                                           "StreamName": "booleans.scm"
                                         }
@@ -831,14 +907,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 202,
-                                          "Line": 12,
+                                          "Index": 221,
+                                          "Line": 13,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 208,
-                                          "Line": 12,
+                                          "Index": 227,
+                                          "Line": 13,
                                           "Column": 20,
                                           "StreamName": "booleans.scm"
                                         }
@@ -852,14 +928,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 193,
-                                  "Line": 12,
+                                  "Index": 212,
+                                  "Line": 13,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 209,
-                                  "Line": 12,
+                                  "Index": 228,
+                                  "Line": 13,
                                   "Column": 21,
                                   "StreamName": "booleans.scm"
                                 }
@@ -882,14 +958,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 215,
-                                          "Line": 13,
+                                          "Index": 234,
+                                          "Line": 14,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 221,
-                                          "Line": 13,
+                                          "Index": 240,
+                                          "Line": 14,
                                           "Column": 12,
                                           "StreamName": "booleans.scm"
                                         }
@@ -912,14 +988,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 222,
-                                          "Line": 13,
+                                          "Index": 241,
+                                          "Line": 14,
                                           "Column": 13,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 224,
-                                          "Line": 13,
+                                          "Index": 243,
+                                          "Line": 14,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
                                         }
@@ -942,14 +1018,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 225,
-                                          "Line": 13,
+                                          "Index": 244,
+                                          "Line": 14,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 231,
-                                          "Line": 13,
+                                          "Index": 250,
+                                          "Line": 14,
                                           "Column": 22,
                                           "StreamName": "booleans.scm"
                                         }
@@ -963,14 +1039,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 214,
-                                  "Line": 13,
+                                  "Index": 233,
+                                  "Line": 14,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 232,
-                                  "Line": 13,
+                                  "Index": 251,
+                                  "Line": 14,
                                   "Column": 23,
                                   "StreamName": "booleans.scm"
                                 }
@@ -993,14 +1069,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 238,
-                                          "Line": 14,
+                                          "Index": 257,
+                                          "Line": 15,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 240,
-                                          "Line": 14,
+                                          "Index": 259,
+                                          "Line": 15,
                                           "Column": 8,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1023,14 +1099,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 242,
-                                                  "Line": 14,
+                                                  "Index": 261,
+                                                  "Line": 15,
                                                   "Column": 10,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 245,
-                                                  "Line": 14,
+                                                  "Index": 264,
+                                                  "Line": 15,
                                                   "Column": 13,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -1053,14 +1129,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 246,
-                                                  "Line": 14,
+                                                  "Index": 265,
+                                                  "Line": 15,
                                                   "Column": 14,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 248,
-                                                  "Line": 14,
+                                                  "Index": 267,
+                                                  "Line": 15,
                                                   "Column": 16,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -1083,14 +1159,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 249,
-                                                  "Line": 14,
+                                                  "Index": 268,
+                                                  "Line": 15,
                                                   "Column": 17,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 254,
-                                                  "Line": 14,
+                                                  "Index": 273,
+                                                  "Line": 15,
                                                   "Column": 22,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -1104,14 +1180,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 241,
-                                          "Line": 14,
+                                          "Index": 260,
+                                          "Line": 15,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 255,
-                                          "Line": 14,
+                                          "Index": 274,
+                                          "Line": 15,
                                           "Column": 23,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1133,14 +1209,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 265,
-                                                "Line": 15,
+                                                "Index": 284,
+                                                "Line": 16,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 269,
-                                                "Line": 15,
+                                                "Index": 288,
+                                                "Line": 16,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1153,14 +1229,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 264,
-                                          "Line": 15,
+                                          "Index": 283,
+                                          "Line": 16,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 278,
-                                          "Line": 16,
+                                          "Index": 297,
+                                          "Line": 17,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1182,14 +1258,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 279,
-                                                "Line": 16,
+                                                "Index": 298,
+                                                "Line": 17,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 283,
-                                                "Line": 16,
+                                                "Index": 302,
+                                                "Line": 17,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1202,14 +1278,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 278,
-                                          "Line": 16,
+                                          "Index": 297,
+                                          "Line": 17,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 283,
-                                          "Line": 16,
+                                          "Index": 302,
+                                          "Line": 17,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1223,14 +1299,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 237,
-                                  "Line": 14,
+                                  "Index": 256,
+                                  "Line": 15,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 284,
-                                  "Line": 16,
+                                  "Index": 303,
+                                  "Line": 17,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -1253,14 +1329,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 290,
-                                          "Line": 17,
+                                          "Index": 309,
+                                          "Line": 18,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 292,
-                                          "Line": 17,
+                                          "Index": 311,
+                                          "Line": 18,
                                           "Column": 8,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1283,14 +1359,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 294,
-                                                  "Line": 17,
+                                                  "Index": 313,
+                                                  "Line": 18,
                                                   "Column": 10,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 300,
-                                                  "Line": 17,
+                                                  "Index": 319,
+                                                  "Line": 18,
                                                   "Column": 16,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -1313,14 +1389,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 301,
-                                                  "Line": 17,
+                                                  "Index": 320,
+                                                  "Line": 18,
                                                   "Column": 17,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 303,
-                                                  "Line": 17,
+                                                  "Index": 322,
+                                                  "Line": 18,
                                                   "Column": 19,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -1343,14 +1419,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 304,
-                                                  "Line": 17,
+                                                  "Index": 323,
+                                                  "Line": 18,
                                                   "Column": 20,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 306,
-                                                  "Line": 17,
+                                                  "Index": 325,
+                                                  "Line": 18,
                                                   "Column": 22,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -1364,14 +1440,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 293,
-                                          "Line": 17,
+                                          "Index": 312,
+                                          "Line": 18,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 307,
-                                          "Line": 17,
+                                          "Index": 326,
+                                          "Line": 18,
                                           "Column": 23,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1393,14 +1469,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 317,
-                                                "Line": 18,
+                                                "Index": 336,
+                                                "Line": 19,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 321,
-                                                "Line": 18,
+                                                "Index": 340,
+                                                "Line": 19,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1413,14 +1489,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 316,
-                                          "Line": 18,
+                                          "Index": 335,
+                                          "Line": 19,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 330,
-                                          "Line": 19,
+                                          "Index": 349,
+                                          "Line": 20,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1442,14 +1518,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 331,
-                                                "Line": 19,
+                                                "Index": 350,
+                                                "Line": 20,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 335,
-                                                "Line": 19,
+                                                "Index": 354,
+                                                "Line": 20,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1462,14 +1538,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 330,
-                                          "Line": 19,
+                                          "Index": 349,
+                                          "Line": 20,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 335,
-                                          "Line": 19,
+                                          "Index": 354,
+                                          "Line": 20,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1483,14 +1559,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 289,
-                                  "Line": 17,
+                                  "Index": 308,
+                                  "Line": 18,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 336,
-                                  "Line": 19,
+                                  "Index": 355,
+                                  "Line": 20,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -1513,14 +1589,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 342,
-                                          "Line": 20,
+                                          "Index": 361,
+                                          "Line": 21,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 344,
-                                          "Line": 20,
+                                          "Index": 363,
+                                          "Line": 21,
                                           "Column": 8,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1543,14 +1619,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 345,
-                                          "Line": 20,
+                                          "Index": 364,
+                                          "Line": 21,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 347,
-                                          "Line": 20,
+                                          "Index": 366,
+                                          "Line": 21,
                                           "Column": 11,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1572,14 +1648,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 357,
-                                                "Line": 21,
+                                                "Index": 376,
+                                                "Line": 22,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 361,
-                                                "Line": 21,
+                                                "Index": 380,
+                                                "Line": 22,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1592,14 +1668,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 356,
-                                          "Line": 21,
+                                          "Index": 375,
+                                          "Line": 22,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 370,
-                                          "Line": 22,
+                                          "Index": 389,
+                                          "Line": 23,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1621,14 +1697,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 371,
-                                                "Line": 22,
+                                                "Index": 390,
+                                                "Line": 23,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 375,
-                                                "Line": 22,
+                                                "Index": 394,
+                                                "Line": 23,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1641,14 +1717,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 370,
-                                          "Line": 22,
+                                          "Index": 389,
+                                          "Line": 23,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 375,
-                                          "Line": 22,
+                                          "Index": 394,
+                                          "Line": 23,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1662,14 +1738,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 341,
-                                  "Line": 20,
+                                  "Index": 360,
+                                  "Line": 21,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 376,
-                                  "Line": 22,
+                                  "Index": 395,
+                                  "Line": 23,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -1692,14 +1768,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 382,
-                                          "Line": 23,
+                                          "Index": 401,
+                                          "Line": 24,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 384,
-                                          "Line": 23,
+                                          "Index": 403,
+                                          "Line": 24,
                                           "Column": 8,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1722,14 +1798,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 385,
-                                          "Line": 23,
+                                          "Index": 404,
+                                          "Line": 24,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 387,
-                                          "Line": 23,
+                                          "Index": 406,
+                                          "Line": 24,
                                           "Column": 11,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1751,14 +1827,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 397,
-                                                "Line": 24,
+                                                "Index": 416,
+                                                "Line": 25,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 401,
-                                                "Line": 24,
+                                                "Index": 420,
+                                                "Line": 25,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1771,14 +1847,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 396,
-                                          "Line": 24,
+                                          "Index": 415,
+                                          "Line": 25,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 410,
-                                          "Line": 25,
+                                          "Index": 429,
+                                          "Line": 26,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1800,14 +1876,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 411,
-                                                "Line": 25,
+                                                "Index": 430,
+                                                "Line": 26,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 415,
-                                                "Line": 25,
+                                                "Index": 434,
+                                                "Line": 26,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1820,14 +1896,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 410,
-                                          "Line": 25,
+                                          "Index": 429,
+                                          "Line": 26,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 415,
-                                          "Line": 25,
+                                          "Index": 434,
+                                          "Line": 26,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1841,14 +1917,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 381,
-                                  "Line": 23,
+                                  "Index": 400,
+                                  "Line": 24,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 416,
-                                  "Line": 25,
+                                  "Index": 435,
+                                  "Line": 26,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -1871,14 +1947,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 422,
-                                          "Line": 26,
+                                          "Index": 441,
+                                          "Line": 27,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 424,
-                                          "Line": 26,
+                                          "Index": 443,
+                                          "Line": 27,
                                           "Column": 8,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1900,14 +1976,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 426,
-                                                "Line": 26,
+                                                "Index": 445,
+                                                "Line": 27,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 428,
-                                                "Line": 26,
+                                                "Index": 447,
+                                                "Line": 27,
                                                 "Column": 12,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1920,14 +1996,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 425,
-                                          "Line": 26,
+                                          "Index": 444,
+                                          "Line": 27,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 437,
-                                          "Line": 27,
+                                          "Index": 456,
+                                          "Line": 28,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1949,14 +2025,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 438,
-                                                "Line": 27,
+                                                "Index": 457,
+                                                "Line": 28,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 442,
-                                                "Line": 27,
+                                                "Index": 461,
+                                                "Line": 28,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -1969,14 +2045,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 437,
-                                          "Line": 27,
+                                          "Index": 456,
+                                          "Line": 28,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 451,
-                                          "Line": 28,
+                                          "Index": 470,
+                                          "Line": 29,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -1998,14 +2074,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 452,
-                                                "Line": 28,
+                                                "Index": 471,
+                                                "Line": 29,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 456,
-                                                "Line": 28,
+                                                "Index": 475,
+                                                "Line": 29,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -2018,14 +2094,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 451,
-                                          "Line": 28,
+                                          "Index": 470,
+                                          "Line": 29,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 456,
-                                          "Line": 28,
+                                          "Index": 475,
+                                          "Line": 29,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2039,14 +2115,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 421,
-                                  "Line": 26,
+                                  "Index": 440,
+                                  "Line": 27,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 457,
-                                  "Line": 28,
+                                  "Index": 476,
+                                  "Line": 29,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2069,14 +2145,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 463,
-                                          "Line": 29,
+                                          "Index": 482,
+                                          "Line": 30,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 465,
-                                          "Line": 29,
+                                          "Index": 484,
+                                          "Line": 30,
                                           "Column": 8,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2098,14 +2174,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 467,
-                                                "Line": 29,
+                                                "Index": 486,
+                                                "Line": 30,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 476,
-                                                "Line": 29,
+                                                "Index": 495,
+                                                "Line": 30,
                                                 "Column": 19,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -2118,14 +2194,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 466,
-                                          "Line": 29,
+                                          "Index": 485,
+                                          "Line": 30,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 485,
-                                          "Line": 30,
+                                          "Index": 504,
+                                          "Line": 31,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2147,14 +2223,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 486,
-                                                "Line": 30,
+                                                "Index": 505,
+                                                "Line": 31,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 490,
-                                                "Line": 30,
+                                                "Index": 509,
+                                                "Line": 31,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -2167,14 +2243,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 485,
-                                          "Line": 30,
+                                          "Index": 504,
+                                          "Line": 31,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 499,
-                                          "Line": 31,
+                                          "Index": 518,
+                                          "Line": 32,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2196,14 +2272,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 500,
-                                                "Line": 31,
+                                                "Index": 519,
+                                                "Line": 32,
                                                 "Column": 10,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 504,
-                                                "Line": 31,
+                                                "Index": 523,
+                                                "Line": 32,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -2216,14 +2292,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 499,
-                                          "Line": 31,
+                                          "Index": 518,
+                                          "Line": 32,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 504,
-                                          "Line": 31,
+                                          "Index": 523,
+                                          "Line": 32,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2237,14 +2313,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 462,
-                                  "Line": 29,
+                                  "Index": 481,
+                                  "Line": 30,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 505,
-                                  "Line": 31,
+                                  "Index": 524,
+                                  "Line": 32,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2258,14 +2334,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 67,
-                          "Line": 3,
+                          "Index": 86,
+                          "Line": 4,
                           "Column": 10,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 511,
-                          "Line": 32,
+                          "Index": 530,
+                          "Line": 33,
                           "Column": 6,
                           "StreamName": "booleans.scm"
                         }
@@ -2279,14 +2355,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 58,
-                  "Line": 3,
+                  "Index": 77,
+                  "Line": 4,
                   "Column": 1,
                   "StreamName": "booleans.scm"
                 },
                 {
-                  "Index": 512,
-                  "Line": 32,
+                  "Index": 531,
+                  "Line": 33,
                   "Column": 7,
                   "StreamName": "booleans.scm"
                 }
@@ -2309,14 +2385,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 513,
-                          "Line": 32,
+                          "Index": 532,
+                          "Line": 33,
                           "Column": 8,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 520,
-                          "Line": 32,
+                          "Index": 539,
+                          "Line": 33,
                           "Column": 15,
                           "StreamName": "booleans.scm"
                         }
@@ -2330,14 +2406,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 512,
-                  "Line": 32,
+                  "Index": 531,
+                  "Line": 33,
                   "Column": 7,
                   "StreamName": "booleans.scm"
                 },
                 {
-                  "Index": 521,
-                  "Line": 32,
+                  "Index": 540,
+                  "Line": 33,
                   "Column": 16,
                   "StreamName": "booleans.scm"
                 }
@@ -2360,14 +2436,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 573,
-                          "Line": 34,
+                          "Index": 592,
+                          "Line": 35,
                           "Column": 2,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 580,
-                          "Line": 34,
+                          "Index": 599,
+                          "Line": 35,
                           "Column": 9,
                           "StreamName": "booleans.scm"
                         }
@@ -2390,14 +2466,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 582,
-                                  "Line": 34,
+                                  "Index": 601,
+                                  "Line": 35,
                                   "Column": 11,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 586,
-                                  "Line": 34,
+                                  "Index": 605,
+                                  "Line": 35,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2424,14 +2500,14 @@
                                     "Case": "Span",
                                     "Fields": [
                                       {
-                                        "Index": 592,
-                                        "Line": 35,
+                                        "Index": 611,
+                                        "Line": 36,
                                         "Column": 6,
                                         "StreamName": "booleans.scm"
                                       },
                                       {
-                                        "Index": 594,
-                                        "Line": 35,
+                                        "Index": 613,
+                                        "Line": 36,
                                         "Column": 8,
                                         "StreamName": "booleans.scm"
                                       }
@@ -2444,14 +2520,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 591,
-                                  "Line": 35,
+                                  "Index": 610,
+                                  "Line": 36,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 599,
-                                  "Line": 36,
+                                  "Index": 618,
+                                  "Line": 37,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2478,14 +2554,14 @@
                                     "Case": "Span",
                                     "Fields": [
                                       {
-                                        "Index": 600,
-                                        "Line": 36,
+                                        "Index": 619,
+                                        "Line": 37,
                                         "Column": 6,
                                         "StreamName": "booleans.scm"
                                       },
                                       {
-                                        "Index": 605,
-                                        "Line": 36,
+                                        "Index": 624,
+                                        "Line": 37,
                                         "Column": 11,
                                         "StreamName": "booleans.scm"
                                       }
@@ -2498,14 +2574,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 599,
-                                  "Line": 36,
+                                  "Index": 618,
+                                  "Line": 37,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 605,
-                                  "Line": 36,
+                                  "Index": 624,
+                                  "Line": 37,
                                   "Column": 11,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2519,14 +2595,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 581,
-                          "Line": 34,
+                          "Index": 600,
+                          "Line": 35,
                           "Column": 10,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 606,
-                          "Line": 36,
+                          "Index": 625,
+                          "Line": 37,
                           "Column": 12,
                           "StreamName": "booleans.scm"
                         }
@@ -2540,14 +2616,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 572,
-                  "Line": 34,
+                  "Index": 591,
+                  "Line": 35,
                   "Column": 1,
                   "StreamName": "booleans.scm"
                 },
                 {
-                  "Index": 607,
-                  "Line": 36,
+                  "Index": 626,
+                  "Line": 37,
                   "Column": 13,
                   "StreamName": "booleans.scm"
                 }
@@ -2570,14 +2646,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 608,
-                          "Line": 36,
+                          "Index": 627,
+                          "Line": 37,
                           "Column": 14,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 615,
-                          "Line": 36,
+                          "Index": 634,
+                          "Line": 37,
                           "Column": 21,
                           "StreamName": "booleans.scm"
                         }
@@ -2591,14 +2667,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 607,
-                  "Line": 36,
+                  "Index": 626,
+                  "Line": 37,
                   "Column": 13,
                   "StreamName": "booleans.scm"
                 },
                 {
-                  "Index": 616,
-                  "Line": 36,
+                  "Index": 635,
+                  "Line": 37,
                   "Column": 22,
                   "StreamName": "booleans.scm"
                 }
@@ -2621,14 +2697,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 676,
-                          "Line": 38,
+                          "Index": 695,
+                          "Line": 39,
                           "Column": 2,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 683,
-                          "Line": 38,
+                          "Index": 702,
+                          "Line": 39,
                           "Column": 9,
                           "StreamName": "booleans.scm"
                         }
@@ -2651,14 +2727,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 685,
-                                  "Line": 38,
+                                  "Index": 704,
+                                  "Line": 39,
                                   "Column": 11,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 689,
-                                  "Line": 38,
+                                  "Index": 708,
+                                  "Line": 39,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2681,14 +2757,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 695,
-                                          "Line": 39,
+                                          "Index": 714,
+                                          "Line": 40,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 698,
-                                          "Line": 39,
+                                          "Index": 717,
+                                          "Line": 40,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2711,14 +2787,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 699,
-                                          "Line": 39,
+                                          "Index": 718,
+                                          "Line": 40,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 701,
-                                          "Line": 39,
+                                          "Index": 720,
+                                          "Line": 40,
                                           "Column": 12,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2732,14 +2808,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 694,
-                                  "Line": 39,
+                                  "Index": 713,
+                                  "Line": 40,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 702,
-                                  "Line": 39,
+                                  "Index": 721,
+                                  "Line": 40,
                                   "Column": 13,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2762,14 +2838,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 716,
-                                          "Line": 40,
+                                          "Index": 735,
+                                          "Line": 41,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 719,
-                                          "Line": 40,
+                                          "Index": 738,
+                                          "Line": 41,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2792,14 +2868,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 720,
-                                          "Line": 40,
+                                          "Index": 739,
+                                          "Line": 41,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 721,
-                                          "Line": 40,
+                                          "Index": 740,
+                                          "Line": 41,
                                           "Column": 11,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2813,14 +2889,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 715,
-                                  "Line": 40,
+                                  "Index": 734,
+                                  "Line": 41,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 722,
-                                  "Line": 40,
+                                  "Index": 741,
+                                  "Line": 41,
                                   "Column": 12,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2843,14 +2919,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 736,
-                                          "Line": 41,
+                                          "Index": 755,
+                                          "Line": 42,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 739,
-                                          "Line": 41,
+                                          "Index": 758,
+                                          "Line": 42,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2873,14 +2949,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 741,
-                                                  "Line": 41,
+                                                  "Index": 760,
+                                                  "Line": 42,
                                                   "Column": 11,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 745,
-                                                  "Line": 41,
+                                                  "Index": 764,
+                                                  "Line": 42,
                                                   "Column": 15,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -2903,14 +2979,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 746,
-                                                  "Line": 41,
+                                                  "Index": 765,
+                                                  "Line": 42,
                                                   "Column": 16,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 747,
-                                                  "Line": 41,
+                                                  "Index": 766,
+                                                  "Line": 42,
                                                   "Column": 17,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -2924,14 +3000,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 740,
-                                          "Line": 41,
+                                          "Index": 759,
+                                          "Line": 42,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 748,
-                                          "Line": 41,
+                                          "Index": 767,
+                                          "Line": 42,
                                           "Column": 18,
                                           "StreamName": "booleans.scm"
                                         }
@@ -2945,14 +3021,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 735,
-                                  "Line": 41,
+                                  "Index": 754,
+                                  "Line": 42,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 749,
-                                  "Line": 41,
+                                  "Index": 768,
+                                  "Line": 42,
                                   "Column": 19,
                                   "StreamName": "booleans.scm"
                                 }
@@ -2975,14 +3051,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 763,
-                                          "Line": 42,
+                                          "Index": 782,
+                                          "Line": 43,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 766,
-                                          "Line": 42,
+                                          "Index": 785,
+                                          "Line": 43,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3005,14 +3081,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 767,
-                                          "Line": 42,
+                                          "Index": 786,
+                                          "Line": 43,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 769,
-                                          "Line": 42,
+                                          "Index": 788,
+                                          "Line": 43,
                                           "Column": 12,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3026,14 +3102,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 762,
-                                  "Line": 42,
+                                  "Index": 781,
+                                  "Line": 43,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 770,
-                                  "Line": 42,
+                                  "Index": 789,
+                                  "Line": 43,
                                   "Column": 13,
                                   "StreamName": "booleans.scm"
                                 }
@@ -3056,14 +3132,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 784,
-                                          "Line": 43,
+                                          "Index": 803,
+                                          "Line": 44,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 787,
-                                          "Line": 43,
+                                          "Index": 806,
+                                          "Line": 44,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3085,14 +3161,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 789,
-                                                "Line": 43,
+                                                "Index": 808,
+                                                "Line": 44,
                                                 "Column": 11,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 791,
-                                                "Line": 43,
+                                                "Index": 810,
+                                                "Line": 44,
                                                 "Column": 13,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -3105,14 +3181,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 788,
-                                          "Line": 43,
+                                          "Index": 807,
+                                          "Line": 44,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 791,
-                                          "Line": 43,
+                                          "Index": 810,
+                                          "Line": 44,
                                           "Column": 13,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3126,14 +3202,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 783,
-                                  "Line": 43,
+                                  "Index": 802,
+                                  "Line": 44,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 792,
-                                  "Line": 43,
+                                  "Index": 811,
+                                  "Line": 44,
                                   "Column": 14,
                                   "StreamName": "booleans.scm"
                                 }
@@ -3156,14 +3232,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 806,
-                                          "Line": 44,
+                                          "Index": 825,
+                                          "Line": 45,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 809,
-                                          "Line": 44,
+                                          "Index": 828,
+                                          "Line": 45,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3186,14 +3262,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 811,
-                                                  "Line": 44,
+                                                  "Index": 830,
+                                                  "Line": 45,
                                                   "Column": 11,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 815,
-                                                  "Line": 44,
+                                                  "Index": 834,
+                                                  "Line": 45,
                                                   "Column": 15,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -3207,14 +3283,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 810,
-                                          "Line": 44,
+                                          "Index": 829,
+                                          "Line": 45,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 816,
-                                          "Line": 44,
+                                          "Index": 835,
+                                          "Line": 45,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3228,14 +3304,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 805,
-                                  "Line": 44,
+                                  "Index": 824,
+                                  "Line": 45,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 817,
-                                  "Line": 44,
+                                  "Index": 836,
+                                  "Line": 45,
                                   "Column": 17,
                                   "StreamName": "booleans.scm"
                                 }
@@ -3258,14 +3334,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 831,
-                                          "Line": 45,
+                                          "Index": 850,
+                                          "Line": 46,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 834,
-                                          "Line": 45,
+                                          "Index": 853,
+                                          "Line": 46,
                                           "Column": 9,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3287,14 +3363,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 836,
-                                                "Line": 45,
+                                                "Index": 855,
+                                                "Line": 46,
                                                 "Column": 11,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 839,
-                                                "Line": 45,
+                                                "Index": 858,
+                                                "Line": 46,
                                                 "Column": 14,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -3307,14 +3383,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 835,
-                                          "Line": 45,
+                                          "Index": 854,
+                                          "Line": 46,
                                           "Column": 10,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 839,
-                                          "Line": 45,
+                                          "Index": 858,
+                                          "Line": 46,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3328,14 +3404,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 830,
-                                  "Line": 45,
+                                  "Index": 849,
+                                  "Line": 46,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 840,
-                                  "Line": 45,
+                                  "Index": 859,
+                                  "Line": 46,
                                   "Column": 15,
                                   "StreamName": "booleans.scm"
                                 }
@@ -3358,14 +3434,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 855,
-                                          "Line": 47,
+                                          "Index": 874,
+                                          "Line": 48,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 863,
-                                          "Line": 47,
+                                          "Index": 882,
+                                          "Line": 48,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3388,14 +3464,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 864,
-                                          "Line": 47,
+                                          "Index": 883,
+                                          "Line": 48,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 866,
-                                          "Line": 47,
+                                          "Index": 885,
+                                          "Line": 48,
                                           "Column": 17,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3409,14 +3485,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 854,
-                                  "Line": 47,
+                                  "Index": 873,
+                                  "Line": 48,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 867,
-                                  "Line": 47,
+                                  "Index": 886,
+                                  "Line": 48,
                                   "Column": 18,
                                   "StreamName": "booleans.scm"
                                 }
@@ -3439,14 +3515,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 881,
-                                          "Line": 48,
+                                          "Index": 900,
+                                          "Line": 49,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 889,
-                                          "Line": 48,
+                                          "Index": 908,
+                                          "Line": 49,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3469,14 +3545,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 890,
-                                          "Line": 48,
+                                          "Index": 909,
+                                          "Line": 49,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 891,
-                                          "Line": 48,
+                                          "Index": 910,
+                                          "Line": 49,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3490,14 +3566,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 880,
-                                  "Line": 48,
+                                  "Index": 899,
+                                  "Line": 49,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 892,
-                                  "Line": 48,
+                                  "Index": 911,
+                                  "Line": 49,
                                   "Column": 17,
                                   "StreamName": "booleans.scm"
                                 }
@@ -3520,14 +3596,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 906,
-                                          "Line": 49,
+                                          "Index": 925,
+                                          "Line": 50,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 914,
-                                          "Line": 49,
+                                          "Index": 933,
+                                          "Line": 50,
                                           "Column": 14,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3549,14 +3625,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 916,
-                                                "Line": 49,
+                                                "Index": 935,
+                                                "Line": 50,
                                                 "Column": 16,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 918,
-                                                "Line": 49,
+                                                "Index": 937,
+                                                "Line": 50,
                                                 "Column": 18,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -3569,14 +3645,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 915,
-                                          "Line": 49,
+                                          "Index": 934,
+                                          "Line": 50,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 918,
-                                          "Line": 49,
+                                          "Index": 937,
+                                          "Line": 50,
                                           "Column": 18,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3590,14 +3666,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 905,
-                                  "Line": 49,
+                                  "Index": 924,
+                                  "Line": 50,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 919,
-                                  "Line": 49,
+                                  "Index": 938,
+                                  "Line": 50,
                                   "Column": 19,
                                   "StreamName": "booleans.scm"
                                 }
@@ -3620,14 +3696,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 938,
-                                          "Line": 51,
+                                          "Index": 957,
+                                          "Line": 52,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 947,
-                                          "Line": 51,
+                                          "Index": 966,
+                                          "Line": 52,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3650,14 +3726,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 948,
-                                          "Line": 51,
+                                          "Index": 967,
+                                          "Line": 52,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 950,
-                                          "Line": 51,
+                                          "Index": 969,
+                                          "Line": 52,
                                           "Column": 18,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3680,96 +3756,15 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 951,
-                                          "Line": 51,
-                                          "Column": 19,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 953,
-                                          "Line": 51,
-                                          "Column": 21,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Boolean",
-                                          "Fields": [
-                                            true
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 954,
-                                          "Line": 51,
-                                          "Column": 22,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 956,
-                                          "Line": 51,
-                                          "Column": 24,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 937,
-                                  "Line": 51,
-                                  "Column": 5,
-                                  "StreamName": "booleans.scm"
-                                },
-                                {
-                                  "Index": 957,
-                                  "Line": 51,
-                                  "Column": 25,
-                                  "StreamName": "booleans.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "boolean=?"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 963,
+                                          "Index": 970,
                                           "Line": 52,
-                                          "Column": 6,
+                                          "Column": 19,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
                                           "Index": 972,
                                           "Line": 52,
-                                          "Column": 15,
+                                          "Column": 21,
                                           "StreamName": "booleans.scm"
                                         }
                                       ]
@@ -3793,71 +3788,11 @@
                                         {
                                           "Index": 973,
                                           "Line": 52,
-                                          "Column": 16,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 975,
-                                          "Line": 52,
-                                          "Column": 18,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Boolean",
-                                          "Fields": [
-                                            false
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 976,
-                                          "Line": 52,
-                                          "Column": 19,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 978,
-                                          "Line": 52,
-                                          "Column": 21,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Boolean",
-                                          "Fields": [
-                                            true
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 979,
-                                          "Line": 52,
                                           "Column": 22,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 981,
+                                          "Index": 975,
                                           "Line": 52,
                                           "Column": 24,
                                           "StreamName": "booleans.scm"
@@ -3872,13 +3807,13 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 962,
+                                  "Index": 956,
                                   "Line": 52,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 982,
+                                  "Index": 976,
                                   "Line": 52,
                                   "Column": 25,
                                   "StreamName": "booleans.scm"
@@ -3902,13 +3837,13 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 988,
+                                          "Index": 982,
                                           "Line": 53,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 997,
+                                          "Index": 991,
                                           "Line": 53,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
@@ -3923,7 +3858,7 @@
                                         {
                                           "Case": "Boolean",
                                           "Fields": [
-                                            false
+                                            true
                                           ]
                                         }
                                       ]
@@ -3932,13 +3867,13 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 998,
+                                          "Index": 992,
                                           "Line": 53,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1000,
+                                          "Index": 994,
                                           "Line": 53,
                                           "Column": 18,
                                           "StreamName": "booleans.scm"
@@ -3962,14 +3897,155 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1001,
+                                          "Index": 995,
                                           "Line": 53,
                                           "Column": 19,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1003,
+                                          "Index": 997,
                                           "Line": 53,
+                                          "Column": 21,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Boolean",
+                                          "Fields": [
+                                            true
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 998,
+                                          "Line": 53,
+                                          "Column": 22,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 1000,
+                                          "Line": 53,
+                                          "Column": 24,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 981,
+                                  "Line": 53,
+                                  "Column": 5,
+                                  "StreamName": "booleans.scm"
+                                },
+                                {
+                                  "Index": 1001,
+                                  "Line": 53,
+                                  "Column": 25,
+                                  "StreamName": "booleans.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "boolean=?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 1007,
+                                          "Line": 54,
+                                          "Column": 6,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 1016,
+                                          "Line": 54,
+                                          "Column": 15,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Boolean",
+                                          "Fields": [
+                                            false
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 1017,
+                                          "Line": 54,
+                                          "Column": 16,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 1019,
+                                          "Line": 54,
+                                          "Column": 18,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Boolean",
+                                          "Fields": [
+                                            false
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 1020,
+                                          "Line": 54,
+                                          "Column": 19,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 1022,
+                                          "Line": 54,
                                           "Column": 21,
                                           "StreamName": "booleans.scm"
                                         }
@@ -3992,14 +4068,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1004,
-                                          "Line": 53,
+                                          "Index": 1023,
+                                          "Line": 54,
                                           "Column": 22,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1006,
-                                          "Line": 53,
+                                          "Index": 1025,
+                                          "Line": 54,
                                           "Column": 24,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4022,14 +4098,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1007,
-                                          "Line": 53,
+                                          "Index": 1026,
+                                          "Line": 54,
                                           "Column": 25,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1009,
-                                          "Line": 53,
+                                          "Index": 1028,
+                                          "Line": 54,
                                           "Column": 27,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4052,14 +4128,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1010,
-                                          "Line": 53,
+                                          "Index": 1029,
+                                          "Line": 54,
                                           "Column": 28,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1012,
-                                          "Line": 53,
+                                          "Index": 1031,
+                                          "Line": 54,
                                           "Column": 30,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4073,14 +4149,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 987,
-                                  "Line": 53,
+                                  "Index": 1006,
+                                  "Line": 54,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 1013,
-                                  "Line": 53,
+                                  "Index": 1032,
+                                  "Line": 54,
                                   "Column": 31,
                                   "StreamName": "booleans.scm"
                                 }
@@ -4103,14 +4179,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1019,
-                                          "Line": 54,
+                                          "Index": 1038,
+                                          "Line": 55,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1028,
-                                          "Line": 54,
+                                          "Index": 1047,
+                                          "Line": 55,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4133,14 +4209,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1029,
-                                          "Line": 54,
+                                          "Index": 1048,
+                                          "Line": 55,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1031,
-                                          "Line": 54,
+                                          "Index": 1050,
+                                          "Line": 55,
                                           "Column": 18,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4163,14 +4239,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1032,
-                                          "Line": 54,
+                                          "Index": 1051,
+                                          "Line": 55,
                                           "Column": 19,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1034,
-                                          "Line": 54,
+                                          "Index": 1053,
+                                          "Line": 55,
                                           "Column": 21,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4193,96 +4269,15 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1035,
-                                          "Line": 54,
-                                          "Column": 22,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 1037,
-                                          "Line": 54,
-                                          "Column": 24,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Boolean",
-                                          "Fields": [
-                                            false
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 1038,
-                                          "Line": 54,
-                                          "Column": 25,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 1040,
-                                          "Line": 54,
-                                          "Column": 27,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 1018,
-                                  "Line": 54,
-                                  "Column": 5,
-                                  "StreamName": "booleans.scm"
-                                },
-                                {
-                                  "Index": 1041,
-                                  "Line": 54,
-                                  "Column": 28,
-                                  "StreamName": "booleans.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "boolean=?"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 1047,
+                                          "Index": 1054,
                                           "Line": 55,
-                                          "Column": 6,
+                                          "Column": 22,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
                                           "Index": 1056,
                                           "Line": 55,
-                                          "Column": 15,
+                                          "Column": 24,
                                           "StreamName": "booleans.scm"
                                         }
                                       ]
@@ -4306,43 +4301,13 @@
                                         {
                                           "Index": 1057,
                                           "Line": 55,
-                                          "Column": 16,
+                                          "Column": 25,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
                                           "Index": 1059,
                                           "Line": 55,
-                                          "Column": 18,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Boolean",
-                                          "Fields": [
-                                            false
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 1060,
-                                          "Line": 55,
-                                          "Column": 19,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 1062,
-                                          "Line": 55,
-                                          "Column": 21,
+                                          "Column": 27,
                                           "StreamName": "booleans.scm"
                                         }
                                       ]
@@ -4355,15 +4320,15 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 1046,
+                                  "Index": 1037,
                                   "Line": 55,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 1063,
+                                  "Index": 1060,
                                   "Line": 55,
-                                  "Column": 22,
+                                  "Column": 28,
                                   "StreamName": "booleans.scm"
                                 }
                               ]
@@ -4385,15 +4350,45 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1069,
+                                          "Index": 1066,
                                           "Line": 56,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1078,
+                                          "Index": 1075,
                                           "Line": 56,
                                           "Column": 15,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Boolean",
+                                          "Fields": [
+                                            false
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 1076,
+                                          "Line": 56,
+                                          "Column": 16,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 1078,
+                                          "Line": 56,
+                                          "Column": 18,
                                           "StreamName": "booleans.scm"
                                         }
                                       ]
@@ -4417,43 +4412,13 @@
                                         {
                                           "Index": 1079,
                                           "Line": 56,
-                                          "Column": 16,
+                                          "Column": 19,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
                                           "Index": 1081,
                                           "Line": 56,
-                                          "Column": 18,
-                                          "StreamName": "booleans.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Constant",
-                                      "Fields": [
-                                        {
-                                          "Case": "Number",
-                                          "Fields": [
-                                            0.0
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 1082,
-                                          "Line": 56,
-                                          "Column": 19,
-                                          "StreamName": "booleans.scm"
-                                        },
-                                        {
-                                          "Index": 1083,
-                                          "Line": 56,
-                                          "Column": 20,
+                                          "Column": 21,
                                           "StreamName": "booleans.scm"
                                         }
                                       ]
@@ -4466,15 +4431,15 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 1068,
+                                  "Index": 1065,
                                   "Line": 56,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 1084,
+                                  "Index": 1082,
                                   "Line": 56,
-                                  "Column": 21,
+                                  "Column": 22,
                                   "StreamName": "booleans.scm"
                                 }
                               ]
@@ -4496,13 +4461,13 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1090,
+                                          "Index": 1088,
                                           "Line": 57,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1099,
+                                          "Index": 1097,
                                           "Line": 57,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
@@ -4526,14 +4491,125 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1100,
+                                          "Index": 1098,
                                           "Line": 57,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
+                                          "Index": 1100,
+                                          "Line": 57,
+                                          "Column": 18,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Number",
+                                          "Fields": [
+                                            0.0
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 1101,
+                                          "Line": 57,
+                                          "Column": 19,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
                                           "Index": 1102,
                                           "Line": 57,
+                                          "Column": 20,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1087,
+                                  "Line": 57,
+                                  "Column": 5,
+                                  "StreamName": "booleans.scm"
+                                },
+                                {
+                                  "Index": 1103,
+                                  "Line": 57,
+                                  "Column": 21,
+                                  "StreamName": "booleans.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "boolean=?"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 1109,
+                                          "Line": 58,
+                                          "Column": 6,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 1118,
+                                          "Line": 58,
+                                          "Column": 15,
+                                          "StreamName": "booleans.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Boolean",
+                                          "Fields": [
+                                            false
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 1119,
+                                          "Line": 58,
+                                          "Column": 16,
+                                          "StreamName": "booleans.scm"
+                                        },
+                                        {
+                                          "Index": 1121,
+                                          "Line": 58,
                                           "Column": 18,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4555,14 +4631,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 1104,
-                                                "Line": 57,
+                                                "Index": 1123,
+                                                "Line": 58,
                                                 "Column": 20,
                                                 "StreamName": "booleans.scm"
                                               },
                                               {
-                                                "Index": 1106,
-                                                "Line": 57,
+                                                "Index": 1125,
+                                                "Line": 58,
                                                 "Column": 22,
                                                 "StreamName": "booleans.scm"
                                               }
@@ -4575,14 +4651,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1103,
-                                          "Line": 57,
+                                          "Index": 1122,
+                                          "Line": 58,
                                           "Column": 19,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1106,
-                                          "Line": 57,
+                                          "Index": 1125,
+                                          "Line": 58,
                                           "Column": 22,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4596,14 +4672,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 1089,
-                                  "Line": 57,
+                                  "Index": 1108,
+                                  "Line": 58,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 1107,
-                                  "Line": 57,
+                                  "Index": 1126,
+                                  "Line": 58,
                                   "Column": 23,
                                   "StreamName": "booleans.scm"
                                 }
@@ -4626,14 +4702,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1113,
-                                          "Line": 58,
+                                          "Index": 1132,
+                                          "Line": 59,
                                           "Column": 6,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1122,
-                                          "Line": 58,
+                                          "Index": 1141,
+                                          "Line": 59,
                                           "Column": 15,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4656,14 +4732,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 1124,
-                                                  "Line": 58,
+                                                  "Index": 1143,
+                                                  "Line": 59,
                                                   "Column": 17,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 1128,
-                                                  "Line": 58,
+                                                  "Index": 1147,
+                                                  "Line": 59,
                                                   "Column": 21,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -4686,14 +4762,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 1129,
-                                                  "Line": 58,
+                                                  "Index": 1148,
+                                                  "Line": 59,
                                                   "Column": 22,
                                                   "StreamName": "booleans.scm"
                                                 },
                                                 {
-                                                  "Index": 1132,
-                                                  "Line": 58,
+                                                  "Index": 1151,
+                                                  "Line": 59,
                                                   "Column": 25,
                                                   "StreamName": "booleans.scm"
                                                 }
@@ -4707,14 +4783,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1123,
-                                          "Line": 58,
+                                          "Index": 1142,
+                                          "Line": 59,
                                           "Column": 16,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1133,
-                                          "Line": 58,
+                                          "Index": 1152,
+                                          "Line": 59,
                                           "Column": 26,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4737,14 +4813,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1134,
-                                          "Line": 58,
+                                          "Index": 1153,
+                                          "Line": 59,
                                           "Column": 27,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1136,
-                                          "Line": 58,
+                                          "Index": 1155,
+                                          "Line": 59,
                                           "Column": 29,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4767,14 +4843,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 1137,
-                                          "Line": 58,
+                                          "Index": 1156,
+                                          "Line": 59,
                                           "Column": 30,
                                           "StreamName": "booleans.scm"
                                         },
                                         {
-                                          "Index": 1139,
-                                          "Line": 58,
+                                          "Index": 1158,
+                                          "Line": 59,
                                           "Column": 32,
                                           "StreamName": "booleans.scm"
                                         }
@@ -4788,14 +4864,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 1112,
-                                  "Line": 58,
+                                  "Index": 1131,
+                                  "Line": 59,
                                   "Column": 5,
                                   "StreamName": "booleans.scm"
                                 },
                                 {
-                                  "Index": 1140,
-                                  "Line": 58,
+                                  "Index": 1159,
+                                  "Line": 59,
                                   "Column": 33,
                                   "StreamName": "booleans.scm"
                                 }
@@ -4809,14 +4885,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 684,
-                          "Line": 38,
+                          "Index": 703,
+                          "Line": 39,
                           "Column": 10,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 1147,
-                          "Line": 60,
+                          "Index": 1166,
+                          "Line": 61,
                           "Column": 6,
                           "StreamName": "booleans.scm"
                         }
@@ -4830,14 +4906,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 675,
-                  "Line": 38,
+                  "Index": 694,
+                  "Line": 39,
                   "Column": 1,
                   "StreamName": "booleans.scm"
                 },
                 {
-                  "Index": 1148,
-                  "Line": 60,
+                  "Index": 1167,
+                  "Line": 61,
                   "Column": 7,
                   "StreamName": "booleans.scm"
                 }
@@ -4860,14 +4936,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 1149,
-                          "Line": 60,
+                          "Index": 1168,
+                          "Line": 61,
                           "Column": 8,
                           "StreamName": "booleans.scm"
                         },
                         {
-                          "Index": 1156,
-                          "Line": 60,
+                          "Index": 1175,
+                          "Line": 61,
                           "Column": 15,
                           "StreamName": "booleans.scm"
                         }
@@ -4881,14 +4957,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 1148,
-                  "Line": 60,
+                  "Index": 1167,
+                  "Line": 61,
                   "Column": 7,
                   "StreamName": "booleans.scm"
                 },
                 {
-                  "Index": 1157,
-                  "Line": 60,
+                  "Index": 1176,
+                  "Line": 61,
                   "Column": 16,
                   "StreamName": "booleans.scm"
                 }
@@ -4908,8 +4984,8 @@
           "StreamName": "booleans.scm"
         },
         {
-          "Index": 1157,
-          "Line": 60,
+          "Index": 1176,
+          "Line": 61,
           "Column": 16,
           "StreamName": "booleans.scm"
         }

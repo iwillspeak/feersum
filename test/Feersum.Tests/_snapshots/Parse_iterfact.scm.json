@@ -109,6 +109,82 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 27,
+                                  "Line": 2,
+                                  "Column": 6,
+                                  "StreamName": "iterfact.scm"
+                                },
+                                {
+                                  "Index": 33,
+                                  "Line": 2,
+                                  "Column": 12,
+                                  "StreamName": "iterfact.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 34,
+                                  "Line": 2,
+                                  "Column": 13,
+                                  "StreamName": "iterfact.scm"
+                                },
+                                {
+                                  "Index": 39,
+                                  "Line": 2,
+                                  "Column": 18,
+                                  "StreamName": "iterfact.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 26,
+                          "Line": 2,
+                          "Column": 5,
+                          "StreamName": "iterfact.scm"
+                        },
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 19,
+                          "StreamName": "iterfact.scm"
+                        }
+                      ]
+                    }
                   }
                 ]
               ]
@@ -123,9 +199,9 @@
                   "StreamName": "iterfact.scm"
                 },
                 {
-                  "Index": 22,
-                  "Line": 1,
-                  "Column": 23,
+                  "Index": 41,
+                  "Line": 2,
+                  "Column": 20,
                   "StreamName": "iterfact.scm"
                 }
               ]
@@ -147,14 +223,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 24,
-                          "Line": 2,
+                          "Index": 43,
+                          "Line": 3,
                           "Column": 2,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 30,
-                          "Line": 2,
+                          "Index": 49,
+                          "Line": 3,
                           "Column": 8,
                           "StreamName": "iterfact.scm"
                         }
@@ -177,14 +253,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 32,
-                                  "Line": 2,
+                                  "Index": 51,
+                                  "Line": 3,
                                   "Column": 10,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 36,
-                                  "Line": 2,
+                                  "Index": 55,
+                                  "Line": 3,
                                   "Column": 14,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -202,14 +278,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 37,
-                                  "Line": 2,
+                                  "Index": 56,
+                                  "Line": 3,
                                   "Column": 15,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 38,
-                                  "Line": 2,
+                                  "Index": 57,
+                                  "Line": 3,
                                   "Column": 16,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -223,14 +299,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 31,
-                          "Line": 2,
+                          "Index": 50,
+                          "Line": 3,
                           "Column": 9,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 39,
-                          "Line": 2,
+                          "Index": 58,
+                          "Line": 3,
                           "Column": 17,
                           "StreamName": "iterfact.scm"
                         }
@@ -253,14 +329,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 45,
-                                  "Line": 3,
+                                  "Index": 64,
+                                  "Line": 4,
                                   "Column": 6,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 47,
-                                  "Line": 3,
+                                  "Index": 66,
+                                  "Line": 4,
                                   "Column": 8,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -283,14 +359,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 49,
-                                          "Line": 3,
+                                          "Index": 68,
+                                          "Line": 4,
                                           "Column": 10,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 50,
-                                          "Line": 3,
+                                          "Index": 69,
+                                          "Line": 4,
                                           "Column": 11,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -308,14 +384,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 51,
-                                          "Line": 3,
+                                          "Index": 70,
+                                          "Line": 4,
                                           "Column": 12,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 52,
-                                          "Line": 3,
+                                          "Index": 71,
+                                          "Line": 4,
                                           "Column": 13,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -338,14 +414,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 53,
-                                          "Line": 3,
+                                          "Index": 72,
+                                          "Line": 4,
                                           "Column": 14,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 54,
-                                          "Line": 3,
+                                          "Index": 73,
+                                          "Line": 4,
                                           "Column": 15,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -359,14 +435,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 48,
-                                  "Line": 3,
+                                  "Index": 67,
+                                  "Line": 4,
                                   "Column": 9,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 55,
-                                  "Line": 3,
+                                  "Index": 74,
+                                  "Line": 4,
                                   "Column": 16,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -389,14 +465,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 64,
-                                  "Line": 4,
+                                  "Index": 83,
+                                  "Line": 5,
                                   "Column": 9,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 65,
-                                  "Line": 4,
+                                  "Index": 84,
+                                  "Line": 5,
                                   "Column": 10,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -419,14 +495,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 75,
-                                          "Line": 5,
+                                          "Index": 94,
+                                          "Line": 6,
                                           "Column": 10,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 76,
-                                          "Line": 5,
+                                          "Index": 95,
+                                          "Line": 6,
                                           "Column": 11,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -444,14 +520,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 77,
-                                          "Line": 5,
+                                          "Index": 96,
+                                          "Line": 6,
                                           "Column": 12,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 78,
-                                          "Line": 5,
+                                          "Index": 97,
+                                          "Line": 6,
                                           "Column": 13,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -474,14 +550,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 80,
-                                                  "Line": 5,
+                                                  "Index": 99,
+                                                  "Line": 6,
                                                   "Column": 15,
                                                   "StreamName": "iterfact.scm"
                                                 },
                                                 {
-                                                  "Index": 84,
-                                                  "Line": 5,
+                                                  "Index": 103,
+                                                  "Line": 6,
                                                   "Column": 19,
                                                   "StreamName": "iterfact.scm"
                                                 }
@@ -504,14 +580,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 86,
-                                                          "Line": 5,
+                                                          "Index": 105,
+                                                          "Line": 6,
                                                           "Column": 21,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 87,
-                                                          "Line": 5,
+                                                          "Index": 106,
+                                                          "Line": 6,
                                                           "Column": 22,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -529,14 +605,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 88,
-                                                          "Line": 5,
+                                                          "Index": 107,
+                                                          "Line": 6,
                                                           "Column": 23,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 89,
-                                                          "Line": 5,
+                                                          "Index": 108,
+                                                          "Line": 6,
                                                           "Column": 24,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -559,14 +635,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 90,
-                                                          "Line": 5,
+                                                          "Index": 109,
+                                                          "Line": 6,
                                                           "Column": 25,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 91,
-                                                          "Line": 5,
+                                                          "Index": 110,
+                                                          "Line": 6,
                                                           "Column": 26,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -580,14 +656,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 85,
-                                                  "Line": 5,
+                                                  "Index": 104,
+                                                  "Line": 6,
                                                   "Column": 20,
                                                   "StreamName": "iterfact.scm"
                                                 },
                                                 {
-                                                  "Index": 92,
-                                                  "Line": 5,
+                                                  "Index": 111,
+                                                  "Line": 6,
                                                   "Column": 27,
                                                   "StreamName": "iterfact.scm"
                                                 }
@@ -601,14 +677,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 79,
-                                          "Line": 5,
+                                          "Index": 98,
+                                          "Line": 6,
                                           "Column": 14,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 93,
-                                          "Line": 5,
+                                          "Index": 112,
+                                          "Line": 6,
                                           "Column": 28,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -622,14 +698,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 74,
-                                  "Line": 5,
+                                  "Index": 93,
+                                  "Line": 6,
                                   "Column": 9,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 94,
-                                  "Line": 5,
+                                  "Index": 113,
+                                  "Line": 6,
                                   "Column": 29,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -643,14 +719,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 44,
-                          "Line": 3,
+                          "Index": 63,
+                          "Line": 4,
                           "Column": 5,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 95,
-                          "Line": 5,
+                          "Index": 114,
+                          "Line": 6,
                           "Column": 30,
                           "StreamName": "iterfact.scm"
                         }
@@ -664,14 +740,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 23,
-                  "Line": 2,
+                  "Index": 42,
+                  "Line": 3,
                   "Column": 1,
                   "StreamName": "iterfact.scm"
                 },
                 {
-                  "Index": 96,
-                  "Line": 5,
+                  "Index": 115,
+                  "Line": 6,
                   "Column": 31,
                   "StreamName": "iterfact.scm"
                 }
@@ -694,14 +770,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 99,
-                          "Line": 7,
+                          "Index": 118,
+                          "Line": 8,
                           "Column": 2,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 105,
-                          "Line": 7,
+                          "Index": 124,
+                          "Line": 8,
                           "Column": 8,
                           "StreamName": "iterfact.scm"
                         }
@@ -724,14 +800,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 107,
-                                  "Line": 7,
+                                  "Index": 126,
+                                  "Line": 8,
                                   "Column": 10,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 115,
-                                  "Line": 7,
+                                  "Index": 134,
+                                  "Line": 8,
                                   "Column": 18,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -749,14 +825,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 116,
-                                  "Line": 7,
+                                  "Index": 135,
+                                  "Line": 8,
                                   "Column": 19,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 117,
-                                  "Line": 7,
+                                  "Index": 136,
+                                  "Line": 8,
                                   "Column": 20,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -770,14 +846,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 106,
-                          "Line": 7,
+                          "Index": 125,
+                          "Line": 8,
                           "Column": 9,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 118,
-                          "Line": 7,
+                          "Index": 137,
+                          "Line": 8,
                           "Column": 21,
                           "StreamName": "iterfact.scm"
                         }
@@ -800,14 +876,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 124,
-                                  "Line": 8,
+                                  "Index": 143,
+                                  "Line": 9,
                                   "Column": 6,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 130,
-                                  "Line": 8,
+                                  "Index": 149,
+                                  "Line": 9,
                                   "Column": 12,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -830,14 +906,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 132,
-                                          "Line": 8,
+                                          "Index": 151,
+                                          "Line": 9,
                                           "Column": 14,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 144,
-                                          "Line": 8,
+                                          "Index": 163,
+                                          "Line": 9,
                                           "Column": 26,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -855,14 +931,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 145,
-                                          "Line": 8,
+                                          "Index": 164,
+                                          "Line": 9,
                                           "Column": 27,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 146,
-                                          "Line": 8,
+                                          "Index": 165,
+                                          "Line": 9,
                                           "Column": 28,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -880,14 +956,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 147,
-                                          "Line": 8,
+                                          "Index": 166,
+                                          "Line": 9,
                                           "Column": 29,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 150,
-                                          "Line": 8,
+                                          "Index": 169,
+                                          "Line": 9,
                                           "Column": 32,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -901,14 +977,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 131,
-                                  "Line": 8,
+                                  "Index": 150,
+                                  "Line": 9,
                                   "Column": 13,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 151,
-                                  "Line": 8,
+                                  "Index": 170,
+                                  "Line": 9,
                                   "Column": 33,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -931,14 +1007,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 161,
-                                          "Line": 9,
+                                          "Index": 180,
+                                          "Line": 10,
                                           "Column": 10,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 163,
-                                          "Line": 9,
+                                          "Index": 182,
+                                          "Line": 10,
                                           "Column": 12,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -961,14 +1037,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 165,
-                                                  "Line": 9,
+                                                  "Index": 184,
+                                                  "Line": 10,
                                                   "Column": 14,
                                                   "StreamName": "iterfact.scm"
                                                 },
                                                 {
-                                                  "Index": 166,
-                                                  "Line": 9,
+                                                  "Index": 185,
+                                                  "Line": 10,
                                                   "Column": 15,
                                                   "StreamName": "iterfact.scm"
                                                 }
@@ -986,14 +1062,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 167,
-                                                  "Line": 9,
+                                                  "Index": 186,
+                                                  "Line": 10,
                                                   "Column": 16,
                                                   "StreamName": "iterfact.scm"
                                                 },
                                                 {
-                                                  "Index": 168,
-                                                  "Line": 9,
+                                                  "Index": 187,
+                                                  "Line": 10,
                                                   "Column": 17,
                                                   "StreamName": "iterfact.scm"
                                                 }
@@ -1016,14 +1092,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 169,
-                                                  "Line": 9,
+                                                  "Index": 188,
+                                                  "Line": 10,
                                                   "Column": 18,
                                                   "StreamName": "iterfact.scm"
                                                 },
                                                 {
-                                                  "Index": 170,
-                                                  "Line": 9,
+                                                  "Index": 189,
+                                                  "Line": 10,
                                                   "Column": 19,
                                                   "StreamName": "iterfact.scm"
                                                 }
@@ -1037,14 +1113,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 164,
-                                          "Line": 9,
+                                          "Index": 183,
+                                          "Line": 10,
                                           "Column": 13,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 171,
-                                          "Line": 9,
+                                          "Index": 190,
+                                          "Line": 10,
                                           "Column": 20,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -1062,14 +1138,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 184,
-                                          "Line": 10,
+                                          "Index": 203,
+                                          "Line": 11,
                                           "Column": 13,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 187,
-                                          "Line": 10,
+                                          "Index": 206,
+                                          "Line": 11,
                                           "Column": 16,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -1092,14 +1168,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 201,
-                                                  "Line": 11,
+                                                  "Index": 220,
+                                                  "Line": 12,
                                                   "Column": 14,
                                                   "StreamName": "iterfact.scm"
                                                 },
                                                 {
-                                                  "Index": 213,
-                                                  "Line": 11,
+                                                  "Index": 232,
+                                                  "Line": 12,
                                                   "Column": 26,
                                                   "StreamName": "iterfact.scm"
                                                 }
@@ -1122,14 +1198,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 215,
-                                                          "Line": 11,
+                                                          "Index": 234,
+                                                          "Line": 12,
                                                           "Column": 28,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 216,
-                                                          "Line": 11,
+                                                          "Index": 235,
+                                                          "Line": 12,
                                                           "Column": 29,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -1147,14 +1223,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 217,
-                                                          "Line": 11,
+                                                          "Index": 236,
+                                                          "Line": 12,
                                                           "Column": 30,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 218,
-                                                          "Line": 11,
+                                                          "Index": 237,
+                                                          "Line": 12,
                                                           "Column": 31,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -1177,14 +1253,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 219,
-                                                          "Line": 11,
+                                                          "Index": 238,
+                                                          "Line": 12,
                                                           "Column": 32,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 220,
-                                                          "Line": 11,
+                                                          "Index": 239,
+                                                          "Line": 12,
                                                           "Column": 33,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -1198,14 +1274,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 214,
-                                                  "Line": 11,
+                                                  "Index": 233,
+                                                  "Line": 12,
                                                   "Column": 27,
                                                   "StreamName": "iterfact.scm"
                                                 },
                                                 {
-                                                  "Index": 221,
-                                                  "Line": 11,
+                                                  "Index": 240,
+                                                  "Line": 12,
                                                   "Column": 34,
                                                   "StreamName": "iterfact.scm"
                                                 }
@@ -1228,14 +1304,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 223,
-                                                          "Line": 11,
+                                                          "Index": 242,
+                                                          "Line": 12,
                                                           "Column": 36,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 224,
-                                                          "Line": 11,
+                                                          "Index": 243,
+                                                          "Line": 12,
                                                           "Column": 37,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -1253,14 +1329,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 225,
-                                                          "Line": 11,
+                                                          "Index": 244,
+                                                          "Line": 12,
                                                           "Column": 38,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 228,
-                                                          "Line": 11,
+                                                          "Index": 247,
+                                                          "Line": 12,
                                                           "Column": 41,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -1278,14 +1354,14 @@
                                                       "Case": "Span",
                                                       "Fields": [
                                                         {
-                                                          "Index": 229,
-                                                          "Line": 11,
+                                                          "Index": 248,
+                                                          "Line": 12,
                                                           "Column": 42,
                                                           "StreamName": "iterfact.scm"
                                                         },
                                                         {
-                                                          "Index": 230,
-                                                          "Line": 11,
+                                                          "Index": 249,
+                                                          "Line": 12,
                                                           "Column": 43,
                                                           "StreamName": "iterfact.scm"
                                                         }
@@ -1299,14 +1375,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 222,
-                                                  "Line": 11,
+                                                  "Index": 241,
+                                                  "Line": 12,
                                                   "Column": 35,
                                                   "StreamName": "iterfact.scm"
                                                 },
                                                 {
-                                                  "Index": 231,
-                                                  "Line": 11,
+                                                  "Index": 250,
+                                                  "Line": 12,
                                                   "Column": 44,
                                                   "StreamName": "iterfact.scm"
                                                 }
@@ -1320,14 +1396,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 200,
-                                          "Line": 11,
+                                          "Index": 219,
+                                          "Line": 12,
                                           "Column": 13,
                                           "StreamName": "iterfact.scm"
                                         },
                                         {
-                                          "Index": 232,
-                                          "Line": 11,
+                                          "Index": 251,
+                                          "Line": 12,
                                           "Column": 45,
                                           "StreamName": "iterfact.scm"
                                         }
@@ -1341,14 +1417,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 160,
-                                  "Line": 9,
+                                  "Index": 179,
+                                  "Line": 10,
                                   "Column": 9,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 233,
-                                  "Line": 11,
+                                  "Index": 252,
+                                  "Line": 12,
                                   "Column": 46,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -1362,14 +1438,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 123,
-                          "Line": 8,
+                          "Index": 142,
+                          "Line": 9,
                           "Column": 5,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 234,
-                          "Line": 11,
+                          "Index": 253,
+                          "Line": 12,
                           "Column": 47,
                           "StreamName": "iterfact.scm"
                         }
@@ -1392,14 +1468,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 240,
-                                  "Line": 12,
+                                  "Index": 259,
+                                  "Line": 13,
                                   "Column": 6,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 252,
-                                  "Line": 12,
+                                  "Index": 271,
+                                  "Line": 13,
                                   "Column": 18,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -1417,14 +1493,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 253,
-                                  "Line": 12,
+                                  "Index": 272,
+                                  "Line": 13,
                                   "Column": 19,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 254,
-                                  "Line": 12,
+                                  "Index": 273,
+                                  "Line": 13,
                                   "Column": 20,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -1447,14 +1523,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 255,
-                                  "Line": 12,
+                                  "Index": 274,
+                                  "Line": 13,
                                   "Column": 21,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 256,
-                                  "Line": 12,
+                                  "Index": 275,
+                                  "Line": 13,
                                   "Column": 22,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -1468,14 +1544,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 239,
-                          "Line": 12,
+                          "Index": 258,
+                          "Line": 13,
                           "Column": 5,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 257,
-                          "Line": 12,
+                          "Index": 276,
+                          "Line": 13,
                           "Column": 23,
                           "StreamName": "iterfact.scm"
                         }
@@ -1489,14 +1565,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 98,
-                  "Line": 7,
+                  "Index": 117,
+                  "Line": 8,
                   "Column": 1,
                   "StreamName": "iterfact.scm"
                 },
                 {
-                  "Index": 258,
-                  "Line": 12,
+                  "Index": 277,
+                  "Line": 13,
                   "Column": 24,
                   "StreamName": "iterfact.scm"
                 }
@@ -1519,14 +1595,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 261,
-                          "Line": 14,
+                          "Index": 280,
+                          "Line": 15,
                           "Column": 2,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 268,
-                          "Line": 14,
+                          "Index": 287,
+                          "Line": 15,
                           "Column": 9,
                           "StreamName": "iterfact.scm"
                         }
@@ -1549,14 +1625,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 270,
-                                  "Line": 14,
+                                  "Index": 289,
+                                  "Line": 15,
                                   "Column": 11,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 274,
-                                  "Line": 14,
+                                  "Index": 293,
+                                  "Line": 15,
                                   "Column": 15,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -1579,14 +1655,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 275,
-                                  "Line": 14,
+                                  "Index": 294,
+                                  "Line": 15,
                                   "Column": 16,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 276,
-                                  "Line": 14,
+                                  "Index": 295,
+                                  "Line": 15,
                                   "Column": 17,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -1600,14 +1676,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 269,
-                          "Line": 14,
+                          "Index": 288,
+                          "Line": 15,
                           "Column": 10,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 277,
-                          "Line": 14,
+                          "Index": 296,
+                          "Line": 15,
                           "Column": 18,
                           "StreamName": "iterfact.scm"
                         }
@@ -1621,14 +1697,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 260,
-                  "Line": 14,
+                  "Index": 279,
+                  "Line": 15,
                   "Column": 1,
                   "StreamName": "iterfact.scm"
                 },
                 {
-                  "Index": 278,
-                  "Line": 14,
+                  "Index": 297,
+                  "Line": 15,
                   "Column": 19,
                   "StreamName": "iterfact.scm"
                 }
@@ -1651,14 +1727,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 279,
-                          "Line": 14,
+                          "Index": 298,
+                          "Line": 15,
                           "Column": 20,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 286,
-                          "Line": 14,
+                          "Index": 305,
+                          "Line": 15,
                           "Column": 27,
                           "StreamName": "iterfact.scm"
                         }
@@ -1672,14 +1748,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 278,
-                  "Line": 14,
+                  "Index": 297,
+                  "Line": 15,
                   "Column": 19,
                   "StreamName": "iterfact.scm"
                 },
                 {
-                  "Index": 287,
-                  "Line": 14,
+                  "Index": 306,
+                  "Line": 15,
                   "Column": 28,
                   "StreamName": "iterfact.scm"
                 }
@@ -1702,14 +1778,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 297,
-                          "Line": 15,
+                          "Index": 316,
+                          "Line": 16,
                           "Column": 2,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 304,
-                          "Line": 15,
+                          "Index": 323,
+                          "Line": 16,
                           "Column": 9,
                           "StreamName": "iterfact.scm"
                         }
@@ -1732,14 +1808,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 306,
-                                  "Line": 15,
+                                  "Index": 325,
+                                  "Line": 16,
                                   "Column": 11,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 314,
-                                  "Line": 15,
+                                  "Index": 333,
+                                  "Line": 16,
                                   "Column": 19,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -1762,14 +1838,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 315,
-                                  "Line": 15,
+                                  "Index": 334,
+                                  "Line": 16,
                                   "Column": 20,
                                   "StreamName": "iterfact.scm"
                                 },
                                 {
-                                  "Index": 316,
-                                  "Line": 15,
+                                  "Index": 335,
+                                  "Line": 16,
                                   "Column": 21,
                                   "StreamName": "iterfact.scm"
                                 }
@@ -1783,14 +1859,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 305,
-                          "Line": 15,
+                          "Index": 324,
+                          "Line": 16,
                           "Column": 10,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 317,
-                          "Line": 15,
+                          "Index": 336,
+                          "Line": 16,
                           "Column": 22,
                           "StreamName": "iterfact.scm"
                         }
@@ -1804,14 +1880,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 296,
-                  "Line": 15,
+                  "Index": 315,
+                  "Line": 16,
                   "Column": 1,
                   "StreamName": "iterfact.scm"
                 },
                 {
-                  "Index": 318,
-                  "Line": 15,
+                  "Index": 337,
+                  "Line": 16,
                   "Column": 23,
                   "StreamName": "iterfact.scm"
                 }
@@ -1834,14 +1910,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 319,
-                          "Line": 15,
+                          "Index": 338,
+                          "Line": 16,
                           "Column": 24,
                           "StreamName": "iterfact.scm"
                         },
                         {
-                          "Index": 326,
-                          "Line": 15,
+                          "Index": 345,
+                          "Line": 16,
                           "Column": 31,
                           "StreamName": "iterfact.scm"
                         }
@@ -1855,14 +1931,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 318,
-                  "Line": 15,
+                  "Index": 337,
+                  "Line": 16,
                   "Column": 23,
                   "StreamName": "iterfact.scm"
                 },
                 {
-                  "Index": 327,
-                  "Line": 15,
+                  "Index": 346,
+                  "Line": 16,
                   "Column": 32,
                   "StreamName": "iterfact.scm"
                 }
@@ -1882,8 +1958,8 @@
           "StreamName": "iterfact.scm"
         },
         {
-          "Index": 335,
-          "Line": 15,
+          "Index": 354,
+          "Line": 16,
           "Column": 40,
           "StreamName": "iterfact.scm"
         }

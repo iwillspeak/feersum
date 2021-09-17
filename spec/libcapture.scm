@@ -1,4 +1,5 @@
-(import (scheme base))
+(import (scheme base)
+    (scheme write))
 (define-library (lib capture)
     (export testit)
     (begin
