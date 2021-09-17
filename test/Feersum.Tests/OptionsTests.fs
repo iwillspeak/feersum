@@ -1,7 +1,8 @@
 module OptionsTests
 
-open Options
 open Xunit
+
+open Options
 
 [<Fact>]
 let ``default extensions for output type`` () =

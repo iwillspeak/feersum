@@ -1,13 +1,13 @@
 module Eval
 
-open Syntax
-open Bind
-open Compile
 open System.IO
 open System.Reflection
 open System
 open System.Runtime.ExceptionServices
+
 open Serehfa
+
+open Compile
 open Options
 
 /// Raw External Representation
@@ -27,7 +27,7 @@ let eval ast =
         ; OutputType = Script }
     let diags = compile options memStream "evalCtx" None ast
     if not diags.IsEmpty then
-        Result.Error(diags)
+        Error(diags)
     else
         let assm = Assembly.Load(memStream.ToArray())
         let progTy = assm.GetType("evalCtx.LispProgram")
@@ -39,4 +39,4 @@ let eval ast =
             // Unwrap target invocation exceptions a little to make the REPL a
             // bit of a nicer experience
             ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-            Result.Error([])
+            Error([])

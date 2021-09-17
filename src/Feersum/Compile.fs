@@ -1,9 +1,5 @@
 module Compile
 
-open Options
-open Bind
-open Syntax
-open IlHelpers
 open System
 open System.IO
 open Mono.Cecil
@@ -11,6 +7,11 @@ open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 open System.Collections.Generic
 open System.Runtime.InteropServices
+
+open Options
+open Bind
+open Syntax
+open IlHelpers
 
 /// Type to Hold Context While Emitting IL
 type EmitCtx = 
@@ -202,7 +203,7 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
                 doc.LanguageVendor <- DocumentLanguageVendor.Other
                 doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
                 ctx.DebugDocuments.[s.StreamName] <- doc
-            let point = SequencePoint(ins, doc)
+            let point = Cil.SequencePoint(ins, doc)
             point.StartLine <- int s.Line
             point.StartColumn <- int s.Column
             point.EndLine <- int e.Line

@@ -1,14 +1,16 @@
 ﻿// Learn more about F# at http://fsharp.org
 
+open System.Reflection
+open System.IO
+
+open Argu.ArguAttributes
+open Argu
+
 open Options
 open Syntax
 open System
 open Eval
 open Compile
-open Argu.ArguAttributes
-open Argu
-open System.Reflection
-open System.IO
 
 /// Command line arguments type. Encompasses the options that the compiler
 /// supports.
