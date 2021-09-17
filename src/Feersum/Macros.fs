@@ -1,4 +1,5 @@
 module Macros
+
 open Diagnostics
 open Syntax
 open Utils

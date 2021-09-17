@@ -231,7 +231,7 @@ let readExpr1 name line: (AstNode * Diagnostic list) =
 let readExpr = readExpr1 "repl"
 
 /// Read an expression from source code on disk
-let parseFile path: (AstNode * Diagnostic list)=
+let parseFile path: (AstNode * Diagnostic list) =
     runParserOnFile parse State.Empty path Encoding.UTF8 |> unpack
 
 /// Read an expression from a stream of source code

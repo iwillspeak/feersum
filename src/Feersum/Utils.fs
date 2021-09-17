@@ -1,4 +1,4 @@
-module Utils
+namespace Utils
 
 module ResultEx =
 

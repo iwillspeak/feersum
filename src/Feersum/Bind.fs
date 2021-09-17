@@ -1,7 +1,5 @@
 module Bind
 
-open System.Collections.Generic
-
 open Diagnostics
 open Syntax
 open Macros

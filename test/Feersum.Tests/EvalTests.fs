@@ -6,7 +6,6 @@ open Eval
 open Syntax
 open SyntaxUtils
 open SyntaxFactory
-open Diagnostics
 
 let private expectOk = function
     | Ok o -> o

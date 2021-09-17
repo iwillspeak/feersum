@@ -2,7 +2,7 @@ module Diagnostics
 
 open FParsec
 
-let missingPos = Position("missing", 0L, 0L, 0L)
+let private missingPos = Position("missing", 0L, 0L, 0L)
 
 /// A point in the source text
 /// 

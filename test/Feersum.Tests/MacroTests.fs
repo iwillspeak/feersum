@@ -1,8 +1,8 @@
 module MacroTests
 
 open Xunit
-open Macros
 
+open Macros
 open SyntaxUtils
 open SyntaxFactory
 open Syntax
