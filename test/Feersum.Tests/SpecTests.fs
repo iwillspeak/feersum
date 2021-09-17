@@ -9,7 +9,8 @@ open Snapper
 open System.Diagnostics
 open SyntaxUtils
 
-type private TestExecutionResult =
+// This type has to be public so `Snapper` can see it.
+type TestExecutionResult =
     { Output: string
     ; Error: string
     ; Exit: int }
