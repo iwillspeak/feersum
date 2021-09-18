@@ -1,7 +1,7 @@
 ;; Sorting library example
 (define-library (sort)
     (import (scheme base))
-    (export qsort)
+    (export (rename qsort sort))
     (begin
         ;; Partition Utitlity
         ;
@@ -57,7 +57,7 @@
 (import
     (scheme base)
     (scheme write)
-    (sort))
+    (rename (sort) (sort quicksort)))
 
-(display (qsort '(79 23 45 6 9)))(newline)
-(display (qsort '(9 8 7 6 5 4 3 2 1 0 0 1 2 3 4 5 6 7 8 9)))(newline)
+(display (quicksort '(79 23 45 6 9)))(newline)
+(display (quicksort '(9 8 7 6 5 4 3 2 1 0 0 1 2 3 4 5 6 7 8 9)))(newline)

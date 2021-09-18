@@ -58,7 +58,7 @@ type BoundExpr =
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
     | Lambda of BoundFormals * BoundBody
-    | Library of string list * string * BoundBody
+    | Library of string list * string * (string * StorageRef) list * BoundBody
     | Import of string
     | Nop
     | Error
@@ -443,6 +443,7 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
     BoundExpr.Library(
         library.LibraryName,
         library.LibraryName |> mangleName,
+        exports,
         List.append imports boundBodies |> BoundExpr.Seq |> BinderCtx.intoRoot libCtx)
 
 and private bindForm ctx (form: AstNode list) node =
