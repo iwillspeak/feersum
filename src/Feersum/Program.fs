@@ -18,6 +18,7 @@ type CliArguments =
     | Version
     | Configuration of BuildConfiguration
     | OutputType of OutputType
+    | [<AltCommandLine("-r")>] Reference of string
     | [<AltCommandLine("-o")>] Output of string
     | [<MainCommand>] Sources of source_file:string list
 
@@ -25,6 +26,7 @@ type CliArguments =
         member s.Usage =
             match s with
             | OutputType _ -> "The output type (Lib / Exe / Script)."
+            | Reference _ -> "Compiled Scheme assembly to reference."
             | Configuration _ -> "The build configuration (Debug / Release)."
             | Version -> "Print the program version and exit."
             | Sources _ -> "Scheme source files for compilation."
@@ -118,7 +120,8 @@ let main argv =
 
     let options =
         { Configuration = buildConfig
-        ; OutputType = outputType }
+        ; OutputType = outputType
+        ; References = args.GetResults Reference }
 
     match args.GetResult(Sources, defaultValue = []) with
     | [] ->

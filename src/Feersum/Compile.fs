@@ -125,6 +125,7 @@ let private ensureField ctx mangledPrefix id =
         | None -> failwithf "ICE: Attempt to access field on '%s', which is not yet defined" mangledPrefix
     
     Seq.tryFind pred ty.Fields
+    |> Option.map (fun f -> ctx.Assm.MainModule.ImportReference(f))
     |> Option.defaultWith (fun () ->
         let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
         ty.Fields.Add(newField)
@@ -135,7 +136,7 @@ let private ensureField ctx mangledPrefix id =
             newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
             ()
         | None -> ()
-        newField)
+        newField :> FieldReference)
 
 /// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
 /// current context. This indexes into the context's `Parameters` list.
@@ -809,10 +810,27 @@ let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
 /// given bound tree. This method is responsible for creating the root
 /// `LispProgram` type and preparting the emit context. The main work of
 /// lowering is done by `emitNamedLambda`.
-let emit options (outputStream: Stream) outputName (symbolStream: Stream option) bound =
+let emit options (outputStream: Stream) outputName (symbolStream: Stream option) refLibs bound =
+
+    /// Collect external types so we can look up their fields later
+    let externs =
+        refLibs
+        |> Seq.map (fun ((ty: TypeDefinition), _) ->
+            (ty.FullName, ty))
+        |> Map.ofSeq
+
     // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
+
+    /// Import the initialisers for the extern libraries
+    let inits =
+        refLibs
+        |> Seq.map (fun ((ty: TypeDefinition), _) ->
+            (ty.Name
+            , (Seq.find (fun (m: MethodDefinition) -> m.Name = "$LibraryBody") ty.Methods)
+               |> assm.MainModule.ImportReference))
+        |> Map.ofSeq
 
     if symbolStream.IsSome then
         markAsDebuggable assm
@@ -832,8 +850,8 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
     let rootEmitCtx = { IL = null
                       ; DebugDocuments = Dictionary()
                       ; ProgramTy = progTy
-                      ; Libraries = Map.add bound.MangledName progTy Map.empty
-                      ; Initialisers = Map.empty
+                      ; Libraries = Map.add bound.MangledName progTy externs
+                      ; Initialisers = inits
                       ; Core = coreTypes
                       ; NextLambda = 0
                       ; Locals = []
@@ -886,16 +904,21 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
     let coreLibs = Builtins.loadCoreSignatures
+    let refLibs =
+        options.References
+        |> List.collect (Builtins.loadReferencedSignatures)
+    let refSigs = List.map (fun (_, s) -> s) refLibs
+    let allLibs = (List.append coreLibs refSigs)
     let scope =
         if options.OutputType = OutputType.Script then
-            scopeFromLibraries coreLibs
+            scopeFromLibraries allLibs
         else
             emptyScope
-    let bound = bind scope coreLibs node
+    let bound = bind scope allLibs node
     if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound
         |> Lower.lower
-        |> emit options outputStream outputName symbolStream
+        |> emit options outputStream outputName symbolStream refLibs
     bound.Diagnostics
 
 /// Read a File and Compile

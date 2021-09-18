@@ -21,7 +21,8 @@ type OutputType =
 /// Options for each compilation
 type CompilationOptions =
     { Configuration: BuildConfiguration
-    ; OutputType: OutputType }
+    ; OutputType: OutputType 
+    ; References: string list }
 
 /// Get the default file extension for the compilation options' output type.
 let public getDefaultExtension options =
