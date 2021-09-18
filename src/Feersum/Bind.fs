@@ -58,7 +58,7 @@ type BoundExpr =
     | If of BoundExpr * BoundExpr * BoundExpr option
     | Seq of BoundExpr list
     | Lambda of BoundFormals * BoundBody
-    | Library of string * BoundBody
+    | Library of string list * string * BoundBody
     | Import of string
     | Nop
     | Error
@@ -441,6 +441,7 @@ and private bindLibrary ctx location (library: Libraries.LibraryDefinition) =
     ctx.Diagnostics.Append libCtx.Diagnostics.Take
 
     BoundExpr.Library(
+        library.LibraryName,
         library.LibraryName |> mangleName,
         List.append imports boundBodies |> BoundExpr.Seq |> BinderCtx.intoRoot libCtx)
 

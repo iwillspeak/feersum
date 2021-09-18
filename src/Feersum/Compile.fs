@@ -80,7 +80,18 @@ let private markAsDebuggable (assm: AssemblyDefinition) =
 
     attr
     |> assm.CustomAttributes.Add
-    ()
+
+let private markWithLibraryName (typ: TypeDefinition) name =
+    let attr =
+        typ.Module.ImportReference(
+            typeof<Serehfa.Attributes.LispLibraryAttribute>
+                .GetConstructor([| typeof<string> |]))
+        |> CustomAttribute
+    attr.ConstructorArguments.Add(
+        CustomAttributeArgument(
+            typ.Module.TypeSystem.String,
+            String.concat "$" name))
+    attr |> typ.CustomAttributes.Add
 
 /// Emit an instance of the unspecified value
 let private emitUnspecified ctx =
@@ -277,8 +288,8 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
             ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, body) ->
         emitLambda ctx formals body
-    | BoundExpr.Library(name, body) ->
-        emitLibrary ctx name body
+    | BoundExpr.Library(name, mangledName, body) ->
+        emitLibrary ctx name mangledName body
     | BoundExpr.Import name ->
         match Map.tryFind name ctx.Initialisers with
         | Some(initialiser) ->
@@ -700,16 +711,17 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
     methodDecl, thunkDecl
 
 /// Emit the body of a library definition
-and emitLibrary ctx name body =
+and emitLibrary ctx name mangledName body =
 
     // Genreate a nominal type to contain the methods for this library.
     let libTy = TypeDefinition(ctx.ProgramTy.Namespace,
-                                name,
+                                mangledName,
                                 TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
                                 ctx.Assm.MainModule.TypeSystem.Object)
     ctx.Assm.MainModule.Types.Add libTy
     libTy.Methods.Add <| createEmptyCtor ctx.Assm
-    ctx.Libraries <- Map.add name libTy ctx.Libraries
+    markWithLibraryName libTy name
+    ctx.Libraries <- Map.add mangledName libTy ctx.Libraries
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
@@ -725,7 +737,7 @@ and emitLibrary ctx name body =
     let bodyParams = BoundFormals.List([])
     let bodyMethod, _ = emitNamedLambda libEmitCtx "$LibraryBody" bodyParams body
 
-    ctx.Initialisers <- Map.add name (bodyMethod :> MethodReference) ctx.Initialisers
+    ctx.Initialisers <- Map.add mangledName (bodyMethod :> MethodReference) ctx.Initialisers
 
     emitUnspecified ctx
 
