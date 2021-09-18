@@ -23,6 +23,7 @@ type EmitCtx =
     ; mutable NextLambda: int
     ; ScopePrefix: string
     ; EmitSymbols: bool
+    ; Exports: Map<(string * string), string>
     ; EnvSize: int option
     ; mutable Environment: VariableDefinition option
     ; ParentEnvSize: int option
@@ -81,6 +82,8 @@ let private markAsDebuggable (assm: AssemblyDefinition) =
     attr
     |> assm.CustomAttributes.Add
 
+/// Mark the given type with a library `name`. This adds the
+/// `LispLibrary` attribute to the type.
 let private markWithLibraryName (typ: TypeDefinition) name =
     let attr =
         typ.Module.ImportReference(
@@ -92,6 +95,20 @@ let private markWithLibraryName (typ: TypeDefinition) name =
             typ.Module.TypeSystem.String,
             String.concat "$" name))
     attr |> typ.CustomAttributes.Add
+
+/// Mark the field as exported. This adds the `LispExport` attribute
+/// to the field.
+let private markWithExportedName (field: FieldDefinition) name =
+    let attr =
+        field.Module.ImportReference(
+            typeof<Serehfa.Attributes.LispExportAttribute>
+                .GetConstructor([| typeof<string> |]))
+        |> CustomAttribute
+    attr.ConstructorArguments.Add(
+        CustomAttributeArgument(
+            field.Module.TypeSystem.String,
+            name))
+    attr |> field.CustomAttributes.Add
 
 /// Emit an instance of the unspecified value
 let private emitUnspecified ctx =
@@ -107,12 +124,18 @@ let private ensureField ctx mangledPrefix id =
         | Some prefix -> prefix
         | None -> failwithf "ICE: Attempt to access field on '%s', which is not yet defined" mangledPrefix
     
-    match Seq.tryFind pred ty.Fields with
-    | Some(found) -> found
-    | None ->
+    Seq.tryFind pred ty.Fields
+    |> Option.defaultWith (fun () ->
         let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
         ty.Fields.Add(newField)
-        newField
+        let export = Map.tryFind (mangledPrefix, id) ctx.Exports
+        match export with
+        | Some(exportedName) ->
+            markWithExportedName newField exportedName
+            newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
+            ()
+        | None -> ()
+        newField)
 
 /// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
 /// current context. This indexes into the context's `Parameters` list.
@@ -288,8 +311,8 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
             ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, body) ->
         emitLambda ctx formals body
-    | BoundExpr.Library(name, mangledName, body) ->
-        emitLibrary ctx name mangledName body
+    | BoundExpr.Library(name, mangledName,exports, body) ->
+        emitLibrary ctx name mangledName exports body
     | BoundExpr.Import name ->
         match Map.tryFind name ctx.Initialisers with
         | Some(initialiser) ->
@@ -711,7 +734,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
     methodDecl, thunkDecl
 
 /// Emit the body of a library definition
-and emitLibrary ctx name mangledName body =
+and emitLibrary ctx name mangledName exports body =
 
     // Genreate a nominal type to contain the methods for this library.
     let libTy = TypeDefinition(ctx.ProgramTy.Namespace,
@@ -723,6 +746,14 @@ and emitLibrary ctx name mangledName body =
     markWithLibraryName libTy name
     ctx.Libraries <- Map.add mangledName libTy ctx.Libraries
 
+    let exports =
+        exports
+        |> Seq.choose (fun (name, storage) ->
+            match storage with
+            | StorageRef.Global(mangled, id) -> Some(((mangled, id), name))
+            | _ -> None)
+        |> Map.ofSeq
+
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
     let libEmitCtx  = { ctx with IL = null
@@ -730,6 +761,7 @@ and emitLibrary ctx name mangledName body =
                               ; NextLambda = 0
                               ; Locals = []
                               ; Parameters = []
+                              ; Exports = exports
                               ; EnvSize = None
                               ; ParentEnvSize = None
                               ; Environment = None
@@ -805,6 +837,7 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
                       ; Core = coreTypes
                       ; NextLambda = 0
                       ; Locals = []
+                      ; Exports = Map.empty
                       ; Parameters = []
                       ; EmitSymbols = symbolStream.IsSome
                       ; EnvSize = None
