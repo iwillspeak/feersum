@@ -80,8 +80,8 @@ let rec private rewriteExpression ctx = function
         Lambda(formals, (rewriteRoot (Some(ctx)) root))
     | SequencePoint(inner, location) ->
         SequencePoint((rewriteExpression ctx inner), location)
-    | Library(name, body) ->
-        Library(name, rewriteRoot None body)
+    | Library(name, mangledName, body) ->
+        Library(name, mangledName, rewriteRoot None body)
     | e -> e
 
 /// Re-write an expression tree root. This node represents a top level

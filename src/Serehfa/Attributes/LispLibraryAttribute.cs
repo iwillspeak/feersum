@@ -14,6 +14,12 @@ namespace Serehfa.Attributes
             Name = name;
         }
 
+        /// <summary>FIXME: Remove this and properly construct attributes</summary>
+        public LispLibraryAttribute(string name)
+        {
+            Name = name.Split('$');
+        }
+
         /// <summary>The libraries name</summary>
 
         public IReadOnlyCollection<string> Name { get; }
