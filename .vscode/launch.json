@@ -54,6 +54,25 @@
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
             "stopAtEntry": false
+        },
+        {
+            "name": "Feersum import  test",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
+            "args": [
+                "--reference",
+                "${workspaceRoot}/spec/bin/qsort.dll",
+                "--reference",
+                "${workspaceRoot}/spec/bin/libgreet.dll",
+                "${workspaceRoot}/importtest.scm",
+                "-o",
+                "${workspaceRoot}/spec/bin/"
+            ],
+            "cwd": "${workspaceRoot}",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
         }
     ],
     "inputs": [

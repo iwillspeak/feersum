@@ -56,7 +56,8 @@ let ``spec tests compile and run`` s =
     let shouldFail = sourcePath.Contains "fail"
     let options =
         { Configuration = BuildConfiguration.Debug
-        ; OutputType = Exe }
+        ; OutputType = Exe
+        ; References = [] }
     match compileFile options exePath sourcePath with
     | [] ->
         if shouldFail then

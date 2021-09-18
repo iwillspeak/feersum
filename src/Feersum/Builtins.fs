@@ -166,7 +166,38 @@ let private coreMacros =
     (["scheme";"base"], [ macroAnd ; macroOr; macroWhen; macroUnless ] |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m))))
     |> Seq.singleton
 
+let private getExports (ty: TypeDefinition) =
+    ty.Fields
+    |> Seq.choose (fun field ->
+        field.CustomAttributes
+        |> Seq.tryPick (fun attr ->
+            if attr.AttributeType.Name = "LispExportAttribute" then
+                Some(attr.ConstructorArguments.[0].Value.ToString())
+            else
+                None)
+        |> Option.map (fun externName ->
+            (externName, Global(ty.FullName, field.Name))))
+    |> List.ofSeq
+
+let private tryGetSignatureFromType (ty: TypeDefinition) =
+    ty.CustomAttributes
+    |> Seq.tryPick (fun attr ->
+        if attr.AttributeType.Name = "LispLibraryAttribute" then
+            Some(attr.ConstructorArguments.[0].Value.ToString())
+        else
+            None)
+    |> Option.map (fun (a: string) ->
+        (ty, { LibraryName = a.Split('$') |> List.ofArray; Exports = getExports ty }))
+
 // ------------------------ Public Builtins API --------------------------------
+
+/// Load the signature from a given libary name
+let public loadReferencedSignatures (name: string) =
+    let assm =
+        Mono.Cecil.AssemblyDefinition.ReadAssembly(name)
+    assm.MainModule.Types
+    |> Seq.choose tryGetSignatureFromType
+    |> List.ofSeq
 
 /// The core library signature
 let public loadCoreSignatures =

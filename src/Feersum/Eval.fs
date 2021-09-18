@@ -24,7 +24,8 @@ let eval ast =
     let memStream = new MemoryStream()
     let options =
         { Configuration = Debug
-        ; OutputType = Script }
+        ; OutputType = Script
+        ; References = [] }
     let diags = compile options memStream "evalCtx" None ast
     if not diags.IsEmpty then
         Error(diags)

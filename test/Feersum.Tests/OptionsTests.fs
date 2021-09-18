@@ -9,7 +9,8 @@ let ``default extensions for output type`` () =
     let checkOutputType outputType expected =
         let options =
             { Configuration = Debug
-            ; OutputType = outputType }
+            ; OutputType = outputType
+            ; References = [] }
         let extension = getDefaultExtension options
         Assert.Equal(expected, extension)
     
