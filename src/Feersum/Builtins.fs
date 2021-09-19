@@ -59,31 +59,30 @@ let private addEnvDecls (assm: AssemblyDefinition) =
 /// Map the exports of a given type using `onGlobal` for `LispExport`s and
 /// `onBuiltin` for `LispBuiltin`s.
 let private cataExports onGlobal onBuiltin (ty: TypeDefinition) =
+
+    let unpackStringArg (attr: CustomAttribute) =
+        attr.ConstructorArguments.[0].Value.ToString()
+
+    let chooseMatching name onMatching (things: seq<'a> when 'a:> ICustomAttributeProvider) =
+        things
+        |> Seq.choose (fun thing ->
+            thing.CustomAttributes
+            |> Seq.tryPick (fun attr ->
+                if attr.AttributeType.Name = name then
+                    Some(onMatching (unpackStringArg attr) thing)
+                else
+                    None))
+
     let exports =
-        ty.Fields
-        |> Seq.choose (fun field ->
-            field.CustomAttributes
-            |> Seq.tryPick (fun attr ->
-                if attr.AttributeType.Name = "LispExportAttribute" then
-                    let name = attr.ConstructorArguments.[0].Value.ToString()
-                    Some(onGlobal name ty field)
-                else
-                    None))
+        ty.Fields |> chooseMatching "LispExportAttribute" (onGlobal ty)
     let builtins =
-        ty.Methods
-        |> Seq.choose (fun method ->
-            method.CustomAttributes
-            |> Seq.tryPick (fun attr ->
-                if attr.AttributeType.Name = "LispBuiltinAttribute" then
-                    let name = attr.ConstructorArguments.[0].Value.ToString()
-                    Some(onBuiltin name method)
-                else
-                    None))
+        ty.Methods |> chooseMatching "LispBuiltinAttribute" (onBuiltin)
+
     Seq.append exports builtins
 
 /// Get Exported items from a given Mono type definition.
 let private getExports =
-    cataExports (fun name ty field -> (name, Global(ty.FullName, field.Name))) (fun name _ -> (name, Builtin(name)))
+    cataExports (fun ty name field -> (name, Global(ty.FullName, field.Name))) (fun name _ -> (name, Builtin(name)))
     >> List.ofSeq
 
 /// Maybe map a given type if it has a `LispLibrary` name. 
