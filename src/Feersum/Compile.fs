@@ -953,19 +953,18 @@ let compileFile options (output: string) (source: string) =
     if Diagnostics.hasErrors diagnostics then
         diagnostics
     else
-        let symbols =
+
+        // Open the output streams. We don't use an `Option` directly here for
+        // the symbols stream so we can drop it with `use`.
+        use outputStream = File.OpenWrite output
+        use symbols =
             match options.Configuration with
             | BuildConfiguration.Debug ->
-                Some(File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream)
+                File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream
                 // make a symbol file
-            | BuildConfiguration.Release -> None
-        let outputStream = File.OpenWrite output
+            | BuildConfiguration.Release -> null
 
-        let diags = compile options outputStream stem symbols ast
-
-        // Close the streams now we have finished writing the compilation output
-        symbols |> Option.map (fun stream -> stream.Close()) |> ignore
-        outputStream.Close()
+        let diags = compile options outputStream stem (symbols |> Option.ofObj) ast
 
         if diags.IsEmpty && options.OutputType = OutputType.Exe then
             // TOOD: This metadata needs to be abstracted to deal with different
@@ -974,12 +973,12 @@ let compileFile options (output: string) (source: string) =
             //       this explicit somewhere in future.
             //       It would be nice to register ourselves as a proper SDK so that
             //       this metadata is generated for us by `dotnet`.
-            let getTfm =
+            let tfmPrefix =
                 if RuntimeInformation.FrameworkDescription.StartsWith ".NET Core" then
                     "netcoreapp"
                 else
                     "net"
-            let version = Environment.Version
+            let tfVersion = Environment.Version
             let config =
                 sprintf """
                 {
@@ -991,7 +990,7 @@ let compileFile options (output: string) (source: string) =
                     }
                   }
                 }
-                """ getTfm version.Major version.Minor version
+                """ tfmPrefix tfVersion.Major tfVersion.Minor tfVersion
             File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), config)
             // FIXME: Copying the core assembly like this is a bit of a hack.
             let corePath = typeof<Serehfa.ConsPair>.Assembly.Location
