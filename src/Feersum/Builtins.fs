@@ -183,11 +183,12 @@ let private tryGetSignatureFromType (ty: TypeDefinition) =
     ty.CustomAttributes
     |> Seq.tryPick (fun attr ->
         if attr.AttributeType.Name = "LispLibraryAttribute" then
-            Some(attr.ConstructorArguments.[0].Value.ToString())
+            Some(attr.ConstructorArguments.[0].Value :?> CustomAttributeArgument[])
         else
             None)
-    |> Option.map (fun (a: string) ->
-        (ty, { LibraryName = a.Split('$') |> List.ofArray; Exports = getExports ty }))
+    |> Option.map (fun (a) ->
+        (ty, { LibraryName = a |> Seq.map (fun arg -> arg.Value.ToString()) |> List.ofSeq
+             ; Exports = getExports ty }))
 
 // ------------------------ Public Builtins API --------------------------------
 
