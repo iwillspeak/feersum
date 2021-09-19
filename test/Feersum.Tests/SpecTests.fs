@@ -54,10 +54,25 @@ let ``spec tests compile and run`` s =
     let sourcePath = Path.Join(specDir, s)
     let exePath = Path.ChangeExtension(Path.Join(specBin, s), "dll")
     let shouldFail = sourcePath.Contains "fail"
+    let libSourcePath = Path.ChangeExtension(sourcePath, "sld")
+    let references =
+        if File.Exists(libSourcePath) then
+            let libPath = Path.Join(specBin, Path.GetFileNameWithoutExtension(libSourcePath) + "-backing.dll")
+            let libOptions =
+                { Configuration = BuildConfiguration.Debug
+                ; OutputType = Lib
+                ; References = [] }
+            match compileFile libOptions libPath libSourcePath with
+            | [] ->
+                [ libPath ]
+            | diags ->
+                failwithf "Compilation error in backing library: %A" diags
+        else
+            []
     let options =
         { Configuration = BuildConfiguration.Debug
         ; OutputType = Exe
-        ; References = [] }
+        ; References = references }
     match compileFile options exePath sourcePath with
     | [] ->
         if shouldFail then
