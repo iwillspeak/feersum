@@ -959,9 +959,15 @@ let compileFile options (output: string) (source: string) =
                 Some(File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream)
                 // make a symbol file
             | BuildConfiguration.Release -> None
+        let outputStream = File.OpenWrite output
 
-        let diags = compile options (File.OpenWrite output) stem symbols ast
-        if diags.IsEmpty then
+        let diags = compile options outputStream stem symbols ast
+
+        // Close the streams now we have finished writing the compilation output
+        symbols |> Option.map (fun stream -> stream.Close()) |> ignore
+        outputStream.Close()
+
+        if diags.IsEmpty && options.OutputType = OutputType.Exe then
             // TOOD: This metadata needs to be abstracted to deal with different
             //       target framework's prefrences. For now the `.exe` we generate
             //       is compatible with .NET Core and Mono. It would be nice to make
