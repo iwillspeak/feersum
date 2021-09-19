@@ -3,6 +3,17 @@ variables:
 - name: configuration
   value: Release
 
+trigger:
+  batch: true
+  branches:
+    include:
+    - '*'
+    exclude:
+    - 'noci[/-]*'
+  tags:
+    include:
+    - 'v*'
+
 pool:
   vmImage: ubuntu-latest
 
