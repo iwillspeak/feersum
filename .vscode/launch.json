@@ -5,18 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Iterfact",
+            "name": "Feersum REPL",
             "type": "coreclr",
-            "preLaunchTask": "builditerfact",
             "request": "launch",
-            "program": "${workspaceFolder}/spec/bin/iterfact.dll",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/spec/bin/",
-            "stopAtEntry": true,
-            "justMyCode": false,
-            "console": "internalConsole",
-            "requireExactSource": false,
-            "internalConsoleOptions": "openOnSessionStart"
+            "cwd": "${workspaceRoot}",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
         },
         {
             "name": "Test Example",
@@ -32,43 +29,13 @@
             "internalConsoleOptions": "openOnSessionStart"
         },
         {
-            "name": "Feersum",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
-            "args": [],
-            "cwd": "${workspaceRoot}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Feersum compile",
+            "name": "Feersum Compile",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
             "args": [
                 "${input:scmToCompile}"
-            ],
-            "cwd": "${workspaceRoot}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Feersum import  test",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
-            "args": [
-                "--reference",
-                "${workspaceRoot}/spec/bin/qsort.dll",
-                "--reference",
-                "${workspaceRoot}/spec/bin/libgreet.dll",
-                "${workspaceRoot}/importtest.scm",
-                "-o",
-                "${workspaceRoot}/spec/bin/"
             ],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
