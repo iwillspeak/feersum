@@ -88,12 +88,17 @@ let private markWithLibraryName (typ: TypeDefinition) name =
     let attr =
         typ.Module.ImportReference(
             typeof<Serehfa.Attributes.LispLibraryAttribute>
-                .GetConstructor([| typeof<string> |]))
+                .GetConstructor([| typeof<string[]> |]))
         |> CustomAttribute
     attr.ConstructorArguments.Add(
         CustomAttributeArgument(
-            typ.Module.TypeSystem.String,
-            String.concat "$" name))
+            typ.Module.TypeSystem.String.MakeArrayType(),
+            name
+            |> Seq.map (fun namePart ->
+                CustomAttributeArgument(
+                    typ.Module.TypeSystem.String,
+                    namePart))
+            |> Array.ofSeq))
     attr |> typ.CustomAttributes.Add
 
 /// Mark the field as exported. This adds the `LispExport` attribute
