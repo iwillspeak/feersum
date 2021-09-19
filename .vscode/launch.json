@@ -35,6 +35,8 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
             "args": [
+                "--output",
+                "${workspaceRoot}/spec/bin",
                 "${input:scmToCompile}"
             ],
             "cwd": "${workspaceRoot}",

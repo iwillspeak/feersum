@@ -932,19 +932,29 @@ let compile options outputStream outputName symbolStream node =
 /// are written to `output`.
 let compileFile options (output: string) (source: string) =
 
-    // Ensure the output path exists
-    let outDir = Path.GetDirectoryName(output)
-    if not (String.IsNullOrWhiteSpace outDir) then
-        // ensure the output directory exists, no need to check it is missing first
-        Directory.CreateDirectory(outDir) |> ignore
-    
+    // Handle the case that the user has speciied a path to a directory but
+    // is missing the trailing `/`
+    let outDir, output =
+        if Directory.Exists(output) then
+            if Path.EndsInDirectorySeparator(output) then
+                output, output
+            else
+                output, sprintf "%s%c" output Path.DirectorySeparatorChar
+        else
+            // Ensure the output path exists
+            let dir = Path.GetDirectoryName(output)
+            if not (String.IsNullOrWhiteSpace dir) then
+                // ensure the output directory exists, no need to check it is missing first
+                Directory.CreateDirectory(dir) |> ignore
+            dir, output
+
     // Normalise the stem and output path. This ensures the output is a file
     // not a directory.
     let stem = Path.GetFileNameWithoutExtension(output)
     let stem, output =
         if String.IsNullOrWhiteSpace(stem) then
             let stem = Path.GetFileNameWithoutExtension(source)
-            stem, Path.Join(outDir, stem + ".dll")
+            stem, Path.Join(outDir, getDefaultExtension options |> sprintf "%s.%s" stem)
         else
             stem, output
     
