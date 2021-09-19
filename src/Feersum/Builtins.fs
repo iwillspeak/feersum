@@ -56,21 +56,62 @@ let private addEnvDecls (assm: AssemblyDefinition) =
 
     envTy
 
-let private findBuiltinMethods (externAssm: Assembly) =
-    let findBuiltinMethodsForTy (ty: Type) =
-            ty.GetMethods(BindingFlags.Public ||| BindingFlags.Static)
-            |> Seq.map (fun m -> (m.GetCustomAttribute<Serehfa.Attributes.LispBuiltinAttribute>(), m))
-            |> Seq.where (fun (attr, _) -> not (isNull attr))
-    externAssm.ExportedTypes
-    |> Seq.choose (fun ty ->
-        ty.GetCustomAttribute<Serehfa.Attributes.LispLibraryAttribute>()
-        |> Option.ofObj
-        |> Option.map (fun n -> (List.ofSeq n.Name, findBuiltinMethodsForTy ty)))
+/// Map the exports of a given type using `onGlobal` for `LispExport`s and
+/// `onBuiltin` for `LispBuiltin`s.
+let private cataExports onGlobal onBuiltin (ty: TypeDefinition) =
+    let exports =
+        ty.Fields
+        |> Seq.choose (fun field ->
+            field.CustomAttributes
+            |> Seq.tryPick (fun attr ->
+                if attr.AttributeType.Name = "LispExportAttribute" then
+                    let name = attr.ConstructorArguments.[0].Value.ToString()
+                    Some(onGlobal name ty field)
+                else
+                    None))
+    let builtins =
+        ty.Methods
+        |> Seq.choose (fun method ->
+            method.CustomAttributes
+            |> Seq.tryPick (fun attr ->
+                if attr.AttributeType.Name = "LispBuiltinAttribute" then
+                    let name = attr.ConstructorArguments.[0].Value.ToString()
+                    Some(onBuiltin name method)
+                else
+                    None))
+    Seq.append exports builtins
 
-let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
-    findBuiltinMethods externAssm
-    |> Seq.collect (fun (_, m) -> m)
-    |> Seq.map (fun (a, m) -> (a.Name, lispAssm.MainModule.ImportReference(m)))
+/// Get Exported items from a given Mono type definition.
+let private getExports =
+    cataExports (fun name ty field -> (name, Global(ty.FullName, field.Name))) (fun name _ -> (name, Builtin(name)))
+    >> List.ofSeq
+
+/// Maybe map a given type if it has a `LispLibrary` name. 
+let private tryCataType onLib (ty: TypeDefinition) =
+    ty.CustomAttributes
+    |> Seq.tryPick (fun attr ->
+        if attr.AttributeType.Name = "LispLibraryAttribute" then
+            Some(attr.ConstructorArguments.[0].Value :?> CustomAttributeArgument[])
+        else
+            None)
+    |> Option.map (onLib ty)
+
+/// Try to convert a given type definition into a library signature.
+let private tryGetSignatureFromType =
+    tryCataType (fun ty name ->
+        (ty, { LibraryName = name |> Seq.map (fun a -> a.Value.ToString()) |> List.ofSeq
+             ; Exports = getExports ty }))
+
+/// Import method references for any builtins in the `externAssm`
+let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: AssemblyDefinition) =
+    let onTy ty name =
+        ty
+        |> cataExports (fun _ _ _ -> None) (fun id method -> Some((id, method)))
+        |> Seq.choose id
+    externAssm.MainModule.Types
+    |> Seq.choose (tryCataType onTy)
+    |> Seq.concat
+    |> Seq.map (fun (name, m) -> (name, lispAssm.MainModule.ImportReference(m :> MethodReference)))
     |> Map.ofSeq
 
 let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
@@ -155,40 +196,13 @@ let private macroUnless =
 
 let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
 
-/// The list of builtin procedure names
-let private coreProcedures =
-    findBuiltinMethods serehfaAssm
-    |> Seq.map (fun (name, exports) ->
-        (name, exports |> Seq.map (fun (a, exports) -> (a.Name, StorageRef.Builtin(a.Name)))))
-
 /// The list of builtin macros
 let private coreMacros =
-    (["scheme";"base"], [ macroAnd ; macroOr; macroWhen; macroUnless ] |> Seq.map (fun m -> (m.Name, StorageRef.Macro(m))))
+    { LibraryName = ["scheme";"base"]
+    ; Exports =
+        [ macroAnd ; macroOr; macroWhen; macroUnless ]
+        |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
     |> Seq.singleton
-
-let private getExports (ty: TypeDefinition) =
-    ty.Fields
-    |> Seq.choose (fun field ->
-        field.CustomAttributes
-        |> Seq.tryPick (fun attr ->
-            if attr.AttributeType.Name = "LispExportAttribute" then
-                Some(attr.ConstructorArguments.[0].Value.ToString())
-            else
-                None)
-        |> Option.map (fun externName ->
-            (externName, Global(ty.FullName, field.Name))))
-    |> List.ofSeq
-
-let private tryGetSignatureFromType (ty: TypeDefinition) =
-    ty.CustomAttributes
-    |> Seq.tryPick (fun attr ->
-        if attr.AttributeType.Name = "LispLibraryAttribute" then
-            Some(attr.ConstructorArguments.[0].Value :?> CustomAttributeArgument[])
-        else
-            None)
-    |> Option.map (fun (a) ->
-        (ty, { LibraryName = a |> Seq.map (fun arg -> arg.Value.ToString()) |> List.ofSeq
-             ; Exports = getExports ty }))
 
 // ------------------------ Public Builtins API --------------------------------
 
@@ -202,14 +216,22 @@ let public loadReferencedSignatures (name: string) =
 
 /// The core library signature
 let public loadCoreSignatures =
-    Seq.append coreProcedures coreMacros
-    |> Seq.groupBy (fun (n, _) -> n)
+    let coreMethods =
+        loadReferencedSignatures serehfaAssm.Location
+        |> Seq.map (fun (_, lib) -> lib)
+    Seq.append coreMethods coreMacros
+    |> Seq.groupBy (fun lib -> lib.LibraryName)
     |> Seq.map (fun (name, parts) ->
-        let bodies = Seq.collect (fun (n, body) -> body) parts
-        { LibraryName = name; Exports = bodies |> List.ofSeq})
+        let bodies =
+            parts
+            |> Seq.collect (fun p -> p.Exports)
+            |> List.ofSeq
+        { LibraryName = name; Exports = bodies })
     |> List.ofSeq
 
 /// Load the core types into the given assembly
-let importCore (assm: AssemblyDefinition) =
-    let builtins = loadExternBuiltins assm serehfaAssm
-    { loadCoreTypes assm serehfaAssm with EnvTy = addEnvDecls assm; Builtins = builtins }
+let importCore (targetAssm: AssemblyDefinition) =
+    let monoSehrefaAssm =
+        Mono.Cecil.AssemblyDefinition.ReadAssembly(serehfaAssm.Location)
+    let builtins = loadExternBuiltins targetAssm monoSehrefaAssm
+    { loadCoreTypes targetAssm serehfaAssm with EnvTy = addEnvDecls targetAssm; Builtins = builtins }
