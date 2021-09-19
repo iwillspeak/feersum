@@ -20,7 +20,7 @@ type CliArguments =
     | OutputType of OutputType
     | [<AltCommandLine("-r")>] Reference of string
     | [<AltCommandLine("-o")>] Output of string
-    | [<MainCommand>] Sources of source_file:string list
+    | [<MainCommand>] Sources of source_file: string list
 
     interface IArgParserTemplate with
         member s.Usage =

@@ -317,7 +317,7 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
             ctx.IL.Append(lblEnd)
     | BoundExpr.Lambda(formals, body) ->
         emitLambda ctx formals body
-    | BoundExpr.Library(name, mangledName,exports, body) ->
+    | BoundExpr.Library(name, mangledName, exports, body) ->
         emitLibrary ctx name mangledName exports body
     | BoundExpr.Import name ->
         match Map.tryFind name ctx.Initialisers with
