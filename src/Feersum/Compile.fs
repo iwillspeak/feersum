@@ -52,6 +52,7 @@ let private markAsCompilerGenerated (method: MethodDefinition) =
         |> method.CustomAttributes.Add
     addSimpleAttr typeof<Runtime.CompilerServices.CompilerGeneratedAttribute>
     addSimpleAttr typeof<Diagnostics.DebuggerNonUserCodeAttribute>
+    addSimpleAttr typeof<Diagnostics.DebuggerStepThroughAttribute>
 
 /// Mark the assembly as supporting debugging
 let private markAsDebuggable (assm: AssemblyDefinition) =
@@ -231,7 +232,8 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
     | BoundExpr.SequencePoint(inner, location) ->
         let pos = ctx.IL.Body.Instructions.Count
         recurse inner
-        if ctx.EmitSymbols then
+        // FIXME: Hidden sequence points for missing locations?
+        if ctx.EmitSymbols && location <> Diagnostics.TextLocation.Missing then
             let ins = ctx.IL.Body.Instructions.[pos]
             let s = location.Start
             let e = location.End
