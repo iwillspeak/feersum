@@ -11,7 +11,8 @@ A Scheme compiler for .NET written in F#. Progress [livestreamed on Twitch][twit
 This is a rough list of interesting features I'd like to implement in this project,
 and is by no means a guarantee or a strict roadmap.
 
- * [ ] Proper support for different target frameworks
+ * [ ] MSBUILD SDK support so `.scmproj` can be defined.
+   * [ ] Proper support for different target frameworks
  * [ ] Implement [all special forms](docs/special-forms.md)
  * [ ] Support [all value types](docs/values.md)
  * [ ] Support [all standard procedures](docs/standard-procedures.md)
@@ -19,14 +20,13 @@ and is by no means a guarantee or a strict roadmap.
    * [ ] Macro Hygene (#13).
  * [ ] Support for Scheme exceptions and `guard`.
  * [ ] Full numeric tower support.
- * [ ] Scheme library and import support.
  * [ ] Interop with other .NET assemblies.
  * [ ] Multi-statement support in the REPL.
  * [ ] Debugging support
    * [x] Bound tree contains sequence points for debuging
    * [ ] Debuggable REPL. Embedded source in PDBs?
    * [ ] Stop at entry, and step in.
- * [ ] MSBUILD SDK support so `.scmproj` can be defined.
+ * [x] Scheme library and import support.
  * [x] Standard library & builtins from a separate assembly.
  * [x] Quoted expressions.
  * [x] Diagnostics with position
