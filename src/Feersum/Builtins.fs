@@ -22,6 +22,11 @@ type CoreTypes =
     ; IdentCtor: MethodReference
     ; Builtins: Map<string,MethodReference> }
 
+/// Reder parameters for Mono assembly loading. 
+let private assmReadParams =
+    let r = ReaderParameters()
+    r.ReadSymbols <- false
+    r
 
 /// Adds the Environment Type
 ///
@@ -207,8 +212,8 @@ let private coreMacros =
 
 /// Load the signature from a given libary name
 let public loadReferencedSignatures (name: string) =
-    let assm =
-        Mono.Cecil.AssemblyDefinition.ReadAssembly(name)
+    use assm =
+        Mono.Cecil.AssemblyDefinition.ReadAssembly(name, assmReadParams)
     assm.MainModule.Types
     |> Seq.choose tryGetSignatureFromType
     |> List.ofSeq
@@ -230,7 +235,7 @@ let public loadCoreSignatures =
 
 /// Load the core types into the given assembly
 let importCore (targetAssm: AssemblyDefinition) =
-    let monoSehrefaAssm =
-        Mono.Cecil.AssemblyDefinition.ReadAssembly(serehfaAssm.Location)
+    use monoSehrefaAssm =
+        Mono.Cecil.AssemblyDefinition.ReadAssembly(serehfaAssm.Location, assmReadParams)
     let builtins = loadExternBuiltins targetAssm monoSehrefaAssm
     { loadCoreTypes targetAssm serehfaAssm with EnvTy = addEnvDecls targetAssm; Builtins = builtins }
