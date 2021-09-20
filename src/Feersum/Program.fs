@@ -68,11 +68,11 @@ let rec repl evaluator =
 
 /// Compile a single file printing an error if
 /// there is one.
-let private compileSingle options output sourcePath =
+let private compileSingle (options: CompilationOptions) output sourcePath =
     let outputPath =
         match output with
         | Some(path) -> path
-        | None -> Path.ChangeExtension(sourcePath, options |> getDefaultExtension)
+        | None -> Path.ChangeExtension(sourcePath, options.DefaultExtension)
     match compileFile options outputPath sourcePath with
     | [] -> 0
     | diagnostics ->
@@ -118,10 +118,8 @@ let main argv =
         args.TryGetResult OutputType
         |> Option.defaultValue Exe
 
-    let options =
-        { Configuration = buildConfig
-        ; OutputType = outputType
-        ; References = args.GetResults Reference }
+    let options = CompilationOptions.Create buildConfig outputType
+    let options = options.WithReferences <| args.GetResults Reference
 
     match args.GetResult(Sources, defaultValue = []) with
     | [] ->
