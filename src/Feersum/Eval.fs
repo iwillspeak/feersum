@@ -22,10 +22,7 @@ let cilExternalRepr (object: Object) =
 /// main method on that.
 let eval ast =
     let memStream = new MemoryStream()
-    let options =
-        { Configuration = Debug
-        ; OutputType = Script
-        ; References = [] }
+    let options = CompilationOptions.Create Debug  Script
     let diags = compile options memStream "evalCtx" None ast
     if not diags.IsEmpty then
         Error(diags)

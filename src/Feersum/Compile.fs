@@ -932,7 +932,7 @@ let compile options outputStream outputName symbolStream node =
 ///
 /// Takes the `source` to an input to read and compile. Compilation results
 /// are written to `output`.
-let compileFile options (output: string) (source: string) =
+let compileFile (options: CompilationOptions) (output: string) (source: string) =
 
     // Handle the case that the user has speciied a path to a directory but
     // is missing the trailing `/`
@@ -956,7 +956,7 @@ let compileFile options (output: string) (source: string) =
     let stem, output =
         if String.IsNullOrWhiteSpace(stem) then
             let stem = Path.GetFileNameWithoutExtension(source)
-            stem, Path.Join(outDir, getDefaultExtension options |> sprintf "%s.%s" stem)
+            stem, Path.Join(outDir, options.DefaultExtension |> sprintf "%s.%s" stem)
         else
             stem, output
     

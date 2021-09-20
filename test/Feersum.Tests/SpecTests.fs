@@ -62,10 +62,7 @@ let ``spec tests compile and run`` s =
     let references =
         if File.Exists(libSourcePath) then
             let libPath = Path.Join(specBin, Path.GetFileNameWithoutExtension(libSourcePath) + "-backing.dll")
-            let libOptions =
-                { Configuration = BuildConfiguration.Debug
-                ; OutputType = Lib
-                ; References = [] }
+            let libOptions = CompilationOptions.Create BuildConfiguration.Debug Lib
             match compileFile libOptions libPath libSourcePath with
             | [] ->
                 [ libPath ]
@@ -74,9 +71,8 @@ let ``spec tests compile and run`` s =
         else
             []
     let options =
-        { Configuration = BuildConfiguration.Debug
-        ; OutputType = Exe
-        ; References = references }
+        CompilationOptions.Create BuildConfiguration.Debug Exe
+        |> (fun x -> x.WithReferences references)
     match compileFile options exePath sourcePath with
     | [] ->
         if shouldFail then
