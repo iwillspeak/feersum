@@ -1,0 +1,1096 @@
+{
+  "Item1": {
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define-library"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1,
+                          "Line": 1,
+                          "Column": 2,
+                          "StreamName": "importtest.sld"
+                        },
+                        {
+                          "Index": 15,
+                          "Line": 1,
+                          "Column": 16,
+                          "StreamName": "importtest.sld"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "example"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 17,
+                                  "Line": 1,
+                                  "Column": 18,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 24,
+                                  "Line": 1,
+                                  "Column": 25,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "displayutils"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 25,
+                                  "Line": 1,
+                                  "Column": 26,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 37,
+                                  "Line": 1,
+                                  "Column": 38,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 16,
+                          "Line": 1,
+                          "Column": 17,
+                          "StreamName": "importtest.sld"
+                        },
+                        {
+                          "Index": 38,
+                          "Line": 1,
+                          "Column": 39,
+                          "StreamName": "importtest.sld"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "export"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 41,
+                                  "Line": 2,
+                                  "Column": 3,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 47,
+                                  "Line": 2,
+                                  "Column": 9,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "display-all"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 48,
+                                  "Line": 2,
+                                  "Column": 10,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 59,
+                                  "Line": 2,
+                                  "Column": 21,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 40,
+                          "Line": 2,
+                          "Column": 2,
+                          "StreamName": "importtest.sld"
+                        },
+                        {
+                          "Index": 60,
+                          "Line": 2,
+                          "Column": 22,
+                          "StreamName": "importtest.sld"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "import"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 63,
+                                  "Line": 3,
+                                  "Column": 3,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 69,
+                                  "Line": 3,
+                                  "Column": 9,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "scheme"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 71,
+                                          "Line": 3,
+                                          "Column": 11,
+                                          "StreamName": "importtest.sld"
+                                        },
+                                        {
+                                          "Index": 77,
+                                          "Line": 3,
+                                          "Column": 17,
+                                          "StreamName": "importtest.sld"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "base"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 78,
+                                          "Line": 3,
+                                          "Column": 18,
+                                          "StreamName": "importtest.sld"
+                                        },
+                                        {
+                                          "Index": 82,
+                                          "Line": 3,
+                                          "Column": 22,
+                                          "StreamName": "importtest.sld"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 70,
+                                  "Line": 3,
+                                  "Column": 10,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 83,
+                                  "Line": 3,
+                                  "Column": 23,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "scheme"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 87,
+                                          "Line": 4,
+                                          "Column": 4,
+                                          "StreamName": "importtest.sld"
+                                        },
+                                        {
+                                          "Index": 93,
+                                          "Line": 4,
+                                          "Column": 10,
+                                          "StreamName": "importtest.sld"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "write"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 94,
+                                          "Line": 4,
+                                          "Column": 11,
+                                          "StreamName": "importtest.sld"
+                                        },
+                                        {
+                                          "Index": 99,
+                                          "Line": 4,
+                                          "Column": 16,
+                                          "StreamName": "importtest.sld"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 86,
+                                  "Line": 4,
+                                  "Column": 3,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 100,
+                                  "Line": 4,
+                                  "Column": 17,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 62,
+                          "Line": 3,
+                          "Column": 2,
+                          "StreamName": "importtest.sld"
+                        },
+                        {
+                          "Index": 101,
+                          "Line": 4,
+                          "Column": 18,
+                          "StreamName": "importtest.sld"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "begin"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 104,
+                                  "Line": 5,
+                                  "Column": 3,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 109,
+                                  "Line": 5,
+                                  "Column": 8,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "define"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 113,
+                                          "Line": 6,
+                                          "Column": 4,
+                                          "StreamName": "importtest.sld"
+                                        },
+                                        {
+                                          "Index": 119,
+                                          "Line": 6,
+                                          "Column": 10,
+                                          "StreamName": "importtest.sld"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "display-all"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 121,
+                                                  "Line": 6,
+                                                  "Column": 12,
+                                                  "StreamName": "importtest.sld"
+                                                },
+                                                {
+                                                  "Index": 132,
+                                                  "Line": 6,
+                                                  "Column": 23,
+                                                  "StreamName": "importtest.sld"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "things"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 133,
+                                                  "Line": 6,
+                                                  "Column": 24,
+                                                  "StreamName": "importtest.sld"
+                                                },
+                                                {
+                                                  "Index": 139,
+                                                  "Line": 6,
+                                                  "Column": 30,
+                                                  "StreamName": "importtest.sld"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 120,
+                                          "Line": 6,
+                                          "Column": 11,
+                                          "StreamName": "importtest.sld"
+                                        },
+                                        {
+                                          "Index": 140,
+                                          "Line": 6,
+                                          "Column": 31,
+                                          "StreamName": "importtest.sld"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "if"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 145,
+                                                  "Line": 7,
+                                                  "Column": 5,
+                                                  "StreamName": "importtest.sld"
+                                                },
+                                                {
+                                                  "Index": 147,
+                                                  "Line": 7,
+                                                  "Column": 7,
+                                                  "StreamName": "importtest.sld"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "null?"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 149,
+                                                          "Line": 7,
+                                                          "Column": 9,
+                                                          "StreamName": "importtest.sld"
+                                                        },
+                                                        {
+                                                          "Index": 154,
+                                                          "Line": 7,
+                                                          "Column": 14,
+                                                          "StreamName": "importtest.sld"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "things"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 155,
+                                                          "Line": 7,
+                                                          "Column": 15,
+                                                          "StreamName": "importtest.sld"
+                                                        },
+                                                        {
+                                                          "Index": 161,
+                                                          "Line": 7,
+                                                          "Column": 21,
+                                                          "StreamName": "importtest.sld"
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 148,
+                                                  "Line": 7,
+                                                  "Column": 8,
+                                                  "StreamName": "importtest.sld"
+                                                },
+                                                {
+                                                  "Index": 162,
+                                                  "Line": 7,
+                                                  "Column": 22,
+                                                  "StreamName": "importtest.sld"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "newline"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 168,
+                                                          "Line": 8,
+                                                          "Column": 6,
+                                                          "StreamName": "importtest.sld"
+                                                        },
+                                                        {
+                                                          "Index": 175,
+                                                          "Line": 8,
+                                                          "Column": 13,
+                                                          "StreamName": "importtest.sld"
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 167,
+                                                  "Line": 8,
+                                                  "Column": 5,
+                                                  "StreamName": "importtest.sld"
+                                                },
+                                                {
+                                                  "Index": 176,
+                                                  "Line": 8,
+                                                  "Column": 14,
+                                                  "StreamName": "importtest.sld"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "begin"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 182,
+                                                          "Line": 9,
+                                                          "Column": 6,
+                                                          "StreamName": "importtest.sld"
+                                                        },
+                                                        {
+                                                          "Index": 187,
+                                                          "Line": 9,
+                                                          "Column": 11,
+                                                          "StreamName": "importtest.sld"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Form",
+                                                      "Fields": [
+                                                        [
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "display"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Index": 194,
+                                                                  "Line": 10,
+                                                                  "Column": 7,
+                                                                  "StreamName": "importtest.sld"
+                                                                },
+                                                                {
+                                                                  "Index": 201,
+                                                                  "Line": 10,
+                                                                  "Column": 14,
+                                                                  "StreamName": "importtest.sld"
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Form",
+                                                              "Fields": [
+                                                                [
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "car"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Index": 203,
+                                                                          "Line": 10,
+                                                                          "Column": 16,
+                                                                          "StreamName": "importtest.sld"
+                                                                        },
+                                                                        {
+                                                                          "Index": 206,
+                                                                          "Line": 10,
+                                                                          "Column": 19,
+                                                                          "StreamName": "importtest.sld"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "things"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Index": 207,
+                                                                          "Line": 10,
+                                                                          "Column": 20,
+                                                                          "StreamName": "importtest.sld"
+                                                                        },
+                                                                        {
+                                                                          "Index": 213,
+                                                                          "Line": 10,
+                                                                          "Column": 26,
+                                                                          "StreamName": "importtest.sld"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  }
+                                                                ]
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Index": 202,
+                                                                  "Line": 10,
+                                                                  "Column": 15,
+                                                                  "StreamName": "importtest.sld"
+                                                                },
+                                                                {
+                                                                  "Index": 214,
+                                                                  "Line": 10,
+                                                                  "Column": 27,
+                                                                  "StreamName": "importtest.sld"
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 193,
+                                                          "Line": 10,
+                                                          "Column": 6,
+                                                          "StreamName": "importtest.sld"
+                                                        },
+                                                        {
+                                                          "Index": 215,
+                                                          "Line": 10,
+                                                          "Column": 28,
+                                                          "StreamName": "importtest.sld"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Form",
+                                                      "Fields": [
+                                                        [
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "display-all"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Index": 222,
+                                                                  "Line": 11,
+                                                                  "Column": 7,
+                                                                  "StreamName": "importtest.sld"
+                                                                },
+                                                                {
+                                                                  "Index": 233,
+                                                                  "Line": 11,
+                                                                  "Column": 18,
+                                                                  "StreamName": "importtest.sld"
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Form",
+                                                              "Fields": [
+                                                                [
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "cdr"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Index": 235,
+                                                                          "Line": 11,
+                                                                          "Column": 20,
+                                                                          "StreamName": "importtest.sld"
+                                                                        },
+                                                                        {
+                                                                          "Index": 238,
+                                                                          "Line": 11,
+                                                                          "Column": 23,
+                                                                          "StreamName": "importtest.sld"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "things"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Index": 239,
+                                                                          "Line": 11,
+                                                                          "Column": 24,
+                                                                          "StreamName": "importtest.sld"
+                                                                        },
+                                                                        {
+                                                                          "Index": 245,
+                                                                          "Line": 11,
+                                                                          "Column": 30,
+                                                                          "StreamName": "importtest.sld"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  }
+                                                                ]
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Index": 234,
+                                                                  "Line": 11,
+                                                                  "Column": 19,
+                                                                  "StreamName": "importtest.sld"
+                                                                },
+                                                                {
+                                                                  "Index": 246,
+                                                                  "Line": 11,
+                                                                  "Column": 31,
+                                                                  "StreamName": "importtest.sld"
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Index": 221,
+                                                          "Line": 11,
+                                                          "Column": 6,
+                                                          "StreamName": "importtest.sld"
+                                                        },
+                                                        {
+                                                          "Index": 247,
+                                                          "Line": 11,
+                                                          "Column": 32,
+                                                          "StreamName": "importtest.sld"
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 181,
+                                                  "Line": 9,
+                                                  "Column": 5,
+                                                  "StreamName": "importtest.sld"
+                                                },
+                                                {
+                                                  "Index": 248,
+                                                  "Line": 11,
+                                                  "Column": 33,
+                                                  "StreamName": "importtest.sld"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 144,
+                                          "Line": 7,
+                                          "Column": 4,
+                                          "StreamName": "importtest.sld"
+                                        },
+                                        {
+                                          "Index": 249,
+                                          "Line": 11,
+                                          "Column": 34,
+                                          "StreamName": "importtest.sld"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 112,
+                                  "Line": 6,
+                                  "Column": 3,
+                                  "StreamName": "importtest.sld"
+                                },
+                                {
+                                  "Index": 250,
+                                  "Line": 11,
+                                  "Column": 35,
+                                  "StreamName": "importtest.sld"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 103,
+                          "Line": 5,
+                          "Column": 2,
+                          "StreamName": "importtest.sld"
+                        },
+                        {
+                          "Index": 251,
+                          "Line": 11,
+                          "Column": 36,
+                          "StreamName": "importtest.sld"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 0,
+                  "Line": 1,
+                  "Column": 1,
+                  "StreamName": "importtest.sld"
+                },
+                {
+                  "Index": 252,
+                  "Line": 11,
+                  "Column": 37,
+                  "StreamName": "importtest.sld"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
+        {
+          "Index": 0,
+          "Line": 1,
+          "Column": 1,
+          "StreamName": "importtest.sld"
+        },
+        {
+          "Index": 252,
+          "Line": 11,
+          "Column": 37,
+          "StreamName": "importtest.sld"
+        }
+      ]
+    }
+  },
+  "Item2": []
+}

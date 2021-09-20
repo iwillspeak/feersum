@@ -24,9 +24,13 @@ let diagSanitiser =
     sanitiseDiagnosticsWith (basedLocation specDir)
     >> List.sortByDescending (fun x -> x.Location.Start)
 
-let listSpecs =
-    Directory.GetFiles(specDir, "*.scm", SearchOption.AllDirectories)
+let specsOfType extension =
+    Directory.GetFiles(specDir, "*." + extension, SearchOption.AllDirectories)
     |> Seq.map (fun x -> [| Path.GetRelativePath(specDir, x) |])
+
+let executableSpecs = specsOfType "scm"
+let librarySpecs = specsOfType "sld"
+let allSpecs = Seq.append executableSpecs librarySpecs
 
 let private runExample exePath =
     let p = new Process()
@@ -49,7 +53,7 @@ let private runExample exePath =
     ; Exit = p.ExitCode }
 
 [<Theory>]
-[<MemberDataAttribute("listSpecs")>]
+[<MemberDataAttribute("executableSpecs")>]
 let ``spec tests compile and run`` s =
     let sourcePath = Path.Join(specDir, s)
     let exePath = Path.ChangeExtension(Path.Join(specBin, s), "dll")
@@ -85,7 +89,7 @@ let ``spec tests compile and run`` s =
         (diags |> diagSanitiser).ShouldMatchChildSnapshot(s)
 
 [<Theory>]
-[<MemberDataAttribute("listSpecs")>]
+[<MemberDataAttribute("allSpecs")>]
 let ``spec tests parse result`` s =
     let node, diagnostics = parseFile (Path.Join(specDir, s))
     let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
