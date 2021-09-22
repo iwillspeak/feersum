@@ -23,6 +23,12 @@ type CoreTypes =
     ; FuncObjCtor: MethodReference
     ; FuncObjInvoke: MethodReference
     ; ExceptionCtor: MethodReference
+    ; CompGenCtor: MethodReference
+    ; NonUserCodeCtor: MethodReference
+    ; StepThroughCtor: MethodReference
+    ; LispExport: MethodReference
+    ; LispLibrary: MethodReference
+    ; AssmConfigCtor: MethodReference
     ; Builtins: Map<string,MethodReference> }
 
 /// Reder parameters for Mono assembly loading. 
@@ -127,17 +133,18 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<Assem
         |> Seq.pick (fun (assm: AssemblyDefinition) ->
             assm.MainModule.Types
             |> Seq.tryFind (fun x  -> x.FullName = name))
-    let consTy = lispAssm.MainModule.ImportReference(getType "Serehfa.ConsPair").Resolve()
-    let consCtor =
-        consTy.GetConstructors()
+
+    let getSingleCtor typeName =
+        let ty = lispAssm.MainModule.ImportReference(getType typeName).Resolve()
+        ty.GetConstructors()
         |> Seq.head
         |> lispAssm.MainModule.ImportReference
-        
-    let identTy = lispAssm.MainModule.ImportReference(getType "Serehfa.Ident").Resolve()
-    let identCtor =
-        identTy.GetConstructors()
-        |> Seq.head
-        |> lispAssm.MainModule.ImportReference
+
+    let consCtor = getSingleCtor "Serehfa.ConsPair"
+    let identCtor = getSingleCtor "Serehfa.Ident"
+    let compGenCtor = getSingleCtor "System.Runtime.CompilerServices.CompilerGeneratedAttribute"
+    let nonUserCodeCtor = getSingleCtor "System.Diagnostics.DebuggerNonUserCodeAttribute"
+    let stepThroughCtor = getSingleCtor "System.Diagnostics.DebuggerStepThroughAttribute"
 
     let exTy = lispAssm.MainModule.ImportReference(getType "System.Exception").Resolve()
     let exCtor =
@@ -160,13 +167,19 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<Assem
         |> Seq.find (fun x -> x.Name = "get_Instance")
         |> lispAssm.MainModule.ImportReference
 
-    { ConsTy = consTy
+    { ConsTy = getType "Serehfa.ConsPair"
     ; ConsCtor = consCtor
     ; IdentCtor = identCtor
     ; UndefinedInstance = undefinedInstance
     ; FuncObjCtor = funcObjCtor
     ; FuncObjInvoke = funcInvoke
     ; ExceptionCtor = exCtor
+    ; CompGenCtor = compGenCtor
+    ; NonUserCodeCtor = nonUserCodeCtor
+    ; StepThroughCtor = stepThroughCtor
+    ; LispExport = getSingleCtor "Serehfa.Attributes.LispExportAttribute"
+    ; LispLibrary = getSingleCtor "Serehfa.Attributes.LispLibraryAttribute"
+    ; AssmConfigCtor = getSingleCtor "System.Reflection.AssemblyConfigurationAttribute"
     ; EnvTy = null
     ; Builtins = Map.empty }
 

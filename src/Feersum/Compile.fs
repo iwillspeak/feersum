@@ -43,19 +43,18 @@ let private envSizeForMappings envMappings =
         |> Seq.length)
 
 /// Set the attributes on a given method to mark it as compiler generated code
-let private markAsCompilerGenerated (method: MethodDefinition) =
-    let addSimpleAttr (attrTy: Type) =
-        method
-            .Module
-            .ImportReference(attrTy.GetConstructor(Type.EmptyTypes))
+let private markAsCompilerGenerated (core: Builtins.CoreTypes) (method: MethodDefinition) =
+    let addSimpleAttr (attrCtor: MethodReference) =
+        attrCtor
         |> CustomAttribute
         |> method.CustomAttributes.Add
-    addSimpleAttr typeof<Runtime.CompilerServices.CompilerGeneratedAttribute>
-    addSimpleAttr typeof<Diagnostics.DebuggerNonUserCodeAttribute>
-    addSimpleAttr typeof<Diagnostics.DebuggerStepThroughAttribute>
+    
+    addSimpleAttr core.CompGenCtor
+    addSimpleAttr core.NonUserCodeCtor
+    addSimpleAttr core.StepThroughCtor
 
 /// Mark the assembly as supporting debugging
-let private markAsDebuggable (assm: AssemblyDefinition) =
+let private markAsDebuggable (core: Builtins.CoreTypes) (assm: AssemblyDefinition) =
     let attr =
         assm.MainModule.ImportReference(
             typeof<Diagnostics.DebuggableAttribute>
@@ -67,30 +66,20 @@ let private markAsDebuggable (assm: AssemblyDefinition) =
     attr.ConstructorArguments.Add(
         CustomAttributeArgument(assm.MainModule.TypeSystem.Boolean, true))
 
-    attr
-    |> assm.CustomAttributes.Add
+    attr |> assm.CustomAttributes.Add
 
-    let attr =
-        assm.MainModule.ImportReference(
-            typeof<Reflection.AssemblyConfigurationAttribute>
-                .GetConstructor([| typeof<string> |]))
-        |> CustomAttribute
+    let attr = core.AssmConfigCtor |> CustomAttribute
     attr.ConstructorArguments.Add(
         CustomAttributeArgument(
             assm.MainModule.TypeSystem.String,
             "Debug"))
 
-    attr
-    |> assm.CustomAttributes.Add
+    attr |> assm.CustomAttributes.Add
 
 /// Mark the given type with a library `name`. This adds the
 /// `LispLibrary` attribute to the type.
-let private markWithLibraryName (typ: TypeDefinition) name =
-    let attr =
-        typ.Module.ImportReference(
-            typeof<Serehfa.Attributes.LispLibraryAttribute>
-                .GetConstructor([| typeof<string[]> |]))
-        |> CustomAttribute
+let private markWithLibraryName (core: Builtins.CoreTypes) (typ: TypeDefinition) name =
+    let attr = core.LispLibrary |> CustomAttribute
     attr.ConstructorArguments.Add(
         CustomAttributeArgument(
             typ.Module.TypeSystem.String.MakeArrayType(),
@@ -104,12 +93,8 @@ let private markWithLibraryName (typ: TypeDefinition) name =
 
 /// Mark the field as exported. This adds the `LispExport` attribute
 /// to the field.
-let private markWithExportedName (field: FieldDefinition) name =
-    let attr =
-        field.Module.ImportReference(
-            typeof<Serehfa.Attributes.LispExportAttribute>
-                .GetConstructor([| typeof<string> |]))
-        |> CustomAttribute
+let private markWithExportedName (core: Builtins.CoreTypes) (field: FieldDefinition) name =
+    let attr = core.LispExport |> CustomAttribute
     attr.ConstructorArguments.Add(
         CustomAttributeArgument(
             field.Module.TypeSystem.String,
@@ -138,7 +123,7 @@ let private ensureField ctx mangledPrefix id =
         let export = Map.tryFind (mangledPrefix, id) ctx.Exports
         match export with
         | Some(exportedName) ->
-            markWithExportedName newField exportedName
+            markWithExportedName ctx.Core newField exportedName
             newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
             ()
         | None -> ()
@@ -733,7 +718,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
         ctx.ProgramTy.Methods.Add methodDecl
         ctx.ProgramTy.Methods.Add thunkDecl
 
-    markAsCompilerGenerated thunkDecl
+    markAsCompilerGenerated ctx.Core thunkDecl
     methodDecl, thunkDecl
 
 /// Emit the body of a library definition
@@ -746,7 +731,7 @@ and emitLibrary ctx name mangledName exports body =
                                 ctx.Assm.MainModule.TypeSystem.Object)
     ctx.Assm.MainModule.Types.Add libTy
     libTy.Methods.Add <| createEmptyCtor ctx.Assm
-    markWithLibraryName libTy name
+    markWithLibraryName ctx.Core libTy name
     ctx.Libraries <- Map.add mangledName libTy ctx.Libraries
 
     let exports =
@@ -834,8 +819,6 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
                |> assm.MainModule.ImportReference))
         |> Map.ofSeq
 
-    if symbolStream.IsSome then
-        markAsDebuggable assm
 
     // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName,
@@ -846,6 +829,9 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
     progTy.Methods.Add <| createEmptyCtor assm
 
     let coreTypes = Builtins.importCore assm
+
+    if symbolStream.IsSome then
+        markAsDebuggable coreTypes assm
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
@@ -881,7 +867,7 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 
         il.Emit(OpCodes.Call, bodyMethod)
         emitMainEpilogue assm il
-        markAsCompilerGenerated mainMethod
+        markAsCompilerGenerated coreTypes mainMethod
 
     // Write our `Assembly` to the output stream now we are done.
     let mutable writerParams = WriterParameters()
