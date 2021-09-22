@@ -55,12 +55,7 @@ let private markAsCompilerGenerated (core: Builtins.CoreTypes) (method: MethodDe
 
 /// Mark the assembly as supporting debugging
 let private markAsDebuggable (core: Builtins.CoreTypes) (assm: AssemblyDefinition) =
-    let attr =
-        assm.MainModule.ImportReference(
-            typeof<Diagnostics.DebuggableAttribute>
-                .GetConstructor([| typeof<bool>; typeof<bool> |]))
-        |> CustomAttribute
-
+    let attr = core.DebuggableCtor |> CustomAttribute
     attr.ConstructorArguments.Add(
         CustomAttributeArgument(assm.MainModule.TypeSystem.Boolean, true))
     attr.ConstructorArguments.Add(
@@ -388,7 +383,7 @@ and emitLiteral ctx = function
             let literalTy = TypeDefinition("Feersum.Internals",
                                            sprintf "<>ByteLiteral%d" ctx.ProgramTy.Fields.Count,
                                            TypeAttributes.NestedPrivate ||| TypeAttributes.Sealed ||| TypeAttributes.ExplicitLayout,
-                                           ctx.Assm.MainModule.ImportReference(typeof<System.ValueType>))
+                                           ctx.Core.ValueType)
             literalTy.PackingSize <- 1s
             literalTy.ClassSize <- len
             ctx.ProgramTy.NestedTypes.Add(literalTy)
@@ -399,10 +394,9 @@ and emitLiteral ctx = function
             ctx.ProgramTy.Fields.Add(literalField)
 
             /// Copy to our new array using the `InitializeArray` intrinsic.
-            let initArray = ctx.Assm.MainModule.ImportReference(typeof<Runtime.CompilerServices.RuntimeHelpers>.GetMethod("InitializeArray"))
             ctx.IL.Emit(OpCodes.Dup)
             ctx.IL.Emit(OpCodes.Ldtoken, literalField)
-            ctx.IL.Emit(OpCodes.Call, initArray)
+            ctx.IL.Emit(OpCodes.Call, ctx.Core.RuntimeInitArray)
 
     /// Emit a write to a given storage location
 and writeTo ctx storage =
