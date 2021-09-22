@@ -15,14 +15,17 @@ open Libraries
 
 /// Core Types Used by the Compiler at Runtime
 type CoreTypes =
-    { ConsTy: TypeDefinition
+    { ConsTy: TypeReference
+    ; ValueType: TypeReference
     ; EnvTy: TypeDefinition
     ; ConsCtor: MethodReference
     ; UndefinedInstance: MethodReference
     ; IdentCtor: MethodReference
+    ; RuntimeInitArray: MethodReference
     ; FuncObjCtor: MethodReference
     ; FuncObjInvoke: MethodReference
     ; ExceptionCtor: MethodReference
+    ; DebuggableCtor: MethodReference
     ; CompGenCtor: MethodReference
     ; NonUserCodeCtor: MethodReference
     ; StepThroughCtor: MethodReference
@@ -127,56 +130,89 @@ let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: Assem
     |> Seq.map (fun (name, m) -> (name, lispAssm.MainModule.ImportReference(m :> MethodReference)))
     |> Map.ofSeq
 
+/// Convert a method reference on a generic type to a method reference on a bound
+/// generic instance type.
+/// 
+/// https://stackoverflow.com/a/16433452/1353098   - CC BY-SA 4.0
+let private makeHostInstanceGeneric args (method: MethodReference) =
+    let reference = 
+        MethodReference(
+            method.Name,
+            method.ReturnType,
+            method.DeclaringType.MakeGenericInstanceType(args)
+        )
+    reference.HasThis <- method.HasThis
+    reference.ExplicitThis <- method.ExplicitThis
+    reference.CallingConvention <- method.CallingConvention
+
+    method.Parameters
+    |> Seq.iter (fun parameter ->
+        reference.Parameters.Add(ParameterDefinition(parameter.ParameterType)))
+
+    method.GenericParameters
+    |> Seq.iter (fun genericParam ->
+        reference.GenericParameters.Add(GenericParameter(genericParam.Name, reference)))
+
+    reference
+
+/// Scan the `externAssms` and retrieve the core types that are required to
+/// compile a scheme progrma. These `CoreTypes` represent the types and methods
+/// that the compilation will emit calls to as part of code generation and
+/// intrisics.
 let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<AssemblyDefinition>) =
+
     let getType name =
         externAssms
         |> Seq.pick (fun (assm: AssemblyDefinition) ->
             assm.MainModule.Types
             |> Seq.tryFind (fun x  -> x.FullName = name))
+        |> lispAssm.MainModule.ImportReference
 
-    let getSingleCtor typeName =
-        let ty = lispAssm.MainModule.ImportReference(getType typeName).Resolve()
+    let getResolvedType name =
+        (getType name).Resolve()
+
+    let getCtorBy pred typeName =
+        let ty = getResolvedType typeName
         ty.GetConstructors()
-        |> Seq.head
+        |> Seq.find pred
         |> lispAssm.MainModule.ImportReference
+    let getSingleCtor = getCtorBy (fun _ -> true)
+    let getCtorByArity arity = getCtorBy (fun m -> m.Parameters.Count = arity)
 
-    let consCtor = getSingleCtor "Serehfa.ConsPair"
-    let identCtor = getSingleCtor "Serehfa.Ident"
-    let compGenCtor = getSingleCtor "System.Runtime.CompilerServices.CompilerGeneratedAttribute"
-    let nonUserCodeCtor = getSingleCtor "System.Diagnostics.DebuggerNonUserCodeAttribute"
-    let stepThroughCtor = getSingleCtor "System.Diagnostics.DebuggerStepThroughAttribute"
+    // Func<object[], object> is akward because we have to convert both the
+    // constructor and invoke methods into instnace methods on the correctly
+    // bound generic instance.
+    let objTy = lispAssm.MainModule.TypeSystem.Object
+    let genericArgs = [| objTy.MakeArrayType() :> TypeReference; objTy |]
+    let funcTy = (getType "System.Func`2").MakeGenericInstanceType(genericArgs).Resolve()
+    let funcCtor =
+        lispAssm.MainModule.ImportReference(
+            funcTy.GetConstructors() |> Seq.head
+        ) |> makeHostInstanceGeneric genericArgs
+    let funcInvoke =
+        lispAssm.MainModule.ImportReference(
+            funcTy.GetMethods() |> Seq.find (fun m -> m.Name = "Invoke")
+        ) |> makeHostInstanceGeneric genericArgs
 
-    let exTy = lispAssm.MainModule.ImportReference(getType "System.Exception").Resolve()
-    let exCtor =
-        exTy.GetConstructors()
-        |> Seq.find (fun x -> x.Parameters.Count = 1 && x.Parameters.[0].ParameterType.Name = "String")
-        |> lispAssm.MainModule.ImportReference
-
-    // FIXME: work out generics
-    let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
-    let funcObjCtor = typeof<Func<obj[], obj>>.GetConstructor(paramTypes)
-    let funcObjCtor = lispAssm.MainModule.ImportReference(funcObjCtor)
-    let funcInvoke = typeof<Func<obj[], obj>>.GetMethod("Invoke",
-                                                        [| typeof<obj[]> |])
-    let funcInvoke = lispAssm.MainModule.ImportReference(funcInvoke)
-    // ENDFIXME
-
-    let undefinedTy = lispAssm.MainModule.ImportReference(getType "Serehfa.Undefined").Resolve()
-    let undefinedInstance =
-        undefinedTy.GetMethods()
-        |> Seq.find (fun x -> x.Name = "get_Instance")
+    let getMethod typeName methodName =
+        let ty = getResolvedType typeName
+        ty.GetMethods()
+        |> Seq.find (fun m -> m.Name = methodName)
         |> lispAssm.MainModule.ImportReference
 
     { ConsTy = getType "Serehfa.ConsPair"
-    ; ConsCtor = consCtor
-    ; IdentCtor = identCtor
-    ; UndefinedInstance = undefinedInstance
-    ; FuncObjCtor = funcObjCtor
+    ; ValueType = getType "System.ValueType"
+    ; ConsCtor = getSingleCtor "Serehfa.ConsPair"
+    ; IdentCtor = getSingleCtor "Serehfa.Ident"
+    ; RuntimeInitArray = getMethod "System.Runtime.CompilerServices.RuntimeHelpers" "InitializeArray"
+    ; UndefinedInstance = getMethod "Serehfa.Undefined" "get_Instance"
+    ; FuncObjCtor = funcCtor
     ; FuncObjInvoke = funcInvoke
-    ; ExceptionCtor = exCtor
-    ; CompGenCtor = compGenCtor
-    ; NonUserCodeCtor = nonUserCodeCtor
-    ; StepThroughCtor = stepThroughCtor
+    ; ExceptionCtor = getCtorByArity 1 "System.Exception"
+    ; DebuggableCtor = getCtorByArity 2 "System.Diagnostics.DebuggableAttribute"
+    ; CompGenCtor = getSingleCtor "System.Runtime.CompilerServices.CompilerGeneratedAttribute"
+    ; NonUserCodeCtor = getSingleCtor "System.Diagnostics.DebuggerNonUserCodeAttribute"
+    ; StepThroughCtor = getSingleCtor "System.Diagnostics.DebuggerStepThroughAttribute"
     ; LispExport = getSingleCtor "Serehfa.Attributes.LispExportAttribute"
     ; LispLibrary = getSingleCtor "Serehfa.Attributes.LispLibraryAttribute"
     ; AssmConfigCtor = getSingleCtor "System.Reflection.AssemblyConfigurationAttribute"
@@ -237,6 +273,8 @@ let private macroUnless =
                 expr1 ...))))"
     |> parseBuiltinMacro "unless"
 
+// FIXME: The following two hardcoded locations should be replaced by some kind
+//        of SDK resoltuion.
 let private serehfaAssmLoc = typeof<Serehfa.ConsPair>.Assembly.Location
 let private mscorelibAssmLoc = typeof<obj>.Assembly.Location
 
