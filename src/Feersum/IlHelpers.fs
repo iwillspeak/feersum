@@ -3,12 +3,11 @@ module IlHelpers
 open System
 open Mono.Cecil
 open Mono.Cecil.Cil
+open Mono.Cecil.Rocks
 
 /// Emit a sequence of instructions to throw an exception
-let emitThrow (il: ILProcessor) (assm: AssemblyDefinition) (err: string) =
+let emitThrow (il: ILProcessor) (exCtor: MethodReference) (err: string) =
     il.Emit(OpCodes.Ldstr, err)
-    let exCtor = typeof<Exception>.GetConstructor([| typeof<string> |])
-    let exCtor = assm.MainModule.ImportReference(exCtor)
     il.Emit(OpCodes.Newobj, exCtor)
     il.Emit(OpCodes.Throw)
 
@@ -25,7 +24,11 @@ let createCtor (assm: AssemblyDefinition) builder =
                                 MethodAttributes.SpecialName |||
                                 MethodAttributes.RTSpecialName,
                                 assm.MainModule.TypeSystem.Void)
-    let objConstructor = assm.MainModule.ImportReference(typeof<obj>.GetConstructor(Array.empty))
+
+    let objConstructor = 
+        assm.MainModule.TypeSystem.Object.Resolve().GetConstructors()
+        |> Seq.find (fun x -> x.Parameters.Count = 0)
+        |> assm.MainModule.ImportReference
     let il = ctor.Body.GetILProcessor()
     il.Emit(OpCodes.Ldarg_0)
     il.Emit(OpCodes.Call, objConstructor)
