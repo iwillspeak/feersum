@@ -20,6 +20,9 @@ type CoreTypes =
     ; ConsCtor: MethodReference
     ; UndefinedInstance: MethodReference
     ; IdentCtor: MethodReference
+    ; FuncObjCtor: MethodReference
+    ; FuncObjInvoke: MethodReference
+    ; ExceptionCtor: MethodReference
     ; Builtins: Map<string,MethodReference> }
 
 /// Reder parameters for Mono assembly loading. 
@@ -118,20 +121,40 @@ let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: Assem
     |> Seq.map (fun (name, m) -> (name, lispAssm.MainModule.ImportReference(m :> MethodReference)))
     |> Map.ofSeq
 
-let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) =
-    let consTy = lispAssm.MainModule.ImportReference(externAssm.GetType("Serehfa.ConsPair")).Resolve()
+let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<AssemblyDefinition>) =
+    let getType name =
+        externAssms
+        |> Seq.pick (fun (assm: AssemblyDefinition) ->
+            assm.MainModule.Types
+            |> Seq.tryFind (fun x  -> x.FullName = name))
+    let consTy = lispAssm.MainModule.ImportReference(getType "Serehfa.ConsPair").Resolve()
     let consCtor =
         consTy.GetConstructors()
         |> Seq.head
         |> lispAssm.MainModule.ImportReference
         
-    let identTy = lispAssm.MainModule.ImportReference(externAssm.GetType("Serehfa.Ident")).Resolve()
+    let identTy = lispAssm.MainModule.ImportReference(getType "Serehfa.Ident").Resolve()
     let identCtor =
         identTy.GetConstructors()
         |> Seq.head
         |> lispAssm.MainModule.ImportReference
 
-    let undefinedTy = lispAssm.MainModule.ImportReference(externAssm.GetType("Serehfa.Undefined")).Resolve()
+    let exTy = lispAssm.MainModule.ImportReference(getType "System.Exception").Resolve()
+    let exCtor =
+        exTy.GetConstructors()
+        |> Seq.find (fun x -> x.Parameters.Count = 1 && x.Parameters.[0].ParameterType.Name = "String")
+        |> lispAssm.MainModule.ImportReference
+
+    // FIXME: work out generics
+    let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
+    let funcObjCtor = typeof<Func<obj[], obj>>.GetConstructor(paramTypes)
+    let funcObjCtor = lispAssm.MainModule.ImportReference(funcObjCtor)
+    let funcInvoke = typeof<Func<obj[], obj>>.GetMethod("Invoke",
+                                                        [| typeof<obj[]> |])
+    let funcInvoke = lispAssm.MainModule.ImportReference(funcInvoke)
+    // ENDFIXME
+
+    let undefinedTy = lispAssm.MainModule.ImportReference(getType "Serehfa.Undefined").Resolve()
     let undefinedInstance =
         undefinedTy.GetMethods()
         |> Seq.find (fun x -> x.Name = "get_Instance")
@@ -141,6 +164,9 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssm: Assembly) 
     ; ConsCtor = consCtor
     ; IdentCtor = identCtor
     ; UndefinedInstance = undefinedInstance
+    ; FuncObjCtor = funcObjCtor
+    ; FuncObjInvoke = funcInvoke
+    ; ExceptionCtor = exCtor
     ; EnvTy = null
     ; Builtins = Map.empty }
 
@@ -198,7 +224,8 @@ let private macroUnless =
                 expr1 ...))))"
     |> parseBuiltinMacro "unless"
 
-let private serehfaAssm = typeof<Serehfa.ConsPair>.Assembly
+let private serehfaAssmLoc = typeof<Serehfa.ConsPair>.Assembly.Location
+let private mscorelibAssmLoc = typeof<obj>.Assembly.Location
 
 /// The list of builtin macros
 let private coreMacros =
@@ -221,7 +248,7 @@ let public loadReferencedSignatures (name: string) =
 /// The core library signature
 let public loadCoreSignatures =
     let coreMethods =
-        loadReferencedSignatures serehfaAssm.Location
+        loadReferencedSignatures serehfaAssmLoc
         |> Seq.map (fun (_, lib) -> lib)
     Seq.append coreMethods coreMacros
     |> Seq.groupBy (fun lib -> lib.LibraryName)
@@ -235,7 +262,10 @@ let public loadCoreSignatures =
 
 /// Load the core types into the given assembly
 let importCore (targetAssm: AssemblyDefinition) =
-    use monoSehrefaAssm =
-        Mono.Cecil.AssemblyDefinition.ReadAssembly(serehfaAssm.Location, assmReadParams)
-    let builtins = loadExternBuiltins targetAssm monoSehrefaAssm
-    { loadCoreTypes targetAssm serehfaAssm with EnvTy = addEnvDecls targetAssm; Builtins = builtins }
+    use sehrefaAssm =
+        AssemblyDefinition.ReadAssembly(serehfaAssmLoc, assmReadParams)
+    use mscorelibAssm =
+        AssemblyDefinition.ReadAssembly(mscorelibAssmLoc, assmReadParams)
+    let builtins = loadExternBuiltins targetAssm sehrefaAssm
+    { loadCoreTypes targetAssm [ sehrefaAssm ; mscorelibAssm ]
+        with EnvTy = addEnvDecls targetAssm; Builtins = builtins }

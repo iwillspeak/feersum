@@ -157,11 +157,9 @@ let private localToVariable ctx idx =
 /// Emit a sequence of instructions to convert a method reference
 /// into a `Func<obj[],obj>` with the context as the current top of stack.
 let private emitMethodToInstanceFunc ctx (method: MethodReference) =
-    let paramTypes = [|typeof<obj>; typeof<IntPtr>|]
-    let funcObjCtor = typeof<Func<obj[], obj>>.GetConstructor(paramTypes)
-    let funcObjCtor = ctx.Assm.MainModule.ImportReference(funcObjCtor)
+
     ctx.IL.Emit(OpCodes.Ldftn, method)
-    ctx.IL.Emit(OpCodes.Newobj, funcObjCtor)
+    ctx.IL.Emit(OpCodes.Newobj, ctx.Core.FuncObjCtor)
 
 /// Emit a sequence of instructions to convert a method reference
 /// into a `Func<obj[],obj>`
@@ -508,12 +506,9 @@ and emitApplication ctx tail ap args =
         ctx.IL.Emit(OpCodes.Stelem_Ref)
         idx + 1) 0 args |> ignore
     
-    let funcInvoke = typeof<Func<obj[], obj>>.GetMethod("Invoke",
-                                                        [| typeof<obj[]> |])
-    let funcInvoke = ctx.Assm.MainModule.ImportReference(funcInvoke)
     if tail then
         ctx.IL.Emit(OpCodes.Tail)
-    ctx.IL.Emit(OpCodes.Callvirt, funcInvoke)
+    ctx.IL.Emit(OpCodes.Callvirt, ctx.Core.FuncObjInvoke)
 
     /// Emit a Lambda Reference
     /// 
@@ -700,7 +695,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
         thunkIl.Emit(OpCodes.Ldc_I4, count)
         thunkIl.Emit(opCode, ok)
 
-        emitThrow thunkIl ctx.Assm err
+        emitThrow thunkIl ctx.Core.ExceptionCtor err
 
         thunkIl.Append(ok)
     
