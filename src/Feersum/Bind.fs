@@ -12,7 +12,7 @@ open Utils
 /// of values to storage locations.
 type StorageRef =
     | Macro of Macro
-    | Builtin of string
+    | Builtin of string * string
     | Local of int
     | Global of string * string
     | Arg of int
