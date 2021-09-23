@@ -32,7 +32,7 @@ type CoreTypes =
     ; LispExport: MethodReference
     ; LispLibrary: MethodReference
     ; AssmConfigCtor: MethodReference
-    ; Builtins: Map<string,MethodReference> }
+    ; Builtins: Map<string * string, MethodReference> }
 
 /// Reder parameters for Mono assembly loading. 
 let private assmReadParams =
@@ -91,15 +91,15 @@ let private cataExports onGlobal onBuiltin (ty: TypeDefinition) =
                     None))
 
     let exports =
-        ty.Fields |> chooseMatching "LispExportAttribute" (onGlobal ty)
+        ty.Fields |> chooseMatching "LispExportAttribute" (onGlobal ty.FullName)
     let builtins =
-        ty.Methods |> chooseMatching "LispBuiltinAttribute" (onBuiltin)
+        ty.Methods |> chooseMatching "LispBuiltinAttribute" (onBuiltin ty.FullName)
 
     Seq.append exports builtins
 
 /// Get Exported items from a given Mono type definition.
 let private getExports =
-    cataExports (fun ty name field -> (name, Global(ty.FullName, field.Name))) (fun name _ -> (name, Builtin(name)))
+    cataExports (fun ty name field -> (name, Global(ty, field.Name))) (fun ty name _ -> (name, Builtin(ty, name)))
     >> List.ofSeq
 
 /// Maybe map a given type if it has a `LispLibrary` name. 
@@ -120,9 +120,9 @@ let private tryGetSignatureFromType =
 
 /// Import method references for any builtins in the `externAssm`
 let private loadExternBuiltins (lispAssm: AssemblyDefinition) (externAssm: AssemblyDefinition) =
-    let onTy ty name =
+    let onTy ty _ =
         ty
-        |> cataExports (fun _ _ _ -> None) (fun id method -> Some((id, method)))
+        |> cataExports (fun _ _ _ -> None) (fun ty id method -> Some(((ty, id), method)))
         |> Seq.choose id
     externAssm.MainModule.Types
     |> Seq.choose (tryCataType onTy)

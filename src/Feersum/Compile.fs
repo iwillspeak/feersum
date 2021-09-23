@@ -401,7 +401,7 @@ and emitLiteral ctx = function
     /// Emit a write to a given storage location
 and writeTo ctx storage =
     match storage with
-    | StorageRef.Builtin id ->
+    | StorageRef.Builtin(_, id) ->
         failwithf "Can't re-define builtin %s" id
     | StorageRef.Macro m ->
         failwithf "Can't re-define macro %s" m.Name
@@ -431,8 +431,8 @@ and readFrom ctx storage =
     match storage with
     | StorageRef.Macro m ->
         failwithf "Invalid macro application %s" m.Name
-    | StorageRef.Builtin id ->
-        let meth = ctx.Core.Builtins.[id]
+    | StorageRef.Builtin(ty, id) ->
+        let meth = ctx.Core.Builtins.[(ty, id)]
         emitMethodToFunc ctx meth
     | StorageRef.Global(mangledPrefix, id) ->
         let field = ensureField ctx mangledPrefix id
