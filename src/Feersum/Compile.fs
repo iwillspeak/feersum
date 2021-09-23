@@ -401,13 +401,15 @@ and emitLiteral ctx = function
     /// Emit a write to a given storage location
 and writeTo ctx storage =
     match storage with
-    | StorageRef.Builtin(_, id) ->
-        failwithf "Can't re-define builtin %s" id
     | StorageRef.Macro m ->
         failwithf "Can't re-define macro %s" m.Name
-    | StorageRef.Global(mangledPrefix, id) ->
-        let field = ensureField ctx mangledPrefix id
-        ctx.IL.Emit(OpCodes.Stsfld, field)
+    | StorageRef.Global(mangledPrefix, loc) ->
+        match loc with
+        | Method id ->
+            failwithf "Can't re-define builtin %s" id
+        | Field id ->
+            let field = ensureField ctx mangledPrefix id
+            ctx.IL.Emit(OpCodes.Stsfld, field)
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
     | StorageRef.Arg(idx) ->
@@ -431,12 +433,14 @@ and readFrom ctx storage =
     match storage with
     | StorageRef.Macro m ->
         failwithf "Invalid macro application %s" m.Name
-    | StorageRef.Builtin(ty, id) ->
-        let meth = ctx.Core.Builtins.[(ty, id)]
-        emitMethodToFunc ctx meth
-    | StorageRef.Global(mangledPrefix, id) ->
-        let field = ensureField ctx mangledPrefix id
-        ctx.IL.Emit(OpCodes.Ldsfld, field)
+    | StorageRef.Global(ty, loc) ->
+        match loc with
+        | Method id ->
+            let meth = ctx.Core.Builtins.[(ty, id)]
+            emitMethodToFunc ctx meth
+        | Field id ->
+            let field = ensureField ctx ty id
+            ctx.IL.Emit(OpCodes.Ldsfld, field)
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)
     | StorageRef.Arg(idx) ->
@@ -732,7 +736,7 @@ and emitLibrary ctx name mangledName exports body =
         exports
         |> Seq.choose (fun (name, storage) ->
             match storage with
-            | StorageRef.Global(mangled, id) -> Some(((mangled, id), name))
+            | StorageRef.Global(mangled, Field id) -> Some(((mangled, id), name))
             | _ -> None)
         |> Map.ofSeq
 
