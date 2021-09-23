@@ -22,6 +22,7 @@ type CoreTypes =
     ; UndefinedInstance: MethodReference
     ; IdentCtor: MethodReference
     ; RuntimeInitArray: MethodReference
+    ; FuncObjTy: TypeReference
     ; FuncObjCtor: MethodReference
     ; FuncObjInvoke: MethodReference
     ; ExceptionCtor: MethodReference
@@ -206,6 +207,7 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<Assem
     ; IdentCtor = getSingleCtor "Serehfa.Ident"
     ; RuntimeInitArray = getMethod "System.Runtime.CompilerServices.RuntimeHelpers" "InitializeArray"
     ; UndefinedInstance = getMethod "Serehfa.Undefined" "get_Instance"
+    ; FuncObjTy = funcTy.MakeGenericInstanceType(genericArgs) |> lispAssm.MainModule.ImportReference
     ; FuncObjCtor = funcCtor
     ; FuncObjInvoke = funcInvoke
     ; ExceptionCtor = getCtorByArity 1 "System.Exception"

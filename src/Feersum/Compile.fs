@@ -479,6 +479,14 @@ and emitSequence ctx tail seq =
 and emitApplication ctx tail ap args =
     emitExpression ctx false ap
 
+    // Duplicate the callee and check it is a faunction
+    ctx.IL.Emit(OpCodes.Dup)
+    ctx.IL.Emit(OpCodes.Isinst, ctx.Core.FuncObjTy)
+    let doCall = ctx.IL.Create(OpCodes.Nop)
+    ctx.IL.Emit(OpCodes.Brtrue_S, doCall)
+    emitThrow ctx.IL ctx.Core.ExceptionCtor "Target is not a function and can't be applied"
+    ctx.IL.Append(doCall)
+
     // Emit the arguments array
     ctx.IL.Emit(OpCodes.Ldc_I4, List.length args)
     ctx.IL.Emit(OpCodes.Newarr, ctx.Assm.MainModule.TypeSystem.Object)
