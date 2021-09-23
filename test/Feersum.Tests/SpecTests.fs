@@ -1,5 +1,7 @@
 module SpecTests
 
+open System.Text.RegularExpressions
+
 open Xunit
 open Options
 open Compile
@@ -52,24 +54,43 @@ let private runExample exePath =
     ; Error = output.[1]
     ; Exit = p.ExitCode }
 
+let private parseDirective (line: string) =
+    let line = line.Trim()
+    if line.StartsWith(';') then
+        let m = Regex.Match(line, ";+\s*!(depends):(.+)")
+        if m.Success then
+            Some((m.Groups.[1].Value, m.Groups.[2].Value))
+        else
+            None
+    else
+        None
+
 [<Theory>]
 [<MemberDataAttribute("executableSpecs")>]
 let ``spec tests compile and run`` s =
+    
     let sourcePath = Path.Join(specDir, s)
     let exePath = Path.ChangeExtension(Path.Join(specBin, s), "dll")
     let shouldFail = sourcePath.Contains "fail"
-    let libSourcePath = Path.ChangeExtension(sourcePath, "sld")
-    let references =
-        if File.Exists(libSourcePath) then
-            let libPath = Path.Join(specBin, Path.GetFileNameWithoutExtension(libSourcePath) + "-backing.dll")
+    let mutable references = []
+
+    File.ReadAllLinesAsync(sourcePath)
+    |> Async.AwaitTask
+    |> Async.RunSynchronously
+    |> Seq.choose parseDirective
+    |> Seq.iter (fun (directive, arg) ->
+        match directive.ToLowerInvariant() with
+        | "depends" ->
+            let libSourcePath = Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
+            let libPath = Path.Join(specBin, Path.GetFileNameWithoutExtension(libSourcePath) + ".dll")
             let libOptions = CompilationOptions.Create BuildConfiguration.Debug Lib
             match compileFile libOptions libPath libSourcePath with
             | [] ->
-                [ libPath ]
+                references <- List.append references [ libPath ]
             | diags ->
                 failwithf "Compilation error in backing library: %A" diags
-        else
-            []
+        | _ -> failwithf "unrecognised directive !%s: %s" directive arg)
+        
     let options =
         CompilationOptions.Create BuildConfiguration.Debug Exe
         |> (fun x -> x.WithReferences references)
@@ -83,6 +104,7 @@ let ``spec tests compile and run`` s =
         if not shouldFail then
             failwithf "Compilation error: %A" diags
         (diags |> diagSanitiser).ShouldMatchChildSnapshot(s)
+    
 
 [<Theory>]
 [<MemberDataAttribute("allSpecs")>]
