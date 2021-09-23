@@ -6,15 +6,22 @@ open Macros
 open Scope
 open Utils
 
+/// Global binding Type
+/// 
+/// For code we generate globals are stored in static fields. For some imported
+/// references globals may be stored in static fields instead.
+type GlobalType =
+    | Method of string
+    | Field of string
+
 /// Storage Reference
 ///
 /// Reference to a given storage location. Used to express reads and writes
 /// of values to storage locations.
 type StorageRef =
     | Macro of Macro
-    | Builtin of string * string
     | Local of int
-    | Global of string * string
+    | Global of string * GlobalType
     | Arg of int
     | Environment of int * StorageRef
     | Captured of StorageRef
@@ -168,7 +175,7 @@ module private BinderCtx =
     let addBinding ctx id =
         let storage =
             if ctx.Parent.IsNone && ctx.OuterScopes.IsEmpty then
-                StorageRef.Global(ctx.MangledName, id)
+                StorageRef.Global(ctx.MangledName, Field id)
             else
                 StorageRef.Local(getNextLocal ctx)
         scopeInsert ctx id storage

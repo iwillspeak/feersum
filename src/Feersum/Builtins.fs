@@ -99,7 +99,7 @@ let private cataExports onGlobal onBuiltin (ty: TypeDefinition) =
 
 /// Get Exported items from a given Mono type definition.
 let private getExports =
-    cataExports (fun ty name field -> (name, Global(ty, field.Name))) (fun ty name _ -> (name, Builtin(ty, name)))
+    cataExports (fun ty name field -> (name, Global(ty, Field field.Name))) (fun ty name _ -> (name, Global(ty, Method name)))
     >> List.ofSeq
 
 /// Maybe map a given type if it has a `LispLibrary` name. 

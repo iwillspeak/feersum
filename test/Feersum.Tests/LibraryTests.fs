@@ -23,7 +23,7 @@ let ``pretty names`` () =
 let ``resolve exported bindings`` () =
     let libs = [
         { LibraryName = ["test";"lib"]
-        ; Exports = [("foo", StorageRef.Global("Mock", "foo-internal"))] }
+        ; Exports = [("foo", StorageRef.Global("Mock", Field "foo-internal"))] }
         ]
 
     let checkImported import expectedId expected =
