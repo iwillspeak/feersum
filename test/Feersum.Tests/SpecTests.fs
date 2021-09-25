@@ -28,11 +28,10 @@ let diagSanitiser =
 
 let specsOfType extension =
     Directory.GetFiles(specDir, "*." + extension, SearchOption.AllDirectories)
-    |> Seq.map (fun x -> [| Path.GetRelativePath(specDir, x) |])
+    |> Seq.map (fun x -> Path.GetRelativePath(specDir, x))
 
 let executableSpecs = specsOfType "scm"
 let librarySpecs = specsOfType "sld"
-let allSpecs = Seq.append executableSpecs librarySpecs
 
 let private runExample host exePath =
     let p = new Process()
@@ -58,7 +57,7 @@ let private parseDirectives (sourcePath: string) =
     let parseDirective (line: string) =
         let line = line.Trim()
         if line.StartsWith(';') then
-            let m = Regex.Match(line, ";+\s*!(depends|skiphost):(.+)")
+            let m = Regex.Match(line, ";+\s*!(depends):(.+)")
             if m.Success then
                 Some((m.Groups.[1].Value.ToLowerInvariant(), m.Groups.[2].Value))
             else
@@ -69,12 +68,18 @@ let private parseDirectives (sourcePath: string) =
     |> Seq.choose parseDirective
 
 
-[<Theory>]
-[<MemberDataAttribute("executableSpecs")>]
-let ``spec tests compile and run`` s =
+let public getRunTestData () =
+    executableSpecs
+    |> Seq.collect (fun spec ->
+        [ [| spec :> obj; BuildConfiguration.Debug :> obj |]
+        ; [| spec :> obj; BuildConfiguration.Release :> obj |] ])
 
-    let sourcePath = Path.Join(specDir, s)
-    let options = CompilationOptions.Create BuildConfiguration.Debug Exe
+[<Theory>]
+[<MemberDataAttribute("getRunTestData")>]
+let ``spec tests compile and run`` specPath configuration =
+
+    let sourcePath = Path.Join(specDir, specPath)
+    let options = CompilationOptions.Create configuration Exe
     let binDir = [| specBin; options.Configuration |> string |] |> Path.Combine
 
     let shouldFail = sourcePath.Contains "fail"
@@ -101,21 +106,24 @@ let ``spec tests compile and run`` s =
     
     // Compile the output assembly, and run the appropriate assertions
     let options = { options with OutputType = Exe; References = references }
-    let exePath = artifactpath options s
+    let exePath = artifactpath options specPath
     match compileFile options exePath sourcePath with
     | [] ->
         if shouldFail then
             failwith "Expected compilation failure!"
         let r = runExample "dotnet" exePath
-        r.ShouldMatchChildSnapshot(s)
+        r.ShouldMatchChildSnapshot(specPath)
     | diags ->
         if not shouldFail then
             failwithf "Compilation error: %A" diags
-        (diags |> diagSanitiser).ShouldMatchChildSnapshot(s)
-    
+        (diags |> diagSanitiser).ShouldMatchChildSnapshot(specPath)
+
+let public getParseTestData () =
+    Seq.append librarySpecs executableSpecs 
+    |> Seq.map (fun x -> [| x |])
 
 [<Theory>]
-[<MemberDataAttribute("allSpecs")>]
+[<MemberDataAttribute("getParseTestData")>]
 let ``spec tests parse result`` s =
     let node, diagnostics = parseFile (Path.Join(specDir, s))
     let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
