@@ -803,13 +803,12 @@ let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
 /// given bound tree. This method is responsible for creating the root
 /// `LispProgram` type and preparting the emit context. The main work of
 /// lowering is done by `emitNamedLambda`.
-let emit options (outputStream: Stream) outputName (symbolStream: Stream option) refLibs bound =
+let emit options (outputStream: Stream) outputName (symbolStream: Stream option) externTys bound =
 
     /// Collect external types so we can look up their fields later
     let externs =
-        refLibs
-        |> Seq.map (fun ((ty: TypeDefinition), _) ->
-            (ty.FullName, ty))
+        externTys
+        |> Seq.map (fun (ty: TypeDefinition) -> (ty.FullName, ty))
         |> Map.ofSeq
 
     // Create an assembly with a nominal version to hold our code
@@ -818,11 +817,11 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 
     /// Import the initialisers for the extern libraries
     let inits =
-        refLibs
-        |> Seq.map (fun ((ty: TypeDefinition), _) ->
-            (ty.Name
-            , (Seq.find (fun (m: MethodDefinition) -> m.Name = "$LibraryBody") ty.Methods)
-               |> assm.MainModule.ImportReference))
+        externTys
+        |> Seq.choose (fun ty ->
+            Seq.tryFind (fun (m: MethodDefinition) -> m.Name = "$LibraryBody") ty.Methods
+            |> Option.map (fun m ->
+                (ty.Name, m |> assm.MainModule.ImportReference)))
         |> Map.ofSeq
 
 
@@ -902,6 +901,7 @@ let compile options outputStream outputName symbolStream node =
         options.References
         |> List.collect (Builtins.loadReferencedSignatures)
     let refSigs = List.map (fun (_, s) -> s) refLibs
+    let refTys =  List.map (fun (t, _) -> t) refLibs
     let allLibs = (List.append coreLibs refSigs)
     let scope =
         if options.OutputType = OutputType.Script then
@@ -912,7 +912,7 @@ let compile options outputStream outputName symbolStream node =
     if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound
         |> Lower.lower
-        |> emit options outputStream outputName symbolStream refLibs
+        |> emit options outputStream outputName symbolStream refTys
     bound.Diagnostics
 
 /// Read a File and Compile
