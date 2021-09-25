@@ -16,3 +16,8 @@ module TargetResolve =
     let public fromCurrentRuntime =
         { LispCoreLocation = serehfaAssmLoc
         ; MSCoreLibLocation = mscorelibAssmLoc }
+
+    // Return a `TargetInfo` for the given MSCoreLib path.
+    let public fromMsCoreLibPath path =
+        { LispCoreLocation = serehfaAssmLoc
+        ; MSCoreLibLocation = path }
