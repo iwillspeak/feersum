@@ -69,7 +69,7 @@ namespace Serehfa
         public static string GetExternalRepresentation(object o)  => o switch
         {
             bool b => b ? "#t" : "#f",
-            double d => d.ToString("G"),
+            double d => d.ToString("G0"),
             string s => EscapeString(s),
             char c => char.IsLetterOrDigit(c) || char.IsPunctuation(c) ?
                 @"#\" + c : $@"#\x{Convert.ToUInt32(c):x4}",
