@@ -100,6 +100,18 @@ let private markWithExportedName (core: Builtins.CoreTypes) (field: FieldDefinit
 let private emitUnspecified ctx =
     ctx.IL.Emit(OpCodes.Call, ctx.Core.UndefinedInstance)
 
+let private getExternMethod ctx typeName id =
+
+    let ty =
+        match Map.tryFind typeName ctx.Libraries with
+        | Some prefix -> prefix
+        | None -> failwithf "ICE: Attempt to access method on '%s', which is not yet defined" typeName
+
+    let method =
+        ty.GetMethods()
+        |> Seq.find (fun m -> m.Name = id) 
+    ctx.Assm.MainModule.ImportReference(method)
+
 /// Ensure a field exists on the program type to be used as a global variable
 let private ensureField ctx mangledPrefix id =
     let pred (field: FieldDefinition) =
@@ -436,7 +448,7 @@ and readFrom ctx storage =
     | StorageRef.Global(ty, loc) ->
         match loc with
         | Method id ->
-            let meth = ctx.Core.Builtins.[(ty, id)]
+            let meth = getExternMethod ctx ty id
             emitMethodToFunc ctx meth
         | Field id ->
             let field = ensureField ctx ty id
@@ -896,13 +908,13 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
-    let coreLibs = Builtins.loadCoreSignatures
-    let refLibs =
+    let (refTys, allLibs) =
         options.References
-        |> List.collect (Builtins.loadReferencedSignatures)
-    let refSigs = List.map (fun (_, s) -> s) refLibs
-    let refTys =  List.map (fun (t, _) -> t) refLibs
-    let allLibs = (List.append coreLibs refSigs)
+        |> Seq.map (Builtins.loadReferencedSignatures)
+        |> Seq.append (Seq.singleton Builtins.loadCoreSignatures)
+        |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> 
+            (List.append tys aTys, List.append sigs aSigs)) ([], [])
+
     let scope =
         if options.OutputType = OutputType.Script then
             scopeFromLibraries allLibs
