@@ -21,7 +21,8 @@ type OutputType =
 /// Options for each compilation
 type CompilationOptions =
     { Configuration: BuildConfiguration
-    ; OutputType: OutputType 
+    ; OutputType: OutputType
+    ; MsCorePath: string option
     ; References: string list }
 with
 
@@ -29,6 +30,7 @@ with
     static member Create configuration outputType =
         { Configuration = configuration
         ; OutputType = outputType
+        ; MsCorePath = None
         ; References = [] }
 
     /// Get the default file extension for the compilation options' output type.
@@ -36,7 +38,3 @@ with
         match c.OutputType with
         | Exe -> "exe"
         | _ -> "dll"
-
-    /// Return a clone of the options with the additional references added.
-    member c.WithReferences additionalReferences =
-        { c with References = Seq.append c.References additionalReferences |> List.ofSeq }

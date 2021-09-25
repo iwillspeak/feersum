@@ -18,6 +18,7 @@ type CliArguments =
     | Version
     | Configuration of BuildConfiguration
     | OutputType of OutputType
+    | CoreLibPath of string
     | [<AltCommandLine("-r")>] Reference of string
     | [<AltCommandLine("-o")>] Output of string
     | [<MainCommand>] Sources of source_file: string list
@@ -25,12 +26,13 @@ type CliArguments =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | OutputType _ -> "The output type (Lib / Exe / Script)."
-            | Reference _ -> "Compiled Scheme assembly to reference."
-            | Configuration _ -> "The build configuration (Debug / Release)."
             | Version -> "Print the program version and exit."
-            | Sources _ -> "Scheme source files for compilation."
+            | Configuration _ -> "The build configuration (Debug / Release)."
+            | OutputType _ -> "The output type (Lib / Exe / Script)."
+            | CoreLibPath _ -> "Location of mscorelib.dll, or System.Runtime.dll."
+            | Reference _ -> "Compiled Scheme assembly to reference."
             | Output _ -> "The output path to write compilation results to."
+            | Sources _ -> "Scheme source files for compilation."
 
 /// Write the diagnostics to the standard error
 let private dumpDiagnostics diags =
@@ -118,8 +120,10 @@ let main argv =
         args.TryGetResult OutputType
         |> Option.defaultValue Exe
 
-    let options = CompilationOptions.Create buildConfig outputType
-    let options = options.WithReferences <| args.GetResults Reference
+    let options =
+        { CompilationOptions.Create buildConfig outputType with
+            References = args.GetResults Reference |> List.ofSeq
+            MsCorePath = args.TryGetResult CoreLibPath }
 
     match args.GetResult(Sources, defaultValue = []) with
     | [] ->

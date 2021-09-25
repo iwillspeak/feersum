@@ -155,10 +155,13 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<Assem
         |> Seq.pick (fun (assm: AssemblyDefinition) ->
             assm.MainModule.Types
             |> Seq.tryFind (fun x  -> x.FullName = name))
+
+    let getImportedType name =
+        getType name
         |> lispAssm.MainModule.ImportReference
 
     let getResolvedType name =
-        (getType name).Resolve()
+        (getImportedType name).Resolve()
 
     let getCtorBy pred typeName =
         let ty = getResolvedType typeName
@@ -189,8 +192,8 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<Assem
         |> Seq.find (fun m -> m.Name = methodName)
         |> lispAssm.MainModule.ImportReference
 
-    { ConsTy = getType "Serehfa.ConsPair"
-    ; ValueType = getType "System.ValueType"
+    { ConsTy = getImportedType "Serehfa.ConsPair"
+    ; ValueType = getImportedType "System.ValueType"
     ; ConsCtor = getSingleCtor "Serehfa.ConsPair"
     ; IdentCtor = getSingleCtor "Serehfa.Ident"
     ; RuntimeInitArray = getMethod "System.Runtime.CompilerServices.RuntimeHelpers" "InitializeArray"

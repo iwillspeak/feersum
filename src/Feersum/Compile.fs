@@ -835,7 +835,12 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
 
     // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
-    let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", ModuleKind.Console)
+    use resolver = new DefaultAssemblyResolver()
+    resolver.AddSearchDirectory(Path.GetDirectoryName(target.MSCoreLibLocation))
+    let moduleParams = ModuleParameters()
+    moduleParams.Kind <- ModuleKind.Console
+    moduleParams.AssemblyResolver <- resolver
+    let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", moduleParams)
 
     /// Import the initialisers for the extern libraries
     let inits =
@@ -919,7 +924,10 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
-    let target = TargetResolve.fromCurrentRuntime
+    let target =
+        match options.MsCorePath with
+        | Some path -> TargetResolve.fromMsCoreLibPath path
+        | _ -> TargetResolve.fromCurrentRuntime
 
     let (refTys, allLibs) =
         options.References

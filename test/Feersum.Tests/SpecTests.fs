@@ -92,8 +92,8 @@ let ``spec tests compile and run`` s =
         | _ -> failwithf "unrecognised directive !%s: %s" directive arg)
         
     let options =
-        CompilationOptions.Create BuildConfiguration.Debug Exe
-        |> (fun x -> x.WithReferences references)
+        { CompilationOptions.Create BuildConfiguration.Debug Exe with
+            References = references }
     match compileFile options exePath sourcePath with
     | [] ->
         if shouldFail then
