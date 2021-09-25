@@ -25,6 +25,7 @@ type EmitCtx =
     ; EmitSymbols: bool
     ; Exports: Map<(string * string), string>
     ; EnvSize: int option
+    ; Externs: Map<string, TypeDefinition>
     ; mutable Environment: VariableDefinition option
     ; ParentEnvSize: int option
     ; ProgramTy: TypeDefinition
@@ -100,41 +101,49 @@ let private markWithExportedName (core: Builtins.CoreTypes) (field: FieldDefinit
 let private emitUnspecified ctx =
     ctx.IL.Emit(OpCodes.Call, ctx.Core.UndefinedInstance)
 
+/// Find an extern type by full `typeName`.
+let private getExternType ctx typeName =
+    match Map.tryFind typeName ctx.Externs with
+    | Some prefix -> prefix
+    | None -> failwithf "ICE: Attempt to access external type '%s', which is not yet imported" typeName
+
+/// Find an extern method by `id`
 let private getExternMethod ctx typeName id =
-
-    let ty =
-        match Map.tryFind typeName ctx.Libraries with
-        | Some prefix -> prefix
-        | None -> failwithf "ICE: Attempt to access method on '%s', which is not yet defined" typeName
-
+    let ty = getExternType ctx typeName
     let method =
         ty.GetMethods()
         |> Seq.find (fun m -> m.Name = id) 
     ctx.Assm.MainModule.ImportReference(method)
 
-/// Ensure a field exists on the program type to be used as a global variable
-let private ensureField ctx mangledPrefix id =
-    let pred (field: FieldDefinition) =
-        field.Name = id
+/// Find an extern field by `id`
+let private getExternField ctx typeName id =
+    let ty = getExternType ctx typeName
+    let field =
+        ty.Fields
+        |> Seq.find (fun f -> f.Name = id) 
+    ctx.Assm.MainModule.ImportReference(field)
 
-    let ty =
-        match Map.tryFind mangledPrefix ctx.Libraries with
-        | Some prefix -> prefix
-        | None -> failwithf "ICE: Attempt to access field on '%s', which is not yet defined" mangledPrefix
+/// Ensure a field exists on the program type to be used as a global variable
+let private getField ctx typeName id =
+    match Map.tryFind typeName ctx.Libraries with
+    | Some ty ->
+        ty.Fields
+        |> Seq.tryFind (fun f -> f.Name = id)
+        |> Option.defaultWith (fun () ->
+            let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
+            ty.Fields.Add(newField)
+            let export = Map.tryFind (typeName, id) ctx.Exports
+            match export with
+            | Some(exportedName) ->
+                markWithExportedName ctx.Core newField exportedName
+                newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
+                ()
+            | None -> ()
+            newField) :> FieldReference
+    | None ->
+        getExternField ctx typeName id
     
-    Seq.tryFind pred ty.Fields
-    |> Option.map (fun f -> ctx.Assm.MainModule.ImportReference(f))
-    |> Option.defaultWith (fun () ->
-        let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
-        ty.Fields.Add(newField)
-        let export = Map.tryFind (mangledPrefix, id) ctx.Exports
-        match export with
-        | Some(exportedName) ->
-            markWithExportedName ctx.Core newField exportedName
-            newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
-            ()
-        | None -> ()
-        newField :> FieldReference)
+    
 
 /// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
 /// current context. This indexes into the context's `Parameters` list.
@@ -420,7 +429,7 @@ and writeTo ctx storage =
         | Method id ->
             failwithf "Can't re-define builtin %s" id
         | Field id ->
-            let field = ensureField ctx mangledPrefix id
+            let field = getField ctx mangledPrefix id
             ctx.IL.Emit(OpCodes.Stsfld, field)
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
@@ -451,7 +460,7 @@ and readFrom ctx storage =
             let meth = getExternMethod ctx ty id
             emitMethodToFunc ctx meth
         | Field id ->
-            let field = ensureField ctx ty id
+            let field = getField ctx ty id
             ctx.IL.Emit(OpCodes.Ldsfld, field)
     | StorageRef.Local(idx) ->
         ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)
@@ -855,7 +864,8 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
     let rootEmitCtx = { IL = null
                       ; DebugDocuments = Dictionary()
                       ; ProgramTy = progTy
-                      ; Libraries = Map.add bound.MangledName progTy externs
+                      ; Externs = externs
+                      ; Libraries = Map.add bound.MangledName progTy Map.empty
                       ; Initialisers = inits
                       ; Core = coreTypes
                       ; NextLambda = 0
