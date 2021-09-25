@@ -12,6 +12,7 @@ open Options
 open Bind
 open Syntax
 open IlHelpers
+open Targets
 
 /// Type to Hold Context While Emitting IL
 type EmitCtx = 
@@ -824,7 +825,7 @@ let private emitMainEpilogue (assm: AssemblyDefinition) (il: ILProcessor) =
 /// given bound tree. This method is responsible for creating the root
 /// `LispProgram` type and preparting the emit context. The main work of
 /// lowering is done by `emitNamedLambda`.
-let emit options (outputStream: Stream) outputName (symbolStream: Stream option) externTys bound =
+let emit options target (outputStream: Stream) outputName (symbolStream: Stream option) externTys bound =
 
     /// Collect external types so we can look up their fields later
     let externs =
@@ -854,10 +855,10 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
 
-    let coreTypes = Builtins.importCore assm
+    let coreTypes = Builtins.importCore assm target
 
     if symbolStream.IsSome then
-        markAsDebuggable coreTypes assm
+        markAsDebuggable coreTypes assm 
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
@@ -918,10 +919,12 @@ let emit options (outputStream: Stream) outputName (symbolStream: Stream option)
 /// at `outputStream`. The `outputName` controls the root namespace and assembly
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
+    let target = TargetResolve.fromCurrentRuntime
+
     let (refTys, allLibs) =
         options.References
         |> Seq.map (Builtins.loadReferencedSignatures)
-        |> Seq.append (Seq.singleton Builtins.loadCoreSignatures)
+        |> Seq.append (Seq.singleton <| Builtins.loadCoreSignatures target)
         |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> 
             (List.append tys aTys, List.append sigs aSigs)) ([], [])
 
@@ -934,7 +937,7 @@ let compile options outputStream outputName symbolStream node =
     if Diagnostics.hasErrors bound.Diagnostics |> not then
         bound
         |> Lower.lower
-        |> emit options outputStream outputName symbolStream refTys
+        |> emit options target outputStream outputName symbolStream refTys
     bound.Diagnostics
 
 /// Read a File and Compile

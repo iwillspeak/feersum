@@ -12,6 +12,7 @@ open Syntax
 open Utils
 open Bind
 open Libraries
+open Targets
 
 /// Core Types Used by the Compiler at Runtime
 type CoreTypes =
@@ -261,10 +262,6 @@ let private macroUnless =
                 expr1 ...))))"
     |> parseBuiltinMacro "unless"
 
-// FIXME: The following two hardcoded locations should be replaced by some kind
-//        of SDK resoltuion.
-let private serehfaAssmLoc = typeof<Serehfa.ConsPair>.Assembly.Location
-let private mscorelibAssmLoc = typeof<obj>.Assembly.Location
 
 /// Folds a sequence of references into a single pair of lists
 let private combineSignatures sigs =
@@ -289,8 +286,8 @@ let public loadReferencedSignatures (name: string) =
     |> combineSignatures
 
 /// The core library signature
-let public loadCoreSignatures =
-    let (tys, sigs) = loadReferencedSignatures serehfaAssmLoc
+let public loadCoreSignatures target =
+    let (tys, sigs) = loadReferencedSignatures target.LispCoreLocation
     let sigs =
         coreMacros :: sigs
         |> Seq.groupBy (fun l -> l.LibraryName)
@@ -301,9 +298,9 @@ let public loadCoreSignatures =
     (tys, sigs |> List.ofSeq)
 
 /// Load the core types into the given assembly
-let importCore (targetAssm: AssemblyDefinition) =
+let importCore (targetAssm: AssemblyDefinition) target =
     use sehrefaAssm =
-        AssemblyDefinition.ReadAssembly(serehfaAssmLoc, assmReadParams)
+        AssemblyDefinition.ReadAssembly(target.LispCoreLocation, assmReadParams)
     use mscorelibAssm =
-        AssemblyDefinition.ReadAssembly(mscorelibAssmLoc, assmReadParams)
+        AssemblyDefinition.ReadAssembly(target.MSCoreLibLocation, assmReadParams)
     loadCoreTypes targetAssm [ sehrefaAssm ; mscorelibAssm ]
