@@ -8,6 +8,7 @@ open Mono.Cecil.Cil
 open System.Collections.Generic
 open System.Runtime.InteropServices
 
+open Ice
 open Options
 open Bind
 open Syntax
@@ -35,14 +36,19 @@ type EmitCtx =
     ; Core: Builtins.CoreTypes }
 
 
+/// Get get the size of environment object required to hold any captured values
+/// in `envMappings`. The return from this has three main meanings:
+/// 
+///  * `None` -> No environment object is required for this lambda
+///  * `Some(0)` -> Only the parent environment link is captured.
+///  * `Some(n)` -> An environment with `n` slots is required.
 let private envSizeForMappings envMappings =
     envMappings
     |> Option.map (fun x ->
-        x
-        |> Seq.filter (function
-            | Environment _ -> true
-            | _ -> false)
-        |> Seq.length)
+        x |> Seq.fold (fun c s ->
+            match s with
+            | Environment _ -> c + 1
+            | _ -> c) 0)
 
 /// Set the attributes on a given method to mark it as compiler generated code
 let private markAsCompilerGenerated (core: Builtins.CoreTypes) (method: MethodDefinition) =
@@ -106,7 +112,7 @@ let private emitUnspecified ctx =
 let private getExternType ctx typeName =
     match Map.tryFind typeName ctx.Externs with
     | Some prefix -> prefix
-    | None -> failwithf "ICE: Attempt to access external type '%s', which is not yet imported" typeName
+    | None -> icef "Attempt to access external type '%s', which is not yet imported" typeName
 
 /// Find an extern method by `id`
 let private getExternMethod ctx typeName id =
@@ -144,8 +150,6 @@ let private getField ctx typeName id =
     | None ->
         getExternField ctx typeName id
     
-    
-
 /// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
 /// current context. This indexes into the context's `Parameters` list.
 let private argToParam ctx idx =
@@ -159,7 +163,6 @@ let private localToVariable ctx idx =
 /// Emit a sequence of instructions to convert a method reference
 /// into a `Func<obj[],obj>` with the context as the current top of stack.
 let private emitMethodToInstanceFunc ctx (method: MethodReference) =
-
     ctx.IL.Emit(OpCodes.Ldftn, method)
     ctx.IL.Emit(OpCodes.Newobj, ctx.Core.FuncObjCtor)
 
@@ -194,7 +197,7 @@ let private getEnvironment ctx =
     match ctx.Environment with
     | Some env -> env
     | None ->
-        failwith "Internal Compiler Error: Attempt to access environment in context without one"
+        ice "Attempt to access environment in context without one"
 
 /// Walk the chain of captures starting at `from` in the parent, and then call
 /// `f` with the environment index that the capture chain ends at. This is used
@@ -205,7 +208,7 @@ let rec private walkCaptureChain ctx from f =
         ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[0])
         walkCaptureChain ctx from f
     | StorageRef.Environment(idx, _) -> f idx
-    | _ -> failwithf "Unexpected storage in capture chain %A" from
+    | _ -> icef "Unexpected storage in capture chain %A" from
 
 /// Given an environment at the top of the stack emit a load of the slot `idx`
 let private readFromEnv ctx (idx: int) =
@@ -228,7 +231,7 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
     let recurse = emitExpression ctx tail
     match expr with
     | BoundExpr.Nop -> emitUnspecified ctx
-    | BoundExpr.Error -> failwith "ICE: Attempt to lower an error expression"
+    | BoundExpr.Error -> ice "Attempt to lower an error expression"
     | BoundExpr.SequencePoint(inner, location) ->
         let pos = ctx.IL.Body.Instructions.Count
         recurse inner
@@ -366,7 +369,7 @@ and emitQuoted ctx quoted =
         |> quoteSequence
     | Dot -> quoteIdent "."
     | Ident id -> quoteIdent id
-    | Error -> failwith "Error in quoted expression"
+    | Error -> ice "Error in quoted expression"
 
 and emitLiteral ctx = function
     | BoundLiteral.Null -> ctx.IL.Emit(OpCodes.Ldnull)
@@ -424,11 +427,11 @@ and emitLiteral ctx = function
 and writeTo ctx storage =
     match storage with
     | StorageRef.Macro m ->
-        failwithf "Can't re-define macro %s" m.Name
+        icef "Can't re-define macro %s" m.Name
     | StorageRef.Global(mangledPrefix, loc) ->
         match loc with
         | Method id ->
-            failwithf "Can't re-define builtin %s" id
+            icef "Can't re-define builtin %s" id
         | Field id ->
             let field = getField ctx mangledPrefix id
             ctx.IL.Emit(OpCodes.Stsfld, field)
@@ -454,7 +457,7 @@ and writeTo ctx storage =
 and readFrom ctx storage =
     match storage with
     | StorageRef.Macro m ->
-        failwithf "Invalid macro application %s" m.Name
+        icef "Invalid macro application %s" m.Name
     | StorageRef.Global(ty, loc) ->
         match loc with
         | Method id ->
@@ -954,7 +957,7 @@ let compile options outputStream outputName symbolStream node =
 /// are written to `output`.
 let compileFile (options: CompilationOptions) (output: string) (source: string) =
 
-    // Handle the case that the user has speciied a path to a directory but
+    // Handle the case that the user has specified a path to a directory but
     // is missing the trailing `/`
     let outDir, output =
         if Directory.Exists(output) then
