@@ -52,3 +52,28 @@ let namedParam name ty =
     ParameterDefinition(name,
                         ParameterAttributes.None,
                         ty)
+
+/// Convert a method reference on a generic type to a method reference on a bound
+/// generic instance type.
+/// 
+/// https://stackoverflow.com/a/16433452/1353098   - CC BY-SA 4.0
+let makeHostInstanceGeneric args (method: MethodReference) =
+    let reference = 
+        MethodReference(
+            method.Name,
+            method.ReturnType,
+            method.DeclaringType.MakeGenericInstanceType(args)
+        )
+    reference.HasThis <- method.HasThis
+    reference.ExplicitThis <- method.ExplicitThis
+    reference.CallingConvention <- method.CallingConvention
+
+    method.Parameters
+    |> Seq.iter (fun parameter ->
+        reference.Parameters.Add(ParameterDefinition(parameter.ParameterType)))
+
+    method.GenericParameters
+    |> Seq.iter (fun genericParam ->
+        reference.GenericParameters.Add(GenericParameter(genericParam.Name, reference)))
+
+    reference

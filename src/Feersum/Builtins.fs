@@ -74,75 +74,43 @@ let private addEnvDecls (assm: AssemblyDefinition) =
 
     envTy
 
-/// Map the exports of a given type using `onGlobal` for `LispExport`s and
-/// `onBuiltin` for `LispBuiltin`s.
-let private cataExports onGlobal onBuiltin (ty: TypeDefinition) =
+// --------------------  External Reference Utils -----------------------------
 
-    let unpackStringArg (attr: CustomAttribute) =
-        attr.ConstructorArguments.[0].Value.ToString()
+[<AutoOpen>]
+module private ExternUtils =
 
-    let chooseMatching name onMatching (things: seq<'a> when 'a:> ICustomAttributeProvider) =
-        things
-        |> Seq.choose (fun thing ->
-            thing.CustomAttributes
-            |> Seq.tryPick (fun attr ->
-                if attr.AttributeType.Name = name then
-                    Some(onMatching (unpackStringArg attr) thing)
-                else
-                    None))
+    /// Get Exported items from a given Mono type definition.
+    let private getExports (ty: TypeDefinition) =
 
-    let exports =
-        ty.Fields |> chooseMatching "LispExportAttribute" (onGlobal ty.FullName)
-    let builtins =
-        ty.Methods |> chooseMatching "LispBuiltinAttribute" (onBuiltin ty.FullName)
+        let unpackStringArg (attr: CustomAttribute) =
+            attr.ConstructorArguments.[0].Value.ToString()
 
-    Seq.append exports builtins
+        let chooseMatching name onMatching (things: seq<'a> when 'a:> ICustomAttributeProvider) =
+            things
+            |> Seq.choose (fun thing ->
+                thing.CustomAttributes
+                |> Seq.tryPick (fun attr ->
+                    if attr.AttributeType.Name = name then
+                        Some(((unpackStringArg attr), Global(ty.FullName, (onMatching thing))))
+                    else
+                        None))
 
-/// Get Exported items from a given Mono type definition.
-let private getExports =
-    cataExports (fun ty name field -> (name, Global(ty, Field field.Name))) (fun ty name meth -> (name, Global(ty, Method meth.Name)))
-    >> List.ofSeq
+        let exports = ty.Fields |> chooseMatching "LispExportAttribute" (fun x -> Field(x.Name))
+        let builtins = ty.Methods |> chooseMatching "LispBuiltinAttribute" (fun x -> Method(x.Name))
 
-/// Maybe map a given type if it has a `LispLibrary` name. 
-let private tryCataType onLib (ty: TypeDefinition) =
-    ty.CustomAttributes
-    |> Seq.tryPick (fun attr ->
-        if attr.AttributeType.Name = "LispLibraryAttribute" then
-            Some(attr.ConstructorArguments.[0].Value :?> CustomAttributeArgument[])
-        else
-            None)
-    |> Option.map (onLib ty)
+        Seq.append exports builtins |> List.ofSeq
 
-/// Try to convert a given type definition into a library signature.
-let private tryGetSignatureFromType =
-    tryCataType (fun ty name ->
-        (ty, { LibraryName = name |> Seq.map (fun a -> a.Value.ToString()) |> List.ofSeq
-             ; Exports = getExports ty }))
-
-/// Convert a method reference on a generic type to a method reference on a bound
-/// generic instance type.
-/// 
-/// https://stackoverflow.com/a/16433452/1353098   - CC BY-SA 4.0
-let private makeHostInstanceGeneric args (method: MethodReference) =
-    let reference = 
-        MethodReference(
-            method.Name,
-            method.ReturnType,
-            method.DeclaringType.MakeGenericInstanceType(args)
-        )
-    reference.HasThis <- method.HasThis
-    reference.ExplicitThis <- method.ExplicitThis
-    reference.CallingConvention <- method.CallingConvention
-
-    method.Parameters
-    |> Seq.iter (fun parameter ->
-        reference.Parameters.Add(ParameterDefinition(parameter.ParameterType)))
-
-    method.GenericParameters
-    |> Seq.iter (fun genericParam ->
-        reference.GenericParameters.Add(GenericParameter(genericParam.Name, reference)))
-
-    reference
+    /// Try to convert a given type definition into a library signature.
+    let tryGetSignatureFromType (ty: TypeDefinition) =
+        ty.CustomAttributes
+        |> Seq.tryPick (fun attr ->
+            if attr.AttributeType.Name = "LispLibraryAttribute" then
+                Some(attr.ConstructorArguments.[0].Value :?> CustomAttributeArgument[])
+            else
+                None)
+        |> Option.map (fun name ->
+            (ty, { LibraryName = name |> Seq.map (fun a -> a.Value.ToString()) |> List.ofSeq
+                 ; Exports = getExports ty }))
 
 /// Scan the `externAssms` and retrieve the core types that are required to
 /// compile a scheme progrma. These `CoreTypes` represent the types and methods
@@ -213,75 +181,75 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<Assem
 
 // --------------------  Builtin Macro Definitions -----------------------------
 
+module private BuiltinMacros =
 
-/// Parse a builtin macro from syntax rules
-let private parseBuiltinMacro id rules =
-    let (node, errs) =
-        Syntax.readExpr1 (sprintf "builtin-%s" id) rules
-    if Diagnostics.hasErrors errs then
-        icef "Error in builtin macro: %A" errs
-    match node with
-    | { Kind = AstNodeKind.Seq([n])} -> n
-    | n -> n
-    |> Macros.parseSyntaxRules id
-    |> ResultEx.unwrap
-
-
-/// Builtin `and` Macro
-let private macroAnd =
-    "(syntax-rules ::: ()
-        ((_ a) a)
-        ((_ a b :::) (if a (and b :::) #f))
-        ((_) #t))"
-    |> parseBuiltinMacro "and"
-
-/// Builtin `or` Macro
-let private macroOr =
-    "(syntax-rules ()
-        ((or) #f)
-        ((or test) test)
-        ((or test1 test2 ...)
-            (let ((|90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| test1))
-                (if |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| (or test2 ...)))))"
-    |> parseBuiltinMacro "or" 
-
-/// Builtin `when` Macro
-let private macroWhen =
-    "(syntax-rules ()
-        ((_ cond expr expr1 ...)
-         (if cond
-            (begin
-                expr
-                expr1 ...))))"
-    |> parseBuiltinMacro "when"
-
-/// Builtin `unless` Macro
-let private macroUnless =
-    "(syntax-rules ()
-        ((_ cond expr expr1 ...)
-         (if (not cond)
-            (begin
-                expr
-                expr1 ...))))"
-    |> parseBuiltinMacro "unless"
+    /// Parse a builtin macro from syntax rules
+    let private parseBuiltinMacro id rules =
+        let (node, errs) =
+            Syntax.readExpr1 (sprintf "builtin-%s" id) rules
+        if Diagnostics.hasErrors errs then
+            icef "Error in builtin macro: %A" errs
+        match node with
+        | { Kind = AstNodeKind.Seq([n])} -> n
+        | n -> n
+        |> Macros.parseSyntaxRules id
+        |> ResultEx.unwrap
 
 
-/// Folds a sequence of references into a single pair of lists
-let private combineSignatures sigs =
-    sigs
-    |> Seq.fold (fun (tys, sigs) (t, s) -> (t :: tys, s :: sigs)) ([], [])
+    /// Builtin `and` Macro
+    let private macroAnd =
+        "(syntax-rules ::: ()
+            ((_ a) a)
+            ((_ a b :::) (if a (and b :::) #f))
+            ((_) #t))"
+        |> parseBuiltinMacro "and"
 
-/// The list of builtin macros
-let private coreMacros =
-    { LibraryName = ["scheme";"base"]
-    ; Exports =
-        [ macroAnd ; macroOr; macroWhen; macroUnless ]
-        |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
+    /// Builtin `or` Macro
+    let private macroOr =
+        "(syntax-rules ()
+            ((or) #f)
+            ((or test) test)
+            ((or test1 test2 ...)
+                (let ((|90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| test1))
+                    (if |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| (or test2 ...)))))"
+        |> parseBuiltinMacro "or" 
+
+    /// Builtin `when` Macro
+    let private macroWhen =
+        "(syntax-rules ()
+            ((_ cond expr expr1 ...)
+             (if cond
+                (begin
+                    expr
+                    expr1 ...))))"
+        |> parseBuiltinMacro "when"
+
+    /// Builtin `unless` Macro
+    let private macroUnless =
+        "(syntax-rules ()
+            ((_ cond expr expr1 ...)
+             (if (not cond)
+                (begin
+                    expr
+                    expr1 ...))))"
+        |> parseBuiltinMacro "unless"
+
+    /// The list of builtin macros
+    let coreMacros =
+        { LibraryName = ["scheme";"base"]
+        ; Exports =
+            [ macroAnd ; macroOr; macroWhen; macroUnless ]
+            |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
 
 // ------------------------ Public Builtins API --------------------------------
 
 /// Load the signature from a given libary name
 let public loadReferencedSignatures (name: string) =
+    /// Folds a sequence of references into a single pair of lists
+    let combineSignatures sigs =
+        sigs
+        |> Seq.fold (fun (tys, sigs) (t, s) -> (t :: tys, s :: sigs)) ([], [])
+
     use assm =
         Mono.Cecil.AssemblyDefinition.ReadAssembly(name, assmReadParams)
     assm.MainModule.Types
@@ -292,7 +260,7 @@ let public loadReferencedSignatures (name: string) =
 let public loadCoreSignatures target =
     let (tys, sigs) = loadReferencedSignatures target.LispCoreLocation
     let sigs =
-        coreMacros :: sigs
+        BuiltinMacros.coreMacros :: sigs
         |> Seq.groupBy (fun l -> l.LibraryName)
         |> Seq.map (fun (n, sigs) ->
             { LibraryName = n
@@ -301,7 +269,7 @@ let public loadCoreSignatures target =
     (tys, sigs |> List.ofSeq)
 
 /// Load the core types into the given assembly
-let importCore (targetAssm: AssemblyDefinition) target =
+let public importCore (targetAssm: AssemblyDefinition) target =
     use sehrefaAssm =
         AssemblyDefinition.ReadAssembly(target.LispCoreLocation, assmReadParams)
     use mscorelibAssm =
