@@ -1,10 +1,10 @@
 module Builtins
 
-open System.Reflection
 open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 
+open Ice
 open IlHelpers
 open Macros
 open System
@@ -219,7 +219,7 @@ let private parseBuiltinMacro id rules =
     let (node, errs) =
         Syntax.readExpr1 (sprintf "builtin-%s" id) rules
     if Diagnostics.hasErrors errs then
-        failwithf "ICE: Error in builtin macro: %A" errs
+        icef "Error in builtin macro: %A" errs
     match node with
     | { Kind = AstNodeKind.Seq([n])} -> n
     | n -> n

@@ -1,5 +1,6 @@
 module Bind
 
+open Ice
 open Diagnostics
 open Syntax
 open Macros
@@ -204,7 +205,7 @@ module private BinderCtx =
             ctx.Scope <- scope
             ctx.OuterScopes <- scopes
         | [] ->
-            failwith "ICE: Unbalanced scope pop"
+            ice "Unbalanced scope pop"
 
     /// Convert the binder context into a bound root around the given expression
     let intoRoot ctx expr =
@@ -311,7 +312,7 @@ let private illFormedInCtx ctx location formName =
 /// references storage locations.
 let rec private bindInContext ctx node =
     match node.Kind with
-    | AstNodeKind.Error -> failwithf "ICE: Attempt to bind an error node."
+    | AstNodeKind.Error -> ice "Attempt to bind an error node."
     | AstNodeKind.Constant c ->
         BoundLiteral.FromConstant c
         |> BoundExpr.Literal
@@ -588,9 +589,9 @@ and private bindForm ctx (form: AstNode list) node =
             |> ResultEx.okOr BoundExpr.Error)
         |> BoundExpr.Seq
     | { Kind = AstNodeKind.Ident("cond") }::body ->
-        failwith "Condition expressions not yet implemented"
+        unimpl "Condition expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("case") }::body ->
-        failwith "Case expressions not yet implemented"
+        unimpl "Case expressions not yet implemented"
     | head::rest -> 
         bindApplication ctx head rest node
     | [] -> BoundExpr.Literal BoundLiteral.Null

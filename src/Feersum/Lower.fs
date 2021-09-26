@@ -1,5 +1,6 @@
 module Lower
 
+open Ice
 open Bind
 
 type private CaptureConversionCtx = { Parent: CaptureConversionCtx option
@@ -41,7 +42,7 @@ let rec private rewriteStorage ctx = function
         | Some(parent) ->
             Captured (rewriteStorage parent s)
         | None ->
-            failwith "Internal compiler error: Capture chain does not match nesting"
+            ice "Capture chain does not match nesting"
     | s ->
         Map.tryFind s ctx.Mappings |> Option.defaultValue s
 

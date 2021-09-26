@@ -1,5 +1,6 @@
 module Macros
 
+open Ice
 open Diagnostics
 open Syntax
 open Utils
@@ -147,7 +148,7 @@ let rec macroMatch (pat: MacroPattern) (ast: AstNode): Result<MacroBindings,unit
         // We _could_ try and 'gracefully' fail here by just matching the inner
         // pattern. That would make finding any bugs in our pattern parsing more
         // difficult to track down though.
-        failwith "Repeat at top level"
+        ice "Repeat at top level"
 
 /// Try to match a list of patterns and, optionally, a tail form against the
 /// contents of a form. If the pattern list contains any elipsis the heavy
@@ -204,7 +205,7 @@ let rec public macroExpand template (bindings: MacroBindings) =
     | Quoted q -> Result.Ok q
     | Subst v ->
         match List.tryFind (fun (id, _) -> id = v) bindings.Bindings with
-        | Some(id, syntax) -> Result.Ok syntax
+        | Some(_, syntax) -> Result.Ok syntax
         | None -> Result.Error (sprintf "Reference to unbound substitution %s" v)
     | Form templateElements ->
         List.collect (fun t -> macroExpandElement t bindings) templateElements
@@ -213,7 +214,7 @@ let rec public macroExpand template (bindings: MacroBindings) =
             { Kind = AstNodeKind.Form(expanded)
             // TODO: Syntax locations from macro elements?
             ; Location = TextLocation.Missing })
-    | DottedForm _ -> failwith "Not supported"
+    | DottedForm _ -> unimpl "Dotted forms in macro expansion are not yet supported"
 and private macroExpandElement templateElement bindings: Result<AstNode,string> list =
     match templateElement with
     | Template t -> [ macroExpand t bindings ]
