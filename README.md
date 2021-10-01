@@ -4,7 +4,13 @@
 
 > Wots in that thare box yoor holdin?
 
-A Scheme compiler for .NET written in F#. Progress [livestreamed on Twitch][twitch], [catchup on YouTube][yt]
+A Scheme compiler for .NET written in F#. Progress
+[livestreamed on Twitch][twitch], [catchup on YouTube][yt]
+
+# Contributing
+
+Feersum is in active development. Contributions are welcome. See
+[CONTRIBUTING][contributing] for more imformation.
 
 # Planned Features
 
@@ -37,3 +43,4 @@ and is by no means a guarantee or a strict roadmap.
  
   [twitch]: https://twitch.tv/iwillspeak
   [yt]: https://www.youtube.com/playlist?list=PLCum1jXOlhoRCBewbQD8ELE7B_7EWnWaO
+  [contributing]: CONTRIBUTING.md
