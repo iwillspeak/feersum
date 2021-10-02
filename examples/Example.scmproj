@@ -22,7 +22,14 @@
        core library so `dotnet` copies it to the output directory. -->
   <ItemGroup>
     <ProjectReference Include="..\src\Serehfa\Serehfa.csproj" SetConfiguration="Configuration=Release" />
-    <ProjectReference Include="..\src\Feersum\Feersum.fsproj" SkipGetTargetFrameworkProperties="True" ReferenceOutputAssembly="False" SetConfiguration="Configuration=Release" />
+    <ProjectReference Include="..\src\Feersum\Feersum.fsproj">
+      <Private>False</Private>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <SetConfiguration>Configuration=Release</SetConfiguration> 
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>false</CopyToOutputDirectory>
+      <CopyToPublishDirectory>false</CopyToPublishDirectory>
+    </ProjectReference>
   </ItemGroup>
 
   <!-- Stub target to keep MSBuild Happy. Not sure what its job is supposed to be.  -->
@@ -30,7 +37,7 @@
 
   <!-- Compilation target. This target calls the Feersum compiler! -->
   <Target Name="CoreCompile" DependsOnTargets="$(CoreCompileDependsOn)">
-  
+
     <ItemGroup>
       <SchemeCompileItems Include="@(Compile)" Condition=" '%(Extension)' == '.scm' " />
       <CoreLibReference Include="@(ReferencePath)" Condition=" '%(Filename)' == 'System.Runtime' OR
