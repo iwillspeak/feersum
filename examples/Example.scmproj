@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Default property group for a scm project, just like a fsproj or csproj -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <!-- Default compile items. We don't want default compile items because of ordering. -->
+  <ItemGroup>
+    <Compile Include="example.scm" />
+  </ItemGroup>
+
+  <!-- Disable bits of the .NET MSBuild SDK we don't want to use. -->
+  <PropertyGroup>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <!-- Reference the compiler so we have it built and can run it. Refernece our
+       core library so `dotnet` copies it to the output directory. -->
+  <ItemGroup>
+    <ProjectReference Include="..\src\Serehfa\Serehfa.csproj" SetConfiguration="Configuration=Release" />
+    <ProjectReference Include="..\src\Feersum\Feersum.fsproj" ReferenceOutputAssembly="False" SetConfiguration="Configuration=Release" />
+  </ItemGroup>
+
+  <!-- Stub target to keep MSBuild Happy. Not sure what its job is supposed to be.  -->
+  <Target Name="CreateManifestResourceNames" />
+
+  <!-- Compilation target. This target calls the Feersum compiler! -->
+  <Target Name="CoreCompile" DependsOnTargets="$(CoreCompileDependsOn)">
+    <ItemGroup>
+      <SchemeCompileItems Include="@(Compile)" Condition="'%(Extension)' == '.scm'" />
+    </ItemGroup>
+    <PropertyGroup>
+      <BuildCommand>dotnet $(MsbuildThisFileDirectory)../src/Feersum/bin/Release/net5.0/Feersum.dll @(SchemeCompileItems) -o @(IntermediateAssembly)</BuildCommand>
+    </PropertyGroup>
+    <Message Text="$(BuildCommand)" Importance="High" />
+    <Exec Command="$(BuildCommand)" />
+  </Target>
+
+</Project>
