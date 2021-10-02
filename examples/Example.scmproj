@@ -3,8 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>True</PackAsTool>
-    <!-- <TargetFramework>net472</TargetFramework> -->
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
+    <!-- <TargetFramework>net5.0</TargetFramework> -->
   </PropertyGroup>
 
   <!-- Default compile items. We don't want default compile items because of ordering. -->
@@ -41,7 +41,6 @@
     <ItemGroup>
       <SchemeCompileItems Include="@(Compile)" Condition=" '%(Extension)' == '.scm' " />
       <CoreLibReference Include="@(ReferencePath)" Condition=" '%(Filename)' == 'System.Runtime' OR
-                                                               '%(Filename)' == 'netstandard' OR
                                                                '%(Filename)' == 'mscorlib' " />
     </ItemGroup>
 

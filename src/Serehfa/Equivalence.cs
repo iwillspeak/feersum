@@ -96,8 +96,8 @@ namespace Serehfa
                 return o switch
                 {
                     ConsPair p =>
-#if NETFRAMEWORK
-                     p.Car.GetHashCode(),
+#if NETSTANDARD2_0
+                     (p.Car, p.Cdr).GetHashCode(),
 #else
                      HashCode.Combine(p.Car, p.Cdr),
 #endif

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net472</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <LangVersion>Latest</LangVersion>
     <Title>The Feersum Scheme core types library</Title>
     <Description>
@@ -9,5 +9,10 @@
       with the Feersum scheme compiler rely on at execution time.
     </Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Condition=" '$(TargetFramework)' == 'netstandard2.0' "
+                       Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
 
 </Project>
