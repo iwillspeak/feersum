@@ -95,7 +95,12 @@ namespace Serehfa
             {
                 return o switch
                 {
-                    ConsPair p => HashCode.Combine(p.Car, p.Cdr),
+                    ConsPair p =>
+#if NETFRAMEWORK
+                     p.Car.GetHashCode(),
+#else
+                     HashCode.Combine(p.Car, p.Cdr),
+#endif
                     object[] v => ArrayHash(v),
                     bool[] bv => ArrayHash(bv),
                     _ => EqualityComparer<object>.Default.GetHashCode(o),
