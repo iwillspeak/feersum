@@ -2,6 +2,7 @@
   <!-- Default property group for a scm project, just like a fsproj or csproj -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <PackAsTool>True</PackAsTool>
     <!-- <TargetFramework>net472</TargetFramework> -->
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
@@ -29,16 +30,29 @@
 
   <!-- Compilation target. This target calls the Feersum compiler! -->
   <Target Name="CoreCompile" DependsOnTargets="$(CoreCompileDependsOn)">
+  
     <ItemGroup>
       <SchemeCompileItems Include="@(Compile)" Condition=" '%(Extension)' == '.scm' " />
       <CoreLibReference Include="@(ReferencePath)" Condition=" '%(Filename)' == 'System.Runtime' OR
                                                                '%(Filename)' == 'netstandard' OR
                                                                '%(Filename)' == 'mscorlib' " />
     </ItemGroup>
+
     <PropertyGroup>
-      <BuildCommand>dotnet $(MsbuildThisFileDirectory)../src/Feersum/bin/Release/net5.0/Feersum.dll @(CoreLibReference->'--corelibpath "%(Identity)"', ' ') @(SchemeCompileItems) -o @(IntermediateAssembly)</BuildCommand>
+      <!-- The path to the compiler exectuable. -->
+      <FeersumCompilerPath>$(MsbuildThisFileDirectory)../src/Feersum/bin/Release/net5.0/Feersum.dll</FeersumCompilerPath>
+      <!-- References to the runtime's core library -->
+      <CoreLibReferences>@(CoreLibReference->'--corelibpath "%(Identity)"', ' ')</CoreLibReferences>
+      <!-- Normalised versions of the configuration and output type to match the compiler's options. -->
+      <NormalisedConfiguration Condition=" '$(Configuration)' == 'Release' ">Release</NormalisedConfiguration>
+      <NormalisedConfiguration Condition=" '$(NormallisedConfiguration)' == '' ">Debug</NormalisedConfiguration>
+      <NormalisedOutputType Condition=" '$(OutputType)' == 'Exe' ">Exe</NormalisedOutputType>
+      <NormalisedOutputType Condition=" '$(NormalisedOutputType)' == '' ">Lib</NormalisedOutputType>
+      <ConfigParams>--configuration $(NormalisedConfiguration) --outputtype $(NormalisedOutputType)</ConfigParams>
+      <!-- Formatted build command. This invokes `dotnet` to run the compiler. -->
+      <BuildCommand>dotnet "$(FeersumCompilerPath)" $(CoreLibReferences) @(SchemeCompileItems->'"%(Identity)"', ' ') $(ConfigParams) -o @(IntermediateAssembly)</BuildCommand>
     </PropertyGroup>
-    <!-- <Message Text="$(BuildCommand)" Importance="High" /> -->
+
     <Exec Command="$(BuildCommand)" />
   </Target>
 
