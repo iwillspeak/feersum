@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <NoWarn>NU5128</NoWarn>
+    <PackageType>MSBuildSdk</PackageType>
+    <Description>
+      Feersum Scheme Compiler .NET SDK. Use this to add scheme support to a dotnet project.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>
