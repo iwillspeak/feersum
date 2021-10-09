@@ -19,7 +19,7 @@
   <PropertyGroup>
     <NoImplicitFeersumCoreReference Condition=" '$(NoImplicitFeersumCoreReference)' == '' ">false</NoImplicitFeersumCoreReference>
     <!-- FIXME: This version should be templated in on build. -->
-    <FeersumCompilerPackageVersion>0.1.2</FeersumCompilerPackageVersion>
+    <FeersumCompilerPackageVersion Condition=" '$(FeersumCompilerPackageVersion)' == '' ">0.1.2</FeersumCompilerPackageVersion>
   </PropertyGroup>
 
   <!-- Reference the compiler so we have it built and can run it. Refernece our
