@@ -1,24 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <!-- Declare our language support to .NET SDK -->
+  <PropertyGroup>
+    <DefaultLanguageSourceExtension>scm</DefaultLanguageSourceExtension>
+    <Language>Scheme</Language>
+    <TargetRuntime>Managed</TargetRuntime>
+    <DefaultProjectTypeGuid>{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}</DefaultProjectTypeGuid>
+  </PropertyGroup>
+
   <!-- Disable bits of the .NET MSBuild SDK we don't want to use. -->
   <PropertyGroup>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
+  <!-- Control the implicit package references used for the compiler and core.  -->
+  <PropertyGroup>
+    <NoImplicitFeersumCoreReference Condition=" '$(NoImplicitFeersumCoreReference)' == '' ">false</NoImplicitFeersumCoreReference>
+    <!-- FIXME: This version should be templated in on build. -->
+    <FeersumCompilerPackageVersion>0.1.2</FeersumCompilerPackageVersion>
+  </PropertyGroup>
+
   <!-- Reference the compiler so we have it built and can run it. Refernece our
   core library so `dotnet` copies it to the output directory. -->
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\..\Serehfa\Serehfa.csproj" SetConfiguration="Configuration=Release" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\..\Feersum\Feersum.fsproj">
-      <Private>False</Private>
-      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <SetConfiguration>Configuration=Release</SetConfiguration> 
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>false</CopyToOutputDirectory>
-      <CopyToPublishDirectory>false</CopyToPublishDirectory>
-    </ProjectReference>
+    <PackageReference Condition="$(NoImplicitFeersumCoreReference)" Include="Serehfa" Version="$(FeersumCompilerPackageVersion)" />
+    <PackageReference
+      Condition=" '$(FeersumCompilerPath)' == '' "
+      Include="Feersum"
+      Version="$(FeersumCompilerPackageVersion)"
+      PrivateAssets="all"
+      ExcludeAssets="all"
+      GeneratePathProperty="true" />
   </ItemGroup>
 
   <!-- Stub target to keep MSBuild Happy. Not sure what its job is supposed to be.  -->
@@ -35,7 +49,7 @@
 
     <PropertyGroup>
       <!-- The path to the compiler exectuable. -->
-      <FeersumCompilerPath>$(MSBuildThisFileDirectory)../../Feersum/bin/Release/net5.0/Feersum.dll</FeersumCompilerPath>
+      <FeersumCompilerPath Condition=" '$(FeersumCompilerPath)' == '' ">$(PkgFeersum)/tools/net5.0/any/Feersum.dll</FeersumCompilerPath>
       <!-- References to the runtime's core library -->
       <CoreLibReferences>@(CoreLibReference->'--corelibpath "%(Identity)"', ' ')</CoreLibReferences>
       <!-- Normalised versions of the configuration and output type to match the compiler's options. -->

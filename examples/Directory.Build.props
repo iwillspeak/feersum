@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <NoImplicitFeersumCoreReference>true</NoImplicitFeersumCoreReference>
+    <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum\bin\$(Configuration)\net5.0\Feersum.dll</FeersumCompilerPath>
+  </PropertyGroup>
+
+  <!-- Reference the compiler so we have it built and can run it. Refernece our
+  core library so `dotnet` copies it to the output directory. -->
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Serehfa\Serehfa.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj">
+      <Private>False</Private>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <!-- <SetConfiguration>Configuration=Release</SetConfiguration>  -->
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>false</CopyToOutputDirectory>
+      <CopyToPublishDirectory>false</CopyToPublishDirectory>
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>
