@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <NoImplicitFeersumCoreReference>true</NoImplicitFeersumCoreReference>
-    <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum\bin\$(Configuration)\net5.0\Feersum.dll</FeersumCompilerPath>
+    <CompilerConfiguration>$(Configuration)</CompilerConfiguration>
+    <CompilerConfiguration Condition=" '$(CompilerConfiguration)' == '' ">Debug</CompilerConfiguration>
+    <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum\bin\$(CompilerConfiguration)\net5.0\Feersum.dll</FeersumCompilerPath>
   </PropertyGroup>
 
   <!-- Reference the compiler so we have it built and can run it. Refernece our

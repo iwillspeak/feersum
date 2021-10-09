@@ -68,14 +68,15 @@ let rec repl evaluator =
     | ex -> eprintfn "Exception: %A" ex
     repl evaluator
 
-/// Compile a single file printing an error if
+/// Compile a collection of files file printing an error if
 /// there is one.
-let private compileSingle (options: CompilationOptions) output sourcePath =
+let private compileAll (options: CompilationOptions) output sources =
+    let mainSource = List.last sources
     let outputPath =
         match output with
         | Some(path) -> path
-        | None -> Path.ChangeExtension(sourcePath, options.DefaultExtension)
-    match compileFile options outputPath sourcePath with
+        | None -> Path.ChangeExtension(mainSource, options.DefaultExtension)
+    match compileFiles options outputPath sources with
     | [] -> 0
     | diagnostics ->
         dumpDiagnostics(diagnostics)
@@ -125,9 +126,12 @@ let main argv =
             References = args.GetResults Reference |> List.ofSeq
             MsCorePath = args.TryGetResult CoreLibPath }
 
-    match args.GetResult(Sources, defaultValue = []) with
-    | [] ->
+    match args.GetResult(Sources, defaultValue = []), args.TryGetResult(Output) with
+    | [], None ->
         runRepl()
         0
-    | files ->
-        Seq.sumBy (compileSingle options (args.TryGetResult Output)) files
+    | [], Some(output) ->
+        eprintfn "No source files provided for output %s" output
+        exit -1
+    | files, output ->
+        compileAll options output files

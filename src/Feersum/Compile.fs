@@ -951,11 +951,11 @@ let compile options outputStream outputName symbolStream node =
         |> emit options target outputStream outputName symbolStream refTys
     bound.Diagnostics
 
-/// Read a File and Compile
+/// Read a collection of Files and Compile
 ///
-/// Takes the `source` to an input to read and compile. Compilation results
+/// Takes the `sources` to an input to read and compile. Compilation results
 /// are written to `output`.
-let compileFile (options: CompilationOptions) (output: string) (source: string) =
+let compileFiles (options: CompilationOptions) (output: string) (sources: string list) =
 
     // Handle the case that the user has specified a path to a directory but
     // is missing the trailing `/`
@@ -978,12 +978,17 @@ let compileFile (options: CompilationOptions) (output: string) (source: string) 
     let stem = Path.GetFileNameWithoutExtension(output)
     let stem, output =
         if String.IsNullOrWhiteSpace(stem) then
-            let stem = Path.GetFileNameWithoutExtension(source)
+            let stem = Path.GetFileNameWithoutExtension(sources |> List.last)
             stem, Path.Join(outDir, options.DefaultExtension |> sprintf "%s.%s" stem)
         else
             stem, output
     
-    let ast, diagnostics = parseFile source
+    let ast, diagnostics =
+        let nodes, diagnostics =
+            List.map parseFile sources
+            |> List.fold (fun (nodes, diags) (n, d) -> (List.append nodes [ n ], List.append d diags)) ([], [])
+
+        { Location = Diagnostics.TextLocation.Missing; Kind = AstNodeKind.Seq(nodes)}, diagnostics
     
     if Diagnostics.hasErrors diagnostics then
         diagnostics
@@ -1031,3 +1036,9 @@ let compileFile (options: CompilationOptions) (output: string) (source: string) 
             let corePath = typeof<Serehfa.ConsPair>.Assembly.Location
             File.Copy(corePath, Path.Join(outDir, Path.GetFileName(corePath)), true)
         diags
+
+/// Read a File and Compile
+///
+/// Takes the `source` to an input to read and compile. Compilation results
+/// are written to `output`.
+let compileFile options output source = compileFiles options output [ source ]
