@@ -1,6 +1,10 @@
 <Project>
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <NoImplicitFeersumCoreReference>true</NoImplicitFeersumCoreReference>
     <CompilerConfiguration>$(Configuration)</CompilerConfiguration>
     <CompilerConfiguration Condition=" '$(CompilerConfiguration)' == '' ">Debug</CompilerConfiguration>
