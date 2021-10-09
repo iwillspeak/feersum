@@ -1,8 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<!-- <Project Sdk="Microsoft.Build.NoTargets/3.1.0" > -->
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(MSBuildThisFileDirectory)/Sdk.props" />
   <!-- Default property group for a scm project, just like a fsproj or csproj -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -13,9 +10,7 @@
 
   <!-- Default compile items. We don't want default compile items because of ordering. -->
   <ItemGroup>
-    <Compile Include="example.scm" />
+    <Compile Include="hello.scm" />
   </ItemGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)/Sdk.targets" />
 
 </Project>
