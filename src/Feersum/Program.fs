@@ -123,8 +123,8 @@ let main argv =
 
     let options =
         { CompilationOptions.Create buildConfig outputType with
-            References = args.GetResults Reference |> List.ofSeq
-            MsCorePath = args.TryGetResult CoreLibPath }
+            References = args.GetResults Reference
+            MsCorePaths = args.GetResults CoreLibPath }
 
     match args.GetResult(Sources, defaultValue = []), args.TryGetResult(Output) with
     | [], None ->

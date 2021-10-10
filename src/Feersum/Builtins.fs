@@ -270,8 +270,13 @@ let public loadCoreSignatures target =
 
 /// Load the core types into the given assembly
 let public importCore (targetAssm: AssemblyDefinition) target =
-    use sehrefaAssm =
-        AssemblyDefinition.ReadAssembly(target.LispCoreLocation, assmReadParams)
-    use mscorelibAssm =
-        AssemblyDefinition.ReadAssembly(target.MSCoreLibLocation, assmReadParams)
-    loadCoreTypes targetAssm [ sehrefaAssm ; mscorelibAssm ]
+
+    let coreAssemblies =
+        target.LispCoreLocation :: target.MSCoreLibLocations
+        |> List.map (fun x -> AssemblyDefinition.ReadAssembly(x, assmReadParams))
+
+    try
+        loadCoreTypes targetAssm coreAssemblies
+    finally
+        coreAssemblies
+        |> List.iter (fun assm -> (assm :> IDisposable).Dispose())

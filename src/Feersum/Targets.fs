@@ -3,7 +3,7 @@ namespace Targets
 /// Resolved targetPaths for SDK reference assemblies.
 type TargetInfo =
     { LispCoreLocation: string
-    ; MSCoreLibLocation: string }
+    ; MSCoreLibLocations: string list }
 
 module TargetResolve =
 
@@ -15,9 +15,9 @@ module TargetResolve =
     /// Return a `TargetInfo` for the currently running process.
     let public fromCurrentRuntime =
         { LispCoreLocation = serehfaAssmLoc
-        ; MSCoreLibLocation = mscorelibAssmLoc }
+        ; MSCoreLibLocations = [ mscorelibAssmLoc ] }
 
     // Return a `TargetInfo` for the given MSCoreLib path.
-    let public fromMsCoreLibPath path =
+    let public fromMsCoreLibPaths path =
         { LispCoreLocation = serehfaAssmLoc
-        ; MSCoreLibLocation = path }
+        ; MSCoreLibLocations = path }

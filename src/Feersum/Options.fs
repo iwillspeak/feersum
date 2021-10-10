@@ -22,7 +22,7 @@ type OutputType =
 type CompilationOptions =
     { Configuration: BuildConfiguration
     ; OutputType: OutputType
-    ; MsCorePath: string option
+    ; MsCorePaths: string list
     ; References: string list }
 with
 
@@ -30,7 +30,7 @@ with
     static member Create configuration outputType =
         { Configuration = configuration
         ; OutputType = outputType
-        ; MsCorePath = None
+        ; MsCorePaths = []
         ; References = [] }
 
     /// Get the default file extension for the compilation options' output type.
