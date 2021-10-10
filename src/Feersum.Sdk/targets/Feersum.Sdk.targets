@@ -19,7 +19,6 @@
 
   <!-- Control the implicit package references used for the compiler and core.  -->
   <PropertyGroup>
-    <NoImplicitFeersumCoreReference Condition=" '$(NoImplicitFeersumCoreReference)' == '' ">false</NoImplicitFeersumCoreReference>
     <!-- Default out the compiler version if we haven't had one specified. For the
          SDK package teh above `Include -->
     <FeersumCompilerPackageVersion Condition=" '$(FeersumCompilerPackageVersion)' == '' ">0.1.2</FeersumCompilerPackageVersion>
@@ -28,7 +27,7 @@
   <!-- Reference the compiler so we have it built and can run it. Refernece our
   core library so `dotnet` copies it to the output directory. -->
   <ItemGroup>
-    <PackageReference Condition="$(NoImplicitFeersumCoreReference)" Include="Serehfa" Version="$(FeersumCompilerPackageVersion)" />
+    <PackageReference Condition=" '$(NoImplicitFeersumCoreReference)' != 'true' " Include="Serehfa" Version="$(FeersumCompilerPackageVersion)" />
     <PackageReference
       Condition=" '$(FeersumCompilerPath)' == '' "
       Include="Feersum"
