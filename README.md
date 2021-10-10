@@ -17,8 +17,6 @@ Feersum is in active development. Contributions are welcome. See
 This is a rough list of interesting features I'd like to implement in this project,
 and is by no means a guarantee or a strict roadmap.
 
- * [ ] MSBUILD SDK support so `.scmproj` can be defined.
-   * [ ] Proper support for different target frameworks
  * [ ] Implement [all special forms](docs/special-forms.md)
  * [ ] Support [all value types](docs/values.md)
  * [ ] Support [all standard procedures](docs/standard-procedures.md)
@@ -32,6 +30,8 @@ and is by no means a guarantee or a strict roadmap.
    * [x] Bound tree contains sequence points for debuging
    * [ ] Debuggable REPL. Embedded source in PDBs?
    * [ ] Stop at entry, and step in.
+ * [x] MSBUILD SDK support so `.scmproj` can be defined.
+   * [x] Proper support for different target frameworks
  * [x] Scheme library and import support.
  * [x] Standard library & builtins from a separate assembly.
  * [x] Quoted expressions.
