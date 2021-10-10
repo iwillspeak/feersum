@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <LanguageTargets Condition="'$(MSBuildProjectExtension)' == '.scmproj'">$(MSBuildThisFileDirectory)../src/Feersum.Sdk/targets/Feersum.Sdk.targets</LanguageTargets>
+  </PropertyGroup>
+
+  <!-- Config for our language targets. We don't want to pull in a compiler from
+       NuGet but instead want to dogfood the current build outputs. -->
+  <PropertyGroup>
     <NoImplicitFeersumCoreReference>true</NoImplicitFeersumCoreReference>
     <CompilerConfiguration>$(Configuration)</CompilerConfiguration>
     <CompilerConfiguration Condition=" '$(CompilerConfiguration)' == '' ">Debug</CompilerConfiguration>

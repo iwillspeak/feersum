@@ -1,84 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- Declare our language support to .NET SDK -->
-  <PropertyGroup>
-    <DefaultLanguageSourceExtension>scm</DefaultLanguageSourceExtension>
-    <Language>Scheme</Language>
-    <TargetRuntime>Managed</TargetRuntime>
-    <DefaultProjectTypeGuid Condition=" '$(DefaultProjectTypeGuid)' == '' ">{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}</DefaultProjectTypeGuid>
-  </PropertyGroup>
+  <Import Condition="Exists('$(MSBuildToolsPath)\Microsoft.Managed.Before.targets')" Project="$(MSBuildToolsPath)\Microsoft.Managed.Before.targets" />
+  
+  <Import Project="$(MSBuildThisFileDirectory)Feersum.Sdk.Core.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 
-  <!-- Disable bits of the .NET MSBuild SDK we don't want to use. -->
-  <PropertyGroup>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-  </PropertyGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)Versions.props" Condition="Exists('$(MSBuildThisFileDirectory)Versions.props')" />
-
-  <!-- Control the implicit package references used for the compiler and core.  -->
-  <PropertyGroup>
-    <!-- Default out the compiler version if we haven't had one specified. For the
-         SDK package teh above `Include -->
-    <FeersumCompilerPackageVersion Condition=" '$(FeersumCompilerPackageVersion)' == '' ">0.1.2</FeersumCompilerPackageVersion>
-  </PropertyGroup>
-
-  <!-- Reference the compiler so we have it built and can run it. Refernece our
-  core library so `dotnet` copies it to the output directory. -->
-  <ItemGroup>
-    <PackageReference Condition=" '$(NoImplicitFeersumCoreReference)' != 'true' " Include="Serehfa" Version="$(FeersumCompilerPackageVersion)" />
-    <PackageReference
-      Condition=" '$(FeersumCompilerPath)' == '' "
-      Include="Feersum"
-      Version="$(FeersumCompilerPackageVersion)"
-      PrivateAssets="all"
-      ExcludeAssets="all"
-      GeneratePathProperty="true" />
-  </ItemGroup>
-
-  <!-- Stub target to keep MSBuild Happy. This is whwere we would generate names
-       for embedded resources if our compiler supported them.  -->
-  <Target Name="CreateManifestResourceNames" />
-
-  <!-- Compilation target. This target calls the Feersum compiler! -->
-  <Target Name="CoreCompile"
-          Inputs="$(MSBuildAllProjects);
-                  @(ReferencePath);
-                  @(Compile)"
-          Outputs="@(IntermediateAssembly)"
-          DependsOnTargets="$(CoreCompileDependsOn)">
-
-    <ItemGroup>
-        <SchemeCompileItems Include="@(Compile)" />
-        <CoreLibReference Include="@(ReferencePath)" Condition=" '%(Filename)' == 'System.Runtime' OR
-                                                                 '%(Filename)' == 'mscorlib' " />
-        <StandardReference Include="@(ReferencePath)" Exclude="@(CoreLibReference)" />
-    </ItemGroup>
-
-    <PropertyGroup>
-      <!-- The path to the compiler exectuable. -->
-      <FeersumCompilerPath Condition=" '$(FeersumCompilerPath)' == '' ">$(PkgFeersum)/tools/net5.0/any/Feersum.dll</FeersumCompilerPath>
-      <DotNetPath>$(DOTNET_HOST_PATH)</DotNetPath>
-      <DotNetPath Condition=" '$(DotNetPath)' == '' ">dotnet</DotNetPath>
-    </PropertyGroup>
-
-    <PropertyGroup>
-      <!-- References to the runtime's core library -->
-      <CoreLibReferences>@(CoreLibReference->'--corelibpath "%(Identity)"', ' ')</CoreLibReferences>
-      <LibReferences>@(StandardReference->'--reference "%(Identity)"', ' ')</LibReferences>
-      <!-- Normalised versions of the configuration and output type to match the compiler's options. -->
-      <NormalisedConfiguration Condition=" '$(Configuration)' == 'Release' ">Release</NormalisedConfiguration>
-      <NormalisedConfiguration Condition=" '$(NormallisedConfiguration)' == '' ">Debug</NormalisedConfiguration>
-      <NormalisedOutputType Condition=" '$(OutputType)' == 'Exe' ">Exe</NormalisedOutputType>
-      <NormalisedOutputType Condition=" '$(NormalisedOutputType)' == '' ">Lib</NormalisedOutputType>
-      <ConfigParams>--configuration $(NormalisedConfiguration) --outputtype $(NormalisedOutputType)</ConfigParams>
-      <!-- Formatted build command. This invokes `dotnet` to run the compiler. -->
-      <BuildCommand>"$(DotNetPath)" "$(FeersumCompilerPath)" $(CoreLibReferences) $(LibReferences) $(ConfigParams) -o "@(IntermediateAssembly)" @(SchemeCompileItems->'"%(Identity)"', ' ')</BuildCommand>
-    </PropertyGroup>
-
-    <Exec Command="$(BuildCommand)" />
-
-  </Target>
+  <Import Condition="Exists('$(MSBuildToolsPath)\Microsoft.Managed.After.targets')" Project="$(MSBuildToolsPath)\Microsoft.Managed.After.targets" />
 
 </Project>
