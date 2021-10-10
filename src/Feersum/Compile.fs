@@ -839,7 +839,7 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
     // Create an assembly with a nominal version to hold our code
     let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
     use resolver = new DefaultAssemblyResolver()
-    resolver.AddSearchDirectory(Path.GetDirectoryName(target.MSCoreLibLocation))
+    List.iter (resolver.AddSearchDirectory) target.MSCoreLibLocations
     let moduleParams = ModuleParameters()
     moduleParams.Kind <- ModuleKind.Console
     moduleParams.AssemblyResolver <- resolver
@@ -928,9 +928,9 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
 /// name of the output.
 let compile options outputStream outputName symbolStream node =
     let target =
-        match options.MsCorePath with
-        | Some path -> TargetResolve.fromMsCoreLibPath path
-        | _ -> TargetResolve.fromCurrentRuntime
+        match options.MsCorePaths with
+        | [] -> TargetResolve.fromCurrentRuntime
+        | paths -> TargetResolve.fromMsCoreLibPaths paths
 
     let (refTys, allLibs) =
         options.References
