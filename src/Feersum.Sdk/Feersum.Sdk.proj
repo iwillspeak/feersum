@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <NoWarn>NU5128</NoWarn>
     <PackageType>MSBuildSdk</PackageType>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <Description>
       Feersum Scheme Compiler .NET SDK. Use this to add scheme support to a dotnet project.
     </Description>
@@ -13,5 +13,32 @@
     <None Include="sdk\**" PackagePath="sdk/" Pack="true" />
     <None Include="targets\**" PackagePath="targets/" Pack="true" />
   </ItemGroup>
+
+  <!-- When restoring the compiler with `PackageReference` the target file wants
+       to know the current package version so a matching compiler can be restored.
+       
+       This target fabricates a simple props file in the build output directory
+       and includes it in the NuGet package next to the targets file. -->
+  <Target Name="GenerateVersionProps" BeforeTargets="Build" >
+    <Message Text="Creating package props for $(Version)" />
+
+    <PropertyGroup>
+      <_PropsFile>$(IntermediateOutputPath)Versions.props</_PropsFile>
+      <_PropsContent><![CDATA[
+        <Project>
+          <PropertyGroup>
+            <FeersumCompilerPackageVersion>$(Version)</FeersumCompilerPackageVersion>
+          </PropertyGroup>
+        </Project>]]></_PropsContent>
+    </PropertyGroup>
+
+    <WriteLinesToFile File="$(_PropsFile)" Lines="$(_PropsContent)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+
+    <ItemGroup>
+      <FileWrites Include="$(_PropsFile)" />
+      <None Include="$(_PropsFile)" Pack="true" PackagePath="targets/" />
+    </ItemGroup>
+
+  </Target> 
 
 </Project>
