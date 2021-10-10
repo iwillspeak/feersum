@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup>
+    <LanguageTargets Condition="'$(MSBuildProjectExtension)' == '.scmproj'">$(MSBuildThisFileDirectory)..\targets\Feersum.Sdk.targets</LanguageTargets>
+  </PropertyGroup>
+
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
-  <Import Project="$(MSBuildThisFileDirectory)../targets/Feersum.Sdk.targets" />
-  
 </Project>
