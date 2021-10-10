@@ -23,7 +23,8 @@
     <Message Text="Creating package props for $(Version)" />
 
     <PropertyGroup>
-      <_PropsFile>$(IntermediateOutputPath)Versions.props</_PropsFile>
+    
+      <_PropsFile>$(BaseIntermediateOutputPath)Versions.props</_PropsFile>
       <_PropsContent><![CDATA[
         <Project>
           <PropertyGroup>
