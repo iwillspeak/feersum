@@ -15,10 +15,13 @@
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
+  <Import Project="$(MSBuildThisFileDirectory)Versions.props" Condition="Exists('$(MSBuildThisFileDirectory)Versions.props')" />
+
   <!-- Control the implicit package references used for the compiler and core.  -->
   <PropertyGroup>
     <NoImplicitFeersumCoreReference Condition=" '$(NoImplicitFeersumCoreReference)' == '' ">false</NoImplicitFeersumCoreReference>
-    <!-- FIXME: This version should be templated in on build. -->
+    <!-- Default out the compiler version if we haven't had one specified. For the
+         SDK package teh above `Include -->
     <FeersumCompilerPackageVersion Condition=" '$(FeersumCompilerPackageVersion)' == '' ">0.1.2</FeersumCompilerPackageVersion>
   </PropertyGroup>
 
