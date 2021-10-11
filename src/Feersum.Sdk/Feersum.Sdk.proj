@@ -19,7 +19,12 @@
        
        This target fabricates a simple props file in the build output directory
        and includes it in the NuGet package next to the targets file. -->
-  <Target Name="GenerateVersionProps" BeforeTargets="Build" >
+  
+  <PropertyGroup>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);GenerateVersionProps</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+  
+  <Target Name="GenerateVersionProps" BeforeTargets="BeforeBuild;GenerateNuspec" DependsOnTargets="PrepareForBuild">
     <Message Text="Creating package props for $(Version)" />
 
     <PropertyGroup>
@@ -37,7 +42,7 @@
 
     <ItemGroup>
       <FileWrites Include="$(_PropsFile)" />
-      <None Include="$(_PropsFile)" Pack="true" PackagePath="targets/" />
+      <TfmSpecificPackageFile Include="$(_PropsFile)" Pack="true" PackagePath="targets/" />
     </ItemGroup>
 
   </Target> 
