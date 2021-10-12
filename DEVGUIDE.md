@@ -6,7 +6,7 @@ exectuable. The project structure is roughly as follows:
 
  * `src/` - Main compiler source code. These projects are packed and publisehd
     as NuGet packages.
- * `spec/` - Scheme files taht cover compilation use cases. These files are used
+ * `spec/` - Scheme files that cover compilation use cases. These files are used
     in two ways: First we parse them and assert that the parser produces the
     expected syntax tree; secondly we compile them and check that executing them
     produces the expected output. This is mainly driven by **snapshot testing**
@@ -66,6 +66,7 @@ The compiler itself is split into 4 main passes: parse, bind, lower, and emit.
  [F#]: https://docs.microsoft.com/en-gb/dotnet/fsharp/
  [C#]: https://docs.microsoft.com/en-gb/dotnet/csharp/
  [Scheme]: https://schemers.org/
+ [Snapper]: https://theramis.github.io/Snapper/#/
  [**Parse**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum/Syntax.fs
  [**Bind**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum/Bind.fs
  [**Lower**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum/Lower.fs
