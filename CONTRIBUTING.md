@@ -7,6 +7,9 @@ simple guidelines to make your contribution extra awesome:
  * [Open an issue][open_issue] and discuss
    larger changes before cutting code.
 
+For information on the structure of the compiler, and how to build and test
+Feersum yourself check out the [DEVGUIDE][devguide]
+
 ## Keep it Small or Discuss First
 
 Seen as I'm sharing the development of this compiler I'd like to reserve the
@@ -34,3 +37,4 @@ shout out in the comments on the issue and I'd be happy to assign it to yo.
  [open_issue]: https://github.com/iwillspeak/feersum/issues/new
  [readme]: ../README.md
  [up-for-grabs]: https://github.com/iwillspeak/feersum/issues?q=is%3Aopen+is%3Aissue+label%3A%22up+for+grabs%22
+ [devguide]: DEVGUIDE.md
