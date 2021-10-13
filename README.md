@@ -89,9 +89,13 @@ and is by no means a guarantee or a strict roadmap.
     * [x] Handle multiple parser errors.
     * [x] Turn errors in `bind` into diagnotics too.
  * [x] Perform on-demand compilation & emit to in-memory assembly for REPL.
+
+Future themes of development are also tracked with
+[`Roadmap` issues][roadmap_issues] on GitHub.
  
   [twitch]: https://twitch.tv/iwillspeak
   [yt]: https://www.youtube.com/playlist?list=PLCum1jXOlhoRCBewbQD8ELE7B_7EWnWaO
   [contributing]: CONTRIBUTING.md
   [devguide]: DEVGUIDE.md
   [exmaple_gist]: https://gist.github.com/iwillspeak/efc9342c63c07a2a763dd814f555f7ee
+  [roadmap_issues]: https://github.com/iwillspeak/feersum/issues?q=is%3Aopen+is%3Aissue+label%3ARoadmap

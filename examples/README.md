@@ -1,13 +1,13 @@
 # Example Projects
 
 This folder contains a series of example projects that demonstrate using the
-`Feersum.Sdk` BSBuild SDK to compile Scheme code. Each project is an SDK-style
+`Feersum.Sdk` MSBuild SDK to compile Scheme code. Each project is an SDK-style
 project using `Sdk="Feersum.Sdk"`.
 
 Each project uses the extension `.scmproj`. The SDK then allows scheme code to
 be compiled by registering `<Compile Include="..." />` items. Support for
 `ProjectReference`, `PackageReference` and other .NET SDK items is provided by
-the base `Microsoft.NET.Sdk`. Items can be built, run, and packed with the
+the base `Microsoft.NET.Sdk`. Projects can be built, run, and packed with the
 `dontet` CLI as usual.
 
 ## Hello World
