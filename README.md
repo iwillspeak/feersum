@@ -1,6 +1,6 @@
 # Feersum
 
-[![Build Status](https://dev.azure.com/iwillspeak/GitHub/_apis/build/status/iwillspeak.feersum?branchName=main)](https://dev.azure.com/iwillspeak/GitHub/_build/latest?definitionId=4&branchName=main)
+[![Build Status](https://dev.azure.com/iwillspeak/GitHub/_apis/build/status/iwillspeak.feersum?branchName=main)](https://dev.azure.com/iwillspeak/GitHub/_build/latest?definitionId=4&branchName=main) [![Feersum on fuget.org](https://www.fuget.org/packages/Feersum/badge.svg)](https://www.fuget.org/packages/Feersum)
 
 > Wots in that thare box yoor holdin?
 
