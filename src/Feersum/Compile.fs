@@ -841,7 +841,11 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
     use resolver = new DefaultAssemblyResolver()
     List.iter (resolver.AddSearchDirectory) target.MSCoreLibLocations
     let moduleParams = ModuleParameters()
-    moduleParams.Kind <- ModuleKind.Console
+    moduleParams.Kind <-
+        if options.OutputType = OutputType.Exe then
+            ModuleKind.Console
+        else
+            ModuleKind.Dll
     moduleParams.AssemblyResolver <- resolver
     let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", moduleParams)
 
