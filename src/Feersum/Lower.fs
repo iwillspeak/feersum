@@ -26,13 +26,44 @@ let rec private findCaptured = function
     | SequencePoint(inner, _) -> findCaptured inner
     | e -> []
 
+/// Finds all local variables in the given node. This is later used to compact
+/// down local declarations to remove 'shadow locals' from captures.
+let rec private findLocals node =
+    let fromStorage = function
+        | Local x -> Set.singleton (Local x)
+        | _ -> Set.empty
+    match node with
+    | Load(storage) -> fromStorage storage
+    | Application(app, args) ->
+        Set.union (findLocals app) (Seq.map (findLocals) args |> Set.unionMany)
+    | If(cond, cons, els) ->
+        (findLocals cond)
+        |> Set.union (findLocals cons)
+        |> Set.union (Option.map (findLocals) els |> Option.defaultValue Set.empty)
+    | Seq(exprs) ->
+        Seq.map (findLocals) exprs |> Set.unionMany
+    | SequencePoint(inner, _) -> findLocals inner
+    | Store(storage, v) ->
+        let inner = Option.map (findLocals) v |> Option.defaultValue Set.empty
+        Set.union (fromStorage storage) inner
+    | e -> Set.empty
+
 /// Finds the variable references that need to be moved into the environment at
 /// this level.
 let private mappingsForExpr expr =
-    findCaptured expr
-    |> Seq.distinct
-    |> Seq.indexed
-    |> Seq.map (fun (i, s) -> (s, StorageRef.Environment(i, s)))
+    let captured = findCaptured expr |> Set.ofSeq
+    let captureReWrites =
+        captured
+        |> Seq.indexed
+        |> Seq.map (fun (i, s) -> (s, StorageRef.Environment(i, s)))
+
+    let uncapturedLocals = Set.difference (findLocals expr) captured
+    let localReWrites =
+        uncapturedLocals
+        |> Seq.indexed
+        |> Seq.map (fun (i, s) -> (s, Local i))
+
+    Seq.append captureReWrites localReWrites
     |> Map.ofSeq
 
 /// Re-write a storage location to move captured values to the environment.
@@ -52,9 +83,24 @@ let private rewriteEnv env mappings =
         env
     else
         Map.toSeq mappings
+        |> Seq.where (fun (_, s) ->
+            match s with
+            | Environment _ -> true
+            | _ -> false)
         |> Seq.map (fun (_, v) -> v)
         |> List.ofSeq
         |> Some
+
+/// Re-write the number of locals based on the `mappings`.
+let private rewriteLocals locals mappings =
+    if Map.isEmpty mappings then
+        locals
+    else
+        Map.toSeq mappings
+        |> Seq.sumBy (fun (_, s) ->
+            match s with
+            | Local _ -> 1
+            | _ -> 0)
 
 /// Lower a single expression and re-write the capture environment for it.
 let rec private rewriteExpression ctx = function
@@ -97,11 +143,12 @@ and private rewriteRoot parent root =
         | _ -> root.Captures
     // find out what is captured
     let ctx = { Parent = parent; Mappings = mappingsForExpr root.Body }
-    /// Update our environment size if captures were found
+    /// Update our environment and local size if captures were found
     let env = rewriteEnv root.EnvMappings ctx.Mappings
+    let locals = rewriteLocals root.Locals ctx.Mappings
     // re-constitute
     { Body = (rewriteExpression ctx root.Body)
-    ; Locals = root.Locals
+    ; Locals = locals
     ; Captures = captures
     ; EnvMappings = env }
 
