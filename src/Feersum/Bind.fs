@@ -516,8 +516,10 @@ and private bindForm ctx (form: AstNode list) node =
                     let body = bindInContext ctx body
                     let storage = BinderCtx.addBinding ctx id
                     BoundExpr.Store(storage, Some(body))))
-    | { Kind = AstNodeKind.Ident("letrec") }::body ->
+    | ({ Kind = AstNodeKind.Ident("letrec") } as head)::body
+    | ({ Kind = AstNodeKind.Ident("letrec*") } as head)::body ->
         bindLet ctx "letrec" body node.Location (fun bindingSpecs  ->
+
 
             // Get storage for each of the idents first into scope.
             let boundIdents =
@@ -525,11 +527,48 @@ and private bindForm ctx (form: AstNode list) node =
                 |> List.map (fun (id, body) ->
                     ((BinderCtx.addBinding ctx id), body))
 
+            //        Validate that bindings don't read from
+            //        un-initialised variables. The `letrec*` is allowed to
+            //        reference previous variables. Plain `letrec` Isn't allowed
+            //        to reference any.
+            let mutable uniitialisedStorage =
+                boundIdents |> List.map (fun (id, _) -> id)
+            let rec checkUses location = function
+                | Application(app, args) ->
+                    checkUses location app
+                    List.iter (checkUses location) args
+                | If(cond, cons, els) ->
+                    checkUses location cond
+                    checkUses location cons
+                    Option.iter (checkUses location) els
+                | Seq(exprs) ->
+                    List.iter (checkUses location) exprs
+                | Lambda _ -> ()
+                | Load(s) -> checkStorage location s
+                | Store(s, v) ->
+                    checkStorage location s
+                    Option.iter (checkUses location) v
+                | SequencePoint(inner, _) -> checkUses location inner
+                | _ -> ()
+            and checkStorage location s =
+                List.tryFindIndex ((=) s) uniitialisedStorage
+                |> Option.iter (fun idx ->
+                    let (name, _) = bindingSpecs.[idx]
+                    name
+                    |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
+                    |> ctx.Diagnostics.Emit location)
+
+            let isLetrecStar = head.Kind = AstNodeKind.Ident("letrec*")
+
             // Now all the IDs are in scope, bind the initialisers
             let boundDecls =
                 boundIdents
                 |> List.map (fun (storage, body) ->
-                    BoundExpr.Store(storage, Some(bindInContext ctx body)))
+                    let bound = bindInContext ctx body
+                    checkUses body.Location bound
+                    if isLetrecStar then
+                        uniitialisedStorage <- List.tail uniitialisedStorage
+                    BoundExpr.Store(storage, Some(bound)))
 
             boundDecls)
     | { Kind = AstNodeKind.Ident("let-syntax")}::body ->
