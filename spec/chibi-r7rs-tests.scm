@@ -226,19 +226,18 @@
                     (even? (- n 1))))))
       (even? 88)))
 
-;;; FIXME: `letrec*` support.
-;; (test 5
-;;     (letrec* ((p
-;;                (lambda (x)
-;;                  (+ 1 (q (- x 1)))))
-;;               (q
-;;                (lambda (y)
-;;                  (if (zero? y)
-;;                      0
-;;                      (+ 1 (p (- y 1))))))
-;;               (x (p 5))
-;;               (y x))
-;;              y))
+(test 5
+    (letrec* ((p
+               (lambda (x)
+                 (+ 1 (q (- x 1)))))
+              (q
+               (lambda (y)
+                 (if (zero? y)
+                     0
+                     (+ 1 (p (- y 1))))))
+              (x (p 5))
+              (y x))
+             y))
 
 
 ;;; FIXME: `let*values` support.
