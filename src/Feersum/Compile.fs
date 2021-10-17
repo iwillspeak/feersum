@@ -233,6 +233,10 @@ let private writeToEnv ctx (temp: VariableDefinition) (idx: int) =
     ctx.IL.Emit(OpCodes.Ldloc, temp)
     ctx.IL.Emit(OpCodes.Stelem_Ref)
 
+let private libraryTypeAttributes =
+    TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass |||
+    TypeAttributes.Abstract ||| TypeAttributes.Sealed
+
 /// Emit a Single Bound Expression
 ///
 /// Emits the code for a single function into the given assembly. For some more
@@ -768,7 +772,7 @@ and emitLibrary ctx name mangledName exports body =
     // Genreate a nominal type to contain the methods for this library.
     let libTy = TypeDefinition(ctx.ProgramTy.Namespace,
                                 mangledName,
-                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                                libraryTypeAttributes,
                                 ctx.Assm.MainModule.TypeSystem.Object)
     ctx.Assm.MainModule.Types.Add libTy
     libTy.Methods.Add <| createEmptyCtor ctx.Assm
@@ -872,7 +876,7 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
     // Genreate a nominal type to contain the methods for this program.
     let progTy = TypeDefinition(outputName,
                                 bound.MangledName,
-                                TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass,
+                                libraryTypeAttributes,
                                 assm.MainModule.TypeSystem.Object)
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
