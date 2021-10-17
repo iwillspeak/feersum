@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.Build.NoTargets/3.1.0">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageType>Template</PackageType>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <Description>
+      Feersum Scheme template pack.
+    </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="templates\**" PackagePath="content/" Pack="true" />
+  </ItemGroup>
+
+</Project>
