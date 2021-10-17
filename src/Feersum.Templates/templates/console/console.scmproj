@@ -1,0 +1,12 @@
+<Project Sdk="Feersum.Sdk/0.2.1">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="program.scm" />
+  </ItemGroup>
+  
+</Project>
