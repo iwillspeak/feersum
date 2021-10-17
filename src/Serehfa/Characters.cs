@@ -155,7 +155,7 @@ namespace Serehfa
         {
             try
             {
-                if (char.TryParse( 
+                if (char.TryParse(
                     char.ConvertFromUtf32(
                         (int)UnpackArgs<double>(args)), out var res))
                 {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Serehfa.Attributes;
-    
+
 namespace Serehfa
 {
     using static ArgHelpers;

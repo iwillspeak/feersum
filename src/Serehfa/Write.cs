@@ -66,7 +66,7 @@ namespace Serehfa
             _ => GetExternalRepresentation(o),
         };
 
-        public static string GetExternalRepresentation(object o)  => o switch
+        public static string GetExternalRepresentation(object o) => o switch
         {
             bool b => b ? "#t" : "#f",
             double d => d.ToString("G0"),
@@ -96,7 +96,7 @@ namespace Serehfa
                 }
                 else
                 {
-                    sb.AppendFormat(@"\x{0:x4};",Convert.ToUInt32(c));
+                    sb.AppendFormat(@"\x{0:x4};", Convert.ToUInt32(c));
                 }
             }
             sb.Append("\"");
