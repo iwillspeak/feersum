@@ -31,6 +31,8 @@ type CoreTypes =
     ; CompGenCtor: MethodReference
     ; NonUserCodeCtor: MethodReference
     ; StepThroughCtor: MethodReference
+    ; CompRelaxAttr: MethodReference
+    ; CompRelaxations: TypeReference
     ; LispExport: MethodReference
     ; LispLibrary: MethodReference
     ; AssmConfigCtor: MethodReference }
@@ -177,6 +179,8 @@ let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<Assem
     ; LispExport = getSingleCtor "Serehfa.Attributes.LispExportAttribute"
     ; LispLibrary = getSingleCtor "Serehfa.Attributes.LispLibraryAttribute"
     ; AssmConfigCtor = getSingleCtor "System.Reflection.AssemblyConfigurationAttribute"
+    ; CompRelaxAttr = getSingleCtor "System.Runtime.CompilerServices.CompilationRelaxationsAttribute"
+    ; CompRelaxations = getImportedType "System.Runtime.CompilerServices.CompilationRelaxations"
     ; EnvTy = addEnvDecls lispAssm }
 
 // --------------------  Builtin Macro Definitions -----------------------------

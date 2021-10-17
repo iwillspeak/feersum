@@ -79,6 +79,16 @@ let private markAsDebuggable (core: Builtins.CoreTypes) (assm: AssemblyDefinitio
 
     attr |> assm.CustomAttributes.Add
 
+/// Mark the assembly with `[CompilationRelaxations]` to indicate we don't
+/// require string interning.
+let private markCompilationRelaxations (core: Builtins.CoreTypes) (assm: AssemblyDefinition) =
+    let attr = core.CompRelaxAttr |> CustomAttribute
+    attr.ConstructorArguments.Add(
+        CustomAttributeArgument(core.CompRelaxations, Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)
+    )
+
+    attr |> assm.CustomAttributes.Add
+
 /// Mark the given type with a library `name`. This adds the
 /// `LispLibrary` attribute to the type.
 let private markWithLibraryName (core: Builtins.CoreTypes) (typ: TypeDefinition) name =
@@ -869,8 +879,9 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
 
     let coreTypes = Builtins.importCore assm target
 
+    markCompilationRelaxations coreTypes assm
     if symbolStream.IsSome then
-        markAsDebuggable coreTypes assm 
+        markAsDebuggable coreTypes assm
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
