@@ -28,38 +28,20 @@ Scheme code to have it compiled and evaluated. To compile a file into a simple
 executable run `feersum-scheme yourfile.scm`. This will produce a new file
 `yourfile.exe` which can then be run by `dotnet yourfile.exe`.
 
-To create an SDK style scheme project and build it with `dotnet build` create a
-file similar to the following:
+To create an SDK style scheme project and build it with `dotnet build` first
+install the `Feersum.Templates` template pack:
 
-```xml
-<!-- Example.scmproj - the extension .scmproj matters -->
-<Project Sdk="Feersum.Sdk/0.2.1">
-  <!--      version here  ^^^^^  should match the latest release -->
-
-  <!-- Default property group for a scm project, just like
-       an fsproj, vbproj, or csproj -->
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
-
-  <!-- Default compile items. We don't to just glob default
-       compile items because ordering matters. -->
-  <ItemGroup>
-    <Compile Include="hello.scm" />
-  </ItemGroup>
-
-</Project>
+```
+dotnet new --install Feersum.Templates::*
 ```
 
-And place the scheme code in `hello.scm`.
+Then from the command line:
 
-```scheme
-(import (scheme write))
-(display "Hello World!")(newline)
+```
+dotnet new console --language Scheme
 ```
 
-For more information check out [the example project Gist][exmaple_gist].
+Compile and run with `dotnet build` and `dotnet run` as usual!
 
 # Planned Features
 
