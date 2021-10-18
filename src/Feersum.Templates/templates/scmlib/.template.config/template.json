@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Will Speak (@iwillspeak)",
+  "classifications": [ "Common", "Scheme" ],
+  "identity": "Feersum.Templates.SchemeLibrary",
+  "name": "Feersum Scheme library declaration.",
+  "shortName": "scmlib",
+  "sourceName": "schemelib",
+  "tags": {
+    "language": "Scheme",
+    "type": "project"
+  },
+  "primaryOutputs": [
+    {
+      "path": "schemelib.sld"
+    }
+  ]
+}
