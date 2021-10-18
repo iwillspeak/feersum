@@ -11,6 +11,25 @@
 
   <ItemGroup>
     <None Include="templates\**" PackagePath="content/" Pack="true" />
+    <None Remove="**\obj\**" />
+    <None Remove="**\bin\**" />
+    <TemplateInputs Include="templates\**\*.*proj" />
+    <None Remove="@(TemplateInputs)" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);GenerateVersionedProjects</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+  
+  <Target Name="GenerateVersionedProjects" BeforeTargets="BeforeBuild;GenerateNuspec" DependsOnTargets="PrepareForBuild;GetVersion">
+    <Message Text="Re-Targeting projects to $(Version) for pack" />
+
+    <ItemGroup>
+      <FileWrites Include="$(BaseIntermediateOutputPath)%(TemplateInputs.FileName)%(TemplateInputs.Extension)" />
+      <TfmSpecificPackageFile Include="$(BaseIntermediateOutputPath)%(TemplateInputs.FileName)%(TemplateInputs.Extension)" Pack="true" PackagePath="content/$([msbuild]::MakeRelative('$(MSBuildThisFileDirectory)templates', '$(MSBuildThisFileDirectory)%(TemplateInputs.RelativeDir)'))  " />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(BaseIntermediateOutputPath)%(TemplateInputs.FileName)%(TemplateInputs.Extension)" Lines="$([System.IO.File]::ReadAllText('%(TemplateInputs.Identity)').Replace('Feersum.Sdk/0.2.1', 'Feersum.Sdk/$(Version)'))" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
 
 </Project>
