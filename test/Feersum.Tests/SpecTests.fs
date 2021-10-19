@@ -21,9 +21,11 @@ let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
 let specBin = Path.Join(specDir, "bin")
 let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
 
-let nodeSanitiser = sanitiseNodeWith (basedLocation specDir)
+let normalisePath (path: string) = path.Replace("\\", "/")
+let sanitiser = (basedLocation specDir) >> sanitiseLocationWith (sanitiseStreamNameWith normalisePath)
+let nodeSanitiser = sanitiseNodeWith (sanitiser)
 let diagSanitiser =
-    sanitiseDiagnosticsWith (basedLocation specDir)
+    sanitiseDiagnosticsWith (sanitiser)
     >> List.sortByDescending (fun x -> x.Location.Start)
 
 let normaliseEndings (s: string) =
