@@ -32,16 +32,21 @@ To create an SDK style scheme project and build it with `dotnet build` first
 install the `Feersum.Templates` template pack:
 
 ```
-dotnet new --install Feersum.Templates::*
+$ dotnet new --install Feersum.Templates::*
 ```
 
 Then from the command line:
 
 ```
-dotnet new console --language Scheme
+$ dotnet new console --language Scheme
 ```
 
-Compile and run with `dotnet build` and `dotnet run` as usual!
+This generates a new console application project in the current directory.
+Compile and run with `dotnet build` and `dotnet run` as usual! Other templates
+are available:
+
+ * `classlib` - Generate a .NET class library project.
+ * `scmlib` - Generate s Scheme library definition file.
 
 # Planned Features
 
