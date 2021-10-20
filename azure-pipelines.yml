@@ -25,8 +25,7 @@ jobs:
     inputs:
       packageType: sdk
       version: 5.0.x
-  - script: |
-      set -euxo pipefail
+  - pwsh: |
       dotnet build --configuration $(configuration)
       dotnet test --no-build --configuration $(configuration) --logger 'trx' --logger 'console;verbosity=normal'
   - task: PublishTestResults@2
