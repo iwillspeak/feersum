@@ -14,10 +14,31 @@ trigger:
     include:
     - 'v*'
 
-pool:
-  vmImage: ubuntu-latest
+jobs:
 
-steps:
+- job: Windows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Use .NET 5.0 sdk'
+    inputs:
+      packageType: sdk
+      version: 5.0.x
+  - script: |
+      set -euxo pipefail
+      dotnet build --configuration $(configuration)
+      dotnet test --no-build --configuration $(configuration) --logger 'trx' --logger 'console;verbosity=normal'
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/TestResults/*.trx'
+
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
   - task: UseDotNet@2
     displayName: 'Use .NET 5.0 sdk'
     inputs:
