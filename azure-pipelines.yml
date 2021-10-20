@@ -26,6 +26,7 @@ jobs:
       packageType: sdk
       version: 5.0.x
   - pwsh: |
+      chcp 65001
       dotnet build --configuration $(configuration)
       dotnet test --no-build --configuration $(configuration) --logger 'trx' --logger 'console;verbosity=normal'
   - task: PublishTestResults@2
