@@ -21,10 +21,15 @@ let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
 let specBin = Path.Join(specDir, "bin")
 let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
 
-let nodeSanitiser = sanitiseNodeWith (basedLocation specDir)
+let normalisePath (path: string) = path.Replace("\\", "/")
+let sanitiser = (basedLocation specDir) >> sanitiseLocationWith (sanitiseStreamNameWith normalisePath)
+let nodeSanitiser = sanitiseNodeWith (sanitiser)
 let diagSanitiser =
-    sanitiseDiagnosticsWith (basedLocation specDir)
+    sanitiseDiagnosticsWith (sanitiser)
     >> List.sortByDescending (fun x -> x.Location.Start)
+
+let normaliseEndings (s: string) =
+    s.Replace("\r\n", "\n")
 
 let specsOfType extension =
     Directory.GetFiles(specDir, "*." + extension, SearchOption.AllDirectories)
@@ -49,8 +54,8 @@ let private runExample host exePath =
         |> Async.Parallel
         |> Async.RunSynchronously
     p.WaitForExit()
-    { Output = output.[0]
-    ; Error = output.[1]
+    { Output = output.[0] |> normaliseEndings
+    ; Error = output.[1] |> normaliseEndings
     ; Exit = p.ExitCode }
 
 let private parseDirectives (sourcePath: string) =
@@ -128,7 +133,3 @@ let ``spec tests parse result`` s =
     let node, diagnostics = parseFile (Path.Join(specDir, s))
     let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
     tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s))
-
-[<Fact>]
-let testOne () =
-    ``spec tests parse result`` "fail/bad-strings-and-idents.scm"
