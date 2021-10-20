@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+    <GenerateGitVersionInformation>false</GenerateGitVersionInformation>
+  </PropertyGroup>
+  
+  <Import Project="../../eng/UseLocalCompiler.props" />
+
+  <ItemGroup>
+    <Compile Include="cxr.scm" />
+  </ItemGroup>
+  
+</Project>

@@ -1051,9 +1051,6 @@ let compileFiles (options: CompilationOptions) (output: string) (sources: string
                 }
                 """ tfmPrefix tfVersion.Major tfVersion.Minor tfVersion
             File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), config)
-            // FIXME: Copying the core assembly like this is a bit of a hack.
-            let corePath = typeof<Serehfa.ConsPair>.Assembly.Location
-            File.Copy(corePath, Path.Join(outDir, Path.GetFileName(corePath)), true)
         diags
 
 /// Read a File and Compile

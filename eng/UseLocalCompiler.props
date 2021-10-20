@@ -1,0 +1,30 @@
+<Project>
+
+  <PropertyGroup>
+    <LanguageTargets Condition="'$(MSBuildProjectExtension)' == '.scmproj'">$(MSBuildThisFileDirectory)../src/Feersum.Sdk/targets/Feersum.Sdk.targets</LanguageTargets>
+  </PropertyGroup>
+
+  <!-- Config for our language targets. We don't want to pull in a compiler from
+       NuGet but instead want to dogfood the current build outputs. -->
+  <PropertyGroup>
+    <NoImplicitFeersumCoreReference>true</NoImplicitFeersumCoreReference>
+    <CompilerConfiguration>$(Configuration)</CompilerConfiguration>
+    <CompilerConfiguration Condition=" '$(CompilerConfiguration)' == '' ">Debug</CompilerConfiguration>
+    <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum\bin\$(CompilerConfiguration)\net5.0\Feersum.dll</FeersumCompilerPath>
+  </PropertyGroup>
+
+  <!-- Reference the compiler so we have it built and can run it. Refernece our
+  core library so `dotnet` copies it to the output directory. -->
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Serehfa\Serehfa.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj">
+      <Private>False</Private>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <!-- <SetConfiguration>Configuration=Release</SetConfiguration>  -->
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>false</CopyToOutputDirectory>
+      <CopyToPublishDirectory>false</CopyToPublishDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  
+</Project>

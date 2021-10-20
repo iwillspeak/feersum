@@ -23,6 +23,8 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 set -euo pipefail
 
-dotnet build --configuration Release src/Feersum/Feersum.fsproj > /dev/null && \
-    dotnet src/Feersum/bin/Release/net5.0/Feersum.dll ${specname} --outputtype exe -o ${specbin} && \
+dotnet build --configuration Release Feersum.sln > /dev/null && \
+    cp src/Feersum.Core/bin/Release/net5.0/Feersum.Core.dll spec/bin && \
+    cp src/Serehfa/bin/Release/netstandard2.1/Serehfa.dll spec/bin && \
+    dotnet src/Feersum/bin/Release/net5.0/Feersum.dll ${specname} --reference src/Feersum.Core/bin/Release/net5.0/Feersum.Core.dll --outputtype exe -o ${specbin} && \
     dotnet ${specbin}
