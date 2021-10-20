@@ -10,6 +10,7 @@ open System.IO
 open Snapper
 open System.Diagnostics
 open SyntaxUtils
+open System.Text
 
 // This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
@@ -43,6 +44,8 @@ let private runExample host exePath =
     p.StartInfo <- ProcessStartInfo(host)
     p.StartInfo.ArgumentList.Add(exePath)
     p.StartInfo.UseShellExecute <- false
+    p.StartInfo.StandardErrorEncoding <- Encoding.UTF8
+    p.StartInfo.StandardOutputEncoding <- Encoding.UTF8
     // TODO: support spec tests with `.input` files.
     // p.StartInfo.RedirectStandardInput <- true
     p.StartInfo.RedirectStandardOutput <- true
