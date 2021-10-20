@@ -39,7 +39,16 @@ let specsOfType extension =
 let executableSpecs = specsOfType "scm"
 let librarySpecs = specsOfType "sld"
 
-let private runExample host exePath =
+let private runExample references host (exePath: string) =
+    
+    // FIXME: Copying the core assembly like this is a bit of a hack.
+    let corePath = typeof<Serehfa.ConsPair>.Assembly.Location
+    let outDir = Path.GetDirectoryName(exePath)
+    references |> Seq.append [ corePath]
+    |> Seq.iter (fun path ->
+        if Path.GetDirectoryName(path) <> outDir then
+            File.Copy(path, Path.Join(outDir, Path.GetFileName(path)), true))
+
     let p = new Process()
     p.StartInfo <- ProcessStartInfo(host)
     p.StartInfo.ArgumentList.Add(exePath)
@@ -93,7 +102,9 @@ let ``spec tests compile and run`` specPath configuration =
     let binDir = [| specBin; options.Configuration |> string |] |> Path.Combine
 
     let shouldFail = sourcePath.Contains "fail"
-    let mutable references = []
+    let mutable references = [
+            typeof<Feersum.Core.LispProgram>.Assembly.Location
+        ]
 
     let artifactpath (options: CompilationOptions) source =
         Path.Join(binDir, Path.ChangeExtension(source, options.DefaultExtension))
@@ -122,7 +133,7 @@ let ``spec tests compile and run`` specPath configuration =
     | [] ->
         if shouldFail then
             failwith "Expected compilation failure!"
-        let r = runExample "dotnet" exePath
+        let r = runExample references "dotnet" exePath
         r.ShouldMatchChildSnapshot(specName)
     | diags ->
         if not shouldFail then
