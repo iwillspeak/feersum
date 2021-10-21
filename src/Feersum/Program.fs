@@ -80,7 +80,10 @@ let private compileAll (options: CompilationOptions) output sources =
     | [] -> 0
     | diagnostics ->
         dumpDiagnostics(diagnostics)
-        List.length diagnostics
+        if Diagnostics.hasErrors diagnostics then
+            -1
+        else
+            0
 
 /// Get the version string for the compiler.
 let private versionString =
