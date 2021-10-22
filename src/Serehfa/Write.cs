@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using Serehfa.Attributes;
+using System.Runtime.InteropServices;
 
 namespace Serehfa
 {
@@ -9,6 +10,14 @@ namespace Serehfa
     [LispLibrary("scheme", "write")]
     public static class Write
     {
+        static Write()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Console.OutputEncoding = Encoding.UTF8;
+            }
+        }
+
         /// <summary>
         /// The newline method. This is a prime candidate for being moved to
         /// a pure scheme definition.

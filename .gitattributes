@@ -1,0 +1,7 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Scheme files in our spec folder are line ending sensitive. Without this our
+# specs would fail as diagnostics have different byte indices.
+*.scm text eol=lf
+*.sld text eol=lf

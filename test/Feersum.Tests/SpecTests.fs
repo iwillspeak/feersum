@@ -10,12 +10,13 @@ open System.IO
 open Snapper
 open System.Diagnostics
 open SyntaxUtils
+open System.Text
 
 // This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
     { Output: string
     ; Error: string
-    ; Exit: int }
+    ; Exit: byte }
 
 let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
 let specBin = Path.Join(specDir, "bin")
@@ -43,6 +44,8 @@ let private runExample host exePath =
     p.StartInfo <- ProcessStartInfo(host)
     p.StartInfo.ArgumentList.Add(exePath)
     p.StartInfo.UseShellExecute <- false
+    p.StartInfo.StandardErrorEncoding <- Encoding.UTF8
+    p.StartInfo.StandardOutputEncoding <- Encoding.UTF8
     // TODO: support spec tests with `.input` files.
     // p.StartInfo.RedirectStandardInput <- true
     p.StartInfo.RedirectStandardOutput <- true
@@ -56,7 +59,9 @@ let private runExample host exePath =
     p.WaitForExit()
     { Output = output.[0] |> normaliseEndings
     ; Error = output.[1] |> normaliseEndings
-    ; Exit = p.ExitCode }
+    // Exit codes on windows are full integers. Clamp everything to a byte so we
+    // have partiy with POSIX systems
+    ; Exit = byte ((uint p.ExitCode) &&& 0xFFu) }
 
 let private parseDirectives (sourcePath: string) =
     let parseDirective (line: string) =
@@ -112,16 +117,17 @@ let ``spec tests compile and run`` specPath configuration =
     // Compile the output assembly, and run the appropriate assertions
     let options = { options with OutputType = Exe; References = references }
     let exePath = artifactpath options specPath
+    let specName = specPath |> normalisePath
     match compileFile options exePath sourcePath with
     | [] ->
         if shouldFail then
             failwith "Expected compilation failure!"
         let r = runExample "dotnet" exePath
-        r.ShouldMatchChildSnapshot(specPath)
+        r.ShouldMatchChildSnapshot(specName)
     | diags ->
         if not shouldFail then
             failwithf "Compilation error: %A" diags
-        (diags |> diagSanitiser).ShouldMatchChildSnapshot(specPath)
+        (diags |> diagSanitiser).ShouldMatchChildSnapshot(specName)
 
 let public getParseTestData () =
     Seq.append librarySpecs executableSpecs 
@@ -132,4 +138,4 @@ let public getParseTestData () =
 let ``spec tests parse result`` s =
     let node, diagnostics = parseFile (Path.Join(specDir, s))
     let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
-    tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s))
+    tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s |> normalisePath))
