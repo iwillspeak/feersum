@@ -300,3 +300,9 @@ let public importCore (targetAssm: AssemblyDefinition) target =
     finally
         coreAssemblies
         |> List.iter (fun assm -> (assm :> IDisposable).Dispose())
+
+/// Load the assembly and retrieve the name from it.
+let public getAssemblyName (path: string) =
+    use assm =
+        Mono.Cecil.AssemblyDefinition.ReadAssembly(path, assmReadParams)
+    assm.Name
