@@ -5,10 +5,11 @@ open System
 open System.IO
 open System.Runtime.InteropServices
 open Microsoft.Extensions.DependencyModel
+open Options
 open Targets
 
 /// Write a runtime config json 
-let public writeRuntimeConfig options (assemblyPath: string) (assemblyName: AssemblyNameDefinition) outputDir =
+let public writeRuntimeConfig (options: CompilationOptions) (assemblyPath: string) (assemblyName: AssemblyNameDefinition) outputDir =
     // TOOD: This metadata needs to be abstracted to deal with different
     //       target framework's prefrences. For now the `.exe` we generate
     //       is compatible with .NET Core and Mono. It would be nice to make
@@ -42,12 +43,28 @@ let public writeRuntimeConfig options (assemblyPath: string) (assemblyName: Asse
     let sehrefa = typeof<Serehfa.ConsPair>.Assembly
     let sehrefaName = sehrefa.GetName()
 
+    let referencePaths =
+      if List.contains (Path.GetFileName(sehrefa.Location)) options.References then
+        options.References
+      else
+        sehrefa.Location :: options.References
     let deps =
-        [ Dependency(sehrefaName.Name, sehrefaName.Version.ToString()) ]
+      referencePaths
+      |> List.map (fun r ->
+        let name = Builtins.getAssemblyName r
+        Dependency(Path.GetFileName(r), name.Version.ToString()))
+        |> List.append [ Dependency(sehrefaName.Name, sehrefaName.Version.ToString()) ]
 
-    let libs =
-        [ RuntimeLibrary("project", assemblyName.Name, assemblyName.Version.ToString(), "", [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(assemblyPath))) ], [], [], deps, false)
-        ; RuntimeLibrary("reference", sehrefaName.Name, sehrefaName.Version.ToString(), "", [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(sehrefa.Location))) ], [], [], [], false, Path.GetDirectoryName(sehrefa.Location), "") ]
+    let refLibs =
+      Seq.zip referencePaths deps
+      |> Seq.map (fun (ref, dep) ->
+        RuntimeLibrary("reference", dep.Name, dep.Version, "", [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(ref))) ], [], [], [], false, Path.GetDirectoryName(ref), ""))
+
+    let baseLibs = [
+        RuntimeLibrary("project", assemblyName.Name, assemblyName.Version.ToString(), "", [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(assemblyPath))) ], [], [], deps, false)
+      ]
+
+    let libs = Seq.append baseLibs refLibs
 
     let context = DependencyContext(target, CompilationOptions.Default, Seq.empty, libs, Seq.empty)
 

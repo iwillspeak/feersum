@@ -41,14 +41,6 @@ let librarySpecs = specsOfType "sld"
 
 let private runExample references host (exePath: string) =
     
-    // FIXME: Copying the core assembly like this is a bit of a hack.
-    let corePath = typeof<Serehfa.ConsPair>.Assembly.Location
-    let outDir = Path.GetDirectoryName(exePath)
-    references |> Seq.append [ corePath]
-    |> Seq.iter (fun path ->
-        if Path.GetDirectoryName(path) <> outDir then
-            File.Copy(path, Path.Join(outDir, Path.GetFileName(path)), true))
-
     let p = new Process()
     p.StartInfo <- ProcessStartInfo(host)
     p.StartInfo.ArgumentList.Add(exePath)
