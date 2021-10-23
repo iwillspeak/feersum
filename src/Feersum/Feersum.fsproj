@@ -26,6 +26,7 @@
     <Compile Include="Targets.fs" />
     <Compile Include="Builtins.fs" />
     <Compile Include="Lower.fs" />
+    <Compile Include="Runtime.fs" />
     <Compile Include="Compile.fs" />
     <Compile Include="Eval.fs" />
     <Compile Include="Program.fs" />
@@ -35,5 +36,6 @@
     <PackageReference Include="FParsec" Version="1.1.1" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
     <PackageReference Include="ReadLine" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
   </ItemGroup>
 </Project>
