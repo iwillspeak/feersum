@@ -21,7 +21,7 @@ type MacroPattern =
 type MacroTemplate =
     | Quoted of AstNode
     | Subst of string
-    | Form of MacroTemplateElement list
+    | Form of TextLocation * MacroTemplateElement list
     | DottedForm of MacroTemplateElement list * MacroTemplate
 and MacroTemplateElement =
     | Template of MacroTemplate
@@ -207,13 +207,12 @@ let rec public macroExpand template (bindings: MacroBindings) =
         match List.tryFind (fun (id, _) -> id = v) bindings.Bindings with
         | Some(_, syntax) -> Result.Ok syntax
         | None -> Result.Error (sprintf "Reference to unbound substitution %s" v)
-    | Form templateElements ->
+    | Form (location, templateElements) ->
         List.collect (fun t -> macroExpandElement t bindings) templateElements
         |> ResultEx.collect
         |> Result.map(fun expanded ->
             { Kind = AstNodeKind.Form(expanded)
-            // TODO: Syntax locations from macro elements?
-            ; Location = TextLocation.Missing })
+            ; Location = location })
     | DottedForm _ -> unimpl "Dotted forms in macro expansion are not yet supported"
 and private macroExpandElement templateElement bindings: Result<AstNode,string> list =
     match templateElement with
@@ -260,7 +259,7 @@ let rec public parseTemplate elipsis bound syntax =
     let recurse = parseTemplate elipsis bound
     match syntax.Kind with
     | AstNodeKind.Form f ->
-        parseMacroForm f elipsis (recurse) (MacroTemplateElement.Repeated) (MacroTemplateElement.Template) (MacroTemplate.DottedForm) (MacroTemplate.Form)
+        parseMacroForm f elipsis (recurse) (MacroTemplateElement.Repeated) (MacroTemplateElement.Template) (MacroTemplate.DottedForm) (fun x -> MacroTemplate.Form(syntax.Location, x))
     | AstNodeKind.Ident id ->
         if List.contains id bound then
             MacroTemplate.Subst id

@@ -7,35 +7,27 @@ open SyntaxUtils
 open SyntaxFactory
 open Syntax
 open Utils
+open Diagnostics
 
-let private tryMatch literals pattern haystack =
-    let macroPat =
-        match (readSingleNode pattern) |> parsePattern "..." literals with
-        | Result.Ok p -> p
-        | Result.Error e -> failwithf "Could not parse macro pattern %A" e
 
+let private parse pattern literals = 
+    match (readSingleNode pattern) |> parsePattern "..." literals with
+    | Result.Ok p -> p
+    | Result.Error e -> failwithf "Could not parse macro pattern %A" e
+
+let private tryMatch macroPat haystack =
     let syntaxTree = readSingleNode haystack
     match macroMatch macroPat syntaxTree with
     | Result.Ok b -> Some b
     | _ -> None
 
-let private tryExpand transformer bindings =
-    let rec findBound bindings =
-        let immediate =
-            List.map (fun (id, _) -> id) bindings.Bindings
-        let nested =
-            Seq.map findBound bindings.Repeated
-            |> List.concat
-        List.append immediate nested
-
+let private tryExpand macroPat transformer bindings =
     let transformer =
         readSingleNode transformer
-        |> parseTemplate "..." (findBound bindings)
+        |> parseTemplate "..." (findBound macroPat)
         |> ResultEx.unwrap
 
-    match macroExpand transformer bindings with
-        | Result.Ok expanded -> Some expanded
-        | Result.Error e -> failwithf "Error expanding macro %A" e
+    macroExpand transformer bindings
 
 let private ppConst = function
     | SyntaxConstant.Number n -> n.ToString("g")
@@ -170,7 +162,8 @@ let ``dotted form patterns`` () =
 [<InlineData("((a ...)...)", "(() (1 2 3) ((1)(2)(3)))", true)>]
 let ``macro parse tests`` pattern syntax shouldMatch =
     let literals = [ "foo"; "bar" ]
-    Assert.Equal(shouldMatch, tryMatch literals pattern syntax |> Option.isSome)
+    let macroPat = parse pattern literals
+    Assert.Equal(shouldMatch, tryMatch macroPat syntax |> Option.isSome)
 
 [<Fact>]
 let ``custom elipsis patterns`` () =
@@ -195,15 +188,27 @@ let ``simple macro expand`` () =
 [<InlineData("(_ (a)...)", "(a ...)", "(test (1)(#f)(foo))", "(1 #f foo)")>]
 [<InlineData("(_ (a ...)...)", "((f a ...) ...)", "(test (1 2)(#f))", "((f 1 2) (f #f))")>]
 let ``macro expand tests`` pattern template invocation expected =
-    let bindings = tryMatch [] pattern invocation |> OptionEx.unwrap
-    let expanded = tryExpand template bindings |> OptionEx.unwrap
+    let macro = parse pattern []
+    let bindings = tryMatch macro invocation |> OptionEx.unwrap
+    let expanded = tryExpand macro template bindings |> ResultEx.unwrap
     Assert.Equal(expected, pp expanded)
 
 [<Fact>]
 let ``repeated values`` () =
-    let bindings = tryMatch [] "(a ...)" "(1 2 3)" |> OptionEx.unwrap
+    let macro = parse "(a ...)" []
+    let bindings = tryMatch macro "(1 2 3)" |> OptionEx.unwrap
     let expanded =
-        macroExpand (MacroTemplate.Form([MacroTemplateElement.Repeated (MacroTemplate.Subst "a")])) bindings
+        macroExpand (MacroTemplate.Form(TextLocation.Missing, [MacroTemplateElement.Repeated (MacroTemplate.Subst "a")])) bindings
         |> ResultEx.unwrap
     
     Assert.Equal("(1 2 3)", pp expanded)
+
+[<Theory>]
+[<InlineData("(bug (a ...) (b ...))", "((cons a b) ...)", "(bug (1 2) (3))")>]
+[<InlineData("(bug (a ...) (b ...))", "((cons a b) ...)", "(bug (1) (2 3))")>]
+[<InlineData("(bug (a ...) (b ...))", "((cons a b) ...)", "(bug (1) ())")>]
+let ``invalid expansions`` pattern template invocation =
+    let macro = parse pattern []
+    let bindings = tryMatch macro invocation |> OptionEx.unwrap
+    let expanded = tryExpand macro template bindings
+    Assert.True(ResultEx.isError expanded)
