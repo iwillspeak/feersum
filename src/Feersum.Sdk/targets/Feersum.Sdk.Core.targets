@@ -74,7 +74,7 @@
       <NormalisedConfiguration Condition=" '$(NormallisedConfiguration)' == '' ">Debug</NormalisedConfiguration>
       <NormalisedOutputType Condition=" '$(OutputType)' == 'Exe' ">Exe</NormalisedOutputType>
       <NormalisedOutputType Condition=" '$(NormalisedOutputType)' == '' ">Lib</NormalisedOutputType>
-      <ConfigParams>--configuration $(NormalisedConfiguration) --outputtype $(NormalisedOutputType)</ConfigParams>
+      <ConfigParams>--configuration $(NormalisedConfiguration) --outputtype $(NormalisedOutputType) --generatedeps false</ConfigParams>
       <!-- Formatted build command. This invokes `dotnet` to run the compiler. -->
       <BuildCommand>"$(DotNetPath)" "$(FeersumCompilerPath)" $(CoreLibReferences) $(LibReferences) $(ConfigParams) -o "@(IntermediateAssembly)" @(SchemeCompileItems->'"%(Identity)"', ' ')</BuildCommand>
     </PropertyGroup>

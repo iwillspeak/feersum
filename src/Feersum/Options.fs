@@ -23,6 +23,7 @@ type CompilationOptions =
     { Configuration: BuildConfiguration
     ; OutputType: OutputType
     ; MsCorePaths: string list
+    ; GenerateDepsFiles: bool
     ; References: string list }
 with
 
@@ -31,6 +32,7 @@ with
         { Configuration = configuration
         ; OutputType = outputType
         ; MsCorePaths = []
+        ; GenerateDepsFiles = false
         ; References = [] }
 
     /// Get the default file extension for the compilation options' output type.

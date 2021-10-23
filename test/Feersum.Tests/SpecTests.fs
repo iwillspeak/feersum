@@ -90,7 +90,7 @@ let public getRunTestData () =
 let ``spec tests compile and run`` specPath configuration =
 
     let sourcePath = Path.Join(specDir, specPath)
-    let options = CompilationOptions.Create configuration Exe
+    let options = { (CompilationOptions.Create configuration Exe) with GenerateDepsFiles = true }
     let binDir = [| specBin; options.Configuration |> string |] |> Path.Combine
 
     let shouldFail = sourcePath.Contains "fail"

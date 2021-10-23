@@ -10,6 +10,7 @@ open Targets
 
 /// Write a runtime config json 
 let public writeRuntimeConfig (options: CompilationOptions) (assemblyPath: string) (assemblyName: AssemblyNameDefinition) outputDir =
+  if options.GenerateDepsFiles then
     // TOOD: This metadata needs to be abstracted to deal with different
     //       target framework's prefrences. For now the `.exe` we generate
     //       is compatible with .NET Core and Mono. It would be nice to make
