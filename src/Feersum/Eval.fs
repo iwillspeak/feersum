@@ -23,9 +23,9 @@ let cilExternalRepr (object: Object) =
 let eval ast =
     let memStream = new MemoryStream()
     let options = CompilationOptions.Create Debug  Script
-    let diags = compile options memStream "evalCtx" None ast
-    if not diags.IsEmpty then
-        Error(diags)
+    let result = compile options memStream "evalCtx" None ast
+    if not result.Diagnostics.IsEmpty then
+        Error(result.Diagnostics)
     else
         let assm = Assembly.Load(memStream.ToArray())
         let progTy = assm.GetType("evalCtx.LispProgram")

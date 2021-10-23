@@ -6,7 +6,6 @@ open Mono.Cecil
 open Mono.Cecil.Rocks
 open Mono.Cecil.Cil
 open System.Collections.Generic
-open System.Runtime.InteropServices
 
 open Ice
 open Options
@@ -35,6 +34,9 @@ type EmitCtx =
     ; mutable Libraries: Map<string, TypeDefinition>
     ; Core: Builtins.CoreTypes }
 
+type CompileResult =
+    { Diagnostics: Diagnostics.Diagnostic list
+    ; EmittedAssemblyName: AssemblyNameDefinition option }
 
 /// Get get the size of environment object required to hold any captured values
 /// in `envMappings`. The return from this has three main meanings:
@@ -933,6 +935,7 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
         writerParams.SymbolWriterProvider <- PortablePdbWriterProvider()
     | None -> ()
     assm.Write(outputStream, writerParams)
+    name
 
 /// Compile a single AST node into an assembly
 ///
@@ -964,11 +967,18 @@ let compile options outputStream outputName symbolStream node =
         else
             emptyScope
     let bound = bind scope allLibs node
-    if Diagnostics.hasErrors bound.Diagnostics |> not then
-        bound
-        |> Lower.lower
-        |> emit options target outputStream outputName symbolStream refTys
-    bound.Diagnostics
+
+    let assmName =
+        if Diagnostics.hasErrors bound.Diagnostics |> not then
+            bound
+            |> Lower.lower
+            |> emit options target outputStream outputName symbolStream refTys
+            |> Some
+        else
+            None
+
+    { Diagnostics = bound.Diagnostics
+    ; EmittedAssemblyName = assmName }
 
 /// Read a collection of Files and Compile
 ///
@@ -1023,35 +1033,13 @@ let compileFiles (options: CompilationOptions) (output: string) (sources: string
                 // make a symbol file
             | BuildConfiguration.Release -> null
 
-        let diags = compile options outputStream stem (symbols |> Option.ofObj) ast
+        let result = compile options outputStream stem (symbols |> Option.ofObj) ast
 
-        if diags.IsEmpty && options.OutputType = OutputType.Exe then
-            // TOOD: This metadata needs to be abstracted to deal with different
-            //       target framework's prefrences. For now the `.exe` we generate
-            //       is compatible with .NET Core and Mono. It would be nice to make
-            //       this explicit somewhere in future.
-            //       It would be nice to register ourselves as a proper SDK so that
-            //       this metadata is generated for us by `dotnet`.
-            let tfmPrefix =
-                if RuntimeInformation.FrameworkDescription.StartsWith ".NET Core" then
-                    "netcoreapp"
-                else
-                    "net"
-            let tfVersion = Environment.Version
-            let config =
-                sprintf """
-                {
-                  "runtimeOptions": {
-                    "tfm": "%s%i.%i",
-                    "framework": {
-                      "name": "Microsoft.NETCore.App",
-                      "version": "%A"
-                    }
-                  }
-                }
-                """ tfmPrefix tfVersion.Major tfVersion.Minor tfVersion
-            File.WriteAllText(Path.Combine(outDir, stem + ".runtimeconfig.json"), config)
-        diags
+        if result.Diagnostics.IsEmpty && options.OutputType = OutputType.Exe then
+            match result.EmittedAssemblyName with
+            | Some(assemblyName) -> Runtime.writeRuntimeConfig options output assemblyName outDir
+            | None -> ()
+        result.Diagnostics
 
 /// Read a File and Compile
 ///
