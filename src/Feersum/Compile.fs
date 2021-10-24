@@ -309,7 +309,7 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
 
         match maybeIfFalse with
         | Some ifFalse -> recurse ifFalse
-        | None -> ctx.IL.Emit(OpCodes.Ldnull)
+        | None -> emitUnspecified ctx
         if tail then
             // If we are in a tail context the JIT expects to see something like
             // the following:
