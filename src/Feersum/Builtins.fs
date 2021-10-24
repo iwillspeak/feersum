@@ -210,6 +210,7 @@ module private BuiltinMacros =
 
     /// Builtin `or` Macro
     let private macroOr =
+        // TODO: re-write this when proper hygene is supported.
         "(syntax-rules ()
             ((or) #f)
             ((or test) test)
@@ -238,11 +239,26 @@ module private BuiltinMacros =
                     expr1 ...))))"
         |> parseBuiltinMacro "unless"
 
+    let private macroCond =
+        // TODO: This `cond` implementation doesn't support the `=>` 'pipe' form
+        //       of the macro yet. This is because we're waiting for hygene
+        //       support like `or`.
+        "(syntax-rules (else)
+            ((cond (else e ...))   (begin e ...))
+            ((cond (test e e1 ...))
+                (if test
+                    (begin e e1 ...)))
+            ((cond (test e e1 ...) c ...)
+                (if test
+                    (begin e e1 ...)
+                    (cond c ...))))"
+        |> parseBuiltinMacro "cond"
+
     /// The list of builtin macros
     let coreMacros =
         { LibraryName = ["scheme";"base"]
         ; Exports =
-            [ macroAnd ; macroOr; macroWhen; macroUnless ]
+            [ macroAnd ; macroOr; macroWhen; macroUnless; macroCond ]
             |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
 
 // ------------------------ Public Builtins API --------------------------------

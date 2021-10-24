@@ -18,28 +18,18 @@
         "world"
         -2))
         
-(define-syntax my-cond
-    (syntax-rules (else)
-        ((cond (else e ...))   (begin e ...))
-        ((cond (test e e1 ...))
-            (if test
-                (begin e e1 ...)))
-        ((cond (test e e1 ...) c ...)
-            (if test
-                (begin e e1 ...)
-                (my-cond c ...)))))
 (display
-    (my-cond
+    (cond
         (#f 'false)
         (#t 'true)
         (else 'fail)))
 (display
-    (my-cond
+    (cond
         (#f 'false)
         (#t 'true)))
 (display
-    (my-cond
+    (cond
         (else 'ok)))
 (display
-    (my-cond 
+    (cond 
         (#f 'fail)))
