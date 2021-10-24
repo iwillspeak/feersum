@@ -627,8 +627,6 @@ and private bindForm ctx (form: AstNode list) node =
             |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
             |> ResultEx.okOr BoundExpr.Error)
         |> BoundExpr.Seq
-    | { Kind = AstNodeKind.Ident("cond") }::body ->
-        unimpl "Condition expressions not yet implemented"
     | { Kind = AstNodeKind.Ident("case") }::body ->
         unimpl "Case expressions not yet implemented"
     | head::rest -> 
