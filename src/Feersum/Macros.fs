@@ -199,26 +199,52 @@ and private matchRepeated repeat patterns maybeTail syntax repeatedBindings =
             // Ran out of repeats and tail never matched
             Result.Error ()
 
+let private getNode (node, _) = node
+let private getCount (_, count) = count
+
 /// Expand a macro template with the given bindings.
 let rec public macroExpand template (bindings: MacroBindings) =
+    let result, _ =
+        macroExpandTemplate template bindings
+    result
+and macroExpandTemplate template (bindings: MacroBindings) =
     match template with
-    | Quoted q -> Result.Ok q
+    | Quoted q -> (Result.Ok q, 0)
     | Subst v ->
         match List.tryFind (fun (id, _) -> id = v) bindings.Bindings with
-        | Some(_, syntax) -> Result.Ok syntax
-        | None -> Result.Error (sprintf "Reference to unbound substitution %s" v)
+        | Some(_, syntax) -> (Result.Ok syntax, 1)
+        | None -> (Result.Error (sprintf "Reference to unbound substitution %s" v), 0)
     | Form (location, templateElements) ->
-        List.collect (fun t -> macroExpandElement t bindings) templateElements
-        |> ResultEx.collect
-        |> Result.map(fun expanded ->
-            { Kind = AstNodeKind.Form(expanded)
-            ; Location = location })
+        let elements =
+            List.map (fun t -> macroExpandElement t bindings) templateElements
+        let substs = List.sumBy (getCount) elements
+        let elements =
+            elements
+            |> List.map (getNode)
+            |> ResultEx.collect
+            |> Result.map(fun expanded ->
+                { Kind = AstNodeKind.Form(expanded |> List.concat)
+                 ; Location = location })
+        (elements, substs)
     | DottedForm _ -> unimpl "Dotted forms in macro expansion are not yet supported"
-and private macroExpandElement templateElement bindings: Result<AstNode,string> list =
+and private macroExpandElement templateElement bindings =
     match templateElement with
-    | Template t -> [ macroExpand t bindings ]
+    | Template t ->
+        let result, substs = macroExpandTemplate t bindings
+        (result |> Result.map (fun n -> [ n ]), substs)
     | Repeated t ->
-        List.map (macroExpand t) bindings.Repeated
+        let rec collectRepeat = function 
+            | (Result.Error _, 0) :: rest -> collectRepeat rest
+            | (Result.Error e, n) :: _ -> Result.Error e
+            | (Result.Ok node, _) :: rest ->
+                collectRepeat rest
+                |> Result.map (fun rest -> node :: rest)
+            | [] -> Result.Ok []
+        let repeated =
+            bindings.Repeated
+            |> List.map (macroExpandTemplate t)
+            |> collectRepeat
+        (repeated, 0)
 
 /// Apply a macro to a given syntax node
 let macroApply (macro: Macro) syntax =
