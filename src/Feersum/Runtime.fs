@@ -9,6 +9,21 @@ open Microsoft.Extensions.DependencyModel
 open Options
 open Targets
 
+/// Create a `RuntimeLibrary` from the given parts
+let private intoRuntimeLib kind name version (path: string) deps =
+  RuntimeLibrary(
+    kind,
+    name,
+    version,
+    "",
+    [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(path))) ],
+    [],
+    [],
+    deps,
+    false,
+    Path.GetDirectoryName(path),
+    "")
+
 /// Write a runtime config json 
 let public writeRuntimeConfig (options: CompilationOptions) (assemblyPath: string) (assemblyName: AssemblyNameDefinition) outputDir =
   if options.GenerateDepsFiles then
@@ -42,8 +57,6 @@ let public writeRuntimeConfig (options: CompilationOptions) (assemblyPath: strin
       JsonSerializer.Serialize(config, opts))
 
     let sehrefa = typeof<Serehfa.ConsPair>.Assembly
-    let sehrefaName = sehrefa.GetName()
-
     let referencePaths =
       if List.contains (Path.GetFileName(sehrefa.Location)) options.References then
         options.References
@@ -58,30 +71,11 @@ let public writeRuntimeConfig (options: CompilationOptions) (assemblyPath: strin
     let refLibs =
       Seq.zip referencePaths deps
       |> Seq.map (fun (ref, dep) ->
-        RuntimeLibrary(
-          "reference",
-          dep.Name,
-          dep.Version,
-          "",
-          [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(ref))) ],
-          [],
-          [],
-          [],
-          false,
-          Path.GetDirectoryName(ref),
-          ""))
+        intoRuntimeLib "reference" dep.Name dep.Version ref [])
 
     let baseLibs = [
-        RuntimeLibrary(
-          "project",
-          assemblyName.Name,
-          assemblyName.Version.ToString(),
-          "",
-          [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(assemblyPath))) ],
-          [],
-          [],
-          deps,
-          false)
+        deps
+        |> intoRuntimeLib "project" assemblyName.Name (assemblyName.Version.ToString()) assemblyPath
       ]
 
     let libs = Seq.append baseLibs refLibs
