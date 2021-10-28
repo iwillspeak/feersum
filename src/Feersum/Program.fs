@@ -45,13 +45,14 @@ let private dumpDiagnostics diags =
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec read (): AstNode =
+let rec read () : AstNode =
     let line = ReadLine.Read("§> ")
+
     match readExpr line with
     | (node, []) -> node
     | (_, diagnostics) ->
         diagnostics |> dumpDiagnostics
-        read()
+        read ()
 
 /// Print an object out to the console. Used to serialise the external
 /// representation form an eval
@@ -63,25 +64,29 @@ let print value =
 /// Repeatedly reads input and prints output
 let rec repl evaluator =
     try
-        match (read >> evaluator)() with
+        match (read >> evaluator) () with
         | Result.Ok _ -> ()
-        | Result.Error diags -> dumpDiagnostics(diags)
+        | Result.Error diags -> dumpDiagnostics (diags)
     with
     | ex -> eprintfn "Exception: %A" ex
+
     repl evaluator
 
 /// Compile a collection of files file printing an error if
 /// there is one.
 let private compileAll (options: CompilationOptions) output sources =
     let mainSource = List.last sources
+
     let outputPath =
         match output with
-        | Some(path) -> path
+        | Some (path) -> path
         | None -> Path.ChangeExtension(mainSource, options.DefaultExtension)
+
     match compileFiles options outputPath sources with
     | [] -> 0
     | diagnostics ->
-        dumpDiagnostics(diagnostics)
+        dumpDiagnostics (diagnostics)
+
         if Diagnostics.hasErrors diagnostics then
             -1
         else
@@ -91,8 +96,12 @@ let private compileAll (options: CompilationOptions) output sources =
 let private versionString =
     let assm = Assembly.GetExecutingAssembly()
     let simpleVersion = assm.GetName().Version
-    let infoVersinoAttr = 
-        Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+
+    let infoVersinoAttr =
+        Assembly
+            .GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+
     match infoVersinoAttr with
     | null -> simpleVersion.ToString()
     | attr -> attr.InformationalVersion
@@ -104,18 +113,26 @@ let private printVersion () =
 /// Run the REPL, using the reflection-based evaluator.
 let private runRepl () =
     ReadLine.HistoryEnabled <- true
-    printVersion()
-    eval >> Result.map print
-    |> repl
+    printVersion ()
+    eval >> Result.map print |> repl
 
 [<EntryPoint>]
 let main argv =
-    let errorHandler = ProcessExiter(colorizer = function ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)
-    let parser = ArgumentParser.Create<CliArguments>(programName = "feersum-scheme", errorHandler = errorHandler)
+    let errorHandler =
+        ProcessExiter(
+            colorizer =
+                function
+                | ErrorCode.HelpText -> None
+                | _ -> Some ConsoleColor.Red
+        )
+
+    let parser =
+        ArgumentParser.Create<CliArguments>(programName = "feersum-scheme", errorHandler = errorHandler)
+
     let args = parser.Parse(argv)
-    
+
     if args.Contains Version then
-        printVersion()
+        printVersion ()
         exit 0
 
     let buildConfig =
@@ -128,16 +145,17 @@ let main argv =
 
     let options =
         { CompilationOptions.Create buildConfig outputType with
-            References = args.GetResults Reference
-            GenerateDepsFiles = (args.TryGetResult GenerateDeps) |> Option.defaultValue true 
-            MsCorePaths = args.GetResults CoreLibPath }
+              References = args.GetResults Reference
+              GenerateDepsFiles =
+                  (args.TryGetResult GenerateDeps)
+                  |> Option.defaultValue true
+              MsCorePaths = args.GetResults CoreLibPath }
 
     match args.GetResult(Sources, defaultValue = []), args.TryGetResult(Output) with
     | [], None ->
-        runRepl()
+        runRepl ()
         0
-    | [], Some(output) ->
+    | [], Some (output) ->
         eprintfn "No source files provided for output %s" output
         exit -1
-    | files, output ->
-        compileAll options output files
+    | files, output -> compileAll options output files
