@@ -2,6 +2,7 @@ module Runtime
 
 open Mono.Cecil
 open System
+open System.Text.Json
 open System.IO
 open System.Runtime.InteropServices
 open Microsoft.Extensions.DependencyModel
@@ -24,22 +25,21 @@ let public writeRuntimeConfig (options: CompilationOptions) (assemblyPath: strin
             "netcoreapp"
         else
             "net"
-    let config =
-        sprintf """
-        {
-          "runtimeOptions": {
-            "tfm": "%s%i.%i",
-            "framework": {
-              "name": "Microsoft.NETCore.App",
-              "version": "%A"
-            },
-            "additionalProbingPaths": [
-              "%s"
-            ]
-          }
-        }
-        """ tfmPrefix tfVersion.Major tfVersion.Minor tfVersion outputDir
-    File.WriteAllText(Path.Combine(outputDir, assemblyName.Name + ".runtimeconfig.json"), config)
+    let config = {|
+        RuntimeOptions =
+          {| Tfm = (sprintf "%s%i.%i" tfmPrefix tfVersion.Major tfVersion.Minor);
+          Framework =
+          {|
+            Name = "Microsoft.NETCore.App";
+            Version = tfVersion.ToString();
+          |};
+          AdditionalProbingPaths = [| outputDir |] |} |}
+    let mutable opts = JsonSerializerOptions(JsonSerializerDefaults.Web)
+    opts.WriteIndented <- true
+    opts.PropertyNamingPolicy <- JsonNamingPolicy.CamelCase
+    File.WriteAllText(
+      Path.Combine(outputDir, assemblyName.Name + ".runtimeconfig.json"),
+      JsonSerializer.Serialize(config, opts))
 
     let sehrefa = typeof<Serehfa.ConsPair>.Assembly
     let sehrefaName = sehrefa.GetName()
@@ -54,15 +54,34 @@ let public writeRuntimeConfig (options: CompilationOptions) (assemblyPath: strin
       |> List.map (fun r ->
         let name = Builtins.getAssemblyName r
         Dependency(Path.GetFileName(r), name.Version.ToString()))
-        |> List.append [ Dependency(sehrefaName.Name, sehrefaName.Version.ToString()) ]
 
     let refLibs =
       Seq.zip referencePaths deps
       |> Seq.map (fun (ref, dep) ->
-        RuntimeLibrary("reference", dep.Name, dep.Version, "", [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(ref))) ], [], [], [], false, Path.GetDirectoryName(ref), ""))
+        RuntimeLibrary(
+          "reference",
+          dep.Name,
+          dep.Version,
+          "",
+          [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(ref))) ],
+          [],
+          [],
+          [],
+          false,
+          Path.GetDirectoryName(ref),
+          ""))
 
     let baseLibs = [
-        RuntimeLibrary("project", assemblyName.Name, assemblyName.Version.ToString(), "", [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(assemblyPath))) ], [], [], deps, false)
+        RuntimeLibrary(
+          "project",
+          assemblyName.Name,
+          assemblyName.Version.ToString(),
+          "",
+          [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(assemblyPath))) ],
+          [],
+          [],
+          deps,
+          false)
       ]
 
     let libs = Seq.append baseLibs refLibs
