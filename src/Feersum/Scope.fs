@@ -22,8 +22,9 @@ let public find scope id =
 /// added at the current depth.
 let public insert scope id value =
     let entry = { Value = value; Id = id }
-    { scope with Entries = entry::scope.Entries; }
+
+    { scope with
+          Entries = entry :: scope.Entries }
 
 /// Create a scope from the initial environment map
-let public fromMap map =
-    Map.fold insert empty map
+let public fromMap map = Map.fold insert empty map

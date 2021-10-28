@@ -21,19 +21,18 @@ type OutputType =
 /// Options for each compilation
 type CompilationOptions =
     { Configuration: BuildConfiguration
-    ; OutputType: OutputType
-    ; MsCorePaths: string list
-    ; GenerateDepsFiles: bool
-    ; References: string list }
-with
+      OutputType: OutputType
+      MsCorePaths: string list
+      GenerateDepsFiles: bool
+      References: string list }
 
     /// Create a new defaulted configuration options.
     static member Create configuration outputType =
         { Configuration = configuration
-        ; OutputType = outputType
-        ; MsCorePaths = []
-        ; GenerateDepsFiles = false
-        ; References = [] }
+          OutputType = outputType
+          MsCorePaths = []
+          GenerateDepsFiles = false
+          References = [] }
 
     /// Get the default file extension for the compilation options' output type.
     member c.DefaultExtension =

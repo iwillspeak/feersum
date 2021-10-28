@@ -15,42 +15,46 @@ open IlHelpers
 open Targets
 
 /// Type to Hold Context While Emitting IL
-type EmitCtx = 
+type EmitCtx =
     { Assm: AssemblyDefinition
-    ; IL: ILProcessor
-    ; Locals: VariableDefinition list
-    ; Parameters: ParameterDefinition list
-    ; DebugDocuments: Dictionary<string, Document>
-    ; mutable NextLambda: int
-    ; ScopePrefix: string
-    ; EmitSymbols: bool
-    ; Exports: Map<(string * string), string>
-    ; EnvSize: int option
-    ; Externs: Map<string, TypeDefinition>
-    ; mutable Environment: VariableDefinition option
-    ; ParentEnvSize: int option
-    ; ProgramTy: TypeDefinition
-    ; mutable Initialisers: Map<string, MethodReference>
-    ; mutable Libraries: Map<string, TypeDefinition>
-    ; Core: Builtins.CoreTypes }
+      IL: ILProcessor
+      Locals: VariableDefinition list
+      Parameters: ParameterDefinition list
+      DebugDocuments: Dictionary<string, Document>
+      mutable NextLambda: int
+      ScopePrefix: string
+      EmitSymbols: bool
+      Exports: Map<(string * string), string>
+      EnvSize: int option
+      Externs: Map<string, TypeDefinition>
+      mutable Environment: VariableDefinition option
+      ParentEnvSize: int option
+      ProgramTy: TypeDefinition
+      mutable Initialisers: Map<string, MethodReference>
+      mutable Libraries: Map<string, TypeDefinition>
+      Core: Builtins.CoreTypes }
 
 type CompileResult =
     { Diagnostics: Diagnostics.Diagnostic list
-    ; EmittedAssemblyName: AssemblyNameDefinition option }
+      EmittedAssemblyName: AssemblyNameDefinition option }
 
 /// Get get the size of environment object required to hold any captured values
 /// in `envMappings`. The return from this has three main meanings:
-/// 
+///
 ///  * `None` -> No environment object is required for this lambda
 ///  * `Some(0)` -> Only the parent environment link is captured.
 ///  * `Some(n)` -> An environment with `n` slots is required.
 let private envSizeForMappings envMappings =
     envMappings
-    |> Option.map (fun x ->
-        x |> Seq.fold (fun c s ->
-            match s with
-            | Environment _ -> c + 1
-            | _ -> c) 0)
+    |> Option.map
+        (fun x ->
+            x
+            |> Seq.fold
+                (fun c s ->
+                    match s with
+                    | Environment _ -> c + 1
+                    | _ -> c)
+                0)
 
 /// Set the attributes on a given method to mark it as compiler generated code
 let private markAsCompilerGenerated (core: Builtins.CoreTypes) (method: MethodDefinition) =
@@ -58,7 +62,7 @@ let private markAsCompilerGenerated (core: Builtins.CoreTypes) (method: MethodDe
         attrCtor
         |> CustomAttribute
         |> method.CustomAttributes.Add
-    
+
     addSimpleAttr core.CompGenCtor
     addSimpleAttr core.NonUserCodeCtor
     addSimpleAttr core.StepThroughCtor
@@ -66,18 +70,13 @@ let private markAsCompilerGenerated (core: Builtins.CoreTypes) (method: MethodDe
 /// Mark the assembly as supporting debugging
 let private markAsDebuggable (core: Builtins.CoreTypes) (assm: AssemblyDefinition) =
     let attr = core.DebuggableCtor |> CustomAttribute
-    attr.ConstructorArguments.Add(
-        CustomAttributeArgument(assm.MainModule.TypeSystem.Boolean, true))
-    attr.ConstructorArguments.Add(
-        CustomAttributeArgument(assm.MainModule.TypeSystem.Boolean, true))
+    attr.ConstructorArguments.Add(CustomAttributeArgument(assm.MainModule.TypeSystem.Boolean, true))
+    attr.ConstructorArguments.Add(CustomAttributeArgument(assm.MainModule.TypeSystem.Boolean, true))
 
     attr |> assm.CustomAttributes.Add
 
     let attr = core.AssmConfigCtor |> CustomAttribute
-    attr.ConstructorArguments.Add(
-        CustomAttributeArgument(
-            assm.MainModule.TypeSystem.String,
-            "Debug"))
+    attr.ConstructorArguments.Add(CustomAttributeArgument(assm.MainModule.TypeSystem.String, "Debug"))
 
     attr |> assm.CustomAttributes.Add
 
@@ -85,6 +84,7 @@ let private markAsDebuggable (core: Builtins.CoreTypes) (assm: AssemblyDefinitio
 /// require string interning.
 let private markCompilationRelaxations (core: Builtins.CoreTypes) (assm: AssemblyDefinition) =
     let attr = core.CompRelaxAttr |> CustomAttribute
+
     attr.ConstructorArguments.Add(
         CustomAttributeArgument(core.CompRelaxations, Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)
     )
@@ -95,25 +95,23 @@ let private markCompilationRelaxations (core: Builtins.CoreTypes) (assm: Assembl
 /// `LispLibrary` attribute to the type.
 let private markWithLibraryName (core: Builtins.CoreTypes) (typ: TypeDefinition) name =
     let attr = core.LispLibrary |> CustomAttribute
+
     attr.ConstructorArguments.Add(
         CustomAttributeArgument(
             typ.Module.TypeSystem.String.MakeArrayType(),
             name
-            |> Seq.map (fun namePart ->
-                CustomAttributeArgument(
-                    typ.Module.TypeSystem.String,
-                    namePart))
-            |> Array.ofSeq))
+            |> Seq.map (fun namePart -> CustomAttributeArgument(typ.Module.TypeSystem.String, namePart))
+            |> Array.ofSeq
+        )
+    )
+
     attr |> typ.CustomAttributes.Add
 
 /// Mark the field as exported. This adds the `LispExport` attribute
 /// to the field.
 let private markWithExportedName (core: Builtins.CoreTypes) (field: FieldDefinition) name =
     let attr = core.LispExport |> CustomAttribute
-    attr.ConstructorArguments.Add(
-        CustomAttributeArgument(
-            field.Module.TypeSystem.String,
-            name))
+    attr.ConstructorArguments.Add(CustomAttributeArgument(field.Module.TypeSystem.String, name))
     attr |> field.CustomAttributes.Add
 
 /// Emit an instance of the unspecified value
@@ -129,17 +127,19 @@ let private getExternType ctx typeName =
 /// Find an extern method by `id`
 let private getExternMethod ctx typeName id =
     let ty = getExternType ctx typeName
+
     let method =
-        ty.GetMethods()
-        |> Seq.find (fun m -> m.Name = id) 
+        ty.GetMethods() |> Seq.find (fun m -> m.Name = id)
+
     ctx.Assm.MainModule.ImportReference(method)
 
 /// Find an extern field by `id`
 let private getExternField ctx typeName id =
     let ty = getExternType ctx typeName
+
     let field =
-        ty.Fields
-        |> Seq.find (fun f -> f.Name = id) 
+        ty.Fields |> Seq.find (fun f -> f.Name = id)
+
     ctx.Assm.MainModule.ImportReference(field)
 
 /// Ensure a field exists on the program type to be used as a global variable
@@ -148,29 +148,32 @@ let private getField ctx typeName id =
     | Some ty ->
         ty.Fields
         |> Seq.tryFind (fun f -> f.Name = id)
-        |> Option.defaultWith (fun () ->
-            let newField = FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
-            ty.Fields.Add(newField)
-            let export = Map.tryFind (typeName, id) ctx.Exports
-            match export with
-            | Some(exportedName) ->
-                markWithExportedName ctx.Core newField exportedName
-                newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
-                ()
-            | None -> ()
-            newField) :> FieldReference
-    | None ->
-        getExternField ctx typeName id
-    
+        |> Option.defaultWith
+            (fun () ->
+                let newField =
+                    FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
+
+                ty.Fields.Add(newField)
+                let export = Map.tryFind (typeName, id) ctx.Exports
+
+                match export with
+                | Some (exportedName) ->
+                    markWithExportedName ctx.Core newField exportedName
+                    newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
+                    ()
+                | None -> ()
+
+                newField)
+        :> FieldReference
+    | None -> getExternField ctx typeName id
+
 /// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
 /// current context. This indexes into the context's `Parameters` list.
-let private argToParam ctx idx =
-    ctx.Parameters.[idx]
+let private argToParam ctx idx = ctx.Parameters.[idx]
 
 /// Convert a local index into a `VariableDefinition`. Variable definitions can
 /// then be used with `Ldloc` and `Stloc`.
-let private localToVariable ctx idx =
-    ctx.Locals.[idx]
+let private localToVariable ctx idx = ctx.Locals.[idx]
 
 /// Emit a sequence of instructions to convert a method reference
 /// into a `Func<obj[],obj>` with the context as the current top of stack.
@@ -196,8 +199,12 @@ let private createEnvironment ctx (size: int) =
         ctx.IL.Emit(OpCodes.Ldarg_0)
     else
         ctx.IL.Emit(OpCodes.Ldnull)
+
     ctx.IL.Emit(OpCodes.Ldc_I4, size)
-    let ctor = Seq.head <| ctx.Core.EnvTy.GetConstructors()
+
+    let ctor =
+        Seq.head <| ctx.Core.EnvTy.GetConstructors()
+
     ctx.IL.Emit(OpCodes.Newobj, ctor)
     let env = makeTemp ctx ctx.Core.EnvTy
     ctx.Environment <- Some env
@@ -208,18 +215,17 @@ let private createEnvironment ctx (size: int) =
 let private getEnvironment ctx =
     match ctx.Environment with
     | Some env -> env
-    | None ->
-        ice "Attempt to access environment in context without one"
+    | None -> ice "Attempt to access environment in context without one"
 
 /// Walk the chain of captures starting at `from` in the parent, and then call
 /// `f` with the environment index that the capture chain ends at. This is used
 /// to read and write values from a captured environment.
 let rec private walkCaptureChain ctx from f =
     match from with
-    | StorageRef.Captured(from) ->
+    | StorageRef.Captured (from) ->
         ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[0])
         walkCaptureChain ctx from f
-    | StorageRef.Environment(idx, _) -> f idx
+    | StorageRef.Environment (idx, _) -> f idx
     | _ -> icef "Unexpected storage in capture chain %A" from
 
 /// Given an environment at the top of the stack emit a load of the slot `idx`
@@ -236,8 +242,11 @@ let private writeToEnv ctx (temp: VariableDefinition) (idx: int) =
     ctx.IL.Emit(OpCodes.Stelem_Ref)
 
 let private libraryTypeAttributes =
-    TypeAttributes.Class ||| TypeAttributes.Public ||| TypeAttributes.AnsiClass |||
-    TypeAttributes.Abstract ||| TypeAttributes.Sealed
+    TypeAttributes.Class
+    ||| TypeAttributes.Public
+    ||| TypeAttributes.AnsiClass
+    ||| TypeAttributes.Abstract
+    ||| TypeAttributes.Sealed
 
 /// Emit a Single Bound Expression
 ///
@@ -245,18 +254,23 @@ let private libraryTypeAttributes =
 /// complex expression types it delegates to the mutually-recursive `emit*`s
 let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
     let recurse = emitExpression ctx tail
+
     match expr with
     | BoundExpr.Nop -> emitUnspecified ctx
     | BoundExpr.Error -> ice "Attempt to lower an error expression"
-    | BoundExpr.SequencePoint(inner, location) ->
+    | BoundExpr.SequencePoint (inner, location) ->
         let pos = ctx.IL.Body.Instructions.Count
         recurse inner
         // FIXME: Hidden sequence points for missing locations?
-        if ctx.EmitSymbols && location <> Diagnostics.TextLocation.Missing then
+        if ctx.EmitSymbols
+           && location <> Diagnostics.TextLocation.Missing then
             let ins = ctx.IL.Body.Instructions.[pos]
             let s = location.Start
             let e = location.End
-            let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
+
+            let mutable (found, doc) =
+                ctx.DebugDocuments.TryGetValue(s.StreamName)
+
             if not found then
                 doc <- Document(Path.GetFullPath(s.StreamName))
                 doc.Language <- DocumentLanguage.Other
@@ -264,6 +278,7 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
                 doc.LanguageVendor <- DocumentLanguageVendor.Other
                 doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
                 ctx.DebugDocuments.[s.StreamName] <- doc
+
             let point = Cil.SequencePoint(ins, doc)
             point.StartLine <- int s.Line
             point.StartColumn <- int s.Column
@@ -272,19 +287,20 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
             ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
     | BoundExpr.Literal l -> emitLiteral ctx l
     | BoundExpr.Seq s -> emitSequence ctx tail s
-    | BoundExpr.Application(ap, args) -> emitApplication ctx tail ap args
-    | BoundExpr.Store(storage, maybeVal) ->
+    | BoundExpr.Application (ap, args) -> emitApplication ctx tail ap args
+    | BoundExpr.Store (storage, maybeVal) ->
         // TODO: Could we just elide the whole definition if there is no value.
         //       If we have nothing to store it would save a lot of code. In the
         //       case we are storing to a field we _might_ need to call
         //       `emitField` still.
         match maybeVal with
-        | Some(expr) -> emitExpression ctx false expr
+        | Some (expr) -> emitExpression ctx false expr
         | None -> ctx.IL.Emit(OpCodes.Ldnull)
+
         ctx.IL.Emit(OpCodes.Dup)
         writeTo ctx storage
     | BoundExpr.Load storage -> readFrom ctx storage
-    | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
+    | BoundExpr.If (cond, ifTrue, maybeIfFalse) ->
         let lblTrue = ctx.IL.Create(OpCodes.Nop)
         let lblNotBool = ctx.IL.Create(OpCodes.Nop)
         let lblEnd = ctx.IL.Create(OpCodes.Nop)
@@ -312,6 +328,7 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
         match maybeIfFalse with
         | Some ifFalse -> recurse ifFalse
         | None -> emitUnspecified ctx
+
         if tail then
             // If we are in a tail context the JIT expects to see something like
             // the following:
@@ -336,21 +353,18 @@ let rec private emitExpression (ctx: EmitCtx) tail (expr: BoundExpr) =
             // TODO: Could do with another sequence point here at the join block. Or
             //       stop using `nops` all over the place as labels and instead.
             ctx.IL.Append(lblEnd)
-    | BoundExpr.Lambda(formals, body) ->
-        emitLambda ctx formals body
-    | BoundExpr.Library(name, mangledName, exports, body) ->
-        emitLibrary ctx name mangledName exports body
+    | BoundExpr.Lambda (formals, body) -> emitLambda ctx formals body
+    | BoundExpr.Library (name, mangledName, exports, body) -> emitLibrary ctx name mangledName exports body
     | BoundExpr.Import name ->
         match Map.tryFind name ctx.Initialisers with
-        | Some(initialiser) ->
-            ctx.IL.Emit(OpCodes.Call, initialiser)
+        | Some (initialiser) -> ctx.IL.Emit(OpCodes.Call, initialiser)
         | None -> emitUnspecified ctx
-    | BoundExpr.Quoted quoted ->
-        emitQuoted ctx quoted
+    | BoundExpr.Quoted quoted -> emitQuoted ctx quoted
 
 and emitQuoted ctx quoted =
     let quoteSequence s =
-        let ret = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+        let ret =
+            makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
         // * start with null
         ctx.IL.Emit(OpCodes.Ldnull)
@@ -360,11 +374,12 @@ and emitQuoted ctx quoted =
         s
         |> List.toSeq
         |> Seq.rev
-        |> Seq.iter (fun q ->
-            emitQuoted ctx q
-            ctx.IL.Emit(OpCodes.Ldloc, ret)
-            ctx.IL.Emit(OpCodes.Newobj, ctx.Core.ConsCtor)
-            ctx.IL.Emit(OpCodes.Stloc, ret))
+        |> Seq.iter
+            (fun q ->
+                emitQuoted ctx q
+                ctx.IL.Emit(OpCodes.Ldloc, ret)
+                ctx.IL.Emit(OpCodes.Newobj, ctx.Core.ConsCtor)
+                ctx.IL.Emit(OpCodes.Stloc, ret))
 
         // * return the result
         ctx.IL.Emit(OpCodes.Ldloc, ret)
@@ -378,23 +393,32 @@ and emitQuoted ctx quoted =
     | ByteVector v -> emitLiteral ctx (BoundLiteral.ByteVector v)
     | Constant c -> emitLiteral ctx (BoundLiteral.FromConstant c)
     | Form [] -> emitLiteral ctx (BoundLiteral.Null)
-    | Form s | Seq s -> quoteSequence s
+    | Form s
+    | Seq s -> quoteSequence s
     | Quoted q ->
         [ { Kind = AstNodeKind.Ident "quote"
-          ; Location = quoted.Location }; q ]
+            Location = quoted.Location }
+          q ]
         |> quoteSequence
     | Dot -> quoteIdent "."
     | Ident id -> quoteIdent id
     | Error -> ice "Error in quoted expression"
 
-and emitLiteral ctx = function
+and emitLiteral ctx =
+    function
     | BoundLiteral.Null -> ctx.IL.Emit(OpCodes.Ldnull)
     | BoundLiteral.Number n ->
         ctx.IL.Emit(OpCodes.Ldc_R8, n)
         ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Double)
     | BoundLiteral.Str s -> ctx.IL.Emit(OpCodes.Ldstr, s)
     | BoundLiteral.Boolean b ->
-        ctx.IL.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
+        ctx.IL.Emit(
+            if b then
+                OpCodes.Ldc_I4_1
+            else
+                OpCodes.Ldc_I4_0
+        )
+
         ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Boolean)
     | BoundLiteral.Character c ->
         ctx.IL.Emit(OpCodes.Ldc_I4, int c)
@@ -406,12 +430,15 @@ and emitLiteral ctx = function
 
         // Fill the array with quoted expressions
         v
-        |> List.fold (fun (idx: int) e -> 
-            ctx.IL.Emit(OpCodes.Dup)
-            ctx.IL.Emit(OpCodes.Ldc_I4, idx)
-            emitQuoted ctx e
-            ctx.IL.Emit(OpCodes.Stelem_Ref)
-            idx + 1) 0 |> ignore
+        |> List.fold
+            (fun (idx: int) e ->
+                ctx.IL.Emit(OpCodes.Dup)
+                ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+                emitQuoted ctx e
+                ctx.IL.Emit(OpCodes.Stelem_Ref)
+                idx + 1)
+            0
+        |> ignore
     | BoundLiteral.ByteVector bv ->
         let len = List.length bv
 
@@ -421,16 +448,30 @@ and emitLiteral ctx = function
 
         if len > 0 then
             // Create a static copy of the bytes
-            let literalTy = TypeDefinition("Feersum.Internals",
-                                           sprintf "<>ByteLiteral%d" ctx.ProgramTy.Fields.Count,
-                                           TypeAttributes.NestedPrivate ||| TypeAttributes.Sealed ||| TypeAttributes.ExplicitLayout,
-                                           ctx.Core.ValueType)
+            let literalTy =
+                TypeDefinition(
+                    "Feersum.Internals",
+                    sprintf "<>ByteLiteral%d" ctx.ProgramTy.Fields.Count,
+                    TypeAttributes.NestedPrivate
+                    ||| TypeAttributes.Sealed
+                    ||| TypeAttributes.ExplicitLayout,
+                    ctx.Core.ValueType
+                )
+
             literalTy.PackingSize <- 1s
             literalTy.ClassSize <- len
             ctx.ProgramTy.NestedTypes.Add(literalTy)
-            let literalField = FieldDefinition(sprintf "<>/Lit%d" ctx.ProgramTy.Fields.Count,
-                                               FieldAttributes.Static ||| FieldAttributes.InitOnly ||| FieldAttributes.Assembly ||| FieldAttributes.HasFieldRVA,
-                                               literalTy)
+
+            let literalField =
+                FieldDefinition(
+                    sprintf "<>/Lit%d" ctx.ProgramTy.Fields.Count,
+                    FieldAttributes.Static
+                    ||| FieldAttributes.InitOnly
+                    ||| FieldAttributes.Assembly
+                    ||| FieldAttributes.HasFieldRVA,
+                    literalTy
+                )
+
             literalField.InitialValue <- List.toArray bv
             ctx.ProgramTy.Fields.Add(literalField)
 
@@ -439,42 +480,41 @@ and emitLiteral ctx = function
             ctx.IL.Emit(OpCodes.Ldtoken, literalField)
             ctx.IL.Emit(OpCodes.Call, ctx.Core.RuntimeInitArray)
 
-    /// Emit a write to a given storage location
+/// Emit a write to a given storage location
 and writeTo ctx storage =
     match storage with
-    | StorageRef.Macro m ->
-        icef "Can't re-define macro %s" m.Name
-    | StorageRef.Global(mangledPrefix, loc) ->
+    | StorageRef.Macro m -> icef "Can't re-define macro %s" m.Name
+    | StorageRef.Global (mangledPrefix, loc) ->
         match loc with
-        | Method id ->
-            icef "Can't re-define builtin %s" id
+        | Method id -> icef "Can't re-define builtin %s" id
         | Field id ->
             let field = getField ctx mangledPrefix id
             ctx.IL.Emit(OpCodes.Stsfld, field)
-    | StorageRef.Local(idx) ->
-        ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
-    | StorageRef.Arg(idx) ->
-        ctx.IL.Emit(OpCodes.Starg, idx |> argToParam ctx)
-    | StorageRef.Environment(idx, _) ->
-        let temp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+    | StorageRef.Local (idx) -> ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
+    | StorageRef.Arg (idx) -> ctx.IL.Emit(OpCodes.Starg, idx |> argToParam ctx)
+    | StorageRef.Environment (idx, _) ->
+        let temp =
+            makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+
         ctx.IL.Emit(OpCodes.Stloc, temp)
-        
+
         ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
         writeToEnv ctx temp idx
-    | StorageRef.Captured(from) ->
-        let temp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+    | StorageRef.Captured (from) ->
+        let temp =
+            makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+
         ctx.IL.Emit(OpCodes.Stloc, temp)
 
         // Start at the parent environment and walk up
         ctx.IL.Emit(OpCodes.Ldarg_0)
         walkCaptureChain ctx from (writeToEnv ctx temp)
-        
-    /// Emit a load from the given storage location
+
+/// Emit a load from the given storage location
 and readFrom ctx storage =
     match storage with
-    | StorageRef.Macro m ->
-        icef "Invalid macro application %s" m.Name
-    | StorageRef.Global(ty, loc) ->
+    | StorageRef.Macro m -> icef "Invalid macro application %s" m.Name
+    | StorageRef.Global (ty, loc) ->
         match loc with
         | Method id ->
             let meth = getExternMethod ctx ty id
@@ -482,41 +522,38 @@ and readFrom ctx storage =
         | Field id ->
             let field = getField ctx ty id
             ctx.IL.Emit(OpCodes.Ldsfld, field)
-    | StorageRef.Local(idx) ->
-        ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)
-    | StorageRef.Arg(idx) ->
-        ctx.IL.Emit(OpCodes.Ldarg, idx |> argToParam ctx)
-    | StorageRef.Environment(idx, _) ->
+    | StorageRef.Local (idx) -> ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)
+    | StorageRef.Arg (idx) -> ctx.IL.Emit(OpCodes.Ldarg, idx |> argToParam ctx)
+    | StorageRef.Environment (idx, _) ->
         ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
         readFromEnv ctx idx
-    | StorageRef.Captured(from) ->
+    | StorageRef.Captured (from) ->
         // start at the parent environment, and walk up
         ctx.IL.Emit(OpCodes.Ldarg_0)
         walkCaptureChain ctx from (readFromEnv ctx)
 
-    /// Emit a Sequence of Expressions
-    ///
-    /// Emits each expression in the sequence, and pops any intermediate values
-    /// from the stack. Emits the unspecified value if the sequence is empty.
+/// Emit a Sequence of Expressions
+///
+/// Emits each expression in the sequence, and pops any intermediate values
+/// from the stack. Emits the unspecified value if the sequence is empty.
 and emitSequence ctx tail seq =
     match seq with
-    | [one] ->
-        emitExpression ctx tail one
-    | head::rest ->
+    | [ one ] -> emitExpression ctx tail one
+    | head :: rest ->
         emitExpression ctx false head
         ctx.IL.Emit(OpCodes.Pop)
         emitSequence ctx tail rest
     | _ -> emitUnspecified ctx
 
-    /// Emit a Function application
-    /// 
-    /// Emits the code to build an arguments array and then call the 'applicant'
-    /// value. This is responsible for 'packing' the arguments up for a call to
-    /// match the 'unified calling convention' we have decided on for this
-    /// Scheme compiler.
-    /// 
-    /// Arguments are passed to a callable instnace as an array. This means that
-    /// all callable values are `Func<obj[],obj>`.
+/// Emit a Function application
+///
+/// Emits the code to build an arguments array and then call the 'applicant'
+/// value. This is responsible for 'packing' the arguments up for a call to
+/// match the 'unified calling convention' we have decided on for this
+/// Scheme compiler.
+///
+/// Arguments are passed to a callable instnace as an array. This means that
+/// all callable values are `Func<obj[],obj>`.
 and emitApplication ctx tail ap args =
     emitExpression ctx false ap
 
@@ -531,101 +568,116 @@ and emitApplication ctx tail ap args =
     // Emit the arguments array
     ctx.IL.Emit(OpCodes.Ldc_I4, List.length args)
     ctx.IL.Emit(OpCodes.Newarr, ctx.Assm.MainModule.TypeSystem.Object)
-    List.fold (fun (idx: int) e -> 
-        ctx.IL.Emit(OpCodes.Dup)
-        ctx.IL.Emit(OpCodes.Ldc_I4, idx)
-        emitExpression ctx false e
-        ctx.IL.Emit(OpCodes.Stelem_Ref)
-        idx + 1) 0 args |> ignore
-    
-    if tail then
-        ctx.IL.Emit(OpCodes.Tail)
+
+    List.fold
+        (fun (idx: int) e ->
+            ctx.IL.Emit(OpCodes.Dup)
+            ctx.IL.Emit(OpCodes.Ldc_I4, idx)
+            emitExpression ctx false e
+            ctx.IL.Emit(OpCodes.Stelem_Ref)
+            idx + 1)
+        0
+        args
+    |> ignore
+
+    if tail then ctx.IL.Emit(OpCodes.Tail)
     ctx.IL.Emit(OpCodes.Callvirt, ctx.Core.FuncObjInvoke)
 
-    /// Emit a Lambda Reference
-    /// 
-    /// Performs the marshalling required to create a callable `Func` instance
-    /// on the stack. This first defers to `emitNamedLambda` to write out the
-    /// lambda's body and then creates a new `Func<obj[],obj>` instance that
-    /// wraps a call to the lambda using the lambda's 'thunk'.
+/// Emit a Lambda Reference
+///
+/// Performs the marshalling required to create a callable `Func` instance
+/// on the stack. This first defers to `emitNamedLambda` to write out the
+/// lambda's body and then creates a new `Func<obj[],obj>` instance that
+/// wraps a call to the lambda using the lambda's 'thunk'.
 and emitLambda ctx formals body =
 
     // Emit a declaration for the lambda's implementation
     let lambdaId = ctx.NextLambda
     ctx.NextLambda <- lambdaId + 1
-    let _, thunk = emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
+
+    let _, thunk =
+        emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
+
     let method = thunk :> MethodReference
 
     // Create a `Func` instance with the appropriate `this` pointer.
     match ctx.EnvSize with
-        | Some(_) ->
-            ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
-            emitMethodToInstanceFunc ctx method
-        | None -> emitMethodToFunc ctx method
+    | Some (_) ->
+        ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
+        emitMethodToInstanceFunc ctx method
+    | None -> emitMethodToFunc ctx method
 
-    /// Emit a Named Lambda Body
-    /// 
-    /// Creates a pair of methods. The first contains the implementation of the
-    /// given `body` as a true .NET method. The second method is a 'thunk'
-    /// which 'unpacks' the arguments to the function and performs runtime
-    /// checks as required to ensure that we match the 'unified' calling
-    /// convention used by this Scheme impementation.
-    /// 
-    /// The thunk is rquired in this case as we can't usually know the type of
-    /// the function we are calling. A future optimisation may be to transform
-    /// the bound tree and lower some calls in the case we _can_ be sure of the
-    /// parameters. 
+/// Emit a Named Lambda Body
+///
+/// Creates a pair of methods. The first contains the implementation of the
+/// given `body` as a true .NET method. The second method is a 'thunk'
+/// which 'unpacks' the arguments to the function and performs runtime
+/// checks as required to ensure that we match the 'unified' calling
+/// convention used by this Scheme impementation.
+///
+/// The thunk is rquired in this case as we can't usually know the type of
+/// the function we are calling. A future optimisation may be to transform
+/// the bound tree and lower some calls in the case we _can_ be sure of the
+/// parameters.
 and emitNamedLambda (ctx: EmitCtx) name formals root =
 
-    let attrs = 
+    let attrs =
         if ctx.EnvSize.IsSome then
             MethodAttributes.Public
         else
-            MethodAttributes.Public ||| MethodAttributes.Static
+            MethodAttributes.Public
+            ||| MethodAttributes.Static
 
-    let methodDecl = MethodDefinition(name,
-                                      attrs,
-                                      ctx.Assm.MainModule.TypeSystem.Object)
+    let methodDecl =
+        MethodDefinition(name, attrs, ctx.Assm.MainModule.TypeSystem.Object)
 
     let mutable parameters = []
+
     let addParam id =
-        let param = namedParam id ctx.Assm.MainModule.TypeSystem.Object
+        let param =
+            namedParam id ctx.Assm.MainModule.TypeSystem.Object
+
         methodDecl.Parameters.Add(param)
-        parameters <- param::parameters
+        parameters <- param :: parameters
 
     // Add formals as parameter definitions
     match formals with
     | Simple id -> addParam id
-    | List fmls ->
-        Seq.iter addParam fmls
-    | DottedList(fmls, dotted) ->
+    | List fmls -> Seq.iter addParam fmls
+    | DottedList (fmls, dotted) ->
         Seq.iter addParam fmls
         addParam dotted
-    
+
     let mutable locals = []
+
     for _ = 1 to root.Locals do
-        let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+        let local =
+            VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+
         methodDecl.Body.Variables.Add(local)
-        locals <- local::locals
+        locals <- local :: locals
 
     // Create a new emit context for the new method, and lower the body in that
     // new context.
-    let ctx = { ctx with NextLambda = 0;
-                         Locals = locals;
-                         Parameters = List.rev parameters;
-                         EnvSize = envSizeForMappings root.EnvMappings
-                         ParentEnvSize = ctx.EnvSize
-                         Environment = None
-                         IL = methodDecl.Body.GetILProcessor();
-                         ScopePrefix = name }
+    let ctx =
+        { ctx with
+              NextLambda = 0
+              Locals = locals
+              Parameters = List.rev parameters
+              EnvSize = envSizeForMappings root.EnvMappings
+              ParentEnvSize = ctx.EnvSize
+              Environment = None
+              IL = methodDecl.Body.GetILProcessor()
+              ScopePrefix = name }
 
     match root.EnvMappings with
     | Some m ->
         createEnvironment ctx (Option.defaultValue 0 ctx.EnvSize)
         // Hoist any arguments into the environment
         m
-        |> Seq.iter (function
-            | Environment(idx, Arg a) ->
+        |> Seq.iter
+            (function
+            | Environment (idx, Arg a) ->
                 ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
                 ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
                 ctx.IL.Emit(OpCodes.Ldc_I4, idx)
@@ -642,29 +694,31 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
         let scope =
             ScopeDebugInformation(
                 methodDecl.Body.Instructions.[0],
-                methodDecl.Body.Instructions.[methodDecl.Body.Instructions.Count - 1])
+                methodDecl.Body.Instructions.[methodDecl.Body.Instructions.Count - 1]
+            )
 
         // If we have an environment tell the debugger about it
         ctx.Environment
-        |> Option.iter (fun env ->
-            VariableDebugInformation(env, "capture-environment")
-            |> scope.Variables.Add)
+        |> Option.iter
+            (fun env ->
+                VariableDebugInformation(env, "capture-environment")
+                |> scope.Variables.Add)
 
         ctx.Locals
-        |> List.iteri (fun idx var ->
-            VariableDebugInformation(var, sprintf "local%d" idx)
-            |> scope.Variables.Add)
+        |> List.iteri
+            (fun idx var ->
+                VariableDebugInformation(var, sprintf "local%d" idx)
+                |> scope.Variables.Add)
 
         methodDecl.DebugInformation.Scope <- scope
 
     // Emit a 'thunk' that unpacks the arguments to our method
     // This allows us to provide a uniform calling convention for
     // lambda instances.
-    let thunkDecl = MethodDefinition((sprintf "%s:thunk" name),
-                                      attrs,
-                                      ctx.Assm.MainModule.TypeSystem.Object)
-    thunkDecl.Parameters.Add(namedParam "args"
-                                        (ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
+    let thunkDecl =
+        MethodDefinition((sprintf "%s:thunk" name), attrs, ctx.Assm.MainModule.TypeSystem.Object)
+
+    thunkDecl.Parameters.Add(namedParam "args" (ArrayType(ctx.Assm.MainModule.TypeSystem.Object)))
 
     let thunkIl = thunkDecl.Body.GetILProcessor()
 
@@ -677,9 +731,14 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
 
     /// Unpack all remaining arguments from `idx` onwards into a Scheme list
     let unpackRemainder (idx: int) =
-        let i = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Int32)
+        let i =
+            VariableDefinition(ctx.Assm.MainModule.TypeSystem.Int32)
+
         thunkDecl.Body.Variables.Add(i)
-        let ret = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+
+        let ret =
+            VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+
         thunkDecl.Body.Variables.Add(ret)
 
         // * get length of array
@@ -688,7 +747,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
 
         // * store as local <i>
         thunkIl.Emit(OpCodes.Stloc, i)
-        
+
         // * load null
         thunkIl.Emit(OpCodes.Ldnull)
         thunkIl.Emit(OpCodes.Stloc, ret)
@@ -696,9 +755,11 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
         // * First check the loop condition
         let loopCond = thunkIl.Create(OpCodes.Ldloc, i)
         thunkIl.Emit(OpCodes.Br, loopCond)
-        
+
         //   * load from the array at <i> and make cons pair
-        let loop = thunkIl.Create(OpCodes.Ldarg, thunkDecl.Parameters.[0])
+        let loop =
+            thunkIl.Create(OpCodes.Ldarg, thunkDecl.Parameters.[0])
+
         thunkIl.Append(loop)
         thunkIl.Emit(OpCodes.Ldloc, i)
         thunkIl.Emit(OpCodes.Ldelem_Ref)
@@ -717,7 +778,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
 
         //   * load the result
         thunkIl.Emit(OpCodes.Ldloc, ret)
-    
+
     /// check the argument count using `opCode` and raise if it fails
     let raiseArgCountMismatch (count: int) opCode (err: string) =
         let ok = thunkIl.Create(OpCodes.Nop)
@@ -730,7 +791,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
         emitThrow thunkIl ctx.Core.ExceptionCtor err
 
         thunkIl.Append(ok)
-    
+
     // If we are calling an instance method we need to push `this` on the stack
     // as the first argument before we unpack any others.
     if ctx.ParentEnvSize.IsSome then
@@ -742,7 +803,7 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
         let expectedArgCount = List.length fmls
         raiseArgCountMismatch expectedArgCount OpCodes.Beq (sprintf "Expected exactly %d arguments" expectedArgCount)
         List.fold unpackArg 0 fmls |> ignore
-    | DottedList(fmls, dotted) ->
+    | DottedList (fmls, dotted) ->
         let expectedArgCount = List.length fmls
         raiseArgCountMismatch expectedArgCount OpCodes.Bge (sprintf "Expected at least %d arguments" expectedArgCount)
         let lastIdx = List.fold unpackArg 0 fmls
@@ -772,10 +833,14 @@ and emitNamedLambda (ctx: EmitCtx) name formals root =
 and emitLibrary ctx name mangledName exports body =
 
     // Genreate a nominal type to contain the methods for this library.
-    let libTy = TypeDefinition(ctx.ProgramTy.Namespace,
-                                mangledName,
-                                libraryTypeAttributes,
-                                ctx.Assm.MainModule.TypeSystem.Object)
+    let libTy =
+        TypeDefinition(
+            ctx.ProgramTy.Namespace,
+            mangledName,
+            libraryTypeAttributes,
+            ctx.Assm.MainModule.TypeSystem.Object
+        )
+
     ctx.Assm.MainModule.Types.Add libTy
     libTy.Methods.Add <| createEmptyCtor ctx.Assm
     markWithLibraryName ctx.Core libTy name
@@ -783,26 +848,32 @@ and emitLibrary ctx name mangledName exports body =
 
     let exports =
         exports
-        |> Seq.choose (fun (name, storage) ->
-            match storage with
-            | StorageRef.Global(mangled, Field id) -> Some(((mangled, id), name))
-            | _ -> None)
+        |> Seq.choose
+            (fun (name, storage) ->
+                match storage with
+                | StorageRef.Global (mangled, Field id) -> Some(((mangled, id), name))
+                | _ -> None)
         |> Map.ofSeq
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
-    let libEmitCtx  = { ctx with IL = null
-                              ; ProgramTy = libTy
-                              ; NextLambda = 0
-                              ; Locals = []
-                              ; Parameters = []
-                              ; Exports = exports
-                              ; EnvSize = None
-                              ; ParentEnvSize = None
-                              ; Environment = None
-                              ; ScopePrefix = "$ROOT" }
+    let libEmitCtx =
+        { ctx with
+              IL = null
+              ProgramTy = libTy
+              NextLambda = 0
+              Locals = []
+              Parameters = []
+              Exports = exports
+              EnvSize = None
+              ParentEnvSize = None
+              Environment = None
+              ScopePrefix = "$ROOT" }
+
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda libEmitCtx "$LibraryBody" bodyParams body
+
+    let bodyMethod, _ =
+        emitNamedLambda libEmitCtx "$LibraryBody" bodyParams body
 
     ctx.Initialisers <- Map.add mangledName (bodyMethod :> MethodReference) ctx.Initialisers
 
@@ -853,70 +924,85 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
         |> Map.ofSeq
 
     // Create an assembly with a nominal version to hold our code
-    let name = AssemblyNameDefinition(outputName, Version(0, 1, 0))
+    let name =
+        AssemblyNameDefinition(outputName, Version(0, 1, 0))
+
     use resolver = new DefaultAssemblyResolver()
     List.iter (resolver.AddSearchDirectory) target.MSCoreLibLocations
     let moduleParams = ModuleParameters()
+
     moduleParams.Kind <-
         if options.OutputType = OutputType.Exe then
             ModuleKind.Console
         else
             ModuleKind.Dll
+
     moduleParams.AssemblyResolver <- resolver
-    let assm = AssemblyDefinition.CreateAssembly(name, "lisp_module", moduleParams)
+
+    let assm =
+        AssemblyDefinition.CreateAssembly(name, "lisp_module", moduleParams)
 
     /// Import the initialisers for the extern libraries
     let inits =
         externTys
-        |> Seq.choose (fun ty ->
-            Seq.tryFind (fun (m: MethodDefinition) -> m.Name = "$LibraryBody") ty.Methods
-            |> Option.map (fun m ->
-                (ty.Name, m |> assm.MainModule.ImportReference)))
+        |> Seq.choose
+            (fun ty ->
+                Seq.tryFind (fun (m: MethodDefinition) -> m.Name = "$LibraryBody") ty.Methods
+                |> Option.map (fun m -> (ty.Name, m |> assm.MainModule.ImportReference)))
         |> Map.ofSeq
 
 
     // Genreate a nominal type to contain the methods for this program.
-    let progTy = TypeDefinition(outputName,
-                                bound.MangledName,
-                                libraryTypeAttributes,
-                                assm.MainModule.TypeSystem.Object)
+    let progTy =
+        TypeDefinition(outputName, bound.MangledName, libraryTypeAttributes, assm.MainModule.TypeSystem.Object)
+
     assm.MainModule.Types.Add progTy
     progTy.Methods.Add <| createEmptyCtor assm
 
     let coreTypes = Builtins.importCore assm target
 
     markCompilationRelaxations coreTypes assm
+
     if symbolStream.IsSome then
         markAsDebuggable coreTypes assm
 
     // Emit the body of the script to a separate method so that the `Eval`
     // module can call it directly
-    let rootEmitCtx = { IL = null
-                      ; DebugDocuments = Dictionary()
-                      ; ProgramTy = progTy
-                      ; Externs = externs
-                      ; Libraries = Map.add bound.MangledName progTy Map.empty
-                      ; Initialisers = inits
-                      ; Core = coreTypes
-                      ; NextLambda = 0
-                      ; Locals = []
-                      ; Exports = Map.empty
-                      ; Parameters = []
-                      ; EmitSymbols = symbolStream.IsSome
-                      ; EnvSize = None
-                      ; ParentEnvSize = None
-                      ; Environment = None
-                      ; ScopePrefix = "$ROOT"
-                      ; Assm = assm }
+    let rootEmitCtx =
+        { IL = null
+          DebugDocuments = Dictionary()
+          ProgramTy = progTy
+          Externs = externs
+          Libraries = Map.add bound.MangledName progTy Map.empty
+          Initialisers = inits
+          Core = coreTypes
+          NextLambda = 0
+          Locals = []
+          Exports = Map.empty
+          Parameters = []
+          EmitSymbols = symbolStream.IsSome
+          EnvSize = None
+          ParentEnvSize = None
+          Environment = None
+          ScopePrefix = "$ROOT"
+          Assm = assm }
+
     let bodyParams = BoundFormals.List([])
-    let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.Root
+
+    let bodyMethod, _ =
+        emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.Root
 
     if options.OutputType = OutputType.Exe then
         // The `Main` method is the entry point of the program. It calls
         // `$ScriptBody` and coerces the return value to an exit code.
-        let mainMethod = MethodDefinition("Main",
-                                          MethodAttributes.Public ||| MethodAttributes.Static,
-                                          assm.MainModule.TypeSystem.Int32)
+        let mainMethod =
+            MethodDefinition(
+                "Main",
+                MethodAttributes.Public
+                ||| MethodAttributes.Static,
+                assm.MainModule.TypeSystem.Int32
+            )
+
         mainMethod.Parameters.Add(ParameterDefinition(ArrayType(assm.MainModule.TypeSystem.String)))
         progTy.Methods.Add mainMethod
         assm.EntryPoint <- mainMethod
@@ -928,12 +1014,14 @@ let emit options target (outputStream: Stream) outputName (symbolStream: Stream 
 
     // Write our `Assembly` to the output stream now we are done.
     let mutable writerParams = WriterParameters()
+
     match symbolStream with
-    | Some(stream) ->
+    | Some (stream) ->
         writerParams.SymbolStream <- stream
         writerParams.WriteSymbols <- true
         writerParams.SymbolWriterProvider <- PortablePdbWriterProvider()
     | None -> ()
+
     assm.Write(outputStream, writerParams)
     name
 
@@ -957,15 +1045,18 @@ let compile options outputStream outputName symbolStream node =
     let (refTys, allLibs) =
         options.References
         |> Seq.map (Builtins.loadReferencedSignatures)
-        |> Seq.append (Seq.singleton <| Builtins.loadCoreSignatures target)
-        |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> 
-            (List.append tys aTys, List.append sigs aSigs)) ([], [])
+        |> Seq.append (
+            Seq.singleton
+            <| Builtins.loadCoreSignatures target
+        )
+        |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> (List.append tys aTys, List.append sigs aSigs)) ([], [])
 
     let scope =
         if options.OutputType = OutputType.Script then
             scopeFromLibraries allLibs
         else
             emptyScope
+
     let bound = bind scope allLibs node
 
     let assmName =
@@ -978,7 +1069,7 @@ let compile options outputStream outputName symbolStream node =
             None
 
     { Diagnostics = bound.Diagnostics
-    ; EmittedAssemblyName = assmName }
+      EmittedAssemblyName = assmName }
 
 /// Read a collection of Files and Compile
 ///
@@ -997,28 +1088,35 @@ let compileFiles (options: CompilationOptions) (output: string) (sources: string
         else
             // Ensure the output path exists
             let dir = Path.GetDirectoryName(output)
+
             if not (String.IsNullOrWhiteSpace dir) then
                 // ensure the output directory exists, no need to check it is missing first
                 Directory.CreateDirectory(dir) |> ignore
+
             dir, output
 
     // Normalise the stem and output path. This ensures the output is a file
     // not a directory.
     let stem = Path.GetFileNameWithoutExtension(output)
+
     let stem, output =
         if String.IsNullOrWhiteSpace(stem) then
-            let stem = Path.GetFileNameWithoutExtension(sources |> List.last)
+            let stem =
+                Path.GetFileNameWithoutExtension(sources |> List.last)
+
             stem, Path.Join(outDir, options.DefaultExtension |> sprintf "%s.%s" stem)
         else
             stem, output
-    
+
     let ast, diagnostics =
         let nodes, diagnostics =
             List.map parseFile sources
             |> List.fold (fun (nodes, diags) (n, d) -> (List.append nodes [ n ], List.append d diags)) ([], [])
 
-        { Location = Diagnostics.TextLocation.Missing; Kind = AstNodeKind.Seq(nodes)}, diagnostics
-    
+        { Location = Diagnostics.TextLocation.Missing
+          Kind = AstNodeKind.Seq(nodes) },
+        diagnostics
+
     if Diagnostics.hasErrors diagnostics then
         diagnostics
     else
@@ -1026,19 +1124,22 @@ let compileFiles (options: CompilationOptions) (output: string) (sources: string
         // Open the output streams. We don't use an `Option` directly here for
         // the symbols stream so we can drop it with `use`.
         use outputStream = File.OpenWrite output
+
         use symbols =
             match options.Configuration with
-            | BuildConfiguration.Debug ->
-                File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream
-                // make a symbol file
+            | BuildConfiguration.Debug -> File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream
+            // make a symbol file
             | BuildConfiguration.Release -> null
 
-        let result = compile options outputStream stem (symbols |> Option.ofObj) ast
+        let result =
+            compile options outputStream stem (symbols |> Option.ofObj) ast
 
-        if result.Diagnostics.IsEmpty && options.OutputType = OutputType.Exe then
+        if result.Diagnostics.IsEmpty
+           && options.OutputType = OutputType.Exe then
             match result.EmittedAssemblyName with
-            | Some(assemblyName) -> Runtime.writeRuntimeConfig options output assemblyName outDir
+            | Some (assemblyName) -> Runtime.writeRuntimeConfig options output assemblyName outDir
             | None -> ()
+
         result.Diagnostics
 
 /// Read a File and Compile
