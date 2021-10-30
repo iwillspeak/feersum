@@ -3,8 +3,8 @@
 
   <Import Condition="Exists('$(MSBuildToolsPath)\Microsoft.Managed.Before.targets')" Project="$(MSBuildToolsPath)\Microsoft.Managed.Before.targets" />
   
-  <Import Project="$(MSBuildThisFileDirectory)Feersum.Sdk.Core.targets" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  <Import Condition="'$(IsCrossTargetingBuild)' != 'true'"  Project="$(MSBuildThisFileDirectory)Feersum.Sdk.Core.targets" />
+  <Import Condition="'$(IsCrossTargetingBuild)' == 'true'" Project="$(MSBuildToolsPath)\Microsoft.Common.CrossTargeting.targets" />
 
   <Import Condition="Exists('$(MSBuildToolsPath)\Microsoft.Managed.After.targets')" Project="$(MSBuildToolsPath)\Microsoft.Managed.After.targets" />
 

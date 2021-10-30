@@ -83,4 +83,6 @@
 
   </Target>
 
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+
 </Project>
