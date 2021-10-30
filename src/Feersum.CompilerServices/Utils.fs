@@ -1,8 +1,8 @@
 namespace Feersum.CompilerServices.Utils
 
-module ResultEx =
+module Result =
 
-    /// Unwrap a result into the inner value. Useful for testing, or in cases
+    /// Unwrap a `Result` into the inner value. Useful for testing, or in cases
     /// where other inference indciates the result will be `Ok`.
     let unwrap =
         function
@@ -21,23 +21,32 @@ module ResultEx =
         | Ok _ -> false
         | Error _ -> true
 
+    /// Collect a list of results into a result of lists. If all values are `Ok`
+    /// then an `OK` is returned containing the results. If any errors are
+    /// encoutnered then an `Error` is returned containing all the erorrs.
+    let collectAll input =
+        let rec decompose =
+            function
+            | [] -> ([], [])
+            | head :: rest ->
+                let (results, errs) = decompose rest
+                match head with
+                | Result.Ok o -> (o :: results, errs)
+                | Result.Error e -> (results, e :: errs)
+
+        let (results, errors) = decompose input
+
+        match errors with
+        | [] -> Result.Ok results
+        | errors -> Result.Error errors
+    
     /// Collect a list of results into a single result. If all results are `Ok`
     /// then `Ok` is returned with the inner values as a list. If any result is
     /// `Error` the first such is returned.
-    let collect input =
-        let rec decompose =
-            function
-            | [] -> ([], None)
-            | Result.Error e :: _ -> ([], Some(e))
-            | Result.Ok v :: rest ->
-                let (results, err) = decompose rest
-                (v :: results, err)
-
-        let (results, maybeErr) = decompose input
-
-        match maybeErr with
-        | Some e -> Result.Error e
-        | None -> Result.Ok results
+    let collect results =
+        results
+        |> collectAll
+        |> Result.mapError (List.head)
 
     /// Extract the value from a result, or fallback to a default value.
     let okOr fallback =
@@ -45,7 +54,7 @@ module ResultEx =
         | Ok o -> o
         | Error _ -> fallback
 
-module OptionEx =
+module Option =
 
     /// Unwrap an option into the inner value. Useful for testing, or in cases
     /// where other inference indicates the result will be `Some`.

@@ -9,7 +9,7 @@ open SyntaxUtils
 open SyntaxFactory
 open Feersum.CompilerServices.Utils
 
-let feeri = eval >> ResultEx.unwrap >> cilExternalRepr
+let feeri = eval >> Result.unwrap >> cilExternalRepr
 
 
 let private tryReadSingle expr =

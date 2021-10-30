@@ -109,13 +109,13 @@ module Macros =
         match maybeDotElement with
         | Some dot ->
             elements
-            |> ResultEx.collect
+            |> Result.collect
             |> Result.bind
                 (fun elements ->
                     match dot with
                     | Ok d -> Ok(onDotted (elements, d))
                     | _ -> dot)
-        | None -> elements |> ResultEx.collect |> Result.map onForm
+        | None -> elements |> Result.collect |> Result.map onForm
 
     /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
     /// pattern matches. Returns `Err` if the pattern does not match the given node.
@@ -232,7 +232,7 @@ module Macros =
             let elements =
                 elements
                 |> List.map (getNode)
-                |> ResultEx.collect
+                |> Result.collect
                 |> Result.map
                     (fun expanded ->
                         { Kind = AstNodeKind.Form(expanded |> List.concat)
@@ -348,11 +348,11 @@ module Macros =
             | { Kind = AstNodeKind.Ident (id) } -> Ok(id)
             | n -> errAt n.Location "Expected an identifier in macro literals")
             literals
-        |> ResultEx.collect
+        |> Result.collect
         |> Result.bind
             (fun literals ->
                 List.map (fun case -> parseTransformer id elip literals case) body
-                |> ResultEx.collect)
+                |> Result.collect)
 
     /// Parse the body of a syntax rules form.
     let private parseSyntaxRulesBody id loc syntax =

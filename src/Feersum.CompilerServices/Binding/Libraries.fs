@@ -86,7 +86,7 @@ module private Utils =
         | AstNodeKind.Form x ->
             x
             |> List.map (parseNameElement)
-            |> ResultEx.collect
+            |> Result.collect
         | _ ->
             diags.Emit name.Location "Expected library name"
             Result.Error(())
@@ -101,7 +101,7 @@ module private Utils =
     let parseIdentifierList idents =
         idents
         |> List.map parseIdentifier
-        |> ResultEx.collect
+        |> Result.collect
 
     /// Parse a library declaration form
     let rec parseLibraryDeclaration (diags: DiagnosticBag) declaration =
@@ -171,7 +171,7 @@ module private Utils =
 
                 renames
                 |> List.map parseRename
-                |> ResultEx.collect
+                |> Result.collect
 
             parseImportForm (parseRenames) fromSet renames ImportSet.Renamed
         | AstNodeKind.Form ([ { Kind = AstNodeKind.Ident ("prefix") }; fromSet; prefix ]) ->
