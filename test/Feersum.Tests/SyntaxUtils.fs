@@ -1,7 +1,8 @@
 module SyntaxUtils
 
-open Syntax
-open Diagnostics
+open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Parse
+open Feersum.CompilerServices.Diagnostics
 open System.IO
 open FParsec
 

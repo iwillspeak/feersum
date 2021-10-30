@@ -2,16 +2,14 @@ module EvalTests
 
 open Xunit
 
-open Eval
-open Syntax
+open Feersum.CompilerServices.Eval
+open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Parse
 open SyntaxUtils
 open SyntaxFactory
+open Feersum.CompilerServices.Utils
 
-let private expectOk = function
-    | Ok o -> o
-    | e -> failwithf "Expected OK, but got %A" e
-
-let feeri = eval >> expectOk >> cilExternalRepr
+let feeri = eval >> ResultEx.unwrap >> cilExternalRepr
 
 
 let private tryReadSingle expr =

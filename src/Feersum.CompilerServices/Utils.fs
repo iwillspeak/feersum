@@ -1,4 +1,4 @@
-namespace Utils
+namespace Feersum.CompilerServices.Utils
 
 module ResultEx =
 

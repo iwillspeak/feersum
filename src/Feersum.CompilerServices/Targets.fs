@@ -1,4 +1,4 @@
-namespace Targets
+namespace Feersum.CompilerServices.Targets
 
 /// Resolved targetPaths for SDK reference assemblies.
 type TargetInfo =

@@ -1,4 +1,4 @@
-module Runtime
+module Feersum.CompilerServices.Runtime
 
 open Mono.Cecil
 open System
@@ -6,8 +6,8 @@ open System.Text.Json
 open System.IO
 open System.Runtime.InteropServices
 open Microsoft.Extensions.DependencyModel
-open Options
-open Targets
+open Feersum.CompilerServices.Options
+open Feersum.CompilerServices.Compile
 
 /// Create a `RuntimeLibrary` from the given parts
 let private intoRuntimeLib kind name version (path: string) deps =

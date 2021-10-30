@@ -3,9 +3,9 @@ module SpecTests
 open System.Text.RegularExpressions
 
 open Xunit
-open Options
-open Compile
-open Syntax
+open Feersum.CompilerServices.Options
+open Feersum.CompilerServices.Compile
+open Feersum.CompilerServices.Syntax
 open System.IO
 open Snapper
 open System.Diagnostics
@@ -110,7 +110,7 @@ let ``spec tests compile and run`` specPath configuration =
             let libSourcePath = Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
             let libOptions = { options with OutputType = Lib }
             let libPath = artifactpath libOptions (Path.GetFileName(libSourcePath))
-            match compileFile libOptions libPath libSourcePath with
+            match Compilation.compileFile libOptions libPath libSourcePath with
             | [] ->
                 references <- List.append references [ libPath ]
             | diags ->
@@ -121,7 +121,7 @@ let ``spec tests compile and run`` specPath configuration =
     let options = { options with OutputType = Exe; References = references }
     let exePath = artifactpath options specPath
     let specName = specPath |> normalisePath
-    match compileFile options exePath sourcePath with
+    match Compilation.compileFile options exePath sourcePath with
     | [] ->
         if shouldFail then
             failwith "Expected compilation failure!"
@@ -139,6 +139,6 @@ let public getParseTestData () =
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
 let ``spec tests parse result`` s =
-    let node, diagnostics = parseFile (Path.Join(specDir, s))
+    let node, diagnostics = Parse.parseFile (Path.Join(specDir, s))
     let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
     tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s |> normalisePath))

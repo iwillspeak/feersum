@@ -1,4 +1,4 @@
-module Eval
+module Feersum.CompilerServices.Eval
 
 open System.IO
 open System.Reflection
@@ -7,8 +7,8 @@ open System.Runtime.ExceptionServices
 
 open Serehfa
 
-open Compile
-open Options
+open Feersum.CompilerServices.Compile
+open Feersum.CompilerServices.Options
 
 /// Raw External Representation
 ///
@@ -24,7 +24,7 @@ let eval ast =
     let options = CompilationOptions.Create Debug Script
 
     let result =
-        compile options memStream "evalCtx" None ast
+        Compilation.compile options memStream "evalCtx" None ast
 
     if not result.Diagnostics.IsEmpty then
         Error(result.Diagnostics)

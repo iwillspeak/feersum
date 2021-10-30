@@ -1,4 +1,4 @@
-namespace Ice
+namespace Feersum.CompilerServices.Ice
 
 /// The ICE exception type. This exception is thrown when control flow reaches
 /// a state indicating a bug in the compiler itself.
