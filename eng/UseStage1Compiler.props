@@ -17,13 +17,12 @@
   core library so `dotnet` copies it to the output directory. -->
   <ItemGroup>
     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Serehfa\Serehfa.csproj" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum.Stage1\Feersum.Stage1.fsproj">
-      <Private>False</Private>
-      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>false</CopyToOutputDirectory>
-      <CopyToPublishDirectory>false</CopyToPublishDirectory>
-    </ProjectReference>
   </ItemGroup>
+
+  <Target Name="EnsureCompilerBuilt" BeforeTargets="PrepareForBuild" >
+    <MSBuild Projects="$(MSBuildThisFileDirectory)..\src\Feersum.Stage1\Feersum.Stage1.fsproj"
+      Properties="Configuration=$(CompilerConfiguration);TargetFramework=net5.0"
+      Targets="Build" />
+  </Target>
   
 </Project>
