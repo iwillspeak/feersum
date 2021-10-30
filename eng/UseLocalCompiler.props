@@ -19,13 +19,12 @@
     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Serehfa\Serehfa.csproj" />
     <!-- FIXME: Cross targetting of the core library.
      <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum.Core\Feersum.Core.scmproj" /> -->
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj">
-      <Private>False</Private>
-      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>false</CopyToOutputDirectory>
-      <CopyToPublishDirectory>false</CopyToPublishDirectory>
-    </ProjectReference>
   </ItemGroup>
+
+  <Target Name="EnsureCompilerBuilt" BeforeTargets="PrepareForBuild" >
+    <MSBuild Projects="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj"
+      Properties="Configuration=$(CompilerConfiguration);TargetFramework=net5.0"
+      Targets="Build" />
+  </Target>
   
 </Project>
