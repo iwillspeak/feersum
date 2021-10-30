@@ -6,6 +6,7 @@ open Feersum.Version
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Eval
 open Feersum.CompilerServices.Diagnostics
+open Feersum.Core
 
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
@@ -42,4 +43,7 @@ let rec private repl evaluator =
 let runRepl () =
     ReadLine.HistoryEnabled <- true
     printVersion ()
-    eval >> Result.map print |> repl
+    let options =
+        { defaultScriptOptions
+            with References = [ typeof<LispProgram>.Assembly.Location ]} 
+    evalWith options >> Result.map print |> repl

@@ -10,6 +10,9 @@ open Serehfa
 open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Options
 
+/// The default set of otpions for scripting
+let defaultScriptOptions = CompilationOptions.Create Debug Script
+
 /// Raw External Representation
 ///
 /// Returns the external representation for a CIL type.
@@ -19,9 +22,8 @@ let cilExternalRepr (object: Object) = Write.GetExternalRepresentation(object)
 ///
 /// This first compiles the tree to an in-memory assembly and then calls the
 /// main method on that.
-let eval ast =
+let evalWith options ast =
     let memStream = new MemoryStream()
-    let options = CompilationOptions.Create Debug Script
 
     let result =
         Compilation.compile options memStream "evalCtx" None ast
@@ -44,3 +46,5 @@ let eval ast =
                 .Throw()
 
             Error([])
+
+let eval = evalWith defaultScriptOptions
