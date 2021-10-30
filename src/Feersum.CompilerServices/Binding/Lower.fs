@@ -1,7 +1,6 @@
-module Lower
+module Feersum.CompilerServices.Binding.Lower
 
-open Ice
-open Bind
+open Feersum.CompilerServices.Ice
 
 type private CaptureConversionCtx =
     { Parent: CaptureConversionCtx option

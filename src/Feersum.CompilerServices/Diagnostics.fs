@@ -1,8 +1,10 @@
-module Diagnostics
+namespace Feersum.CompilerServices.Diagnostics
 
 open FParsec
 
-let private missingPos = Position("missing", 0L, 0L, 0L)
+[<AutoOpen>]
+module private Internals =
+    let missingPos = Position("missing", 0L, 0L, 0L)
 
 /// A point in the source text
 ///
@@ -90,11 +92,20 @@ type DiagnosticBag =
     /// Create a new, empty, diagnostics bag.
     static member Empty = { Diagnostics = [] }
 
-/// Returns true if the diagnostic should be considered an error
-let public isError =
-    function
-    | { Level = DiagnosticLevel.Error } -> true
-    | _ -> false
+[<AutoOpen>]
+module Diagnostics =
 
-/// Test if a given diagnostics collection contains any errors.
-let public hasErrors (diagnostics: Diagnostic seq) : bool = Seq.exists (isError) diagnostics
+    /// Returns true if the diagnostic should be considered an error
+    let public isError =
+        function
+        | { Level = Error } -> true
+        | _ -> false
+
+    /// Test if a given diagnostics collection contains any errors.
+    let public hasErrors (diagnostics: Diagnostic seq) : bool = Seq.exists (isError) diagnostics
+
+    /// Write the diagnostics to the standard error
+    let dumpDiagnostics diags =
+        diags
+        |> List.rev
+        |> Seq.iter (fun x -> eprintfn "%s" (x.ToString()))

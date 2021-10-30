@@ -1,9 +1,9 @@
 module LibraryTests
 
-open Libraries
+open Feersum.CompilerServices.Binding
+open Feersum.CompilerServices.Binding.Libraries
 open Xunit
-open Bind
-open Utils
+open Feersum.CompilerServices.Utils
 
 [<Fact>]
 let ``Match library names`` () =

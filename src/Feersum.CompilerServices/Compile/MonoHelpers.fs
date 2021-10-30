@@ -1,4 +1,5 @@
-module IlHelpers
+module Feersum.CompilerServices.Compile.MonoHelpers
+// FIXME: This module should probably be private?
 
 open System
 open Mono.Cecil
@@ -78,3 +79,52 @@ let makeHostInstanceGeneric args (method: MethodReference) =
     |> Seq.iter (fun genericParam -> reference.GenericParameters.Add(GenericParameter(genericParam.Name, reference)))
 
     reference
+
+/// Adds the Environment Type
+///
+/// Creates the environment class that is used to hold dynamic environments
+/// introduced by lambda captures..
+let addEnvDecls (assm: AssemblyDefinition) =
+    let compilerServicesNs = "Feersum.CompilerServices"
+
+    let envTy =
+        TypeDefinition(
+            compilerServicesNs,
+            "Environment",
+            TypeAttributes.Class
+            ||| TypeAttributes.Public
+            ||| TypeAttributes.AnsiClass,
+            assm.MainModule.TypeSystem.Object
+        )
+
+    let parent =
+        FieldDefinition("parent", FieldAttributes.Public, envTy)
+
+    envTy.Fields.Add(parent)
+
+    let slots =
+        FieldDefinition("slots", FieldAttributes.Public, ArrayType(assm.MainModule.TypeSystem.Object))
+
+    envTy.Fields.Add(slots)
+
+    envTy.Methods.Add
+    <| createCtor
+        assm
+        (fun ctor ctorIl ->
+            ctor.Parameters.Add <| namedParam "parent" envTy
+
+            ctor.Parameters.Add
+            <| namedParam "size" assm.MainModule.TypeSystem.Int32
+
+            ctorIl.Emit(OpCodes.Ldarg_0)
+            ctorIl.Emit(OpCodes.Ldarg_1)
+            ctorIl.Emit(OpCodes.Stfld, parent)
+
+            ctorIl.Emit(OpCodes.Ldarg_0)
+            ctorIl.Emit(OpCodes.Ldarg_2)
+            ctorIl.Emit(OpCodes.Newarr, assm.MainModule.TypeSystem.Object)
+            ctorIl.Emit(OpCodes.Stfld, slots))
+
+    assm.MainModule.Types.Add envTy
+
+    envTy

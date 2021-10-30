@@ -1,6 +1,6 @@
 module DiagnosticsTests
 
-open Diagnostics
+open Feersum.CompilerServices.Diagnostics
 open Xunit
 
 [<Fact>]

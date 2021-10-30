@@ -2,12 +2,13 @@ module MacroTests
 
 open Xunit
 
-open Macros
 open SyntaxUtils
 open SyntaxFactory
-open Syntax
-open Utils
-open Diagnostics
+open Feersum.CompilerServices.Binding
+open Feersum.CompilerServices.Binding.Macros
+open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Utils
+open Feersum.CompilerServices.Diagnostics
 
 
 let private parse pattern literals = 

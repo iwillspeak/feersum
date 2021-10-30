@@ -1,7 +1,8 @@
 module SyntaxTests
 
 open Xunit
-open Syntax
+open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Parse
 
 open SyntaxUtils
 open SyntaxFactory
