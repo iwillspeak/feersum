@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Feersum.CompilerServices\Feersum.CompilerServices.fsproj" />
+    <ProjectReference Include="..\Feersum.Core\Feersum.Core.scmproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Version.fs" />

@@ -10,16 +10,14 @@
     <NoImplicitFeersumCoreReference>true</NoImplicitFeersumCoreReference>
     <CompilerConfiguration>$(Configuration)</CompilerConfiguration>
     <CompilerConfiguration Condition=" '$(CompilerConfiguration)' == '' ">Debug</CompilerConfiguration>
-    <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum\bin\$(CompilerConfiguration)\net5.0\Feersum.dll</FeersumCompilerPath>
+    <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum.Stage1\bin\$(CompilerConfiguration)\net5.0\Feersum.Stage1.dll</FeersumCompilerPath>
   </PropertyGroup>
 
   <!-- Reference the compiler so we have it built and can run it. Refernece our
   core library so `dotnet` copies it to the output directory. -->
   <ItemGroup>
     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Serehfa\Serehfa.csproj" />
-    <!-- FIXME: Cross targetting of the core library.
-     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum.Core\Feersum.Core.scmproj" /> -->
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum.Stage1\Feersum.Stage1.fsproj">
       <Private>False</Private>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

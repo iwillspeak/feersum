@@ -6,7 +6,7 @@
     <GenerateGitVersionInformation>false</GenerateGitVersionInformation>
   </PropertyGroup>
   
-  <Import Project="../../eng/UseLocalCompiler.props" />
+  <Import Project="../../eng/UseStage1Compiler.props" />
 
   <ItemGroup>
     <Compile Include="cxr.scm" />
