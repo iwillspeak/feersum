@@ -109,7 +109,7 @@ module private BuiltinMacros =
         | { Kind = AstNodeKind.Seq ([ n ]) } -> n
         | n -> n
         |> Macros.parseSyntaxRules id
-        |> ResultEx.unwrap
+        |> Result.unwrap
 
 
     /// Builtin `and` Macro

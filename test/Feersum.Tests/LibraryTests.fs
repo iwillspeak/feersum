@@ -28,12 +28,12 @@ let ``resolve exported bindings`` () =
 
     let checkImported import expectedId expected =
         let result = resolveImport libs import
-        Assert.True (ResultEx.isOk result)
-        let signature = ResultEx.unwrap result
+        Assert.True (Result.isOk result)
+        let signature = Result.unwrap result
         Assert.Equal<string>(expectedId, signature.LibraryName)
         Assert.Equal<string>(expected, (signature.Exports |> List.map (fun (id, _) -> id)))
 
-    Assert.True (ResultEx.isError (resolveImport libs (ImportSet.Plain(["not";"valid"]))))
+    Assert.True (Result.isError (resolveImport libs (ImportSet.Plain(["not";"valid"]))))
     checkImported (ImportSet.Plain(["test";"lib"])) ["test";"lib"] ["foo"]
     checkImported (ImportSet.Only(ImportSet.Plain(["test";"lib"]), ["test"])) ["test";"lib"] []
     checkImported (ImportSet.Only(ImportSet.Plain(["test";"lib"]), ["foo"])) ["test";"lib"] ["foo"]

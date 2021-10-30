@@ -26,7 +26,7 @@ let private tryExpand macroPat transformer bindings =
     let transformer =
         readSingleNode transformer
         |> parseTemplate "..." (findBound macroPat)
-        |> ResultEx.unwrap
+        |> Result.unwrap
 
     macroExpand transformer bindings
 
@@ -168,7 +168,7 @@ let ``macro parse tests`` pattern syntax shouldMatch =
 
 [<Fact>]
 let ``custom elipsis patterns`` () =
-    let pattern = parsePattern ":::" [] (readSingleNode "(a :::)") |> ResultEx.unwrap
+    let pattern = parsePattern ":::" [] (readSingleNode "(a :::)") |> Result.unwrap
     Assert.Equal(MacroPattern.Form [ MacroPattern.Repeat (MacroPattern.Variable "a")]
                 ,pattern)
 
@@ -181,7 +181,7 @@ let ``simple macro expand`` () =
     Assert.Equal(Ok(constant (Boolean true)), expanded)
 
     let expanded = macroExpand (MacroTemplate.Subst "thing") MacroBindings.Empty
-    Assert.True(ResultEx.isError expanded)
+    Assert.True(Result.isError expanded)
 
 [<Theory>]
 [<InlineData("(a)", "a", "(1)", "1")>]
@@ -190,17 +190,17 @@ let ``simple macro expand`` () =
 [<InlineData("(_ (a ...)...)", "((f a ...) ...)", "(test (1 2)(#f))", "((f 1 2) (f #f))")>]
 let ``macro expand tests`` pattern template invocation expected =
     let macro = parse pattern []
-    let bindings = tryMatch macro invocation |> OptionEx.unwrap
-    let expanded = tryExpand macro template bindings |> ResultEx.unwrap
+    let bindings = tryMatch macro invocation |> Option.unwrap
+    let expanded = tryExpand macro template bindings |> Result.unwrap
     Assert.Equal(expected, pp expanded)
 
 [<Fact>]
 let ``repeated values`` () =
     let macro = parse "(a ...)" []
-    let bindings = tryMatch macro "(1 2 3)" |> OptionEx.unwrap
+    let bindings = tryMatch macro "(1 2 3)" |> Option.unwrap
     let expanded =
         macroExpand (MacroTemplate.Form(TextLocation.Missing, [MacroTemplateElement.Repeated (MacroTemplate.Subst "a")])) bindings
-        |> ResultEx.unwrap
+        |> Result.unwrap
     
     Assert.Equal("(1 2 3)", pp expanded)
 
@@ -210,6 +210,6 @@ let ``repeated values`` () =
 [<InlineData("(bug (a ...) (b ...))", "((cons a b) ...)", "(bug (1) ())")>]
 let ``invalid expansions`` pattern template invocation =
     let macro = parse pattern []
-    let bindings = tryMatch macro invocation |> OptionEx.unwrap
+    let bindings = tryMatch macro invocation |> Option.unwrap
     let expanded = tryExpand macro template bindings
-    Assert.True(ResultEx.isError expanded)
+    Assert.True(Result.isError expanded)

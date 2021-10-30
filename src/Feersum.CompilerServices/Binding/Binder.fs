@@ -421,7 +421,7 @@ module private Impl =
                         Libraries.resolveImport ctx.Libraries
                         >> Result.map (BinderCtx.importLibrary libCtx >> BoundExpr.Import)
                         >> Result.mapError (libCtx.Diagnostics.Emit location)
-                        >> OptionEx.ofResult
+                        >> Option.ofResult
                     )
                     |> BoundExpr.Seq
                     |> Some
@@ -679,7 +679,7 @@ module private Impl =
                     |> Libraries.resolveImport ctx.Libraries
                     |> Result.mapError (ctx.Diagnostics.Emit item.Location)
                     |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
-                    |> ResultEx.okOr BoundExpr.Error)
+                    |> Result.okOr BoundExpr.Error)
             |> BoundExpr.Seq
         | { Kind = AstNodeKind.Ident ("case") } :: body -> unimpl "Case expressions not yet implemented"
         | head :: rest -> bindApplication ctx head rest node
