@@ -28,6 +28,7 @@
   core library so `dotnet` copies it to the output directory. -->
   <ItemGroup>
     <PackageReference Condition=" '$(NoImplicitFeersumCoreReference)' != 'true' " Include="Serehfa" Version="$(FeersumCompilerPackageVersion)" />
+    <PackageReference Condition=" '$(NoImplicitFeersumCoreReference)' != 'true' " Include="Feersum.Core" Version="$(FeersumCompilerPackageVersion)" />
     <PackageReference
       Condition=" '$(FeersumCompilerPath)' == '' "
       Include="Feersum"
