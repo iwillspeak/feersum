@@ -72,10 +72,14 @@ let public writeRuntimeConfig
         let sehrefa = typeof<Serehfa.ConsPair>.Assembly
 
         let referencePaths =
+            // FIXME: We shouldn't be worrying about adding the core
+            // library to the references like this. Feels like a job
+            // for the options or the compilation before us.
             if List.contains (Path.GetFileName(sehrefa.Location)) options.References then
                 options.References
             else
                 sehrefa.Location :: options.References
+            |> List.map (Path.GetFullPath)
 
         let deps =
             referencePaths
