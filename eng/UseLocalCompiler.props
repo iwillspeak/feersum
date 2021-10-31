@@ -13,14 +13,13 @@
     <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum\bin\$(CompilerConfiguration)\net5.0\Feersum.dll</FeersumCompilerPath>
   </PropertyGroup>
 
-  <!-- Reference the compiler so we have it built and can run it. Refernece our
-  core library so `dotnet` copies it to the output directory. -->
+  <!-- Refernece our core library so it is available to import, and `dotnet` copies it to the output directory. -->
   <ItemGroup>
     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Serehfa\Serehfa.csproj" />
-    <!-- FIXME: Cross targetting of the core library.
-     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum.Core\Feersum.Core.scmproj" /> -->
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum.Core\Feersum.Core.scmproj" />
   </ItemGroup>
 
+  <!-- Ensure the compiler is built so we can run it. -->
   <Target Name="EnsureCompilerBuilt" BeforeTargets="PrepareForBuild" >
     <MSBuild Projects="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj"
       Properties="Configuration=$(CompilerConfiguration);TargetFramework=net5.0"
