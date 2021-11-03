@@ -6,7 +6,7 @@ open System.Text.Json
 open System.IO
 open System.Runtime.InteropServices
 open Microsoft.Extensions.DependencyModel
-open Feersum.CompilerServices.Options
+open Feersum.CompilerServices
 open Feersum.CompilerServices.Compile
 
 /// Create a `RuntimeLibrary` from the given parts

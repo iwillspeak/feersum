@@ -8,8 +8,8 @@ open Argu
 
 open Feersum.Repl
 open Feersum.Version
+open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
-open Feersum.CompilerServices.Options
 open Feersum.CompilerServices.Compile
 
 /// Command line arguments type. Encompasses the options that the compiler

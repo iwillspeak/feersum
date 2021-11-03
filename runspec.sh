@@ -23,6 +23,10 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 set -euo pipefail
 
+# FIXME: we shouldn't need to reference Feersum.Core here. The compiler needs
+#        updating to include it implicitly just like `Serehfa`.
 dotnet build --configuration Release Feersum.sln > /dev/null && \
-    dotnet src/Feersum/bin/Release/net5.0/Feersum.dll ${specname} --reference src/Feersum.Core/bin/Release/net5.0/Feersum.Core.dll --outputtype exe -o ${specbin} && \
+    dotnet src/Feersum/bin/Release/net5.0/Feersum.dll ${specname} \
+        --reference src/Feersum.Core/bin/Release/net5.0/Feersum.Core.dll \
+        --outputtype exe -o ${specbin} && \
     dotnet ${specbin}
