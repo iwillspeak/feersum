@@ -7,8 +7,8 @@ open System.Runtime.ExceptionServices
 
 open Serehfa
 
+open Feersum.CompilerServices
 open Feersum.CompilerServices.Compile
-open Feersum.CompilerServices.Options
 
 /// The default set of otpions for scripting
 let defaultScriptOptions = CompilationOptions.Create Debug Script
@@ -22,6 +22,8 @@ let cilExternalRepr (object: Object) = Write.GetExternalRepresentation(object)
 ///
 /// This first compiles the tree to an in-memory assembly and then calls the
 /// main method on that.
+///
+/// The script is compiled using `options`
 let evalWith options ast =
     let memStream = new MemoryStream()
 
@@ -47,4 +49,9 @@ let evalWith options ast =
 
             Error([])
 
+/// Take a syntax tree and evaluate it in-process
+///
+/// This first compiles the tree to an in-memory assembly and then calls the
+/// main method on that. This is the same os calling `evalWith` using the
+/// `defaultScriptoptions`.
 let eval = evalWith defaultScriptOptions

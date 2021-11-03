@@ -1,4 +1,4 @@
-namespace Feersum.CompilerServices.Options
+namespace Feersum.CompilerServices
 
 /// The build configuration for the compiler.
 [<Struct>]

@@ -1,9 +1,8 @@
-﻿
-open Argu.ArguAttributes
+﻿open Argu.ArguAttributes
 open Argu
 
+open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
-open Feersum.CompilerServices.Options
 open Feersum.CompilerServices.Compile
 
 /// Command line arguments type. Cut-down stage1 compiler options
