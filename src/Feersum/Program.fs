@@ -51,10 +51,7 @@ let private compileAll (options: CompilationOptions) output sources =
     | diagnostics ->
         dumpDiagnostics (diagnostics)
 
-        if hasErrors diagnostics then
-            -1
-        else
-            0
+        if hasErrors diagnostics then -1 else 0
 
 
 [<EntryPoint>]

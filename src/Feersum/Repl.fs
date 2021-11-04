@@ -43,7 +43,9 @@ let rec private repl evaluator =
 let runRepl () =
     ReadLine.HistoryEnabled <- true
     printVersion ()
+
     let options =
-        { defaultScriptOptions
-            with References = [ typeof<LispProgram>.Assembly.Location ]} 
+        { defaultScriptOptions with
+              References = [ typeof<LispProgram>.Assembly.Location ] }
+
     evalWith options >> Result.map print |> repl

@@ -1,4 +1,5 @@
 module Feersum.Version
+
 open System.Reflection
 
 /// Get the version string for the compiler.

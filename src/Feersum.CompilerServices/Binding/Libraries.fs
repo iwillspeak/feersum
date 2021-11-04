@@ -83,10 +83,7 @@ module private Utils =
                 Result.Error(())
 
         match name.Kind with
-        | AstNodeKind.Form x ->
-            x
-            |> List.map (parseNameElement)
-            |> Result.collect
+        | AstNodeKind.Form x -> x |> List.map (parseNameElement) |> Result.collect
         | _ ->
             diags.Emit name.Location "Expected library name"
             Result.Error(())
@@ -169,9 +166,7 @@ module private Utils =
                         |> Result.mapError (Diagnostic.Create node.Location)
                     | _ -> Result.Error(Diagnostic.Create node.Location "Expected rename")
 
-                renames
-                |> List.map parseRename
-                |> Result.collect
+                renames |> List.map parseRename |> Result.collect
 
             parseImportForm (parseRenames) fromSet renames ImportSet.Renamed
         | AstNodeKind.Form ([ { Kind = AstNodeKind.Ident ("prefix") }; fromSet; prefix ]) ->

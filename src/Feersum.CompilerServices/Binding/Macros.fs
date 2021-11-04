@@ -325,7 +325,8 @@ module Macros =
         | MacroPattern.Variable v -> [ v ]
         | MacroPattern.Repeat r -> findBound r
         | MacroPattern.Form body -> Seq.map (findBound) body |> List.concat
-        | MacroPattern.DottedForm (body, extra) -> List.append (Seq.map (findBound) body |> List.concat) (findBound extra)
+        | MacroPattern.DottedForm (body, extra) ->
+            List.append (Seq.map (findBound) body |> List.concat) (findBound extra)
         | _ -> []
 
     /// Parse a single macro transformer from a syntax node

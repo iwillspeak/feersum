@@ -90,7 +90,10 @@ module private Utils =
         let attr = core.CompRelaxAttr |> CustomAttribute
 
         attr.ConstructorArguments.Add(
-            CustomAttributeArgument(core.CompRelaxations, Runtime.CompilerServices.CompilationRelaxations.NoStringInterning)
+            CustomAttributeArgument(
+                core.CompRelaxations,
+                Runtime.CompilerServices.CompilationRelaxations.NoStringInterning
+            )
         )
 
         attr |> assm.CustomAttributes.Add
@@ -805,11 +808,21 @@ module private Utils =
         | Simple id -> unpackRemainder 0
         | List fmls ->
             let expectedArgCount = List.length fmls
-            raiseArgCountMismatch expectedArgCount OpCodes.Beq (sprintf "Expected exactly %d arguments" expectedArgCount)
+
+            raiseArgCountMismatch
+                expectedArgCount
+                OpCodes.Beq
+                (sprintf "Expected exactly %d arguments" expectedArgCount)
+
             List.fold unpackArg 0 fmls |> ignore
         | DottedList (fmls, dotted) ->
             let expectedArgCount = List.length fmls
-            raiseArgCountMismatch expectedArgCount OpCodes.Bge (sprintf "Expected at least %d arguments" expectedArgCount)
+
+            raiseArgCountMismatch
+                expectedArgCount
+                OpCodes.Bge
+                (sprintf "Expected at least %d arguments" expectedArgCount)
+
             let lastIdx = List.fold unpackArg 0 fmls
             unpackRemainder lastIdx
 
