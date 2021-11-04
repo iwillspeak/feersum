@@ -2,7 +2,7 @@ module OptionsTests
 
 open Xunit
 
-open Feersum.CompilerServices.Options
+open Feersum.CompilerServices
 
 [<Fact>]
 let ``default extensions for output type`` () =
