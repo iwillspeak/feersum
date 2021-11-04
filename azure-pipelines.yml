@@ -46,12 +46,14 @@ jobs:
       version: 5.0.x
   - bash: |
       set -euxo pipefail
+      dotnet tool restore
       dotnet build --configuration $(configuration)
       dotnet test --no-build --configuration $(configuration) --logger 'trx' --logger 'console;verbosity=normal'
       # FIXME: The pack command below _should_ use --no-build too. Problem is
       #        that doing so when an F# project depends on a C# one causes
       #        a spurious re-build for some reason and ends up in NETSDK1085
       dotnet pack --configuration $(configuration) --output=$(Build.ArtifactStagingDirectory)
+      dotnet tool run fantomas --check --recurse .
   - task: PublishTestResults@2
     condition: always()
     inputs:
