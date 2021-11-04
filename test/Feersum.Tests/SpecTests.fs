@@ -3,7 +3,7 @@ module SpecTests
 open System.Text.RegularExpressions
 
 open Xunit
-open Feersum.CompilerServices.Options
+open Feersum.CompilerServices
 open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Syntax
 open System.IO
