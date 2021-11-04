@@ -10,7 +10,9 @@ let ``create returns error`` () =
 
 [<Fact>]
 let ``warnings are not errors`` () =
-    let diag = Diagnostic.CreateWarning Missing "warn message"
+    let diag =
+        Diagnostic.CreateWarning Missing "warn message"
+
     Assert.False(isError diag)
 
 [<Fact>]
@@ -20,7 +22,9 @@ let ``empty diags list has no errors `` () =
 
 [<Fact>]
 let ``single warning is not an error`` () =
-    let diags = [ Diagnostic.CreateWarning Missing "warning" ]
+    let diags =
+        [ Diagnostic.CreateWarning Missing "warning" ]
+
     Assert.False(hasErrors diags)
 
 [<Fact>]

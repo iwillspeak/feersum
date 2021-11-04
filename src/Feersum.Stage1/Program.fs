@@ -50,7 +50,9 @@ let main argv =
                   |> Option.defaultValue true
               MsCorePaths = args.GetResults CoreLibPath }
 
-    let diags = Compilation.compileFiles options (args.GetResult(Output)) (args.GetResult(Sources))
+    let diags =
+        Compilation.compileFiles options (args.GetResult(Output)) (args.GetResult(Sources))
+
     if hasErrors diags then
         dumpDiagnostics diags
         diags |> List.length

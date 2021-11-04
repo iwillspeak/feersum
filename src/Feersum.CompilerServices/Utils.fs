@@ -30,6 +30,7 @@ module Result =
             | [] -> ([], [])
             | head :: rest ->
                 let (results, errs) = decompose rest
+
                 match head with
                 | Result.Ok o -> (o :: results, errs)
                 | Result.Error e -> (results, e :: errs)
@@ -39,7 +40,7 @@ module Result =
         match errors with
         | [] -> Result.Ok results
         | errors -> Result.Error errors
-    
+
     /// Collect a list of results into a single result. If all results are `Ok`
     /// then `Ok` is returned with the inner values as a list. If any result is
     /// `Error` the first such is returned.

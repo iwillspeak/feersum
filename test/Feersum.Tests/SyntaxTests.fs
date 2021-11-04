@@ -10,21 +10,39 @@ open SyntaxFactory
 // TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
 //       invalid hex escapes, bad identifiers and so on.
 
-let sanitise = sanitiseNodeWith (function _ -> dummyLocation)
+let sanitise =
+    sanitiseNodeWith
+        (function
+        | _ -> dummyLocation)
 
 [<Fact>]
 let ``parse seqs`` () =
-    Assert.Equal(Seq [ Number 1.0 |> Constant |> node; Number 23.0  |> Constant |> node] |> node, readMany "1 23" |> sanitise)
-    Assert.Equal(Seq [ Boolean true  |> Constant |> node] |> node, readMany "#t" |> sanitise)
-    Assert.Equal(Seq [ ] |> node, readMany "" |> sanitise)
-    Assert.Equal(Seq [ Form [ Ident "+" |> node; Number 12.0 |> Constant |> node; Number 34.0  |> Constant|> node ] |> node; Boolean false |> Constant |> node] |> node, readMany "(+ 12 34) #f" |> sanitise)
+    Assert.Equal(
+        Seq [ Number 1.0 |> Constant |> node
+              Number 23.0 |> Constant |> node ]
+        |> node,
+        readMany "1 23" |> sanitise
+    )
+
+    Assert.Equal(Seq [ Boolean true |> Constant |> node ] |> node, readMany "#t" |> sanitise)
+    Assert.Equal(Seq [] |> node, readMany "" |> sanitise)
+
+    Assert.Equal(
+        Seq [ Form [ Ident "+" |> node
+                     Number 12.0 |> Constant |> node
+                     Number 34.0 |> Constant |> node ]
+              |> node
+              Boolean false |> Constant |> node ]
+        |> node,
+        readMany "(+ 12 34) #f" |> sanitise
+    )
 
 [<Fact>]
 let ``parse atoms`` () =
     Assert.Equal(Number 123.559 |> Constant, readSingle "123.559")
-    Assert.Equal(Number 789.0|> Constant, readSingle "789")
-    Assert.Equal(Str "hello\nworld"|> Constant, readSingle @"""hello\nworld""")
-    Assert.Equal(Str ""|> Constant, readSingle("\"\""))
+    Assert.Equal(Number 789.0 |> Constant, readSingle "789")
+    Assert.Equal(Str "hello\nworld" |> Constant, readSingle @"""hello\nworld""")
+    Assert.Equal(Str "" |> Constant, readSingle ("\"\""))
     Assert.Equal(Ident "nil", readSingle "nil")
     Assert.Equal(Boolean true |> Constant, readSingle "#t")
     Assert.Equal(Boolean false |> Constant, readSingle "#f")
@@ -104,12 +122,17 @@ let ``identifier literals`` raw cooked =
 [<InlineData("\\x41;", 'A')>]
 [<InlineData("\\x1234;", '\u1234')>]
 let ``parse escaped characters`` escaped char =
-    Assert.Equal(Str (char |> string) |> Constant, readSingle (sprintf "\"%s\"" escaped))
+    Assert.Equal(Str(char |> string) |> Constant, readSingle (sprintf "\"%s\"" escaped))
 
 [<Fact>]
 let ``parse datum comment`` () =
-    Assert.Equal(Number 1.0 |> Constant, readSingle "#;(= n 1)
-            1        ;Base case: return 1")
+    Assert.Equal(
+        Number 1.0 |> Constant,
+        readSingle
+            "#;(= n 1)
+            1        ;Base case: return 1"
+    )
+
     Assert.Equal(Number 123.0 |> Constant, readSingle "#;(= n 1)123")
     Assert.Equal(Number 456.0 |> Constant, readSingle "#;123 456")
 
