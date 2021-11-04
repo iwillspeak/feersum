@@ -1,5 +1,7 @@
 namespace Feersum.CompilerServices
 
+open System
+
 /// The build configuration for the compiler.
 [<Struct>]
 type BuildConfiguration =
@@ -22,6 +24,7 @@ type OutputType =
 type CompilationOptions =
     { Configuration: BuildConfiguration
       OutputType: OutputType
+      Version: Version option
       MsCorePaths: string list
       GenerateDepsFiles: bool
       References: string list }
@@ -30,6 +33,7 @@ type CompilationOptions =
     static member Create configuration outputType =
         { Configuration = configuration
           OutputType = outputType
+          Version = None
           MsCorePaths = []
           GenerateDepsFiles = false
           References = [] }

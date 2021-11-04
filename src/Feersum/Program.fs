@@ -20,6 +20,7 @@ type CliArguments =
     | OutputType of OutputType
     | CoreLibPath of string
     | GenerateDeps of bool
+    | AssemblyVersion of string
     | [<AltCommandLine("-r")>] Reference of string
     | [<AltCommandLine("-o")>] Output of string
     | [<MainCommand>] Sources of source_file: string list
@@ -32,6 +33,7 @@ type CliArguments =
             | OutputType _ -> "The output type (Lib / Exe / Script)."
             | CoreLibPath _ -> "Location of mscorelib.dll, or System.Runtime.dll."
             | GenerateDeps _ -> "Generate .deps.json and .runtimeconfig.json stubs."
+            | AssemblyVersion _ -> "Specify the version for the generated assembly."
             | Reference _ -> "Compiled Scheme assembly to reference."
             | Output _ -> "The output path to write compilation results to."
             | Sources _ -> "Scheme source files for compilation."
@@ -83,6 +85,9 @@ let main argv =
 
     let options =
         { CompilationOptions.Create buildConfig outputType with
+              Version =
+                  args.TryGetResult AssemblyVersion
+                  |> Option.map Version.Parse
               References = args.GetResults Reference
               GenerateDepsFiles =
                   (args.TryGetResult GenerateDeps)
