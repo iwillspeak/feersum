@@ -934,7 +934,7 @@ module Compilation =
     /// given bound tree. This method is responsible for creating the root
     /// `LispProgram` type and preparting the emit context. The main work of
     /// lowering is done by `emitNamedLambda`.
-    let emit options target (outputStream: Stream) outputName (symbolStream: Stream option) externTys bound =
+    let emit options target (outputStream: Stream) (outputName: string) (symbolStream: Stream option) externTys bound =
 
         /// Collect external types so we can look up their fields later
         let externs =
@@ -944,7 +944,14 @@ module Compilation =
 
         // Create an assembly with a nominal version to hold our code
         let name =
-            AssemblyNameDefinition(outputName, Version(0, 1, 0))
+            let stem =
+                Path.GetFileNameWithoutExtension(outputName)
+
+            AssemblyNameDefinition(
+                stem,
+                options.Version
+                |> Option.defaultValue (Version(1, 0))
+            )
 
         use resolver = new DefaultAssemblyResolver()
         List.iter (resolver.AddSearchDirectory) target.MSCoreLibLocations
@@ -959,7 +966,7 @@ module Compilation =
         moduleParams.AssemblyResolver <- resolver
 
         let assm =
-            AssemblyDefinition.CreateAssembly(name, "lisp_module", moduleParams)
+            AssemblyDefinition.CreateAssembly(name, outputName, moduleParams)
 
         /// Import the initialisers for the extern libraries
         let inits =
@@ -973,7 +980,7 @@ module Compilation =
 
         // Genreate a nominal type to contain the methods for this program.
         let progTy =
-            TypeDefinition(outputName, bound.MangledName, libraryTypeAttributes, assm.MainModule.TypeSystem.Object)
+            TypeDefinition(name.Name, bound.MangledName, libraryTypeAttributes, assm.MainModule.TypeSystem.Object)
 
         assm.MainModule.Types.Add progTy
         progTy.Methods.Add <| createEmptyCtor assm
@@ -1116,16 +1123,14 @@ module Compilation =
 
         // Normalise the stem and output path. This ensures the output is a file
         // not a directory.
-        let stem = Path.GetFileNameWithoutExtension(output)
-
-        let stem, output =
-            if String.IsNullOrWhiteSpace(stem) then
-                let stem =
-                    Path.GetFileNameWithoutExtension(sources |> List.last)
-
-                stem, Path.Join(outDir, options.DefaultExtension |> sprintf "%s.%s" stem)
+        let output =
+            if String.IsNullOrWhiteSpace(Path.GetFileName(output)) then
+                Path.ChangeExtension(
+                    Path.Join(outDir, Path.GetFileName(sources |> List.last)),
+                    options.DefaultExtension
+                )
             else
-                stem, output
+                output
 
         let ast, diagnostics =
             let nodes, diagnostics =
@@ -1151,7 +1156,7 @@ module Compilation =
                 | BuildConfiguration.Release -> null
 
             let result =
-                compile options outputStream stem (symbols |> Option.ofObj) ast
+                compile options outputStream (Path.GetFileName(output)) (symbols |> Option.ofObj) ast
 
             if result.Diagnostics.IsEmpty
                && options.OutputType = OutputType.Exe then
