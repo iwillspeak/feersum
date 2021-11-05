@@ -53,7 +53,9 @@ jobs:
       #        that doing so when an F# project depends on a C# one causes
       #        a spurious re-build for some reason and ends up in NETSDK1085
       dotnet pack --configuration $(configuration) --output=$(Build.ArtifactStagingDirectory)
+      # Check code format. Fantomas for F#, dotnet-format for C#
       dotnet tool run fantomas --check --recurse .
+      dotnet tool run dotnet-format --check
   - task: PublishTestResults@2
     condition: always()
     inputs:
