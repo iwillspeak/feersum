@@ -5,70 +5,70 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("scheme", "base")]
+    [LispLibrary("feersum", "sehehfa", "characters")]
     public static class Characters
     {
-        [LispBuiltin("char?")]
+        [LispExport("char?")]
         public static object IsChar(object[] args)
         {
             return UnpackArgs<object>(args) is char;
         }
 
-        [LispBuiltin("char=?")]
+        [LispExport("char=?")]
         public static object CharEqual(object[] args)
         {
             return ComparisonOp(args, false, (c, d) => c == d);
         }
 
-        [LispBuiltin("char<?")]
+        [LispExport("char<?")]
         public static object CharLt(object[] args)
         {
             return ComparisonOp(args, false, (c, d) => c < d);
         }
 
-        [LispBuiltin("char>?")]
+        [LispExport("char>?")]
         public static object CharGt(object[] args)
         {
             return ComparisonOp(args, false, (c, d) => c > d);
         }
 
-        [LispBuiltin("char<=?")]
+        [LispExport("char<=?")]
         public static object CharLte(object[] args)
         {
             return ComparisonOp(args, false, (c, d) => c <= d);
         }
 
-        [LispBuiltin("char>=?")]
+        [LispExport("char>=?")]
         public static object CharGte(object[] args)
         {
             return ComparisonOp(args, false, (c, d) => c >= d);
         }
 
-        [LispBuiltin("char-ci=?")]
+        [LispExport("char-ci=?")]
         public static object CharEqualCI(object[] args)
         {
             return ComparisonOp(args, true, (c, d) => c == d);
         }
 
-        [LispBuiltin("char-ci<?")]
+        [LispExport("char-ci<?")]
         public static object CharLtCi(object[] args)
         {
             return ComparisonOp(args, true, (c, d) => c < d);
         }
 
-        [LispBuiltin("char-ci>?")]
+        [LispExport("char-ci>?")]
         public static object CharGtCi(object[] args)
         {
             return ComparisonOp(args, true, (c, d) => c > d);
         }
 
-        [LispBuiltin("char-ci<=?")]
+        [LispExport("char-ci<=?")]
         public static object CharLteCi(object[] args)
         {
             return ComparisonOp(args, true, (c, d) => c <= d);
         }
 
-        [LispBuiltin("char-ci>=?")]
+        [LispExport("char-ci>=?")]
         public static object CharGteCi(object[] args)
         {
             return ComparisonOp(args, true, (c, d) => c >= d);
@@ -103,37 +103,37 @@ namespace Serehfa
             }
         }
 
-        [LispBuiltin("char-alphabetic?")]
+        [LispExport("char-alphabetic?")]
         public static object IsAlphabetic(object[] args)
         {
             return char.IsLetter(UnpackArgs<char>(args));
         }
 
-        [LispBuiltin("char-numeric?")]
+        [LispExport("char-numeric?")]
         public static object IsNumeric(object[] args)
         {
             return char.IsDigit(UnpackArgs<char>(args));
         }
 
-        [LispBuiltin("char-whitespace?")]
+        [LispExport("char-whitespace?")]
         public static object IsWhitespace(object[] args)
         {
             return char.IsWhiteSpace(UnpackArgs<char>(args));
         }
 
-        [LispBuiltin("char-upper-case?")]
+        [LispExport("char-upper-case?")]
         public static object IsUpper(object[] args)
         {
             return char.IsUpper(UnpackArgs<char>(args));
         }
 
-        [LispBuiltin("char-lower-case?")]
+        [LispExport("char-lower-case?")]
         public static object IsLower(object[] args)
         {
             return char.IsLower(UnpackArgs<char>(args));
         }
 
-        [LispBuiltin("digit-value")]
+        [LispExport("digit-value")]
         public static object DigitValue(object[] args)
         {
             var c = UnpackArgs<char>(args);
@@ -144,13 +144,13 @@ namespace Serehfa
             return char.GetNumericValue(c);
         }
 
-        [LispBuiltin("char->integer")]
+        [LispExport("char->integer")]
         public static object CharToNumber(object[] args)
         {
             return (double)(Convert.ToUInt32(UnpackArgs<char>(args)));
         }
 
-        [LispBuiltin("integer->char")]
+        [LispExport("integer->char")]
         public static object NumberToChar(object[] args)
         {
             try
@@ -170,19 +170,19 @@ namespace Serehfa
             return (double)(0x10FFFF + 1);
         }
 
-        [LispBuiltin("char-upcase")]
+        [LispExport("char-upcase")]
         public static object CharUpcase(object[] args)
         {
             return char.ToUpperInvariant(UnpackArgs<char>(args));
         }
 
-        [LispBuiltin("char-downcase")]
+        [LispExport("char-downcase")]
         public static object CharDowncase(object[] args)
         {
             return char.ToLowerInvariant(UnpackArgs<char>(args));
         }
 
-        [LispBuiltin("char-foldcase")]
+        [LispExport("char-foldcase")]
         public static object CharFoldcase(object[] args)
         {
             // Is this OK?

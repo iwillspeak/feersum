@@ -22,7 +22,7 @@ namespace Serehfa
         /// The newline method. This is a prime candidate for being moved to
         /// a pure scheme definition.
         /// </summary>
-        [LispBuiltin("newline")]
+        [LispExport("newline")]
         public static object Newline(object[] args)
         {
             CheckNoArgs(args);
@@ -40,7 +40,7 @@ namespace Serehfa
         /// This implementation calls `ToString` on the underlying .NET object and
         /// uses that directly.
         /// </summary>
-        [LispBuiltin("display")]
+        [LispExport("display")]
         public static object Display(object[] args)
         {
             var obj = UnpackArgs<object>(args);
@@ -56,7 +56,7 @@ namespace Serehfa
         /// Write builtin. This is intended for round-trippable and machine
         /// readable output.
         /// </summary>
-        [LispBuiltin("write")]
+        [LispExport("write")]
         public static object WriteExternal(object[] args)
         {
             var obj = UnpackArgs<object>(args);

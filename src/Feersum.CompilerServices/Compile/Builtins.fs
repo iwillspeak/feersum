@@ -18,6 +18,7 @@ type CoreTypes =
     { ConsTy: TypeReference
       ValueType: TypeReference
       EnvTy: TypeDefinition
+      TypeTy: TypeReference
       ConsCtor: MethodReference
       UndefinedInstance: MethodReference
       IdentCtor: MethodReference
@@ -34,6 +35,7 @@ type CoreTypes =
       CompRelaxations: TypeReference
       LispExport: MethodReference
       LispLibrary: MethodReference
+      LispReExport: MethodReference
       AssmConfigCtor: MethodReference }
 
 // --------------------  External Reference Utils -----------------------------
@@ -50,30 +52,41 @@ module private ExternUtils =
     /// Get Exported items from a given Mono type definition.
     let private getExports (ty: TypeDefinition) =
 
-        let unpackStringArg (attr: CustomAttribute) =
-            attr.ConstructorArguments.[0].Value.ToString()
+        let unpackStringArg (attr: CustomAttribute) idx =
+            attr.ConstructorArguments.[idx].Value.ToString()
 
-        let chooseMatching name onMatching (things: seq<'a> when 'a :> ICustomAttributeProvider) =
+        let findExported onMatching (things: seq<'a> when 'a :> ICustomAttributeProvider) =
             things
             |> Seq.choose
                 (fun thing ->
                     thing.CustomAttributes
                     |> Seq.tryPick
                         (fun attr ->
-                            if attr.AttributeType.Name = name then
-                                Some(((unpackStringArg attr), Global(ty.FullName, (onMatching thing))))
+                            if attr.AttributeType.Name = "LispExportAttribute" then
+                                Some(((unpackStringArg attr 0), Global(ty.FullName, (onMatching thing))))
                             else
                                 None))
 
         let exports =
             ty.Fields
-            |> chooseMatching "LispExportAttribute" (fun x -> Field(x.Name))
+            |> findExported  (fun x -> Field(x.Name))
 
         let builtins =
             ty.Methods
-            |> chooseMatching "LispBuiltinAttribute" (fun x -> Method(x.Name))
+            |> findExported (fun x -> Method(x.Name))
 
-        Seq.append exports builtins |> List.ofSeq
+        let reExports =
+            ty.CustomAttributes
+            |> Seq.choose
+                (fun attr ->
+                    if attr.AttributeType.Name = "LispReExportAttribute" then
+                        // FIXME: not ty.FullName, needs to be unpacked from the args
+                        // FIXME: Need to decide if the re-exported item is a method or field.
+                        Some((unpackStringArg attr 0, Global(ty.FullName, Method(unpackStringArg attr 2))))
+                    else
+                        None)
+
+        Seq.concat [ exports; builtins; reExports ] |> List.ofSeq
 
     /// Try to convert a given type definition into a library signature.
     let tryGetSignatureFromType (ty: TypeDefinition) =
@@ -168,7 +181,7 @@ module private BuiltinMacros =
 
     /// The list of builtin macros
     let coreMacros =
-        { LibraryName = [ "scheme"; "base" ]
+        { LibraryName = [ "feersum"; "builtin"; "macros" ]
           Exports =
               [ macroAnd
                 macroOr
@@ -246,6 +259,7 @@ module Builtins =
 
         { ConsTy = getImportedType "Serehfa.ConsPair"
           ValueType = getImportedType "System.ValueType"
+          TypeTy = getImportedType "System.Type"
           ConsCtor = getSingleCtor "Serehfa.ConsPair"
           IdentCtor = getSingleCtor "Serehfa.Ident"
           RuntimeInitArray = getMethod "System.Runtime.CompilerServices.RuntimeHelpers" "InitializeArray"
@@ -261,6 +275,7 @@ module Builtins =
           NonUserCodeCtor = getSingleCtor "System.Diagnostics.DebuggerNonUserCodeAttribute"
           StepThroughCtor = getSingleCtor "System.Diagnostics.DebuggerStepThroughAttribute"
           LispExport = getSingleCtor "Serehfa.Attributes.LispExportAttribute"
+          LispReExport = getSingleCtor "Serehfa.Attributes.LispReExportAttribute"
           LispLibrary = getSingleCtor "Serehfa.Attributes.LispLibraryAttribute"
           AssmConfigCtor = getSingleCtor "System.Reflection.AssemblyConfigurationAttribute"
           CompRelaxAttr = getSingleCtor "System.Runtime.CompilerServices.CompilationRelaxationsAttribute"
@@ -288,15 +303,8 @@ module Builtins =
 
         let sigs =
             BuiltinMacros.coreMacros :: sigs
-            |> Seq.groupBy (fun l -> l.LibraryName)
-            |> Seq.map
-                (fun (n, sigs) ->
-                    { LibraryName = n
-                      Exports =
-                          Seq.collect (fun x -> x.Exports) sigs
-                          |> List.ofSeq })
 
-        (tys, sigs |> List.ofSeq)
+        (tys, sigs)
 
     /// Load the core types into the given assembly
     let importCore (targetAssm: AssemblyDefinition) target =

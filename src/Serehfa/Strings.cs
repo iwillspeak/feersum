@@ -5,10 +5,10 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("scheme", "base")]
+    [LispLibrary("feersum", "sehehfa", "strings")]
     public static class Strings
     {
-        [LispBuiltin("string=?")]
+        [LispExport("string=?")]
         public static object StringEquals(object[] args)
         {
             CheckAtLeastArgs(args, 2);
@@ -26,7 +26,7 @@ namespace Serehfa
             return true;
         }
 
-        [LispBuiltin("string->number")]
+        [LispExport("string->number")]
         public static object StringToNumber(object[] args)
         {
             if (args.Length == 1)

@@ -4,16 +4,16 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("scheme", "base")]
+    [LispLibrary("feersum", "sehehfa", "symbols")]
     public static class Symbols
     {
-        [LispBuiltin("symbol?")]
+        [LispExport("symbol?")]
         public static object IsSymbol(object[] args)
         {
             return UnpackArgs<object>(args) is Ident;
         }
 
-        [LispBuiltin("symbol=?")]
+        [LispExport("symbol=?")]
         public static object SymbolEquals(object[] args)
         {
             CheckAtLeastArgs(args, 2);
@@ -31,13 +31,13 @@ namespace Serehfa
             return true;
         }
 
-        [LispBuiltin("symbol->string")]
+        [LispExport("symbol->string")]
         public static object SymbolToString(object[] args)
         {
             return UnpackArgs<Ident>(args).Raw;
         }
 
-        [LispBuiltin("string->symbol")]
+        [LispExport("string->symbol")]
         public static object StringToSymbol(object[] args)
         {
             return new Ident(UnpackArgs<string>(args));

@@ -6,7 +6,7 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("scheme", "base")]
+    [LispLibrary("feersum", "sehehfa", "equivalence")]
     public static class Equivalence
     {
         /// <summary>
@@ -14,7 +14,7 @@ namespace Serehfa
         ///  version of <c>eq?</c>, but with value equivalence for
         ///  Our various boxed values.
         /// </summary>
-        [LispBuiltin("eqv?")]
+        [LispExport("eqv?")]
         public static object Equiv(object[] args)
         {
             return UnpackArgs<object, object>(args) switch
@@ -37,7 +37,7 @@ namespace Serehfa
         ///  to handle identifiers + procedures specially as they
         ///  aren't completely transparent references.
         /// </summary>
-        [LispBuiltin("eq?")]
+        [LispExport("eq?")]
         public static object Eq(object[] args)
         {
             return UnpackArgs<object, object>(args) switch
@@ -52,7 +52,7 @@ namespace Serehfa
             };
         }
 
-        [LispBuiltin("equal?")]
+        [LispExport("equal?")]
         public static object Equal(object[] args)
         {
             var (left, right) = UnpackArgs<object, object>(args);
