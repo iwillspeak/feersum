@@ -88,6 +88,22 @@ namespace Serehfa
             return list.Cdr;
         }
 
+        [LispBuiltin("set-car!")]
+        public static object SetCar(object[] args)
+        {
+            var (list, newCar) = UnpackArgs<ConsPair, object>(args);
+            list.Car = newCar;
+            return Undefined.Instance;
+        }
+
+        [LispBuiltin("set-cdr!")]
+        public static object SetCdr(object[] args)
+        {
+            var (list, newCdr) = UnpackArgs<ConsPair, object>(args);
+            list.Cdr = newCdr;
+            return Undefined.Instance;
+        }
+
         [LispBuiltin("length")]
         public static object Length(object[] args)
         {
