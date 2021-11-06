@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <!-- Ensure the compiler is built so we can run it. -->
-  <Target Name="EnsureCompilerBuilt" BeforeTargets="PrepareForBuild" >
+  <Target Name="EnsureCompilerBuilt" BeforeTargets="PrepareForBuild" Outputs="$(FeersumCompilerPath)" >
     <MSBuild Projects="$(MSBuildThisFileDirectory)..\src\Feersum.Stage1\Feersum.Stage1.fsproj"
       Properties="Configuration=$(CompilerConfiguration);TargetFramework=net5.0"
       Targets="Build" />
