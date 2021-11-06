@@ -4,17 +4,14 @@ namespace Serehfa
 {
     public class ConsPair
     {
-        private object _car;
-        private object _cdr;
-
         public ConsPair(object car, object cdr)
         {
-            _car = car;
-            _cdr = cdr;
+            Car = car;
+            Cdr = cdr;
         }
 
-        public object Car => _car;
-        public object Cdr => _cdr;
+        public object Car { get; set; }
+        public object Cdr { get; set; }
 
         public override string ToString()
         {
@@ -23,20 +20,20 @@ namespace Serehfa
             var current = this;
             while (current != null)
             {
-                sb.Append(Write.GetExternalRepresentation(current._car));
-                if (current._cdr is ConsPair tail)
+                sb.Append(Write.GetExternalRepresentation(current.Car));
+                if (current.Cdr is ConsPair tail)
                 {
                     sb.Append(" ");
                     current = tail;
                 }
-                else if (current._cdr is null)
+                else if (current.Cdr is null)
                 {
                     current = null;
                 }
                 else
                 {
                     sb.Append(" . ");
-                    sb.Append(Write.GetExternalRepresentation(current._cdr));
+                    sb.Append(Write.GetExternalRepresentation(current.Cdr));
                     break;
                 }
             }
