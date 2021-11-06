@@ -27,6 +27,5 @@ set -euo pipefail
 #        updating to include it implicitly just like `Serehfa`.
 dotnet build --configuration Release Feersum.sln > /dev/null && \
     dotnet src/Feersum/bin/Release/net5.0/Feersum.dll ${specname} \
-        --reference src/Feersum.Core/bin/Release/net5.0/Feersum.Core.dll \
         --outputtype exe -o ${specbin} && \
     dotnet ${specbin}

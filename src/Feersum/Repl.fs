@@ -38,6 +38,7 @@ let rec private repl evaluator =
 
     repl evaluator
 
+let coreReferences = [ typeof<LispProgram>.Assembly.Location ]
 
 /// Run the REPL, using the reflection-based evaluator.
 let runRepl () =
@@ -46,6 +47,6 @@ let runRepl () =
 
     let options =
         { defaultScriptOptions with
-              References = [ typeof<LispProgram>.Assembly.Location ] }
+              References = coreReferences }
 
     evalWith options >> Result.map print |> repl
