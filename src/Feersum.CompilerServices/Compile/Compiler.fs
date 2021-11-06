@@ -25,7 +25,7 @@ type EmitCtx =
       mutable NextLambda: int
       ScopePrefix: string
       EmitSymbols: bool
-      Exports: Map<(string * string), string>
+      Exports: Map<string, string>
       EnvSize: int option
       Externs: Map<string, TypeDefinition>
       mutable Environment: VariableDefinition option
@@ -114,6 +114,23 @@ module private Utils =
 
         attr |> typ.CustomAttributes.Add
 
+    /// Add an attribute marking the given item as re-exported under the new
+    /// name `ext` from `typ`.
+    let private markAsReExport (core: CoreTypes) (typ: TypeDefinition) ext libTy item =
+        let attr = core.LispReExport |> CustomAttribute
+        attr.ConstructorArguments.Add(CustomAttributeArgument(typ.Module.TypeSystem.String, ext))
+        attr.ConstructorArguments.Add(CustomAttributeArgument(core.TypeTy, libTy))
+
+        match item with
+        | Field id ->
+            attr.ConstructorArguments.Add(CustomAttributeArgument(typ.Module.TypeSystem.String, id))
+            attr.ConstructorArguments.Add(CustomAttributeArgument(typ.Module.TypeSystem.Boolean, false))
+        | Method id ->
+            attr.ConstructorArguments.Add(CustomAttributeArgument(typ.Module.TypeSystem.String, id))
+            attr.ConstructorArguments.Add(CustomAttributeArgument(typ.Module.TypeSystem.Boolean, true))
+
+        typ.CustomAttributes.Add(attr)
+
     /// Mark the field as exported. This adds the `LispExport` attribute
     /// to the field.
     let private markWithExportedName (core: CoreTypes) (field: FieldDefinition) name =
@@ -160,8 +177,11 @@ module private Utils =
                     let newField =
                         FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
 
+                    if ctx.ProgramTy <> ty then
+                        icef "Type %A does not match %A being modified for field %s" ctx.ProgramTy ty id
+
                     ty.Fields.Add(newField)
-                    let export = Map.tryFind (typeName, id) ctx.Exports
+                    let export = Map.tryFind id ctx.Exports
 
                     match export with
                     | Some (exportedName) ->
@@ -863,14 +883,28 @@ module private Utils =
         markWithLibraryName ctx.Core libTy name
         ctx.Libraries <- Map.add mangledName libTy ctx.Libraries
 
-        let exports =
+        let exports, reExports =
             exports
-            |> Seq.choose
-                (fun (name, storage) ->
+            |> Seq.fold
+                (fun state (name, storage) ->
                     match storage with
-                    | StorageRef.Global (mangled, Field id) -> Some(((mangled, id), name))
-                    | _ -> None)
-            |> Map.ofSeq
+                    | StorageRef.Global (mangled, item) ->
+                        let (exports, reExports) = state
+                        if mangled = mangledName then
+                            match item with
+                            | Field id -> ((name, id) :: exports, reExports)
+                            | _ -> icef "unexpected export type %A" item
+                        else
+                            (exports, ((name, mangled, item) :: reExports))
+                    | _ -> state)
+                ([], [])
+
+        reExports
+        |> List.iter (fun (externName, libTypName, item) ->
+            let externlibTy =
+                Map.tryFind libTypName ctx.Libraries
+                |> Option.defaultWith (fun () -> getExternType ctx libTypName)
+            markAsReExport ctx.Core libTy externName externlibTy item)        
 
         // Emit the body of the script to a separate method so that the `Eval`
         // module can call it directly
@@ -881,7 +915,7 @@ module private Utils =
                   NextLambda = 0
                   Locals = []
                   Parameters = []
-                  Exports = exports
+                  Exports = exports |> Map.ofSeq
                   EnvSize = None
                   ParentEnvSize = None
                   Environment = None

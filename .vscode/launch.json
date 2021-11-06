@@ -16,6 +16,21 @@
             "stopAtEntry": false
         },
         {
+            "name": "Stage1 Core",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildStage1",
+            "program": "${workspaceRoot}/src/Feersum.Stage1/bin/Debug/net5.0/Feersum.Stage1.dll",
+            "args": [
+              "--output", "bin/Test/",
+              "lists.scm",
+              "base.sld"
+            ],
+            "cwd": "${workspaceRoot}/src/Feersum.Core",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
             "name": "Test Example",
             "type": "coreclr",
             "request": "launch",

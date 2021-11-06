@@ -6,10 +6,10 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("scheme", "base")]
+    [LispLibrary("feersum", "sehehfa", "bytevectors")]
     public static class ByteVectors
     {
-        [LispBuiltin("bytevector?")]
+        [LispExport("bytevector?")]
         public static object IsBytevector(object[] args)
         {
             var maybeVec = UnpackArgs<object>(args);
@@ -17,7 +17,7 @@ namespace Serehfa
             return maybeVec is byte[];
         }
 
-        [LispBuiltin("make-bytevector")]
+        [LispExport("make-bytevector")]
         public static object MakeBytevector(object[] args)
         {
             // TODO: Narrow down the types here when we support numerics better.
@@ -33,7 +33,7 @@ namespace Serehfa
             return vec;
         }
 
-        [LispBuiltin("bytevector")]
+        [LispExport("bytevector")]
         public static object NewBytevector(object[] args)
         {
             var vec = new byte[args.Length];

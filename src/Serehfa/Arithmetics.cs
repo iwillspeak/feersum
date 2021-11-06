@@ -6,64 +6,64 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("scheme", "base")]
+    [LispLibrary("feersum", "sehehfa", "arithmetics")]
     public static class Arithmetics
     {
-        [LispBuiltin("zero?")]
+        [LispExport("zero?")]
         public static object ArithZero(object[] args)
         {
             return UnpackArgs<double>(args) == 0.0;
         }
 
-        [LispBuiltin("+")]
+        [LispExport("+")]
         public static object Arithadd(object[] args)
         {
             return ArithOp(args, 0.0, (a, b) => a + b);
         }
 
-        [LispBuiltin("-")]
+        [LispExport("-")]
         public static object Arithsub(object[] args)
         {
             return ArithOp(args, 0.0, (a, b) => a - b);
         }
 
-        [LispBuiltin("/")]
+        [LispExport("/")]
         public static object Arithdiv(object[] args)
         {
             return ArithOp(args, 1.0, (a, b) => a / b);
         }
 
-        [LispBuiltin("*")]
+        [LispExport("*")]
         public static object Arithmul(object[] args)
         {
             return ArithOp(args, 1.0, (a, b) => a * b);
         }
 
-        [LispBuiltin("=")]
+        [LispExport("=")]
         public static object Aritheq(object[] args)
         {
             return ComparisonOp(args, (a, b) => a == b);
         }
 
-        [LispBuiltin(">")]
+        [LispExport(">")]
         public static object Arithgt(object[] args)
         {
             return ComparisonOp(args, (a, b) => a > b);
         }
 
-        [LispBuiltin("<")]
+        [LispExport("<")]
         public static object Arithlt(object[] args)
         {
             return ComparisonOp(args, (a, b) => a < b);
         }
 
-        [LispBuiltin(">=")]
+        [LispExport(">=")]
         public static object Arithgte(object[] args)
         {
             return ComparisonOp(args, (a, b) => a >= b);
         }
 
-        [LispBuiltin("<=")]
+        [LispExport("<=")]
         public static object Arithlte(object[] args)
         {
             return ComparisonOp(args, (a, b) => a <= b);

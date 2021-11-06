@@ -11,30 +11,30 @@ namespace Serehfa
     ///  Methods to interact with Scheme vectors. Our scheme vector
     ///  implementation uses the .NET <see cref="List{T}" />.
     /// </summary>
-    [LispLibrary("scheme", "base")]
+    [LispLibrary("feersum", "sehehfa", "vectors")]
     public static class Vectors
     {
-        [LispBuiltin("vector")]
+        [LispExport("vector")]
         public static object VectorNew(object[] args)
         {
             return args;
         }
 
-        [LispBuiltin("vector?")]
+        [LispExport("vector?")]
         public static object IsVector(object[] args)
         {
             var vec = UnpackArgs<object>(args);
             return vec is object[];
         }
 
-        [LispBuiltin("vector-length")]
+        [LispExport("vector-length")]
         public static object VectorLength(object[] args)
         {
             var vec = UnpackArgs<object[]>(args);
             return (Double)vec.Length;
         }
 
-        [LispBuiltin("vector-set!")]
+        [LispExport("vector-set!")]
         public static object VectorSet(object[] args)
         {
             var (vec, index, value) = UnpackArgs<object[], Double, object>(args);
@@ -42,14 +42,14 @@ namespace Serehfa
             return null;
         }
 
-        [LispBuiltin("vector-ref")]
+        [LispExport("vector-ref")]
         public static object VectorRef(object[] args)
         {
             var (vec, index) = UnpackArgs<object[], Double>(args);
             return vec[(int)index];
         }
 
-        [LispBuiltin("make-vector")]
+        [LispExport("make-vector")]
         public static object MakeVector(object[] args)
         {
             var (size, init) = UnpackArgs<Double, object>(args);

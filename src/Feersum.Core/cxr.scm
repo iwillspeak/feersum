@@ -1,18 +1,8 @@
 ﻿(define-library (scheme cxr)
-    (import (scheme base))
-    (export caar cadr cdar cddr)
+    (import (feersum sehehfa lists))
     (export caaar caadr cadar caddr cdaar cdadr cddar cdddr caaaar caaadr caadar
          caaddr cadaar cadadr caddar cadddr cdaaar cdaadr cdadar cdaddr cddaar
          cddadr cdddar cddddr)
-    (begin
-        ;; FIXME: These shouldn't really be in cxr, they should be in base. We
-        ;; can't split base accross assemblies though. Needs to wait for Sherefa
-        ;; to be renamed and its contents re-exporeted into the base library
-        ;; instead.
-        (define (caar x) (car (car x)))
-        (define (cadr x) (car (cdr x)))
-        (define (cdar x) (cdr (car x)))
-        (define (cddr x) (cdr (cdr x))))
     (begin
         ;; Actual CXR library functions
         (define (caaar x) (car (car (car x))))

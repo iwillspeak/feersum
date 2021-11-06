@@ -4,23 +4,24 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("scheme", "base")]
+
+    [LispLibrary("feersum", "sehehfa", "lists")]
     public class Lists
     {
-        [LispBuiltin("null?")]
+        [LispExport("null?")]
         public static object NullCheck(object[] args)
         {
             return UnpackArgs<object>(args) == null;
         }
 
-        [LispBuiltin("cons")]
+        [LispExport("cons")]
         public static object Cons(object[] args)
         {
             var (left, right) = UnpackArgs<object, object>(args);
             return new ConsPair(left, right);
         }
 
-        [LispBuiltin("list")]
+        [LispExport("list")]
         public static object Listnew(object[] args)
         {
             ConsPair ret = null;
@@ -31,7 +32,7 @@ namespace Serehfa
             return ret;
         }
 
-        [LispBuiltin("make-list")]
+        [LispExport("make-list")]
         public static object MakeList(object[] args)
         {
             object fill = null;
@@ -55,14 +56,14 @@ namespace Serehfa
             return tail;
         }
 
-        [LispBuiltin("pair?")]
+        [LispExport("pair?")]
         public static object IsPair(object[] args)
         {
             var toTest = UnpackArgs<object>(args);
             return toTest is ConsPair;
         }
 
-        [LispBuiltin("list?")]
+        [LispExport("list?")]
         public static object IsList(object[] args)
         {
             var toTest = UnpackArgs<object>(args);
@@ -74,21 +75,21 @@ namespace Serehfa
             };
         }
 
-        [LispBuiltin("car")]
+        [LispExport("car")]
         public static object Car(object[] args)
         {
             var list = UnpackArgs<ConsPair>(args);
             return list.Car;
         }
 
-        [LispBuiltin("cdr")]
+        [LispExport("cdr")]
         public static object Cdr(object[] args)
         {
             var list = UnpackArgs<ConsPair>(args);
             return list.Cdr;
         }
 
-        [LispBuiltin("set-car!")]
+        [LispExport("set-car!")]
         public static object SetCar(object[] args)
         {
             var (list, newCar) = UnpackArgs<ConsPair, object>(args);
@@ -96,7 +97,7 @@ namespace Serehfa
             return Undefined.Instance;
         }
 
-        [LispBuiltin("set-cdr!")]
+        [LispExport("set-cdr!")]
         public static object SetCdr(object[] args)
         {
             var (list, newCdr) = UnpackArgs<ConsPair, object>(args);
@@ -104,7 +105,7 @@ namespace Serehfa
             return Undefined.Instance;
         }
 
-        [LispBuiltin("length")]
+        [LispExport("length")]
         public static object Length(object[] args)
         {
             var list = UnpackArgs<ConsPair>(args);

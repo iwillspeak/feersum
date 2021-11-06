@@ -4,22 +4,22 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("scheme", "base")]
+    [LispLibrary("feersum", "sehehfa", "booleans")]
     public static class Booleans
     {
-        [LispBuiltin("not")]
+        [LispExport("not")]
         public static object Not(object[] args)
         {
             return UnpackArgs<object>(args) is false;
         }
 
-        [LispBuiltin("boolean?")]
+        [LispExport("boolean?")]
         public static object IsBoolean(object[] args)
         {
             return UnpackArgs<object>(args) is bool;
         }
 
-        [LispBuiltin("boolean=?")]
+        [LispExport("boolean=?")]
         public static object BooleanEq(object[] args)
         {
             CheckAtLeastArgs(args, 2);
