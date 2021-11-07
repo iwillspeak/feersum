@@ -25,7 +25,7 @@ let cilExternalRepr (object: Object) = Write.GetExternalRepresentation(object)
 ///
 /// The script is compiled using `options`
 let evalWith options ast =
-    let memStream = new MemoryStream()
+    use memStream = new MemoryStream()
 
     let result =
         Compilation.compile options memStream "evalCtx" None ast

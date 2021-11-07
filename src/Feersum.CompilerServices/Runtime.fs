@@ -33,12 +33,14 @@ let public writeRuntimeConfig
     outputDir
     =
     if options.GenerateDepsFiles then
-        // TOOD: This metadata needs to be abstracted to deal with different
-        //       target framework's prefrences. For now the `.exe` we generate
-        //       is compatible with .NET Core and Mono. It would be nice to make
-        //       this explicit somewhere in future.
-        //       It would be nice to register ourselves as a proper SDK so that
-        //       this metadata is generated for us by `dotnet`.
+        
+        // For one-shot compilation we assume the compilation target is the same
+        // as the current runtime. We generate a runtime config and deps file
+        // stub to provide load hints for running locally.
+        //
+        // This is all _somewhat_ of a hack. It shoulldn't be relied on for more
+        // than quick local testing. For anything complex MSBuild will generate
+        // a real `.deps.json` file for us.
         let tfVersion = Environment.Version
 
         let target =
