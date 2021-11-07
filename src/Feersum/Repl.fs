@@ -38,7 +38,8 @@ let rec private repl evaluator =
 
     repl evaluator
 
-let coreReferences = [ typeof<LispProgram>.Assembly.Location ]
+let coreReferences =
+    [ typeof<LispProgram>.Assembly.Location ]
 
 /// Run the REPL, using the reflection-based evaluator.
 let runRepl () =

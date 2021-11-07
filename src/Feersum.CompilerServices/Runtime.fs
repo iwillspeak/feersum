@@ -33,7 +33,7 @@ let public writeRuntimeConfig
     outputDir
     =
     if options.GenerateDepsFiles then
-        
+
         // For one-shot compilation we assume the compilation target is the same
         // as the current runtime. We generate a runtime config and deps file
         // stub to provide load hints for running locally.
