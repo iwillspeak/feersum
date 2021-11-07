@@ -34,3 +34,6 @@
 (display (append ’(a b) ’(c . d)))(newline) ; -> (a b c . d) ;; FIXME: quoted pairs!
 (display (append ’(a b) (cons 'c 'd)))(newline) ; -> (a b c . d)
 (display (append ’() ’a))(newline) ; -> a
+
+(display (reverse ’(a b c)))(newline) ; -> (c b a)
+(display (reverse ’(a (b c) d (e (f)))))(newline) ; -> ((e (f)) d (b c) a)
