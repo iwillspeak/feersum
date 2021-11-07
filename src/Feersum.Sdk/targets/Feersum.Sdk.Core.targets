@@ -72,7 +72,7 @@
       <LibReferences>@(StandardReference->'--reference "%(Identity)"', ' ')</LibReferences>
       <!-- Normalised versions of the configuration and output type to match the compiler's options. -->
       <NormalisedConfiguration Condition=" '$(Configuration)' == 'Release' ">Release</NormalisedConfiguration>
-      <NormalisedConfiguration Condition=" '$(NormallisedConfiguration)' == '' ">Debug</NormalisedConfiguration>
+      <NormalisedConfiguration Condition=" '$(NormalisedConfiguration)' == '' ">Debug</NormalisedConfiguration>
       <NormalisedOutputType Condition=" '$(OutputType)' == 'Exe' ">Exe</NormalisedOutputType>
       <NormalisedOutputType Condition=" '$(NormalisedOutputType)' == '' ">Lib</NormalisedOutputType>
       <ConfigParams>--configuration $(NormalisedConfiguration) --outputtype $(NormalisedOutputType) --generatedeps false</ConfigParams>
