@@ -1,7 +1,5 @@
-module Feersum.CompilerServices.Compile.MonoHelpers
-// FIXME: This module should probably be private?
+module private Feersum.CompilerServices.Compile.MonoHelpers
 
-open System
 open Mono.Cecil
 open Mono.Cecil.Cil
 open Mono.Cecil.Rocks
