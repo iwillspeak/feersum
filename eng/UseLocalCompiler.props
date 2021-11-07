@@ -17,13 +17,12 @@
   <ItemGroup>
     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Serehfa\Serehfa.csproj" />
     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum.Core\Feersum.Core.scmproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <Private>false</Private>
+      <SetTargetFramework>TargetFramework=net5.0</SetTargetFramework>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
   </ItemGroup>
-
-  <!-- Ensure the compiler is built so we can run it. -->
-  <Target Name="EnsureCompilerBuilt" BeforeTargets="PrepareForBuild" Outputs="$(FeersumCompilerPath)" >
-    <MSBuild Projects="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj"
-      Properties="Configuration=$(CompilerConfiguration);TargetFramework=net5.0"
-      Targets="Build" />
-  </Target>
   
 </Project>
