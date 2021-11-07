@@ -138,8 +138,10 @@ let ``spec tests compile and run`` specPath configuration =
                 let libSourcePath =
                     Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
 
-                let libOptions = { options with OutputType = Lib
-                                                References = references }
+                let libOptions =
+                    { options with
+                          OutputType = Lib
+                          References = references }
 
                 let libPath =
                     artifactpath libOptions (Path.GetFileName(libSourcePath))

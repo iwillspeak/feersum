@@ -890,6 +890,7 @@ module private Utils =
                     match storage with
                     | StorageRef.Global (mangled, item) ->
                         let (exports, reExports) = state
+
                         if mangled = mangledName then
                             match item with
                             | Field id -> ((name, id) :: exports, reExports)
@@ -900,11 +901,13 @@ module private Utils =
                 ([], [])
 
         reExports
-        |> List.iter (fun (externName, libTypName, item) ->
-            let externlibTy =
-                Map.tryFind libTypName ctx.Libraries
-                |> Option.defaultWith (fun () -> getExternType ctx libTypName)
-            markAsReExport ctx.Core libTy externName externlibTy item)        
+        |> List.iter
+            (fun (externName, libTypName, item) ->
+                let externlibTy =
+                    Map.tryFind libTypName ctx.Libraries
+                    |> Option.defaultWith (fun () -> getExternType ctx libTypName)
+
+                markAsReExport ctx.Core libTy externName externlibTy item)
 
         // Emit the body of the script to a separate method so that the `Eval`
         // module can call it directly
