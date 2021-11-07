@@ -8,7 +8,7 @@
   (import(feersum serehfa lists)
           (scheme write)
           (feersum builtin macros))
-  (export append)
+  (export append reverse)
   (begin
     ;;; Append Lists
     ;;
@@ -51,4 +51,14 @@
       (if (null? lists)
         '()
         (append-recurse lists)))
+    
+    ;;; Reverse a list
+    ;;
+    ;; A simple tail-recursive reverse implementaiton.
+    (define (reverse list)
+      (define (reverse-helper list acc)
+        (if (null? list)
+          acc
+          (reverse-helper (cdr list) (cons (car list) acc))))
+      (reverse-helper list '()))
     ))
