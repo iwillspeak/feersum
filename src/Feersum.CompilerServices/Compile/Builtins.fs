@@ -53,7 +53,19 @@ module private ExternUtils =
     let private getExports (ty: TypeDefinition) =
 
         let unpackStringArg (attr: CustomAttribute) idx =
-            attr.ConstructorArguments.[idx].Value.ToString()
+            let arg =
+                attr.ConstructorArguments.[idx]
+            if arg.Type = ty.Module.TypeSystem.String then
+                arg.Value.ToString()
+            else
+                icef "Attempt to unpack arg %d as string, but found %A" idx arg.Type
+        
+        let unpackBoolArg (attr: CustomAttribute) idx =
+            let arg =
+                attr.ConstructorArguments.[idx]
+            match arg.Value with
+            | :? Boolean as b -> b
+            | _ -> icef "Attempt to unpack arg %d as string, but found %A" idx arg.Type
 
         let findExported onMatching (things: seq<'a> when 'a :> ICustomAttributeProvider) =
             things
@@ -80,9 +92,15 @@ module private ExternUtils =
             |> Seq.choose
                 (fun attr ->
                     if attr.AttributeType.Name = "LispReExportAttribute" then
-                        // FIXME: not ty.FullName, needs to be unpacked from the args
-                        // FIXME: Need to decide if the re-exported item is a method or field.
-                        Some((unpackStringArg attr 0, Global(ty.FullName, Method(unpackStringArg attr 2))))
+                        let exportedItem =
+                            let id = unpackStringArg attr 2
+                            if unpackBoolArg attr 3 then
+                                Method(id)
+                            else
+                                Field(id)
+                        let libTy =
+                            attr.ConstructorArguments.[1].Value :?> TypeReference 
+                        Some((unpackStringArg attr 0, Global(libTy.FullName, exportedItem)))
                     else
                         None)
 

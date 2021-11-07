@@ -30,6 +30,9 @@
 ; THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (import (scheme base)
+    ;; FIXME: we shouldn't _need_ to import this, but we have no way of
+    ;;        exporting or re-exporting macro definitions currently.
+    (feersum builtin macros)
 ;;      (scheme char) (scheme lazy)
 ;;         (scheme inexact) (scheme complex) (scheme time)
 ;;         (scheme file) (scheme read)

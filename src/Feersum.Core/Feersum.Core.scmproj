@@ -9,8 +9,8 @@
   <Import Project="../../eng/UseStage1Compiler.props" />
 
   <ItemGroup>
-    <Compile Include="cxr.scm" />
-    <Compile Include="lists.scm" />
+    <Compile Include="cxr.sld" />
+    <Compile Include="lists.sld" />
     <Compile Include="base.sld" />
   </ItemGroup>
   

@@ -6,7 +6,7 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("feersum", "sehehfa", "bytevectors")]
+    [LispLibrary("feersum", "serehfa", "bytevectors")]
     public static class ByteVectors
     {
         [LispExport("bytevector?")]

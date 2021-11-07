@@ -1,4 +1,7 @@
 (import (scheme base)
+    ;; FIXME: we shouldn't _need_ to import this, but we have no way of
+    ;;        exporting or re-exporting macro definitions currently.
+    (feersum builtin macros)
     (scheme write))
 (display
     (list

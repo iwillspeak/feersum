@@ -27,3 +27,10 @@
 (display (pair? (cons "a" (list)))) ; -> #t
 (display (pair? (cons "a" "b"))) ; -> #t
 (newline)
+
+(display (append ’(x) ’(y)))(newline) ; -> (x y)
+(display (append ’(a) ’(b c d)))(newline) ; -> (a b c d)
+(display (append ’(a (b)) ’((c))))(newline) ; -> (a (b) (c))
+(display (append ’(a b) ’(c . d)))(newline) ; -> (a b c . d) ;; FIXME: quoted pairs!
+(display (append ’(a b) (cons 'c 'd)))(newline) ; -> (a b c . d)
+(display (append ’() ’a))(newline) ; -> a

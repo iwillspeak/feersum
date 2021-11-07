@@ -119,6 +119,107 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
+                                "feersum"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 168,
+                                  "Line": 4,
+                                  "Column": 6,
+                                  "StreamName": "builtin-macros.scm"
+                                },
+                                {
+                                  "Index": 175,
+                                  "Line": 4,
+                                  "Column": 13,
+                                  "StreamName": "builtin-macros.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "builtin"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 176,
+                                  "Line": 4,
+                                  "Column": 14,
+                                  "StreamName": "builtin-macros.scm"
+                                },
+                                {
+                                  "Index": 183,
+                                  "Line": 4,
+                                  "Column": 21,
+                                  "StreamName": "builtin-macros.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "macros"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 184,
+                                  "Line": 4,
+                                  "Column": 22,
+                                  "StreamName": "builtin-macros.scm"
+                                },
+                                {
+                                  "Index": 190,
+                                  "Line": 4,
+                                  "Column": 28,
+                                  "StreamName": "builtin-macros.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 167,
+                          "Line": 4,
+                          "Column": 5,
+                          "StreamName": "builtin-macros.scm"
+                        },
+                        {
+                          "Index": 191,
+                          "Line": 4,
+                          "Column": 29,
+                          "StreamName": "builtin-macros.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
                                 "scheme"
                               ]
                             },
@@ -126,14 +227,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 27,
-                                  "Line": 2,
+                                  "Index": 197,
+                                  "Line": 5,
                                   "Column": 6,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 33,
-                                  "Line": 2,
+                                  "Index": 203,
+                                  "Line": 5,
                                   "Column": 12,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -151,14 +252,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 34,
-                                  "Line": 2,
+                                  "Index": 204,
+                                  "Line": 5,
                                   "Column": 13,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 39,
-                                  "Line": 2,
+                                  "Index": 209,
+                                  "Line": 5,
                                   "Column": 18,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -172,14 +273,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 26,
-                          "Line": 2,
+                          "Index": 196,
+                          "Line": 5,
                           "Column": 5,
                           "StreamName": "builtin-macros.scm"
                         },
                         {
-                          "Index": 40,
-                          "Line": 2,
+                          "Index": 210,
+                          "Line": 5,
                           "Column": 19,
                           "StreamName": "builtin-macros.scm"
                         }
@@ -199,8 +300,8 @@
                   "StreamName": "builtin-macros.scm"
                 },
                 {
-                  "Index": 41,
-                  "Line": 2,
+                  "Index": 211,
+                  "Line": 5,
                   "Column": 20,
                   "StreamName": "builtin-macros.scm"
                 }
@@ -223,14 +324,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 43,
-                          "Line": 3,
+                          "Index": 213,
+                          "Line": 6,
                           "Column": 2,
                           "StreamName": "builtin-macros.scm"
                         },
                         {
-                          "Index": 50,
-                          "Line": 3,
+                          "Index": 220,
+                          "Line": 6,
                           "Column": 9,
                           "StreamName": "builtin-macros.scm"
                         }
@@ -253,14 +354,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 56,
-                                  "Line": 4,
+                                  "Index": 226,
+                                  "Line": 7,
                                   "Column": 6,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 60,
-                                  "Line": 4,
+                                  "Index": 230,
+                                  "Line": 7,
                                   "Column": 10,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -283,14 +384,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 70,
-                                          "Line": 5,
+                                          "Index": 240,
+                                          "Line": 8,
                                           "Column": 10,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 73,
-                                          "Line": 5,
+                                          "Index": 243,
+                                          "Line": 8,
                                           "Column": 13,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -313,14 +414,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 75,
-                                                  "Line": 5,
+                                                  "Index": 245,
+                                                  "Line": 8,
                                                   "Column": 15,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 76,
-                                                  "Line": 5,
+                                                  "Index": 246,
+                                                  "Line": 8,
                                                   "Column": 16,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -343,14 +444,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 77,
-                                                  "Line": 5,
+                                                  "Index": 247,
+                                                  "Line": 8,
                                                   "Column": 17,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 78,
-                                                  "Line": 5,
+                                                  "Index": 248,
+                                                  "Line": 8,
                                                   "Column": 18,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -373,14 +474,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 79,
-                                                  "Line": 5,
+                                                  "Index": 249,
+                                                  "Line": 8,
                                                   "Column": 19,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 80,
-                                                  "Line": 5,
+                                                  "Index": 250,
+                                                  "Line": 8,
                                                   "Column": 20,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -394,14 +495,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 74,
-                                          "Line": 5,
+                                          "Index": 244,
+                                          "Line": 8,
                                           "Column": 14,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 81,
-                                          "Line": 5,
+                                          "Index": 251,
+                                          "Line": 8,
                                           "Column": 21,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -424,14 +525,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 83,
-                                                  "Line": 5,
+                                                  "Index": 253,
+                                                  "Line": 8,
                                                   "Column": 23,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 84,
-                                                  "Line": 5,
+                                                  "Index": 254,
+                                                  "Line": 8,
                                                   "Column": 24,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -454,14 +555,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 85,
-                                                  "Line": 5,
+                                                  "Index": 255,
+                                                  "Line": 8,
                                                   "Column": 25,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 86,
-                                                  "Line": 5,
+                                                  "Index": 256,
+                                                  "Line": 8,
                                                   "Column": 26,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -484,14 +585,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 87,
-                                                  "Line": 5,
+                                                  "Index": 257,
+                                                  "Line": 8,
                                                   "Column": 27,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 88,
-                                                  "Line": 5,
+                                                  "Index": 258,
+                                                  "Line": 8,
                                                   "Column": 28,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -505,14 +606,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 82,
-                                          "Line": 5,
+                                          "Index": 252,
+                                          "Line": 8,
                                           "Column": 22,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 89,
-                                          "Line": 5,
+                                          "Index": 259,
+                                          "Line": 8,
                                           "Column": 29,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -526,14 +627,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 69,
-                                  "Line": 5,
+                                  "Index": 239,
+                                  "Line": 8,
                                   "Column": 9,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 90,
-                                  "Line": 5,
+                                  "Index": 260,
+                                  "Line": 8,
                                   "Column": 30,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -556,14 +657,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 108,
-                                          "Line": 6,
+                                          "Index": 278,
+                                          "Line": 9,
                                           "Column": 10,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 111,
-                                          "Line": 6,
+                                          "Index": 281,
+                                          "Line": 9,
                                           "Column": 13,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -586,14 +687,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 113,
-                                                  "Line": 6,
+                                                  "Index": 283,
+                                                  "Line": 9,
                                                   "Column": 15,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 114,
-                                                  "Line": 6,
+                                                  "Index": 284,
+                                                  "Line": 9,
                                                   "Column": 16,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -616,14 +717,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 115,
-                                                  "Line": 6,
+                                                  "Index": 285,
+                                                  "Line": 9,
                                                   "Column": 17,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 116,
-                                                  "Line": 6,
+                                                  "Index": 286,
+                                                  "Line": 9,
                                                   "Column": 18,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -646,14 +747,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 117,
-                                                  "Line": 6,
+                                                  "Index": 287,
+                                                  "Line": 9,
                                                   "Column": 19,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 118,
-                                                  "Line": 6,
+                                                  "Index": 288,
+                                                  "Line": 9,
                                                   "Column": 20,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -667,14 +768,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 112,
-                                          "Line": 6,
+                                          "Index": 282,
+                                          "Line": 9,
                                           "Column": 14,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 119,
-                                          "Line": 6,
+                                          "Index": 289,
+                                          "Line": 9,
                                           "Column": 21,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -697,14 +798,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 121,
-                                                  "Line": 6,
+                                                  "Index": 291,
+                                                  "Line": 9,
                                                   "Column": 23,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 122,
-                                                  "Line": 6,
+                                                  "Index": 292,
+                                                  "Line": 9,
                                                   "Column": 24,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -727,14 +828,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 123,
-                                                  "Line": 6,
+                                                  "Index": 293,
+                                                  "Line": 9,
                                                   "Column": 25,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 124,
-                                                  "Line": 6,
+                                                  "Index": 294,
+                                                  "Line": 9,
                                                   "Column": 26,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -757,14 +858,14 @@
                                               "Case": "Span",
                                               "Fields": [
                                                 {
-                                                  "Index": 125,
-                                                  "Line": 6,
+                                                  "Index": 295,
+                                                  "Line": 9,
                                                   "Column": 27,
                                                   "StreamName": "builtin-macros.scm"
                                                 },
                                                 {
-                                                  "Index": 126,
-                                                  "Line": 6,
+                                                  "Index": 296,
+                                                  "Line": 9,
                                                   "Column": 28,
                                                   "StreamName": "builtin-macros.scm"
                                                 }
@@ -778,14 +879,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 120,
-                                          "Line": 6,
+                                          "Index": 290,
+                                          "Line": 9,
                                           "Column": 22,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 127,
-                                          "Line": 6,
+                                          "Index": 297,
+                                          "Line": 9,
                                           "Column": 29,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -799,14 +900,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 107,
-                                  "Line": 6,
+                                  "Index": 277,
+                                  "Line": 9,
                                   "Column": 9,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 128,
-                                  "Line": 6,
+                                  "Index": 298,
+                                  "Line": 9,
                                   "Column": 30,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -829,14 +930,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 146,
-                                          "Line": 7,
+                                          "Index": 316,
+                                          "Line": 10,
                                           "Column": 10,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 149,
-                                          "Line": 7,
+                                          "Index": 319,
+                                          "Line": 10,
                                           "Column": 13,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -859,14 +960,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 150,
-                                          "Line": 7,
+                                          "Index": 320,
+                                          "Line": 10,
                                           "Column": 14,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 151,
-                                          "Line": 7,
+                                          "Index": 321,
+                                          "Line": 10,
                                           "Column": 15,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -889,14 +990,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 152,
-                                          "Line": 7,
+                                          "Index": 322,
+                                          "Line": 10,
                                           "Column": 16,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 153,
-                                          "Line": 7,
+                                          "Index": 323,
+                                          "Line": 10,
                                           "Column": 17,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -918,14 +1019,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 155,
-                                                "Line": 7,
+                                                "Index": 325,
+                                                "Line": 10,
                                                 "Column": 19,
                                                 "StreamName": "builtin-macros.scm"
                                               },
                                               {
-                                                "Index": 156,
-                                                "Line": 7,
+                                                "Index": 326,
+                                                "Line": 10,
                                                 "Column": 20,
                                                 "StreamName": "builtin-macros.scm"
                                               }
@@ -938,14 +1039,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 154,
-                                          "Line": 7,
+                                          "Index": 324,
+                                          "Line": 10,
                                           "Column": 18,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 157,
-                                          "Line": 7,
+                                          "Index": 327,
+                                          "Line": 10,
                                           "Column": 21,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -972,14 +1073,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 159,
-                                                        "Line": 7,
+                                                        "Index": 329,
+                                                        "Line": 10,
                                                         "Column": 23,
                                                         "StreamName": "builtin-macros.scm"
                                                       },
                                                       {
-                                                        "Index": 160,
-                                                        "Line": 7,
+                                                        "Index": 330,
+                                                        "Line": 10,
                                                         "Column": 24,
                                                         "StreamName": "builtin-macros.scm"
                                                       }
@@ -997,14 +1098,14 @@
                                                     "Case": "Span",
                                                     "Fields": [
                                                       {
-                                                        "Index": 161,
-                                                        "Line": 7,
+                                                        "Index": 331,
+                                                        "Line": 10,
                                                         "Column": 25,
                                                         "StreamName": "builtin-macros.scm"
                                                       },
                                                       {
-                                                        "Index": 162,
-                                                        "Line": 7,
+                                                        "Index": 332,
+                                                        "Line": 10,
                                                         "Column": 26,
                                                         "StreamName": "builtin-macros.scm"
                                                       }
@@ -1018,14 +1119,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 158,
-                                                "Line": 7,
+                                                "Index": 328,
+                                                "Line": 10,
                                                 "Column": 22,
                                                 "StreamName": "builtin-macros.scm"
                                               },
                                               {
-                                                "Index": 163,
-                                                "Line": 7,
+                                                "Index": 333,
+                                                "Line": 10,
                                                 "Column": 27,
                                                 "StreamName": "builtin-macros.scm"
                                               }
@@ -1038,14 +1139,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 157,
-                                          "Line": 7,
+                                          "Index": 327,
+                                          "Line": 10,
                                           "Column": 21,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 163,
-                                          "Line": 7,
+                                          "Index": 333,
+                                          "Line": 10,
                                           "Column": 27,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1059,14 +1160,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 145,
-                                  "Line": 7,
+                                  "Index": 315,
+                                  "Line": 10,
                                   "Column": 9,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 164,
-                                  "Line": 7,
+                                  "Index": 334,
+                                  "Line": 10,
                                   "Column": 28,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -1089,14 +1190,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 186,
-                                          "Line": 8,
+                                          "Index": 356,
+                                          "Line": 11,
                                           "Column": 10,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 189,
-                                          "Line": 8,
+                                          "Index": 359,
+                                          "Line": 11,
                                           "Column": 13,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1110,14 +1211,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 185,
-                                  "Line": 8,
+                                  "Index": 355,
+                                  "Line": 11,
                                   "Column": 9,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 190,
-                                  "Line": 8,
+                                  "Index": 360,
+                                  "Line": 11,
                                   "Column": 14,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -1140,14 +1241,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 208,
-                                          "Line": 9,
+                                          "Index": 378,
+                                          "Line": 12,
                                           "Column": 10,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 210,
-                                          "Line": 9,
+                                          "Index": 380,
+                                          "Line": 12,
                                           "Column": 12,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1170,14 +1271,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 211,
-                                          "Line": 9,
+                                          "Index": 381,
+                                          "Line": 12,
                                           "Column": 13,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 213,
-                                          "Line": 9,
+                                          "Index": 383,
+                                          "Line": 12,
                                           "Column": 15,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1200,14 +1301,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 214,
-                                          "Line": 9,
+                                          "Index": 384,
+                                          "Line": 12,
                                           "Column": 16,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 216,
-                                          "Line": 9,
+                                          "Index": 386,
+                                          "Line": 12,
                                           "Column": 18,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1221,14 +1322,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 207,
-                                  "Line": 9,
+                                  "Index": 377,
+                                  "Line": 12,
                                   "Column": 9,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 217,
-                                  "Line": 9,
+                                  "Index": 387,
+                                  "Line": 12,
                                   "Column": 19,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -1251,14 +1352,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 235,
-                                          "Line": 10,
+                                          "Index": 405,
+                                          "Line": 13,
                                           "Column": 10,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 237,
-                                          "Line": 10,
+                                          "Index": 407,
+                                          "Line": 13,
                                           "Column": 12,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1281,14 +1382,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 238,
-                                          "Line": 10,
+                                          "Index": 408,
+                                          "Line": 13,
                                           "Column": 13,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 240,
-                                          "Line": 10,
+                                          "Index": 410,
+                                          "Line": 13,
                                           "Column": 15,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1311,14 +1412,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 241,
-                                          "Line": 10,
+                                          "Index": 411,
+                                          "Line": 13,
                                           "Column": 16,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 243,
-                                          "Line": 10,
+                                          "Index": 413,
+                                          "Line": 13,
                                           "Column": 18,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1341,14 +1442,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 244,
-                                          "Line": 10,
+                                          "Index": 414,
+                                          "Line": 13,
                                           "Column": 19,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 246,
-                                          "Line": 10,
+                                          "Index": 416,
+                                          "Line": 13,
                                           "Column": 21,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1371,14 +1472,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 247,
-                                          "Line": 10,
+                                          "Index": 417,
+                                          "Line": 13,
                                           "Column": 22,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 249,
-                                          "Line": 10,
+                                          "Index": 419,
+                                          "Line": 13,
                                           "Column": 24,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1401,14 +1502,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 250,
-                                          "Line": 10,
+                                          "Index": 420,
+                                          "Line": 13,
                                           "Column": 25,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 252,
-                                          "Line": 10,
+                                          "Index": 422,
+                                          "Line": 13,
                                           "Column": 27,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1431,14 +1532,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 253,
-                                          "Line": 10,
+                                          "Index": 423,
+                                          "Line": 13,
                                           "Column": 28,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 255,
-                                          "Line": 10,
+                                          "Index": 425,
+                                          "Line": 13,
                                           "Column": 30,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1461,14 +1562,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 256,
-                                          "Line": 10,
+                                          "Index": 426,
+                                          "Line": 13,
                                           "Column": 31,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 258,
-                                          "Line": 10,
+                                          "Index": 428,
+                                          "Line": 13,
                                           "Column": 33,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1482,14 +1583,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 234,
-                                  "Line": 10,
+                                  "Index": 404,
+                                  "Line": 13,
                                   "Column": 9,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 259,
-                                  "Line": 10,
+                                  "Index": 429,
+                                  "Line": 13,
                                   "Column": 34,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -1512,14 +1613,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 277,
-                                          "Line": 11,
+                                          "Index": 447,
+                                          "Line": 14,
                                           "Column": 10,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 279,
-                                          "Line": 11,
+                                          "Index": 449,
+                                          "Line": 14,
                                           "Column": 12,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1542,14 +1643,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 280,
-                                          "Line": 11,
+                                          "Index": 450,
+                                          "Line": 14,
                                           "Column": 13,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 282,
-                                          "Line": 11,
+                                          "Index": 452,
+                                          "Line": 14,
                                           "Column": 15,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1572,14 +1673,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 283,
-                                          "Line": 11,
+                                          "Index": 453,
+                                          "Line": 14,
                                           "Column": 16,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 286,
-                                          "Line": 11,
+                                          "Index": 456,
+                                          "Line": 14,
                                           "Column": 19,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1602,14 +1703,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 287,
-                                          "Line": 11,
+                                          "Index": 457,
+                                          "Line": 14,
                                           "Column": 20,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 289,
-                                          "Line": 11,
+                                          "Index": 459,
+                                          "Line": 14,
                                           "Column": 22,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1632,14 +1733,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 290,
-                                          "Line": 11,
+                                          "Index": 460,
+                                          "Line": 14,
                                           "Column": 23,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 293,
-                                          "Line": 11,
+                                          "Index": 463,
+                                          "Line": 14,
                                           "Column": 26,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1653,14 +1754,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 276,
-                                  "Line": 11,
+                                  "Index": 446,
+                                  "Line": 14,
                                   "Column": 9,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 294,
-                                  "Line": 11,
+                                  "Index": 464,
+                                  "Line": 14,
                                   "Column": 27,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -1683,14 +1784,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 310,
-                                          "Line": 12,
+                                          "Index": 480,
+                                          "Line": 15,
                                           "Column": 10,
                                           "StreamName": "builtin-macros.scm"
                                         },
                                         {
-                                          "Index": 312,
-                                          "Line": 12,
+                                          "Index": 482,
+                                          "Line": 15,
                                           "Column": 12,
                                           "StreamName": "builtin-macros.scm"
                                         }
@@ -1704,14 +1805,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 309,
-                                  "Line": 12,
+                                  "Index": 479,
+                                  "Line": 15,
                                   "Column": 9,
                                   "StreamName": "builtin-macros.scm"
                                 },
                                 {
-                                  "Index": 313,
-                                  "Line": 12,
+                                  "Index": 483,
+                                  "Line": 15,
                                   "Column": 13,
                                   "StreamName": "builtin-macros.scm"
                                 }
@@ -1725,14 +1826,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 55,
-                          "Line": 4,
+                          "Index": 225,
+                          "Line": 7,
                           "Column": 5,
                           "StreamName": "builtin-macros.scm"
                         },
                         {
-                          "Index": 327,
-                          "Line": 13,
+                          "Index": 497,
+                          "Line": 16,
                           "Column": 6,
                           "StreamName": "builtin-macros.scm"
                         }
@@ -1746,14 +1847,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 42,
-                  "Line": 3,
+                  "Index": 212,
+                  "Line": 6,
                   "Column": 1,
                   "StreamName": "builtin-macros.scm"
                 },
                 {
-                  "Index": 328,
-                  "Line": 13,
+                  "Index": 498,
+                  "Line": 16,
                   "Column": 7,
                   "StreamName": "builtin-macros.scm"
                 }
@@ -1773,9 +1874,9 @@
           "StreamName": "builtin-macros.scm"
         },
         {
-          "Index": 328,
-          "Line": 13,
-          "Column": 7,
+          "Index": 499,
+          "Line": 17,
+          "Column": 1,
           "StreamName": "builtin-macros.scm"
         }
       ]

@@ -4,7 +4,7 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("feersum", "sehehfa", "symbols")]
+    [LispLibrary("feersum", "serehfa", "symbols")]
     public static class Symbols
     {
         [LispExport("symbol?")]
