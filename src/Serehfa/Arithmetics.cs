@@ -6,7 +6,7 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("feersum", "sehehfa", "arithmetics")]
+    [LispLibrary("feersum", "serehfa", "arithmetics")]
     public static class Arithmetics
     {
         [LispExport("zero?")]

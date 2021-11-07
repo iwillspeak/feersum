@@ -11,7 +11,7 @@ namespace Serehfa
     ///  Methods to interact with Scheme vectors. Our scheme vector
     ///  implementation uses the .NET <see cref="List{T}" />.
     /// </summary>
-    [LispLibrary("feersum", "sehehfa", "vectors")]
+    [LispLibrary("feersum", "serehfa", "vectors")]
     public static class Vectors
     {
         [LispExport("vector")]

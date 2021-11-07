@@ -6,7 +6,7 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("feersum", "sehehfa", "equivalence")]
+    [LispLibrary("feersum", "serehfa", "equivalence")]
     public static class Equivalence
     {
         /// <summary>

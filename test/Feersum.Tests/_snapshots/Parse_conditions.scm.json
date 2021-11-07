@@ -119,6 +119,107 @@
                             "Kind": {
                               "Case": "Ident",
                               "Fields": [
+                                "feersum"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 168,
+                                  "Line": 4,
+                                  "Column": 6,
+                                  "StreamName": "conditions.scm"
+                                },
+                                {
+                                  "Index": 175,
+                                  "Line": 4,
+                                  "Column": 13,
+                                  "StreamName": "conditions.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "builtin"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 176,
+                                  "Line": 4,
+                                  "Column": 14,
+                                  "StreamName": "conditions.scm"
+                                },
+                                {
+                                  "Index": 183,
+                                  "Line": 4,
+                                  "Column": 21,
+                                  "StreamName": "conditions.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "macros"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 184,
+                                  "Line": 4,
+                                  "Column": 22,
+                                  "StreamName": "conditions.scm"
+                                },
+                                {
+                                  "Index": 190,
+                                  "Line": 4,
+                                  "Column": 28,
+                                  "StreamName": "conditions.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 167,
+                          "Line": 4,
+                          "Column": 5,
+                          "StreamName": "conditions.scm"
+                        },
+                        {
+                          "Index": 191,
+                          "Line": 4,
+                          "Column": 29,
+                          "StreamName": "conditions.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
                                 "scheme"
                               ]
                             },
@@ -126,14 +227,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 27,
-                                  "Line": 2,
+                                  "Index": 197,
+                                  "Line": 5,
                                   "Column": 6,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 33,
-                                  "Line": 2,
+                                  "Index": 203,
+                                  "Line": 5,
                                   "Column": 12,
                                   "StreamName": "conditions.scm"
                                 }
@@ -151,14 +252,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 34,
-                                  "Line": 2,
+                                  "Index": 204,
+                                  "Line": 5,
                                   "Column": 13,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 39,
-                                  "Line": 2,
+                                  "Index": 209,
+                                  "Line": 5,
                                   "Column": 18,
                                   "StreamName": "conditions.scm"
                                 }
@@ -172,14 +273,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 26,
-                          "Line": 2,
+                          "Index": 196,
+                          "Line": 5,
                           "Column": 5,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 40,
-                          "Line": 2,
+                          "Index": 210,
+                          "Line": 5,
                           "Column": 19,
                           "StreamName": "conditions.scm"
                         }
@@ -199,8 +300,8 @@
                   "StreamName": "conditions.scm"
                 },
                 {
-                  "Index": 41,
-                  "Line": 2,
+                  "Index": 211,
+                  "Line": 5,
                   "Column": 20,
                   "StreamName": "conditions.scm"
                 }
@@ -223,14 +324,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 43,
-                          "Line": 3,
+                          "Index": 213,
+                          "Line": 6,
                           "Column": 2,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 50,
-                          "Line": 3,
+                          "Index": 220,
+                          "Line": 6,
                           "Column": 9,
                           "StreamName": "conditions.scm"
                         }
@@ -253,14 +354,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 52,
-                                  "Line": 3,
+                                  "Index": 222,
+                                  "Line": 6,
                                   "Column": 11,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 56,
-                                  "Line": 3,
+                                  "Index": 226,
+                                  "Line": 6,
                                   "Column": 15,
                                   "StreamName": "conditions.scm"
                                 }
@@ -283,14 +384,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 62,
-                                          "Line": 4,
+                                          "Index": 232,
+                                          "Line": 7,
                                           "Column": 6,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 66,
-                                          "Line": 4,
+                                          "Index": 236,
+                                          "Line": 7,
                                           "Column": 10,
                                           "StreamName": "conditions.scm"
                                         }
@@ -313,14 +414,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 67,
-                                          "Line": 4,
+                                          "Index": 237,
+                                          "Line": 7,
                                           "Column": 11,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 69,
-                                          "Line": 4,
+                                          "Index": 239,
+                                          "Line": 7,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         }
@@ -343,14 +444,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 70,
-                                          "Line": 4,
+                                          "Index": 240,
+                                          "Line": 7,
                                           "Column": 14,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 71,
-                                          "Line": 4,
+                                          "Index": 241,
+                                          "Line": 7,
                                           "Column": 15,
                                           "StreamName": "conditions.scm"
                                         }
@@ -373,14 +474,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 72,
-                                          "Line": 4,
+                                          "Index": 242,
+                                          "Line": 7,
                                           "Column": 16,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 73,
-                                          "Line": 4,
+                                          "Index": 243,
+                                          "Line": 7,
                                           "Column": 17,
                                           "StreamName": "conditions.scm"
                                         }
@@ -403,14 +504,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 74,
-                                          "Line": 4,
+                                          "Index": 244,
+                                          "Line": 7,
                                           "Column": 18,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 75,
-                                          "Line": 4,
+                                          "Index": 245,
+                                          "Line": 7,
                                           "Column": 19,
                                           "StreamName": "conditions.scm"
                                         }
@@ -424,14 +525,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 61,
-                                  "Line": 4,
+                                  "Index": 231,
+                                  "Line": 7,
                                   "Column": 5,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 76,
-                                  "Line": 4,
+                                  "Index": 246,
+                                  "Line": 7,
                                   "Column": 20,
                                   "StreamName": "conditions.scm"
                                 }
@@ -454,14 +555,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 82,
-                                          "Line": 5,
+                                          "Index": 252,
+                                          "Line": 8,
                                           "Column": 6,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 86,
-                                          "Line": 5,
+                                          "Index": 256,
+                                          "Line": 8,
                                           "Column": 10,
                                           "StreamName": "conditions.scm"
                                         }
@@ -484,14 +585,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 87,
-                                          "Line": 5,
+                                          "Index": 257,
+                                          "Line": 8,
                                           "Column": 11,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 89,
-                                          "Line": 5,
+                                          "Index": 259,
+                                          "Line": 8,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         }
@@ -513,14 +614,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 91,
-                                                "Line": 5,
+                                                "Index": 261,
+                                                "Line": 8,
                                                 "Column": 15,
                                                 "StreamName": "conditions.scm"
                                               },
                                               {
-                                                "Index": 95,
-                                                "Line": 5,
+                                                "Index": 265,
+                                                "Line": 8,
                                                 "Column": 19,
                                                 "StreamName": "conditions.scm"
                                               }
@@ -533,14 +634,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 90,
-                                          "Line": 5,
+                                          "Index": 260,
+                                          "Line": 8,
                                           "Column": 14,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 95,
-                                          "Line": 5,
+                                          "Index": 265,
+                                          "Line": 8,
                                           "Column": 19,
                                           "StreamName": "conditions.scm"
                                         }
@@ -554,14 +655,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 81,
-                                  "Line": 5,
+                                  "Index": 251,
+                                  "Line": 8,
                                   "Column": 5,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 96,
-                                  "Line": 5,
+                                  "Index": 266,
+                                  "Line": 8,
                                   "Column": 20,
                                   "StreamName": "conditions.scm"
                                 }
@@ -584,14 +685,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 102,
-                                          "Line": 6,
+                                          "Index": 272,
+                                          "Line": 9,
                                           "Column": 6,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 108,
-                                          "Line": 6,
+                                          "Index": 278,
+                                          "Line": 9,
                                           "Column": 12,
                                           "StreamName": "conditions.scm"
                                         }
@@ -614,14 +715,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 109,
-                                          "Line": 6,
+                                          "Index": 279,
+                                          "Line": 9,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 111,
-                                          "Line": 6,
+                                          "Index": 281,
+                                          "Line": 9,
                                           "Column": 15,
                                           "StreamName": "conditions.scm"
                                         }
@@ -643,14 +744,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 113,
-                                                "Line": 6,
+                                                "Index": 283,
+                                                "Line": 9,
                                                 "Column": 17,
                                                 "StreamName": "conditions.scm"
                                               },
                                               {
-                                                "Index": 117,
-                                                "Line": 6,
+                                                "Index": 287,
+                                                "Line": 9,
                                                 "Column": 21,
                                                 "StreamName": "conditions.scm"
                                               }
@@ -663,14 +764,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 112,
-                                          "Line": 6,
+                                          "Index": 282,
+                                          "Line": 9,
                                           "Column": 16,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 117,
-                                          "Line": 6,
+                                          "Index": 287,
+                                          "Line": 9,
                                           "Column": 21,
                                           "StreamName": "conditions.scm"
                                         }
@@ -684,14 +785,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 101,
-                                  "Line": 6,
+                                  "Index": 271,
+                                  "Line": 9,
                                   "Column": 5,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 118,
-                                  "Line": 6,
+                                  "Index": 288,
+                                  "Line": 9,
                                   "Column": 22,
                                   "StreamName": "conditions.scm"
                                 }
@@ -714,14 +815,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 124,
-                                          "Line": 7,
+                                          "Index": 294,
+                                          "Line": 10,
                                           "Column": 6,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 130,
-                                          "Line": 7,
+                                          "Index": 300,
+                                          "Line": 10,
                                           "Column": 12,
                                           "StreamName": "conditions.scm"
                                         }
@@ -744,14 +845,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 131,
-                                          "Line": 7,
+                                          "Index": 301,
+                                          "Line": 10,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 136,
-                                          "Line": 7,
+                                          "Index": 306,
+                                          "Line": 10,
                                           "Column": 18,
                                           "StreamName": "conditions.scm"
                                         }
@@ -774,14 +875,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 137,
-                                          "Line": 7,
+                                          "Index": 307,
+                                          "Line": 10,
                                           "Column": 19,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 140,
-                                          "Line": 7,
+                                          "Index": 310,
+                                          "Line": 10,
                                           "Column": 22,
                                           "StreamName": "conditions.scm"
                                         }
@@ -795,14 +896,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 123,
-                                  "Line": 7,
+                                  "Index": 293,
+                                  "Line": 10,
                                   "Column": 5,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 141,
-                                  "Line": 7,
+                                  "Index": 311,
+                                  "Line": 10,
                                   "Column": 23,
                                   "StreamName": "conditions.scm"
                                 }
@@ -816,14 +917,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 51,
-                          "Line": 3,
+                          "Index": 221,
+                          "Line": 6,
                           "Column": 10,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 147,
-                          "Line": 8,
+                          "Index": 317,
+                          "Line": 11,
                           "Column": 6,
                           "StreamName": "conditions.scm"
                         }
@@ -837,14 +938,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 42,
-                  "Line": 3,
+                  "Index": 212,
+                  "Line": 6,
                   "Column": 1,
                   "StreamName": "conditions.scm"
                 },
                 {
-                  "Index": 148,
-                  "Line": 8,
+                  "Index": 318,
+                  "Line": 11,
                   "Column": 7,
                   "StreamName": "conditions.scm"
                 }
@@ -867,14 +968,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 151,
-                          "Line": 10,
+                          "Index": 321,
+                          "Line": 13,
                           "Column": 2,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 158,
-                          "Line": 10,
+                          "Index": 328,
+                          "Line": 13,
                           "Column": 9,
                           "StreamName": "conditions.scm"
                         }
@@ -897,14 +998,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 164,
-                                  "Line": 11,
+                                  "Index": 334,
+                                  "Line": 14,
                                   "Column": 6,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 166,
-                                  "Line": 11,
+                                  "Index": 336,
+                                  "Line": 14,
                                   "Column": 8,
                                   "StreamName": "conditions.scm"
                                 }
@@ -927,14 +1028,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 167,
-                                  "Line": 11,
+                                  "Index": 337,
+                                  "Line": 14,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 169,
-                                  "Line": 11,
+                                  "Index": 339,
+                                  "Line": 14,
                                   "Column": 11,
                                   "StreamName": "conditions.scm"
                                 }
@@ -957,14 +1058,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 178,
-                                  "Line": 12,
+                                  "Index": 348,
+                                  "Line": 15,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 181,
-                                  "Line": 12,
+                                  "Index": 351,
+                                  "Line": 15,
                                   "Column": 12,
                                   "StreamName": "conditions.scm"
                                 }
@@ -987,14 +1088,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 190,
-                                  "Line": 13,
+                                  "Index": 360,
+                                  "Line": 16,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 194,
-                                  "Line": 13,
+                                  "Index": 364,
+                                  "Line": 16,
                                   "Column": 13,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1008,14 +1109,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 163,
-                          "Line": 11,
+                          "Index": 333,
+                          "Line": 14,
                           "Column": 5,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 195,
-                          "Line": 13,
+                          "Index": 365,
+                          "Line": 16,
                           "Column": 14,
                           "StreamName": "conditions.scm"
                         }
@@ -1029,14 +1130,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 150,
-                  "Line": 10,
+                  "Index": 320,
+                  "Line": 13,
                   "Column": 1,
                   "StreamName": "conditions.scm"
                 },
                 {
-                  "Index": 196,
-                  "Line": 13,
+                  "Index": 366,
+                  "Line": 16,
                   "Column": 15,
                   "StreamName": "conditions.scm"
                 }
@@ -1059,14 +1160,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 253,
-                          "Line": 16,
+                          "Index": 423,
+                          "Line": 19,
                           "Column": 2,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 260,
-                          "Line": 16,
+                          "Index": 430,
+                          "Line": 19,
                           "Column": 9,
                           "StreamName": "conditions.scm"
                         }
@@ -1089,14 +1190,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 266,
-                                  "Line": 17,
+                                  "Index": 436,
+                                  "Line": 20,
                                   "Column": 6,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 268,
-                                  "Line": 17,
+                                  "Index": 438,
+                                  "Line": 20,
                                   "Column": 8,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1119,14 +1220,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 269,
-                                  "Line": 17,
+                                  "Index": 439,
+                                  "Line": 20,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 276,
-                                  "Line": 17,
+                                  "Index": 446,
+                                  "Line": 20,
                                   "Column": 16,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1149,14 +1250,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 285,
-                                  "Line": 18,
+                                  "Index": 455,
+                                  "Line": 21,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 292,
-                                  "Line": 18,
+                                  "Index": 462,
+                                  "Line": 21,
                                   "Column": 16,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1179,14 +1280,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 301,
-                                  "Line": 19,
+                                  "Index": 471,
+                                  "Line": 22,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 303,
-                                  "Line": 19,
+                                  "Index": 473,
+                                  "Line": 22,
                                   "Column": 11,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1200,14 +1301,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 265,
-                          "Line": 17,
+                          "Index": 435,
+                          "Line": 20,
                           "Column": 5,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 304,
-                          "Line": 19,
+                          "Index": 474,
+                          "Line": 22,
                           "Column": 12,
                           "StreamName": "conditions.scm"
                         }
@@ -1221,14 +1322,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 252,
-                  "Line": 16,
+                  "Index": 422,
+                  "Line": 19,
                   "Column": 1,
                   "StreamName": "conditions.scm"
                 },
                 {
-                  "Index": 305,
-                  "Line": 19,
+                  "Index": 475,
+                  "Line": 22,
                   "Column": 13,
                   "StreamName": "conditions.scm"
                 }
@@ -1251,14 +1352,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 316,
-                          "Line": 21,
+                          "Index": 486,
+                          "Line": 24,
                           "Column": 2,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 323,
-                          "Line": 21,
+                          "Index": 493,
+                          "Line": 24,
                           "Column": 9,
                           "StreamName": "conditions.scm"
                         }
@@ -1281,14 +1382,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 329,
-                                  "Line": 22,
+                                  "Index": 499,
+                                  "Line": 25,
                                   "Column": 6,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 333,
-                                  "Line": 22,
+                                  "Index": 503,
+                                  "Line": 25,
                                   "Column": 10,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1316,14 +1417,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 343,
-                                          "Line": 23,
+                                          "Index": 513,
+                                          "Line": 26,
                                           "Column": 10,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 345,
-                                          "Line": 23,
+                                          "Index": 515,
+                                          "Line": 26,
                                           "Column": 12,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1345,14 +1446,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 347,
-                                                "Line": 23,
+                                                "Index": 517,
+                                                "Line": 26,
                                                 "Column": 14,
                                                 "StreamName": "conditions.scm"
                                               },
                                               {
-                                                "Index": 352,
-                                                "Line": 23,
+                                                "Index": 522,
+                                                "Line": 26,
                                                 "Column": 19,
                                                 "StreamName": "conditions.scm"
                                               }
@@ -1365,14 +1466,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 346,
-                                          "Line": 23,
+                                          "Index": 516,
+                                          "Line": 26,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 352,
-                                          "Line": 23,
+                                          "Index": 522,
+                                          "Line": 26,
                                           "Column": 19,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1386,14 +1487,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 342,
-                                  "Line": 23,
+                                  "Index": 512,
+                                  "Line": 26,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 353,
-                                  "Line": 23,
+                                  "Index": 523,
+                                  "Line": 26,
                                   "Column": 20,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1421,14 +1522,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 363,
-                                          "Line": 24,
+                                          "Index": 533,
+                                          "Line": 27,
                                           "Column": 10,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 365,
-                                          "Line": 24,
+                                          "Index": 535,
+                                          "Line": 27,
                                           "Column": 12,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1450,14 +1551,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 367,
-                                                "Line": 24,
+                                                "Index": 537,
+                                                "Line": 27,
                                                 "Column": 14,
                                                 "StreamName": "conditions.scm"
                                               },
                                               {
-                                                "Index": 371,
-                                                "Line": 24,
+                                                "Index": 541,
+                                                "Line": 27,
                                                 "Column": 18,
                                                 "StreamName": "conditions.scm"
                                               }
@@ -1470,14 +1571,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 366,
-                                          "Line": 24,
+                                          "Index": 536,
+                                          "Line": 27,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 371,
-                                          "Line": 24,
+                                          "Index": 541,
+                                          "Line": 27,
                                           "Column": 18,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1491,14 +1592,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 362,
-                                  "Line": 24,
+                                  "Index": 532,
+                                  "Line": 27,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 372,
-                                  "Line": 24,
+                                  "Index": 542,
+                                  "Line": 27,
                                   "Column": 19,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1521,14 +1622,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 382,
-                                          "Line": 25,
+                                          "Index": 552,
+                                          "Line": 28,
                                           "Column": 10,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 386,
-                                          "Line": 25,
+                                          "Index": 556,
+                                          "Line": 28,
                                           "Column": 14,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1550,14 +1651,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 388,
-                                                "Line": 25,
+                                                "Index": 558,
+                                                "Line": 28,
                                                 "Column": 16,
                                                 "StreamName": "conditions.scm"
                                               },
                                               {
-                                                "Index": 392,
-                                                "Line": 25,
+                                                "Index": 562,
+                                                "Line": 28,
                                                 "Column": 20,
                                                 "StreamName": "conditions.scm"
                                               }
@@ -1570,14 +1671,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 387,
-                                          "Line": 25,
+                                          "Index": 557,
+                                          "Line": 28,
                                           "Column": 15,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 392,
-                                          "Line": 25,
+                                          "Index": 562,
+                                          "Line": 28,
                                           "Column": 20,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1591,14 +1692,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 381,
-                                  "Line": 25,
+                                  "Index": 551,
+                                  "Line": 28,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 393,
-                                  "Line": 25,
+                                  "Index": 563,
+                                  "Line": 28,
                                   "Column": 21,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1612,14 +1713,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 328,
-                          "Line": 22,
+                          "Index": 498,
+                          "Line": 25,
                           "Column": 5,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 394,
-                          "Line": 25,
+                          "Index": 564,
+                          "Line": 28,
                           "Column": 22,
                           "StreamName": "conditions.scm"
                         }
@@ -1633,14 +1734,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 315,
-                  "Line": 21,
+                  "Index": 485,
+                  "Line": 24,
                   "Column": 1,
                   "StreamName": "conditions.scm"
                 },
                 {
-                  "Index": 395,
-                  "Line": 25,
+                  "Index": 565,
+                  "Line": 28,
                   "Column": 23,
                   "StreamName": "conditions.scm"
                 }
@@ -1663,14 +1764,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 397,
-                          "Line": 26,
+                          "Index": 567,
+                          "Line": 29,
                           "Column": 2,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 404,
-                          "Line": 26,
+                          "Index": 574,
+                          "Line": 29,
                           "Column": 9,
                           "StreamName": "conditions.scm"
                         }
@@ -1693,14 +1794,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 410,
-                                  "Line": 27,
+                                  "Index": 580,
+                                  "Line": 30,
                                   "Column": 6,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 414,
-                                  "Line": 27,
+                                  "Index": 584,
+                                  "Line": 30,
                                   "Column": 10,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1728,14 +1829,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 424,
-                                          "Line": 28,
+                                          "Index": 594,
+                                          "Line": 31,
                                           "Column": 10,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 426,
-                                          "Line": 28,
+                                          "Index": 596,
+                                          "Line": 31,
                                           "Column": 12,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1757,14 +1858,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 428,
-                                                "Line": 28,
+                                                "Index": 598,
+                                                "Line": 31,
                                                 "Column": 14,
                                                 "StreamName": "conditions.scm"
                                               },
                                               {
-                                                "Index": 433,
-                                                "Line": 28,
+                                                "Index": 603,
+                                                "Line": 31,
                                                 "Column": 19,
                                                 "StreamName": "conditions.scm"
                                               }
@@ -1777,14 +1878,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 427,
-                                          "Line": 28,
+                                          "Index": 597,
+                                          "Line": 31,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 433,
-                                          "Line": 28,
+                                          "Index": 603,
+                                          "Line": 31,
                                           "Column": 19,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1798,14 +1899,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 423,
-                                  "Line": 28,
+                                  "Index": 593,
+                                  "Line": 31,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 434,
-                                  "Line": 28,
+                                  "Index": 604,
+                                  "Line": 31,
                                   "Column": 20,
                                   "StreamName": "conditions.scm"
                                 }
@@ -1833,14 +1934,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 444,
-                                          "Line": 29,
+                                          "Index": 614,
+                                          "Line": 32,
                                           "Column": 10,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 446,
-                                          "Line": 29,
+                                          "Index": 616,
+                                          "Line": 32,
                                           "Column": 12,
                                           "StreamName": "conditions.scm"
                                         }
@@ -1862,14 +1963,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 448,
-                                                "Line": 29,
+                                                "Index": 618,
+                                                "Line": 32,
                                                 "Column": 14,
                                                 "StreamName": "conditions.scm"
                                               },
                                               {
-                                                "Index": 452,
-                                                "Line": 29,
+                                                "Index": 622,
+                                                "Line": 32,
                                                 "Column": 18,
                                                 "StreamName": "conditions.scm"
                                               }
@@ -1882,215 +1983,13 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 447,
-                                          "Line": 29,
+                                          "Index": 617,
+                                          "Line": 32,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 452,
-                                          "Line": 29,
-                                          "Column": 18,
-                                          "StreamName": "conditions.scm"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 443,
-                                  "Line": 29,
-                                  "Column": 9,
-                                  "StreamName": "conditions.scm"
-                                },
-                                {
-                                  "Index": 453,
-                                  "Line": 29,
-                                  "Column": 19,
-                                  "StreamName": "conditions.scm"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 409,
-                          "Line": 27,
-                          "Column": 5,
-                          "StreamName": "conditions.scm"
-                        },
-                        {
-                          "Index": 454,
-                          "Line": 29,
-                          "Column": 20,
-                          "StreamName": "conditions.scm"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              ]
-            },
-            "Location": {
-              "Case": "Span",
-              "Fields": [
-                {
-                  "Index": 396,
-                  "Line": 26,
-                  "Column": 1,
-                  "StreamName": "conditions.scm"
-                },
-                {
-                  "Index": 455,
-                  "Line": 29,
-                  "Column": 21,
-                  "StreamName": "conditions.scm"
-                }
-              ]
-            }
-          },
-          {
-            "Kind": {
-              "Case": "Form",
-              "Fields": [
-                [
-                  {
-                    "Kind": {
-                      "Case": "Ident",
-                      "Fields": [
-                        "display"
-                      ]
-                    },
-                    "Location": {
-                      "Case": "Span",
-                      "Fields": [
-                        {
-                          "Index": 457,
-                          "Line": 30,
-                          "Column": 2,
-                          "StreamName": "conditions.scm"
-                        },
-                        {
-                          "Index": 464,
-                          "Line": 30,
-                          "Column": 9,
-                          "StreamName": "conditions.scm"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Kind": {
-                      "Case": "Form",
-                      "Fields": [
-                        [
-                          {
-                            "Kind": {
-                              "Case": "Ident",
-                              "Fields": [
-                                "cond"
-                              ]
-                            },
-                            "Location": {
-                              "Case": "Span",
-                              "Fields": [
-                                {
-                                  "Index": 470,
-                                  "Line": 31,
-                                  "Column": 6,
-                                  "StreamName": "conditions.scm"
-                                },
-                                {
-                                  "Index": 474,
-                                  "Line": 31,
-                                  "Column": 10,
-                                  "StreamName": "conditions.scm"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Kind": {
-                              "Case": "Form",
-                              "Fields": [
-                                [
-                                  {
-                                    "Kind": {
-                                      "Case": "Ident",
-                                      "Fields": [
-                                        "else"
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 484,
-                                          "Line": 32,
-                                          "Column": 10,
-                                          "StreamName": "conditions.scm"
-                                        },
-                                        {
-                                          "Index": 488,
-                                          "Line": 32,
-                                          "Column": 14,
-                                          "StreamName": "conditions.scm"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  {
-                                    "Kind": {
-                                      "Case": "Quoted",
-                                      "Fields": [
-                                        {
-                                          "Kind": {
-                                            "Case": "Ident",
-                                            "Fields": [
-                                              "ok"
-                                            ]
-                                          },
-                                          "Location": {
-                                            "Case": "Span",
-                                            "Fields": [
-                                              {
-                                                "Index": 490,
-                                                "Line": 32,
-                                                "Column": 16,
-                                                "StreamName": "conditions.scm"
-                                              },
-                                              {
-                                                "Index": 492,
-                                                "Line": 32,
-                                                "Column": 18,
-                                                "StreamName": "conditions.scm"
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      ]
-                                    },
-                                    "Location": {
-                                      "Case": "Span",
-                                      "Fields": [
-                                        {
-                                          "Index": 489,
-                                          "Line": 32,
-                                          "Column": 15,
-                                          "StreamName": "conditions.scm"
-                                        },
-                                        {
-                                          "Index": 492,
+                                          "Index": 622,
                                           "Line": 32,
                                           "Column": 18,
                                           "StreamName": "conditions.scm"
@@ -2105,13 +2004,13 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 483,
+                                  "Index": 613,
                                   "Line": 32,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 493,
+                                  "Index": 623,
                                   "Line": 32,
                                   "Column": 19,
                                   "StreamName": "conditions.scm"
@@ -2126,13 +2025,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 469,
-                          "Line": 31,
+                          "Index": 579,
+                          "Line": 30,
                           "Column": 5,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 494,
+                          "Index": 624,
                           "Line": 32,
                           "Column": 20,
                           "StreamName": "conditions.scm"
@@ -2147,13 +2046,13 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 456,
-                  "Line": 30,
+                  "Index": 566,
+                  "Line": 29,
                   "Column": 1,
                   "StreamName": "conditions.scm"
                 },
                 {
-                  "Index": 495,
+                  "Index": 625,
                   "Line": 32,
                   "Column": 21,
                   "StreamName": "conditions.scm"
@@ -2177,13 +2076,13 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 497,
+                          "Index": 627,
                           "Line": 33,
                           "Column": 2,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 504,
+                          "Index": 634,
                           "Line": 33,
                           "Column": 9,
                           "StreamName": "conditions.scm"
@@ -2207,14 +2106,216 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 510,
+                                  "Index": 640,
                                   "Line": 34,
                                   "Column": 6,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 514,
+                                  "Index": 644,
                                   "Line": 34,
+                                  "Column": 10,
+                                  "StreamName": "conditions.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "else"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 654,
+                                          "Line": 35,
+                                          "Column": 10,
+                                          "StreamName": "conditions.scm"
+                                        },
+                                        {
+                                          "Index": 658,
+                                          "Line": 35,
+                                          "Column": 14,
+                                          "StreamName": "conditions.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Quoted",
+                                      "Fields": [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "ok"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Index": 660,
+                                                "Line": 35,
+                                                "Column": 16,
+                                                "StreamName": "conditions.scm"
+                                              },
+                                              {
+                                                "Index": 662,
+                                                "Line": 35,
+                                                "Column": 18,
+                                                "StreamName": "conditions.scm"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 659,
+                                          "Line": 35,
+                                          "Column": 15,
+                                          "StreamName": "conditions.scm"
+                                        },
+                                        {
+                                          "Index": 662,
+                                          "Line": 35,
+                                          "Column": 18,
+                                          "StreamName": "conditions.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 653,
+                                  "Line": 35,
+                                  "Column": 9,
+                                  "StreamName": "conditions.scm"
+                                },
+                                {
+                                  "Index": 663,
+                                  "Line": 35,
+                                  "Column": 19,
+                                  "StreamName": "conditions.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 639,
+                          "Line": 34,
+                          "Column": 5,
+                          "StreamName": "conditions.scm"
+                        },
+                        {
+                          "Index": 664,
+                          "Line": 35,
+                          "Column": 20,
+                          "StreamName": "conditions.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 626,
+                  "Line": 33,
+                  "Column": 1,
+                  "StreamName": "conditions.scm"
+                },
+                {
+                  "Index": 665,
+                  "Line": 35,
+                  "Column": 21,
+                  "StreamName": "conditions.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 667,
+                          "Line": 36,
+                          "Column": 2,
+                          "StreamName": "conditions.scm"
+                        },
+                        {
+                          "Index": 674,
+                          "Line": 36,
+                          "Column": 9,
+                          "StreamName": "conditions.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "cond"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 680,
+                                  "Line": 37,
+                                  "Column": 6,
+                                  "StreamName": "conditions.scm"
+                                },
+                                {
+                                  "Index": 684,
+                                  "Line": 37,
                                   "Column": 10,
                                   "StreamName": "conditions.scm"
                                 }
@@ -2242,14 +2343,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 525,
-                                          "Line": 35,
+                                          "Index": 695,
+                                          "Line": 38,
                                           "Column": 10,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 527,
-                                          "Line": 35,
+                                          "Index": 697,
+                                          "Line": 38,
                                           "Column": 12,
                                           "StreamName": "conditions.scm"
                                         }
@@ -2271,14 +2372,14 @@
                                             "Case": "Span",
                                             "Fields": [
                                               {
-                                                "Index": 529,
-                                                "Line": 35,
+                                                "Index": 699,
+                                                "Line": 38,
                                                 "Column": 14,
                                                 "StreamName": "conditions.scm"
                                               },
                                               {
-                                                "Index": 533,
-                                                "Line": 35,
+                                                "Index": 703,
+                                                "Line": 38,
                                                 "Column": 18,
                                                 "StreamName": "conditions.scm"
                                               }
@@ -2291,14 +2392,14 @@
                                       "Case": "Span",
                                       "Fields": [
                                         {
-                                          "Index": 528,
-                                          "Line": 35,
+                                          "Index": 698,
+                                          "Line": 38,
                                           "Column": 13,
                                           "StreamName": "conditions.scm"
                                         },
                                         {
-                                          "Index": 533,
-                                          "Line": 35,
+                                          "Index": 703,
+                                          "Line": 38,
                                           "Column": 18,
                                           "StreamName": "conditions.scm"
                                         }
@@ -2312,14 +2413,14 @@
                               "Case": "Span",
                               "Fields": [
                                 {
-                                  "Index": 524,
-                                  "Line": 35,
+                                  "Index": 694,
+                                  "Line": 38,
                                   "Column": 9,
                                   "StreamName": "conditions.scm"
                                 },
                                 {
-                                  "Index": 534,
-                                  "Line": 35,
+                                  "Index": 704,
+                                  "Line": 38,
                                   "Column": 19,
                                   "StreamName": "conditions.scm"
                                 }
@@ -2333,14 +2434,14 @@
                       "Case": "Span",
                       "Fields": [
                         {
-                          "Index": 509,
-                          "Line": 34,
+                          "Index": 679,
+                          "Line": 37,
                           "Column": 5,
                           "StreamName": "conditions.scm"
                         },
                         {
-                          "Index": 535,
-                          "Line": 35,
+                          "Index": 705,
+                          "Line": 38,
                           "Column": 20,
                           "StreamName": "conditions.scm"
                         }
@@ -2354,14 +2455,14 @@
               "Case": "Span",
               "Fields": [
                 {
-                  "Index": 496,
-                  "Line": 33,
+                  "Index": 666,
+                  "Line": 36,
                   "Column": 1,
                   "StreamName": "conditions.scm"
                 },
                 {
-                  "Index": 536,
-                  "Line": 35,
+                  "Index": 706,
+                  "Line": 38,
                   "Column": 21,
                   "StreamName": "conditions.scm"
                 }
@@ -2381,8 +2482,8 @@
           "StreamName": "conditions.scm"
         },
         {
-          "Index": 537,
-          "Line": 36,
+          "Index": 707,
+          "Line": 39,
           "Column": 1,
           "StreamName": "conditions.scm"
         }

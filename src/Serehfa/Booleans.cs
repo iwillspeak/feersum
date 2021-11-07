@@ -4,7 +4,7 @@ namespace Serehfa
 {
     using static ArgHelpers;
 
-    [LispLibrary("feersum", "sehehfa", "booleans")]
+    [LispLibrary("feersum", "serehfa", "booleans")]
     public static class Booleans
     {
         [LispExport("not")]
