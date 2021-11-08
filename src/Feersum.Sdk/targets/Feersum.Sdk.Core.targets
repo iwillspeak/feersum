@@ -13,6 +13,12 @@
   <PropertyGroup>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <!-- FIXME: PDB generation is controlled by build configuration. Stop
+        MSBuild from expecting PDB files if we are in release mode.
+        
+        Instead of this we should have a separate pair of `DebugType`, and
+        `PdbOut` parameters to control PDB generation in isolation. We'd  -->
+    <DebugType Condition=" '$(Configuration)'!='Debug' ">None</DebugType>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)Versions.props" Condition="Exists('$(MSBuildThisFileDirectory)Versions.props')" />
