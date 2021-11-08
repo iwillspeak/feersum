@@ -5,10 +5,11 @@
 ;; in C#. Most consumers will not access it directly, but instead the
 ;; re-exported items from `(scheme base)`.
 (define-library (feersum core lists)
-  (import(feersum serehfa lists)
+  (import (feersum serehfa lists)
+          (feersum serehfa arithmetics)
           (scheme write)
           (feersum builtin macros))
-  (export append reverse)
+  (export append reverse list-tail)
   (begin
     ;;; Append Lists
     ;;
@@ -61,4 +62,12 @@
           acc
           (reverse-helper (cdr list) (cons (car list) acc))))
       (reverse-helper list '()))
+
+    ;;; List Tail
+    ;;
+    ;; Walks the list and returns the k-th tail.
+    (define (list-tail lst k)
+      (if (zero? k)
+        lst
+        (list-tail (cdr lst) (- k 1))))
     ))

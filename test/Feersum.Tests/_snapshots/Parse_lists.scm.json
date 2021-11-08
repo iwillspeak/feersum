@@ -6528,6 +6528,931 @@
                 }
               ]
             }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1242,
+                          "Line": 41,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1248,
+                          "Line": 41,
+                          "Column": 8,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test-list"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1249,
+                          "Line": 41,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1258,
+                          "Line": 41,
+                          "Column": 18,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Quoted",
+                      "Fields": [
+                        {
+                          "Kind": {
+                            "Case": "Form",
+                            "Fields": [
+                              [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "a"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 1261,
+                                        "Line": 41,
+                                        "Column": 21,
+                                        "StreamName": "lists.scm"
+                                      },
+                                      {
+                                        "Index": 1262,
+                                        "Line": 41,
+                                        "Column": 22,
+                                        "StreamName": "lists.scm"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "b"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 1263,
+                                        "Line": 41,
+                                        "Column": 23,
+                                        "StreamName": "lists.scm"
+                                      },
+                                      {
+                                        "Index": 1264,
+                                        "Line": 41,
+                                        "Column": 24,
+                                        "StreamName": "lists.scm"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "c"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 1265,
+                                        "Line": 41,
+                                        "Column": 25,
+                                        "StreamName": "lists.scm"
+                                      },
+                                      {
+                                        "Index": 1266,
+                                        "Line": 41,
+                                        "Column": 26,
+                                        "StreamName": "lists.scm"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "d"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 1267,
+                                        "Line": 41,
+                                        "Column": 27,
+                                        "StreamName": "lists.scm"
+                                      },
+                                      {
+                                        "Index": 1268,
+                                        "Line": 41,
+                                        "Column": 28,
+                                        "StreamName": "lists.scm"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "e"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 1269,
+                                        "Line": 41,
+                                        "Column": 29,
+                                        "StreamName": "lists.scm"
+                                      },
+                                      {
+                                        "Index": 1270,
+                                        "Line": 41,
+                                        "Column": 30,
+                                        "StreamName": "lists.scm"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "f"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 1271,
+                                        "Line": 41,
+                                        "Column": 31,
+                                        "StreamName": "lists.scm"
+                                      },
+                                      {
+                                        "Index": 1272,
+                                        "Line": 41,
+                                        "Column": 32,
+                                        "StreamName": "lists.scm"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "g"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Index": 1273,
+                                        "Line": 41,
+                                        "Column": 33,
+                                        "StreamName": "lists.scm"
+                                      },
+                                      {
+                                        "Index": 1274,
+                                        "Line": 41,
+                                        "Column": 34,
+                                        "StreamName": "lists.scm"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            ]
+                          },
+                          "Location": {
+                            "Case": "Span",
+                            "Fields": [
+                              {
+                                "Index": 1260,
+                                "Line": 41,
+                                "Column": 20,
+                                "StreamName": "lists.scm"
+                              },
+                              {
+                                "Index": 1275,
+                                "Line": 41,
+                                "Column": 35,
+                                "StreamName": "lists.scm"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1259,
+                          "Line": 41,
+                          "Column": 19,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1275,
+                          "Line": 41,
+                          "Column": 35,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1241,
+                  "Line": 41,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 1276,
+                  "Line": 41,
+                  "Column": 36,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1278,
+                          "Line": 42,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1285,
+                          "Line": 42,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "list-tail"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1287,
+                                  "Line": 42,
+                                  "Column": 11,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1296,
+                                  "Line": 42,
+                                  "Column": 20,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test-list"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1297,
+                                  "Line": 42,
+                                  "Column": 21,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1306,
+                                  "Line": 42,
+                                  "Column": 30,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    1.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1307,
+                                  "Line": 42,
+                                  "Column": 31,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1308,
+                                  "Line": 42,
+                                  "Column": 32,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1286,
+                          "Line": 42,
+                          "Column": 10,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1309,
+                          "Line": 42,
+                          "Column": 33,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1277,
+                  "Line": 42,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 1310,
+                  "Line": 42,
+                  "Column": 34,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1311,
+                          "Line": 42,
+                          "Column": 35,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1318,
+                          "Line": 42,
+                          "Column": 42,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1310,
+                  "Line": 42,
+                  "Column": 34,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 1319,
+                  "Line": 42,
+                  "Column": 43,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1321,
+                          "Line": 43,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1328,
+                          "Line": 43,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "list-tail"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1330,
+                                  "Line": 43,
+                                  "Column": 11,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1339,
+                                  "Line": 43,
+                                  "Column": 20,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test-list"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1340,
+                                  "Line": 43,
+                                  "Column": 21,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1349,
+                                  "Line": 43,
+                                  "Column": 30,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    0.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1350,
+                                  "Line": 43,
+                                  "Column": 31,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1351,
+                                  "Line": 43,
+                                  "Column": 32,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1329,
+                          "Line": 43,
+                          "Column": 10,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1352,
+                          "Line": 43,
+                          "Column": 33,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1320,
+                  "Line": 43,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 1353,
+                  "Line": 43,
+                  "Column": 34,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1354,
+                          "Line": 43,
+                          "Column": 35,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1361,
+                          "Line": 43,
+                          "Column": 42,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1353,
+                  "Line": 43,
+                  "Column": 34,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 1362,
+                  "Line": 43,
+                  "Column": 43,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1364,
+                          "Line": 44,
+                          "Column": 2,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1371,
+                          "Line": 44,
+                          "Column": 9,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "list-tail"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1373,
+                                  "Line": 44,
+                                  "Column": 11,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1382,
+                                  "Line": 44,
+                                  "Column": 20,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test-list"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1383,
+                                  "Line": 44,
+                                  "Column": 21,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1392,
+                                  "Line": 44,
+                                  "Column": 30,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    6.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 1393,
+                                  "Line": 44,
+                                  "Column": 31,
+                                  "StreamName": "lists.scm"
+                                },
+                                {
+                                  "Index": 1394,
+                                  "Line": 44,
+                                  "Column": 32,
+                                  "StreamName": "lists.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1372,
+                          "Line": 44,
+                          "Column": 10,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1395,
+                          "Line": 44,
+                          "Column": 33,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1363,
+                  "Line": 44,
+                  "Column": 1,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 1396,
+                  "Line": 44,
+                  "Column": 34,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 1397,
+                          "Line": 44,
+                          "Column": 35,
+                          "StreamName": "lists.scm"
+                        },
+                        {
+                          "Index": 1404,
+                          "Line": 44,
+                          "Column": 42,
+                          "StreamName": "lists.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 1396,
+                  "Line": 44,
+                  "Column": 34,
+                  "StreamName": "lists.scm"
+                },
+                {
+                  "Index": 1405,
+                  "Line": 44,
+                  "Column": 43,
+                  "StreamName": "lists.scm"
+                }
+              ]
+            }
           }
         ]
       ]
@@ -6542,8 +7467,8 @@
           "StreamName": "lists.scm"
         },
         {
-          "Index": 1240,
-          "Line": 40,
+          "Index": 1406,
+          "Line": 45,
           "Column": 1,
           "StreamName": "lists.scm"
         }
