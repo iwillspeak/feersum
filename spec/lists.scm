@@ -37,3 +37,8 @@
 
 (display (reverse ’(a b c)))(newline) ; -> (c b a)
 (display (reverse ’(a (b c) d (e (f)))))(newline) ; -> ((e (f)) d (b c) a)
+
+(define test-list '(a b c d e f g))
+(display (list-tail test-list 1))(newline)
+(display (list-tail test-list 0))(newline)
+(display (list-tail test-list 6))(newline)

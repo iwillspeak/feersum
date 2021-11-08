@@ -20,7 +20,7 @@
         char-downcase char-foldcase)
     ;; Re-export base items from other definitions in this assembly
     (import (feersum core lists))
-    (export append reverse)
+    (export append reverse list-tail)
     ;; Simple definitions
     (export caar cadr cdar cddr)
     (begin

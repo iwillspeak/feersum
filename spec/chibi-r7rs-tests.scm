@@ -1165,7 +1165,7 @@
 (test #t (list? '(a b c)))
 (test #t (list? '()))
 ;; (test #f (list? '(a . b)))  ; FIXME: Quoting of dotted forms
-;; (test #f (let ((x (list 'a))) (set-cdr! x x) (list? x)))
+; FIXME: recurse in `list?` ; (test #f (let ((x (list 'a))) (set-cdr! x x) (list? x)))
 
 (test '(3 3) (make-list 2 3))
 
@@ -1176,17 +1176,17 @@
 (test 3 (length '(a (b) (c d e))))
 (test 0 (length '()))
 
-;; (test '(x y) (append '(x) '(y)))
-;; (test '(a b c d) (append '(a) '(b c d)))
-;; (test '(a (b) (c)) (append '(a (b)) '((c))))
+(test '(x y) (append '(x) '(y)))
+(test '(a b c d) (append '(a) '(b c d)))
+(test '(a (b) (c)) (append '(a (b)) '((c))))
 
-;; (test '(a b c . d) (append '(a b) '(c . d)))
-;; (test 'a (append '() 'a))
+(test '(a b c . d) (append '(a b) '(c . d)))
+(test 'a (append '() 'a))
 
-;; (test '(c b a) (reverse '(a b c)))
-;; (test '((e (f)) d (b c) a) (reverse '(a (b c) d (e (f)))))
+(test '(c b a) (reverse '(a b c)))
+(test '((e (f)) d (b c) a) (reverse '(a (b c) d (e (f)))))
 
-;; (test '(d e) (list-tail '(a b c d e) 3))
+(test '(d e) (list-tail '(a b c d e) 3))
 
 ;; (test 'c (list-ref '(a b c d) 2))
 ;; (test 'c (list-ref '(a b c d)
