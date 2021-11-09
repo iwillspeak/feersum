@@ -52,6 +52,7 @@
   <Target Name="CoreCompile"
           Inputs="$(MSBuildAllProjects);
                   @(ReferencePath);
+                  $(FeersumCompilerPath);
                   @(Compile)"
           Outputs="@(IntermediateAssembly)"
           DependsOnTargets="$(CoreCompileDependsOn)">
