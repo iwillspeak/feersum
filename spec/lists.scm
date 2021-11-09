@@ -42,3 +42,16 @@
 (display (list-tail test-list 1))(newline)
 (display (list-tail test-list 0))(newline)
 (display (list-tail test-list 6))(newline)
+
+(display
+  (list-ref ’(a b c d) 2)) ; =⇒ c
+(newline)
+
+(display
+  (let ((ls (list ’one ’two ’five!)))
+    (list-set! ls 2 ’three)
+    ls) ; =⇒ (one two three)
+  )(newline)
+
+(display (eq? (list-copy test-list) test-list))(newline)
+(display (list-copy 2))(newline)

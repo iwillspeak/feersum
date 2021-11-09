@@ -9,7 +9,7 @@
           (feersum serehfa arithmetics)
           (scheme write)
           (feersum builtin macros))
-  (export append reverse list-tail)
+  (export append reverse list-tail list-ref list-set! list-copy)
   (begin
     ;;; Append Lists
     ;;
@@ -70,4 +70,25 @@
       (if (zero? k)
         lst
         (list-tail (cdr lst) (- k 1))))
+
+    ;;; List Ref
+    ;;
+    ;; Returns the `k`th item from the list.
+    (define (list-ref lst k)
+      (car (list-tail lst k)))
+
+    ;;; List Set Index
+    ;;
+    ;; Mutates the `k`th element in the list to become `val`.
+    (define (list-set! lst k val)
+      (set-car! (list-tail lst k) val))
+
+    ;;; List Copy
+    ;;
+    ;; If `lst` is a proper list then a new list is built contianing the same
+    ;; elements in `car` position, but with new pairs.
+    (define (list-copy lst)
+      (if (pair? lst)
+        (cons (car lst) (list-copy (cdr lst)))
+        lst))
     ))

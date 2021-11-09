@@ -1188,14 +1188,14 @@
 
 (test '(d e) (list-tail '(a b c d e) 3))
 
-;; (test 'c (list-ref '(a b c d) 2))
+(test 'c (list-ref '(a b c d) 2))
 ;; (test 'c (list-ref '(a b c d)
-;;           (exact (round 1.8))))
+;;           (exact (round 1.8)))) FIXME: support `round` and `exact`
 
-;; (test '(0 ("Sue" "Sue") "Anna")
-;;     (let ((lst (list 0 '(2 2 2 2) "Anna")))
-;;       (list-set! lst 1 '("Sue" "Sue"))
-;;       lst))
+(test '(0 ("Sue" "Sue") "Anna")
+    (let ((lst (list 0 '(2 2 2 2) "Anna")))
+      (list-set! lst 1 '("Sue" "Sue"))
+      lst))
 
 ;; (test '(a b c) (memq 'a '(a b c)))
 ;; (test '(b c) (memq 'b '(a b c)))
