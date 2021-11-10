@@ -7,9 +7,10 @@
 (define-library (feersum core lists)
   (import (feersum serehfa lists)
           (feersum serehfa arithmetics)
+          (feersum serehfa equivalence)
           (scheme write)
           (feersum builtin macros))
-  (export append reverse list-tail list-ref list-set! list-copy)
+  (export append reverse list-tail list-ref list-set! list-copy memq memv member)
   (begin
     ;;; Append Lists
     ;;
@@ -91,4 +92,46 @@
       (if (pair? lst)
         (cons (car lst) (list-copy (cdr lst)))
         lst))
+
+    ;;; List Member Search with Eq
+    ;;
+    ;; Returns the tail of the list starting from the first element that
+    ;; compares equal to `obj` using `eq?`.
+    (define (memq obj lst)
+      (if (null? lst)
+        #f
+        (if (eq? (car lst) obj)
+          lst
+          (memq obj (cdr lst)))))
+
+    ;;; List Member Search with Eqv
+    ;;
+    ;; Returns the tail of the list starting from the first element that
+    ;; compares equal to the `obj` using `eqv?`.
+    (define (memv obj lst)
+      (if (null? lst)
+        #f
+        (if (eqv? (car lst) obj)
+          lst
+          (memv obj (cdr lst)))))
+
+    ;;; List Member Search with comparator
+    ;;
+    ;; Returns the tail of the list starting from the first element that
+    ;; compares equal to the `obj` using the givne `cmp`arator, or `equal?` if
+    ;; no comparator is provided.
+    (define (member . params)
+      (define (member-cmp obj lst cmp)
+        (if (null? lst)
+          #f
+          (if (cmp (car lst) obj)
+            lst
+            (member-cmp obj (cdr lst) cmp))))
+      ;; FIXME: re-write once case-lambda is supported.
+      (let ((obj (car params))
+            (lst (list-ref params 1))
+            (cmp (list-tail params 2)))
+        (if (null? cmp)
+          (member-cmp obj lst equal?)
+          (member-cmp obj lst (car cmp)))))
     ))

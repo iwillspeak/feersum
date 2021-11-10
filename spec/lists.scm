@@ -55,3 +55,16 @@
 
 (display (eq? (list-copy test-list) test-list))(newline)
 (display (list-copy 2))(newline)
+
+
+(display (memq ’a ’(a b c)))(newline) ; -> (a b c)
+(display (memq ’b ’(a b c)))(newline) ; -> (b c)
+(display (memq ’a ’(b c d)))(newline) ; -> #f
+(display (memq (list ’a) ’(b (a) c)))(newline) ; -> #f
+(display (member (list ’a)
+  ’(b (a) c)))(newline) ; -> ((a) c)
+(display (member #\B
+  ’(#\a #\b #\c)
+  char-ci=?))(newline) ; -> (#\b #\c)
+(display (memq 101 ’(100 101 102)))(newline) ; -> unspecified
+(display (memv 101 ’(100 101 102)))(newline) ; -> (101 102)
