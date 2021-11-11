@@ -68,3 +68,13 @@
   char-ci=?))(newline) ; -> (#\b #\c)
 (display (memq 101 ’(100 101 102)))(newline) ; -> unspecified
 (display (memv 101 ’(100 101 102)))(newline) ; -> (101 102)
+
+(define e ’((a 1) (b 2) (c 3)))
+(display (assq ’a e))(newline) ; -> (a 1)
+(display (assq ’b e))(newline) ; -> (b 2)
+(display (assq ’d e))(newline) ; -> #f
+(display (assq (list ’a) ’(((a)) ((b)) ((c)))))(newline) ; -> #f
+(display (assoc (list ’a) ’(((a)) ((b)) ((c)))))(newline) ; -> ((a))
+(display (assoc 2.0 ’((1 1) (2 4) (3 9)) =))(newline) ; -> (2 4)
+(display (assq 5 ’((2 3) (5 7) (11 13))))(newline) ; -> unspecified
+(display (assv 5 ’((2 3) (5 7) (11 13))))(newline) ; -> (5 7)

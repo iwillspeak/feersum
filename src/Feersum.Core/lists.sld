@@ -10,7 +10,8 @@
           (feersum serehfa equivalence)
           (scheme write)
           (feersum builtin macros))
-  (export append reverse list-tail list-ref list-set! list-copy memq memv member)
+  (export append reverse list-tail list-ref list-set! list-copy memq memv member
+    assv assq assoc)
   (begin
     ;;; Append Lists
     ;;
@@ -134,4 +135,38 @@
         (if (null? cmp)
           (member-cmp obj lst equal?)
           (member-cmp obj lst (car cmp)))))
+    
+    ;;; Association List Search with Equals
+    ;;
+    ;; Searches the given association list for a pair who's `car` compares
+    ;; equal to the `key` using `equals?`.
+    (define (assoc . params)
+      (define (assoc-cmp obj lst cmp)
+        (if (null? lst)
+          #f
+          (let ((cur (car lst)))
+            (if (cmp (car cur) obj)
+              cur
+              (assoc-cmp obj (cdr lst) cmp)))))
+      ;; FIXME: re-write once case-lambda is supported.
+      (let ((obj (car params))
+            (lst (list-ref params 1))
+            (cmp (list-tail params 2)))
+        (if (null? cmp)
+          (assoc-cmp obj lst equal?)
+          (assoc-cmp obj lst (car cmp)))))
+
+    ;;; Association List Search with Eq
+    ;;
+    ;; Searches the given association list for a pair who's `car` compares
+    ;; equal to the `key` using `eq?`.
+    (define (assq key alist)
+      (assoc key alist eq?))
+
+    ;;; Association List Search with Eqv
+    ;;
+    ;; Searches the given association list for a pair who's `car` compares
+    ;; equal to the `key` using `eqv?`.
+    (define (assv key alist)
+      (assoc key alist eqv?))
     ))
