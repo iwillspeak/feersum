@@ -15,4 +15,10 @@
     (bytevector 1 2 4 5)
     (make-bytevector 10 90)
 
-    ))
+    ))(newline)
+
+(define test-vector #u8(1 2 3 4 5))
+(display (bytevector-length test-vector))(newline)
+(display (bytevector-u8-ref test-vector 3))(newline)
+(bytevector-u8-set! test-vector 3 101)
+(display (bytevector-u8-ref test-vector 3))(newline)

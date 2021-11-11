@@ -878,6 +878,894 @@
                 }
               ]
             }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 297,
+                          "Line": 18,
+                          "Column": 8,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 304,
+                          "Line": 18,
+                          "Column": 15,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 296,
+                  "Line": 18,
+                  "Column": 7,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 305,
+                  "Line": 18,
+                  "Column": 16,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 308,
+                          "Line": 20,
+                          "Column": 2,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 314,
+                          "Line": 20,
+                          "Column": 8,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test-vector"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 315,
+                          "Line": 20,
+                          "Column": 9,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 326,
+                          "Line": 20,
+                          "Column": 20,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "ByteVector",
+                      "Fields": [
+                        [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 327,
+                          "Line": 20,
+                          "Column": 21,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 341,
+                          "Line": 20,
+                          "Column": 35,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 307,
+                  "Line": 20,
+                  "Column": 1,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 342,
+                  "Line": 20,
+                  "Column": 36,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 344,
+                          "Line": 21,
+                          "Column": 2,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 351,
+                          "Line": 21,
+                          "Column": 9,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "bytevector-length"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 353,
+                                  "Line": 21,
+                                  "Column": 11,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 370,
+                                  "Line": 21,
+                                  "Column": 28,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test-vector"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 371,
+                                  "Line": 21,
+                                  "Column": 29,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 382,
+                                  "Line": 21,
+                                  "Column": 40,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 352,
+                          "Line": 21,
+                          "Column": 10,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 383,
+                          "Line": 21,
+                          "Column": 41,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 343,
+                  "Line": 21,
+                  "Column": 1,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 384,
+                  "Line": 21,
+                  "Column": 42,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 385,
+                          "Line": 21,
+                          "Column": 43,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 392,
+                          "Line": 21,
+                          "Column": 50,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 384,
+                  "Line": 21,
+                  "Column": 42,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 393,
+                  "Line": 21,
+                  "Column": 51,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 395,
+                          "Line": 22,
+                          "Column": 2,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 402,
+                          "Line": 22,
+                          "Column": 9,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "bytevector-u8-ref"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 404,
+                                  "Line": 22,
+                                  "Column": 11,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 421,
+                                  "Line": 22,
+                                  "Column": 28,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test-vector"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 422,
+                                  "Line": 22,
+                                  "Column": 29,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 433,
+                                  "Line": 22,
+                                  "Column": 40,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    3.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 434,
+                                  "Line": 22,
+                                  "Column": 41,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 435,
+                                  "Line": 22,
+                                  "Column": 42,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 403,
+                          "Line": 22,
+                          "Column": 10,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 436,
+                          "Line": 22,
+                          "Column": 43,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 394,
+                  "Line": 22,
+                  "Column": 1,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 437,
+                  "Line": 22,
+                  "Column": 44,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 438,
+                          "Line": 22,
+                          "Column": 45,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 445,
+                          "Line": 22,
+                          "Column": 52,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 437,
+                  "Line": 22,
+                  "Column": 44,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 446,
+                  "Line": 22,
+                  "Column": 53,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "bytevector-u8-set!"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 448,
+                          "Line": 23,
+                          "Column": 2,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 466,
+                          "Line": 23,
+                          "Column": 20,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test-vector"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 467,
+                          "Line": 23,
+                          "Column": 21,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 478,
+                          "Line": 23,
+                          "Column": 32,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Number",
+                          "Fields": [
+                            3.0
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 479,
+                          "Line": 23,
+                          "Column": 33,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 480,
+                          "Line": 23,
+                          "Column": 34,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Number",
+                          "Fields": [
+                            101.0
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 481,
+                          "Line": 23,
+                          "Column": 35,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 484,
+                          "Line": 23,
+                          "Column": 38,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 447,
+                  "Line": 23,
+                  "Column": 1,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 485,
+                  "Line": 23,
+                  "Column": 39,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 487,
+                          "Line": 24,
+                          "Column": 2,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 494,
+                          "Line": 24,
+                          "Column": 9,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "bytevector-u8-ref"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 496,
+                                  "Line": 24,
+                                  "Column": 11,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 513,
+                                  "Line": 24,
+                                  "Column": 28,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test-vector"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 514,
+                                  "Line": 24,
+                                  "Column": 29,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 525,
+                                  "Line": 24,
+                                  "Column": 40,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    3.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 526,
+                                  "Line": 24,
+                                  "Column": 41,
+                                  "StreamName": "byte-vectors.scm"
+                                },
+                                {
+                                  "Index": 527,
+                                  "Line": 24,
+                                  "Column": 42,
+                                  "StreamName": "byte-vectors.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 495,
+                          "Line": 24,
+                          "Column": 10,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 528,
+                          "Line": 24,
+                          "Column": 43,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 486,
+                  "Line": 24,
+                  "Column": 1,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 529,
+                  "Line": 24,
+                  "Column": 44,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 530,
+                          "Line": 24,
+                          "Column": 45,
+                          "StreamName": "byte-vectors.scm"
+                        },
+                        {
+                          "Index": 537,
+                          "Line": 24,
+                          "Column": 52,
+                          "StreamName": "byte-vectors.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 529,
+                  "Line": 24,
+                  "Column": 44,
+                  "StreamName": "byte-vectors.scm"
+                },
+                {
+                  "Index": 538,
+                  "Line": 24,
+                  "Column": 53,
+                  "StreamName": "byte-vectors.scm"
+                }
+              ]
+            }
           }
         ]
       ]
@@ -892,9 +1780,9 @@
           "StreamName": "byte-vectors.scm"
         },
         {
-          "Index": 296,
-          "Line": 18,
-          "Column": 7,
+          "Index": 539,
+          "Line": 25,
+          "Column": 1,
           "StreamName": "byte-vectors.scm"
         }
       ]

@@ -12,12 +12,12 @@
     (export vector vector? vector-length vector-set! vector-ref make-vector 
         string=? string->number null? cons list make-list pair? list? car cdr
         set-car! set-cdr! length symbol? symbol=? symbol->string string->symbol
-        eqv? eq? equal? bytevector? make-bytevector bytevector not boolean?
-        boolean=? zero? + - / * = > < >= <= char? char=? char<? char>? char<=?
-        char>=? char-ci=? char-ci<? char-ci>? char-ci<=? char-ci>=?
-        char-alphabetic? char-numeric? char-whitespace? char-upper-case?
-        char-lower-case? digit-value char->integer integer->char char-upcase
-        char-downcase char-foldcase)
+        eqv? eq? equal? bytevector? make-bytevector bytevector bytevector-length
+        bytevector-u8-set! bytevector-u8-ref not boolean? boolean=? zero? + - /
+        * = > < >= <= char? char=? char<? char>? char<=? char>=? char-ci=?
+        char-ci<? char-ci>? char-ci<=? char-ci>=? char-alphabetic? char-numeric?
+        char-whitespace? char-upper-case? char-lower-case? digit-value
+        char->integer integer->char char-upcase char-downcase char-foldcase)
     ;; Re-export base items from other definitions in this assembly
     (import (feersum core lists))
     (export append reverse list-tail list-ref list-set! list-copy memq memv member

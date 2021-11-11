@@ -1537,18 +1537,18 @@
 
 (test-begin "6.8 Vectors")
 
-;; (test #t (vector? #()))
-;; (test #t (vector? #(1 2 3)))
-;; (test #t (vector? '#(1 2 3)))
+(test #t (vector? #()))
+(test #t (vector? #(1 2 3)))
+(test #t (vector? '#(1 2 3)))
 
-;; (test 0 (vector-length (make-vector 0)))
-;; (test 1000 (vector-length (make-vector 1000)))
+(test 0 (vector-length (make-vector 0)))
+(test 1000 (vector-length (make-vector 1000)))
 
-;; (test #(0 (2 2 2 2) "Anna") '#(0 (2 2 2 2) "Anna"))
+(test #(0 (2 2 2 2) "Anna") '#(0 (2 2 2 2) "Anna"))
 
-;; (test #(a b c) (vector 'a 'b 'c))
+(test #(a b c) (vector 'a 'b 'c))
 
-;; (test 8 (vector-ref '#(1 1 2 3 5 8 13 21) 5))
+(test 8 (vector-ref '#(1 1 2 3 5 8 13 21) 5))
 ;; (test 13 (vector-ref '#(1 1 2 3 5 8 13 21)
 ;;             (let ((i (round (* 2 (acos -1)))))
 ;;               (if (inexact? i)
@@ -1616,18 +1616,18 @@
 
 (test-begin "6.9 Bytevectors")
 
-;; (test #t (bytevector? #u8()))
-;; (test #t (bytevector? #u8(0 1 2)))
-;; (test #f (bytevector? #()))
-;; (test #f (bytevector? #(0 1 2)))
-;; (test #f (bytevector? '()))
-;; (test #t (bytevector? (make-bytevector 0)))
+(test #t (bytevector? #u8()))
+(test #t (bytevector? #u8(0 1 2)))
+(test #f (bytevector? #()))
+(test #f (bytevector? #(0 1 2)))
+(test #f (bytevector? '()))
+(test #t (bytevector? (make-bytevector 0)))
 
-;; (test 0 (bytevector-length (make-bytevector 0)))
-;; (test 1024 (bytevector-length (make-bytevector 1024)))
-;; (test 1024 (bytevector-length (make-bytevector 1024 255)))
+(test 0 (bytevector-length (make-bytevector 0)))
+(test 1024 (bytevector-length (make-bytevector 1024)))
+(test 1024 (bytevector-length (make-bytevector 1024 255)))
 
-;; (test 3 (bytevector-length (bytevector 0 1 2)))
+(test 3 (bytevector-length (bytevector 0 1 2)))
 
 ;; (test 0 (bytevector-u8-ref (bytevector 0 1 2) 0))
 ;; (test 1 (bytevector-u8-ref (bytevector 0 1 2) 1))

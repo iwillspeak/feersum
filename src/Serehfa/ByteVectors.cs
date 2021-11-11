@@ -21,16 +21,45 @@ namespace Serehfa
         public static object MakeBytevector(object[] args)
         {
             // TODO: Narrow down the types here when we support numerics better.
-            var (size, fill) = UnpackArgs<double, double>(args);
+            var (size, fill) =
+                args.Length == 1 ?
+                    (UnpackArgs<double>(args), default) :
+                    UnpackArgs<double, double>(args);
             var byteFill = (byte)fill;
 
             var vec = new byte[(int)size];
-            for (var i = 0; i < (int)size; i++)
+
+            if (byteFill != default)
             {
-                vec[i] = byteFill;
+                for (var i = 0; i < (int)size; i++)
+                {
+                    vec[i] = byteFill;
+                }
             }
 
             return vec;
+        }
+
+        [LispExport("bytevector-length")]
+        public static object BytevectorLength(object[] args)
+        {
+            var vec = UnpackArgs<byte[]>(args);
+            return (Double)vec.Length;
+        }
+
+        [LispExport("bytevector-u8-set!")]
+        public static object BytevectorSet(object[] args)
+        {
+            var (vec, index, value) = UnpackArgs<byte[], Double, Double>(args);
+            vec[(int)index] = (byte)value;
+            return null;
+        }
+
+        [LispExport("bytevector-u8-ref")]
+        public static object BytevectorRef(object[] args)
+        {
+            var (vec, index) = UnpackArgs<byte[], Double>(args);
+            return (double)vec[(int)index];
         }
 
         [LispExport("bytevector")]

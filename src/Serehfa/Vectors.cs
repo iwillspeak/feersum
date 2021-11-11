@@ -52,12 +52,18 @@ namespace Serehfa
         [LispExport("make-vector")]
         public static object MakeVector(object[] args)
         {
-            var (size, init) = UnpackArgs<Double, object>(args);
+            var (size, init) =
+                args.Length == 1 ?
+                    (UnpackArgs<double>(args), default) :
+                    UnpackArgs<double, object>(args);
             var isize = (int)size;
             var vec = new object[isize];
-            for (int i = 0; i < isize; i++)
+            if (init != default)
             {
-                vec[i] = init;
+                for (int i = 0; i < isize; i++)
+                {
+                    vec[i] = init;
+                }
             }
             return vec;
         }
