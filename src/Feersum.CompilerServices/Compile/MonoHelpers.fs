@@ -82,47 +82,49 @@ let makeHostInstanceGeneric args (method: MethodReference) =
 ///
 /// Creates the environment class that is used to hold dynamic environments
 /// introduced by lambda captures..
-let addEnvDecls (assm: AssemblyDefinition) =
-    let compilerServicesNs = "Feersum.CompilerServices"
-
+let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition option) name =
     let envTy =
         TypeDefinition(
-            compilerServicesNs,
-            "Environment",
+            "",
+            name,
             TypeAttributes.Class
             ||| TypeAttributes.Public
             ||| TypeAttributes.AnsiClass,
             assm.MainModule.TypeSystem.Object
         )
 
-    let parent =
-        FieldDefinition("parent", FieldAttributes.Public, envTy)
-
-    envTy.Fields.Add(parent)
-
     let slots =
         FieldDefinition("slots", FieldAttributes.Public, ArrayType(assm.MainModule.TypeSystem.Object))
-
     envTy.Fields.Add(slots)
 
-    envTy.Methods.Add
-    <| createCtor
+    let parent =
+        parentTy
+        |> Option.map (fun ty ->
+            let f = FieldDefinition("parent", FieldAttributes.Public, ty)
+            envTy.Fields.Add(f)
+            f)
+
+    createCtor
         assm
         (fun ctor ctorIl ->
-            ctor.Parameters.Add <| namedParam "parent" envTy
+            
+            parent
+            |> Option.iter (fun parent ->
+                let parentArg = namedParam "parent" parent.FieldType
+                
+                ctor.Parameters.Add(parentArg)
 
-            ctor.Parameters.Add
-            <| namedParam "size" assm.MainModule.TypeSystem.Int32
+                ctorIl.Emit(OpCodes.Ldarg_0)
+                ctorIl.Emit(OpCodes.Ldarg, parentArg)
+                ctorIl.Emit(OpCodes.Stfld, parent))
+
+            let sizeArg = namedParam "size" assm.MainModule.TypeSystem.Int32
+            ctor.Parameters.Add(sizeArg)
 
             ctorIl.Emit(OpCodes.Ldarg_0)
-            ctorIl.Emit(OpCodes.Ldarg_1)
-            ctorIl.Emit(OpCodes.Stfld, parent)
-
-            ctorIl.Emit(OpCodes.Ldarg_0)
-            ctorIl.Emit(OpCodes.Ldarg_2)
+            ctorIl.Emit(OpCodes.Ldarg, sizeArg)
             ctorIl.Emit(OpCodes.Newarr, assm.MainModule.TypeSystem.Object)
             ctorIl.Emit(OpCodes.Stfld, slots))
-
-    assm.MainModule.Types.Add envTy
+    |> envTy.Methods.Add
 
     envTy

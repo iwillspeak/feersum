@@ -14,6 +14,27 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Compile.MonoHelpers
 open Feersum.CompilerServices.Targets
+open Feersum.CompilerServices.Utils
+
+/// Capture Environment Information
+type EnvInfo =
+    { Type: TypeDefinition
+      Size: int
+      Captured: StorageRef list
+      mutable Local: VariableDefinition option
+      Parent: EnvInfo option }
+
+module private EnvUtils =
+    /// Get the local variable used to store the current method's environment
+    let getLocal env = env.Local
+
+    /// Get the type part of the environment info.
+    let getType env = env.Type
+
+    /// Get the parent of the given environment.
+    let getParent env = env.Parent
+
+
 
 /// Type to Hold Context While Emitting IL
 type EmitCtx =
@@ -26,10 +47,9 @@ type EmitCtx =
       ScopePrefix: string
       EmitSymbols: bool
       Exports: Map<string, string>
-      EnvSize: int option
       Externs: Map<string, TypeDefinition>
-      mutable Environment: VariableDefinition option
-      ParentEnvSize: int option
+      ParentEnvironment: EnvInfo option
+      Environment: EnvInfo option
       ProgramTy: TypeDefinition
       mutable Initialisers: Map<string, MethodReference>
       mutable Libraries: Map<string, TypeDefinition>
@@ -43,22 +63,26 @@ type CompileResult =
 module private Utils =
 
     /// Get get the size of environment object required to hold any captured values
-    /// in `envMappings`. The return from this has three main meanings:
+    /// in `envMappings`. The return from this has two main meanings:
     ///
-    ///  * `None` -> No environment object is required for this lambda
-    ///  * `Some(0)` -> Only the parent environment link is captured.
-    ///  * `Some(n)` -> An environment with `n` slots is required.
+    ///  * `0` -> Only the parent environment link is captured.
+    ///  * `n` -> An environment with `n` slots is required.
     let private envSizeForMappings envMappings =
         envMappings
-        |> Option.map
-            (fun x ->
-                x
-                |> Seq.fold
-                    (fun c s ->
-                        match s with
-                        | Environment _ -> c + 1
-                        | _ -> c)
-                    0)
+        |> Seq.fold
+            (fun c s ->
+                match s with
+                | Environment _ -> c + 1
+                | _ -> c)
+            0
+
+    let getParentEnv ctx =
+        ctx.ParentEnvironment
+
+    let hasParentEnv = getParentEnv >> Option.isSome
+
+    let hasEnv ctx =
+        ctx.Environment |> Option.isSome
 
     /// Set the attributes on a given method to mark it as compiler generated code
     let markAsCompilerGenerated (core: CoreTypes) (method: MethodDefinition) =
@@ -221,49 +245,50 @@ module private Utils =
         temp
 
     /// Create a dynamic environmnet instance for the given context.
-    let private createEnvironment ctx (size: int) =
-        if ctx.ParentEnvSize.IsSome then
+    let private createEnvironment ctx envInfo =
+        if envInfo.Parent.IsSome then
             ctx.IL.Emit(OpCodes.Ldarg_0)
-        else
-            ctx.IL.Emit(OpCodes.Ldnull)
 
-        ctx.IL.Emit(OpCodes.Ldc_I4, size)
+        ctx.IL.Emit(OpCodes.Ldc_I4, envInfo.Size)
 
         let ctor =
-            Seq.head <| ctx.Core.EnvTy.GetConstructors()
+            Seq.head <| envInfo.Type.GetConstructors()
 
         ctx.IL.Emit(OpCodes.Newobj, ctor)
-        let env = makeTemp ctx ctx.Core.EnvTy
-        ctx.Environment <- Some env
+
+        let env = makeTemp ctx envInfo.Type
+        envInfo.Local <- Some env
         ctx.IL.Emit(OpCodes.Stloc, env)
 
     /// Get the variable definition that the local environment is stored in. If the
     /// environment hasn't been referenced yet then IL is emitted to initialise it.
     let private getEnvironment ctx =
-        match ctx.Environment with
+        match ctx.Environment |> Option.bind (EnvUtils.getLocal) with
         | Some env -> env
         | None -> ice "Attempt to access environment in context without one"
 
     /// Walk the chain of captures starting at `from` in the parent, and then call
     /// `f` with the environment index that the capture chain ends at. This is used
     /// to read and write values from a captured environment.
-    let rec private walkCaptureChain ctx from f =
+    let rec private walkCaptureChain ctx envInfo from f =
         match from with
         | StorageRef.Captured (from) ->
-            ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[0])
-            walkCaptureChain ctx from f
-        | StorageRef.Environment (idx, _) -> f idx
+            let parent =
+                envInfo.Parent |> Option.unwrap
+            ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[1])
+            walkCaptureChain ctx parent from f
+        | StorageRef.Environment (idx, _) -> f envInfo idx
         | _ -> icef "Unexpected storage in capture chain %A" from
 
     /// Given an environment at the top of the stack emit a load of the slot `idx`
-    let private readFromEnv ctx (idx: int) =
-        ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
+    let private readFromEnv ctx envInfo (idx: int) =
+        ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[0])
         ctx.IL.Emit(OpCodes.Ldc_I4, idx)
         ctx.IL.Emit(OpCodes.Ldelem_Ref)
 
     /// Given an environment at the top of the stack emit a store to the slot `idx`
-    let private writeToEnv ctx (temp: VariableDefinition) (idx: int) =
-        ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
+    let private writeToEnv ctx (temp: VariableDefinition) envInfo (idx: int) =
+        ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[0])
         ctx.IL.Emit(OpCodes.Ldc_I4, idx)
         ctx.IL.Emit(OpCodes.Ldloc, temp)
         ctx.IL.Emit(OpCodes.Stelem_Ref)
@@ -526,7 +551,7 @@ module private Utils =
             ctx.IL.Emit(OpCodes.Stloc, temp)
 
             ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
-            writeToEnv ctx temp idx
+            writeToEnv ctx temp (ctx.Environment |> Option.unwrap) idx
         | StorageRef.Captured (from) ->
             let temp =
                 makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
@@ -535,7 +560,7 @@ module private Utils =
 
             // Start at the parent environment and walk up
             ctx.IL.Emit(OpCodes.Ldarg_0)
-            walkCaptureChain ctx from (writeToEnv ctx temp)
+            walkCaptureChain ctx (getParentEnv ctx |> Option.unwrap) from (writeToEnv ctx temp)
 
     /// Emit a load from the given storage location
     and readFrom ctx storage =
@@ -553,11 +578,11 @@ module private Utils =
         | StorageRef.Arg (idx) -> ctx.IL.Emit(OpCodes.Ldarg, idx |> argToParam ctx)
         | StorageRef.Environment (idx, _) ->
             ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
-            readFromEnv ctx idx
+            readFromEnv ctx (ctx.Environment |> Option.unwrap) idx
         | StorageRef.Captured (from) ->
             // start at the parent environment, and walk up
             ctx.IL.Emit(OpCodes.Ldarg_0)
-            walkCaptureChain ctx from (readFromEnv ctx)
+            walkCaptureChain ctx  (getParentEnv ctx |> Option.unwrap) from (readFromEnv ctx)
 
     /// Emit a Sequence of Expressions
     ///
@@ -628,7 +653,7 @@ module private Utils =
         let method = thunk :> MethodReference
 
         // Create a `Func` instance with the appropriate `this` pointer.
-        match ctx.EnvSize with
+        match ctx.Environment with
         | Some (_) ->
             ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
             emitMethodToInstanceFunc ctx method
@@ -649,7 +674,7 @@ module private Utils =
     and public emitNamedLambda (ctx: EmitCtx) name formals root =
 
         let attrs =
-            if ctx.EnvSize.IsSome then
+            if hasEnv ctx then
                 MethodAttributes.Public
             else
                 MethodAttributes.Public
@@ -684,6 +709,33 @@ module private Utils =
             methodDecl.Body.Variables.Add(local)
             locals <- local :: locals
 
+        let buildEnv (captured: StorageRef list) =
+            let envSize =
+                envSizeForMappings captured
+            
+            // let containerTy =
+            //     ctx.Environment
+            //     |> Option.map (EnvUtils.getType)
+            //     |> Option.defaultValue ctx.ProgramTy
+
+            let parentTy = ctx.Environment |> Option.map (EnvUtils.getType)
+
+            let envTy =
+                sprintf "<%s>$Env" name
+                |> makeEnvironmentType ctx.Assm parentTy 
+            
+            ctx.Assm.MainModule.Types.Add envTy
+
+            { Parent = ctx.Environment
+              Type = envTy
+              Size = envSize
+              Captured = captured
+              Local = None }
+
+        let env =
+            root.EnvMappings
+            |> Option.map (buildEnv)
+
         // Create a new emit context for the new method, and lower the body in that
         // new context.
         let ctx =
@@ -691,22 +743,21 @@ module private Utils =
                   NextLambda = 0
                   Locals = locals
                   Parameters = List.rev parameters
-                  EnvSize = envSizeForMappings root.EnvMappings
-                  ParentEnvSize = ctx.EnvSize
-                  Environment = None
+                  Environment = env
+                  ParentEnvironment = ctx.Environment
                   IL = methodDecl.Body.GetILProcessor()
                   ScopePrefix = name }
 
-        match root.EnvMappings with
-        | Some m ->
-            createEnvironment ctx (Option.defaultValue 0 ctx.EnvSize)
+        match ctx.Environment with
+        | Some e ->
+            createEnvironment ctx e
             // Hoist any arguments into the environment
-            m
+            e.Captured
             |> Seq.iter
                 (function
                 | Environment (idx, Arg a) ->
                     ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
-                    ctx.IL.Emit(OpCodes.Ldfld, ctx.Core.EnvTy.Fields.[1])
+                    ctx.IL.Emit(OpCodes.Ldfld, e.Type.Fields.[0])
                     ctx.IL.Emit(OpCodes.Ldc_I4, idx)
                     ctx.IL.Emit(OpCodes.Ldarg, argToParam ctx a)
                     ctx.IL.Emit(OpCodes.Stelem_Ref)
@@ -726,6 +777,7 @@ module private Utils =
 
             // If we have an environment tell the debugger about it
             ctx.Environment
+            |> Option.bind (EnvUtils.getLocal)
             |> Option.iter
                 (fun env ->
                     VariableDebugInformation(env, "capture-environment")
@@ -821,7 +873,7 @@ module private Utils =
 
         // If we are calling an instance method we need to push `this` on the stack
         // as the first argument before we unpack any others.
-        if ctx.ParentEnvSize.IsSome then
+        if hasParentEnv ctx then
             thunkIl.Emit(OpCodes.Ldarg_0)
 
         match formals with
@@ -856,10 +908,11 @@ module private Utils =
         /// If this is method has a captures environment then add it as an instance
         /// mmethod to the environmen type. If not then add it as a plain static
         /// method to the program type.
-        if ctx.ParentEnvSize.IsSome then
-            ctx.Core.EnvTy.Methods.Add methodDecl
-            ctx.Core.EnvTy.Methods.Add thunkDecl
-        else
+        match getParentEnv ctx with
+        | Some parent ->
+            parent.Type.Methods.Add methodDecl
+            parent.Type.Methods.Add thunkDecl
+        | _ ->
             ctx.ProgramTy.Methods.Add methodDecl
             ctx.ProgramTy.Methods.Add thunkDecl
 
@@ -919,9 +972,8 @@ module private Utils =
                   Locals = []
                   Parameters = []
                   Exports = exports |> Map.ofSeq
-                  EnvSize = None
-                  ParentEnvSize = None
                   Environment = None
+                  ParentEnvironment = None
                   ScopePrefix = "$ROOT" }
 
         let bodyParams = BoundFormals.List([])
@@ -1044,9 +1096,8 @@ module Compilation =
               Exports = Map.empty
               Parameters = []
               EmitSymbols = symbolStream.IsSome
-              EnvSize = None
-              ParentEnvSize = None
               Environment = None
+              ParentEnvironment = None
               ScopePrefix = "$ROOT"
               Assm = assm }
 
