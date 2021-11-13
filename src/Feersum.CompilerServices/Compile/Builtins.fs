@@ -17,7 +17,6 @@ open Feersum.CompilerServices.Targets
 type CoreTypes =
     { ConsTy: TypeReference
       ValueType: TypeReference
-      EnvTy: TypeDefinition
       TypeTy: TypeReference
       ConsCtor: MethodReference
       UndefinedInstance: MethodReference
@@ -302,8 +301,7 @@ module Builtins =
           LispLibrary = getSingleCtor "Serehfa.Attributes.LispLibraryAttribute"
           AssmConfigCtor = getSingleCtor "System.Reflection.AssemblyConfigurationAttribute"
           CompRelaxAttr = getSingleCtor "System.Runtime.CompilerServices.CompilationRelaxationsAttribute"
-          CompRelaxations = getImportedType "System.Runtime.CompilerServices.CompilationRelaxations"
-          EnvTy = addEnvDecls lispAssm }
+          CompRelaxations = getImportedType "System.Runtime.CompilerServices.CompilationRelaxations" }
 
     /// Load the signature from a given libary name
     let loadReferencedSignatures (name: string) =
