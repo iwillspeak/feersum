@@ -88,7 +88,7 @@ let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition opt
             "",
             name,
             TypeAttributes.Class
-            ||| TypeAttributes.NotPublic
+            ||| TypeAttributes.NestedPrivate
             ||| TypeAttributes.AnsiClass,
             assm.MainModule.TypeSystem.Object
         )

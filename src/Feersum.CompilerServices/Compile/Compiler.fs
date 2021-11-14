@@ -709,15 +709,6 @@ module private Utils =
                     | Environment _ -> 1
                     | _ -> 0)
 
-            // FIXME: we should add the created environmen type to the nested
-            //        types of our current environment / library. Unfortunately
-            //        however I can't get Mono.Cecil to emit a valid Assembly in
-            //        that case...
-            // let containerTy =
-            //     ctx.Environment
-            //     |> Option.map (EnvUtils.getType)
-            //     |> Option.defaultValue ctx.ProgramTy
-
             let parentTy =
                 ctx.Environment |> Option.map (EnvUtils.getType)
 
@@ -725,7 +716,12 @@ module private Utils =
                 sprintf "<%s>$Env" name
                 |> makeEnvironmentType ctx.Assm parentTy
 
-            ctx.Assm.MainModule.Types.Add envTy
+            let containerTy =
+                ctx.Environment
+                |> Option.map (EnvUtils.getType)
+                |> Option.defaultValue ctx.ProgramTy
+
+            containerTy.NestedTypes.Add envTy
 
             { Parent = ctx.Environment
               Type = envTy
