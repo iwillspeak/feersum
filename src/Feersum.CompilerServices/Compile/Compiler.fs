@@ -62,27 +62,14 @@ type CompileResult =
 [<AutoOpen>]
 module private Utils =
 
-    /// Get get the size of environment object required to hold any captured values
-    /// in `envMappings`. The return from this has two main meanings:
-    ///
-    ///  * `0` -> Only the parent environment link is captured.
-    ///  * `n` -> An environment with `n` slots is required.
-    let private envSizeForMappings envMappings =
-        envMappings
-        |> Seq.fold
-            (fun c s ->
-                match s with
-                | Environment _ -> c + 1
-                | _ -> c)
-            0
+    /// Get the Parent Environment from the current emit context
+    let getParentEnv ctx = ctx.ParentEnvironment
 
-    let getParentEnv ctx =
-        ctx.ParentEnvironment
-
+    /// Predicate to check if the current emit context has a parent environment.
     let hasParentEnv = getParentEnv >> Option.isSome
 
-    let hasEnv ctx =
-        ctx.Environment |> Option.isSome
+    /// Predicate to check if the current emit context has a capture environment.
+    let hasEnv ctx = ctx.Environment |> Option.isSome
 
     /// Set the attributes on a given method to mark it as compiler generated code
     let markAsCompilerGenerated (core: CoreTypes) (method: MethodDefinition) =
@@ -260,8 +247,7 @@ module private Utils =
         envInfo.Local <- Some env
         ctx.IL.Emit(OpCodes.Stloc, env)
 
-    /// Get the variable definition that the local environment is stored in. If the
-    /// environment hasn't been referenced yet then IL is emitted to initialise it.
+    /// Get the variable definition that the local environment is stored in.
     let private getEnvironment ctx =
         match ctx.Environment |> Option.bind (EnvUtils.getLocal) with
         | Some env -> env
@@ -273,8 +259,7 @@ module private Utils =
     let rec private walkCaptureChain ctx envInfo from f =
         match from with
         | StorageRef.Captured (from) ->
-            let parent =
-                envInfo.Parent |> Option.unwrap
+            let parent = envInfo.Parent |> Option.unwrap
             ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[1])
             walkCaptureChain ctx parent from f
         | StorageRef.Environment (idx, _) -> f envInfo idx
@@ -582,7 +567,7 @@ module private Utils =
         | StorageRef.Captured (from) ->
             // start at the parent environment, and walk up
             ctx.IL.Emit(OpCodes.Ldarg_0)
-            walkCaptureChain ctx  (getParentEnv ctx |> Option.unwrap) from (readFromEnv ctx)
+            walkCaptureChain ctx (getParentEnv ctx |> Option.unwrap) from (readFromEnv ctx)
 
     /// Emit a Sequence of Expressions
     ///
@@ -653,11 +638,11 @@ module private Utils =
         let method = thunk :> MethodReference
 
         // Create a `Func` instance with the appropriate `this` pointer.
-        match ctx.Environment with
-        | Some (_) ->
+        if ctx.Environment.IsSome then
             ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
             emitMethodToInstanceFunc ctx method
-        | None -> emitMethodToFunc ctx method
+        else
+            emitMethodToFunc ctx method
 
     /// Emit a Named Lambda Body
     ///
@@ -709,21 +694,37 @@ module private Utils =
             methodDecl.Body.Variables.Add(local)
             locals <- local :: locals
 
+        /// Build an environment info for the given storage
         let buildEnv (captured: StorageRef list) =
+
+            // Get get the size of environment object required to hold any captured values
+            // in `envMappings`. The return from this has two main meanings:
+            //
+            //  * `0` -> Only the parent environment link is captured.
+            //  * `n` -> An environment with `n` slots is required.
             let envSize =
-                envSizeForMappings captured
-            
+                captured
+                |> Seq.sumBy
+                    (function
+                    | Environment _ -> 1
+                    | _ -> 0)
+
+            // FIXME: we should add the created environmen type to the nested
+            //        types of our current environment / library. Unfortunately
+            //        however I can't get Mono.Cecil to emit a valid Assembly in
+            //        that case...
             // let containerTy =
             //     ctx.Environment
             //     |> Option.map (EnvUtils.getType)
             //     |> Option.defaultValue ctx.ProgramTy
 
-            let parentTy = ctx.Environment |> Option.map (EnvUtils.getType)
+            let parentTy =
+                ctx.Environment |> Option.map (EnvUtils.getType)
 
             let envTy =
                 sprintf "<%s>$Env" name
-                |> makeEnvironmentType ctx.Assm parentTy 
-            
+                |> makeEnvironmentType ctx.Assm parentTy
+
             ctx.Assm.MainModule.Types.Add envTy
 
             { Parent = ctx.Environment
@@ -732,9 +733,7 @@ module private Utils =
               Captured = captured
               Local = None }
 
-        let env =
-            root.EnvMappings
-            |> Option.map (buildEnv)
+        let env = root.EnvMappings |> Option.map buildEnv
 
         // Create a new emit context for the new method, and lower the body in that
         // new context.
