@@ -88,37 +88,44 @@ let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition opt
             "",
             name,
             TypeAttributes.Class
-            ||| TypeAttributes.Public
+            ||| TypeAttributes.NotPublic
             ||| TypeAttributes.AnsiClass,
             assm.MainModule.TypeSystem.Object
         )
 
     let slots =
         FieldDefinition("slots", FieldAttributes.Public, ArrayType(assm.MainModule.TypeSystem.Object))
+
     envTy.Fields.Add(slots)
 
     let parent =
         parentTy
-        |> Option.map (fun ty ->
-            let f = FieldDefinition("parent", FieldAttributes.Public, ty)
-            envTy.Fields.Add(f)
-            f)
+        |> Option.map
+            (fun ty ->
+                let f =
+                    FieldDefinition("parent", FieldAttributes.Public, ty)
+
+                envTy.Fields.Add(f)
+                f)
 
     createCtor
         assm
         (fun ctor ctorIl ->
-            
+
             parent
-            |> Option.iter (fun parent ->
-                let parentArg = namedParam "parent" parent.FieldType
-                
-                ctor.Parameters.Add(parentArg)
+            |> Option.iter
+                (fun parent ->
+                    let parentArg = namedParam "parent" parent.FieldType
 
-                ctorIl.Emit(OpCodes.Ldarg_0)
-                ctorIl.Emit(OpCodes.Ldarg, parentArg)
-                ctorIl.Emit(OpCodes.Stfld, parent))
+                    ctor.Parameters.Add(parentArg)
 
-            let sizeArg = namedParam "size" assm.MainModule.TypeSystem.Int32
+                    ctorIl.Emit(OpCodes.Ldarg_0)
+                    ctorIl.Emit(OpCodes.Ldarg, parentArg)
+                    ctorIl.Emit(OpCodes.Stfld, parent))
+
+            let sizeArg =
+                namedParam "size" assm.MainModule.TypeSystem.Int32
+
             ctor.Parameters.Add(sizeArg)
 
             ctorIl.Emit(OpCodes.Ldarg_0)

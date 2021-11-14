@@ -4,113 +4,127 @@
     "version": "2.0.0",
     "tasks": [
       {
-          "label": "build",
-          "command": "dotnet",
-          "type": "shell",
-          "args": [
-              "build",
-              "/property:GenerateFullPaths=true",
-              "/consoleloggerparameters:NoSummary"
-          ],
-          "group": {
-              "kind": "build",
-              "isDefault": true
-          },
-          "presentation": {
-              "reveal": "silent"
-          },
-          "problemMatcher": "$msCompile"
+        "label": "build",
+        "command": "dotnet",
+        "type": "shell",
+        "args": [
+          "build",
+          "/property:GenerateFullPaths=true",
+          "/consoleloggerparameters:NoSummary"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "silent"
+        },
+        "problemMatcher": "$msCompile"
       },
       {
-          "label": "buildStage1",
-          "command": "dotnet",
-          "type": "shell",
-          "args": [
-              "build",
-              "/property:GenerateFullPaths=true",
-              "/consoleloggerparameters:NoSummary",
-              "${workspaceRoot}/src/Feersum.Stage1"
-          ],
-          "group": "build",
-          "presentation": {
-              "reveal": "silent"
-          },
-          "problemMatcher": "$msCompile"
+        "label": "buildStage1",
+        "command": "dotnet",
+        "type": "shell",
+        "args": [
+          "build",
+          "/property:GenerateFullPaths=true",
+          "/consoleloggerparameters:NoSummary",
+          "${workspaceRoot}/src/Feersum.Stage1"
+        ],
+        "group": "build",
+        "presentation": {
+          "reveal": "silent"
+        },
+        "problemMatcher": "$msCompile"
       },
-        {
-            "label": "test",
-            "command": "dotnet",
-            "type": "shell",
-            "dependsOn": "build",
-            "args": [
-                "test",
-                "--no-build",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary",
-                "-v=n"
-            ],
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "silent"
-            },
-            "problemMatcher": "$msCompile"
+      {
+        "label": "test",
+        "command": "dotnet",
+        "type": "shell",
+        "dependsOn": "build",
+        "args": [
+          "test",
+          "--no-build",
+          "/property:GenerateFullPaths=true",
+          "/consoleloggerparameters:NoSummary",
+          "-v=n"
+        ],
+        "group": {
+          "kind": "test",
+          "isDefault": true
         },
-        {
-            "label": "runcompiler",
-            "command": "dotnet",
-            "type": "shell",
-            "dependsOn": "build",
-            "args": [
-                "${workspaceFolder}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
-                "--configuration", "Debug",
-                "-o", "${workspaceFolder}/spec/bin/",
-                "${input:scmToCompile}"
-            ],
-            "group": "build",
-            "presentation": {
-                "reveal": "silent"
-            },
-            "problemMatcher": "$msCompile"
+        "presentation": {
+          "reveal": "silent"
         },
-        {
-            "label": "update-snapshots",
-            "command": "dotnet",
-            "type": "shell",
-            "args": [
-                "test",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary",
-                "-v=n"
-            ],
-            "group": "test",
-            "presentation": {
-                "reveal": "silent"
-            },
-            "problemMatcher": "$msCompile",
-            "options": {
-                "env": {
-                    "UpdateSnapshots": "true"
-                }
-            }
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "runcompiler",
+        "command": "dotnet",
+        "type": "shell",
+        "dependsOn": "build",
+        "args": [
+          "${workspaceFolder}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
+          "--configuration",
+          "Debug",
+          "-o",
+          "${workspaceFolder}/spec/bin/",
+          "${input:scmToCompile}"
+        ],
+        "group": "build",
+        "presentation": {
+          "reveal": "silent"
         },
-        {
-            "label": "pack",
-            "command": "dotnet",
-            "type": "shell",
-            "args": [
-                "pack",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary",
-            ],
-            "group": "build",
-            "presentation": {
-                "reveal": "silent"
-            },
-            "problemMatcher": "$msCompile"
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "update-snapshots",
+        "command": "dotnet",
+        "type": "shell",
+        "args": [
+          "test",
+          "/property:GenerateFullPaths=true",
+          "/consoleloggerparameters:NoSummary",
+          "-v=n"
+        ],
+        "group": "test",
+        "presentation": {
+          "reveal": "silent"
+        },
+        "problemMatcher": "$msCompile",
+        "options": {
+          "env": {
+            "UpdateSnapshots": "true"
+          }
         }
+      },
+      {
+        "label": "pack",
+        "command": "dotnet",
+        "type": "shell",
+        "args": [
+          "pack",
+          "/property:GenerateFullPaths=true",
+          "/consoleloggerparameters:NoSummary"
+        ],
+        "group": "build",
+        "presentation": {
+          "reveal": "silent"
+        },
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "reformat",
+        "command": "bash",
+        "type": "shell",
+        "args": [
+          "reformat.sh"
+        ],
+        "options": {
+          "cwd": "${workspaceRoot}"
+        },
+        "problemMatcher": []
+      }
     ],
     "inputs": [
         {
