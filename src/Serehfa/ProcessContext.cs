@@ -13,7 +13,7 @@ namespace Serehfa
         {
             CheckNoArgs(args);
             return Lists.ListNew(
-                Environment.CommandLine
+                Environment.GetCommandLineArgs()
                     .Cast<object>()
                     .ToArray());
         }
