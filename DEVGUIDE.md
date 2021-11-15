@@ -67,8 +67,8 @@ The compiler itself is split into 4 main passes: parse, bind, lower, and emit.
  [C#]: https://docs.microsoft.com/en-gb/dotnet/csharp/
  [Scheme]: https://schemers.org/
  [Snapper]: https://theramis.github.io/Snapper/#/
- [**Parse**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum/Syntax.fs
- [**Bind**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum/Bind.fs
- [**Lower**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum/Lower.fs
- [**Emit**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum/Compile.fs
+ [**Parse**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Syntax.fs
+ [**Bind**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Binding/Binder.fs
+ [**Lower**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Binding/Lower.fs
+ [**Emit**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Compile/Compiler.fs
  [captivating]: https://willspeak.me/2020/09/06/a-captivating-resolution.html
