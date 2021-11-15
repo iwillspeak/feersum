@@ -22,7 +22,7 @@ namespace Serehfa
         }
 
         [LispExport("list")]
-        public static object Listnew(object[] args)
+        public static object ListNew(object[] args)
         {
             ConsPair ret = null;
             for (int i = args.Length; i > 0; i--)

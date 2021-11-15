@@ -59,6 +59,7 @@ let private runExample references host (exePath: string) =
     // p.StartInfo.RedirectStandardInput <- true
     p.StartInfo.RedirectStandardOutput <- true
     p.StartInfo.RedirectStandardError <- true
+    p.StartInfo.Environment.["FEERSUM_TESTING"] <- "test-sentinel"
     Assert.True(p.Start())
 
     let output =
