@@ -93,9 +93,9 @@ let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition opt
             assm.MainModule.TypeSystem.Object
         )
 
-    for slot in 1 .. size do
+    for slot in 0 .. size - 1 do
         let slot =
-            FieldDefinition(sprintf "env%d" slot, FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
+            FieldDefinition(sprintf "env_%d" slot, FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
 
         envTy.Fields.Add(slot)
 
