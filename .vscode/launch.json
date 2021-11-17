@@ -41,6 +41,12 @@
             "justMyCode": false,
             "console": "internalConsole",
             "requireExactSource": false,
+            "symbolOptions": {
+              "searchPaths": [
+                "${workspaceFolder}/spec/bin",
+                "${workspaceFolder}/spec/bin/Debug"
+              ]
+            },
             "internalConsoleOptions": "openOnSessionStart"
         },
         {
