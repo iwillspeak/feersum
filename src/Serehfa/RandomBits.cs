@@ -17,7 +17,7 @@ namespace Serehfa
                 return (double)s_RandomInstance.Next((int)max);
             }
         }
-    
+
         [LispExport("random-real")]
         public static object RandomDouble(object[] args)
         {

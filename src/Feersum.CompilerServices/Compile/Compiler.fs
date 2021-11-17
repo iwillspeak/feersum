@@ -19,7 +19,6 @@ open Feersum.CompilerServices.Utils
 /// Capture Environment Information
 type EnvInfo =
     { Type: TypeDefinition
-      Size: int
       Captured: StorageRef list
       mutable Local: VariableDefinition option
       Parent: EnvInfo option }
@@ -236,8 +235,6 @@ module private Utils =
         if envInfo.Parent.IsSome then
             ctx.IL.Emit(OpCodes.Ldarg_0)
 
-        ctx.IL.Emit(OpCodes.Ldc_I4, envInfo.Size)
-
         let ctor =
             Seq.head <| envInfo.Type.GetConstructors()
 
@@ -260,23 +257,19 @@ module private Utils =
         match from with
         | StorageRef.Captured (from) ->
             let parent = envInfo.Parent |> Option.unwrap
-            ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[1])
+            ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[envInfo.Captured.Length])
             walkCaptureChain ctx parent from f
         | StorageRef.Environment (idx, _) -> f envInfo idx
         | _ -> icef "Unexpected storage in capture chain %A" from
 
     /// Given an environment at the top of the stack emit a load of the slot `idx`
     let private readFromEnv ctx envInfo (idx: int) =
-        ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[0])
-        ctx.IL.Emit(OpCodes.Ldc_I4, idx)
-        ctx.IL.Emit(OpCodes.Ldelem_Ref)
+        ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[idx])
 
     /// Given an environment at the top of the stack emit a store to the slot `idx`
     let private writeToEnv ctx (temp: VariableDefinition) envInfo (idx: int) =
-        ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[0])
-        ctx.IL.Emit(OpCodes.Ldc_I4, idx)
         ctx.IL.Emit(OpCodes.Ldloc, temp)
-        ctx.IL.Emit(OpCodes.Stelem_Ref)
+        ctx.IL.Emit(OpCodes.Stfld, envInfo.Type.Fields.[idx])
 
     let libraryTypeAttributes =
         TypeAttributes.Class
@@ -714,7 +707,7 @@ module private Utils =
 
             let envTy =
                 sprintf "<%s>$Env" name
-                |> makeEnvironmentType ctx.Assm parentTy
+                |> makeEnvironmentType ctx.Assm parentTy envSize
 
             let containerTy =
                 ctx.Environment
@@ -725,7 +718,6 @@ module private Utils =
 
             { Parent = ctx.Environment
               Type = envTy
-              Size = envSize
               Captured = captured
               Local = None }
 
@@ -752,10 +744,8 @@ module private Utils =
                 (function
                 | Environment (idx, Arg a) ->
                     ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
-                    ctx.IL.Emit(OpCodes.Ldfld, e.Type.Fields.[0])
-                    ctx.IL.Emit(OpCodes.Ldc_I4, idx)
                     ctx.IL.Emit(OpCodes.Ldarg, argToParam ctx a)
-                    ctx.IL.Emit(OpCodes.Stelem_Ref)
+                    ctx.IL.Emit(OpCodes.Stfld, e.Type.Fields.[idx])
                 | _ -> ())
         | None -> ()
 

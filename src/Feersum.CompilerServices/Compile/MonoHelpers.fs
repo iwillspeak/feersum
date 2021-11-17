@@ -82,7 +82,7 @@ let makeHostInstanceGeneric args (method: MethodReference) =
 ///
 /// Creates the environment class that is used to hold dynamic environments
 /// introduced by lambda captures..
-let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition option) name =
+let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition option) size name =
     let envTy =
         TypeDefinition(
             "",
@@ -93,10 +93,11 @@ let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition opt
             assm.MainModule.TypeSystem.Object
         )
 
-    let slots =
-        FieldDefinition("slots", FieldAttributes.Public, ArrayType(assm.MainModule.TypeSystem.Object))
+    for slot in 1 .. size do
+        let slot =
+            FieldDefinition(sprintf "env%d" slot, FieldAttributes.Public, assm.MainModule.TypeSystem.Object)
 
-    envTy.Fields.Add(slots)
+        envTy.Fields.Add(slot)
 
     let parent =
         parentTy
@@ -121,17 +122,7 @@ let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition opt
 
                     ctorIl.Emit(OpCodes.Ldarg_0)
                     ctorIl.Emit(OpCodes.Ldarg, parentArg)
-                    ctorIl.Emit(OpCodes.Stfld, parent))
-
-            let sizeArg =
-                namedParam "size" assm.MainModule.TypeSystem.Int32
-
-            ctor.Parameters.Add(sizeArg)
-
-            ctorIl.Emit(OpCodes.Ldarg_0)
-            ctorIl.Emit(OpCodes.Ldarg, sizeArg)
-            ctorIl.Emit(OpCodes.Newarr, assm.MainModule.TypeSystem.Object)
-            ctorIl.Emit(OpCodes.Stfld, slots))
+                    ctorIl.Emit(OpCodes.Stfld, parent)))
     |> envTy.Methods.Add
 
     envTy
