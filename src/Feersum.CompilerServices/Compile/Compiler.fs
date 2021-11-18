@@ -80,6 +80,12 @@ module private Utils =
         addSimpleAttr core.CompGenCtor
         addSimpleAttr core.NonUserCodeCtor
         addSimpleAttr core.StepThroughCtor
+    
+    /// Mark a type as compiler generated.
+    let markTypeAsCompilerGenerated (core: CoreTypes) (ty: TypeDefinition) =
+        core.CompGenCtor
+        |> CustomAttribute
+        |> ty.CustomAttributes.Add
 
     /// Mark the assembly as supporting debugging
     let markAsDebuggable (core: CoreTypes) (assm: AssemblyDefinition) =
@@ -708,6 +714,7 @@ module private Utils =
             let envTy =
                 sprintf "<%s>$Env" name
                 |> makeEnvironmentType ctx.Assm parentTy envSize
+            markTypeAsCompilerGenerated ctx.Core envTy
 
             let containerTy =
                 ctx.Environment
