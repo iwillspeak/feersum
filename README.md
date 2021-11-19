@@ -2,7 +2,9 @@
 
 [![Build Status](https://dev.azure.com/iwillspeak/GitHub/_apis/build/status/iwillspeak.feersum?branchName=main)](https://dev.azure.com/iwillspeak/GitHub/_build/latest?definitionId=4&branchName=main) [![Feersum on fuget.org](https://www.fuget.org/packages/Feersum/badge.svg)](https://www.fuget.org/packages/Feersum)
 
-<img src="docs/Logo_colour_sm.png" alt="Ant in a box" style="display: block; margin-left: auto; margin-right: auto;" />
+<p align="center">
+	<img src="docs/Logo_colour_sm.png" alt="Ant in a box"  />
+</p>
 
 > Wots in that thare box yoor holdin?
 
