@@ -774,6 +774,909 @@
                 }
               ]
             }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 120,
+                          "Line": 9,
+                          "Column": 25,
+                          "StreamName": "envtest.scm"
+                        },
+                        {
+                          "Index": 127,
+                          "Line": 9,
+                          "Column": 32,
+                          "StreamName": "envtest.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 119,
+                  "Line": 9,
+                  "Column": 24,
+                  "StreamName": "envtest.scm"
+                },
+                {
+                  "Index": 128,
+                  "Line": 9,
+                  "Column": 33,
+                  "StreamName": "envtest.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 131,
+                          "Line": 11,
+                          "Column": 2,
+                          "StreamName": "envtest.scm"
+                        },
+                        {
+                          "Index": 137,
+                          "Line": 11,
+                          "Column": 8,
+                          "StreamName": "envtest.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 139,
+                                  "Line": 11,
+                                  "Column": 10,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 143,
+                                  "Line": 11,
+                                  "Column": 14,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "a"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 144,
+                                  "Line": 11,
+                                  "Column": 15,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 145,
+                                  "Line": 11,
+                                  "Column": 16,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "b"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 146,
+                                  "Line": 11,
+                                  "Column": 17,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 147,
+                                  "Line": 11,
+                                  "Column": 18,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 138,
+                          "Line": 11,
+                          "Column": 9,
+                          "StreamName": "envtest.scm"
+                        },
+                        {
+                          "Index": 148,
+                          "Line": 11,
+                          "Column": 19,
+                          "StreamName": "envtest.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "define"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 152,
+                                  "Line": 12,
+                                  "Column": 4,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 158,
+                                  "Line": 12,
+                                  "Column": 10,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "do-stuff"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 160,
+                                          "Line": 12,
+                                          "Column": 12,
+                                          "StreamName": "envtest.scm"
+                                        },
+                                        {
+                                          "Index": 168,
+                                          "Line": 12,
+                                          "Column": 20,
+                                          "StreamName": "envtest.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 159,
+                                  "Line": 12,
+                                  "Column": 11,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 169,
+                                  "Line": 12,
+                                  "Column": 21,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "define"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 175,
+                                          "Line": 13,
+                                          "Column": 6,
+                                          "StreamName": "envtest.scm"
+                                        },
+                                        {
+                                          "Index": 181,
+                                          "Line": 13,
+                                          "Column": 12,
+                                          "StreamName": "envtest.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "things"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 183,
+                                                  "Line": 13,
+                                                  "Column": 14,
+                                                  "StreamName": "envtest.scm"
+                                                },
+                                                {
+                                                  "Index": 189,
+                                                  "Line": 13,
+                                                  "Column": 20,
+                                                  "StreamName": "envtest.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "c"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 190,
+                                                  "Line": 13,
+                                                  "Column": 21,
+                                                  "StreamName": "envtest.scm"
+                                                },
+                                                {
+                                                  "Index": 191,
+                                                  "Line": 13,
+                                                  "Column": 22,
+                                                  "StreamName": "envtest.scm"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 182,
+                                          "Line": 13,
+                                          "Column": 13,
+                                          "StreamName": "envtest.scm"
+                                        },
+                                        {
+                                          "Index": 192,
+                                          "Line": 13,
+                                          "Column": 23,
+                                          "StreamName": "envtest.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "+"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 200,
+                                                  "Line": 14,
+                                                  "Column": 8,
+                                                  "StreamName": "envtest.scm"
+                                                },
+                                                {
+                                                  "Index": 201,
+                                                  "Line": 14,
+                                                  "Column": 9,
+                                                  "StreamName": "envtest.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "a"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 202,
+                                                  "Line": 14,
+                                                  "Column": 10,
+                                                  "StreamName": "envtest.scm"
+                                                },
+                                                {
+                                                  "Index": 203,
+                                                  "Line": 14,
+                                                  "Column": 11,
+                                                  "StreamName": "envtest.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "b"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 204,
+                                                  "Line": 14,
+                                                  "Column": 12,
+                                                  "StreamName": "envtest.scm"
+                                                },
+                                                {
+                                                  "Index": 205,
+                                                  "Line": 14,
+                                                  "Column": 13,
+                                                  "StreamName": "envtest.scm"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "c"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Index": 206,
+                                                  "Line": 14,
+                                                  "Column": 14,
+                                                  "StreamName": "envtest.scm"
+                                                },
+                                                {
+                                                  "Index": 207,
+                                                  "Line": 14,
+                                                  "Column": 15,
+                                                  "StreamName": "envtest.scm"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 199,
+                                          "Line": 14,
+                                          "Column": 7,
+                                          "StreamName": "envtest.scm"
+                                        },
+                                        {
+                                          "Index": 208,
+                                          "Line": 14,
+                                          "Column": 16,
+                                          "StreamName": "envtest.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 174,
+                                  "Line": 13,
+                                  "Column": 5,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 209,
+                                  "Line": 14,
+                                  "Column": 17,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "things"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 215,
+                                          "Line": 15,
+                                          "Column": 6,
+                                          "StreamName": "envtest.scm"
+                                        },
+                                        {
+                                          "Index": 221,
+                                          "Line": 15,
+                                          "Column": 12,
+                                          "StreamName": "envtest.scm"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Number",
+                                          "Fields": [
+                                            12.0
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Index": 222,
+                                          "Line": 15,
+                                          "Column": 13,
+                                          "StreamName": "envtest.scm"
+                                        },
+                                        {
+                                          "Index": 224,
+                                          "Line": 15,
+                                          "Column": 15,
+                                          "StreamName": "envtest.scm"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 214,
+                                  "Line": 15,
+                                  "Column": 5,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 225,
+                                  "Line": 15,
+                                  "Column": 16,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 151,
+                          "Line": 12,
+                          "Column": 3,
+                          "StreamName": "envtest.scm"
+                        },
+                        {
+                          "Index": 226,
+                          "Line": 15,
+                          "Column": 17,
+                          "StreamName": "envtest.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "do-stuff"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 230,
+                                  "Line": 16,
+                                  "Column": 4,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 238,
+                                  "Line": 16,
+                                  "Column": 12,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 229,
+                          "Line": 16,
+                          "Column": 3,
+                          "StreamName": "envtest.scm"
+                        },
+                        {
+                          "Index": 239,
+                          "Line": 16,
+                          "Column": 13,
+                          "StreamName": "envtest.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 130,
+                  "Line": 11,
+                  "Column": 1,
+                  "StreamName": "envtest.scm"
+                },
+                {
+                  "Index": 240,
+                  "Line": 16,
+                  "Column": 14,
+                  "StreamName": "envtest.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 243,
+                          "Line": 18,
+                          "Column": 2,
+                          "StreamName": "envtest.scm"
+                        },
+                        {
+                          "Index": 250,
+                          "Line": 18,
+                          "Column": 9,
+                          "StreamName": "envtest.scm"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "test"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 252,
+                                  "Line": 18,
+                                  "Column": 11,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 256,
+                                  "Line": 18,
+                                  "Column": 15,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    1.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 257,
+                                  "Line": 18,
+                                  "Column": 16,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 258,
+                                  "Line": 18,
+                                  "Column": 17,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    2.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Index": 259,
+                                  "Line": 18,
+                                  "Column": 18,
+                                  "StreamName": "envtest.scm"
+                                },
+                                {
+                                  "Index": 260,
+                                  "Line": 18,
+                                  "Column": 19,
+                                  "StreamName": "envtest.scm"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 251,
+                          "Line": 18,
+                          "Column": 10,
+                          "StreamName": "envtest.scm"
+                        },
+                        {
+                          "Index": 261,
+                          "Line": 18,
+                          "Column": 20,
+                          "StreamName": "envtest.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 242,
+                  "Line": 18,
+                  "Column": 1,
+                  "StreamName": "envtest.scm"
+                },
+                {
+                  "Index": 262,
+                  "Line": 18,
+                  "Column": 21,
+                  "StreamName": "envtest.scm"
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Index": 263,
+                          "Line": 18,
+                          "Column": 22,
+                          "StreamName": "envtest.scm"
+                        },
+                        {
+                          "Index": 270,
+                          "Line": 18,
+                          "Column": 29,
+                          "StreamName": "envtest.scm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Index": 262,
+                  "Line": 18,
+                  "Column": 21,
+                  "StreamName": "envtest.scm"
+                },
+                {
+                  "Index": 271,
+                  "Line": 18,
+                  "Column": 30,
+                  "StreamName": "envtest.scm"
+                }
+              ]
+            }
           }
         ]
       ]
@@ -788,8 +1691,8 @@
           "StreamName": "envtest.scm"
         },
         {
-          "Index": 120,
-          "Line": 10,
+          "Index": 272,
+          "Line": 19,
           "Column": 1,
           "StreamName": "envtest.scm"
         }
