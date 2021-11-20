@@ -18,21 +18,28 @@ open Feersum.CompilerServices.Utils
 
 /// Capture Environment Information
 type EnvInfo =
-    { Type: TypeDefinition
+    { Kind: EnvKind
       Captured: StorageRef list
-      mutable Local: VariableDefinition option
-      Parent: EnvInfo option }
+      mutable Local: VariableDefinition option }
+and EnvKind =
+    | Standard of ty: TypeDefinition * parent: EnvInfo option
+    | Link of EnvInfo
 
 module private EnvUtils =
     /// Get the local variable used to store the current method's environment
     let getLocal env = env.Local
 
     /// Get the type part of the environment info.
-    let getType env = env.Type
+    let rec getType env =
+        match env.Kind with
+        | Standard (ty, _) -> ty
+        | Link inner -> getType inner
 
     /// Get the parent of the given environment.
-    let getParent env = env.Parent
-
+    let rec getParent env =
+        match env.Kind with
+        | Standard (_, parent) -> parent
+        | Link inner -> getParent inner
 
 
 /// Type to Hold Context While Emitting IL
@@ -238,17 +245,20 @@ module private Utils =
 
     /// Create a dynamic environmnet instance for the given context.
     let private createEnvironment ctx envInfo =
-        if envInfo.Parent.IsSome then
-            ctx.IL.Emit(OpCodes.Ldarg_0)
+        match envInfo.Kind with
+        | Standard (ty, parent) ->
+            if parent.IsSome then
+                ctx.IL.Emit(OpCodes.Ldarg_0)
 
-        let ctor =
-            Seq.head <| envInfo.Type.GetConstructors()
+            let ctor =
+                Seq.head <| ty.GetConstructors()
 
-        ctx.IL.Emit(OpCodes.Newobj, ctor)
+            ctx.IL.Emit(OpCodes.Newobj, ctor)
 
-        let env = makeTemp ctx envInfo.Type
-        envInfo.Local <- Some env
-        ctx.IL.Emit(OpCodes.Stloc, env)
+            let env = makeTemp ctx ty
+            envInfo.Local <- Some env
+            ctx.IL.Emit(OpCodes.Stloc, env)
+        | _ -> ()
 
     /// Get the variable definition that the local environment is stored in.
     let private getEnvironment ctx =
@@ -262,20 +272,30 @@ module private Utils =
     let rec private walkCaptureChain ctx envInfo from f =
         match from with
         | StorageRef.Captured (from) ->
-            let parent = envInfo.Parent |> Option.unwrap
-            ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[envInfo.Captured.Length])
+            let parent =
+                match envInfo.Kind with
+                | Standard (ty, parent) ->
+                    ctx.IL.Emit(OpCodes.Ldfld, ty.Fields.[envInfo.Captured.Length])
+                    parent |> Option.unwrap
+                | Link l -> l
             walkCaptureChain ctx parent from f
         | StorageRef.Environment (idx, _) -> f envInfo idx
         | _ -> icef "Unexpected storage in capture chain %A" from
 
     /// Given an environment at the top of the stack emit a load of the slot `idx`
     let private readFromEnv ctx envInfo (idx: int) =
-        ctx.IL.Emit(OpCodes.Ldfld, envInfo.Type.Fields.[idx])
+        match envInfo.Kind with
+        | Standard (ty, _) ->
+            ctx.IL.Emit(OpCodes.Ldfld, ty.Fields.[idx])
+        | Link l -> icef "Attempt to read from link environment %A at index %d" l idx 
 
     /// Given an environment at the top of the stack emit a store to the slot `idx`
     let private writeToEnv ctx (temp: VariableDefinition) envInfo (idx: int) =
-        ctx.IL.Emit(OpCodes.Ldloc, temp)
-        ctx.IL.Emit(OpCodes.Stfld, envInfo.Type.Fields.[idx])
+        match envInfo.Kind with
+        | Standard (ty, _) ->
+            ctx.IL.Emit(OpCodes.Ldloc, temp)
+            ctx.IL.Emit(OpCodes.Stfld, ty.Fields.[idx])
+        | Link l -> icef "Attempt to write to link environment %A at index %d" l idx 
 
     let libraryTypeAttributes =
         TypeAttributes.Class
@@ -637,11 +657,16 @@ module private Utils =
         let method = thunk :> MethodReference
 
         // Create a `Func` instance with the appropriate `this` pointer.
-        if ctx.Environment.IsSome then
-            ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
+        match ctx.Environment with
+        | Some env ->
+            // load the this pointer
+            match env.Kind with
+            | Standard _ ->
+                ctx.IL.Emit(OpCodes.Ldloc,  env.Local |> Option.unwrap)
+            | Link _ ->
+                ctx.IL.Emit(OpCodes.Ldarg_0)
             emitMethodToInstanceFunc ctx method
-        else
-            emitMethodToFunc ctx method
+        | _ -> emitMethodToFunc ctx method
 
     /// Emit a Named Lambda Body
     ///
@@ -708,28 +733,46 @@ module private Utils =
                     | Environment _ -> 1
                     | _ -> 0)
 
-            let parentTy =
-                ctx.Environment |> Option.map (EnvUtils.getType)
 
-            let envTy =
-                sprintf "<%s>$Env" name
-                |> makeEnvironmentType ctx.Assm parentTy envSize
+            let kind =
+                if envSize = 0 then
+                    match ctx.Environment with
+                    | Some e -> Link e
+                    | _ ->
+                        eprintfn "Failed to find link environment parent %A" captured
+                        ice "bad environment"
+                else
+                    let parentTy =
+                        ctx.Environment |> Option.map (EnvUtils.getType)
 
-            markTypeAsCompilerGenerated ctx.Core envTy
+                    let envTy =
+                        sprintf "<%s>$Env" name
+                        |> makeEnvironmentType ctx.Assm parentTy envSize
 
-            let containerTy =
-                ctx.Environment
-                |> Option.map (EnvUtils.getType)
-                |> Option.defaultValue ctx.ProgramTy
+                    markTypeAsCompilerGenerated ctx.Core envTy
 
-            containerTy.NestedTypes.Add envTy
+                    let containerTy =
+                        ctx.Environment
+                        |> Option.map (EnvUtils.getType)
+                        |> Option.defaultValue ctx.ProgramTy
 
-            { Parent = ctx.Environment
-              Type = envTy
+                    containerTy.NestedTypes.Add envTy
+                    Standard(envTy, ctx.Environment)
+
+            { Kind = kind
               Captured = captured
               Local = None }
 
-        let env = root.EnvMappings |> Option.map buildEnv
+        let env =
+            match root.EnvMappings with
+            | Some [] ->
+                ctx.Environment
+                |> Option.map (fun p ->
+                    { Kind = Link p
+                      Captured = []
+                      Local = None })
+            | Some caps -> buildEnv caps |> Some
+            | None -> None
 
         // Create a new emit context for the new method, and lower the body in that
         // new context.
@@ -745,16 +788,19 @@ module private Utils =
 
         match ctx.Environment with
         | Some e ->
-            createEnvironment ctx e
-            // Hoist any arguments into the environment
-            e.Captured
-            |> Seq.iter
-                (function
-                | Environment (idx, Arg a) ->
-                    ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
-                    ctx.IL.Emit(OpCodes.Ldarg, argToParam ctx a)
-                    ctx.IL.Emit(OpCodes.Stfld, e.Type.Fields.[idx])
-                | _ -> ())
+            match e.Kind with
+            | Standard (ty, _) ->
+                createEnvironment ctx e
+                // Hoist any arguments into the environment
+                e.Captured
+                |> Seq.iter
+                    (function
+                    | Environment (idx, Arg a) ->
+                        ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
+                        ctx.IL.Emit(OpCodes.Ldarg, argToParam ctx a)
+                        ctx.IL.Emit(OpCodes.Stfld, ty.Fields.[idx])
+                    | _ -> ())
+            | Link _ -> ()
         | None -> ()
 
         emitExpression ctx true root.Body
@@ -903,8 +949,9 @@ module private Utils =
         /// method to the program type.
         match getParentEnv ctx with
         | Some parent ->
-            parent.Type.Methods.Add methodDecl
-            parent.Type.Methods.Add thunkDecl
+            let parentTy = EnvUtils.getType parent
+            parentTy.Methods.Add methodDecl
+            parentTy.Methods.Add thunkDecl
         | _ ->
             ctx.ProgramTy.Methods.Add methodDecl
             ctx.ProgramTy.Methods.Add thunkDecl
