@@ -18,10 +18,13 @@ let private getValue token =
 let ``Empty input text always returns end of file`` () =
     let lexer = Lexer("")
 
+    Assert.True(lexer.Done)
     Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
     lexer.Bump()
+    Assert.True(lexer.Done)
     Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
     lexer.Bump()
+    Assert.True(lexer.Done)
     Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
 
 [<Theory>]
@@ -59,5 +62,27 @@ let ``Lexer lex single token`` (token, kind) =
     Assert.Equal(kind, lexer.Current |> getKind)
     Assert.Equal(kind, lexer.Current |> getKind)
     Assert.Equal(token, lexer.Current |> getValue)
+    Assert.False(lexer.Done)
     lexer.Bump()
     Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
+    Assert.True(lexer.Done)
+
+[<Fact>]
+let ``Lexer happy path`` () =
+
+    let lexer = Lexer("(display #| hello |# world)")
+    let checkTok expectedKind expectedValue =
+        let (kind, value) = lexer.Current
+        Assert.Equal(expectedKind, kind)
+        Assert.Equal(expectedValue, value)
+        lexer.Bump()
+
+    checkTok TokenKind.OpenBracket "("
+    checkTok TokenKind.Identifier "display"
+    checkTok TokenKind.Whitespace " "
+    checkTok TokenKind.Comment "#| hello |#"
+    checkTok TokenKind.Whitespace " "
+    checkTok TokenKind.Identifier "world"
+    checkTok TokenKind.CloseBracket ")"
+    checkTok TokenKind.EndOfFile ""
+    checkTok TokenKind.EndOfFile ""

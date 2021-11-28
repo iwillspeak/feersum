@@ -55,7 +55,12 @@ type Lexer(input: string) =
         ()
 
     /// Check if there are more tokens the lexer could produce.
-    member _.Done = tokenStart < buffer.Length |> not
+    member self.Done = 
+        if tokenStart < buffer.Length then
+            false
+        else
+            let (kind, _) = self.Current
+            kind = TokenKind.EndOfFile
 
     /// Attempt to advance the lexer to another token. No further tokens are
     /// available then `TokenKind.EndOfFile` is always returned.
@@ -93,7 +98,7 @@ type Lexer(input: string) =
             | InMultiLineSeenHash _ 
             | InMultiLineSeenBar _ -> TokenKind.Error
 
-        let tokenValue = buffer.[tokenStart..currentChar]
+        let tokenValue = buffer.[tokenStart..tokenEnd]
         tokenStart <- currentChar
 
         (kind, tokenValue)
