@@ -11,6 +11,7 @@ open Snapper
 open System.Diagnostics
 open SyntaxUtils
 open System.Text
+open Feersum.Syntax
 
 // This type has to be public so `Snapper` can see it.
 type TestExecutionResult =

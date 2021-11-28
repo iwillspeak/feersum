@@ -22,11 +22,12 @@ type private LexState =
     | SingleLineComment
     | SeenHash
     | InMultiLine of depth: int
-    | InMultlineSeenHash of depth: int
+    | InMultiLineSeenHash of depth: int
     | InMultiLineSeenBar of depth: int
     | MultiLineDone
     | Identifier
     | Whitespace
+    | Error
 
 /// The lexical analyser. This tokenises the input buffer and exposes the
 /// `Current` token. The next token can be retrieved by calling `Bump`.
@@ -52,6 +53,9 @@ type Lexer(input: string) =
     member _.Bump() =
         current <- None
         ()
+
+    /// Check if there are more tokens the lexer could produce.
+    member _.Done = tokenStart < buffer.Length |> not
 
     /// Attempt to advance the lexer to another token. No further tokens are
     /// available then `TokenKind.EndOfFile` is always returned.
@@ -82,7 +86,12 @@ type Lexer(input: string) =
             | SingleLineComment
             | MultiLineDone -> TokenKind.Comment
             | Whitespace -> TokenKind.Whitespace
-            | _ -> TokenKind.Error
+            | Identifier -> TokenKind.Identifier
+            | Error
+            | SeenHash
+            | InMultiLine _ 
+            | InMultiLineSeenHash _ 
+            | InMultiLineSeenBar _ -> TokenKind.Error
 
         let tokenValue = buffer.[tokenStart..currentChar]
         tokenStart <- currentChar
@@ -130,7 +139,7 @@ type Lexer(input: string) =
                 || (Set.contains c specialInitial)
                 ->
                 Some(LexState.Identifier)
-            | _ -> None
+            | _ -> Some(LexState.Error)
         | SingleLineComment ->
             match c with
             | '\r'
@@ -143,9 +152,9 @@ type Lexer(input: string) =
         | InMultiLine n ->
             match c with
             | '|' -> Some(LexState.InMultiLineSeenBar n)
-            | '#' -> Some(LexState.InMultlineSeenHash n)
+            | '#' -> Some(LexState.InMultiLineSeenHash n)
             | _ -> Some(LexState.InMultiLine n)
-        | InMultlineSeenHash n ->
+        | InMultiLineSeenHash n ->
             match c with
             | '|' -> Some(LexState.InMultiLine(n + 1))
             | _ -> Some(LexState.InMultiLine n)
@@ -169,5 +178,6 @@ type Lexer(input: string) =
             | c when Char.IsWhiteSpace(c) -> Some(LexState.Whitespace)
             | _ -> None
         // Simple accepting states
+        | Error
         | SimpleToken _
         | MultiLineDone -> None
