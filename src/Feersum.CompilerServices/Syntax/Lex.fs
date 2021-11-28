@@ -13,6 +13,7 @@ type TokenKind =
     | Comment = 6
     | Identifier = 7
     | DatumCommentMarker = 8
+    | Number = 9
     | Error = 99
     | EndOfFile = 100
 
@@ -29,6 +30,7 @@ type private LexState =
     | Identifier
     | PerculiarIdentifierSeenSign
     | PerculiarIdentifierSeenDot
+    | Number
     | Whitespace
     | Error
 
@@ -103,6 +105,7 @@ type Lexer(input: string) =
                     TokenKind.Dot
                 else
                     TokenKind.Identifier
+            | Number -> TokenKind.Number
             | Error
             | SeenHash
             | InMultiLine _
@@ -159,6 +162,8 @@ type Lexer(input: string) =
                 || (Set.contains c specialInitial)
                 ->
                 Some(LexState.Identifier)
+            | c when Char.IsDigit(c) ->
+                Some(LexState.Number)
             | _ -> Some(LexState.Error)
         | SingleLineComment ->
             match c with
@@ -214,6 +219,11 @@ type Lexer(input: string) =
                 ->
                 Some(LexState.Identifier)
             | _ -> None
+        | Number ->
+            if Char.IsDigit(c) then
+                Some(LexState.Number)
+            else
+                None
         | Whitespace ->
             match c with
             | c when Char.IsWhiteSpace(c) -> Some(LexState.Whitespace)

@@ -64,6 +64,9 @@ let ``Empty input text always returns end of file`` () =
 [<InlineData("...", TokenKind.Identifier)>]
 [<InlineData(".-", TokenKind.Identifier)>]
 [<InlineData("-@", TokenKind.Identifier)>]
+[<InlineData("1", TokenKind.Number)>]
+[<InlineData("101", TokenKind.Number)>]
+[<InlineData("1234567890", TokenKind.Number)>]
 let ``Lexer lex single token`` (token, kind) =
     let lexer = Lexer(token)
 
