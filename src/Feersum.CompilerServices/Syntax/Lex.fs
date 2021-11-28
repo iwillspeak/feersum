@@ -12,6 +12,7 @@ type TokenKind =
     | Dot = 5
     | Comment = 6
     | Identifier = 7
+    | DatumCommentMarker = 8
     | Error = 99
     | EndOfFile = 100
 
@@ -26,6 +27,8 @@ type private LexState =
     | InMultiLineSeenBar of depth: int
     | MultiLineDone
     | Identifier
+    | PerculiarIdentifierSeenSign
+    | PerculiarIdentifierSeenDot
     | Whitespace
     | Error
 
@@ -55,7 +58,7 @@ type Lexer(input: string) =
         ()
 
     /// Check if there are more tokens the lexer could produce.
-    member self.Done = 
+    member self.Done =
         if tokenStart < buffer.Length then
             false
         else
@@ -91,11 +94,19 @@ type Lexer(input: string) =
             | SingleLineComment
             | MultiLineDone -> TokenKind.Comment
             | Whitespace -> TokenKind.Whitespace
+            | PerculiarIdentifierSeenSign
             | Identifier -> TokenKind.Identifier
+            | PerculiarIdentifierSeenDot ->
+                // Slices in F# are _inclusive_ this is effectively checking if
+                // the identifier is ony a single `.` character.
+                if tokenEnd = tokenStart then
+                    TokenKind.Dot
+                else
+                    TokenKind.Identifier
             | Error
             | SeenHash
-            | InMultiLine _ 
-            | InMultiLineSeenHash _ 
+            | InMultiLine _
+            | InMultiLineSeenHash _
             | InMultiLineSeenBar _ -> TokenKind.Error
 
         let tokenValue = buffer.[tokenStart..tokenEnd]
@@ -124,6 +135,8 @@ type Lexer(input: string) =
               '~' ]
             |> Set.ofList
 
+        let signSubseqent = [ '-'; '+'; '@' ] |> Set.ofList
+
         let specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
 
         match state with
@@ -136,9 +149,11 @@ type Lexer(input: string) =
             | '’'
             | '`' -> Some(LexState.SimpleToken TokenKind.Quote)
             | ',' -> Some(LexState.SimpleToken TokenKind.Unquote)
-            | '.' -> Some(LexState.SimpleToken TokenKind.Dot)
+            | '.' -> Some(LexState.PerculiarIdentifierSeenDot)
             | ';' -> Some(LexState.SingleLineComment)
             | '#' -> Some(LexState.SeenHash)
+            | '-'
+            | '+' -> Some(LexState.PerculiarIdentifierSeenSign)
             | c when
                 Char.IsLetter(c)
                 || (Set.contains c specialInitial)
@@ -153,6 +168,7 @@ type Lexer(input: string) =
         | SeenHash ->
             match c with
             | '|' -> Some(LexState.InMultiLine 1)
+            | ';' -> Some(LexState.SimpleToken TokenKind.DatumCommentMarker)
             | _ -> None
         | InMultiLine n ->
             match c with
@@ -178,6 +194,26 @@ type Lexer(input: string) =
                 Some(LexState.Identifier)
             else
                 None
+        | PerculiarIdentifierSeenSign ->
+            match c with
+            | c when
+                Char.IsLetter(c)
+                || Set.contains c specialInitial
+                || Set.contains c signSubseqent
+                ->
+                Some(LexState.Identifier)
+            | '.' -> Some(LexState.PerculiarIdentifierSeenDot)
+            | _ -> None
+        | PerculiarIdentifierSeenDot ->
+            match c with
+            | '.' -> Some(LexState.Identifier)
+            | c when
+                Char.IsLetter(c)
+                || Set.contains c specialInitial
+                || Set.contains c signSubseqent
+                ->
+                Some(LexState.Identifier)
+            | _ -> None
         | Whitespace ->
             match c with
             | c when Char.IsWhiteSpace(c) -> Some(LexState.Whitespace)
