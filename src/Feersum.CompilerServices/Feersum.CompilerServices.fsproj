@@ -14,7 +14,8 @@
     <Compile Include="Utils.fs" />
     <Compile Include="Options.fs" />
     <Compile Include="Diagnostics.fs" />
-    <Compile Include="Syntax.fs" />
+    <Compile Include="LegacySyntax.fs" />
+    <Compile Include="Syntax/Lex.fs" />
     <Compile Include="Scope.fs" />
     <Compile Include="Binding/Libraries.fs" />
     <Compile Include="Binding/Macros.fs" />
