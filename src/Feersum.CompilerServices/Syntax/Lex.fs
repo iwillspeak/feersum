@@ -48,6 +48,60 @@ type private LexState =
     | Whitespace
     | Error
 
+[<AutoOpen>]
+module private Charsets =
+    /// Charcters, other than alphabetics, that can start an identifier.
+    let specialInitial =
+        [ '!'
+          '$'
+          '%'
+          '&'
+          '*'
+          '/'
+          ':'
+          '<'
+          '='
+          '>'
+          '?'
+          '^'
+          '_'
+          '~' ]
+        |> Set.ofList
+
+    /// Characters that can appear after an explicit sign at the beginning of
+    /// an identifier.
+    let signSubseqent = [ '-'; '+'; '@' ] |> Set.ofList
+
+    /// Non-alphanumeric characters that can appear after the start of a plain
+    /// identifier.
+    let specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
+
+    /// Hexadecimal digits, in both upper and lower case.
+    let hexDigits =
+        [ '0'
+          '1'
+          '2'
+          '3'
+          '4'
+          '5'
+          '6'
+          '7'
+          '8'
+          '9'
+          'a'
+          'b'
+          'c'
+          'd'
+          'e'
+          'f'
+          'A'
+          'B'
+          'C'
+          'D'
+          'E'
+          'F' ]
+        |> Set.ofList
+
 /// The lexical analyser. This tokenises the input buffer and exposes the
 /// `Current` token. The next token can be retrieved by calling `Bump`.
 type Lexer(input: string) =
@@ -144,51 +198,6 @@ type Lexer(input: string) =
     /// returns `Some` if a transition exists, and `None` if no transition is
     /// available.
     member private _.NextTransition(state: LexState, c: char) =
-        let specialInitial =
-            [ '!'
-              '$'
-              '%'
-              '&'
-              '*'
-              '/'
-              ':'
-              '<'
-              '='
-              '>'
-              '?'
-              '^'
-              '_'
-              '~' ]
-            |> Set.ofList
-
-        let signSubseqent = [ '-'; '+'; '@' ] |> Set.ofList
-
-        let specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
-
-        let hexDigits =
-            [ '0'
-              '1'
-              '2'
-              '3'
-              '4'
-              '5'
-              '6'
-              '7'
-              '8'
-              '9'
-              'a'
-              'b'
-              'c'
-              'd'
-              'e'
-              'f'
-              'A'
-              'B'
-              'C'
-              'D'
-              'E'
-              'F' ]
-            |> Set.ofList
 
         match state with
         | Start ->
