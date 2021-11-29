@@ -15,6 +15,7 @@ type TokenKind =
     | DatumCommentMarker = 8
     | Number = 9
     | String = 10
+    | Character = 11
     | Error = 99
     | EndOfFile = 100
 
@@ -35,6 +36,9 @@ type private LexState =
     | LiteralIdentifierSeenEscape
     | String
     | StringSeenEscape
+    | Char
+    | CharNamed
+    | CharHex
     | Number
     | Whitespace
     | Error
@@ -111,6 +115,11 @@ type Lexer(input: string) =
                 else
                     TokenKind.Identifier
             | Number -> TokenKind.Number
+            | CharNamed
+            | CharHex -> TokenKind.Character
+            | LiteralIdentifier
+            | LiteralIdentifierSeenEscape
+            | Char
             | StringSeenEscape
             | String
             | Error
@@ -149,6 +158,31 @@ type Lexer(input: string) =
 
         let specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
 
+        let hexDigits =
+            [ '0'
+              '1'
+              '2'
+              '3'
+              '4'
+              '5'
+              '6'
+              '7'
+              '8'
+              '9'
+              'a'
+              'b'
+              'c'
+              'd'
+              'e'
+              'f'
+              'A'
+              'B'
+              'C'
+              'D'
+              'E'
+              'F' ]
+            |> Set.ofList
+
         match state with
         | Start ->
             match c with
@@ -171,8 +205,7 @@ type Lexer(input: string) =
                 || (Set.contains c specialInitial)
                 ->
                 Some(LexState.Identifier)
-            | c when Char.IsDigit(c) ->
-                Some(LexState.Number)
+            | c when Char.IsDigit(c) -> Some(LexState.Number)
             | _ -> Some(LexState.Error)
         | SingleLineComment ->
             match c with
@@ -183,6 +216,7 @@ type Lexer(input: string) =
             match c with
             | '|' -> Some(LexState.InMultiLine 1)
             | ';' -> Some(LexState.SimpleToken TokenKind.DatumCommentMarker)
+            | '\\' -> Some(LexState.Char)
             | _ -> None
         | InMultiLine n ->
             match c with
@@ -238,15 +272,28 @@ type Lexer(input: string) =
             | '\\' -> Some(LexState.StringSeenEscape)
             | '"' -> Some(LexState.SimpleToken TokenKind.String)
             | _ -> Some(LexState.String)
-        | StringSeenEscape ->
-            Some(LexState.String)
+        | StringSeenEscape -> Some(LexState.String)
         | LiteralIdentifier ->
             match c with
             | '\\' -> Some(LexState.LiteralIdentifierSeenEscape)
             | '|' -> Some(LexState.SimpleToken TokenKind.Identifier)
             | _ -> Some(LexState.LiteralIdentifier)
-        | LiteralIdentifierSeenEscape ->
-            Some(LexState.LiteralIdentifier)
+        | LiteralIdentifierSeenEscape -> Some(LexState.LiteralIdentifier)
+        | Char ->
+            match c with
+            | 'x' -> Some(LexState.CharHex)
+            | c when Char.IsLetter(c) -> Some(LexState.CharNamed)
+            | _ -> Some(LexState.SimpleToken TokenKind.Character)
+        | CharHex ->
+            if Set.contains c hexDigits then
+                Some(LexState.CharHex)
+            else
+                None
+        | CharNamed ->
+            if Char.IsLetter(c) then
+                Some(LexState.CharNamed)
+            else
+                None
         | Whitespace ->
             match c with
             | c when Char.IsWhiteSpace(c) -> Some(LexState.Whitespace)

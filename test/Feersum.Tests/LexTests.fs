@@ -67,10 +67,21 @@ let ``Empty input text always returns end of file`` () =
 [<InlineData("1", TokenKind.Number)>]
 [<InlineData("101", TokenKind.Number)>]
 [<InlineData("1234567890", TokenKind.Number)>]
+[<InlineData("\"", TokenKind.Error)>]
+[<InlineData("\"\\", TokenKind.Error)>]
+[<InlineData("\"\\\"", TokenKind.Error)>]
 [<InlineData("\"\"", TokenKind.String)>]
 [<InlineData("\" some \\\" test\\\\\"", TokenKind.String)>]
 [<InlineData("||", TokenKind.Identifier)>]
+[<InlineData("|", TokenKind.Error)>]
+[<InlineData("|\\", TokenKind.Error)>]
+[<InlineData("|\\|", TokenKind.Error)>]
 [<InlineData("| some \\| test\\\\|", TokenKind.Identifier)>]
+[<InlineData("#\\x101", TokenKind.Character)>]
+[<InlineData("#\\x", TokenKind.Character)>]
+[<InlineData("#\\a", TokenKind.Character)>]
+[<InlineData("#\\alarm", TokenKind.Character)>]
+[<InlineData("#\\ ", TokenKind.Character)>]
 let ``Lexer lex single token`` (token, kind) =
     let lexer = Lexer(token)
 
@@ -86,6 +97,7 @@ let ``Lexer lex single token`` (token, kind) =
 let ``Lexer happy path`` () =
 
     let lexer = Lexer("(display #| hello |# world)")
+
     let checkTok expectedKind expectedValue =
         let (kind, value) = lexer.Current
         Assert.Equal(expectedKind, kind)
