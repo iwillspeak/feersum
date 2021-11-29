@@ -31,6 +31,8 @@ type private LexState =
     | Identifier
     | PerculiarIdentifierSeenSign
     | PerculiarIdentifierSeenDot
+    | LiteralIdentifier
+    | LiteralIdentifierSeenEscape
     | String
     | StringSeenEscape
     | Number
@@ -163,6 +165,7 @@ type Lexer(input: string) =
             | '-'
             | '+' -> Some(LexState.PerculiarIdentifierSeenSign)
             | '"' -> Some(LexState.String)
+            | '|' -> Some(LexState.LiteralIdentifier)
             | c when
                 Char.IsLetter(c)
                 || (Set.contains c specialInitial)
@@ -237,6 +240,13 @@ type Lexer(input: string) =
             | _ -> Some(LexState.String)
         | StringSeenEscape ->
             Some(LexState.String)
+        | LiteralIdentifier ->
+            match c with
+            | '\\' -> Some(LexState.LiteralIdentifierSeenEscape)
+            | '|' -> Some(LexState.SimpleToken TokenKind.Identifier)
+            | _ -> Some(LexState.LiteralIdentifier)
+        | LiteralIdentifierSeenEscape ->
+            Some(LexState.LiteralIdentifier)
         | Whitespace ->
             match c with
             | c when Char.IsWhiteSpace(c) -> Some(LexState.Whitespace)
