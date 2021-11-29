@@ -16,13 +16,17 @@ type TokenKind =
     | Number = 9
     | String = 10
     | Character = 11
+    | Boolean = 12
+    | VectorPrefix = 13
+    | BytevectorPrefix = 14
     | Error = 99
     | EndOfFile = 100
 
 /// States in our lexer's state machine.
 type private LexState =
     | Start
-    | SimpleToken of TokenKind
+    | SimpleToken of kind: TokenKind
+    | ComplexToken of remaining: char list * kind: TokenKind
     | SingleLineComment
     | SeenHash
     | InMultiLine of depth: int
@@ -40,6 +44,7 @@ type private LexState =
     | CharNamed
     | CharHex
     | Number
+    | Bool of next: char * longSuffix: char list
     | Whitespace
     | Error
 
@@ -115,8 +120,10 @@ type Lexer(input: string) =
                 else
                     TokenKind.Identifier
             | Number -> TokenKind.Number
+            | Bool _ -> TokenKind.Boolean
             | CharNamed
             | CharHex -> TokenKind.Character
+            | ComplexToken _
             | LiteralIdentifier
             | LiteralIdentifierSeenEscape
             | Char
@@ -217,6 +224,10 @@ type Lexer(input: string) =
             | '|' -> Some(LexState.InMultiLine 1)
             | ';' -> Some(LexState.SimpleToken TokenKind.DatumCommentMarker)
             | '\\' -> Some(LexState.Char)
+            | 't' -> Some(LexState.Bool('r', [ 'u'; 'e' ]))
+            | 'f' -> Some(LexState.Bool('a', [ 'l'; 's'; 'e' ]))
+            | '(' -> Some(LexState.SimpleToken TokenKind.VectorPrefix)
+            | 'u' -> Some(LexState.ComplexToken([ '8'; '(' ], TokenKind.BytevectorPrefix))
             | _ -> None
         | InMultiLine n ->
             match c with
@@ -294,9 +305,27 @@ type Lexer(input: string) =
                 Some(LexState.CharNamed)
             else
                 None
+        | Bool (next, suffix) ->
+            if c = next then
+                Some(LexState.ComplexToken(suffix, TokenKind.Boolean))
+            else
+                None
         | Whitespace ->
             match c with
             | c when Char.IsWhiteSpace(c) -> Some(LexState.Whitespace)
+            | _ -> None
+        | ComplexToken (remaining, kind) ->
+            match remaining with
+            | [ single ] ->
+                if c = single then
+                    Some(LexState.SimpleToken kind)
+                else
+                    None
+            | expected :: rest ->
+                if c = expected then
+                    Some(LexState.ComplexToken(rest, kind))
+                else
+                    None
             | _ -> None
         // Simple accepting states
         | Error

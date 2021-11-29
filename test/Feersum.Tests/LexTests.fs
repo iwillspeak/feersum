@@ -82,6 +82,12 @@ let ``Empty input text always returns end of file`` () =
 [<InlineData("#\\a", TokenKind.Character)>]
 [<InlineData("#\\alarm", TokenKind.Character)>]
 [<InlineData("#\\ ", TokenKind.Character)>]
+[<InlineData("#(", TokenKind.VectorPrefix)>]
+[<InlineData("#u8(", TokenKind.BytevectorPrefix)>]
+[<InlineData("#t", TokenKind.Boolean)>]
+[<InlineData("#f", TokenKind.Boolean)>]
+[<InlineData("#true", TokenKind.Boolean)>]
+[<InlineData("#false", TokenKind.Boolean)>]
 let ``Lexer lex single token`` (token, kind) =
     let lexer = Lexer(token)
 

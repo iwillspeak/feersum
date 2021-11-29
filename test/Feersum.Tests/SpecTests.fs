@@ -12,6 +12,8 @@ open System.Diagnostics
 open SyntaxUtils
 open System.Text
 open Feersum.Syntax
+open System.Threading
+open System
 
 // This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
@@ -186,3 +188,28 @@ let ``spec tests parse result`` s =
         (node |> nodeSanitiser, diagnostics |> diagSanitiser)
 
     tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s |> normalisePath))
+
+[<Theory>]
+[<MemberDataAttribute("getParseTestData")>]
+let ``Test new lexer`` s =
+    let sourceText = File.ReadAllText(Path.Join(specDir, s))
+    let lexer = Lexer(sourceText)
+
+    use timeout =
+        new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
+
+    let mutable errors = 0
+
+    while not lexer.Done do
+        timeout.Token.ThrowIfCancellationRequested()
+        let (kind, token) = lexer.Current
+
+        if kind = TokenKind.Error then
+            printfn "Unexpected error token %s" token
+            errors <- errors + 1
+
+        lexer.Bump()
+
+    // We expect error tokens in the lexer fail cases.
+    if not (s.Contains("bad")) then
+        Assert.Equal(0, errors)
