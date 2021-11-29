@@ -47,14 +47,14 @@ let main argv =
 
     let options =
         { CompilationOptions.Create buildConfig outputType with
-              Version =
-                  args.TryGetResult AssemblyVersion
-                  |> Option.map Version.Parse
-              References = args.GetResults Reference
-              GenerateDepsFiles =
-                  (args.TryGetResult GenerateDeps)
-                  |> Option.defaultValue true
-              MsCorePaths = args.GetResults CoreLibPath }
+            Version =
+                args.TryGetResult AssemblyVersion
+                |> Option.map Version.Parse
+            References = args.GetResults Reference
+            GenerateDepsFiles =
+                (args.TryGetResult GenerateDeps)
+                |> Option.defaultValue true
+            MsCorePaths = args.GetResults CoreLibPath }
 
     let diags =
         Compilation.compileFiles options (args.GetResult(Output)) (args.GetResult(Sources))

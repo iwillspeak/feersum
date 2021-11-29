@@ -99,11 +99,10 @@ let private rewriteEnv env mappings =
         env
     else
         Map.toSeq mappings
-        |> Seq.where
-            (fun (_, s) ->
-                match s with
-                | Environment _ -> true
-                | _ -> false)
+        |> Seq.where (fun (_, s) ->
+            match s with
+            | Environment _ -> true
+            | _ -> false)
         |> Seq.map (fun (_, v) -> v)
         |> List.ofSeq
         |> Some
@@ -114,11 +113,10 @@ let private rewriteLocals locals mappings =
         locals
     else
         Map.toSeq mappings
-        |> Seq.sumBy
-            (fun (_, s) ->
-                match s with
-                | Local _ -> 1
-                | _ -> 0)
+        |> Seq.sumBy (fun (_, s) ->
+            match s with
+            | Local _ -> 1
+            | _ -> 0)
 
 /// Lower a single expression and re-write the capture environment for it.
 let rec private rewriteExpression ctx =
@@ -177,5 +175,4 @@ and private rewriteRoot parent root =
 
 /// Lower a bound tree to a form better suited for the emit phase.
 let lower (ast: BoundSyntaxTree) =
-    { ast with
-          Root = rewriteRoot None ast.Root }
+    { ast with Root = rewriteRoot None ast.Root }

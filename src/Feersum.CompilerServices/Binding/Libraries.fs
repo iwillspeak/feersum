@@ -46,8 +46,7 @@ type LibrarySignature<'a> =
 module private Utils =
     /// Map the exports in a given library signature
     let mapExports mapper signature =
-        { signature with
-              Exports = signature.Exports |> mapper }
+        { signature with Exports = signature.Exports |> mapper }
 
     /// Recognise a list of strings as a library name
     let parseLibraryName (diags: DiagnosticBag) name =

@@ -32,13 +32,11 @@ let public sanitiseStreamNameWith reWriter (p: Position) =
 
 /// Path Re-Writer that returns a fixed stream name
 let public fixedStreamName name =
-    sanitiseStreamNameWith
-        (function
+    sanitiseStreamNameWith (function
         | _ -> name)
 /// Path Re-Writer that normalises paths relative to `base`
 let public basedStreamName basePath =
-    sanitiseStreamNameWith
-        (function
+    sanitiseStreamNameWith (function
         | path -> Path.GetRelativePath(basePath, path))
 
 /// Transform a location with the given Path Re-Writer
@@ -71,8 +69,7 @@ and private sanitiseKind rewriter =
 /// Transofrm a diagnostics list with the given Location Re-Writer `rewriter`
 let public sanitiseDiagnosticsWith rewriter (diags: Diagnostic list) =
     let sanitiseDiag d =
-        { d with
-              Diagnostic.Location = rewriter (d.Location) }
+        { d with Diagnostic.Location = rewriter (d.Location) }
 
     List.map (sanitiseDiag) diags
 

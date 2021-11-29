@@ -85,16 +85,16 @@ let main argv =
 
     let options =
         { CompilationOptions.Create buildConfig outputType with
-              Version =
-                  args.TryGetResult AssemblyVersion
-                  |> Option.map Version.Parse
-              References =
-                  args.GetResults Reference
-                  |> List.append coreReferences
-              GenerateDepsFiles =
-                  (args.TryGetResult GenerateDeps)
-                  |> Option.defaultValue true
-              MsCorePaths = args.GetResults CoreLibPath }
+            Version =
+                args.TryGetResult AssemblyVersion
+                |> Option.map Version.Parse
+            References =
+                args.GetResults Reference
+                |> List.append coreReferences
+            GenerateDepsFiles =
+                (args.TryGetResult GenerateDeps)
+                |> Option.defaultValue true
+            MsCorePaths = args.GetResults CoreLibPath }
 
     match args.GetResult(Sources, defaultValue = []), args.TryGetResult(Output) with
     | [], None ->

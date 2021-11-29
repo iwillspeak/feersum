@@ -68,15 +68,13 @@ module private ExternUtils =
 
         let findExported onMatching (things: seq<'a> when 'a :> ICustomAttributeProvider) =
             things
-            |> Seq.choose
-                (fun thing ->
-                    thing.CustomAttributes
-                    |> Seq.tryPick
-                        (fun attr ->
-                            if attr.AttributeType.Name = "LispExportAttribute" then
-                                Some(((unpackStringArg attr 0), Global(ty.FullName, (onMatching thing))))
-                            else
-                                None))
+            |> Seq.choose (fun thing ->
+                thing.CustomAttributes
+                |> Seq.tryPick (fun attr ->
+                    if attr.AttributeType.Name = "LispExportAttribute" then
+                        Some(((unpackStringArg attr 0), Global(ty.FullName, (onMatching thing))))
+                    else
+                        None))
 
         let exports =
             ty.Fields |> findExported (fun x -> Field(x.Name))
@@ -87,23 +85,22 @@ module private ExternUtils =
 
         let reExports =
             ty.CustomAttributes
-            |> Seq.choose
-                (fun attr ->
-                    if attr.AttributeType.Name = "LispReExportAttribute" then
-                        let exportedItem =
-                            let id = unpackStringArg attr 2
+            |> Seq.choose (fun attr ->
+                if attr.AttributeType.Name = "LispReExportAttribute" then
+                    let exportedItem =
+                        let id = unpackStringArg attr 2
 
-                            if unpackBoolArg attr 3 then
-                                Method(id)
-                            else
-                                Field(id)
+                        if unpackBoolArg attr 3 then
+                            Method(id)
+                        else
+                            Field(id)
 
-                        let libTy =
-                            attr.ConstructorArguments.[1].Value :?> TypeReference
+                    let libTy =
+                        attr.ConstructorArguments.[1].Value :?> TypeReference
 
-                        Some((unpackStringArg attr 0, Global(libTy.FullName, exportedItem)))
-                    else
-                        None)
+                    Some((unpackStringArg attr 0, Global(libTy.FullName, exportedItem)))
+                else
+                    None)
 
         Seq.concat [ exports
                      builtins
@@ -113,20 +110,18 @@ module private ExternUtils =
     /// Try to convert a given type definition into a library signature.
     let tryGetSignatureFromType (ty: TypeDefinition) =
         ty.CustomAttributes
-        |> Seq.tryPick
-            (fun attr ->
-                if attr.AttributeType.Name = "LispLibraryAttribute" then
-                    Some(attr.ConstructorArguments.[0].Value :?> CustomAttributeArgument [])
-                else
-                    None)
-        |> Option.map
-            (fun name ->
-                (ty,
-                 { LibraryName =
-                       name
-                       |> Seq.map (fun a -> a.Value.ToString())
-                       |> List.ofSeq
-                   Exports = getExports ty }))
+        |> Seq.tryPick (fun attr ->
+            if attr.AttributeType.Name = "LispLibraryAttribute" then
+                Some(attr.ConstructorArguments.[0].Value :?> CustomAttributeArgument [])
+            else
+                None)
+        |> Option.map (fun name ->
+            (ty,
+             { LibraryName =
+                 name
+                 |> Seq.map (fun a -> a.Value.ToString())
+                 |> List.ofSeq
+               Exports = getExports ty }))
 
 // --------------------  Builtin Macro Definitions -----------------------------
 
@@ -205,12 +200,12 @@ module private BuiltinMacros =
     let coreMacros =
         { LibraryName = [ "feersum"; "builtin"; "macros" ]
           Exports =
-              [ macroAnd
-                macroOr
-                macroWhen
-                macroUnless
-                macroCond ]
-              |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
+            [ macroAnd
+              macroOr
+              macroWhen
+              macroUnless
+              macroCond ]
+            |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
 
 // ------------------------ Public Builtins API --------------------------------
 
@@ -224,10 +219,9 @@ module Builtins =
 
         let getType name =
             externAssms
-            |> Seq.pick
-                (fun (assm: AssemblyDefinition) ->
-                    assm.MainModule.Types
-                    |> Seq.tryFind (fun x -> x.FullName = name))
+            |> Seq.pick (fun (assm: AssemblyDefinition) ->
+                assm.MainModule.Types
+                |> Seq.tryFind (fun x -> x.FullName = name))
 
         let getImportedType name =
             getType name
@@ -287,8 +281,8 @@ module Builtins =
           RuntimeInitArray = getMethod "System.Runtime.CompilerServices.RuntimeHelpers" "InitializeArray"
           UndefinedInstance = getMethod "Serehfa.Undefined" "get_Instance"
           FuncObjTy =
-              funcTy.MakeGenericInstanceType(genericArgs)
-              |> lispAssm.MainModule.ImportReference
+            funcTy.MakeGenericInstanceType(genericArgs)
+            |> lispAssm.MainModule.ImportReference
           FuncObjCtor = funcCtor
           FuncObjInvoke = funcInvoke
           ExceptionCtor = getCtorByArity 1 "System.Exception"

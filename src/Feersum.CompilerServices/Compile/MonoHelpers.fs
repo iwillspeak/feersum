@@ -101,28 +101,24 @@ let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition opt
 
     let parent =
         parentTy
-        |> Option.map
-            (fun ty ->
-                let f =
-                    FieldDefinition("parent", FieldAttributes.Public, ty)
+        |> Option.map (fun ty ->
+            let f =
+                FieldDefinition("parent", FieldAttributes.Public, ty)
 
-                envTy.Fields.Add(f)
-                f)
+            envTy.Fields.Add(f)
+            f)
 
-    createCtor
-        assm
-        (fun ctor ctorIl ->
+    createCtor assm (fun ctor ctorIl ->
 
-            parent
-            |> Option.iter
-                (fun parent ->
-                    let parentArg = namedParam "parent" parent.FieldType
+        parent
+        |> Option.iter (fun parent ->
+            let parentArg = namedParam "parent" parent.FieldType
 
-                    ctor.Parameters.Add(parentArg)
+            ctor.Parameters.Add(parentArg)
 
-                    ctorIl.Emit(OpCodes.Ldarg_0)
-                    ctorIl.Emit(OpCodes.Ldarg, parentArg)
-                    ctorIl.Emit(OpCodes.Stfld, parent)))
+            ctorIl.Emit(OpCodes.Ldarg_0)
+            ctorIl.Emit(OpCodes.Ldarg, parentArg)
+            ctorIl.Emit(OpCodes.Stfld, parent)))
     |> envTy.Methods.Add
 
     envTy

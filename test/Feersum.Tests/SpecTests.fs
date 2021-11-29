@@ -100,12 +100,11 @@ let private parseDirectives (sourcePath: string) =
 
 let public getRunTestData () =
     executableSpecs
-    |> Seq.collect
-        (fun spec ->
-            [ [| spec :> obj
-                 BuildConfiguration.Debug :> obj |]
-              [| spec :> obj
-                 BuildConfiguration.Release :> obj |] ])
+    |> Seq.collect (fun spec ->
+        [ [| spec :> obj
+             BuildConfiguration.Debug :> obj |]
+          [| spec :> obj
+             BuildConfiguration.Release :> obj |] ])
 
 [<Theory>]
 [<MemberDataAttribute("getRunTestData")>]
@@ -114,8 +113,7 @@ let ``spec tests compile and run`` specPath configuration =
     let sourcePath = Path.Join(specDir, specPath)
 
     let options =
-        { (CompilationOptions.Create configuration Exe) with
-              GenerateDepsFiles = true }
+        { (CompilationOptions.Create configuration Exe) with GenerateDepsFiles = true }
 
     let binDir =
         [| specBin
@@ -133,31 +131,30 @@ let ``spec tests compile and run`` specPath configuration =
     // Process directives from the source file. This is where we compile
     // dependant libraries.
     parseDirectives sourcePath
-    |> Seq.iter
-        (fun (directive, arg) ->
-            match directive with
-            | "depends" ->
-                let libSourcePath =
-                    Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
+    |> Seq.iter (fun (directive, arg) ->
+        match directive with
+        | "depends" ->
+            let libSourcePath =
+                Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
 
-                let libOptions =
-                    { options with
-                          OutputType = Lib
-                          References = references }
+            let libOptions =
+                { options with
+                    OutputType = Lib
+                    References = references }
 
-                let libPath =
-                    artifactpath libOptions (Path.GetFileName(libSourcePath))
+            let libPath =
+                artifactpath libOptions (Path.GetFileName(libSourcePath))
 
-                match Compilation.compileFile libOptions libPath libSourcePath with
-                | [] -> references <- List.append references [ libPath ]
-                | diags -> failwithf "Compilation error in backing library: %A" diags
-            | _ -> failwithf "unrecognised directive !%s: %s" directive arg)
+            match Compilation.compileFile libOptions libPath libSourcePath with
+            | [] -> references <- List.append references [ libPath ]
+            | diags -> failwithf "Compilation error in backing library: %A" diags
+        | _ -> failwithf "unrecognised directive !%s: %s" directive arg)
 
     // Compile the output assembly, and run the appropriate assertions
     let options =
         { options with
-              OutputType = Exe
-              References = references }
+            OutputType = Exe
+            References = references }
 
     let exePath = artifactpath options specPath
     let specName = specPath |> normalisePath

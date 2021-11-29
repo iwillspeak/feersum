@@ -203,25 +203,24 @@ module private Utils =
         | Some ty ->
             ty.Fields
             |> Seq.tryFind (fun f -> f.Name = id)
-            |> Option.defaultWith
-                (fun () ->
-                    let newField =
-                        FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
+            |> Option.defaultWith (fun () ->
+                let newField =
+                    FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
 
-                    if ctx.ProgramTy <> ty then
-                        icef "Type %A does not match %A being modified for field %s" ctx.ProgramTy ty id
+                if ctx.ProgramTy <> ty then
+                    icef "Type %A does not match %A being modified for field %s" ctx.ProgramTy ty id
 
-                    ty.Fields.Add(newField)
-                    let export = Map.tryFind id ctx.Exports
+                ty.Fields.Add(newField)
+                let export = Map.tryFind id ctx.Exports
 
-                    match export with
-                    | Some (exportedName) ->
-                        markWithExportedName ctx.Core newField exportedName
-                        newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
-                        ()
-                    | None -> ()
+                match export with
+                | Some (exportedName) ->
+                    markWithExportedName ctx.Core newField exportedName
+                    newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
+                    ()
+                | None -> ()
 
-                    newField)
+                newField)
             :> FieldReference
         | None -> getExternField ctx typeName id
 
@@ -271,8 +270,7 @@ module private Utils =
         // Hoist any arguments into the environment
         captured
         |> Option.iter (
-            Seq.iter
-                (function
+            Seq.iter (function
                 | Environment (idx, Arg a) ->
                     ctx.IL.Emit(OpCodes.Ldloc, envLocal)
                     ctx.IL.Emit(OpCodes.Ldarg, argToParam ctx a)
@@ -450,12 +448,11 @@ module private Utils =
             s
             |> List.toSeq
             |> Seq.rev
-            |> Seq.iter
-                (fun q ->
-                    emitQuoted ctx q
-                    ctx.IL.Emit(OpCodes.Ldloc, ret)
-                    ctx.IL.Emit(OpCodes.Newobj, ctx.Core.ConsCtor)
-                    ctx.IL.Emit(OpCodes.Stloc, ret))
+            |> Seq.iter (fun q ->
+                emitQuoted ctx q
+                ctx.IL.Emit(OpCodes.Ldloc, ret)
+                ctx.IL.Emit(OpCodes.Newobj, ctx.Core.ConsCtor)
+                ctx.IL.Emit(OpCodes.Stloc, ret))
 
             // * return the result
             ctx.IL.Emit(OpCodes.Ldloc, ret)
@@ -768,8 +765,7 @@ module private Utils =
             let envSize =
                 root.EnvMappings
                 |> Option.map (
-                    Seq.sumBy
-                        (function
+                    Seq.sumBy (function
                         | Environment _ -> 1
                         | _ -> 0)
                 )
@@ -783,13 +779,13 @@ module private Utils =
         // new context.
         let ctx =
             { ctx with
-                  NextLambda = 0
-                  Locals = locals
-                  Parameters = List.rev parameters
-                  Environment = env
-                  ParentEnvironment = ctx.Environment
-                  IL = methodDecl.Body.GetILProcessor()
-                  ScopePrefix = name }
+                NextLambda = 0
+                Locals = locals
+                Parameters = List.rev parameters
+                Environment = env
+                ParentEnvironment = ctx.Environment
+                IL = methodDecl.Body.GetILProcessor()
+                ScopePrefix = name }
 
         match ctx.Environment with
         | Some e ->
@@ -812,16 +808,14 @@ module private Utils =
             // If we have an environment tell the debugger about it
             ctx.Environment
             |> Option.bind (EnvUtils.getLocal)
-            |> Option.iter
-                (fun env ->
-                    VariableDebugInformation(env, "capture-environment")
-                    |> scope.Variables.Add)
+            |> Option.iter (fun env ->
+                VariableDebugInformation(env, "capture-environment")
+                |> scope.Variables.Add)
 
             ctx.Locals
-            |> List.iteri
-                (fun idx var ->
-                    VariableDebugInformation(var, sprintf "local%d" idx)
-                    |> scope.Variables.Add)
+            |> List.iteri (fun idx var ->
+                VariableDebugInformation(var, sprintf "local%d" idx)
+                |> scope.Variables.Add)
 
             methodDecl.DebugInformation.Scope <- scope
 
@@ -989,27 +983,26 @@ module private Utils =
                 ([], [])
 
         reExports
-        |> List.iter
-            (fun (externName, libTypName, item) ->
-                let externlibTy =
-                    Map.tryFind libTypName ctx.Libraries
-                    |> Option.defaultWith (fun () -> getExternType ctx libTypName)
+        |> List.iter (fun (externName, libTypName, item) ->
+            let externlibTy =
+                Map.tryFind libTypName ctx.Libraries
+                |> Option.defaultWith (fun () -> getExternType ctx libTypName)
 
-                markAsReExport ctx.Core libTy externName externlibTy item)
+            markAsReExport ctx.Core libTy externName externlibTy item)
 
         // Emit the body of the script to a separate method so that the `Eval`
         // module can call it directly
         let libEmitCtx =
             { ctx with
-                  IL = null
-                  ProgramTy = libTy
-                  NextLambda = 0
-                  Locals = []
-                  Parameters = []
-                  Exports = exports |> Map.ofSeq
-                  Environment = None
-                  ParentEnvironment = None
-                  ScopePrefix = "$ROOT" }
+                IL = null
+                ProgramTy = libTy
+                NextLambda = 0
+                Locals = []
+                Parameters = []
+                Exports = exports |> Map.ofSeq
+                Environment = None
+                ParentEnvironment = None
+                ScopePrefix = "$ROOT" }
 
         let bodyParams = BoundFormals.List([])
 
@@ -1095,10 +1088,9 @@ module Compilation =
         /// Import the initialisers for the extern libraries
         let inits =
             externTys
-            |> Seq.choose
-                (fun ty ->
-                    Seq.tryFind (fun (m: MethodDefinition) -> m.Name = "$LibraryBody") ty.Methods
-                    |> Option.map (fun m -> (ty.Name, m |> assm.MainModule.ImportReference)))
+            |> Seq.choose (fun ty ->
+                Seq.tryFind (fun (m: MethodDefinition) -> m.Name = "$LibraryBody") ty.Methods
+                |> Option.map (fun m -> (ty.Name, m |> assm.MainModule.ImportReference)))
             |> Map.ofSeq
 
 

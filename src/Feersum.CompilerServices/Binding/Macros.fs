@@ -110,11 +110,10 @@ module Macros =
         | Some dot ->
             elements
             |> Result.collect
-            |> Result.bind
-                (fun elements ->
-                    match dot with
-                    | Ok d -> Ok(onDotted (elements, d))
-                    | _ -> dot)
+            |> Result.bind (fun elements ->
+                match dot with
+                | Ok d -> Ok(onDotted (elements, d))
+                | _ -> dot)
         | None -> elements |> Result.collect |> Result.map onForm
 
     /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
@@ -163,10 +162,9 @@ module Macros =
             match syntax with
             | head :: rest ->
                 macroMatch headPat head
-                |> Result.bind
-                    (fun vars ->
-                        matchForm patterns maybeTail rest
-                        |> Result.map (MacroBindings.Union vars))
+                |> Result.bind (fun vars ->
+                    matchForm patterns maybeTail rest
+                    |> Result.map (MacroBindings.Union vars))
             | [] -> Result.Error()
         | [] ->
             match maybeTail with
@@ -195,10 +193,7 @@ module Macros =
     /// to backtracking.
     and private matchRepeated repeat patterns maybeTail syntax repeatedBindings =
         match matchForm patterns maybeTail syntax with
-        | Ok vars ->
-            Ok
-                { vars with
-                      Repeated = repeatedBindings |> List.rev }
+        | Ok vars -> Ok { vars with Repeated = repeatedBindings |> List.rev }
         | _ ->
             match syntax with
             | head :: syntax ->
@@ -233,10 +228,9 @@ module Macros =
                 elements
                 |> List.map (getNode)
                 |> Result.collect
-                |> Result.map
-                    (fun expanded ->
-                        { Kind = AstNodeKind.Form(expanded |> List.concat)
-                          Location = location })
+                |> Result.map (fun expanded ->
+                    { Kind = AstNodeKind.Form(expanded |> List.concat)
+                      Location = location })
 
             (elements, substs)
         | DottedForm _ -> unimpl "Dotted forms in macro expansion are not yet supported"
@@ -334,12 +328,11 @@ module Macros =
         function
         | { Kind = AstNodeKind.Form ([ pat; template ]) } ->
             parsePattern elip literals pat
-            |> Result.bind
-                (fun pat ->
-                    let bound = findBound pat
+            |> Result.bind (fun pat ->
+                let bound = findBound pat
 
-                    parseTemplate elip bound template
-                    |> Result.map (fun template -> (pat, template)))
+                parseTemplate elip bound template
+                |> Result.map (fun template -> (pat, template)))
         | n -> errAt n.Location "Ill-formed syntax case"
 
     // Parse a list of syntax transformers
@@ -350,10 +343,9 @@ module Macros =
             | n -> errAt n.Location "Expected an identifier in macro literals")
             literals
         |> Result.collect
-        |> Result.bind
-            (fun literals ->
-                List.map (fun case -> parseTransformer id elip literals case) body
-                |> Result.collect)
+        |> Result.bind (fun literals ->
+            List.map (fun case -> parseTransformer id elip literals case) body
+            |> Result.collect)
 
     /// Parse the body of a syntax rules form.
     let private parseSyntaxRulesBody id loc syntax =
@@ -362,10 +354,9 @@ module Macros =
             parseTransformers id elip literals body
         | { Kind = AstNodeKind.Form (literals) } :: body -> parseTransformers id "..." literals body
         | _ -> errAt loc "Ill-formed syntax rules."
-        |> Result.map
-            (fun transformers ->
-                { Name = id
-                  Transformers = transformers })
+        |> Result.map (fun transformers ->
+            { Name = id
+              Transformers = transformers })
 
     /// Parse a syntax rules expression into a macro definition.
     let public parseSyntaxRules id syntaxRulesSyn =

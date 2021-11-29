@@ -47,7 +47,6 @@ let runRepl () =
     printVersion ()
 
     let options =
-        { defaultScriptOptions with
-              References = coreReferences }
+        { defaultScriptOptions with References = coreReferences }
 
     evalWith options >> Result.map print |> repl

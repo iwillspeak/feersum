@@ -11,8 +11,7 @@ open SyntaxFactory
 //       invalid hex escapes, bad identifiers and so on.
 
 let sanitise =
-    sanitiseNodeWith
-        (function
+    sanitiseNodeWith (function
         | _ -> dummyLocation)
 
 [<Fact>]

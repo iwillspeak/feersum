@@ -413,8 +413,7 @@ module private Impl =
 
         let imports =
             library.Declarations
-            |> List.choose
-                (function
+            |> List.choose (function
                 | LibraryDeclaration.Import i ->
                     i
                     |> List.choose (
@@ -448,12 +447,10 @@ module private Impl =
 
         let exports =
             library.Declarations
-            |> List.choose
-                (function
+            |> List.choose (function
                 | LibraryDeclaration.Export exp ->
                     exp
-                    |> List.choose
-                        (function
+                    |> List.choose (function
                         | ExportSet.Plain p -> lookupExport p p
                         | ExportSet.Renamed rename -> lookupExport rename.From rename.To)
                     |> Some
@@ -514,28 +511,22 @@ module private Impl =
                 bindLambdaBody ctx boundFormals body
             | _ -> illFormed "lambda"
         | { Kind = AstNodeKind.Ident ("let") } :: body ->
-            bindLet
-                ctx
-                "let"
-                body
-                node.Location
-                (fun bindingSpecs ->
+            bindLet ctx "let" body node.Location (fun bindingSpecs ->
 
-                    // Bind the body of each binding spec first
-                    let decls =
-                        bindingSpecs
-                        |> List.map (fun (id, body) -> (id, bindInContext ctx body))
+                // Bind the body of each binding spec first
+                let decls =
+                    bindingSpecs
+                    |> List.map (fun (id, body) -> (id, bindInContext ctx body))
 
-                    // Once the bodies are bound, we can create assignments and
-                    // initialise the environment
-                    let boundDecls =
-                        decls
-                        |> List.map
-                            (fun (id, body) ->
-                                let storage = BinderCtx.addBinding ctx id
-                                BoundExpr.Store(storage, Some(body)))
+                // Once the bodies are bound, we can create assignments and
+                // initialise the environment
+                let boundDecls =
+                    decls
+                    |> List.map (fun (id, body) ->
+                        let storage = BinderCtx.addBinding ctx id
+                        BoundExpr.Store(storage, Some(body)))
 
-                    boundDecls)
+                boundDecls)
         | { Kind = AstNodeKind.Ident ("let*") } :: body ->
             bindLet
                 ctx
@@ -544,93 +535,80 @@ module private Impl =
                 node.Location
                 (
                 // let* binds each spec sequentially
-                List.map
-                    (fun (id, body) ->
-                        let body = bindInContext ctx body
-                        let storage = BinderCtx.addBinding ctx id
-                        BoundExpr.Store(storage, Some(body))))
+                List.map (fun (id, body) ->
+                    let body = bindInContext ctx body
+                    let storage = BinderCtx.addBinding ctx id
+                    BoundExpr.Store(storage, Some(body))))
         | ({ Kind = AstNodeKind.Ident ("letrec") } as head) :: body
         | ({ Kind = AstNodeKind.Ident ("letrec*") } as head) :: body ->
-            bindLet
-                ctx
-                "letrec"
-                body
-                node.Location
-                (fun bindingSpecs ->
+            bindLet ctx "letrec" body node.Location (fun bindingSpecs ->
 
 
-                    // Get storage for each of the idents first into scope.
-                    let boundIdents =
-                        bindingSpecs
-                        |> List.map (fun (id, body) -> ((BinderCtx.addBinding ctx id), body))
+                // Get storage for each of the idents first into scope.
+                let boundIdents =
+                    bindingSpecs
+                    |> List.map (fun (id, body) -> ((BinderCtx.addBinding ctx id), body))
 
-                    //        Validate that bindings don't read from
-                    //        un-initialised variables. The `letrec*` is allowed to
-                    //        reference previous variables. Plain `letrec` Isn't allowed
-                    //        to reference any.
-                    let mutable uniitialisedStorage =
-                        boundIdents |> List.map (fun (id, _) -> id)
+                //        Validate that bindings don't read from
+                //        un-initialised variables. The `letrec*` is allowed to
+                //        reference previous variables. Plain `letrec` Isn't allowed
+                //        to reference any.
+                let mutable uniitialisedStorage =
+                    boundIdents |> List.map (fun (id, _) -> id)
 
-                    let rec checkUses location =
-                        function
-                        | Application (app, args) ->
-                            checkUses location app
-                            List.iter (checkUses location) args
-                        | If (cond, cons, els) ->
-                            checkUses location cond
-                            checkUses location cons
-                            Option.iter (checkUses location) els
-                        | Seq (exprs) -> List.iter (checkUses location) exprs
-                        | Lambda _ -> ()
-                        | Load (s) -> checkStorage location s
-                        | Store (s, v) ->
-                            checkStorage location s
-                            Option.iter (checkUses location) v
-                        | SequencePoint (inner, _) -> checkUses location inner
-                        | _ -> ()
+                let rec checkUses location =
+                    function
+                    | Application (app, args) ->
+                        checkUses location app
+                        List.iter (checkUses location) args
+                    | If (cond, cons, els) ->
+                        checkUses location cond
+                        checkUses location cons
+                        Option.iter (checkUses location) els
+                    | Seq (exprs) -> List.iter (checkUses location) exprs
+                    | Lambda _ -> ()
+                    | Load (s) -> checkStorage location s
+                    | Store (s, v) ->
+                        checkStorage location s
+                        Option.iter (checkUses location) v
+                    | SequencePoint (inner, _) -> checkUses location inner
+                    | _ -> ()
 
-                    and checkStorage location s =
-                        List.tryFindIndex ((=) s) uniitialisedStorage
-                        |> Option.iter
-                            (fun idx ->
-                                let (name, _) = bindingSpecs.[idx]
+                and checkStorage location s =
+                    List.tryFindIndex ((=) s) uniitialisedStorage
+                    |> Option.iter (fun idx ->
+                        let (name, _) = bindingSpecs.[idx]
 
-                                name
-                                |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
-                                |> ctx.Diagnostics.Emit location)
+                        name
+                        |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
+                        |> ctx.Diagnostics.Emit location)
 
-                    let isLetrecStar = head.Kind = AstNodeKind.Ident("letrec*")
+                let isLetrecStar = head.Kind = AstNodeKind.Ident("letrec*")
 
-                    // Now all the IDs are in scope, bind the initialisers
-                    let boundDecls =
-                        boundIdents
-                        |> List.map
-                            (fun (storage, body) ->
-                                let bound = bindInContext ctx body
-                                checkUses body.Location bound
+                // Now all the IDs are in scope, bind the initialisers
+                let boundDecls =
+                    boundIdents
+                    |> List.map (fun (storage, body) ->
+                        let bound = bindInContext ctx body
+                        checkUses body.Location bound
 
-                                if isLetrecStar then
-                                    uniitialisedStorage <- List.tail uniitialisedStorage
+                        if isLetrecStar then
+                            uniitialisedStorage <- List.tail uniitialisedStorage
 
-                                BoundExpr.Store(storage, Some(bound)))
+                        BoundExpr.Store(storage, Some(bound)))
 
-                    boundDecls)
+                boundDecls)
         | { Kind = AstNodeKind.Ident ("let-syntax") } :: body ->
-            bindLet
-                ctx
-                "let-syntax"
-                body
-                node.Location
-                (fun bindingSpecs ->
+            bindLet ctx "let-syntax" body node.Location (fun bindingSpecs ->
 
-                    Seq.iter
-                        (fun (id, syntaxRules) ->
-                            match Macros.parseSyntaxRules id syntaxRules with
-                            | Ok (macro) -> BinderCtx.addMacro ctx id macro
-                            | Result.Error e -> ctx.Diagnostics.Add e)
-                        bindingSpecs
+                Seq.iter
+                    (fun (id, syntaxRules) ->
+                        match Macros.parseSyntaxRules id syntaxRules with
+                        | Ok (macro) -> BinderCtx.addMacro ctx id macro
+                        | Result.Error e -> ctx.Diagnostics.Add e)
+                    bindingSpecs
 
-                    [])
+                [])
         | { Kind = AstNodeKind.Ident ("set!")
             Location = l } :: body ->
             match body with
@@ -673,13 +651,12 @@ module private Impl =
             | _ -> illFormed "define-library"
         | { Kind = AstNodeKind.Ident ("import") } :: body ->
             body
-            |> List.map
-                (fun item ->
-                    Libraries.parseImport ctx.Diagnostics item
-                    |> Libraries.resolveImport ctx.Libraries
-                    |> Result.mapError (ctx.Diagnostics.Emit item.Location)
-                    |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
-                    |> Result.okOr BoundExpr.Error)
+            |> List.map (fun item ->
+                Libraries.parseImport ctx.Diagnostics item
+                |> Libraries.resolveImport ctx.Libraries
+                |> Result.mapError (ctx.Diagnostics.Emit item.Location)
+                |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
+                |> Result.okOr BoundExpr.Error)
             |> BoundExpr.Seq
         | { Kind = AstNodeKind.Ident ("case") } :: body -> unimpl "Case expressions not yet implemented"
         | head :: rest -> bindApplication ctx head rest node

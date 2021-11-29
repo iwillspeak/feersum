@@ -54,11 +54,11 @@ let public writeRuntimeConfig
 
         let config =
             {| RuntimeOptions =
-                   {| Tfm = (sprintf "%s%i.%i" tfmPrefix tfVersion.Major tfVersion.Minor)
-                      Framework =
-                          {| Name = "Microsoft.NETCore.App"
-                             Version = tfVersion.ToString() |}
-                      AdditionalProbingPaths = [| outputDir |] |} |}
+                {| Tfm = (sprintf "%s%i.%i" tfmPrefix tfVersion.Major tfVersion.Minor)
+                   Framework =
+                    {| Name = "Microsoft.NETCore.App"
+                       Version = tfVersion.ToString() |}
+                   AdditionalProbingPaths = [| outputDir |] |} |}
 
         let mutable opts =
             JsonSerializerOptions(JsonSerializerDefaults.Web)
@@ -85,10 +85,9 @@ let public writeRuntimeConfig
 
         let deps =
             referencePaths
-            |> List.map
-                (fun r ->
-                    let name = Builtins.getAssemblyName r
-                    Dependency(Path.GetFileName(r), name.Version.ToString()))
+            |> List.map (fun r ->
+                let name = Builtins.getAssemblyName r
+                Dependency(Path.GetFileName(r), name.Version.ToString()))
 
         let refLibs =
             Seq.zip referencePaths deps
