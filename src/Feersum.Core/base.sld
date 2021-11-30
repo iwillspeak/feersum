@@ -7,6 +7,7 @@
         (feersum serehfa lists)
         (feersum serehfa strings)
         (feersum serehfa symbols)
+        (feersum serehfa read)
         (feersum serehfa vectors)
         (feersum serehfa bytevectors))
     (export vector vector? vector-length vector-set! vector-ref make-vector 
@@ -17,7 +18,9 @@
         * = > < >= <= char? char=? char<? char>? char<=? char>=? char-ci=?
         char-ci<? char-ci>? char-ci<=? char-ci>=? char-alphabetic? char-numeric?
         char-whitespace? char-upper-case? char-lower-case? digit-value
-        char->integer integer->char char-upcase char-downcase char-foldcase)
+        char->integer integer->char char-upcase char-downcase char-foldcase
+        read-char peek-char read-line eof-object eof-object? char-ready?
+        read-string)
     ;; Re-export base items from other definitions in this assembly
     (import (feersum core lists))
     (export append reverse list-tail list-ref list-set! list-copy memq memv member
