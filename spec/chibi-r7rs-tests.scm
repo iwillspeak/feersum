@@ -159,14 +159,14 @@
 (test-begin "4.2 Derived expression types")
 
 ;;;;; FIXME: No `cond` or `case` support yet
-;; (test 'greater
-;;     (cond ((> 3 2) 'greater)
-;;           ((< 3 2) 'less)))
+(test 'greater
+    (cond ((> 3 2) 'greater)
+          ((< 3 2) 'less)))
 
-;; (test 'equal
-;;     (cond ((> 3 3) 'greater)
-;;           ((< 3 3) 'less)
-;;           (else 'equal)))
+(test 'equal
+    (cond ((> 3 3) 'greater)
+          ((< 3 3) 'less)
+          (else 'equal)))
 
 ;; (test 2
 ;;     (cond ((assv 'b '((a 1) (b 2))) => cadr)
@@ -200,8 +200,8 @@
 (test #t (or (= 2 2) (> 2 1)))
 (test #t (or (= 2 2) (< 2 1)))
 (test #f (or #f #f #f))
-;; (test '(b c) (or (memq 'b '(a b c)) ;; FIXME: No `memq` yet
-;;     (/ 3 0)))
+(test '(b c) (or (memq 'b '(a b c)) ;; FIXME: No `memq` yet
+    (/ 3 0)))
 
 (test 6 (let ((x 2) (y 3))
   (* x y)))
@@ -465,12 +465,12 @@
                (when if (set! if 'now))
                if)))
 
-;;; FIXME: hygene?
 (test 'outer (let ((x 'outer))
   (let-syntax ((m (syntax-rules () ((m) x))))
     (let ((x 'inner))
       (m)))))
 
+;;; FIXME: hygene?
 ;; (test 7 (letrec-syntax
 ;;   ((my-or (syntax-rules ()
 ;;             ((my-or) #f)
@@ -576,7 +576,6 @@
 (test '(2 0 many)
     (list (count-to-2 a b) (count-to-2) (count-to-2 a b c d)))
 
-;; FIXME: Underscore as a literal
 (define-syntax count-to-2_
   (syntax-rules (_)
     ((_) 0)

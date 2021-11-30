@@ -424,8 +424,9 @@ module private Utils =
 
             // We only need the branch target here if we emitted a jump to it above.
             if not tail then
-                // TODO: Could do with another sequence point here at the join block. Or
-                //       stop using `nops` all over the place as labels and instead.
+                // TODO: Could do with another sequence point here at the join
+                //       block. Or stop using `nops` all over the place as
+                //       labels and instead.
                 ctx.IL.Append(lblEnd)
         | BoundExpr.Lambda (formals, body) -> emitLambda ctx formals body
         | BoundExpr.Library (name, mangledName, exports, body) -> emitLibrary ctx name mangledName exports body
