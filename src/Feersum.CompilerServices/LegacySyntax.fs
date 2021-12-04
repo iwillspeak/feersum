@@ -94,8 +94,7 @@ module Parse =
                      attempt (skipChar '|' >>. skipNoneOf "#")
                      skipChar '#' ]
 
-        blockRef
-        := between (skipString "#|") (skipString "|#") (skipMany blockBody)
+        blockRef.Value <- between (skipString "#|") (skipString "|#") (skipMany blockBody)
 
         singleLine <|> datum <|> block
 
@@ -223,8 +222,7 @@ module Parse =
         |> spannedNode Form
 
     do
-        parseFormRef
-        := between ws ws (parseApplication <|> parseAtom <|> parseQuoted)
+        parseFormRef.Value <- between ws ws (parseApplication <|> parseAtom <|> parseQuoted)
 
     /// Parse the given string into a syntax tree
     let private parse: Parser<AstNode, State> =
