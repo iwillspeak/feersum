@@ -1,6 +1,7 @@
 namespace Feersum.CompilerServices.Diagnostics
 
 open FParsec
+open System.IO
 
 [<AutoOpen>]
 module private Internals =
@@ -60,21 +61,38 @@ type Diagnostic =
 
     /// Format the diagnostic for output.
     override d.ToString() =
+        let normaliseName (stream: string) =
+            if Path.IsPathRooted(stream) then
+                stream
+            else
+                Path.Join(Directory.GetCurrentDirectory(), stream)
+
         match d.Location with
-        | Missing -> sprintf "%s: %s" d.MessagePrefix d.Message
-        | Point p -> sprintf "%s:%d:%d: %s: %s" p.StreamName p.Line p.Column d.MessagePrefix d.Message
+        | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.Message
+        | Point p ->
+            sprintf "%s(%d,%d): %s: %s" (p.StreamName |> normaliseName) p.Line p.Column d.MessagePrefix d.Message
         | Span (s, e) ->
-            sprintf "%s:%d:%d,%d:%d: %s: %s" s.StreamName s.Line s.Column e.Line e.Column d.MessagePrefix d.Message
+            sprintf
+                "%s(%d,%d,%d,%d): %s: %s"
+                (s.StreamName |> normaliseName)
+                s.Line
+                s.Column
+                e.Line
+                e.Column
+                d.MessagePrefix
+                d.Message
 
     /// Prefix for the message. Used to summarise the diagnostic kind.
     member private d.MessagePrefix =
+        // TODO: proper error codes here rather than hardocding it to SCM9999.
         match d.Level with
-        | Warning -> "warning"
-        | Error -> "error"
+        | Warning -> "warning SCM9999"
+        | Error -> "error SCM9999"
 
 /// A collection of diagnostics being built by a compiler phase.
 type DiagnosticBag =
     { mutable Diagnostics: Diagnostic list }
+
     /// Buffer a diagnostic into the bag.
     member b.Emit pos message = Diagnostic.Create pos message |> b.Add
 

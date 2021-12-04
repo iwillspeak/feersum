@@ -221,8 +221,7 @@ module Parse =
         between (skipChar '(') (expectCharClosing ')') (many parseForm)
         |> spannedNode Form
 
-    do
-        parseFormRef.Value <- between ws ws (parseApplication <|> parseAtom <|> parseQuoted)
+    do parseFormRef.Value <- between ws ws (parseApplication <|> parseAtom <|> parseQuoted)
 
     /// Parse the given string into a syntax tree
     let private parse: Parser<AstNode, State> =
