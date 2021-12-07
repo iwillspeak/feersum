@@ -3,6 +3,7 @@
     <UpdateVersionProperties>true</UpdateVersionProperties>
     <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GitVersion.MsBuild" Version="5.7.0">
