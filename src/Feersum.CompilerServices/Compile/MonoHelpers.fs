@@ -102,8 +102,7 @@ let makeEnvironmentType (assm: AssemblyDefinition) (parentTy: TypeDefinition opt
     let parent =
         parentTy
         |> Option.map (fun ty ->
-            let f =
-                FieldDefinition("parent", FieldAttributes.Public, ty)
+            let f = FieldDefinition("parent", FieldAttributes.Public, ty)
 
             envTy.Fields.Add(f)
             f)

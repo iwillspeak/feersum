@@ -9,8 +9,7 @@ module TargetResolve =
 
     // FIXME: The following two hardcoded locations should be replaced by some kind
     //        of SDK resoltuion.
-    let private serehfaAssmLoc =
-        typeof<Serehfa.ConsPair>.Assembly.Location
+    let private serehfaAssmLoc = typeof<Serehfa.ConsPair>.Assembly.Location
 
     let private mscorelibAssmLoc = typeof<obj>.Assembly.Location
 

@@ -32,8 +32,7 @@ type CliArguments =
 
 [<EntryPoint>]
 let main argv =
-    let parser =
-        ArgumentParser.Create<CliArguments>(programName = "feersum-stage1")
+    let parser = ArgumentParser.Create<CliArguments>(programName = "feersum-stage1")
 
     let args = parser.Parse(argv)
 

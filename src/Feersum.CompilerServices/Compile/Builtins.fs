@@ -52,7 +52,7 @@ module private ExternUtils =
     let private getExports (ty: TypeDefinition) =
 
         let unpackStringArg (attr: CustomAttribute) idx =
-            let arg = attr.ConstructorArguments.[idx]
+            let arg = attr.ConstructorArguments[idx]
 
             if arg.Type = ty.Module.TypeSystem.String then
                 arg.Value.ToString()
@@ -60,7 +60,7 @@ module private ExternUtils =
                 icef "Attempt to unpack arg %d as string, but found %A" idx arg.Type
 
         let unpackBoolArg (attr: CustomAttribute) idx =
-            let arg = attr.ConstructorArguments.[idx]
+            let arg = attr.ConstructorArguments[idx]
 
             match arg.Value with
             | :? Boolean as b -> b
@@ -76,8 +76,7 @@ module private ExternUtils =
                     else
                         None))
 
-        let exports =
-            ty.Fields |> findExported (fun x -> Field(x.Name))
+        let exports = ty.Fields |> findExported (fun x -> Field(x.Name))
 
         let builtins =
             ty.Methods
@@ -95,8 +94,7 @@ module private ExternUtils =
                         else
                             Field(id)
 
-                    let libTy =
-                        attr.ConstructorArguments.[1].Value :?> TypeReference
+                    let libTy = attr.ConstructorArguments[1].Value :?> TypeReference
 
                     Some((unpackStringArg attr 0, Global(libTy.FullName, exportedItem)))
                 else
@@ -112,7 +110,7 @@ module private ExternUtils =
         ty.CustomAttributes
         |> Seq.tryPick (fun attr ->
             if attr.AttributeType.Name = "LispLibraryAttribute" then
-                Some(attr.ConstructorArguments.[0].Value :?> CustomAttributeArgument [])
+                Some(attr.ConstructorArguments[0].Value :?> CustomAttributeArgument [])
             else
                 None)
         |> Option.map (fun name ->
@@ -129,8 +127,7 @@ module private BuiltinMacros =
 
     /// Parse a builtin macro from syntax rules
     let private parseBuiltinMacro id rules =
-        let (node, errs) =
-            Parse.readExpr1 (sprintf "builtin-%s" id) rules
+        let (node, errs) = Parse.readExpr1 (sprintf "builtin-%s" id) rules
 
         if hasErrors errs then
             icef "Error in builtin macro: %A" errs
@@ -304,8 +301,7 @@ module Builtins =
             sigs
             |> Seq.fold (fun (tys, sigs) (t, s) -> (t :: tys, s :: sigs)) ([], [])
 
-        use assm =
-            Mono.Cecil.AssemblyDefinition.ReadAssembly(name, assmReadParams)
+        use assm = Mono.Cecil.AssemblyDefinition.ReadAssembly(name, assmReadParams)
 
         assm.MainModule.Types
         |> Seq.choose tryGetSignatureFromType
@@ -313,8 +309,7 @@ module Builtins =
 
     /// The core library signature
     let loadCoreSignatures target =
-        let (tys, sigs) =
-            loadReferencedSignatures target.LispCoreLocation
+        let (tys, sigs) = loadReferencedSignatures target.LispCoreLocation
 
         let sigs = BuiltinMacros.coreMacros :: sigs
 
@@ -336,7 +331,6 @@ module Builtins =
 
     /// Load the assembly and retrieve the name from it.
     let getAssemblyName (path: string) =
-        use assm =
-            Mono.Cecil.AssemblyDefinition.ReadAssembly(path, assmReadParams)
+        use assm = Mono.Cecil.AssemblyDefinition.ReadAssembly(path, assmReadParams)
 
         assm.Name

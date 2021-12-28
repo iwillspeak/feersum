@@ -183,8 +183,7 @@ module private Utils =
     let private getExternMethod ctx typeName id =
         let ty = getExternType ctx typeName
 
-        let method =
-            ty.GetMethods() |> Seq.find (fun m -> m.Name = id)
+        let method = ty.GetMethods() |> Seq.find (fun m -> m.Name = id)
 
         ctx.Assm.MainModule.ImportReference(method)
 
@@ -192,8 +191,7 @@ module private Utils =
     let private getExternField ctx typeName id =
         let ty = getExternType ctx typeName
 
-        let field =
-            ty.Fields |> Seq.find (fun f -> f.Name = id)
+        let field = ty.Fields |> Seq.find (fun f -> f.Name = id)
 
         ctx.Assm.MainModule.ImportReference(field)
 
@@ -226,11 +224,11 @@ module private Utils =
 
     /// Convert an argument index into a `ParameterDefinition` for `Ldarg` given the
     /// current context. This indexes into the context's `Parameters` list.
-    let private argToParam ctx idx = ctx.Parameters.[idx]
+    let private argToParam ctx idx = ctx.Parameters[idx]
 
     /// Convert a local index into a `VariableDefinition`. Variable definitions can
     /// then be used with `Ldloc` and `Stloc`.
-    let private localToVariable ctx idx = ctx.Locals.[idx]
+    let private localToVariable ctx idx = ctx.Locals[idx]
 
     /// Emit a sequence of instructions to convert a method reference
     /// into a `Func<obj[],obj>` with the context as the current top of stack.
@@ -274,7 +272,7 @@ module private Utils =
                 | Environment (idx, Arg a) ->
                     ctx.IL.Emit(OpCodes.Ldloc, envLocal)
                     ctx.IL.Emit(OpCodes.Ldarg, argToParam ctx a)
-                    ctx.IL.Emit(OpCodes.Stfld, ty.Fields.[idx])
+                    ctx.IL.Emit(OpCodes.Stfld, ty.Fields[idx])
                 | _ -> ())
         )
 
@@ -293,7 +291,7 @@ module private Utils =
             let parent =
                 match envInfo with
                 | Standard (_, ty, parent) ->
-                    ctx.IL.Emit(OpCodes.Ldfld, ty.Fields.[ty.Fields.Count - 1])
+                    ctx.IL.Emit(OpCodes.Ldfld, ty.Fields[ty.Fields.Count - 1])
                     parent |> Option.unwrap
                 | Link l -> l
 
@@ -304,7 +302,7 @@ module private Utils =
     /// Given an environment at the top of the stack emit a load of the slot `idx`
     let private readFromEnv ctx envInfo (idx: int) =
         match envInfo with
-        | Standard (_, ty, _) -> ctx.IL.Emit(OpCodes.Ldfld, ty.Fields.[idx])
+        | Standard (_, ty, _) -> ctx.IL.Emit(OpCodes.Ldfld, ty.Fields[idx])
         | Link l -> icef "Attempt to read from link environment %A at index %d" l idx
 
     /// Given an environment at the top of the stack emit a store to the slot `idx`
@@ -312,7 +310,7 @@ module private Utils =
         match envInfo with
         | Standard (_, ty, _) ->
             ctx.IL.Emit(OpCodes.Ldloc, temp)
-            ctx.IL.Emit(OpCodes.Stfld, ty.Fields.[idx])
+            ctx.IL.Emit(OpCodes.Stfld, ty.Fields[idx])
         | Link l -> icef "Attempt to write to link environment %A at index %d" l idx
 
     let libraryTypeAttributes =
@@ -338,12 +336,11 @@ module private Utils =
             // FIXME: Hidden sequence points for missing locations?
             if ctx.EmitSymbols
                && location <> TextLocation.Missing then
-                let ins = ctx.IL.Body.Instructions.[pos]
+                let ins = ctx.IL.Body.Instructions[pos]
                 let s = location.Start
                 let e = location.End
 
-                let mutable (found, doc) =
-                    ctx.DebugDocuments.TryGetValue(s.StreamName)
+                let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
 
                 if not found then
                     doc <- Document(Path.GetFullPath(s.StreamName))
@@ -351,7 +348,7 @@ module private Utils =
                     doc.LanguageGuid <- Guid("c70c3e24-e471-4637-8129-10f771417dbb")
                     doc.LanguageVendor <- DocumentLanguageVendor.Other
                     doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
-                    ctx.DebugDocuments.[s.StreamName] <- doc
+                    ctx.DebugDocuments[ s.StreamName ] <- doc
 
                 let point = Cil.SequencePoint(ins, doc)
                 point.StartLine <- int s.Line
@@ -438,8 +435,7 @@ module private Utils =
 
     and emitQuoted ctx quoted =
         let quoteSequence s =
-            let ret =
-                makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+            let ret = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
             // * start with null
             ctx.IL.Emit(OpCodes.Ldnull)
@@ -567,16 +563,14 @@ module private Utils =
         | StorageRef.Local (idx) -> ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
         | StorageRef.Arg (idx) -> ctx.IL.Emit(OpCodes.Starg, idx |> argToParam ctx)
         | StorageRef.Environment (idx, _) ->
-            let temp =
-                makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+            let temp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
             ctx.IL.Emit(OpCodes.Stloc, temp)
 
             ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
             writeToEnv ctx temp (ctx.Environment |> Option.unwrap) idx
         | StorageRef.Captured (from) ->
-            let temp =
-                makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+            let temp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
             ctx.IL.Emit(OpCodes.Stloc, temp)
 
@@ -712,8 +706,7 @@ module private Utils =
         let mutable parameters = []
 
         let addParam id =
-            let param =
-                namedParam id ctx.Assm.MainModule.TypeSystem.Object
+            let param = namedParam id ctx.Assm.MainModule.TypeSystem.Object
 
             methodDecl.Parameters.Add(param)
             parameters <- param :: parameters
@@ -729,16 +722,14 @@ module private Utils =
         let mutable locals = []
 
         for _ = 1 to root.Locals do
-            let local =
-                VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+            let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
 
             methodDecl.Body.Variables.Add(local)
             locals <- local :: locals
 
         /// Build an environment info for the given storage
         let buildEnv envSize =
-            let parentTy =
-                ctx.Environment |> Option.map (EnvUtils.getType)
+            let parentTy = ctx.Environment |> Option.map (EnvUtils.getType)
 
             let envTy =
                 sprintf "<%s>$Env" name
@@ -802,8 +793,8 @@ module private Utils =
         if ctx.EmitSymbols then
             let scope =
                 ScopeDebugInformation(
-                    methodDecl.Body.Instructions.[0],
-                    methodDecl.Body.Instructions.[methodDecl.Body.Instructions.Count - 1]
+                    methodDecl.Body.Instructions[0],
+                    methodDecl.Body.Instructions[methodDecl.Body.Instructions.Count - 1]
                 )
 
             // If we have an environment tell the debugger about it
@@ -832,25 +823,23 @@ module private Utils =
 
         /// Unpack a single argument from the arguments array onto the stack
         let unpackArg (idx: int) id =
-            thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters.[0])
+            thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters[0])
             thunkIl.Emit(OpCodes.Ldc_I4, idx)
             thunkIl.Emit(OpCodes.Ldelem_Ref)
             idx + 1
 
         /// Unpack all remaining arguments from `idx` onwards into a Scheme list
         let unpackRemainder (idx: int) =
-            let i =
-                VariableDefinition(ctx.Assm.MainModule.TypeSystem.Int32)
+            let i = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Int32)
 
             thunkDecl.Body.Variables.Add(i)
 
-            let ret =
-                VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+            let ret = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
 
             thunkDecl.Body.Variables.Add(ret)
 
             // * get length of array
-            thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters.[0])
+            thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters[0])
             thunkIl.Emit(OpCodes.Ldlen)
 
             // * store as local <i>
@@ -865,8 +854,7 @@ module private Utils =
             thunkIl.Emit(OpCodes.Br, loopCond)
 
             //   * load from the array at <i> and make cons pair
-            let loop =
-                thunkIl.Create(OpCodes.Ldarg, thunkDecl.Parameters.[0])
+            let loop = thunkIl.Create(OpCodes.Ldarg, thunkDecl.Parameters[0])
 
             thunkIl.Append(loop)
             thunkIl.Emit(OpCodes.Ldloc, i)
@@ -891,7 +879,7 @@ module private Utils =
         let raiseArgCountMismatch (count: int) opCode (err: string) =
             let ok = thunkIl.Create(OpCodes.Nop)
 
-            thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters.[0])
+            thunkIl.Emit(OpCodes.Ldarg, thunkDecl.Parameters[0])
             thunkIl.Emit(OpCodes.Ldlen)
             thunkIl.Emit(OpCodes.Ldc_I4, count)
             thunkIl.Emit(opCode, ok)
@@ -1007,8 +995,7 @@ module private Utils =
 
         let bodyParams = BoundFormals.List([])
 
-        let bodyMethod, _ =
-            emitNamedLambda libEmitCtx "$LibraryBody" bodyParams body
+        let bodyMethod, _ = emitNamedLambda libEmitCtx "$LibraryBody" bodyParams body
 
         ctx.Initialisers <- Map.add mangledName (bodyMethod :> MethodReference) ctx.Initialisers
 
@@ -1062,8 +1049,7 @@ module Compilation =
 
         // Create an assembly with a nominal version to hold our code
         let name =
-            let stem =
-                Path.GetFileNameWithoutExtension(outputName)
+            let stem = Path.GetFileNameWithoutExtension(outputName)
 
             AssemblyNameDefinition(
                 stem,
@@ -1083,8 +1069,7 @@ module Compilation =
 
         moduleParams.AssemblyResolver <- resolver
 
-        let assm =
-            AssemblyDefinition.CreateAssembly(name, outputName, moduleParams)
+        let assm = AssemblyDefinition.CreateAssembly(name, outputName, moduleParams)
 
         /// Import the initialisers for the extern libraries
         let inits =
@@ -1131,8 +1116,7 @@ module Compilation =
 
         let bodyParams = BoundFormals.List([])
 
-        let bodyMethod, _ =
-            emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.Root
+        let bodyMethod, _ = emitNamedLambda rootEmitCtx "$ScriptBody" bodyParams bound.Root
 
         if options.OutputType = OutputType.Exe then
             // The `Main` method is the entry point of the program. It calls

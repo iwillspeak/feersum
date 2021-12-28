@@ -496,8 +496,7 @@ module private Impl =
                 // the body. This makes recursive calls possible.
                 BinderCtx.addBinding ctx id |> ignore
 
-                let lambda =
-                    bindLambdaBody ctx (bindFormalsList ctx formals) body
+                let lambda = bindLambdaBody ctx (bindFormalsList ctx formals) body
                 // Look the storage back up. This is key as the lambda, or one of
                 // the lambdas nested inside it, could have captured the lambda
                 // and moved it to the environment.
@@ -553,8 +552,7 @@ module private Impl =
                 //        un-initialised variables. The `letrec*` is allowed to
                 //        reference previous variables. Plain `letrec` Isn't allowed
                 //        to reference any.
-                let mutable uniitialisedStorage =
-                    boundIdents |> List.map (fun (id, _) -> id)
+                let mutable uniitialisedStorage = boundIdents |> List.map (fun (id, _) -> id)
 
                 let rec checkUses location =
                     function
@@ -577,7 +575,7 @@ module private Impl =
                 and checkStorage location s =
                     List.tryFindIndex ((=) s) uniitialisedStorage
                     |> Option.iter (fun idx ->
-                        let (name, _) = bindingSpecs.[idx]
+                        let (name, _) = bindingSpecs[idx]
 
                         name
                         |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
@@ -682,11 +680,9 @@ module Binder =
     /// Walks the parse tree and computes semantic information. The result of this
     /// call can be passed to the `Compile` or `Emit` API to be lowered to IL.
     let bind scope libraries node : BoundSyntaxTree =
-        let ctx =
-            BinderCtx.createForGlobalScope scope libraries [ "LispProgram" ]
+        let ctx = BinderCtx.createForGlobalScope scope libraries [ "LispProgram" ]
 
-        let bound =
-            bindInContext ctx node |> BinderCtx.intoRoot ctx
+        let bound = bindInContext ctx node |> BinderCtx.intoRoot ctx
 
         { Root = bound
           MangledName = ctx.MangledName

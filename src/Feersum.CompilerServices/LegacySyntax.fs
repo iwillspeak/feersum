@@ -67,11 +67,9 @@ module Parse =
 
     let expectCharWithMessage message chr = expect (skipChar chr) (message chr)
 
-    let expectChar =
-        expectCharWithMessage (sprintf "Expected '%c'")
+    let expectChar = expectCharWithMessage (sprintf "Expected '%c'")
 
-    let expectCharClosing =
-        expectCharWithMessage (sprintf "Missing closing '%c'")
+    let expectCharClosing = expectCharWithMessage (sprintf "Missing closing '%c'")
 
     let private parseForm, parseFormRef = createParserForwardedToRef ()
 
@@ -172,8 +170,7 @@ module Parse =
                      stringReturn "space" ' '
                      stringReturn "tab" '\u0009' ]
 
-        let hexChar =
-            attempt (skipChar 'x' >>. hexScalarValue)
+        let hexChar = attempt (skipChar 'x' >>. hexScalarValue)
 
         spannedNode
             (Character >> Constant)
@@ -186,14 +183,11 @@ module Parse =
         || isAnyOf "!$%&*/:<=>?@^_~+-." c
 
     let private parseIdent =
-        let simpleIdent =
-            many1SatisfyL isIdentifierChar "identifier"
+        let simpleIdent = many1SatisfyL isIdentifierChar "identifier"
 
-        let identLiteralChar =
-            (manyChars ((noneOf "\\|") <|> hexEscape <|> escapedChar))
+        let identLiteralChar = (manyChars ((noneOf "\\|") <|> hexEscape <|> escapedChar))
 
-        let identLiteral =
-            between (skipChar '|') (expectCharClosing '|') identLiteralChar
+        let identLiteral = between (skipChar '|') (expectCharClosing '|') identLiteralChar
 
         spannedNode Ident (simpleIdent <|> identLiteral)
 
@@ -202,8 +196,7 @@ module Parse =
          >>? notFollowedBy (satisfy isIdentifierChar))
         |> spannedNodeOfKind Dot
 
-    let private parseQuoted =
-        skipAnyOf "’'" >>. parseForm |> spannedNode Quoted
+    let private parseQuoted = skipAnyOf "’'" >>. parseForm |> spannedNode Quoted
 
     let private parseAtom =
         // The order is important here. Numbers have higher priority than

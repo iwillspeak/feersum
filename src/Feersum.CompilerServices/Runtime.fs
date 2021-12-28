@@ -60,8 +60,7 @@ let public writeRuntimeConfig
                        Version = tfVersion.ToString() |}
                    AdditionalProbingPaths = [| outputDir |] |} |}
 
-        let mutable opts =
-            JsonSerializerOptions(JsonSerializerDefaults.Web)
+        let mutable opts = JsonSerializerOptions(JsonSerializerDefaults.Web)
 
         opts.WriteIndented <- true
         opts.PropertyNamingPolicy <- JsonNamingPolicy.CamelCase

@@ -219,8 +219,7 @@ module Macros =
             | Some (_, syntax) -> (Result.Ok syntax, 1)
             | None -> (Result.Error(sprintf "Reference to unbound substitution %s" v), 0)
         | Form (location, templateElements) ->
-            let elements =
-                List.map (fun t -> macroExpandElement t bindings) templateElements
+            let elements = List.map (fun t -> macroExpandElement t bindings) templateElements
 
             let substs = List.sumBy (getCount) elements
 

@@ -27,8 +27,7 @@ let cilExternalRepr (object: Object) = Write.GetExternalRepresentation(object)
 let evalWith options ast =
     use memStream = new MemoryStream()
 
-    let result =
-        Compilation.compile options memStream "evalCtx" None ast
+    let result = Compilation.compile options memStream "evalCtx" None ast
 
     if not result.Diagnostics.IsEmpty then
         Error(result.Diagnostics)

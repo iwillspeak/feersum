@@ -7,8 +7,7 @@ open Feersum.CompilerServices
 [<Fact>]
 let ``default extensions for output type`` () =
     let checkOutputType outputType expected =
-        let options =
-            CompilationOptions.Create Debug outputType
+        let options = CompilationOptions.Create Debug outputType
 
         let extension = options.DefaultExtension
         Assert.Equal(expected, extension)

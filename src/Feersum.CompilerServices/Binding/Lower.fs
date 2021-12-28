@@ -71,8 +71,7 @@ let private mappingsForExpr expr =
         |> Seq.indexed
         |> Seq.map (fun (i, s) -> (s, StorageRef.Environment(i, s)))
 
-    let uncapturedLocals =
-        Set.difference (findLocals expr) captured
+    let uncapturedLocals = Set.difference (findLocals expr) captured
 
     let localReWrites =
         uncapturedLocals

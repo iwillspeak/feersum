@@ -208,8 +208,7 @@ let ``custom elipsis patterns`` () =
 
 [<Fact>]
 let ``simple macro expand`` () =
-    let expanded =
-        macroExpand (MacroTemplate.Quoted(number 123.0)) MacroBindings.Empty
+    let expanded = macroExpand (MacroTemplate.Quoted(number 123.0)) MacroBindings.Empty
 
     Assert.Equal(Ok(number 123.0), expanded)
 
@@ -218,8 +217,7 @@ let ``simple macro expand`` () =
 
     Assert.Equal(Ok(constant (Boolean true)), expanded)
 
-    let expanded =
-        macroExpand (MacroTemplate.Subst "thing") MacroBindings.Empty
+    let expanded = macroExpand (MacroTemplate.Subst "thing") MacroBindings.Empty
 
     Assert.True(Result.isError expanded)
 
@@ -231,11 +229,9 @@ let ``simple macro expand`` () =
 let ``macro expand tests`` pattern template invocation expected =
     let macro = parse pattern []
 
-    let bindings =
-        tryMatch macro invocation |> Option.unwrap
+    let bindings = tryMatch macro invocation |> Option.unwrap
 
-    let expanded =
-        tryExpand macro template bindings |> Result.unwrap
+    let expanded = tryExpand macro template bindings |> Result.unwrap
 
     Assert.Equal(expected, pp expanded)
 
@@ -243,8 +239,7 @@ let ``macro expand tests`` pattern template invocation expected =
 let ``repeated values`` () =
     let macro = parse "(a ...)" []
 
-    let bindings =
-        tryMatch macro "(1 2 3)" |> Option.unwrap
+    let bindings = tryMatch macro "(1 2 3)" |> Option.unwrap
 
     let expanded =
         macroExpand
@@ -261,8 +256,7 @@ let ``repeated values`` () =
 let ``invalid expansions`` pattern template invocation =
     let macro = parse pattern []
 
-    let bindings =
-        tryMatch macro invocation |> Option.unwrap
+    let bindings = tryMatch macro invocation |> Option.unwrap
 
     let expanded = tryExpand macro template bindings
     Assert.True(Result.isError expanded)

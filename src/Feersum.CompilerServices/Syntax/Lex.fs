@@ -146,7 +146,7 @@ type Lexer(input: string) =
 
         while not finished && currentChar < buffer.Length do
 
-            let c = buffer.[currentChar]
+            let c = buffer[currentChar]
 
             let nextState = self.NextTransition(state, c)
 
@@ -189,7 +189,7 @@ type Lexer(input: string) =
             | InMultiLineSeenHash _
             | InMultiLineSeenBar _ -> TokenKind.Error
 
-        let tokenValue = buffer.[tokenStart..tokenEnd]
+        let tokenValue = buffer[tokenStart..tokenEnd]
         tokenStart <- currentChar
 
         (kind, tokenValue)

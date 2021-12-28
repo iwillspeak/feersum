@@ -10,8 +10,7 @@ open FParsec
 module SyntaxFactory =
 
     /// a fabricated location
-    let dummyLocation =
-        TextLocation.Point(FParsec.Position("dummy", -1L, -1L, -1L))
+    let dummyLocation = TextLocation.Point(FParsec.Position("dummy", -1L, -1L, -1L))
 
     /// Build a node with a fabricated position
     let node kind =

@@ -21,13 +21,11 @@ type TestExecutionResult =
       Error: string
       Exit: byte }
 
-let specDir =
-    Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
+let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
 
 let specBin = Path.Join(specDir, "bin")
 
-let snapDir =
-    Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
+let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
 
 let normalisePath (path: string) = path.Replace("\\", "/")
 
@@ -50,7 +48,7 @@ let specsOfType extension =
 let executableSpecs = specsOfType "scm"
 let librarySpecs = specsOfType "sld"
 
-let private runExample references host (exePath: string) =
+let private runExampleAsync references host (exePath: string) =
 
     let p = new Process()
     p.StartInfo <- ProcessStartInfo(host)
@@ -62,35 +60,32 @@ let private runExample references host (exePath: string) =
     // p.StartInfo.RedirectStandardInput <- true
     p.StartInfo.RedirectStandardOutput <- true
     p.StartInfo.RedirectStandardError <- true
-    p.StartInfo.Environment.["FEERSUM_TESTING"] <- "test-sentinel"
+    p.StartInfo.Environment[ "FEERSUM_TESTING" ] <- "test-sentinel"
     Assert.True(p.Start())
 
-    let output =
-        [ p.StandardOutput.ReadToEndAsync()
-          |> Async.AwaitTask
-          p.StandardError.ReadToEndAsync()
-          |> Async.AwaitTask ]
-        |> Async.Parallel
-        |> Async.RunSynchronously
+    task {
+        let! output = p.StandardOutput.ReadToEndAsync()
+        let! err = p.StandardError.ReadToEndAsync()
 
-    p.WaitForExit()
+        let! exit = p.WaitForExitAsync()
 
-    { Output = output.[0] |> normaliseEndings
-      Error = output.[1] |> normaliseEndings
-      // Exit codes on windows are full integers. Clamp everything to a byte so we
-      // have partiy with POSIX systems
-      Exit = byte ((uint p.ExitCode) &&& 0xFFu) }
+        return
+            { Output = output |> normaliseEndings
+              Error = err |> normaliseEndings
+              // Exit codes on windows are full integers. Clamp everything to a byte so we
+              // have partiy with POSIX systems
+              Exit = byte ((uint p.ExitCode) &&& 0xFFu) }
+    }
 
 let private parseDirectives (sourcePath: string) =
     let parseDirective (line: string) =
         let line = line.Trim()
 
         if line.StartsWith(';') then
-            let m =
-                Regex.Match(line, ";+\s*!(depends):(.+)")
+            let m = Regex.Match(line, ";+\s*!(depends):(.+)")
 
             if m.Success then
-                Some((m.Groups.[1].Value.ToLowerInvariant(), m.Groups.[2].Value))
+                Some((m.Groups[ 1 ].Value.ToLowerInvariant(), m.Groups[2].Value))
             else
                 None
         else
@@ -124,8 +119,7 @@ let ``spec tests compile and run`` specPath configuration =
 
     let shouldFail = sourcePath.Contains "fail"
 
-    let mutable references =
-        [ typeof<Feersum.Core.LispProgram>.Assembly.Location ]
+    let mutable references = [ typeof<Feersum.Core.LispProgram>.Assembly.Location ]
 
     let artifactpath (options: CompilationOptions) source =
         Path.Join(binDir, Path.ChangeExtension(source, options.DefaultExtension))
@@ -136,16 +130,14 @@ let ``spec tests compile and run`` specPath configuration =
     |> Seq.iter (fun (directive, arg) ->
         match directive with
         | "depends" ->
-            let libSourcePath =
-                Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
+            let libSourcePath = Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
 
             let libOptions =
                 { options with
                     OutputType = Lib
                     References = references }
 
-            let libPath =
-                artifactpath libOptions (Path.GetFileName(libSourcePath))
+            let libPath = artifactpath libOptions (Path.GetFileName(libSourcePath))
 
             match Compilation.compileFile libOptions libPath libSourcePath with
             | [] -> references <- List.append references [ libPath ]
@@ -166,7 +158,11 @@ let ``spec tests compile and run`` specPath configuration =
         if shouldFail then
             failwith "Expected compilation failure!"
 
-        let r = runExample references "dotnet" exePath
+        let r =
+            runExampleAsync references "dotnet" exePath
+            |> Async.AwaitTask
+            |> Async.RunSynchronously
+
         r.ShouldMatchChildSnapshot(specName)
     | diags ->
         if not shouldFail then
@@ -184,8 +180,7 @@ let public getParseTestData () =
 let ``spec tests parse result`` s =
     let node, diagnostics = Parse.parseFile (Path.Join(specDir, s))
 
-    let tree =
-        (node |> nodeSanitiser, diagnostics |> diagSanitiser)
+    let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
 
     tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s |> normalisePath))
 
@@ -195,8 +190,7 @@ let ``Test new lexer`` s =
     let sourceText = File.ReadAllText(Path.Join(specDir, s))
     let lexer = Lexer(sourceText)
 
-    use timeout =
-        new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
+    use timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
 
     let mutable errors = 0
 
