@@ -10,7 +10,7 @@
     <NoImplicitFeersumCoreReference>true</NoImplicitFeersumCoreReference>
     <CompilerConfiguration>$(Configuration)</CompilerConfiguration>
     <CompilerConfiguration Condition=" '$(CompilerConfiguration)' == '' ">Debug</CompilerConfiguration>
-    <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum\bin\$(CompilerConfiguration)\net5.0\Feersum.dll</FeersumCompilerPath>
+    <FeersumCompilerPath>$(MSBuildThisFileDirectory)..\src\Feersum\bin\$(CompilerConfiguration)\net6.0\Feersum.dll</FeersumCompilerPath>
   </PropertyGroup>
 
   <!-- Refernece our core library so it is available to import, and `dotnet` copies it to the output directory. -->
@@ -20,7 +20,7 @@
     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <Private>false</Private>
-      <SetTargetFramework>TargetFramework=net5.0</SetTargetFramework>
+      <SetTargetFramework>TargetFramework=net6.0</SetTargetFramework>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
     </ProjectReference>
   </ItemGroup>

@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
+            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net6.0/Feersum.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
@@ -20,7 +20,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "buildStage1",
-            "program": "${workspaceRoot}/src/Feersum.Stage1/bin/Debug/net5.0/Feersum.Stage1.dll",
+            "program": "${workspaceRoot}/src/Feersum.Stage1/bin/Debug/net6.0/Feersum.Stage1.dll",
             "args": [
               "--output", "bin/Test/",
               "lists.scm",
@@ -54,7 +54,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net5.0/Feersum.dll",
+            "program": "${workspaceRoot}/src/Feersum/bin/Debug/net6.0/Feersum.dll",
             "args": [
                 "--output",
                 "${workspaceRoot}/spec/bin",

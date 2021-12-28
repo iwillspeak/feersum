@@ -14,9 +14,13 @@
     "Framework": {
       "type": "parameter",
       "datatype": "choice",
-      "defaultValue": "net5.0",
-      "replaces": "net5.0",
+      "defaultValue": "net6.0",
+      "replaces": "net6.0",
       "choices": [
+        {
+          "choice": "net6.0",
+          "description": "Target .NET 6"
+        },
         {
           "choice": "net5.0",
           "description": "Target .NET 5"
