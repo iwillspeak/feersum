@@ -16,6 +16,7 @@
     <Compile Include="Diagnostics.fs" />
     <Compile Include="LegacySyntax.fs" />
     <Compile Include="Syntax/Lex.fs" />
+    <Compile Include="Syntax/Parse.fs" />
     <Compile Include="Scope.fs" />
     <Compile Include="Binding/Libraries.fs" />
     <Compile Include="Binding/Macros.fs" />
@@ -35,6 +36,7 @@
 
   <ItemGroup>
     <PackageReference Include="FParsec" Version="1.1.1" />
+    <PackageReference Include="Firethorn" Version="0.2.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
   </ItemGroup>

@@ -44,6 +44,7 @@ type private LexState =
     | CharNamed
     | CharHex
     | Number
+    | NumberSuffix
     | Bool of next: char * longSuffix: char list
     | Whitespace
     | Error
@@ -173,7 +174,8 @@ type Lexer(input: string) =
                     TokenKind.Dot
                 else
                     TokenKind.Identifier
-            | Number -> TokenKind.Number
+            | Number
+            | NumberSuffix -> TokenKind.Number
             | Bool _ -> TokenKind.Boolean
             | CharNamed
             | CharHex -> TokenKind.Character
@@ -285,6 +287,13 @@ type Lexer(input: string) =
         | Number ->
             if Char.IsDigit(c) then
                 Some(LexState.Number)
+            else if c = '.' then
+                Some(LexState.NumberSuffix)
+            else
+                None
+        | NumberSuffix ->
+            if Char.IsDigit(c) then
+                Some(LexState.NumberSuffix)
             else
                 None
         | String ->
