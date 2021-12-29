@@ -65,14 +65,17 @@ let private runExampleAsync references host (exePath: string) =
     Assert.True(p.Start())
 
     task {
-        let! output = p.StandardOutput.ReadToEndAsync()
-        let! err = p.StandardError.ReadToEndAsync()
+        let! output =
+            Task.WhenAll(
+                [| p.StandardOutput.ReadToEndAsync()
+                   p.StandardError.ReadToEndAsync() |]
+            )
 
         let! exit = p.WaitForExitAsync()
 
         return
-            { Output = output |> normaliseEndings
-              Error = err |> normaliseEndings
+            { Output = output[0] |> normaliseEndings
+              Error = output[1] |> normaliseEndings
               // Exit codes on windows are full integers. Clamp everything to a byte so we
               // have partiy with POSIX systems
               Exit = byte ((uint p.ExitCode) &&& 0xFFu) }
@@ -92,9 +95,10 @@ let private parseDirectives (sourcePath: string) =
         else
             None
 
-    File.ReadAllLines(sourcePath)
-    |> Seq.choose parseDirective
-
+    task {
+        let! lines = File.ReadAllLinesAsync(sourcePath)
+        return lines |> Seq.choose parseDirective
+    }
 
 let public getRunTestData () =
     executableSpecs
@@ -124,55 +128,56 @@ let rec ``spec tests compile and run`` specPath configuration =
     let artifactpath (options: CompilationOptions) source =
         Path.Join(binDir, Path.ChangeExtension(source, options.DefaultExtension))
 
-    // Process directives from the source file. This is where we compile
-    // dependant libraries.
-    parseDirectives sourcePath
-    |> Seq.iter (fun (directive, arg) ->
-        match directive with
-        | "depends" ->
-            let libSourcePath = Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
+    task {
+        // Process directives from the source file. This is where we compile
+        // dependant libraries.
+        let! directives = parseDirectives sourcePath
 
-            let libOptions =
-                { options with
-                    OutputType = Lib
-                    References = references }
+        directives
+        |> Seq.iter (fun (directive, arg) ->
+            match directive with
+            | "depends" ->
+                let libSourcePath = Path.Join(Path.GetDirectoryName(sourcePath), arg.Trim())
 
-            let libPath = artifactpath libOptions (Path.GetFileName(libSourcePath))
+                let libOptions =
+                    { options with
+                        OutputType = Lib
+                        References = references }
 
-            match Compilation.compileFile libOptions libPath libSourcePath with
-            | [] -> references <- List.append references [ libPath ]
-            | diags -> failwithf "Compilation error in backing library: %A" diags
-        | _ -> failwithf "unrecognised directive !%s: %s" directive arg)
+                let libPath = artifactpath libOptions (Path.GetFileName(libSourcePath))
 
-    // Compile the output assembly, and run the appropriate assertions
-    let options =
-        { options with
-            OutputType = Exe
-            References = references }
+                match Compilation.compileFile libOptions libPath libSourcePath with
+                | [] -> references <- List.append references [ libPath ]
+                | diags -> failwithf "Compilation error in backing library: %A" diags
+            | _ -> failwithf "unrecognised directive !%s: %s" directive arg)
 
-    let exePath = artifactpath options specPath
-    let specName = specPath |> normalisePath
+        // Compile the output assembly, and run the appropriate assertions
+        let options =
+            { options with
+                OutputType = Exe
+                References = references }
 
-    match Compilation.compileFile options exePath sourcePath with
-    | [] ->
-        if shouldFail then
-            failwith "Expected compilation failure!"
+        let exePath = artifactpath options specPath
+        let specName = specPath |> normalisePath
 
-        task {
+        let snapshotId =
+            Core.SnapshotId(snapDir, "SpecTests", nameof (``spec tests compile and run``), specName, false)
+
+        match Compilation.compileFile options exePath sourcePath with
+        | [] ->
+            if shouldFail then
+                failwith "Expected compilation failure!"
+
             let! r = runExampleAsync references "dotnet" exePath
 
-            r.ShouldMatchSnapshot(
-                Core.SnapshotId(snapDir, "SpecTests", nameof (``spec tests compile and run``), specName, false)
-            )
-        }
-    | diags ->
-        if not shouldFail then
-            failwithf "Compilation error: %A" diags
+            r.ShouldMatchSnapshot(snapshotId)
+        | diags ->
+            if not shouldFail then
+                failwithf "Compilation error: %A" diags
 
-        (diags |> diagSanitiser)
-            .ShouldMatchChildSnapshot(specName)
-
-        Task.FromResult(())
+            (diags |> diagSanitiser)
+                .ShouldMatchSnapshot(snapshotId)
+    }
 
 let public getParseTestData () =
     Seq.append librarySpecs executableSpecs
@@ -190,23 +195,27 @@ let ``spec tests parse result`` s =
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
 let ``Test new lexer`` s =
-    let sourceText = File.ReadAllText(Path.Join(specDir, s))
-    let lexer = Lexer(sourceText)
+    task {
+        let! sourceText = File.ReadAllTextAsync(Path.Join(specDir, s))
+        let lexer = Lexer(sourceText)
 
-    use timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
+        use timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
 
-    let mutable errors = 0
+        let mutable errors = 0
+        let expectFail = s.Contains("bad")
 
-    while not lexer.Done do
-        timeout.Token.ThrowIfCancellationRequested()
-        let (kind, token) = lexer.Current
+        while not lexer.Done do
+            timeout.Token.ThrowIfCancellationRequested()
+            let (kind, token) = lexer.Current
 
-        if kind = TokenKind.Error then
-            printfn "Unexpected error token %s" token
-            errors <- errors + 1
+            if kind = TokenKind.Error then
+                if not expectFail then
+                    printfn "Unexpected error token %s" token
+                errors <- errors + 1
 
-        lexer.Bump()
+            lexer.Bump()
 
-    // We expect error tokens in the lexer fail cases.
-    if not (s.Contains("bad")) then
-        Assert.Equal(0, errors)
+        // We expect error tokens in the lexer fail cases.
+        if not expectFail then
+            Assert.Equal(0, errors)
+    }
