@@ -14,6 +14,7 @@ open System.Text
 open Feersum.Syntax
 open System.Threading
 open System
+open System.Threading.Tasks
 
 // This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
@@ -105,8 +106,7 @@ let public getRunTestData () =
 
 [<Theory>]
 [<MemberDataAttribute("getRunTestData")>]
-let ``spec tests compile and run`` specPath configuration =
-
+let rec ``spec tests compile and run`` specPath configuration =
     let sourcePath = Path.Join(specDir, specPath)
 
     let options =
@@ -158,18 +158,21 @@ let ``spec tests compile and run`` specPath configuration =
         if shouldFail then
             failwith "Expected compilation failure!"
 
-        let r =
-            runExampleAsync references "dotnet" exePath
-            |> Async.AwaitTask
-            |> Async.RunSynchronously
+        task {
+            let! r = runExampleAsync references "dotnet" exePath
 
-        r.ShouldMatchChildSnapshot(specName)
+            r.ShouldMatchSnapshot(
+                Core.SnapshotId(snapDir, "SpecTests", nameof (``spec tests compile and run``), specName, false)
+            )
+        }
     | diags ->
         if not shouldFail then
             failwithf "Compilation error: %A" diags
 
         (diags |> diagSanitiser)
             .ShouldMatchChildSnapshot(specName)
+
+        Task.FromResult(())
 
 let public getParseTestData () =
     Seq.append librarySpecs executableSpecs
