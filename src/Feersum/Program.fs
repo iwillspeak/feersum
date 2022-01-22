@@ -41,6 +41,8 @@ type CliArguments =
 /// Compile a collection of files file printing an error if
 /// there is one.
 let private compileAll (options: CompilationOptions) output sources =
+    Runtime.GCSettings.LatencyMode <- Runtime.GCLatencyMode.Batch
+
     let mainSource = List.last sources
 
     let outputPath =
