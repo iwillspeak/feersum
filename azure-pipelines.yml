@@ -21,10 +21,10 @@ jobs:
     vmImage: 'windows-latest'
   steps:
   - task: UseDotNet@2
-    displayName: 'Use .NET 5.0 sdk'
+    displayName: 'Use .NET 6.0 sdk'
     inputs:
       packageType: sdk
-      version: 5.0.x
+      version: 6.0.x
   - pwsh: |
       chcp 65001
       dotnet build --configuration $(configuration)
@@ -40,10 +40,10 @@ jobs:
     vmImage: 'ubuntu-latest'
   steps:
   - task: UseDotNet@2
-    displayName: 'Use .NET 5.0 sdk'
+    displayName: 'Use .NET 6.0 sdk'
     inputs:
       packageType: sdk
-      version: 5.0.x
+      version: 6.0.x
   - bash: |
       set -euxo pipefail
       dotnet tool restore
@@ -52,6 +52,7 @@ jobs:
       # FIXME: The pack command below _should_ use --no-build too. Problem is
       #        that doing so when an F# project depends on a C# one causes
       #        a spurious re-build for some reason and ends up in NETSDK1085
+      #   https://github.com/dotnet/fsharp/issues/12320
       dotnet pack --configuration $(configuration) --output=$(Build.ArtifactStagingDirectory)
       # Check code format. Fantomas for F#, dotnet-format for C#
       dotnet tool run fantomas --check --recurse .
