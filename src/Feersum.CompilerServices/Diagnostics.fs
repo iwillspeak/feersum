@@ -14,13 +14,16 @@ module private Internals =
 type TextLocation =
     | Span of Position * Position
     | Point of Position
+    | Offset of int
     | Missing
+
     /// Get the start of the text location. This returns a cursor that lies just
     /// before any text represented by this locaiton.
     member x.Start =
         match x with
         | Span (s, _) -> s
         | Point p -> p
+        | Offset _
         | Missing -> missingPos
 
     /// Get the end of the text location. This returns a cursot that lies just
@@ -29,6 +32,7 @@ type TextLocation =
         match x with
         | Span (_, e) -> e
         | Point p -> p
+        | Offset _
         | Missing -> missingPos
 
 /// Level of diagnostic. Used to tell warnings from errors.
@@ -68,6 +72,7 @@ type Diagnostic =
                 Path.Join(Directory.GetCurrentDirectory(), stream)
 
         match d.Location with
+        | Offset _
         | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.Message
         | Point p ->
             sprintf "%s(%d,%d): %s: %s" (p.StreamName |> normaliseName) p.Line p.Column d.MessagePrefix d.Message

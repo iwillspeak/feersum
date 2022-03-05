@@ -1,6 +1,7 @@
 namespace Feersum.Syntax
 
 open System
+open Feersum.CompilerServices.Diagnostics
 
 /// Token kinds for the language.
 type TokenKind =
@@ -135,6 +136,9 @@ type Lexer(input: string) =
         else
             let (kind, _) = self.Current
             kind = TokenKind.EndOfFile
+
+    /// Get the current location for in this lexer.
+    member _.Position = TextLocation.Offset tokenStart
 
     /// Attempt to advance the lexer to another token. No further tokens are
     /// available then `TokenKind.EndOfFile` is always returned.

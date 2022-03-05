@@ -211,6 +211,7 @@ let ``Test new lexer`` s =
             if kind = TokenKind.Error then
                 if not expectFail then
                     printfn "Unexpected error token %s" token
+
                 errors <- errors + 1
 
             lexer.Bump()

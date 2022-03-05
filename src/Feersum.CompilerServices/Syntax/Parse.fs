@@ -4,9 +4,9 @@ open Firethorn
 open Feersum.Syntax
 open Firethorn.Green
 open Firethorn.Red
+open Feersum.CompilerServices.Diagnostics
 
 module TreeNew =
-    open Feersum.CompilerServices.Diagnostics
 
     /// Node kind for each element in the raw tree.
     type AstKind =
@@ -61,6 +61,9 @@ module ParseNew =
 
         member private _.CurrentText = lexer.Current |> getText
 
+        member private _.ErrAtPoint(message: string) =
+            errors <- Diagnostic.Create lexer.Position message :: errors
+
         member private self.LookingAt(tokenKind: TokenKind) = self.CurrentKind = tokenKind
 
         member private self.Bump(kind: AstKind) =
@@ -71,10 +74,14 @@ module ParseNew =
             if self.LookingAt(tokenKind) then
                 self.Bump(nodeKind)
             else
-                printfn "Expected %A, got %A" tokenKind self.CurrentKind
+                sprintf "Expected %A, got %A" tokenKind self.CurrentKind
+                |> self.ErrAtPoint
+
                 builder.Token(AstKind.ERROR |> astToGreen, "")
 
-        member private self.ParseErr() = self.Bump(AstKind.ERROR)
+        member private self.ParseErr(message: string) =
+            self.ErrAtPoint(message)
+            self.Bump(AstKind.ERROR)
 
         member private self.ParseNumber() =
             builder.StartNode(AstKind.CONSTANT |> astToGreen)
@@ -84,7 +91,9 @@ module ParseNew =
         member private self.ParseExpr() =
             match self.CurrentKind with
             | TokenKind.Number -> self.ParseNumber()
-            | _ -> self.ParseErr()
+            | _ ->
+                sprintf "Unexpected token %A" self.CurrentKind
+                |> self.ParseErr
 
         member private self.Finalise(rootKind: AstKind) =
             let root =
@@ -92,7 +101,6 @@ module ParseNew =
                 |> SyntaxNode.CreateRoot
 
             { Errors = errors; Root = root }
-
 
         /// Parse Program
         ///

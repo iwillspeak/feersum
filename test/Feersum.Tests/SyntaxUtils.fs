@@ -43,6 +43,7 @@ let public sanitiseLocationWith rewriter =
     function
     | Point (p) -> Point(rewriter p)
     | Span (s, e) -> Span(rewriter s, rewriter e)
+    | Offset _
     | Missing -> Missing
 
 /// Location Re-writer that uses the `fixedStreamName` Path Re-writer
