@@ -73,6 +73,8 @@
       <DotNetPath Condition=" '$(DotNetPath)' == '' ">dotnet</DotNetPath>
     </PropertyGroup>
 
+    <Error Condition="!Exists($(FeersumCompilerPath))" Text="Compiler build output is missing" />
+
     <PropertyGroup>
       <!-- References to the runtime's core library -->
       <CoreLibReferences>@(CoreLibReference->'--corelibpath "%(Identity)"', ' ')</CoreLibReferences>
