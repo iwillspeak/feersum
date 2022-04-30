@@ -16,7 +16,7 @@ let private getValue token =
 
 [<Fact>]
 let ``Empty input text always returns end of file`` () =
-    let lexer = Lexer("")
+    let lexer = Lexer("", "test.scm")
 
     Assert.True(lexer.Done)
     Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
@@ -89,7 +89,7 @@ let ``Empty input text always returns end of file`` () =
 [<InlineData("#true", TokenKind.Boolean)>]
 [<InlineData("#false", TokenKind.Boolean)>]
 let ``Lexer lex single token`` (token, kind) =
-    let lexer = Lexer(token)
+    let lexer = Lexer(token, "test.scm")
 
     Assert.Equal(kind, lexer.Current |> getKind)
     Assert.Equal(kind, lexer.Current |> getKind)
@@ -102,7 +102,7 @@ let ``Lexer lex single token`` (token, kind) =
 [<Fact>]
 let ``Lexer happy path`` () =
 
-    let lexer = Lexer("(display #| hello |# world)")
+    let lexer = Lexer("(display #| hello |# world)", "test.scm")
 
     let checkTok expectedKind expectedValue =
         let (kind, value) = lexer.Current

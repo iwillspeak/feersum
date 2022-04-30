@@ -197,7 +197,7 @@ let ``spec tests parse result`` s =
 let ``Test new lexer`` s =
     task {
         let! sourceText = File.ReadAllTextAsync(Path.Join(specDir, s))
-        let lexer = Lexer(sourceText)
+        let lexer = Lexer(sourceText, "test.scm")
 
         use timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
 

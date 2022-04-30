@@ -123,5 +123,5 @@ module ParseNew =
 
 
     let readExpr1 name line : ParseResult =
-        let parser = Parser(Lexer(line))
+        let parser = Parser(Lexer(line, name))
         parser.ParseExpression()

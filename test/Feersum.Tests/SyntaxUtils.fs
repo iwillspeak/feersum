@@ -4,13 +4,12 @@ open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Diagnostics
 open System.IO
-open FParsec
 
 /// Helpers for fabricating syntax elements
 module SyntaxFactory =
 
     /// a fabricated location
-    let dummyLocation = TextLocation.Point(FParsec.Position("dummy", -1L, -1L, -1L))
+    let dummyLocation = TextLocation.Point(TextPoint.FromParts("dummy", -1L, -1L))
 
     /// Build a node with a fabricated position
     let node kind =
@@ -26,8 +25,8 @@ module SyntaxFactory =
 /// Transform the StreamName in a Position
 ///
 /// Re-writes the path in a given `Position` with a given `reWriter`.
-let public sanitiseStreamNameWith reWriter (p: Position) =
-    Position(p.StreamName |> reWriter, p.Index, p.Line, p.Column)
+let public sanitiseStreamNameWith reWriter (p: TextPoint) =
+    TextPoint.FromParts(p.Source |> reWriter, p.Line, p.Col)
 
 /// Path Re-Writer that returns a fixed stream name
 let public fixedStreamName name =
@@ -43,7 +42,6 @@ let public sanitiseLocationWith rewriter =
     function
     | Point (p) -> Point(rewriter p)
     | Span (s, e) -> Span(rewriter s, rewriter e)
-    | Offset _
     | Missing -> Missing
 
 /// Location Re-writer that uses the `fixedStreamName` Path Re-writer

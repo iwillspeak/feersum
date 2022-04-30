@@ -42,7 +42,7 @@ module Parse =
 
     let errorNode =
         { Kind = AstNodeKind.Error
-          Location = Point(Position("error", 0L, 0L, 0L)) }
+          Location = Point(TextPoint.FromExternal(Position("error", 0L, 0L, 0L))) }
 
     let expect (parser: Parser<'t, State>) message : Parser<'t option, State> =
         fun stream ->
@@ -50,7 +50,7 @@ module Parse =
 
             match reply.Status with
             | ReplyStatus.Error ->
-                stream.UserState.Emit stream.Position message
+                stream.UserState.Emit(TextPoint.FromExternal(stream.Position)) message
                 Reply(None)
             | _ -> Reply(reply.Status, Some(reply.Result), reply.Error)
 
@@ -62,7 +62,7 @@ module Parse =
             if skipped = EOS then
                 Reply(ReplyStatus.Error, expected "at end of string")
             else
-                stream.UserState.Emit pos (problem skipped)
+                stream.UserState.Emit(TextPoint.FromExternal(pos)) (problem skipped)
                 Reply(())
 
     let expectCharWithMessage message chr = expect (skipChar chr) (message chr)
@@ -77,7 +77,7 @@ module Parse =
         getPosition .>>. nodeParser .>>. getPosition
         |>> (fun ((s, i), e) ->
             { Kind = nodeCons (i)
-              Location = Span(s, e) })
+              Location = Span(TextPoint.FromExternal(s), TextPoint.FromExternal(e)) })
 
     let private spannedNodeOfKind atomKind = spannedNode (fun _ -> atomKind)
 
@@ -115,8 +115,8 @@ module Parse =
             if r.Status = ReplyStatus.Ok then
                 match hexUnescape r.Result with
                 | (true, ch) -> Reply(ch)
-                | (false, ch) ->
-                    stream.UserState.Emit s "Invalid code unit"
+                | (false, _) ->
+                    stream.UserState.Emit(TextPoint.FromExternal(s)) "Invalid code unit"
                     Reply('\uFFFD')
             else
                 Reply(r.Status, r.Error)
@@ -232,8 +232,12 @@ module Parse =
         function
         | Success (node, s, _) -> (node, s.Diagnostics.Take)
         | Failure (mess, err, s) ->
-            s.Diagnostics.Emit(Point(err.Position)) mess
-            s.Diagnostics.Emit(Point(err.Position)) "The parser encountered an error that could not be recovered from."
+            s.Diagnostics.Emit(Point(TextPoint.FromExternal(err.Position))) mess
+
+            s.Diagnostics.Emit
+                (Point(TextPoint.FromExternal(err.Position)))
+                "The parser encountered an error that could not be recovered from."
+
             (errorNode, s.Diagnostics.Take)
 
     /// Read a single expression from the named input text

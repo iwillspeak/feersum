@@ -3,18 +3,27 @@ namespace Feersum.CompilerServices.Diagnostics
 open FParsec
 open System.IO
 
-[<AutoOpen>]
-module private Internals =
-    let missingPos = Position("missing", 0L, 0L, 0L)
-
 /// A point in the source text
+type TextPoint =
+    { Source: string
+      Line: int64
+      Col: int64 }
+
+    static member public FromExternal(position: Position) : TextPoint =
+        TextPoint.FromParts(position.StreamName, position.Line, position.Column)
+
+    static member public FromParts(source: string, line: int64, col: int64) =
+        { Source = source
+          Line = line
+          Col = col }
+
+/// A lcation in the source text
 ///
 /// A text position represents either a single `Point` in the source text that
 /// lies 'between' two characters, or a `Span` that encompases a range of text.
 type TextLocation =
-    | Span of Position * Position
-    | Point of Position
-    | Offset of int
+    | Span of TextPoint * TextPoint
+    | Point of TextPoint
     | Missing
 
     /// Get the start of the text location. This returns a cursor that lies just
@@ -23,8 +32,7 @@ type TextLocation =
         match x with
         | Span (s, _) -> s
         | Point p -> p
-        | Offset _
-        | Missing -> missingPos
+        | Missing -> TextPoint.FromParts("missing", 0, 0)
 
     /// Get the end of the text location. This returns a cursot that lies just
     /// after any text represented by this location.
@@ -32,8 +40,7 @@ type TextLocation =
         match x with
         | Span (_, e) -> e
         | Point p -> p
-        | Offset _
-        | Missing -> missingPos
+        | Missing -> TextPoint.FromParts("missing", 0, 0)
 
 /// Level of diagnostic. Used to tell warnings from errors.
 type DiagnosticLevel =
@@ -72,18 +79,16 @@ type Diagnostic =
                 Path.Join(Directory.GetCurrentDirectory(), stream)
 
         match d.Location with
-        | Offset _
         | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.Message
-        | Point p ->
-            sprintf "%s(%d,%d): %s: %s" (p.StreamName |> normaliseName) p.Line p.Column d.MessagePrefix d.Message
+        | Point p -> sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.Message
         | Span (s, e) ->
             sprintf
                 "%s(%d,%d,%d,%d): %s: %s"
-                (s.StreamName |> normaliseName)
+                (s.Source |> normaliseName)
                 s.Line
-                s.Column
+                s.Col
                 e.Line
-                e.Column
+                e.Col
                 d.MessagePrefix
                 d.Message
 
