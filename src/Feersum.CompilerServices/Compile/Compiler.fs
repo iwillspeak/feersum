@@ -340,21 +340,21 @@ module private Utils =
                 let s = location.Start
                 let e = location.End
 
-                let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.StreamName)
+                let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.Source)
 
                 if not found then
-                    doc <- Document(Path.GetFullPath(s.StreamName))
+                    doc <- Document(Path.GetFullPath(s.Source))
                     doc.Language <- DocumentLanguage.Other
                     doc.LanguageGuid <- Guid("c70c3e24-e471-4637-8129-10f771417dbb")
                     doc.LanguageVendor <- DocumentLanguageVendor.Other
                     doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
-                    ctx.DebugDocuments[ s.StreamName ] <- doc
+                    ctx.DebugDocuments[ s.Source ] <- doc
 
                 let point = Cil.SequencePoint(ins, doc)
                 point.StartLine <- int s.Line
-                point.StartColumn <- int s.Column
+                point.StartColumn <- int s.Col
                 point.EndLine <- int e.Line
-                point.EndColumn <- int e.Column
+                point.EndColumn <- int e.Col
                 ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
         | BoundExpr.Literal l -> emitLiteral ctx l
         | BoundExpr.Seq s -> emitSequence ctx tail s

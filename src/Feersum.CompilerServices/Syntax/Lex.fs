@@ -106,12 +106,15 @@ module private Charsets =
 
 /// The lexical analyser. This tokenises the input buffer and exposes the
 /// `Current` token. The next token can be retrieved by calling `Bump`.
-type Lexer(input: string) =
+type Lexer(input: string, name: string) =
 
     // The input text as a string
     let buffer = input
+    let name = name
 
     let mutable tokenStart = 0
+    let mutable line = 0
+    let mutable lastLineStart = 0
 
     let mutable current = None
 
@@ -138,7 +141,9 @@ type Lexer(input: string) =
             kind = TokenKind.EndOfFile
 
     /// Get the current location for in this lexer.
-    member _.Position = TextLocation.Offset tokenStart
+    member _.Position =
+        TextPoint.FromParts(name, line, int64 <| tokenStart - lastLineStart)
+        |> TextLocation.Point
 
     /// Attempt to advance the lexer to another token. No further tokens are
     /// available then `TokenKind.EndOfFile` is always returned.
@@ -152,6 +157,11 @@ type Lexer(input: string) =
         while not finished && currentChar < buffer.Length do
 
             let c = buffer[currentChar]
+
+            // FIXME: handle other newlines than \n and \r\n
+            if c = '\n' then
+                line <- line + 1
+                lastLineStart <- currentChar + 1
 
             let nextState = self.NextTransition(state, c)
 
