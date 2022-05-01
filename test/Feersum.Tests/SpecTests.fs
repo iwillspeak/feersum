@@ -11,7 +11,6 @@ open Snapper
 open System.Diagnostics
 open SyntaxUtils
 open System.Text
-open Feersum.Syntax
 open System.Threading
 open System
 open System.Threading.Tasks

@@ -1,4 +1,4 @@
-namespace Feersum.Syntax
+namespace Feersum.CompilerServices.Syntax
 
 open System
 open Feersum.CompilerServices.Diagnostics

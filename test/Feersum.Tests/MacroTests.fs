@@ -173,7 +173,7 @@ let ``dotted form patterns`` () =
     let tailNode = (number 567.8)
     // (head . tail)
     Assert.Equal(
-        MacroBindings.Union(MacroBindings.FromVariable "head" headNode) (MacroBindings.FromVariable "tail" tailNode),
+        MacroBindings.Union (MacroBindings.FromVariable "head" headNode) (MacroBindings.FromVariable "tail" tailNode),
         assertMatches
             (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail"))
             (Form [ headNode; tailNode ] |> node)

@@ -32,6 +32,7 @@ let public sanitiseStreamNameWith reWriter (p: TextPoint) =
 let public fixedStreamName name =
     sanitiseStreamNameWith (function
         | _ -> name)
+
 /// Path Re-Writer that normalises paths relative to `base`
 let public basedStreamName basePath =
     sanitiseStreamNameWith (function
@@ -47,6 +48,7 @@ let public sanitiseLocationWith rewriter =
 /// Location Re-writer that uses the `fixedStreamName` Path Re-writer
 let public fixedLocaiton path =
     sanitiseLocationWith (fixedStreamName path)
+
 /// Location Re-writer that uses the `basedStreamName` Path Re-writer
 let public basedLocation basePath =
     sanitiseLocationWith (basedStreamName basePath)

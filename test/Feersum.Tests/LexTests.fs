@@ -2,7 +2,7 @@ module LexTests
 
 open Xunit
 
-open Feersum.Syntax
+open Feersum.CompilerServices.Syntax
 
 /// Grab the kind from a syntax token pair.
 let private getKind token =
