@@ -8,7 +8,7 @@ open Firethorn.Red
 let readSingle line =
     let result = ParseNew.readExpr1 "repl" line
 
-    printfn "GOT NODE:%A" result
+    result.Root |> dump
 
     if result.Errors |> List.isEmpty then
         result.Root.Children() |> Seq.exactlyOne
@@ -52,6 +52,12 @@ let getKind (node: SyntaxNode) = node.Kind |> greenToAst
 [<Fact>]
 let ``parse atoms`` () =
     Assert.Equal(AstKind.CONSTANT, readSingle "123.559" |> getKind)
+    Assert.Equal(AstKind.CONSTANT, readSingle @"""hello\nworld""" |> getKind)
+    Assert.Equal(AstKind.CONSTANT, readSingle "#f" |> getKind)
+    Assert.Equal(AstKind.CONSTANT, readSingle "#t" |> getKind)
+    Assert.Equal(AstKind.CONSTANT, readSingle "#false" |> getKind)
+    Assert.Equal(AstKind.CONSTANT, readSingle "#true" |> getKind)
+    Assert.Equal(AstKind.SYMBOL, readSingle "nil" |> getKind)
 
 // Assert.Equal(Number 123.559 |> Constant, readSingle "123.559")
 // Assert.Equal(Number 789.0 |> Constant, readSingle "789")

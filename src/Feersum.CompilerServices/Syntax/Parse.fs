@@ -1,43 +1,12 @@
 namespace Feersum.CompilerServices.Syntax
 
 open Firethorn
-open Feersum.Syntax
 open Firethorn.Green
 open Firethorn.Red
 open Feersum.CompilerServices.Diagnostics
 
-module TreeNew =
-
-    /// Node kind for each element in the raw tree.
-    type AstKind =
-        | ERROR = -1
-
-        // nodes
-        | EXPR_PROGRAM = 1
-        | PROGRAM = 2
-        | CONSTANT = 3
-
-        // tokens
-        | EOF = 101
-        | NUMBER = 102
-
-    /// Type to represent parse results.
-    type public ParseResult =
-        { Errors: Diagnostic list
-          Root: SyntaxNode }
-
-    /// Convert an AST Kind to a raw `SyntaxKind`
-    let astToGreen (kind: AstKind) = SyntaxKind(int kind)
-
-    /// Convert a raw kind back to a syntax kind
-    let greenToAst =
-        function
-        | SyntaxKind kind -> enum<AstKind> kind
-
-
 module ParseNew =
 
-    open Feersum.CompilerServices.Ice.IceHelpers
     open TreeNew
 
     /// Parser Type
@@ -83,17 +52,33 @@ module ParseNew =
             self.ErrAtPoint(message)
             self.Bump(AstKind.ERROR)
 
-        member private self.ParseNumber() =
+        member private self.ParseConstant() =
             builder.StartNode(AstKind.CONSTANT |> astToGreen)
-            self.Expect(TokenKind.Number, AstKind.NUMBER)
-            builder.FinishNode()
 
-        member private self.ParseExpr() =
             match self.CurrentKind with
-            | TokenKind.Number -> self.ParseNumber()
+            | TokenKind.String -> self.Bump(AstKind.STRING)
+            | TokenKind.Number -> self.Bump(AstKind.NUMBER)
+            | TokenKind.Boolean -> self.Bump(AstKind.BOOLEAN)
+            | TokenKind.Character -> self.Bump(AstKind.CHARACTER)
             | _ ->
                 sprintf "Unexpected token %A" self.CurrentKind
                 |> self.ParseErr
+
+            builder.FinishNode()
+
+        member private self.ParseIdentifier() =
+            builder.StartNode(AstKind.SYMBOL |> astToGreen)
+            self.Bump(AstKind.IDENTIFIER)
+            builder.FinishNode()
+
+        member private self.ParseAtom() =
+            match self.CurrentKind with
+            | TokenKind.Identifier -> self.ParseIdentifier()
+            | _ -> self.ParseConstant()
+
+        member private self.ParseExpr() =
+            match self.CurrentKind with
+            | _ -> self.ParseAtom()
 
         member private self.Finalise(rootKind: AstKind) =
             let root =

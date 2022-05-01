@@ -34,7 +34,7 @@ type AstNode =
 type State =
     { Diagnostics: DiagnosticBag }
     member s.Emit pos message =
-        s.Diagnostics.Emit(TextLocation.Point(pos)) message
+        s.Diagnostics.Emit (TextLocation.Point(pos)) message
 
     static member Empty = { Diagnostics = DiagnosticBag.Empty }
 
@@ -50,7 +50,7 @@ module Parse =
 
             match reply.Status with
             | ReplyStatus.Error ->
-                stream.UserState.Emit(TextPoint.FromExternal(stream.Position)) message
+                stream.UserState.Emit (TextPoint.FromExternal(stream.Position)) message
                 Reply(None)
             | _ -> Reply(reply.Status, Some(reply.Result), reply.Error)
 
@@ -62,7 +62,7 @@ module Parse =
             if skipped = EOS then
                 Reply(ReplyStatus.Error, expected "at end of string")
             else
-                stream.UserState.Emit(TextPoint.FromExternal(pos)) (problem skipped)
+                stream.UserState.Emit (TextPoint.FromExternal(pos)) (problem skipped)
                 Reply(())
 
     let expectCharWithMessage message chr = expect (skipChar chr) (message chr)
@@ -116,7 +116,7 @@ module Parse =
                 match hexUnescape r.Result with
                 | (true, ch) -> Reply(ch)
                 | (false, _) ->
-                    stream.UserState.Emit(TextPoint.FromExternal(s)) "Invalid code unit"
+                    stream.UserState.Emit (TextPoint.FromExternal(s)) "Invalid code unit"
                     Reply('\uFFFD')
             else
                 Reply(r.Status, r.Error)
@@ -232,7 +232,7 @@ module Parse =
         function
         | Success (node, s, _) -> (node, s.Diagnostics.Take)
         | Failure (mess, err, s) ->
-            s.Diagnostics.Emit(Point(TextPoint.FromExternal(err.Position))) mess
+            s.Diagnostics.Emit (Point(TextPoint.FromExternal(err.Position))) mess
 
             s.Diagnostics.Emit
                 (Point(TextPoint.FromExternal(err.Position)))

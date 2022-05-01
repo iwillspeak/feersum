@@ -545,7 +545,7 @@ module private Utils =
                 literalField.InitialValue <- List.toArray bv
                 ctx.ProgramTy.Fields.Add(literalField)
 
-                /// Copy to our new array using the `InitializeArray` intrinsic.
+                // Copy to our new array using the `InitializeArray` intrinsic.
                 ctx.IL.Emit(OpCodes.Dup)
                 ctx.IL.Emit(OpCodes.Ldtoken, literalField)
                 ctx.IL.Emit(OpCodes.Call, ctx.Core.RuntimeInitArray)
@@ -922,9 +922,9 @@ module private Utils =
 
         thunkDecl.Body.Optimize()
 
-        /// If this is method has a captures environment then add it as an instance
-        /// mmethod to the environmen type. If not then add it as a plain static
-        /// method to the program type.
+        // If this is method has a captures environment then add it as an instance
+        // mmethod to the environmen type. If not then add it as a plain static
+        // method to the program type.
         match getParentEnv ctx with
         | Some parent ->
             let parentTy = EnvUtils.getType parent

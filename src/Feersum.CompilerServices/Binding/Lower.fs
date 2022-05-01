@@ -163,6 +163,7 @@ and private rewriteRoot parent root =
     let ctx =
         { Parent = parent
           Mappings = mappingsForExpr root.Body }
+
     /// Update our environment and local size if captures were found
     let env = rewriteEnv root.EnvMappings ctx.Mappings
     let locals = rewriteLocals root.Locals ctx.Mappings
