@@ -1,0 +1,3189 @@
+{
+  "Item1": {
+    "Kind": {
+      "Case": "Seq",
+      "Fields": [
+        [
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "import"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 1,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 1,
+                          "Col": 8
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 1,
+                                  "Col": 10
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 1,
+                                  "Col": 16
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "base"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 1,
+                                  "Col": 17
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 1,
+                                  "Col": 21
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 1,
+                          "Col": 9
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 1,
+                          "Col": 22
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "scheme"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 2,
+                                  "Col": 4
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 2,
+                                  "Col": 10
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "write"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 2,
+                                  "Col": 11
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 2,
+                                  "Col": 16
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 2,
+                          "Col": 3
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 2,
+                          "Col": 17
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 1,
+                  "Col": 1
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 2,
+                  "Col": 18
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 5,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 5,
+                          "Col": 8
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "Z"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 5,
+                                  "Col": 10
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 5,
+                                  "Col": 11
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "f"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 5,
+                                  "Col": 12
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 5,
+                                  "Col": 13
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 5,
+                          "Col": 9
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 5,
+                          "Col": 14
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 6,
+                                          "Col": 5
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 6,
+                                          "Col": 11
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "g"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 6,
+                                                  "Col": 13
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 6,
+                                                  "Col": 14
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 6,
+                                          "Col": 12
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 6,
+                                          "Col": 15
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "g"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 6,
+                                                  "Col": 17
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 6,
+                                                  "Col": 18
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "g"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 6,
+                                                  "Col": 19
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 6,
+                                                  "Col": 20
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 6,
+                                          "Col": 16
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 6,
+                                          "Col": 21
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 6,
+                                  "Col": 4
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 6,
+                                  "Col": 22
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 7,
+                                          "Col": 5
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 7,
+                                          "Col": 11
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "g"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 7,
+                                                  "Col": 13
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 7,
+                                                  "Col": 14
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 7,
+                                          "Col": 12
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 7,
+                                          "Col": 15
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "f"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 8,
+                                                  "Col": 6
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 8,
+                                                  "Col": 7
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "lambda"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 8,
+                                                          "Col": 9
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 8,
+                                                          "Col": 15
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "a"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 8,
+                                                          "Col": 16
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 8,
+                                                          "Col": 17
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Form",
+                                                      "Fields": [
+                                                        [
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "apply"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 8,
+                                                                  "Col": 19
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 8,
+                                                                  "Col": 24
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Form",
+                                                              "Fields": [
+                                                                [
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "g"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 8,
+                                                                          "Col": 26
+                                                                        },
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 8,
+                                                                          "Col": 27
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "g"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 8,
+                                                                          "Col": 28
+                                                                        },
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 8,
+                                                                          "Col": 29
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  }
+                                                                ]
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 8,
+                                                                  "Col": 25
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 8,
+                                                                  "Col": 30
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "a"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 8,
+                                                                  "Col": 31
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 8,
+                                                                  "Col": 32
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 8,
+                                                          "Col": 18
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 8,
+                                                          "Col": 33
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 8,
+                                                  "Col": 8
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 8,
+                                                  "Col": 34
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 8,
+                                          "Col": 5
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 8,
+                                          "Col": 35
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 7,
+                                  "Col": 4
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 8,
+                                  "Col": 36
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 6,
+                          "Col": 3
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 8,
+                          "Col": 37
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 5,
+                  "Col": 1
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 8,
+                  "Col": 38
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 11,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 11,
+                          "Col": 8
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "echo"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 11,
+                          "Col": 9
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 11,
+                          "Col": 13
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "Z"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 12,
+                                  "Col": 4
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 12,
+                                  "Col": 5
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 12,
+                                          "Col": 7
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 12,
+                                          "Col": 13
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "echo"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 12,
+                                                  "Col": 15
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 12,
+                                                  "Col": 19
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 12,
+                                          "Col": 14
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 12,
+                                          "Col": 20
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "lambda"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 13,
+                                                  "Col": 6
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 13,
+                                                  "Col": 12
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "args"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 13,
+                                                  "Col": 13
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 13,
+                                                  "Col": 17
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "display"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 14,
+                                                          "Col": 8
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 14,
+                                                          "Col": 15
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "args"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 14,
+                                                          "Col": 16
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 14,
+                                                          "Col": 20
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 14,
+                                                  "Col": 7
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 14,
+                                                  "Col": 21
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 13,
+                                          "Col": 5
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 14,
+                                          "Col": 22
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 12,
+                                  "Col": 6
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 14,
+                                  "Col": 23
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 12,
+                          "Col": 3
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 14,
+                          "Col": 24
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 11,
+                  "Col": 1
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 14,
+                  "Col": 25
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "echo"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 16,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 16,
+                          "Col": 6
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Str",
+                          "Fields": [
+                            "hello world"
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 16,
+                          "Col": 7
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 16,
+                          "Col": 20
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 16,
+                  "Col": 1
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 16,
+                  "Col": 21
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 16,
+                          "Col": 22
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 16,
+                          "Col": 29
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 16,
+                  "Col": 21
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 16,
+                  "Col": 30
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 19,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 19,
+                          "Col": 8
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "fib"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 19,
+                          "Col": 9
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 19,
+                          "Col": 12
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "Z"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 20,
+                                  "Col": 4
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 20,
+                                  "Col": 5
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 20,
+                                          "Col": 7
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 20,
+                                          "Col": 13
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "fib"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 20,
+                                                  "Col": 15
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 20,
+                                                  "Col": 18
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 20,
+                                          "Col": 14
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 20,
+                                          "Col": 19
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "lambda"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 21,
+                                                  "Col": 6
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 21,
+                                                  "Col": 12
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "n"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 21,
+                                                          "Col": 14
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 21,
+                                                          "Col": 15
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 21,
+                                                  "Col": 13
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 21,
+                                                  "Col": 16
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "if"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 22,
+                                                          "Col": 8
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 22,
+                                                          "Col": 10
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Form",
+                                                      "Fields": [
+                                                        [
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "<="
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 22,
+                                                                  "Col": 12
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 22,
+                                                                  "Col": 14
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "n"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 22,
+                                                                  "Col": 15
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 22,
+                                                                  "Col": 16
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Constant",
+                                                              "Fields": [
+                                                                {
+                                                                  "Case": "Number",
+                                                                  "Fields": [
+                                                                    2.0
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 22,
+                                                                  "Col": 17
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 22,
+                                                                  "Col": 18
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 22,
+                                                          "Col": 11
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 22,
+                                                          "Col": 19
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Constant",
+                                                      "Fields": [
+                                                        {
+                                                          "Case": "Number",
+                                                          "Fields": [
+                                                            1.0
+                                                          ]
+                                                        }
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 23,
+                                                          "Col": 9
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 23,
+                                                          "Col": 10
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Form",
+                                                      "Fields": [
+                                                        [
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "+"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 24,
+                                                                  "Col": 10
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 24,
+                                                                  "Col": 11
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Form",
+                                                              "Fields": [
+                                                                [
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "fib"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 24,
+                                                                          "Col": 13
+                                                                        },
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 24,
+                                                                          "Col": 16
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Form",
+                                                                      "Fields": [
+                                                                        [
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Ident",
+                                                                              "Fields": [
+                                                                                "-"
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 18
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 19
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          },
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Ident",
+                                                                              "Fields": [
+                                                                                "n"
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 20
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 21
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          },
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Constant",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Case": "Number",
+                                                                                  "Fields": [
+                                                                                    1.0
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 22
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 23
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          }
+                                                                        ]
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 24,
+                                                                          "Col": 17
+                                                                        },
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 24,
+                                                                          "Col": 24
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  }
+                                                                ]
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 24,
+                                                                  "Col": 12
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 24,
+                                                                  "Col": 25
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Form",
+                                                              "Fields": [
+                                                                [
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "fib"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 24,
+                                                                          "Col": 27
+                                                                        },
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 24,
+                                                                          "Col": 30
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Form",
+                                                                      "Fields": [
+                                                                        [
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Ident",
+                                                                              "Fields": [
+                                                                                "-"
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 32
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 33
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          },
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Ident",
+                                                                              "Fields": [
+                                                                                "n"
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 34
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 35
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          },
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Constant",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Case": "Number",
+                                                                                  "Fields": [
+                                                                                    2.0
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 36
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 24,
+                                                                                  "Col": 37
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          }
+                                                                        ]
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 24,
+                                                                          "Col": 31
+                                                                        },
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 24,
+                                                                          "Col": 38
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  }
+                                                                ]
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 24,
+                                                                  "Col": 26
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 24,
+                                                                  "Col": 39
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 24,
+                                                          "Col": 9
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 24,
+                                                          "Col": 40
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 22,
+                                                  "Col": 7
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 24,
+                                                  "Col": 41
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 21,
+                                          "Col": 5
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 24,
+                                          "Col": 42
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 20,
+                                  "Col": 6
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 24,
+                                  "Col": 43
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 20,
+                          "Col": 3
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 24,
+                          "Col": 44
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 19,
+                  "Col": 1
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 24,
+                  "Col": 45
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 26,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 26,
+                          "Col": 9
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "fib"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 26,
+                                  "Col": 11
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 26,
+                                  "Col": 14
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    5.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 26,
+                                  "Col": 15
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 26,
+                                  "Col": 16
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 26,
+                          "Col": 10
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 26,
+                          "Col": 17
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 26,
+                  "Col": 1
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 26,
+                  "Col": 18
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 26,
+                          "Col": 19
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 26,
+                          "Col": 26
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 26,
+                  "Col": 18
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 26,
+                  "Col": 27
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "define"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 29,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 29,
+                          "Col": 8
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "fact"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 29,
+                          "Col": 9
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 29,
+                          "Col": 13
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "Z"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 30,
+                                  "Col": 4
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 30,
+                                  "Col": 5
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 30,
+                                          "Col": 7
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 30,
+                                          "Col": 13
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "fact"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 30,
+                                                  "Col": 15
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 30,
+                                                  "Col": 19
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 30,
+                                          "Col": 14
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 30,
+                                          "Col": 20
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "lambda"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 31,
+                                                  "Col": 6
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 31,
+                                                  "Col": 12
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "n"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 31,
+                                                          "Col": 14
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 31,
+                                                          "Col": 15
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 31,
+                                                  "Col": 13
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 31,
+                                                  "Col": 16
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Form",
+                                              "Fields": [
+                                                [
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Ident",
+                                                      "Fields": [
+                                                        "if"
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 32,
+                                                          "Col": 8
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 32,
+                                                          "Col": 10
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Form",
+                                                      "Fields": [
+                                                        [
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "="
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 32,
+                                                                  "Col": 12
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 32,
+                                                                  "Col": 13
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "n"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 32,
+                                                                  "Col": 14
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 32,
+                                                                  "Col": 15
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Constant",
+                                                              "Fields": [
+                                                                {
+                                                                  "Case": "Number",
+                                                                  "Fields": [
+                                                                    0.0
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 32,
+                                                                  "Col": 16
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 32,
+                                                                  "Col": 17
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 32,
+                                                          "Col": 11
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 32,
+                                                          "Col": 18
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Constant",
+                                                      "Fields": [
+                                                        {
+                                                          "Case": "Number",
+                                                          "Fields": [
+                                                            1.0
+                                                          ]
+                                                        }
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 33,
+                                                          "Col": 9
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 33,
+                                                          "Col": 10
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "Kind": {
+                                                      "Case": "Form",
+                                                      "Fields": [
+                                                        [
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "*"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 34,
+                                                                  "Col": 10
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 34,
+                                                                  "Col": 11
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Ident",
+                                                              "Fields": [
+                                                                "n"
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 34,
+                                                                  "Col": 12
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 34,
+                                                                  "Col": 13
+                                                                }
+                                                              ]
+                                                            }
+                                                          },
+                                                          {
+                                                            "Kind": {
+                                                              "Case": "Form",
+                                                              "Fields": [
+                                                                [
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Ident",
+                                                                      "Fields": [
+                                                                        "fact"
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 34,
+                                                                          "Col": 15
+                                                                        },
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 34,
+                                                                          "Col": 19
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "Kind": {
+                                                                      "Case": "Form",
+                                                                      "Fields": [
+                                                                        [
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Ident",
+                                                                              "Fields": [
+                                                                                "-"
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 34,
+                                                                                  "Col": 21
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 34,
+                                                                                  "Col": 22
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          },
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Ident",
+                                                                              "Fields": [
+                                                                                "n"
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 34,
+                                                                                  "Col": 23
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 34,
+                                                                                  "Col": 24
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          },
+                                                                          {
+                                                                            "Kind": {
+                                                                              "Case": "Constant",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Case": "Number",
+                                                                                  "Fields": [
+                                                                                    1.0
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            },
+                                                                            "Location": {
+                                                                              "Case": "Span",
+                                                                              "Fields": [
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 34,
+                                                                                  "Col": 25
+                                                                                },
+                                                                                {
+                                                                                  "Source": "zed.scm",
+                                                                                  "Line": 34,
+                                                                                  "Col": 26
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          }
+                                                                        ]
+                                                                      ]
+                                                                    },
+                                                                    "Location": {
+                                                                      "Case": "Span",
+                                                                      "Fields": [
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 34,
+                                                                          "Col": 20
+                                                                        },
+                                                                        {
+                                                                          "Source": "zed.scm",
+                                                                          "Line": 34,
+                                                                          "Col": 27
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  }
+                                                                ]
+                                                              ]
+                                                            },
+                                                            "Location": {
+                                                              "Case": "Span",
+                                                              "Fields": [
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 34,
+                                                                  "Col": 14
+                                                                },
+                                                                {
+                                                                  "Source": "zed.scm",
+                                                                  "Line": 34,
+                                                                  "Col": 28
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      ]
+                                                    },
+                                                    "Location": {
+                                                      "Case": "Span",
+                                                      "Fields": [
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 34,
+                                                          "Col": 9
+                                                        },
+                                                        {
+                                                          "Source": "zed.scm",
+                                                          "Line": 34,
+                                                          "Col": 29
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 32,
+                                                  "Col": 7
+                                                },
+                                                {
+                                                  "Source": "zed.scm",
+                                                  "Line": 34,
+                                                  "Col": 30
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 31,
+                                          "Col": 5
+                                        },
+                                        {
+                                          "Source": "zed.scm",
+                                          "Line": 34,
+                                          "Col": 31
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 30,
+                                  "Col": 6
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 34,
+                                  "Col": 32
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 30,
+                          "Col": 3
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 34,
+                          "Col": 33
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 29,
+                  "Col": 1
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 34,
+                  "Col": 34
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "display"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 36,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 36,
+                          "Col": 9
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "fact"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 36,
+                                  "Col": 11
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 36,
+                                  "Col": 15
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    12.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 36,
+                                  "Col": 16
+                                },
+                                {
+                                  "Source": "zed.scm",
+                                  "Line": 36,
+                                  "Col": 18
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 36,
+                          "Col": 10
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 36,
+                          "Col": 19
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 36,
+                  "Col": 1
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 36,
+                  "Col": 20
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "newline"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "zed.scm",
+                          "Line": 36,
+                          "Col": 21
+                        },
+                        {
+                          "Source": "zed.scm",
+                          "Line": 36,
+                          "Col": 28
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "zed.scm",
+                  "Line": 36,
+                  "Col": 20
+                },
+                {
+                  "Source": "zed.scm",
+                  "Line": 36,
+                  "Col": 29
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "Location": {
+      "Case": "Span",
+      "Fields": [
+        {
+          "Source": "zed.scm",
+          "Line": 1,
+          "Col": 1
+        },
+        {
+          "Source": "zed.scm",
+          "Line": 37,
+          "Col": 1
+        }
+      ]
+    }
+  },
+  "Item2": []
+}
