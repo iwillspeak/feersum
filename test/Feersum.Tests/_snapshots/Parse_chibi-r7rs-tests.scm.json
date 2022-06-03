@@ -87092,6 +87092,1454 @@
                     "Kind": {
                       "Case": "Ident",
                       "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1694,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1694,
+                          "Col": 6
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1694,
+                          "Col": 7
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1694,
+                          "Col": 9
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "procedure?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1694,
+                                  "Col": 11
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1694,
+                                  "Col": 21
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "car"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1694,
+                                  "Col": 22
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1694,
+                                  "Col": 25
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1694,
+                          "Col": 10
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1694,
+                          "Col": 26
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1694,
+                  "Col": 1
+                },
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1694,
+                  "Col": 27
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1695,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1695,
+                          "Col": 6
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            false
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1695,
+                          "Col": 7
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1695,
+                          "Col": 9
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "procedure?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1695,
+                                  "Col": 11
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1695,
+                                  "Col": 21
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Ident",
+                                    "Fields": [
+                                      "car"
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Source": "chibi-r7rs-tests.scm",
+                                        "Line": 1695,
+                                        "Col": 23
+                                      },
+                                      {
+                                        "Source": "chibi-r7rs-tests.scm",
+                                        "Line": 1695,
+                                        "Col": 26
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1695,
+                                  "Col": 22
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1695,
+                                  "Col": 26
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1695,
+                          "Col": 10
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1695,
+                          "Col": 27
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1695,
+                  "Col": 1
+                },
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1695,
+                  "Col": 28
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1696,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1696,
+                          "Col": 6
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            true
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1696,
+                          "Col": 7
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1696,
+                          "Col": 9
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "procedure?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1696,
+                                  "Col": 11
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1696,
+                                  "Col": 21
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "lambda"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1696,
+                                          "Col": 23
+                                        },
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1696,
+                                          "Col": 29
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "x"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "chibi-r7rs-tests.scm",
+                                                  "Line": 1696,
+                                                  "Col": 31
+                                                },
+                                                {
+                                                  "Source": "chibi-r7rs-tests.scm",
+                                                  "Line": 1696,
+                                                  "Col": 32
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1696,
+                                          "Col": 30
+                                        },
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1696,
+                                          "Col": 33
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Form",
+                                      "Fields": [
+                                        [
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "*"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "chibi-r7rs-tests.scm",
+                                                  "Line": 1696,
+                                                  "Col": 35
+                                                },
+                                                {
+                                                  "Source": "chibi-r7rs-tests.scm",
+                                                  "Line": 1696,
+                                                  "Col": 36
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "x"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "chibi-r7rs-tests.scm",
+                                                  "Line": 1696,
+                                                  "Col": 37
+                                                },
+                                                {
+                                                  "Source": "chibi-r7rs-tests.scm",
+                                                  "Line": 1696,
+                                                  "Col": 38
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "Kind": {
+                                              "Case": "Ident",
+                                              "Fields": [
+                                                "x"
+                                              ]
+                                            },
+                                            "Location": {
+                                              "Case": "Span",
+                                              "Fields": [
+                                                {
+                                                  "Source": "chibi-r7rs-tests.scm",
+                                                  "Line": 1696,
+                                                  "Col": 39
+                                                },
+                                                {
+                                                  "Source": "chibi-r7rs-tests.scm",
+                                                  "Line": 1696,
+                                                  "Col": 40
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1696,
+                                          "Col": 34
+                                        },
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1696,
+                                          "Col": 41
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1696,
+                                  "Col": 22
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1696,
+                                  "Col": 42
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1696,
+                          "Col": 10
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1696,
+                          "Col": 43
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1696,
+                  "Col": 1
+                },
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1696,
+                  "Col": 44
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1697,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1697,
+                          "Col": 6
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Boolean",
+                          "Fields": [
+                            false
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1697,
+                          "Col": 7
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1697,
+                          "Col": 9
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "procedure?"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1697,
+                                  "Col": 11
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1697,
+                                  "Col": 21
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Quoted",
+                              "Fields": [
+                                {
+                                  "Kind": {
+                                    "Case": "Form",
+                                    "Fields": [
+                                      [
+                                        {
+                                          "Kind": {
+                                            "Case": "Ident",
+                                            "Fields": [
+                                              "lambda"
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Source": "chibi-r7rs-tests.scm",
+                                                "Line": 1697,
+                                                "Col": 24
+                                              },
+                                              {
+                                                "Source": "chibi-r7rs-tests.scm",
+                                                "Line": 1697,
+                                                "Col": 30
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "Kind": {
+                                            "Case": "Form",
+                                            "Fields": [
+                                              [
+                                                {
+                                                  "Kind": {
+                                                    "Case": "Ident",
+                                                    "Fields": [
+                                                      "x"
+                                                    ]
+                                                  },
+                                                  "Location": {
+                                                    "Case": "Span",
+                                                    "Fields": [
+                                                      {
+                                                        "Source": "chibi-r7rs-tests.scm",
+                                                        "Line": 1697,
+                                                        "Col": 32
+                                                      },
+                                                      {
+                                                        "Source": "chibi-r7rs-tests.scm",
+                                                        "Line": 1697,
+                                                        "Col": 33
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              ]
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Source": "chibi-r7rs-tests.scm",
+                                                "Line": 1697,
+                                                "Col": 31
+                                              },
+                                              {
+                                                "Source": "chibi-r7rs-tests.scm",
+                                                "Line": 1697,
+                                                "Col": 34
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "Kind": {
+                                            "Case": "Form",
+                                            "Fields": [
+                                              [
+                                                {
+                                                  "Kind": {
+                                                    "Case": "Ident",
+                                                    "Fields": [
+                                                      "*"
+                                                    ]
+                                                  },
+                                                  "Location": {
+                                                    "Case": "Span",
+                                                    "Fields": [
+                                                      {
+                                                        "Source": "chibi-r7rs-tests.scm",
+                                                        "Line": 1697,
+                                                        "Col": 36
+                                                      },
+                                                      {
+                                                        "Source": "chibi-r7rs-tests.scm",
+                                                        "Line": 1697,
+                                                        "Col": 37
+                                                      }
+                                                    ]
+                                                  }
+                                                },
+                                                {
+                                                  "Kind": {
+                                                    "Case": "Ident",
+                                                    "Fields": [
+                                                      "x"
+                                                    ]
+                                                  },
+                                                  "Location": {
+                                                    "Case": "Span",
+                                                    "Fields": [
+                                                      {
+                                                        "Source": "chibi-r7rs-tests.scm",
+                                                        "Line": 1697,
+                                                        "Col": 38
+                                                      },
+                                                      {
+                                                        "Source": "chibi-r7rs-tests.scm",
+                                                        "Line": 1697,
+                                                        "Col": 39
+                                                      }
+                                                    ]
+                                                  }
+                                                },
+                                                {
+                                                  "Kind": {
+                                                    "Case": "Ident",
+                                                    "Fields": [
+                                                      "x"
+                                                    ]
+                                                  },
+                                                  "Location": {
+                                                    "Case": "Span",
+                                                    "Fields": [
+                                                      {
+                                                        "Source": "chibi-r7rs-tests.scm",
+                                                        "Line": 1697,
+                                                        "Col": 40
+                                                      },
+                                                      {
+                                                        "Source": "chibi-r7rs-tests.scm",
+                                                        "Line": 1697,
+                                                        "Col": 41
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              ]
+                                            ]
+                                          },
+                                          "Location": {
+                                            "Case": "Span",
+                                            "Fields": [
+                                              {
+                                                "Source": "chibi-r7rs-tests.scm",
+                                                "Line": 1697,
+                                                "Col": 35
+                                              },
+                                              {
+                                                "Source": "chibi-r7rs-tests.scm",
+                                                "Line": 1697,
+                                                "Col": 42
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    ]
+                                  },
+                                  "Location": {
+                                    "Case": "Span",
+                                    "Fields": [
+                                      {
+                                        "Source": "chibi-r7rs-tests.scm",
+                                        "Line": 1697,
+                                        "Col": 23
+                                      },
+                                      {
+                                        "Source": "chibi-r7rs-tests.scm",
+                                        "Line": 1697,
+                                        "Col": 43
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1697,
+                                  "Col": 22
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1697,
+                                  "Col": 43
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1697,
+                          "Col": 10
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1697,
+                          "Col": 44
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1697,
+                  "Col": 1
+                },
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1697,
+                  "Col": 45
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1700,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1700,
+                          "Col": 6
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Number",
+                          "Fields": [
+                            7.0
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1700,
+                          "Col": 7
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1700,
+                          "Col": 8
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "apply"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1700,
+                                  "Col": 10
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1700,
+                                  "Col": 15
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "+"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1700,
+                                  "Col": 16
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1700,
+                                  "Col": 17
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "list"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1700,
+                                          "Col": 19
+                                        },
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1700,
+                                          "Col": 23
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Number",
+                                          "Fields": [
+                                            3.0
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1700,
+                                          "Col": 24
+                                        },
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1700,
+                                          "Col": 25
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Kind": {
+                                      "Case": "Constant",
+                                      "Fields": [
+                                        {
+                                          "Case": "Number",
+                                          "Fields": [
+                                            4.0
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1700,
+                                          "Col": 26
+                                        },
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1700,
+                                          "Col": 27
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1700,
+                                  "Col": 18
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1700,
+                                  "Col": 28
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1700,
+                          "Col": 9
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1700,
+                          "Col": 29
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1700,
+                  "Col": 1
+                },
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1700,
+                  "Col": 30
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
+                        "test"
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1701,
+                          "Col": 2
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1701,
+                          "Col": 6
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Constant",
+                      "Fields": [
+                        {
+                          "Case": "Number",
+                          "Fields": [
+                            7.0
+                          ]
+                        }
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1701,
+                          "Col": 7
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1701,
+                          "Col": 8
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Kind": {
+                      "Case": "Form",
+                      "Fields": [
+                        [
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "apply"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 10
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 15
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Ident",
+                              "Fields": [
+                                "+"
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 16
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 17
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    3.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 18
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 19
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Constant",
+                              "Fields": [
+                                {
+                                  "Case": "Number",
+                                  "Fields": [
+                                    4.0
+                                  ]
+                                }
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 20
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 21
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Kind": {
+                              "Case": "Form",
+                              "Fields": [
+                                [
+                                  {
+                                    "Kind": {
+                                      "Case": "Ident",
+                                      "Fields": [
+                                        "list"
+                                      ]
+                                    },
+                                    "Location": {
+                                      "Case": "Span",
+                                      "Fields": [
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1701,
+                                          "Col": 23
+                                        },
+                                        {
+                                          "Source": "chibi-r7rs-tests.scm",
+                                          "Line": 1701,
+                                          "Col": 27
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            },
+                            "Location": {
+                              "Case": "Span",
+                              "Fields": [
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 22
+                                },
+                                {
+                                  "Source": "chibi-r7rs-tests.scm",
+                                  "Line": 1701,
+                                  "Col": 28
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "Location": {
+                      "Case": "Span",
+                      "Fields": [
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1701,
+                          "Col": 9
+                        },
+                        {
+                          "Source": "chibi-r7rs-tests.scm",
+                          "Line": 1701,
+                          "Col": 29
+                        }
+                      ]
+                    }
+                  }
+                ]
+              ]
+            },
+            "Location": {
+              "Case": "Span",
+              "Fields": [
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1701,
+                  "Col": 1
+                },
+                {
+                  "Source": "chibi-r7rs-tests.scm",
+                  "Line": 1701,
+                  "Col": 30
+                }
+              ]
+            }
+          },
+          {
+            "Kind": {
+              "Case": "Form",
+              "Fields": [
+                [
+                  {
+                    "Kind": {
+                      "Case": "Ident",
+                      "Fields": [
                         "test-end"
                       ]
                     },
