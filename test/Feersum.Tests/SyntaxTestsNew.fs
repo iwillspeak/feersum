@@ -8,14 +8,14 @@ open Firethorn.Red
 let readSingle line =
     let result = ParseNew.readExpr1 "repl" line
 
-    result.Root |> dump
-
     if result.Errors |> List.isEmpty then
         result.Root.Children() |> Seq.exactlyOne
     else
         failwithf "Expected single expression but got: %A" result.Errors
 
 let getKind (node: SyntaxNode) = node.Kind |> greenToAst
+
+let getTokenKind (token: SyntaxToken) = token.Kind |> greenToAst
 
 // open SyntaxUtils
 // open SyntaxFactory
@@ -52,81 +52,105 @@ let getKind (node: SyntaxNode) = node.Kind |> greenToAst
 [<Fact>]
 let ``parse atoms`` () =
     Assert.Equal(AstKind.CONSTANT, readSingle "123.559" |> getKind)
+    Assert.Equal(AstKind.CONSTANT, readSingle "789" |> getKind)
     Assert.Equal(AstKind.CONSTANT, readSingle @"""hello\nworld""" |> getKind)
+    Assert.Equal(AstKind.CONSTANT, readSingle "\"\"" |> getKind)
+    Assert.Equal(AstKind.SYMBOL, readSingle "nil" |> getKind)
     Assert.Equal(AstKind.CONSTANT, readSingle "#f" |> getKind)
     Assert.Equal(AstKind.CONSTANT, readSingle "#t" |> getKind)
     Assert.Equal(AstKind.CONSTANT, readSingle "#false" |> getKind)
     Assert.Equal(AstKind.CONSTANT, readSingle "#true" |> getKind)
-    Assert.Equal(AstKind.SYMBOL, readSingle "nil" |> getKind)
 
-// Assert.Equal(Number 123.559 |> Constant, readSingle "123.559")
-// Assert.Equal(Number 789.0 |> Constant, readSingle "789")
-// Assert.Equal(Str "hello\nworld" |> Constant, readSingle @"""hello\nworld""")
-// Assert.Equal(Str "" |> Constant, readSingle ("\"\""))
-// Assert.Equal(Ident "nil", readSingle "nil")
-// Assert.Equal(Boolean true |> Constant, readSingle "#t")
-// Assert.Equal(Boolean false |> Constant, readSingle "#f")
-// Assert.Equal(Boolean true |> Constant, readSingle "#true")
-// Assert.Equal(Boolean false |> Constant, readSingle "#false")
-// Assert.Equal(Dot, readSingle ".")
+[<Theory>]
+[<InlineData("?")>]
+[<InlineData("+")>]
+[<InlineData("*")>]
+[<InlineData("/")>]
+[<InlineData("-")>]
+[<InlineData("a")>]
+[<InlineData("test")>]
+[<InlineData("test?")>]
+[<InlineData("celsius->farenhiet")>]
+[<InlineData("things")>]
+let ``parse identifiers`` ident =
+    let tree = readSingle ident
 
-// [<Theory>]
-// [<InlineData("?")>]
-// [<InlineData("+")>]
-// [<InlineData("*")>]
-// [<InlineData("/")>]
-// [<InlineData("-")>]
-// [<InlineData("a")>]
-// [<InlineData("test")>]
-// [<InlineData("test?")>]
-// [<InlineData("celsius->farenhiet")>]
-// [<InlineData("things")>]
-// let ``parse identifiers`` ident =
-//     Assert.Equal(Ident ident, readSingle ident)
+    Assert.Equal(AstKind.SYMBOL, tree |> getKind)
 
-// [<Theory>]
-// [<InlineData("!")>]
-// [<InlineData("$")>]
-// [<InlineData("%")>]
-// [<InlineData("&")>]
-// [<InlineData("*")>]
-// [<InlineData("+")>]
-// [<InlineData("-")>]
-// [<InlineData("/")>]
-// [<InlineData(":")>]
-// [<InlineData("<")>]
-// [<InlineData("=")>]
-// [<InlineData(">")>]
-// [<InlineData("?")>]
-// [<InlineData("@")>]
-// [<InlineData("^")>]
-// [<InlineData("_")>]
-// [<InlineData("~")>]
-// [<InlineData("..")>]
-// [<InlineData("extended.")>]
-// [<InlineData("extended.identifier")>]
-// [<InlineData("...")>]
-// [<InlineData("+soup+")>]
-// [<InlineData("<=?")>]
-// [<InlineData("->string")>]
-// [<InlineData("a34kTMNs")>]
-// [<InlineData("lambda")>]
-// [<InlineData("list->vector")>]
-// [<InlineData("q")>]
-// [<InlineData("V17a")>]
-// [<InlineData("the-word-recursion-has-many-meanings")>]
-// let ``extended identifier characters`` ident =
-//     Assert.Equal(Ident ident, readSingle ident)
+    let identTok =
+        tree.ChildrenWithTokens()
+        |> Seq.choose (Firethorn.NodeOrToken.asToken)
+        |> Seq.exactlyOne
 
-// [<Theory>]
-// [<InlineData("|two words|", "two words")>]
-// [<InlineData(@"|two\x20;words|", "two words")>]
-// [<InlineData(@"|\t\t|", "\t\t")>]
-// [<InlineData(@"|\x9;\x9;|", "\t\t")>]
-// [<InlineData(@"|H\x65;llo|", "Hello")>]
-// [<InlineData(@"|\x3BB;|", "λ")>]
-// let ``identifier literals`` raw cooked =
-//     Assert.Equal(Ident cooked, readSingle raw)
+    Assert.Equal(AstKind.IDENTIFIER, identTok |> getTokenKind)
+    Assert.Equal(ident, identTok.Green.Text)
+
+[<Theory>]
+[<InlineData("!")>]
+[<InlineData("$")>]
+[<InlineData("%")>]
+[<InlineData("&")>]
+[<InlineData("*")>]
+[<InlineData("+")>]
+[<InlineData("-")>]
+[<InlineData("/")>]
+[<InlineData(":")>]
+[<InlineData("<")>]
+[<InlineData("=")>]
+[<InlineData(">")>]
+[<InlineData("?")>]
+// [<InlineData("@")>] TODO: Is this a valid identifier or not?
+[<InlineData("^")>]
+[<InlineData("_")>]
+[<InlineData("~")>]
+[<InlineData("..")>]
+[<InlineData("extended.")>]
+[<InlineData("extended.identifier")>]
+[<InlineData("...")>]
+[<InlineData("+soup+")>]
+[<InlineData("<=?")>]
+[<InlineData("->string")>]
+[<InlineData("a34kTMNs")>]
+[<InlineData("lambda")>]
+[<InlineData("list->vector")>]
+[<InlineData("q")>]
+[<InlineData("V17a")>]
+[<InlineData("the-word-recursion-has-many-meanings")>]
+let ``extended identifier characters`` ident =
+    let tree = readSingle ident
+
+    Assert.Equal(AstKind.SYMBOL, tree |> getKind)
+
+    let identTok =
+        tree.ChildrenWithTokens()
+        |> Seq.choose (Firethorn.NodeOrToken.asToken)
+        |> Seq.exactlyOne
+
+    Assert.Equal(AstKind.IDENTIFIER, identTok |> getTokenKind)
+    Assert.Equal(ident, identTok.Green.Text)
+
+[<Theory>]
+[<InlineData("|two words|", "two words")>]
+[<InlineData(@"|two\x20;words|", "two words")>]
+[<InlineData(@"|\t\t|", "\t\t")>]
+[<InlineData(@"|\x9;\x9;|", "\t\t")>]
+[<InlineData(@"|H\x65;llo|", "Hello")>]
+[<InlineData(@"|\x3BB;|", "λ")>]
+let ``identifier literals`` raw (cooked: string) =
+    let tree = readSingle raw
+
+    Assert.Equal(AstKind.SYMBOL, tree |> getKind)
+
+    let identTok =
+        tree.ChildrenWithTokens()
+        |> Seq.choose (Firethorn.NodeOrToken.asToken)
+        |> Seq.exactlyOne
+
+    Assert.Equal(AstKind.IDENTIFIER, identTok |> getTokenKind)
+
+    // FIXME: Assert on the value of cooked. Probably parse as typed tree
+    //        instead here and access the value through that.
+    cooked |> ignore
 
 // [<Theory>]
 // [<InlineData("\\a", '\a')>]
