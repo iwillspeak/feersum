@@ -2,7 +2,7 @@
 <p align="center">
 	<img src="docs/Logo_colour_sm.png" alt="Ant in a box"  />
 </p>
-<h1 align="center">Feersum Scheme</h1>
+<h1 align="center"><samp>(feersum . scheme)</samp></h1>
 <p align="center">
 <a href=https://dev.azure.com/iwillspeak/GitHub/_build/latest?definitionId=4&branchName=main"><img alt="Build Status" src="https://dev.azure.com/iwillspeak/GitHub/_apis/build/status/iwillspeak.feersum?branchName=main" /></a>
 <a href="https://www.fuget.org/packages/Feersum"><img alt="Feersum on fuget.org" src="https://www.fuget.org/packages/Feersum/badge.svg" /></a>
