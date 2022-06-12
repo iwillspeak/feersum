@@ -79,9 +79,16 @@ module ParseNew =
             self.Bump(AstKind.IDENTIFIER)
             builder.FinishNode()
 
+        member private self.ParseQuote() =
+            builder.StartNode(AstKind.QUOTED_DATUM |> astToGreen)
+            self.Expect(TokenKind.Quote, AstKind.QUOTE)
+            self.ParseExpr()
+            builder.FinishNode()
+
         member private self.ParseAtom() =
             match self.CurrentKind with
             | TokenKind.Identifier -> self.ParseIdentifier()
+            | TokenKind.Quote -> self.ParseQuote()
             | _ -> self.ParseConstant()
 
         member private self.ParseForm() =
@@ -99,11 +106,10 @@ module ParseNew =
             builder.FinishNode()
 
         member private self.ParseExpr() =
-            self.SkipAtmosphere()
-
             match self.CurrentKind with
             | TokenKind.OpenBracket -> self.ParseForm()
             | _ -> self.ParseAtom()
+            self.SkipAtmosphere()
 
         member private _.Finalise(rootKind: AstKind) =
             let root =
@@ -116,6 +122,8 @@ module ParseNew =
         ///
         /// Read a sequence of expressions as a single program.
         member self.ParseProgram() =
+            self.SkipAtmosphere()
+
             while not <| self.LookingAt(TokenKind.EndOfFile) do
                 self.ParseExpr()
 
@@ -126,6 +134,8 @@ module ParseNew =
         ///
         /// Reads a single expression from the lexer
         member self.ParseExpression() =
+            self.SkipAtmosphere()
+
             self.ParseExpr()
 
             self.Expect(TokenKind.EndOfFile, AstKind.EOF)
