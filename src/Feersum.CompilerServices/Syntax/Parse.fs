@@ -159,6 +159,7 @@ module Parse =
     let readProgram name line =
         let parser = Parser(Lexer(line, name))
         parser.ParseProgram()
+        |> ParseResult.map (fun x -> new Program(x))
 
     let readExpr1 name line : ParseResult<SyntaxNode> =
         let parser = Parser(Lexer(line, name))

@@ -3,7 +3,6 @@ namespace Feersum.CompilerServices.Syntax
 open Firethorn
 open Firethorn.Green
 open Firethorn.Red
-open Feersum.CompilerServices.Diagnostics
 
 module Tree =
 
@@ -42,6 +41,35 @@ module Tree =
     /// Debug dump. Writes a debug representation of the tree to stdout.
     let dump = Debug.debugDump (Debug.mappedFormatter greenToAst)
 
+    [<AutoOpen>]
+    module private Utils =
+
+        let tokenOfKind (kind: AstKind) (token: SyntaxToken) =
+            token.Kind = (kind |> astToGreen)
+
+    /// Form syntax wrapper
+    type Form(red: SyntaxNode) =
+        let red = red
+
+        member public _.OpeningParen =
+            red.ChildrenWithTokens ()
+            |> Seq.choose (NodeOrToken.asToken)
+            |> Seq.tryFind (tokenOfKind AstKind.OPEN_PAREN)
+
+        member public _.Body =
+            red.Children ()
+
+        member public _.ClosingParen =
+            red.ChildrenWithTokens ()
+            |> Seq.choose (NodeOrToken.asToken)
+            |> Seq.tryFind (tokenOfKind AstKind.CLOSE_PAREN)
+
+        static member TryCast(red: SyntaxNode) : Option<Form> =
+            if red.Kind = (AstKind.FORM |> astToGreen) then
+                Some(new Form(red))
+            else
+                None
+
     type Number(red: SyntaxToken) =
         let red = red
 
@@ -56,7 +84,14 @@ module Tree =
             | (true, value) -> value
             | _ -> 0.0
 
-    type ConstantKind = Number of Number
+    type Symbol(red: SyntaxNode) =
+        let red = red
+
+        static member TryCast(red: SyntaxNode) =
+            if (red.Kind = (AstKind.SYMBOL |> astToGreen)) then
+                Some(new Symbol(red))
+            else
+                None
 
     type Constant(red: SyntaxNode) =
         let red = red
@@ -64,5 +99,33 @@ module Tree =
         static member TryCast(red: SyntaxNode) =
             if red.Kind = (AstKind.CONSTANT |> astToGreen) then
                 new Constant(red) |> Some
+            else
+                None
+
+    type Expression =
+        | Form of Form
+        | Constant of Constant
+        | Symbol of Symbol
+
+    module Expression =
+        let tryCast (node: SyntaxNode) =
+            match node.Kind |> greenToAst with
+            | AstKind.FORM -> Some(Expression.Form (new Form(node)))
+            | AstKind.SYMBOL -> Some(Expression.Symbol (new Symbol(node)))
+            | AstKind.CONSTANT -> Some(Expression.Constant (new Constant(node)))
+            | _ -> None
+
+    type Program(red: SyntaxNode) =
+        let red = red
+
+        member _.Raw = red
+
+        member _.Body =
+            red.Children ()
+            |> Seq.choose (Expression.tryCast)
+
+        static member TryCast(red: SyntaxNode) =
+            if red.Kind = (AstKind.PROGRAM |> astToGreen) then
+                Some(new Program(red))
             else
                 None
