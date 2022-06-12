@@ -7,7 +7,8 @@ open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
 
 let private read () =
-    ReadLine.Read("§> ") |> Parse.readProgram "repl.scm"
+    ReadLine.Read("§> ")
+    |> Parse.readProgram "repl.scm"
 
 let private print (result: ParseResult<Program>) =
     if ParseResult.hasErrors result then
