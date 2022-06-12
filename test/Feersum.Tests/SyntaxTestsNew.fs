@@ -2,11 +2,11 @@ module SyntaxTestsNew
 
 open Xunit
 open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.TreeNew
+open Feersum.CompilerServices.Syntax.Tree
 open Firethorn.Red
 
 let readSingle line =
-    let result = ParseNew.readExpr1 "repl" line
+    let result = Parse.readExpr1 "repl" line
 
     if result.Errors |> List.isEmpty then
         result.Root.Children() |> Seq.exactlyOne

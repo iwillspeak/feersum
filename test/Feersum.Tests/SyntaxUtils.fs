@@ -1,7 +1,7 @@
 module SyntaxUtils
 
 open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.Parse
+open Feersum.CompilerServices.Syntax.LegacyParse
 open Feersum.CompilerServices.Diagnostics
 open System.IO
 

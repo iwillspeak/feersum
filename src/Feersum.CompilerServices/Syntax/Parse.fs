@@ -4,15 +4,30 @@ open Firethorn.Green
 open Firethorn.Red
 open Feersum.CompilerServices.Diagnostics
 
-module ParseNew =
+module Parse =
 
-    open TreeNew
+    open Tree
+
+    /// Type to represent parse results.
+    type public ParseResult<'a> =
+        { Errors: Diagnostic list
+          Root: 'a }
+
+    module ParseResult =
+
+        /// Check a parse result for errors
+        let public hasErrors result =
+            result.Errors <> []
+
+        /// Map the results of a parse
+        let public map mapper result =
+            { Errors = result.Errors; Root = result.Root |> mapper }
 
     /// Parser Type
     ///
     /// Class type to hold state when parsing. This is not intended to be used
     /// directly. The main parser API is via the `read*` functions.
-    type Parser(lexer: Lexer) =
+    type private Parser(lexer: Lexer) =
 
         let builder = GreenNodeBuilder()
         let mutable errors = []
@@ -145,6 +160,6 @@ module ParseNew =
         let parser = Parser(Lexer(line, name))
         parser.ParseProgram()
 
-    let readExpr1 name line : ParseResult =
+    let readExpr1 name line : ParseResult<SyntaxNode> =
         let parser = Parser(Lexer(line, name))
         parser.ParseExpression()
