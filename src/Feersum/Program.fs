@@ -11,6 +11,7 @@ open Feersum.Version
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Compile
+open Feersum.ParseRepl
 
 /// Command line arguments type. Encompasses the options that the compiler
 /// supports.
@@ -101,6 +102,9 @@ let main argv =
     match args.GetResult(Sources, defaultValue = []), args.TryGetResult(Output) with
     | [], None ->
         runRepl ()
+        0
+    | [ "parserepl" ], None ->
+        runParserRepl ()
         0
     | [], Some (output) ->
         eprintfn "No source files provided for output %s" output
