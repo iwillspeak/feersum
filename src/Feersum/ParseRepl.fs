@@ -1,19 +1,18 @@
 module Feersum.ParseRepl
 
 open System
-open Feersum.CompilerServices.Syntax.ParseNew
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.TreeNew
+open Feersum.CompilerServices.Syntax.Parse
 
 let private read () =
-    ReadLine.Read("§> ") |> readProgram "repl.scm"
+    ReadLine.Read("§> ") |> Parse.readProgram "repl.scm"
 
-let private print (result: ParseResult) =
-    if result.Errors <> [] then
+let private print result =
+    if ParseResult.hasErrors result then
         dumpDiagnostics result.Errors
 
-    TreeNew.dump result.Root
+    Tree.dump result.Root
 
 let rec parserReplImpl () =
     read () |> print

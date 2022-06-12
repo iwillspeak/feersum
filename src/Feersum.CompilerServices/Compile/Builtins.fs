@@ -127,7 +127,7 @@ module private BuiltinMacros =
 
     /// Parse a builtin macro from syntax rules
     let private parseBuiltinMacro id rules =
-        let (node, errs) = Parse.readExpr1 (sprintf "builtin-%s" id) rules
+        let (node, errs) = LegacyParse.readExpr1 (sprintf "builtin-%s" id) rules
 
         if hasErrors errs then
             icef "Error in builtin macro: %A" errs

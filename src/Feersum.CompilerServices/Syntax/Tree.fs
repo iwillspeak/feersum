@@ -5,7 +5,7 @@ open Firethorn.Green
 open Firethorn.Red
 open Feersum.CompilerServices.Diagnostics
 
-module TreeNew =
+module Tree =
 
     /// Node kind for each element in the raw tree.
     type AstKind =
@@ -30,11 +30,6 @@ module TreeNew =
         | OPEN_PAREN = 108
         | CLOSE_PAREN = 109
         | QUOTE = 110
-
-    /// Type to represent parse results.
-    type public ParseResult =
-        { Errors: Diagnostic list
-          Root: SyntaxNode }
 
     /// Convert an AST Kind to a raw `SyntaxKind`
     let astToGreen (kind: AstKind) = SyntaxKind(int kind)

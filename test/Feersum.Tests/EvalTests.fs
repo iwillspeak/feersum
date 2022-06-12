@@ -4,7 +4,7 @@ open Xunit
 
 open Feersum.CompilerServices.Eval
 open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.Parse
+open Feersum.CompilerServices.Syntax.LegacyParse
 open SyntaxUtils
 open SyntaxFactory
 open Feersum.CompilerServices.Utils

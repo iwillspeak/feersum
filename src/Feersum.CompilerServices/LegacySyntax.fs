@@ -38,7 +38,7 @@ type State =
 
     static member Empty = { Diagnostics = DiagnosticBag.Empty }
 
-module Parse =
+module LegacyParse =
 
     let errorNode =
         { Kind = AstNodeKind.Error

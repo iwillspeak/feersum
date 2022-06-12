@@ -14,7 +14,7 @@ open Feersum.Core
 let rec private read () : AstNode =
     let line = ReadLine.Read("§> ")
 
-    match Parse.readExpr line with
+    match LegacyParse.readExpr line with
     | (node, []) -> node
     | (_, diagnostics) ->
         diagnostics |> dumpDiagnostics

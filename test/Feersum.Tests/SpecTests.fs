@@ -185,7 +185,7 @@ let public getParseTestData () =
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
 let ``spec tests parse result`` s =
-    let node, diagnostics = Parse.parseFile (Path.Join(specDir, s))
+    let node, diagnostics = LegacyParse.parseFile (Path.Join(specDir, s))
 
     let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
 

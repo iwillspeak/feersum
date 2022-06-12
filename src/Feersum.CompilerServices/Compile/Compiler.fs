@@ -1234,7 +1234,7 @@ module Compilation =
 
         let ast, diagnostics =
             let nodes, diagnostics =
-                List.map Parse.parseFile sources
+                List.map LegacyParse.parseFile sources
                 |> List.fold (fun (nodes, diags) (n, d) -> (List.append nodes [ n ], List.append d diags)) ([], [])
 
             { Location = TextLocation.Missing
