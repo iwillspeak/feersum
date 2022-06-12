@@ -14,7 +14,8 @@ module Parse =
     module ParseResult =
 
         /// Check a parse result for errors
-        let public hasErrors result = result.Errors <> []
+        let public hasErrors result =
+            result.Errors |> hasErrors
 
         /// Map the results of a parse
         let public map mapper result =
