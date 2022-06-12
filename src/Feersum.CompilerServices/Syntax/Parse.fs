@@ -35,6 +35,8 @@ module ParseNew =
 
         member private self.LookingAt(tokenKind: TokenKind) = self.CurrentKind = tokenKind
 
+        member private self.LookingAtAny(kinds: TokenKind list) = List.contains self.CurrentKind kinds
+
         member private self.Bump(kind: AstKind) =
             builder.Token(kind |> astToGreen, self.CurrentText)
             lexer.Bump()
@@ -66,6 +68,13 @@ module ParseNew =
 
             builder.FinishNode()
 
+        member private self.SkipAtmosphere() =
+            while self.LookingAtAny(
+                [ TokenKind.Whitespace
+                  TokenKind.Comment ]
+            ) do
+                self.Bump(AstKind.ATMOSPHERE)
+
         member private self.ParseIdentifier() =
             builder.StartNode(AstKind.SYMBOL |> astToGreen)
             self.Bump(AstKind.IDENTIFIER)
@@ -77,10 +86,12 @@ module ParseNew =
             | _ -> self.ParseConstant()
 
         member private self.ParseExpr() =
+            self.SkipAtmosphere()
+
             match self.CurrentKind with
             | _ -> self.ParseAtom()
 
-        member private self.Finalise(rootKind: AstKind) =
+        member private _.Finalise(rootKind: AstKind) =
             let root =
                 builder.BuildRoot(rootKind |> astToGreen)
                 |> SyntaxNode.CreateRoot
@@ -106,6 +117,9 @@ module ParseNew =
             self.Expect(TokenKind.EndOfFile, AstKind.EOF)
             self.Finalise(AstKind.EXPR_PROGRAM)
 
+    let readProgram name line =
+        let parser = Parser(Lexer(line, name))
+        parser.ParseProgram()
 
     let readExpr1 name line : ParseResult =
         let parser = Parser(Lexer(line, name))

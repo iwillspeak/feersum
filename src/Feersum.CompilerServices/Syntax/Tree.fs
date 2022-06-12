@@ -24,6 +24,7 @@ module TreeNew =
         | BOOLEAN = 104
         | CHARACTER = 105
         | IDENTIFIER = 106
+        | ATMOSPHERE = 107
 
     /// Type to represent parse results.
     type public ParseResult =
