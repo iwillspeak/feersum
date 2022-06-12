@@ -16,6 +16,17 @@
             "stopAtEntry": false
         },
         {
+          "name": "Feersum Parse REPL",
+          "type": "coreclr",
+          "request": "launch",
+          "preLaunchTask": "build",
+          "program": "${workspaceRoot}/src/Feersum/bin/Debug/net6.0/Feersum.dll",
+          "args": [ "parserepl" ],
+          "cwd": "${workspaceRoot}",
+          "console": "integratedTerminal",
+          "stopAtEntry": false
+      },
+      {
             "name": "Stage1 Core",
             "type": "coreclr",
             "request": "launch",
