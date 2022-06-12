@@ -16,6 +16,7 @@ module TreeNew =
         | PROGRAM = 2
         | CONSTANT = 3
         | SYMBOL = 4
+        | FORM = 5
 
         // tokens
         | EOF = 101
@@ -25,6 +26,8 @@ module TreeNew =
         | CHARACTER = 105
         | IDENTIFIER = 106
         | ATMOSPHERE = 107
+        | OPEN_PAREN = 108
+        | CLOSE_PAREN = 109
 
     /// Type to represent parse results.
     type public ParseResult =

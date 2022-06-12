@@ -1,6 +1,5 @@
 namespace Feersum.CompilerServices.Syntax
 
-open Firethorn
 open Firethorn.Green
 open Firethorn.Red
 open Feersum.CompilerServices.Diagnostics
@@ -85,10 +84,25 @@ module ParseNew =
             | TokenKind.Identifier -> self.ParseIdentifier()
             | _ -> self.ParseConstant()
 
+        member private self.ParseForm() =
+            builder.StartNode(AstKind.FORM |> astToGreen)
+            self.Expect(TokenKind.OpenBracket, AstKind.OPEN_PAREN)
+
+            while not
+                  <| self.LookingAtAny(
+                      [ TokenKind.EndOfFile
+                        TokenKind.CloseBracket ]
+                  ) do
+                self.ParseExpr()
+
+            self.Expect(TokenKind.CloseBracket, AstKind.CLOSE_PAREN)
+            builder.FinishNode()
+
         member private self.ParseExpr() =
             self.SkipAtmosphere()
 
             match self.CurrentKind with
+            | TokenKind.OpenBracket -> self.ParseForm()
             | _ -> self.ParseAtom()
 
         member private _.Finalise(rootKind: AstKind) =
