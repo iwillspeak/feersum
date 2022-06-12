@@ -17,6 +17,7 @@ module TreeNew =
         | CONSTANT = 3
         | SYMBOL = 4
         | FORM = 5
+        | QUOTED_DATUM = 6
 
         // tokens
         | EOF = 101
@@ -28,6 +29,7 @@ module TreeNew =
         | ATMOSPHERE = 107
         | OPEN_PAREN = 108
         | CLOSE_PAREN = 109
+        | QUOTE = 110
 
     /// Type to represent parse results.
     type public ParseResult =
