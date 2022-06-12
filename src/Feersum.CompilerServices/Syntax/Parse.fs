@@ -9,19 +9,17 @@ module Parse =
     open Tree
 
     /// Type to represent parse results.
-    type public ParseResult<'a> =
-        { Errors: Diagnostic list
-          Root: 'a }
+    type public ParseResult<'a> = { Errors: Diagnostic list; Root: 'a }
 
     module ParseResult =
 
         /// Check a parse result for errors
-        let public hasErrors result =
-            result.Errors <> []
+        let public hasErrors result = result.Errors <> []
 
         /// Map the results of a parse
         let public map mapper result =
-            { Errors = result.Errors; Root = result.Root |> mapper }
+            { Errors = result.Errors
+              Root = result.Root |> mapper }
 
     /// Parser Type
     ///
@@ -124,6 +122,7 @@ module Parse =
             match self.CurrentKind with
             | TokenKind.OpenBracket -> self.ParseForm()
             | _ -> self.ParseAtom()
+
             self.SkipAtmosphere()
 
         member private _.Finalise(rootKind: AstKind) =
@@ -158,6 +157,7 @@ module Parse =
 
     let readProgram name line =
         let parser = Parser(Lexer(line, name))
+
         parser.ParseProgram()
         |> ParseResult.map (fun x -> new Program(x))
 

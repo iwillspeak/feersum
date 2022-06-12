@@ -44,23 +44,21 @@ module Tree =
     [<AutoOpen>]
     module private Utils =
 
-        let tokenOfKind (kind: AstKind) (token: SyntaxToken) =
-            token.Kind = (kind |> astToGreen)
+        let tokenOfKind (kind: AstKind) (token: SyntaxToken) = token.Kind = (kind |> astToGreen)
 
     /// Form syntax wrapper
     type Form(red: SyntaxNode) =
         let red = red
 
         member public _.OpeningParen =
-            red.ChildrenWithTokens ()
+            red.ChildrenWithTokens()
             |> Seq.choose (NodeOrToken.asToken)
             |> Seq.tryFind (tokenOfKind AstKind.OPEN_PAREN)
 
-        member public _.Body =
-            red.Children ()
+        member public _.Body = red.Children()
 
         member public _.ClosingParen =
-            red.ChildrenWithTokens ()
+            red.ChildrenWithTokens()
             |> Seq.choose (NodeOrToken.asToken)
             |> Seq.tryFind (tokenOfKind AstKind.CLOSE_PAREN)
 
@@ -110,9 +108,9 @@ module Tree =
     module Expression =
         let tryCast (node: SyntaxNode) =
             match node.Kind |> greenToAst with
-            | AstKind.FORM -> Some(Expression.Form (new Form(node)))
-            | AstKind.SYMBOL -> Some(Expression.Symbol (new Symbol(node)))
-            | AstKind.CONSTANT -> Some(Expression.Constant (new Constant(node)))
+            | AstKind.FORM -> Some(Expression.Form(new Form(node)))
+            | AstKind.SYMBOL -> Some(Expression.Symbol(new Symbol(node)))
+            | AstKind.CONSTANT -> Some(Expression.Constant(new Constant(node)))
             | _ -> None
 
     type Program(red: SyntaxNode) =
@@ -120,9 +118,7 @@ module Tree =
 
         member _.Raw = red
 
-        member _.Body =
-            red.Children ()
-            |> Seq.choose (Expression.tryCast)
+        member _.Body = red.Children() |> Seq.choose (Expression.tryCast)
 
         static member TryCast(red: SyntaxNode) =
             if red.Kind = (AstKind.PROGRAM |> astToGreen) then
