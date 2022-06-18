@@ -1,15 +1,17 @@
 namespace Feersum.CompilerServices.Diagnostics
 
-open FParsec
 open System.IO
 
 /// A point in the source text
 type TextPoint =
+    // FIXME: this _should_ just be the offset into the file, with line and
+    // other information resolved later from a workspace or similar. We're stuck
+    // like this for the time being though becuase of FParsec.
     { Source: string
       Line: int64
       Col: int64 }
 
-    static member public FromExternal(position: Position) : TextPoint =
+    static member public FromExternal(position: FParsec.Position) : TextPoint =
         TextPoint.FromParts(position.StreamName, position.Line, position.Column)
 
     static member public FromParts(source: string, line: int64, col: int64) =
@@ -46,27 +48,33 @@ type TextLocation =
 type DiagnosticLevel =
     /// The diagnostic represents an error. Compilation should not continue.
     | Error
-    /// THe diagnostic represents a warning. Compilation may continue but the
+    /// The diagnostic represents a warning. Compilation may continue but the
     /// result may be unexpected or invalid.
     | Warning
 
+/// Kind for a diagnostic. This holds all the information for a diagnostic that
+/// is not related to the specific instance of that diagnostic. That is the
+/// level, code, etc.
+type DiagnosticKind =
+    { Level: DiagnosticLevel
+      Code: int
+      Title: string }
+
+    static member Create level code title =
+        { Level = level
+          Code = code
+          Title = title }
+
 /// Diagnostics indicate problems with our source code at a given position.
+[<RequireQualifiedAccess>]
 type Diagnostic =
-    { Location: TextLocation
-      Message: string
-      Level: DiagnosticLevel }
+    { Kind: DiagnosticKind
+      Location: TextLocation
+      Message: string }
 
     /// Create a new error diagnostic at the given `location`.`
-    static member Create location message =
-        Diagnostic.CreateWithKind DiagnosticLevel.Error location message
-
-    /// Create a new warning diagnostic at the given `location`.`
-    static member CreateWarning location message =
-        Diagnostic.CreateWithKind DiagnosticLevel.Warning location message
-
-    /// Create a new diagnostic with the given `kind` and `location`.
-    static member CreateWithKind kind location message =
-        { Level = kind
+    static member Create kind location message =
+        { Kind = kind
           Location = location
           Message = message }
 
@@ -79,8 +87,9 @@ type Diagnostic =
                 Path.Join(Directory.GetCurrentDirectory(), stream)
 
         match d.Location with
-        | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.Message
-        | Point p -> sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.Message
+        | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.FormattedMessage
+        | Point p ->
+            sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
         | Span (s, e) ->
             sprintf
                 "%s(%d,%d,%d,%d): %s: %s"
@@ -90,21 +99,24 @@ type Diagnostic =
                 e.Line
                 e.Col
                 d.MessagePrefix
-                d.Message
+                d.FormattedMessage
+
+    /// Formatted value for the message
+    member private d.FormattedMessage = sprintf "%s %s" d.Kind.Title d.Message
 
     /// Prefix for the message. Used to summarise the diagnostic kind.
     member private d.MessagePrefix =
-        // TODO: proper error codes here rather than hardocding it to SCM9999.
-        match d.Level with
-        | Warning -> "warning SCM9999"
-        | Error -> "error SCM9999"
+        match d.Kind.Level with
+        | Warning -> sprintf "warning SCM%04u" d.Kind.Code
+        | Error -> sprintf "error SCM%04u" d.Kind.Code
 
 /// A collection of diagnostics being built by a compiler phase.
 type DiagnosticBag =
     { mutable Diagnostics: Diagnostic list }
 
     /// Buffer a diagnostic into the bag.
-    member b.Emit pos message = Diagnostic.Create pos message |> b.Add
+    member b.Emit kind pos message =
+        Diagnostic.Create kind pos message |> b.Add
 
     /// Add a diagnostic to the bag.
     member b.Add diag = b.Diagnostics <- diag :: b.Diagnostics
@@ -126,7 +138,7 @@ module Diagnostics =
     /// Returns true if the diagnostic should be considered an error
     let public isError =
         function
-        | { Level = Error } -> true
+        | { Diagnostic.Kind = { Level = Error } } -> true
         | _ -> false
 
     /// Test if a given diagnostics collection contains any errors.

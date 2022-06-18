@@ -67,14 +67,14 @@ module Tree =
 
     [<AbstractClass>]
     type AstNode(red: SyntaxNode) =
-        
+
         inherit AstItem(red |> Node)
 
         member public _.RawNode = red
 
     [<AbstractClass>]
     type AstToken(red: SyntaxToken) =
-        
+
         inherit AstItem(red |> Token)
 
         member public _.RawToken = red

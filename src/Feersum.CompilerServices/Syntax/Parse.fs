@@ -6,12 +6,18 @@ open Firethorn.Green
 open Firethorn.Red
 open Feersum.CompilerServices.Diagnostics
 
+module private Diagnostics =
+
+    let parseError = DiagnosticKind.Create DiagnosticLevel.Error 10 "Parse error"
+
 module Parse =
 
     open Tree
 
     /// Type to represent parse results.
-    type public ParseResult<'a> = { Diagnostics: Diagnostic list; Root: 'a }
+    type public ParseResult<'a> =
+        { Diagnostics: Diagnostic list
+          Root: 'a }
 
     module ParseResult =
 
@@ -24,7 +30,9 @@ module Parse =
               Root = result.Root |> mapper }
 
     /// Type to represent different kinds of programs we can read
-    type public ReadMode = Program | Script
+    type public ReadMode =
+        | Program
+        | Script
 
     /// Parser Type
     ///
@@ -48,7 +56,9 @@ module Parse =
         member private _.CurrentText = lexer.Current |> getText
 
         member private _.ErrAtPoint(message: string) =
-            errors <- Diagnostic.Create lexer.Position message :: errors
+            errors <-
+                Diagnostic.Create Diagnostics.parseError lexer.Position message
+                :: errors
 
         member private self.LookingAt(tokenKind: TokenKind) = self.CurrentKind = tokenKind
 
@@ -162,6 +172,7 @@ module Parse =
 
     let readRaw mode name line =
         let parser = Parser(Lexer(line, name))
+
         match mode with
         | Program -> parser.ParseProgram()
         | Script -> parser.ParseExpression()

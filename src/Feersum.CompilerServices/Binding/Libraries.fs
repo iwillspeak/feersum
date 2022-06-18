@@ -4,6 +4,16 @@ open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Utils
 
+module private LibraryDiagnostics =
+
+    let improperLibraryName = DiagnosticKind.Create Warning 20 "Improper library name"
+
+    let invalidLibraryName =
+        DiagnosticKind.Create DiagnosticLevel.Error 21 "Invalid library name"
+
+    let malformedLibraryDecl =
+        DiagnosticKind.Create DiagnosticLevel.Error 22 "Malformed library declaration"
+
 /// The rename of a single element exported or imported from a library
 type SymbolRename = { From: string; To: string }
 
@@ -73,25 +83,26 @@ module private Utils =
             | AstNodeKind.Ident (namePart) ->
                 if Seq.exists (isInvalidChar) (namePart.ToCharArray()) then
                     "Library names should not contain complex characters"
-                    |> Diagnostic.CreateWarning element.Location
+                    |> Diagnostic.Create LibraryDiagnostics.improperLibraryName element.Location
                     |> diags.Add
 
                 Ok(namePart)
             | _ ->
-                diags.Emit element.Location "Invalid library name part"
+                diags.Emit LibraryDiagnostics.invalidLibraryName element.Location "Invalid library name part"
                 Result.Error(())
 
         match name.Kind with
         | AstNodeKind.Form x -> x |> List.map (parseNameElement) |> Result.collect
         | _ ->
-            diags.Emit name.Location "Expected library name"
+            diags.Emit LibraryDiagnostics.invalidLibraryName name.Location "Expected library name"
             Result.Error(())
 
     /// Try and parse a node as an identifier
     let parseIdentifier =
         function
         | { Kind = AstNodeKind.Ident (id) } -> Ok(id)
-        | node -> Result.Error(Diagnostic.Create node.Location "Expected identifier")
+        | node ->
+            Result.Error(Diagnostic.Create LibraryDiagnostics.invalidLibraryName node.Location "Expected identifier")
 
     /// Parse a list of identifiers into a list of strings
     let parseIdentifierList idents =
@@ -105,7 +116,7 @@ module private Utils =
         | AstNodeKind.Form ({ Kind = AstNodeKind.Ident (special) } :: body) ->
             parseLibraryDeclarationForm diags declaration.Location special body
         | _ ->
-            diags.Emit declaration.Location "Expected library declaration"
+            diags.Emit LibraryDiagnostics.malformedLibraryDecl declaration.Location "Expected library declaration"
             LibraryDeclaration.Error
 
     and parseLibraryDeclarationForm diags position special body =
@@ -121,7 +132,7 @@ module private Utils =
         | "begin" -> LibraryDeclaration.Begin body
         | s ->
             sprintf "Unrecognised library declaration %s" s
-            |> diags.Emit position
+            |> diags.Emit LibraryDiagnostics.malformedLibraryDecl position
 
             LibraryDeclaration.Error
 
@@ -137,10 +148,10 @@ module private Utils =
             match rename |> tryParseRename with
             | Ok renamed -> Some(ExportSet.Renamed renamed)
             | Result.Error e ->
-                diags.Emit export.Location e
+                diags.Emit LibraryDiagnostics.malformedLibraryDecl export.Location e
                 None
         | _ ->
-            diags.Emit export.Location "Invalid export element"
+            diags.Emit LibraryDiagnostics.malformedLibraryDecl export.Location "Invalid export element"
             None
 
     and parseImportDeclaration diags import =
@@ -162,8 +173,11 @@ module private Utils =
                     match node with
                     | { Kind = AstNodeKind.Form (f) } ->
                         tryParseRename (f)
-                        |> Result.mapError (Diagnostic.Create node.Location)
-                    | _ -> Result.Error(Diagnostic.Create node.Location "Expected rename")
+                        |> Result.mapError (Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl node.Location)
+                    | _ ->
+                        Result.Error(
+                            Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl node.Location "Expected rename"
+                        )
 
                 renames |> List.map parseRename |> Result.collect
 
@@ -242,7 +256,7 @@ module Libraries =
                 if start = "scheme" || start = "srfi" then
                     start
                     |> sprintf "The name prefix %s is reserved"
-                    |> Diagnostic.CreateWarning name.Location
+                    |> Diagnostic.Create LibraryDiagnostics.improperLibraryName name.Location
                     |> diags.Add
 
                 start :: rest
