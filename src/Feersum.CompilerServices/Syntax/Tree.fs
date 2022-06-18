@@ -33,7 +33,7 @@ module Tree =
     /// Convert an AST Kind to a raw `SyntaxKind`
     let astToGreen (kind: AstKind) = SyntaxKind(int kind)
 
-    /// Convert a raw kind back to a syntax kind
+    /// Convert a raw kind back to an `AstKind`
     let greenToAst =
         function
         | SyntaxKind kind -> enum<AstKind> kind
@@ -44,11 +44,27 @@ module Tree =
     [<AutoOpen>]
     module private Utils =
 
+        /// Predicate funtion to filter tokesn by AST Kind 
         let tokenOfKind (kind: AstKind) (token: SyntaxToken) = token.Kind = (kind |> astToGreen)
+
+    /// Root type in the AST Tree. All node types should inherit from this
+    /// either directly or indeirectly .
+    [<AbstractClass>]
+    type AstItem(red: NodeOrToken<SyntaxNode, SyntaxToken>) =
+
+        /// Get the Syntax range of the item
+        member public _.SyntaxRange =
+            red
+            |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
+
+        override _.ToString() =
+            red
+            |> NodeOrToken.consolidate (fun n -> n.ToString()) (fun t -> t.ToString())
 
     /// Form syntax wrapper
     type Form(red: SyntaxNode) =
-        let red = red
+
+        inherit AstItem(red |> Node)
 
         member public _.OpeningParen =
             red.ChildrenWithTokens()
@@ -68,8 +84,10 @@ module Tree =
             else
                 None
 
+    /// Number node in the syntax tree.
     type Number(red: SyntaxToken) =
-        let red = red
+
+        inherit AstItem(red |> Token)
 
         static member TryCast(red: SyntaxToken) : Option<Number> =
             if red.Kind = (AstKind.NUMBER |> astToGreen) then
@@ -83,7 +101,8 @@ module Tree =
             | _ -> 0.0
 
     type Symbol(red: SyntaxNode) =
-        let red = red
+
+        inherit AstItem(red |> Node)
 
         static member TryCast(red: SyntaxNode) =
             if (red.Kind = (AstKind.SYMBOL |> astToGreen)) then
@@ -91,8 +110,20 @@ module Tree =
             else
                 None
 
+    type ConstantValue =
+        | Number of Number
+        | Error
+
     type Constant(red: SyntaxNode) =
-        let red = red
+
+        inherit AstItem(red |> Node)
+
+        member public _.Value = 
+            red.ChildrenWithTokens()
+            |> Seq.choose (NodeOrToken.asToken)
+            |> Seq.tryExactlyOne
+            |> Option.bind (Number.TryCast)
+            |> Option.map (ConstantValue.Number)
 
         static member TryCast(red: SyntaxNode) =
             if red.Kind = (AstKind.CONSTANT |> astToGreen) then
@@ -113,6 +144,8 @@ module Tree =
             | AstKind.CONSTANT -> Some(Expression.Constant(new Constant(node)))
             | _ -> None
 
+    /// Wrapper type to represent an entire parsed program. This represents the
+    /// contents of a single compilation unit.
     type Program(red: SyntaxNode) =
         let red = red
 
