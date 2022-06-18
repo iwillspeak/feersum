@@ -6,12 +6,12 @@ open Feersum.CompilerServices.Syntax.Tree
 open Firethorn.Red
 
 let readSingle line =
-    let result = Parse.readExpr1 "repl" line
+    let result = Parse.readRaw Parse.ReadMode.Script "repl" line
 
-    if result.Errors |> List.isEmpty then
-        result.Root.Children() |> Seq.exactlyOne
+    if result.Diagnostics |> List.isEmpty then
+        result.Root.Children () |> Seq.exactlyOne
     else
-        failwithf "Expected single expression but got: %A" result.Errors
+        failwithf "Expected single expression but got: %A" result.Diagnostics
 
 let getKind (node: SyntaxNode) = node.Kind |> greenToAst
 
@@ -223,8 +223,8 @@ let ``identifier literals`` raw (cooked: string) =
 // let ``parse hex characters`` hex char =
 //     Assert.Equal(Character char |> Constant, readSingle hex)
 
-// [<Fact>]
-// let ``multiple diagnostics on error`` () =
-//     let source = "(- 1 § (display \"foo\")"
-//     let (parsed, diagnostics) = readExpr source
-//     Assert.True(List.length diagnostics > 1)
+[<Fact>]
+let ``multiple diagnostics on error`` () =
+    let source = "(- 1 § (display \"foo\")"
+    let result =  Parse.readExpr source
+    Assert.True(List.length result.Diagnostics > 1)

@@ -12,11 +12,11 @@ let private read () =
 
 let private print (result: ParseResult<Program>) =
     if ParseResult.hasErrors result then
-        dumpDiagnostics result.Errors
+        dumpDiagnostics result.Diagnostics
 
-    Tree.dump result.Root.Raw
+    Tree.dump result.Root.RawNode
 
-let rec parserReplImpl () =
+let rec private parserReplImpl () =
     read () |> print
     parserReplImpl ()
 

@@ -1,5 +1,7 @@
 namespace Feersum.CompilerServices.Syntax
 
+open System.IO
+
 open Firethorn.Green
 open Firethorn.Red
 open Feersum.CompilerServices.Diagnostics
@@ -9,17 +11,20 @@ module Parse =
     open Tree
 
     /// Type to represent parse results.
-    type public ParseResult<'a> = { Errors: Diagnostic list; Root: 'a }
+    type public ParseResult<'a> = { Diagnostics: Diagnostic list; Root: 'a }
 
     module ParseResult =
 
         /// Check a parse result for errors
-        let public hasErrors result = result.Errors |> hasErrors
+        let public hasErrors result = result.Diagnostics |> hasErrors
 
         /// Map the results of a parse
         let public map mapper result =
-            { Errors = result.Errors
+            { Diagnostics = result.Diagnostics
               Root = result.Root |> mapper }
+
+    /// Type to represent different kinds of programs we can read
+    type public ReadMode = Program | Script
 
     /// Parser Type
     ///
@@ -130,7 +135,7 @@ module Parse =
                 builder.BuildRoot(rootKind |> astToGreen)
                 |> SyntaxNode.CreateRoot
 
-            { Errors = errors; Root = root }
+            { Diagnostics = errors; Root = root }
 
         /// Parse Program
         ///
@@ -155,12 +160,27 @@ module Parse =
             self.Expect(TokenKind.EndOfFile, AstKind.EOF)
             self.Finalise(AstKind.EXPR_PROGRAM)
 
-    let readProgram name line =
+    let readRaw mode name line =
         let parser = Parser(Lexer(line, name))
+        match mode with
+        | Program -> parser.ParseProgram()
+        | Script -> parser.ParseExpression()
 
-        parser.ParseProgram()
+    let readProgram name line =
+        readRaw Program name line
         |> ParseResult.map (fun x -> new Program(x))
 
-    let readExpr1 name line : ParseResult<SyntaxNode> =
-        let parser = Parser(Lexer(line, name))
-        parser.ParseExpression()
+    /// Read a single expression from the named input text
+    let readExpr1 name line =
+        readRaw Script name line
+        |> ParseResult.map (fun x -> new ScriptProgram(x))
+
+    /// Read a single expression from the input text
+    let readExpr = readExpr1 "repl"
+
+    /// Read an expression from source code on disk
+    let parseFile path =
+        async {
+            let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
+            return readProgram path text
+        }

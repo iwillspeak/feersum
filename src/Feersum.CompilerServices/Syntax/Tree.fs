@@ -44,7 +44,7 @@ module Tree =
     [<AutoOpen>]
     module private Utils =
 
-        /// Predicate funtion to filter tokesn by AST Kind 
+        /// Predicate funtion to filter tokesn by AST Kind
         let tokenOfKind (kind: AstKind) (token: SyntaxToken) = token.Kind = (kind |> astToGreen)
 
     /// Root type in the AST Tree. All node types should inherit from this
@@ -57,14 +57,32 @@ module Tree =
             red
             |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
 
+        member _.Text =
+            red
+            |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
+
         override _.ToString() =
             red
             |> NodeOrToken.consolidate (fun n -> n.ToString()) (fun t -> t.ToString())
 
+    [<AbstractClass>]
+    type AstNode(red: SyntaxNode) =
+        
+        inherit AstItem(red |> Node)
+
+        member public _.RawNode = red
+
+    [<AbstractClass>]
+    type AstToken(red: SyntaxToken) =
+        
+        inherit AstItem(red |> Token)
+
+        member public _.RawToken = red
+
     /// Form syntax wrapper
     type Form(red: SyntaxNode) =
 
-        inherit AstItem(red |> Node)
+        inherit AstNode(red)
 
         member public _.OpeningParen =
             red.ChildrenWithTokens()
@@ -87,7 +105,7 @@ module Tree =
     /// Number node in the syntax tree.
     type Number(red: SyntaxToken) =
 
-        inherit AstItem(red |> Token)
+        inherit AstToken(red)
 
         static member TryCast(red: SyntaxToken) : Option<Number> =
             if red.Kind = (AstKind.NUMBER |> astToGreen) then
@@ -102,7 +120,7 @@ module Tree =
 
     type Symbol(red: SyntaxNode) =
 
-        inherit AstItem(red |> Node)
+        inherit AstNode(red)
 
         static member TryCast(red: SyntaxNode) =
             if (red.Kind = (AstKind.SYMBOL |> astToGreen)) then
@@ -116,9 +134,9 @@ module Tree =
 
     type Constant(red: SyntaxNode) =
 
-        inherit AstItem(red |> Node)
+        inherit AstNode(red)
 
-        member public _.Value = 
+        member public _.Value =
             red.ChildrenWithTokens()
             |> Seq.choose (NodeOrToken.asToken)
             |> Seq.tryExactlyOne
@@ -144,12 +162,21 @@ module Tree =
             | AstKind.CONSTANT -> Some(Expression.Constant(new Constant(node)))
             | _ -> None
 
+    /// Root AST type for script expressions.
+    type ScriptProgram(red: SyntaxNode) =
+
+        inherit AstNode(red)
+
+        member _.Body =
+            red.Children()
+            |> Seq.choose (Expression.tryCast)
+            |> Seq.tryExactlyOne
+
     /// Wrapper type to represent an entire parsed program. This represents the
     /// contents of a single compilation unit.
     type Program(red: SyntaxNode) =
-        let red = red
 
-        member _.Raw = red
+        inherit AstNode(red)
 
         member _.Body = red.Children() |> Seq.choose (Expression.tryCast)
 
