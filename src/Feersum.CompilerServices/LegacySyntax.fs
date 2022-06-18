@@ -30,11 +30,18 @@ type AstNode =
     { Kind: AstNodeKind<AstNode>
       Location: TextLocation }
 
-/// The parser state. Used to collect diagnostics
+module private LegacySyntaxDiagnostics =
+
+    let parseError = DiagnosticKind.Create DiagnosticLevel.Error 1 "Parse error"
+
+    let fparsecFailure = DiagnosticKind.Create DiagnosticLevel.Error 2 "FParsec failure"
+
+/// The parser state. Used to collect
 type State =
     { Diagnostics: DiagnosticBag }
+
     member s.Emit pos message =
-        s.Diagnostics.Emit (TextLocation.Point(pos)) message
+        s.Diagnostics.Emit LegacySyntaxDiagnostics.parseError (TextLocation.Point(pos)) message
 
     static member Empty = { Diagnostics = DiagnosticBag.Empty }
 
@@ -232,9 +239,10 @@ module LegacyParse =
         function
         | Success (node, s, _) -> (node, s.Diagnostics.Take)
         | Failure (mess, err, s) ->
-            s.Diagnostics.Emit (Point(TextPoint.FromExternal(err.Position))) mess
+            s.Diagnostics.Emit LegacySyntaxDiagnostics.fparsecFailure (Point(TextPoint.FromExternal(err.Position))) mess
 
             s.Diagnostics.Emit
+                LegacySyntaxDiagnostics.fparsecFailure
                 (Point(TextPoint.FromExternal(err.Position)))
                 "The parser encountered an error that could not be recovered from."
 

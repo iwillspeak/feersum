@@ -6,6 +6,14 @@ open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Utils
 
+module private Diagnostics =
+
+    // TODO: remove this and replace with better binder errors
+    let bindError = DiagnosticKind.Create DiagnosticLevel.Error 30 "Generic bind error"
+
+    let missingExport =
+        DiagnosticKind.Create DiagnosticLevel.Warning 31 "Missing export"
+
 /// Global binding Type
 ///
 /// For code we generate globals are stored in static fields. For some imported
@@ -244,19 +252,19 @@ module private Impl =
 
             if seenDot then
                 if afterDot.IsSome then
-                    ctx.Diagnostics.Emit formal.Location "Only expect single ID after dot"
+                    ctx.Diagnostics.Emit Diagnostics.bindError formal.Location "Only expect single ID after dot"
 
                 match formal.Kind with
                 | AstNodeKind.Ident (id) -> (formals, true, Some(id))
                 | _ ->
-                    ctx.Diagnostics.Emit formal.Location "Expected ID after dot"
+                    ctx.Diagnostics.Emit Diagnostics.bindError formal.Location "Expected ID after dot"
                     acc
             else
                 match formal.Kind with
                 | AstNodeKind.Dot -> (formals, true, None)
                 | AstNodeKind.Ident (id) -> (id :: formals, false, None)
                 | _ ->
-                    ctx.Diagnostics.Emit formal.Location "Expected ID or dot in formals"
+                    ctx.Diagnostics.Emit Diagnostics.bindError formal.Location "Expected ID or dot in formals"
                     acc
 
         let (fmls, sawDot, dotted) = List.fold f ([], false, None) formals
@@ -266,7 +274,7 @@ module private Impl =
             match dotted with
             | Some (d) -> BoundFormals.DottedList(fmls, d)
             | None ->
-                ctx.Diagnostics.Emit (List.last formals).Location "Saw dot but no ID in formals"
+                ctx.Diagnostics.Emit Diagnostics.bindError (List.last formals).Location "Saw dot but no ID in formals"
                 BoundFormals.List(fmls)
         else
             BoundFormals.List(fmls)
@@ -284,7 +292,7 @@ module private Impl =
         | AstNodeKind.Form (formals) -> bindFormalsList ctx formals
         | _ ->
             "Unrecognised formal parameter list. Must be an ID or list pattern"
-            |> ctx.Diagnostics.Emit formals.Location
+            |> ctx.Diagnostics.Emit Diagnostics.bindError formals.Location
 
             BoundFormals.List([])
 
@@ -298,23 +306,23 @@ module private Impl =
                 match binding with
                 | [ { Kind = AstNodeKind.Ident id }; body ] -> (id, body) :: bindings
                 | _ ->
-                    ctx.Diagnostics.Emit decl.Location "Invalid binding form"
+                    ctx.Diagnostics.Emit Diagnostics.bindError decl.Location "Invalid binding form"
                     bindings
             | _ ->
-                ctx.Diagnostics.Emit decl.Location "Expeted a binding form"
+                ctx.Diagnostics.Emit Diagnostics.bindError decl.Location "Expeted a binding form"
                 bindings
 
         match node with
         | { Kind = AstNodeKind.Form (decls) } -> List.foldBack (parseBindingSpec) decls []
         | _ ->
-            ctx.Diagnostics.Emit node.Location "Expected binding list"
+            ctx.Diagnostics.Emit Diagnostics.bindError node.Location "Expected binding list"
             []
 
     /// Emit a diagnostic for an ill-formed special form
     let private illFormedInCtx ctx location formName =
         formName
         |> sprintf "Ill-formed '%s' special form"
-        |> ctx.Diagnostics.Emit location
+        |> ctx.Diagnostics.Emit Diagnostics.bindError location
 
         BoundExpr.Error
 
@@ -330,7 +338,7 @@ module private Impl =
         | AstNodeKind.Vector v -> BoundExpr.Literal(BoundLiteral.Vector v)
         | AstNodeKind.ByteVector bv -> BoundExpr.Literal(BoundLiteral.ByteVector bv)
         | AstNodeKind.Dot ->
-            ctx.Diagnostics.Emit node.Location "Unexpected dot"
+            ctx.Diagnostics.Emit Diagnostics.bindError node.Location "Unexpected dot"
             BoundExpr.Error
         | AstNodeKind.Seq s -> bindSequence ctx s
         | AstNodeKind.Form f -> bindForm ctx f node
@@ -339,7 +347,7 @@ module private Impl =
             | Some s -> BoundExpr.Load(s)
             | None ->
                 sprintf "reference to undefined symbol %s" id
-                |> ctx.Diagnostics.Emit node.Location
+                |> ctx.Diagnostics.Emit Diagnostics.bindError node.Location
 
                 BoundExpr.Error
         | AstNodeKind.Quoted q -> bindQuoted ctx q
@@ -419,7 +427,7 @@ module private Impl =
                     |> List.choose (
                         Libraries.resolveImport ctx.Libraries
                         >> Result.map (BinderCtx.importLibrary libCtx >> BoundExpr.Import)
-                        >> Result.mapError (libCtx.Diagnostics.Emit location)
+                        >> Result.mapError (libCtx.Diagnostics.Emit Diagnostics.bindError location)
                         >> Option.ofResult
                     )
                     |> BoundExpr.Seq
@@ -440,7 +448,7 @@ module private Impl =
             | Some (x) -> Some((extId, x))
             | _ ->
                 sprintf "Could not find exported item %s" id
-                |> Diagnostic.CreateWarning location
+                |> Diagnostic.Create Diagnostics.missingExport location
                 |> libCtx.Diagnostics.Add
 
                 None
@@ -579,7 +587,7 @@ module private Impl =
 
                         name
                         |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
-                        |> ctx.Diagnostics.Emit location)
+                        |> ctx.Diagnostics.Emit Diagnostics.bindError location)
 
                 let isLetrecStar = head.Kind = AstNodeKind.Ident("letrec*")
 
@@ -617,7 +625,7 @@ module private Impl =
                 | Some s -> BoundExpr.Store(s, Some(value))
                 | None ->
                     sprintf "Attempt to set `%s` that was not yet defined" id
-                    |> ctx.Diagnostics.Emit l
+                    |> ctx.Diagnostics.Emit Diagnostics.bindError l
 
                     BoundExpr.Error
             | _ -> illFormed "set!"
@@ -652,7 +660,7 @@ module private Impl =
             |> List.map (fun item ->
                 Libraries.parseImport ctx.Diagnostics item
                 |> Libraries.resolveImport ctx.Libraries
-                |> Result.mapError (ctx.Diagnostics.Emit item.Location)
+                |> Result.mapError (ctx.Diagnostics.Emit Diagnostics.bindError item.Location)
                 |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
                 |> Result.okOr BoundExpr.Error)
             |> BoundExpr.Seq

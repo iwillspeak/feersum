@@ -68,9 +68,13 @@ type MacroBindings =
 
 module Macros =
 
+    let private macroExpansionError =
+        DiagnosticKind.Create DiagnosticLevel.Error 40 "Macro expansion error"
+
     /// Create an error result with a diagnostic at `location`
     let private errAt location message =
-        Diagnostic.Create location message |> Result.Error
+        Diagnostic.Create macroExpansionError location message
+        |> Result.Error
 
     /// Parse a (a ... . b) or (a ...) form. This is used to parse both patterns and
     /// templates for transformers.
@@ -267,7 +271,7 @@ module Macros =
             | [] -> Result.Error "No pattern matched the syntax"
 
         macroTryApply macro.Transformers
-        |> Result.mapError (Diagnostic.Create syntax.Location)
+        |> Result.mapError (Diagnostic.Create macroExpansionError syntax.Location)
 
     /// Try to parse a pattern from the given syntax.
     let rec public parsePattern elipsis literals syntax =

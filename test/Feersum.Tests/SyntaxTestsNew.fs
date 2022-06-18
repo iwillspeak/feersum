@@ -9,7 +9,7 @@ let readSingle line =
     let result = Parse.readRaw Parse.ReadMode.Script "repl" line
 
     if result.Diagnostics |> List.isEmpty then
-        result.Root.Children () |> Seq.exactlyOne
+        result.Root.Children() |> Seq.exactlyOne
     else
         failwithf "Expected single expression but got: %A" result.Diagnostics
 
@@ -226,5 +226,5 @@ let ``identifier literals`` raw (cooked: string) =
 [<Fact>]
 let ``multiple diagnostics on error`` () =
     let source = "(- 1 § (display \"foo\")"
-    let result =  Parse.readExpr source
+    let result = Parse.readExpr source
     Assert.True(List.length result.Diagnostics > 1)
