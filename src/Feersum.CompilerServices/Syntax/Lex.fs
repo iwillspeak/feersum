@@ -126,8 +126,10 @@ let public tokenise input name =
             | PerculiarIdentifierSeenSign
             | Identifier -> TokenKind.Identifier
             | PerculiarIdentifierSeenDot ->
-                // Slices in F# are _inclusive_ this is effectively checking if
-                // the identifier is ony a single `.` character.
+                // If we are in a 'perculiar identifier' just having seen a dot
+                // then we _may_ be parsing `+.`, `-.`, or `.`. Only `.` is not
+                // actually an identifier. Handle that case here rather than
+                // having two separate states for dot after sign and plain dot.
                 if lexeme = "." then
                     TokenKind.Dot
                 else
@@ -230,6 +232,8 @@ let public tokenise input name =
                 ->
                 Some(LexState.Identifier)
             | '.' -> Some(LexState.PerculiarIdentifierSeenDot)
+            | c when Char.IsDigit(c) ->
+                Some(LexState.Number)
             | _ -> None
         | PerculiarIdentifierSeenDot ->
             match c with
@@ -240,6 +244,8 @@ let public tokenise input name =
                 || Set.contains c signSubseqent
                 ->
                 Some(LexState.Identifier)
+            | c when Char.IsDigit(c) ->
+                Some(LexState.NumberSuffix)
             | _ -> None
         | Number ->
             if Char.IsDigit(c) then

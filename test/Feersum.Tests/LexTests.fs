@@ -87,6 +87,15 @@ let ``Empty input text always returns end of file`` () =
 [<InlineData("#f", TokenKind.Boolean)>]
 [<InlineData("#true", TokenKind.Boolean)>]
 [<InlineData("#false", TokenKind.Boolean)>]
+[<InlineData(".100", TokenKind.Number)>]
+[<InlineData("+.345", TokenKind.Number)>]
+[<InlineData("-.67", TokenKind.Number)>]
+[<InlineData("+89", TokenKind.Number)>]
+[<InlineData("-100", TokenKind.Number)>]
+[<InlineData("+89.0", TokenKind.Number)>]
+[<InlineData("-100.", TokenKind.Number)>]
+[<InlineData("-..10", TokenKind.Identifier)>]
+[<InlineData("+-.0", TokenKind.Identifier)>]
 let ``Lexer lex single token`` (token, kind) =
     let tokens = Lex.tokenise token "test.scm"
 
