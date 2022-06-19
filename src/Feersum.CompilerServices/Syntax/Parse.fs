@@ -1,239 +1,271 @@
-namespace Feersum.CompilerServices.Syntax
+module Feersum.CompilerServices.Syntax.Parse
 
 open System.IO
 
 open Firethorn.Green
 open Firethorn.Red
+
+open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Diagnostics
+
+open Lex
+open Tree
 
 module private ParserDiagnostics =
 
     let parseError = DiagnosticKind.Create DiagnosticLevel.Error 10 "Parse error"
 
-module Parse =
+/// Type to represent parse results.
+///
+/// Parser results represent the result of a parser operation. A result
+/// always contains some syntax item `Root`, along with a list of
+/// `Diagnostics`.
+///
+/// Parser results can be transformed and consumed with `ParseResult.map`,
+/// `ParseResult.toResult`.
+type public ParseResult<'a> =
+    { Diagnostics: Diagnostic list
+      Root: 'a }
 
-    open Tree
-    open Lex
+module ParseResult =
 
-    /// Type to represent parse results.
+    /// Check a parse result for errors
+    let public hasErrors result = result.Diagnostics |> hasErrors
+
+    /// Map the results of a parse
     ///
-    /// Parser results represent the result of a parser operation. A result
-    /// always contains some syntax item `Root`, along with a list of
-    /// `Diagnostics`.
+    /// Allows the result of a parse to be functionally transformed without
+    /// affecting the buffered diagnostics. This is used by the 'typed parse'
+    /// APIs to convert untyped syntax trees into their typed wrappers.
+    let public map mapper result =
+        { Diagnostics = result.Diagnostics
+          Root = result.Root |> mapper }
+
+    /// Convert a parser response into a plain result type
     ///
-    /// Parser results can be transformed and consumed with `ParseResult.map`,
-    /// `ParseResult.toResult`.
-    type public ParseResult<'a> =
-        { Diagnostics: Diagnostic list
-          Root: 'a }
+    /// This drops any tree from the error, but opens up parser responses to
+    /// being processed using standard error handling
+    let public toResult response =
+        match response.Diagnostics with
+        | [] -> response.Root |> Ok
+        | errs -> errs |> Result.Error
 
-    module ParseResult =
+/// Parser Type
+///
+/// Type to hold state when parsing. This is not intended to be used
+/// directly. The main parser API is via the `read*` functions.
+type private ParserState =
+    { Tokens: LexicalToken list
+      Diagnostics: Diagnostic list }
 
-        /// Check a parse result for errors
-        let public hasErrors result = result.Diagnostics |> hasErrors
+module private ParserState =
 
-        /// Map the results of a parse
-        ///
-        /// Allows the result of a parse to be functionally transformed without
-        /// affecting the buffered diagnostics. This is used by the 'typed parse'
-        /// APIs to convert untyped syntax trees into their typed wrappers.
-        let public map mapper result =
-            { Diagnostics = result.Diagnostics
-              Root = result.Root |> mapper }
+    /// Create a new parser state from the given sequence of tokens
+    let fromTokens tokens =
+        { Tokens = List.ofSeq tokens
+          Diagnostics = [] }
 
-        /// Convert a parser response into a plain result type
-        ///
-        /// This drops any tree from the error, but opens up parser responses to
-        /// being processed using standard error handling
-        let public toResult response =
-            match response.Diagnostics with
-            | [] -> response.Root |> Ok
-            | errs -> errs |> Result.Error
+    /// Bump the token enumerator, returning the current token and new state.
+    let bump state =
+        match state.Tokens with
+        | [] -> ice "Parser bumped with no remaining tokens"
+        | head :: rest -> head, { state with Tokens = rest }
 
-    // /// Parser Type
-    // ///
-    // /// Type to hold state when parsing. This is not intended to be used
-    // /// directly. The main parser API is via the `read*` functions.
-    // type private ParserState =
-    //     { Tokens:  }
+    /// Buffer a raw diagnostic at this position
+    let bufferDiagnosticRaw state diagnostic =
+        { state with ParserState.Diagnostics = (diagnostic :: state.Diagnostics) }
 
-    /// Type to represent different kinds of programs we can read
-    type public ReadMode =
-        | Program
-        | Script
+    /// Buffer a diagnostic at the current token in the parser state.
+    let bufferDiagnostic state diagKind message =
+        let pos =
+            match List.tryHead state.Tokens with
+            | Some token -> token.Location
+            | _ -> Missing
 
-    /// Parser Type
-    ///
-    /// Class type to hold state when parsing. This is not intended to be used
-    /// directly. The main parser API is via the `read*` functions.
-    type private Parser(tokens: LexicalToken seq) =
+        Diagnostic.Create diagKind pos message
+        |> bufferDiagnosticRaw state
 
-        let mutable tokens = tokens |> List.ofSeq
+    /// Finalise the parse state
+    let finalise (builder: GreenNodeBuilder) rootKind state =
+        let root =
+            builder.BuildRoot(rootKind |> Tree.astToGreen)
+            |> SyntaxNode.CreateRoot
 
-        let builder = GreenNodeBuilder()
-        let mutable errors = []
+        { Diagnostics = state.Diagnostics
+          Root = root }
 
-        let getText token =
-            let (_, text) = token
-            text
 
-        let getKind token =
-            let (kind, _) = token
-            kind
+/// Type to represent different kinds of programs we can read
+type public ReadMode =
+    | Program
+    | Script
 
-        member private _.Current =
-            match List.tryHead tokens with
-            | Some head -> head
-            | None ->
-                { Kind = TokenKind.EndOfFile
-                  Lexeme = ""
-                  Location = Missing }
+// =========================== Parser Utilities ===============================
 
-        member private self.CurrentKind = self.Current.Kind
+/// Get the kind of the current token. If no more tokens remain then EOF is
+/// returned instead.
+let private currentKind state =
+    match List.tryHead state.Tokens with
+    | Some token -> token.Kind
+    | _ -> TokenKind.EndOfFile
 
-        member private self.CurrentText = self.Current.Lexeme
+/// Check if the parser state is currently at a token of the given `kind`.
+let private lookingAt kind state = currentKind state = kind
 
-        member private self.ErrAtPoint(message: string) =
-            errors <-
-                Diagnostic.Create ParserDiagnostics.parseError self.Current.Location message
-                :: errors
+/// Check if the parser state is currently at a token with any of `kinds`
+let private lookingAtAny kinds state = List.contains (currentKind state) kinds
 
-        member private self.LookingAt(tokenKind: TokenKind) = self.CurrentKind = tokenKind
+/// Eat a single token as the given `kind`
+let private eat (builder: GreenNodeBuilder) kind state =
+    let (token, state) = ParserState.bump state
+    builder.Token(kind |> Tree.astToGreen, token.Lexeme)
+    state
 
-        member private self.LookingAtAny(kinds: TokenKind list) = List.contains self.CurrentKind kinds
+/// Expect a given token kind, or buffer a diagnostic otherwise.
+let private expect (builder: GreenNodeBuilder) tokenKind nodeKind state =
 
-        member private self.Bump(kind: AstKind) =
-            builder.Token(kind |> astToGreen, self.CurrentText)
+    if lookingAt tokenKind state then
+        eat builder nodeKind state
+    else
+        sprintf "Expected %A, got %A" tokenKind (currentKind state)
+        |> ParserState.bufferDiagnostic state ParserDiagnostics.parseError
+        |> eat builder AstKind.ERROR
 
-            tokens <-
-                match tokens with
-                | [] -> []
-                | _ :: rest -> rest
+// =============================== Parsers ===================================
 
-        member private self.Expect(tokenKind: TokenKind, nodeKind: AstKind) =
-            if self.LookingAt(tokenKind) then
-                self.Bump(nodeKind)
-            else
-                sprintf "Expected %A, got %A" tokenKind self.CurrentKind
-                |> self.ErrAtPoint
+let private parseConstant (builder: GreenNodeBuilder) state =
+    builder.StartNode(AstKind.CONSTANT |> astToGreen)
 
-                builder.Token(AstKind.ERROR |> astToGreen, "")
+    let mutable state = state
 
-        member private self.ParseErr(message: string) =
-            self.ErrAtPoint(message)
-            self.Bump(AstKind.ERROR)
+    let kind =
+        match currentKind state with
+        | TokenKind.String -> AstKind.STRING
+        | TokenKind.Number -> AstKind.NUMBER
+        | TokenKind.Boolean -> AstKind.BOOLEAN
+        | TokenKind.Character -> AstKind.CHARACTER
+        | _ ->
+            state <-
+                sprintf "Unexpected token %A" (currentKind state)
+                |> ParserState.bufferDiagnostic state ParserDiagnostics.parseError
 
-        member private self.ParseConstant() =
-            builder.StartNode(AstKind.CONSTANT |> astToGreen)
+            AstKind.ERROR
 
-            match self.CurrentKind with
-            | TokenKind.String -> self.Bump(AstKind.STRING)
-            | TokenKind.Number -> self.Bump(AstKind.NUMBER)
-            | TokenKind.Boolean -> self.Bump(AstKind.BOOLEAN)
-            | TokenKind.Character -> self.Bump(AstKind.CHARACTER)
-            | _ ->
-                sprintf "Unexpected token %A" self.CurrentKind
-                |> self.ParseErr
+    let state = eat builder kind state
 
-            builder.FinishNode()
+    builder.FinishNode()
+    state
 
-        member private self.SkipAtmosphere() =
-            while self.LookingAtAny(
-                [ TokenKind.Whitespace
-                  TokenKind.Comment ]
-            ) do
-                self.Bump(AstKind.ATMOSPHERE)
+let private skipAtmosphere (builder: GreenNodeBuilder) state =
+    let mutable state = state
 
-        member private self.ParseIdentifier() =
-            builder.StartNode(AstKind.SYMBOL |> astToGreen)
-            self.Bump(AstKind.IDENTIFIER)
-            builder.FinishNode()
+    while lookingAtAny
+              [ TokenKind.Whitespace
+                TokenKind.Comment ]
+              state do
+        state <- eat builder AstKind.ATMOSPHERE state
 
-        member private self.ParseQuote() =
-            builder.StartNode(AstKind.QUOTED_DATUM |> astToGreen)
-            self.Expect(TokenKind.Quote, AstKind.QUOTE)
-            self.ParseExpr()
-            builder.FinishNode()
+    state
 
-        member private self.ParseAtom() =
-            match self.CurrentKind with
-            | TokenKind.Identifier -> self.ParseIdentifier()
-            | TokenKind.Quote -> self.ParseQuote()
-            | _ -> self.ParseConstant()
+let private parseIdentifier (builder: GreenNodeBuilder) state =
+    builder.StartNode(AstKind.SYMBOL |> astToGreen)
+    let state = expect builder TokenKind.Identifier AstKind.IDENTIFIER state
+    builder.FinishNode()
+    state
 
-        member private self.ParseForm() =
-            builder.StartNode(AstKind.FORM |> astToGreen)
-            self.Expect(TokenKind.OpenBracket, AstKind.OPEN_PAREN)
+let rec private parseQuote (builder: GreenNodeBuilder) state =
+    builder.StartNode(AstKind.QUOTED_DATUM |> astToGreen)
 
-            while not
-                  <| self.LookingAtAny(
-                      [ TokenKind.EndOfFile
-                        TokenKind.CloseBracket ]
-                  ) do
-                self.ParseExpr()
+    let state =
+        state
+        |> expect builder TokenKind.Quote AstKind.QUOTE
+        |> parseExpr builder
 
-            self.Expect(TokenKind.CloseBracket, AstKind.CLOSE_PAREN)
-            builder.FinishNode()
+    builder.FinishNode()
+    state
 
-        member private self.ParseExpr() =
-            match self.CurrentKind with
-            | TokenKind.OpenBracket -> self.ParseForm()
-            | _ -> self.ParseAtom()
+and private parseAtom builder state =
+    match currentKind state with
+    | TokenKind.Identifier -> parseIdentifier builder state
+    | TokenKind.Quote -> parseQuote builder state
+    | _ -> parseConstant builder state
 
-            self.SkipAtmosphere()
+and private parseForm (builder: GreenNodeBuilder) state =
+    builder.StartNode(AstKind.FORM |> astToGreen)
+    let mutable state = expect builder TokenKind.OpenBracket AstKind.OPEN_PAREN state
 
-        member private _.Finalise(rootKind: AstKind) =
-            let root =
-                builder.BuildRoot(rootKind |> astToGreen)
-                |> SyntaxNode.CreateRoot
+    while not (
+        lookingAtAny
+            [ TokenKind.EndOfFile
+              TokenKind.CloseBracket ]
+            state
+    ) do
+        state <- parseExpr builder state
 
-            { Diagnostics = errors; Root = root }
+    let state = expect builder TokenKind.CloseBracket AstKind.CLOSE_PAREN state
+    builder.FinishNode()
 
-        /// Parse Program
-        ///
-        /// Read a sequence of expressions as a single program.
-        member self.ParseProgram() =
-            self.SkipAtmosphere()
+    state
 
-            while not <| self.LookingAt(TokenKind.EndOfFile) do
-                self.ParseExpr()
+and private parseExpr builder state =
+    match currentKind state with
+    | TokenKind.OpenBracket -> parseForm builder state
+    | _ -> parseAtom builder state
+    |> skipAtmosphere builder
 
-            self.Expect(TokenKind.EndOfFile, AstKind.EOF)
-            self.Finalise(AstKind.PROGRAM)
+and private parseExprSeq builder endKinds state =
+    if lookingAtAny endKinds state then
+        state
+    else
+        state
+        |> parseExpr builder
+        |> skipAtmosphere builder
+        |> parseExprSeq builder endKinds
 
-        /// Parse Expression
-        ///
-        /// Reads a single expression from the lexer
-        member self.ParseExpression() =
-            self.SkipAtmosphere()
+/// Parse Program
+///
+/// Read a sequence of expressions as a single program.
+let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
+    skipAtmosphere builder state
+    |> parseExprSeq builder [ TokenKind.EndOfFile ]
+    |> ParserState.finalise builder AstKind.PROGRAM
 
-            self.ParseExpr()
+/// Parse Expression
+///
+/// Reads a single expression from the lexer
+let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
+    skipAtmosphere builder state
+    |> parseExpr builder
+    |> ParserState.finalise builder AstKind.SCRIPT_PROGRAM
 
-            self.Expect(TokenKind.EndOfFile, AstKind.EOF)
-            self.Finalise(AstKind.EXPR_PROGRAM)
+// =============================== Public API ==================================
 
-    let readRaw mode name (line: string) =
-        let parser = Lex.tokenise line name |> Parser
+/// Read a raw syntax tree from the given input.
+let readRaw mode name (line: string) =
+    let parseState = Lex.tokenise line name |> ParserState.fromTokens
 
-        match mode with
-        | Program -> parser.ParseProgram()
-        | Script -> parser.ParseExpression()
+    let builder = GreenNodeBuilder()
 
-    let readProgram name line =
-        readRaw Program name line
-        |> ParseResult.map (fun x -> new Program(x))
+    match mode with
+    | Program -> parseProgram builder parseState
+    | Script -> parseScript builder parseState
 
-    /// Read a single expression from the named input text
-    let readExpr1 name line =
-        readRaw Script name line
-        |> ParseResult.map (fun x -> new ScriptProgram(x))
+/// Read a sequence of expressions as a program from the given `input`.
+let readProgram name input =
+    readRaw Program name input
+    |> ParseResult.map (fun x -> new Program(x))
 
-    /// Read a single expression from the input text
-    let readExpr = readExpr1 "repl"
+/// Read a single expression from the named input `line`.
+let readExpr1 name line =
+    readRaw Script name line
+    |> ParseResult.map (fun x -> new ScriptProgram(x))
 
-    /// Read an expression from source code on disk
-    let parseFile path =
-        async {
-            let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
-            return readProgram path text
-        }
+/// Read a single expression from the input `line` using an implicit name.
+let readExpr = readExpr1 "repl"
+
+/// Read an expression from source code on disk
+let parseFile path =
+    async {
+        let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
+        return readProgram path text
+    }
