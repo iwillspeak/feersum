@@ -57,59 +57,27 @@ type private LexState =
     | Whitespace
     | Error
 
-[<AutoOpen>]
-module private Charsets =
-    /// Charcters, other than alphabetics, that can start an identifier.
-    let specialInitial =
-        [ '!'
-          '$'
-          '%'
-          '&'
-          '*'
-          '/'
-          ':'
-          '<'
-          '='
-          '>'
-          '?'
-          '^'
-          '_'
-          '~' ]
-        |> Set.ofList
+// =============================== Utilities ==================================
 
-    /// Characters that can appear after an explicit sign at the beginning of
-    /// an identifier.
-    let signSubseqent = [ '-'; '+'; '@' ] |> Set.ofList
+/// Charcters, other than alphabetics, that can start an identifier.
+let private specialInitial =
+    [ '!' '$' '%' '&' '*' '/' ':' '<' '=' '>' '?' '^' '_' '~' ]
+    |> Set.ofList
 
-    /// Non-alphanumeric characters that can appear after the start of a plain
-    /// identifier.
-    let specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
+/// Characters that can appear after an explicit sign at the beginning of
+/// an identifier.
+let private signSubseqent = [ '-'; '+'; '@' ] |> Set.ofList
 
-    /// Hexadecimal digits, in both upper and lower case.
-    let hexDigits =
-        [ '0'
-          '1'
-          '2'
-          '3'
-          '4'
-          '5'
-          '6'
-          '7'
-          '8'
-          '9'
-          'a'
-          'b'
-          'c'
-          'd'
-          'e'
-          'f'
-          'A'
-          'B'
-          'C'
-          'D'
-          'E'
-          'F' ]
-        |> Set.ofList
+/// Non-alphanumeric characters that can appear after the start of a plain
+/// identifier.
+let private specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
+
+/// Hexadecimal digits, in both upper and lower case.
+let private hexDigits =
+    [ '0' '1' '2' '3' '4' '5' '6' '7' '8' '9' 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F' ]
+    |> Set.ofList
+
+// =============================== Public API ==================================
 
 /// Tokenise the input text. Returns an enumerable sequence of the tokens within
 /// the text.
@@ -232,8 +200,7 @@ let public tokenise input name =
                 ->
                 Some(LexState.Identifier)
             | '.' -> Some(LexState.PerculiarIdentifierSeenDot)
-            | c when Char.IsDigit(c) ->
-                Some(LexState.Number)
+            | c when Char.IsDigit(c) -> Some(LexState.Number)
             | _ -> None
         | PerculiarIdentifierSeenDot ->
             match c with
@@ -244,8 +211,7 @@ let public tokenise input name =
                 || Set.contains c signSubseqent
                 ->
                 Some(LexState.Identifier)
-            | c when Char.IsDigit(c) ->
-                Some(LexState.NumberSuffix)
+            | c when Char.IsDigit(c) -> Some(LexState.NumberSuffix)
             | _ -> None
         | Number ->
             if Char.IsDigit(c) then
