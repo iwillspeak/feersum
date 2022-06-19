@@ -61,7 +61,20 @@ type private LexState =
 
 /// Charcters, other than alphabetics, that can start an identifier.
 let private specialInitial =
-    [ '!' '$' '%' '&' '*' '/' ':' '<' '=' '>' '?' '^' '_' '~' ]
+    [ '!'
+      '$'
+      '%'
+      '&'
+      '*'
+      '/'
+      ':'
+      '<'
+      '='
+      '>'
+      '?'
+      '^'
+      '_'
+      '~' ]
     |> Set.ofList
 
 /// Characters that can appear after an explicit sign at the beginning of
@@ -74,7 +87,28 @@ let private specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
 
 /// Hexadecimal digits, in both upper and lower case.
 let private hexDigits =
-    [ '0' '1' '2' '3' '4' '5' '6' '7' '8' '9' 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F' ]
+    [ '0'
+      '1'
+      '2'
+      '3'
+      '4'
+      '5'
+      '6'
+      '7'
+      '8'
+      '9'
+      'a'
+      'b'
+      'c'
+      'd'
+      'e'
+      'f'
+      'A'
+      'B'
+      'C'
+      'D'
+      'E'
+      'F' ]
     |> Set.ofList
 
 // =============================== Public API ==================================

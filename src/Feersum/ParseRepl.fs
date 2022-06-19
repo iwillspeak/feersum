@@ -7,7 +7,7 @@ open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
 
 let private read () =
-    ReadLine.Read("§> ")
+    ReadLine.Read("[]> ")
     |> Parse.readProgram "repl.scm"
 
 let private print (result: ParseResult<Program>) =

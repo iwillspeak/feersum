@@ -11,7 +11,7 @@ module Tree =
         | ERROR = -1
 
         // nodes
-        | EXPR_PROGRAM = 1
+        | SCRIPT_PROGRAM = 1
         | PROGRAM = 2
         | CONSTANT = 3
         | SYMBOL = 4
