@@ -19,12 +19,12 @@
     <Compile Include="Scope.fs" />
     <Compile Include="Binding/Libraries.fs" />
     <Compile Include="Binding/Macros.fs" />
-    <Compile Include="Compile/MonoHelpers.fs" />
     <Compile Include="Binding/Binder.fs" />
     <Compile Include="Binding/Lower.fs" />
     <Compile Include="Targets.fs" />
+    <Compile Include="Compile/MonoHelpers.fs" />
     <Compile Include="Compile/Builtins.fs" />
-    <Compile Include="Runtime.fs" />
+    <Compile Include="Compile/Runtime.fs" />
     <Compile Include="Compile/Compiler.fs" />
     <Compile Include="Eval.fs" />
   </ItemGroup>
