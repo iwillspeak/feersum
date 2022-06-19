@@ -180,11 +180,16 @@ let ``identifier literals`` raw (cooked: string) =
 //     Assert.Equal(Number 123.0 |> Constant, readSingle "#;(= n 1)123")
 //     Assert.Equal(Number 456.0 |> Constant, readSingle "#;123 456")
 
-// [<Fact>]
-// let ``parse block comments`` () =
-//     Assert.Equal(Number 1.0 |> Constant, readSingle "#| this is a comment |#1")
-//     Assert.Equal(Number 1.0 |> Constant, readSingle "1#| this is a comment |#")
-//     Assert.Equal(Number 1.0 |> Constant, readSingle "#| this #| is a |# comment |#1")
+[<Fact>]
+let ``parse block comments`` () =
+    Assert.Equal(AstKind.CONSTANT, readSingle "#| this is a comment |#1" |> getKind)
+    Assert.Equal(AstKind.CONSTANT, readSingle "1#| this is a comment |#" |> getKind)
+
+    Assert.Equal(
+        AstKind.CONSTANT,
+        readSingle "#| this #| is a |# comment |#1"
+        |> getKind
+    )
 
 // [<Theory>]
 // [<InlineData('a')>]

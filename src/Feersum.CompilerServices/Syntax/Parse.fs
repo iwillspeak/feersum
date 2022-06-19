@@ -68,8 +68,8 @@ module private ParserState =
     /// Bump the token enumerator, returning the current token and new state.
     let bump state =
         match state.Tokens with
-        | [] -> ice "Parser bumped with no remaining tokens"
-        | head :: rest -> head, { state with Tokens = rest }
+        | [] -> None, state
+        | head :: rest -> Some(head), { state with Tokens = rest }
 
     /// Buffer a raw diagnostic at this position
     let bufferDiagnosticRaw state diagnostic =
@@ -118,7 +118,13 @@ let private lookingAtAny kinds state = List.contains (currentKind state) kinds
 /// Eat a single token as the given `kind`
 let private eat (builder: GreenNodeBuilder) kind state =
     let (token, state) = ParserState.bump state
-    builder.Token(kind |> Tree.astToGreen, token.Lexeme)
+
+    let lexeme =
+        match token with
+        | Some token -> token.Lexeme
+        | None -> ""
+
+    builder.Token(kind |> astToGreen, lexeme)
     state
 
 /// Expect a given token kind, or buffer a diagnostic otherwise.
