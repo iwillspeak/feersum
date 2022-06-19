@@ -227,6 +227,13 @@
   },
   "Item2": [
     {
+      "Kind": {
+        "Level": {
+          "Case": "Error"
+        },
+        "Code": 1,
+        "Title": "Parse error"
+      },
       "Location": {
         "Case": "Point",
         "Fields": [
@@ -237,12 +244,16 @@
           }
         ]
       },
-      "Message": "Missing closing '|'",
-      "Level": {
-        "Case": "Error"
-      }
+      "Message": "Missing closing '|'"
     },
     {
+      "Kind": {
+        "Level": {
+          "Case": "Error"
+        },
+        "Code": 1,
+        "Title": "Parse error"
+      },
       "Location": {
         "Case": "Point",
         "Fields": [
@@ -253,12 +264,16 @@
           }
         ]
       },
-      "Message": "Expected ';'",
-      "Level": {
-        "Case": "Error"
-      }
+      "Message": "Expected ';'"
     },
     {
+      "Kind": {
+        "Level": {
+          "Case": "Error"
+        },
+        "Code": 1,
+        "Title": "Parse error"
+      },
       "Location": {
         "Case": "Point",
         "Fields": [
@@ -269,12 +284,16 @@
           }
         ]
       },
-      "Message": "Expected hex character literal",
-      "Level": {
-        "Case": "Error"
-      }
+      "Message": "Expected hex character literal"
     },
     {
+      "Kind": {
+        "Level": {
+          "Case": "Error"
+        },
+        "Code": 1,
+        "Title": "Parse error"
+      },
       "Location": {
         "Case": "Point",
         "Fields": [
@@ -285,12 +304,16 @@
           }
         ]
       },
-      "Message": "Expected hex character literal",
-      "Level": {
-        "Case": "Error"
-      }
+      "Message": "Expected hex character literal"
     },
     {
+      "Kind": {
+        "Level": {
+          "Case": "Error"
+        },
+        "Code": 1,
+        "Title": "Parse error"
+      },
       "Location": {
         "Case": "Point",
         "Fields": [
@@ -301,12 +324,16 @@
           }
         ]
       },
-      "Message": "Invalid code unit",
-      "Level": {
-        "Case": "Error"
-      }
+      "Message": "Invalid code unit"
     },
     {
+      "Kind": {
+        "Level": {
+          "Case": "Error"
+        },
+        "Code": 1,
+        "Title": "Parse error"
+      },
       "Location": {
         "Case": "Point",
         "Fields": [
@@ -317,12 +344,16 @@
           }
         ]
       },
-      "Message": "Invalid code unit",
-      "Level": {
-        "Case": "Error"
-      }
+      "Message": "Invalid code unit"
     },
     {
+      "Kind": {
+        "Level": {
+          "Case": "Error"
+        },
+        "Code": 1,
+        "Title": "Parse error"
+      },
       "Location": {
         "Case": "Point",
         "Fields": [
@@ -333,12 +364,16 @@
           }
         ]
       },
-      "Message": "Expected ';'",
-      "Level": {
-        "Case": "Error"
-      }
+      "Message": "Expected ';'"
     },
     {
+      "Kind": {
+        "Level": {
+          "Case": "Error"
+        },
+        "Code": 1,
+        "Title": "Parse error"
+      },
       "Location": {
         "Case": "Point",
         "Fields": [
@@ -349,10 +384,7 @@
           }
         ]
       },
-      "Message": "Expected hex character literal",
-      "Level": {
-        "Case": "Error"
-      }
+      "Message": "Expected hex character literal"
     }
   ]
 }
