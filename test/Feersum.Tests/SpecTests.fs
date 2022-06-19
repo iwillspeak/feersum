@@ -6,6 +6,7 @@ open Xunit
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Lex
 open System.IO
 open Snapper
 open System.Diagnostics
@@ -208,7 +209,7 @@ let ``Test new lexer`` s =
 
         while lexer.MoveNext() do
             timeout.Token.ThrowIfCancellationRequested()
-            let (kind, token) = lexer.Current
+            let { Kind = kind; Lexeme = token } = lexer.Current
 
             if kind = TokenKind.Error then
                 if not expectFail then

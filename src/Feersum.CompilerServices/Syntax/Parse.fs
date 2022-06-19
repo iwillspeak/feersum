@@ -13,8 +13,16 @@ module private ParserDiagnostics =
 module Parse =
 
     open Tree
+    open Lex
 
     /// Type to represent parse results.
+    ///
+    /// Parser results represent the result of a parser operation. A result
+    /// always contains some syntax item `Root`, along with a list of
+    /// `Diagnostics`.
+    ///
+    /// Parser results can be transformed and consumed with `ParseResult.map`,
+    /// `ParseResult.toResult`.
     type public ParseResult<'a> =
         { Diagnostics: Diagnostic list
           Root: 'a }
@@ -25,9 +33,29 @@ module Parse =
         let public hasErrors result = result.Diagnostics |> hasErrors
 
         /// Map the results of a parse
+        ///
+        /// Allows the result of a parse to be functionally transformed without
+        /// affecting the buffered diagnostics. This is used by the 'typed parse'
+        /// APIs to convert untyped syntax trees into their typed wrappers.
         let public map mapper result =
             { Diagnostics = result.Diagnostics
               Root = result.Root |> mapper }
+
+        /// Convert a parser response into a plain result type
+        ///
+        /// This drops any tree from the error, but opens up parser responses to
+        /// being processed using standard error handling
+        let public toResult response =
+            match response.Diagnostics with
+            | [] -> response.Root |> Ok
+            | errs -> errs |> Result.Error
+
+    // /// Parser Type
+    // ///
+    // /// Type to hold state when parsing. This is not intended to be used
+    // /// directly. The main parser API is via the `read*` functions.
+    // type private ParserState =
+    //     { Tokens:  }
 
     /// Type to represent different kinds of programs we can read
     type public ReadMode =
@@ -38,7 +66,9 @@ module Parse =
     ///
     /// Class type to hold state when parsing. This is not intended to be used
     /// directly. The main parser API is via the `read*` functions.
-    type private Parser(lexer: Lexer) =
+    type private Parser(tokens: LexicalToken seq) =
+
+        let mutable tokens = tokens |> List.ofSeq
 
         let builder = GreenNodeBuilder()
         let mutable errors = []
@@ -51,13 +81,21 @@ module Parse =
             let (kind, _) = token
             kind
 
-        member private _.CurrentKind = lexer.Current |> getKind
+        member private _.Current =
+            match List.tryHead tokens with
+            | Some head -> head
+            | None ->
+                { Kind = TokenKind.EndOfFile
+                  Lexeme = ""
+                  Location = Missing }
 
-        member private _.CurrentText = lexer.Current |> getText
+        member private self.CurrentKind = self.Current.Kind
 
-        member private _.ErrAtPoint(message: string) =
+        member private self.CurrentText = self.Current.Lexeme
+
+        member private self.ErrAtPoint(message: string) =
             errors <-
-                Diagnostic.Create ParserDiagnostics.parseError lexer.Position message
+                Diagnostic.Create ParserDiagnostics.parseError self.Current.Location message
                 :: errors
 
         member private self.LookingAt(tokenKind: TokenKind) = self.CurrentKind = tokenKind
@@ -66,7 +104,11 @@ module Parse =
 
         member private self.Bump(kind: AstKind) =
             builder.Token(kind |> astToGreen, self.CurrentText)
-            lexer.Bump()
+
+            tokens <-
+                match tokens with
+                | [] -> []
+                | _ :: rest -> rest
 
         member private self.Expect(tokenKind: TokenKind, nodeKind: AstKind) =
             if self.LookingAt(tokenKind) then
@@ -170,8 +212,8 @@ module Parse =
             self.Expect(TokenKind.EndOfFile, AstKind.EOF)
             self.Finalise(AstKind.EXPR_PROGRAM)
 
-    let readRaw mode name line =
-        let parser = Parser(Lexer(line, name))
+    let readRaw mode name (line: string) =
+        let parser = Lex.tokenise line name |> Parser
 
         match mode with
         | Program -> parser.ParseProgram()

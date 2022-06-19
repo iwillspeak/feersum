@@ -3,6 +3,12 @@ module LexTests
 open Xunit
 
 open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Lex
+open Feersum.CompilerServices.Diagnostics
+
+let private p name line col =
+    TextPoint.FromParts(name, line, col)
+    |> TextLocation.Point
 
 /// Grab the kind from a syntax token pair.
 let private getKind token =
@@ -16,7 +22,7 @@ let private getValue token =
 
 [<Fact>]
 let ``Empty input text always returns end of file`` () =
-    let tokens = Lex.tokenise "" "test.scm"
+    let tokens = tokenise "" "test.scm"
 
     Assert.Empty(tokens)
 
@@ -84,12 +90,29 @@ let ``Empty input text always returns end of file`` () =
 let ``Lexer lex single token`` (token, kind) =
     let tokens = Lex.tokenise token "test.scm"
 
-    Assert.Equal([ kind, token ], tokens)
+    let (line, col) =
+        token
+        |> Seq.fold
+            (fun (line, col) char ->
+                if char = '\n' then
+                    (line + 1, 0)
+                else
+                    (line, col + 1))
+            (1, 0)
+
+    Assert.Equal(
+        [ { Kind = kind
+            Lexeme = token
+            Location = (p "test.scm" line col) } ],
+        tokens
+    )
 
 [<Fact>]
 let ``Lexer happy path`` () =
 
-    let tokens = Lex.tokenise "(display #| hello |# world)" "test.scm"
+    let tokens =
+        Lex.tokenise "(display #| hello |# world)" "test.scm"
+        |> Seq.map (fun token -> token.Kind, token.Lexeme)
 
     Assert.Equal(
         [ TokenKind.OpenBracket, "("

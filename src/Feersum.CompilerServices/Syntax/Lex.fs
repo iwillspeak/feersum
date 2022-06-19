@@ -1,6 +1,7 @@
-namespace Feersum.CompilerServices.Syntax
+module Feersum.CompilerServices.Syntax.Lex
 
 open System
+open System.Text
 open Feersum.CompilerServices.Diagnostics
 
 /// Token kinds for the language.
@@ -22,6 +23,12 @@ type TokenKind =
     | BytevectorPrefix = 14
     | Error = 99
     | EndOfFile = 100
+
+/// Token in our lexical pass
+type LexicalToken =
+    { Kind: TokenKind
+      Lexeme: string
+      Location: TextLocation }
 
 /// States in our lexer's state machine.
 type private LexState =
@@ -104,74 +111,11 @@ module private Charsets =
           'F' ]
         |> Set.ofList
 
-/// The lexical analyser. This tokenises the input buffer and exposes the
-/// `Current` token. The next token can be retrieved by calling `Bump`.
-type private Lexer(input: string, name: string) =
+/// Tokenise the input text. Returns an enumerable sequence of the tokens within
+/// the text.
+let public tokenise input name =
 
-    // The input text as a string
-    let buffer = input
-    let name = name
-
-    let mutable tokenStart = 0
-    let mutable line = 0
-    let mutable lastLineStart = 0
-
-    let mutable current = None
-
-    // Retrieve the current token.
-    member self.Current =
-        match current with
-        | Some token -> token
-        | None ->
-            let nextToken = self.GetNextToken()
-            current <- Some(nextToken)
-            nextToken
-
-    /// Advance past the current token.
-    member _.Bump() =
-        current <- None
-        ()
-
-    /// Check if there are more tokens the lexer could produce.
-    member self.Done =
-        if tokenStart < buffer.Length then
-            false
-        else
-            let (kind, _) = self.Current
-            kind = TokenKind.EndOfFile
-
-    /// Get the current location for in this lexer.
-    member _.Position =
-        TextPoint.FromParts(name, line, int64 <| tokenStart - lastLineStart)
-        |> TextLocation.Point
-
-    /// Attempt to advance the lexer to another token. No further tokens are
-    /// available then `TokenKind.EndOfFile` is always returned.
-    member private self.GetNextToken() =
-
-        let mutable state = LexState.Start
-        let mutable currentChar = tokenStart
-        let mutable tokenEnd = currentChar
-        let mutable finished = false
-
-        while not finished && currentChar < buffer.Length do
-
-            let c = buffer[currentChar]
-
-            // FIXME: handle other newlines than \n and \r\n
-            if c = '\n' then
-                line <- line + 1
-                lastLineStart <- currentChar + 1
-
-            let nextState = self.NextTransition(state, c)
-
-            match nextState with
-            | Some next ->
-                state <- next
-                tokenEnd <- currentChar
-                currentChar <- currentChar + 1
-            | None -> finished <- true
-
+    let tokenForState lexeme state pos =
         let kind =
             match state with
             | Start -> TokenKind.EndOfFile
@@ -184,7 +128,7 @@ type private Lexer(input: string, name: string) =
             | PerculiarIdentifierSeenDot ->
                 // Slices in F# are _inclusive_ this is effectively checking if
                 // the identifier is ony a single `.` character.
-                if tokenEnd = tokenStart then
+                if lexeme = "." then
                     TokenKind.Dot
                 else
                     TokenKind.Identifier
@@ -205,15 +149,14 @@ type private Lexer(input: string, name: string) =
             | InMultiLineSeenHash _
             | InMultiLineSeenBar _ -> TokenKind.Error
 
-        let tokenValue = buffer[tokenStart..tokenEnd]
-        tokenStart <- currentChar
-
-        (kind, tokenValue)
+        { Kind = kind
+          Lexeme = lexeme
+          Location = pos }
 
     /// Get the next transition, if any, for the current `state` and `c`. This
     /// returns `Some` if a transition exists, and `None` if no transition is
     /// available.
-    member private _.NextTransition(state: LexState, c: char) =
+    let nextTransition state c =
 
         match state with
         | Start ->
@@ -364,16 +307,31 @@ type private Lexer(input: string, name: string) =
         | SimpleToken _
         | MultiLineDone -> None
 
-module Lex =
+    let mutable state = Start
+    let mutable lexeme = StringBuilder()
+    let mutable line = 1
+    let mutable col = 0
 
-    /// Tokenise the input text. Returns an enumerable sequence of the tokens
-    /// within the text.
-    let public tokenise input name =
+    seq {
+        for char in input do
+            match char with
+            | '\n' ->
+                col <- 0
+                line <- line + 1
+            | _ -> col <- col + 1
 
-        let lexer = Lexer(input, name)
+            match nextTransition state char with
+            | None ->
+                yield tokenForState (lexeme.ToString()) state (TextLocation.Point(TextPoint.FromParts(name, line, col)))
+                lexeme <- lexeme.Clear().Append(char)
 
-        seq {
-            while not lexer.Done do
-                yield lexer.Current
-                lexer.Bump()
-        }
+                state <-
+                    nextTransition Start char
+                    |> Option.defaultValue Error
+            | Some next ->
+                state <- next
+                lexeme <- lexeme.Append(char)
+
+        if state <> Start then
+            yield tokenForState (lexeme.ToString()) state (TextLocation.Point(TextPoint.FromParts(name, line, col)))
+    }
