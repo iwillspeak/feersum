@@ -196,14 +196,17 @@ let ``spec tests parse result`` s =
 let ``Test new lexer`` s =
     task {
         let! sourceText = File.ReadAllTextAsync(Path.Join(specDir, s))
-        let lexer = Lexer(sourceText, "test.scm")
+
+        let lexer =
+            (Lex.tokenise sourceText "test.scm")
+                .GetEnumerator()
 
         use timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
 
         let mutable errors = 0
         let expectFail = s.Contains("bad")
 
-        while not lexer.Done do
+        while lexer.MoveNext() do
             timeout.Token.ThrowIfCancellationRequested()
             let (kind, token) = lexer.Current
 
@@ -212,8 +215,6 @@ let ``Test new lexer`` s =
                     printfn "Unexpected error token %s" token
 
                 errors <- errors + 1
-
-            lexer.Bump()
 
         // We expect error tokens in the lexer fail cases.
         if not expectFail then

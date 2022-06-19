@@ -106,7 +106,7 @@ module private Charsets =
 
 /// The lexical analyser. This tokenises the input buffer and exposes the
 /// `Current` token. The next token can be retrieved by calling `Bump`.
-type Lexer(input: string, name: string) =
+type private Lexer(input: string, name: string) =
 
     // The input text as a string
     let buffer = input
@@ -363,3 +363,17 @@ type Lexer(input: string, name: string) =
         | Error
         | SimpleToken _
         | MultiLineDone -> None
+
+module Lex =
+
+    /// Tokenise the input text. Returns an enumerable sequence of the tokens
+    /// within the text.
+    let public tokenise input name =
+
+        let lexer = Lexer(input, name)
+
+        seq {
+            while not lexer.Done do
+                yield lexer.Current
+                lexer.Bump()
+        }

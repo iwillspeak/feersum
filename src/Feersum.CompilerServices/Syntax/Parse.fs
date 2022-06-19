@@ -6,7 +6,7 @@ open Firethorn.Green
 open Firethorn.Red
 open Feersum.CompilerServices.Diagnostics
 
-module private Diagnostics =
+module private ParserDiagnostics =
 
     let parseError = DiagnosticKind.Create DiagnosticLevel.Error 10 "Parse error"
 
@@ -57,7 +57,7 @@ module Parse =
 
         member private _.ErrAtPoint(message: string) =
             errors <-
-                Diagnostic.Create Diagnostics.parseError lexer.Position message
+                Diagnostic.Create ParserDiagnostics.parseError lexer.Position message
                 :: errors
 
         member private self.LookingAt(tokenKind: TokenKind) = self.CurrentKind = tokenKind
