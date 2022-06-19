@@ -49,7 +49,7 @@ let specsOfType extension =
 let executableSpecs = specsOfType "scm"
 let librarySpecs = specsOfType "sld"
 
-let private runExampleAsync references host (exePath: string) =
+let private runExampleAsync host (exePath: string) =
 
     let p = new Process()
     p.StartInfo <- ProcessStartInfo(host)
@@ -168,7 +168,7 @@ let rec ``spec tests compile and run`` specPath configuration =
             if shouldFail then
                 failwith "Expected compilation failure!"
 
-            let! r = runExampleAsync references "dotnet" exePath
+            let! r = runExampleAsync "dotnet" exePath
 
             r.ShouldMatchSnapshot(snapshotId)
         | diags ->
