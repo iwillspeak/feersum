@@ -22,7 +22,7 @@ namespace Serehfa
         {
             CheckNoArgs(args);
             // FIXME: return fixnum
-            return (double)s_JiffyWatch.ElapsedTicks;
+            return (double)Stopwatch.GetTimestamp();
         }
 
         [LispExport("jiffies-per-second")]
@@ -32,7 +32,5 @@ namespace Serehfa
             // FIXME: return fixnum
             return (double)Stopwatch.Frequency;
         }
-
-        private static Stopwatch s_JiffyWatch = Stopwatch.StartNew();
     }
 }
