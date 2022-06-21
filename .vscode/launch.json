@@ -20,7 +20,7 @@
           "type": "coreclr",
           "request": "launch",
           "preLaunchTask": "build",
-          "program": "${workspaceRoot}/src/Feersum/bin/Debug/net6.0/Feersum.dll",
+          "program": "${workspaceRoot}/src/Feersum/bin/Debug/net7.0/Feersum.dll",
           "args": [ "parserepl" ],
           "cwd": "${workspaceRoot}",
           "console": "integratedTerminal",
