@@ -1,67 +1,43 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "build",
-        "command": "dotnet",
-        "type": "shell",
-        "args": [
-          "build",
-          "/nologo",
-          "/property:GenerateFullPaths=true",
-          "/consoleloggerparameters:NoSummary"
-        ],
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": "$msCompile"
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "build",
+        "/nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
       },
-      {
-        "label": "buildStage1",
-        "command": "dotnet",
-        "type": "shell",
-        "args": [
-          "build",
-          "/nologo",
-          "/property:GenerateFullPaths=true",
-          "/consoleloggerparameters:NoSummary",
-          "${workspaceRoot}/src/Feersum.Stage1"
-        ],
-        "group": "build",
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": "$msCompile"
+      "presentation": {
+        "reveal": "silent"
       },
-      {
-        "label": "test",
-        "command": "dotnet",
-        "type": "shell",
-        "dependsOn": "build",
-        "args": [
-          "test",
-          "--no-build",
-          "/nologo",
-          "/property:GenerateFullPaths=true",
-          "/consoleloggerparameters:NoSummary",
-          "--logger:'console;verbosity=normal'",
-          "-v:q"
-        ],
-        "group": {
-          "kind": "test",
-          "isDefault": true
-        },
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "buildStage1",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "build",
+        "/nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "${workspaceRoot}/src/Feersum.Stage1"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
       },
+<<<<<<< HEAD
       {
         "label": "runcompiler",
         "command": "dotnet",
@@ -80,63 +56,108 @@
           "reveal": "silent"
         },
         "problemMatcher": "$msCompile"
+=======
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "command": "dotnet",
+      "type": "shell",
+      "dependsOn": "build",
+      "args": [
+        "test",
+        "--no-build",
+        "/nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "--logger:'console;verbosity=normal'",
+        "-v:q"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+>>>>>>> 0f9f9a2 (Reformat JSON Config)
       },
-      {
-        "label": "update-snapshots",
-        "command": "dotnet",
-        "type": "shell",
-        "args": [
-          "test",
-          "/nologo",
-          "/property:GenerateFullPaths=true",
-          "/consoleloggerparameters:NoSummary",
-          "-v=n"
-        ],
-        "group": "test",
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": "$msCompile",
-        "options": {
-          "env": {
-            "UpdateSnapshots": "true"
-          }
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "runcompiler",
+      "command": "dotnet",
+      "type": "shell",
+      "dependsOn": "build",
+      "args": [
+        "${workspaceFolder}/src/Feersum/bin/Debug/net6.0/Feersum.dll",
+        "--configuration",
+        "Debug",
+        "-o",
+        "${workspaceFolder}/spec/bin/",
+        "${input:scmToCompile}"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "update-snapshots",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "test",
+        "/nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "-v=n"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile",
+      "options": {
+        "env": {
+          "UpdateSnapshots": "true"
         }
-      },
-      {
-        "label": "pack",
-        "command": "dotnet",
-        "type": "shell",
-        "args": [
-          "pack",
-          "/nologo",
-          "/property:GenerateFullPaths=true",
-          "/consoleloggerparameters:NoSummary"
-        ],
-        "group": "build",
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": "$msCompile"
-      },
-      {
-        "label": "reformat",
-        "command": "bash",
-        "type": "shell",
-        "args": [
-          "reformat.sh"
-        ],
-        "options": {
-          "cwd": "${workspaceRoot}"
-        },
-        "problemMatcher": []
       }
-    ],
-    "inputs": [
-        {
-            "type": "promptString",
-            "description": "Scheme file to compile",
-            "id": "scmToCompile"
-        }
-    ]
+    },
+    {
+      "label": "pack",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "pack",
+        "/nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "reformat",
+      "command": "bash",
+      "type": "shell",
+      "args": [
+        "reformat.sh"
+      ],
+      "options": {
+        "cwd": "${workspaceRoot}"
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "type": "promptString",
+      "description": "Scheme file to compile",
+      "id": "scmToCompile"
+    }
+  ]
 }
