@@ -19,12 +19,12 @@ type CliArguments =
     | Version
     | Configuration of BuildConfiguration
     | OutputType of OutputType
-    | CoreLibPath of string
+    | CoreLibPath of path: string
     | GenerateDeps of bool
-    | AssemblyVersion of string
-    | [<AltCommandLine("-r")>] Reference of string
-    | [<AltCommandLine("-o")>] Output of string
-    | [<MainCommand>] Sources of source_file: string list
+    | AssemblyVersion of ver: string
+    | [<AltCommandLine("-r")>] Reference of path: string
+    | [<AltCommandLine("-o")>] Output of out: string
+    | [<MainCommand>] Compile of source_file: string list
 
     interface IArgParserTemplate with
         member s.Usage =
@@ -37,7 +37,7 @@ type CliArguments =
             | AssemblyVersion _ -> "Specify the version for the generated assembly."
             | Reference _ -> "Compiled Scheme assembly to reference."
             | Output _ -> "The output path to write compilation results to."
-            | Sources _ -> "Scheme source files for compilation."
+            | Compile _ -> "Scheme source files for compilation."
 
 /// Compile a collection of files file printing an error if
 /// there is one.
@@ -99,7 +99,7 @@ let main argv =
                 |> Option.defaultValue true
             MsCorePaths = args.GetResults CoreLibPath }
 
-    match args.GetResult(Sources, defaultValue = []), args.TryGetResult(Output) with
+    match args.GetResult(Compile, defaultValue = []), args.TryGetResult(Output) with
     | [], None ->
         runRepl ()
         0
