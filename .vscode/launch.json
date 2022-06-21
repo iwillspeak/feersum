@@ -48,8 +48,6 @@
             "program": "${workspaceFolder}/${input:dllToDebug}",
             "args": [],
             "cwd": "${workspaceFolder}",
-            "stopAtEntry": true,
-            "justMyCode": false,
             "console": "internalConsole",
             "requireExactSource": false,
             "symbolOptions": {
