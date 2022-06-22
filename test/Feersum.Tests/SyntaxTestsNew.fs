@@ -60,6 +60,8 @@ let ``parse atoms`` () =
     Assert.Equal(AstKind.CONSTANT, readSingle "#t" |> getKind)
     Assert.Equal(AstKind.CONSTANT, readSingle "#false" |> getKind)
     Assert.Equal(AstKind.CONSTANT, readSingle "#true" |> getKind)
+    Assert.Equal(AstKind.VEC, readSingle "#(1 #true (3 4))" |> getKind)
+    Assert.Equal(AstKind.BYTEVEC, readSingle "#u8(1 7 0 1)" |> getKind)
 
 [<Theory>]
 [<InlineData("?")>]

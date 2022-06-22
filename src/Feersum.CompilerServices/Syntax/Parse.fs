@@ -196,9 +196,8 @@ and private parseAtom builder state =
     | TokenKind.Quote -> parseQuote builder state
     | _ -> parseConstant builder state
 
-and private parseForm (builder: GreenNodeBuilder) state =
-    builder.StartNode(AstKind.FORM |> astToGreen)
-    let mutable state = expect builder TokenKind.OpenBracket AstKind.OPEN_PAREN state
+and private parseFormTail builder state =
+    let mutable state = state
 
     while not (
         lookingAtAny
@@ -213,9 +212,37 @@ and private parseForm (builder: GreenNodeBuilder) state =
 
     state
 
+and private parseForm (builder: GreenNodeBuilder) state =
+    builder.StartNode(AstKind.FORM |> astToGreen)
+
+    expect builder TokenKind.OpenBracket AstKind.OPEN_PAREN state
+    |> parseFormTail builder
+
+
+and private parseVec (builder: GreenNodeBuilder) state =
+    builder.StartNode(AstKind.VEC |> astToGreen)
+
+    expect builder TokenKind.VectorPrefix AstKind.OPEN_PAREN state
+    |> parseFormTail builder
+
+and private parseBytevec (builder: GreenNodeBuilder) state =
+    builder.StartNode(AstKind.BYTEVEC |> astToGreen)
+
+    // TODO: Strinctly speaking this should be many numbers, not many
+    //       expressions. We can always deal with that later on in semantic
+    //       analys however. It might be worth changing this though. Datums are
+    //       more restrictive than plain expressions. We might benefit from
+    //       better modelling the grammar non-terminals of the spec in general.
+    //       e.g. (quote <datum>) and '<datum> being the same node kind in the
+    //       tree.
+    expect builder TokenKind.BytevectorPrefix AstKind.OPEN_PAREN state
+    |> parseFormTail builder
+
 and private parseExpr builder state =
     match currentKind state with
     | TokenKind.OpenBracket -> parseForm builder state
+    | TokenKind.VectorPrefix -> parseVec builder state
+    | TokenKind.BytevectorPrefix -> parseBytevec builder state
     | _ -> parseAtom builder state
     |> skipAtmosphere builder
 

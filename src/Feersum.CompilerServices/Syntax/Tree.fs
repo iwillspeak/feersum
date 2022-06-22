@@ -17,6 +17,8 @@ module Tree =
         | SYMBOL = 4
         | FORM = 5
         | QUOTED_DATUM = 6
+        | VEC = 7
+        | BYTEVEC = 8
 
         // tokens
         | EOF = 101
