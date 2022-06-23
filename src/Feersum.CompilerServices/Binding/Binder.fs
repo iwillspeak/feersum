@@ -6,7 +6,7 @@ open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Utils
 
-module private Diagnostics =
+module private BinderDiagnostics =
 
     // TODO: remove this and replace with better binder errors
     let bindError = DiagnosticKind.Create DiagnosticLevel.Error 30 "Generic bind error"
@@ -48,7 +48,7 @@ type BoundLiteral =
     | Character of char
     | Number of double
     | Str of string
-    | Vector of AstNode list
+    | Vector of BoundDatum list
     | ByteVector of byte list
     | Null
 
@@ -59,13 +59,19 @@ type BoundLiteral =
         | SyntaxConstant.Boolean b -> BoundLiteral.Boolean b
         | SyntaxConstant.Str s -> BoundLiteral.Str s
 
+and BoundDatum =
+    | Compound of BoundDatum list
+    | SelfEval of BoundLiteral
+    | Ident of string
+    | Quoted of BoundDatum
+
 /// Bound Expression Type
 ///
 /// Bound expressions represent the syntax of a program with all identifier
 /// references resolved to the correct storage.
 type BoundExpr =
     | Literal of BoundLiteral
-    | Quoted of AstNode
+    | Quoted of BoundDatum
     | SequencePoint of BoundExpr * TextLocation
     | Load of StorageRef
     | Store of StorageRef * BoundExpr option
@@ -252,19 +258,19 @@ module private Impl =
 
             if seenDot then
                 if afterDot.IsSome then
-                    ctx.Diagnostics.Emit Diagnostics.bindError formal.Location "Only expect single ID after dot"
+                    ctx.Diagnostics.Emit BinderDiagnostics.bindError formal.Location "Only expect single ID after dot"
 
                 match formal.Kind with
                 | AstNodeKind.Ident (id) -> (formals, true, Some(id))
                 | _ ->
-                    ctx.Diagnostics.Emit Diagnostics.bindError formal.Location "Expected ID after dot"
+                    ctx.Diagnostics.Emit BinderDiagnostics.bindError formal.Location "Expected ID after dot"
                     acc
             else
                 match formal.Kind with
                 | AstNodeKind.Dot -> (formals, true, None)
                 | AstNodeKind.Ident (id) -> (id :: formals, false, None)
                 | _ ->
-                    ctx.Diagnostics.Emit Diagnostics.bindError formal.Location "Expected ID or dot in formals"
+                    ctx.Diagnostics.Emit BinderDiagnostics.bindError formal.Location "Expected ID or dot in formals"
                     acc
 
         let (fmls, sawDot, dotted) = List.fold f ([], false, None) formals
@@ -274,7 +280,11 @@ module private Impl =
             match dotted with
             | Some (d) -> BoundFormals.DottedList(fmls, d)
             | None ->
-                ctx.Diagnostics.Emit Diagnostics.bindError (List.last formals).Location "Saw dot but no ID in formals"
+                ctx.Diagnostics.Emit
+                    BinderDiagnostics.bindError
+                    (List.last formals).Location
+                    "Saw dot but no ID in formals"
+
                 BoundFormals.List(fmls)
         else
             BoundFormals.List(fmls)
@@ -292,7 +302,7 @@ module private Impl =
         | AstNodeKind.Form (formals) -> bindFormalsList ctx formals
         | _ ->
             "Unrecognised formal parameter list. Must be an ID or list pattern"
-            |> ctx.Diagnostics.Emit Diagnostics.bindError formals.Location
+            |> ctx.Diagnostics.Emit BinderDiagnostics.bindError formals.Location
 
             BoundFormals.List([])
 
@@ -306,23 +316,23 @@ module private Impl =
                 match binding with
                 | [ { Kind = AstNodeKind.Ident id }; body ] -> (id, body) :: bindings
                 | _ ->
-                    ctx.Diagnostics.Emit Diagnostics.bindError decl.Location "Invalid binding form"
+                    ctx.Diagnostics.Emit BinderDiagnostics.bindError decl.Location "Invalid binding form"
                     bindings
             | _ ->
-                ctx.Diagnostics.Emit Diagnostics.bindError decl.Location "Expeted a binding form"
+                ctx.Diagnostics.Emit BinderDiagnostics.bindError decl.Location "Expeted a binding form"
                 bindings
 
         match node with
         | { Kind = AstNodeKind.Form (decls) } -> List.foldBack (parseBindingSpec) decls []
         | _ ->
-            ctx.Diagnostics.Emit Diagnostics.bindError node.Location "Expected binding list"
+            ctx.Diagnostics.Emit BinderDiagnostics.bindError node.Location "Expected binding list"
             []
 
     /// Emit a diagnostic for an ill-formed special form
     let private illFormedInCtx ctx location formName =
         formName
         |> sprintf "Ill-formed '%s' special form"
-        |> ctx.Diagnostics.Emit Diagnostics.bindError location
+        |> ctx.Diagnostics.Emit BinderDiagnostics.bindError location
 
         BoundExpr.Error
 
@@ -335,10 +345,13 @@ module private Impl =
         match node.Kind with
         | AstNodeKind.Error -> ice "Attempt to bind an error node."
         | AstNodeKind.Constant c -> BoundLiteral.FromConstant c |> BoundExpr.Literal
-        | AstNodeKind.Vector v -> BoundExpr.Literal(BoundLiteral.Vector v)
+        | AstNodeKind.Vector v ->
+            List.map (bindDatum ctx) v
+            |> BoundLiteral.Vector
+            |> BoundExpr.Literal
         | AstNodeKind.ByteVector bv -> BoundExpr.Literal(BoundLiteral.ByteVector bv)
         | AstNodeKind.Dot ->
-            ctx.Diagnostics.Emit Diagnostics.bindError node.Location "Unexpected dot"
+            ctx.Diagnostics.Emit BinderDiagnostics.bindError node.Location "Unexpected dot"
             BoundExpr.Error
         | AstNodeKind.Seq s -> bindSequence ctx s
         | AstNodeKind.Form f -> bindForm ctx f node
@@ -347,12 +360,31 @@ module private Impl =
             | Some s -> BoundExpr.Load(s)
             | None ->
                 sprintf "reference to undefined symbol %s" id
-                |> ctx.Diagnostics.Emit Diagnostics.bindError node.Location
+                |> ctx.Diagnostics.Emit BinderDiagnostics.bindError node.Location
 
                 BoundExpr.Error
         | AstNodeKind.Quoted q -> bindQuoted ctx q
 
-    and private bindQuoted ctx quoted = BoundExpr.Quoted quoted
+    and private bindDatum ctx node =
+        match node.Kind with
+        | AstNodeKind.Ident i -> BoundDatum.Ident i
+        | AstNodeKind.Constant c -> BoundDatum.SelfEval(BoundLiteral.FromConstant c)
+        | AstNodeKind.Dot -> BoundDatum.Ident "." // FIXME: This is definitely not right
+        | AstNodeKind.Form f
+        | AstNodeKind.Seq f -> List.map (bindDatum ctx) f |> BoundDatum.Compound
+        | AstNodeKind.Quoted q -> bindDatum ctx q |> BoundDatum.Quoted
+        | AstNodeKind.Vector v ->
+            List.map (bindDatum ctx) v
+            |> BoundLiteral.Vector
+            |> BoundDatum.SelfEval
+        | AstNodeKind.ByteVector v -> BoundLiteral.ByteVector v |> BoundDatum.SelfEval
+        | AstNodeKind.Error ->
+            ctx.Diagnostics.Emit BinderDiagnostics.bindError node.Location "invalid item in quoted expression"
+            BoundDatum.Ident("<ERROR>")
+
+    and private bindQuoted ctx quoted =
+
+        bindDatum ctx quoted |> BoundExpr.Quoted
 
     and private bindWithSequencePoint ctx expr =
         let inner = bindInContext ctx expr
@@ -427,7 +459,7 @@ module private Impl =
                     |> List.choose (
                         Libraries.resolveImport ctx.Libraries
                         >> Result.map (BinderCtx.importLibrary libCtx >> BoundExpr.Import)
-                        >> Result.mapError (libCtx.Diagnostics.Emit Diagnostics.bindError location)
+                        >> Result.mapError (libCtx.Diagnostics.Emit BinderDiagnostics.bindError location)
                         >> Option.ofResult
                     )
                     |> BoundExpr.Seq
@@ -448,7 +480,7 @@ module private Impl =
             | Some (x) -> Some((extId, x))
             | _ ->
                 sprintf "Could not find exported item %s" id
-                |> Diagnostic.Create Diagnostics.missingExport location
+                |> Diagnostic.Create BinderDiagnostics.missingExport location
                 |> libCtx.Diagnostics.Add
 
                 None
@@ -587,7 +619,7 @@ module private Impl =
 
                         name
                         |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
-                        |> ctx.Diagnostics.Emit Diagnostics.bindError location)
+                        |> ctx.Diagnostics.Emit BinderDiagnostics.bindError location)
 
                 let isLetrecStar = head.Kind = AstNodeKind.Ident("letrec*")
 
@@ -625,7 +657,7 @@ module private Impl =
                 | Some s -> BoundExpr.Store(s, Some(value))
                 | None ->
                     sprintf "Attempt to set `%s` that was not yet defined" id
-                    |> ctx.Diagnostics.Emit Diagnostics.bindError l
+                    |> ctx.Diagnostics.Emit BinderDiagnostics.bindError l
 
                     BoundExpr.Error
             | _ -> illFormed "set!"
@@ -635,11 +667,11 @@ module private Impl =
             | _ -> illFormed "quote"
         | { Kind = AstNodeKind.Ident ("define-syntax") } :: body ->
             match body with
-            | [ { Kind = AstNodeKind.Ident (id) } as idSyn; syntaxRules ] ->
+            | [ { Kind = AstNodeKind.Ident (id) }; syntaxRules ] ->
                 match Macros.parseSyntaxRules id syntaxRules with
                 | Ok (macro) ->
                     BinderCtx.addMacro ctx id macro
-                    BoundExpr.Quoted idSyn
+                    BoundExpr.Quoted(BoundDatum.Ident id)
                 | Result.Error e ->
                     ctx.Diagnostics.Add e
                     BoundExpr.Error
@@ -660,7 +692,7 @@ module private Impl =
             |> List.map (fun item ->
                 Libraries.parseImport ctx.Diagnostics item
                 |> Libraries.resolveImport ctx.Libraries
-                |> Result.mapError (ctx.Diagnostics.Emit Diagnostics.bindError item.Location)
+                |> Result.mapError (ctx.Diagnostics.Emit BinderDiagnostics.bindError item.Location)
                 |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
                 |> Result.okOr BoundExpr.Error)
             |> BoundExpr.Seq
