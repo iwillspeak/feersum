@@ -433,7 +433,7 @@ module private Utils =
             | None -> emitUnspecified ctx
         | BoundExpr.Quoted quoted -> emitQuoted ctx quoted
 
-    and emitQuoted ctx quoted =
+    and emitQuoted ctx (quoted: BoundDatum) =
         let quoteSequence s =
             let ret = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
@@ -458,21 +458,12 @@ module private Utils =
             ctx.IL.Emit(OpCodes.Ldstr, id)
             ctx.IL.Emit(OpCodes.Newobj, ctx.Core.IdentCtor)
 
-        match quoted.Kind with
-        | Vector v -> emitLiteral ctx (BoundLiteral.Vector v)
-        | ByteVector v -> emitLiteral ctx (BoundLiteral.ByteVector v)
-        | Constant c -> emitLiteral ctx (BoundLiteral.FromConstant c)
-        | Form [] -> emitLiteral ctx (BoundLiteral.Null)
-        | Form s
-        | Seq s -> quoteSequence s
-        | Quoted q ->
-            [ { Kind = AstNodeKind.Ident "quote"
-                Location = quoted.Location }
-              q ]
-            |> quoteSequence
-        | Dot -> quoteIdent "."
-        | Ident id -> quoteIdent id
-        | Error -> ice "Error in quoted expression"
+        match quoted with
+        | BoundDatum.SelfEval c -> emitLiteral ctx c
+        | BoundDatum.Compound [] -> emitLiteral ctx (BoundLiteral.Null)
+        | BoundDatum.Compound s -> quoteSequence s
+        | BoundDatum.Quoted q -> [ BoundDatum.Ident "quote"; q ] |> quoteSequence
+        | BoundDatum.Ident id -> quoteIdent id
 
     and emitLiteral ctx =
         function
