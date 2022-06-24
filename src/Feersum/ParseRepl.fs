@@ -14,7 +14,7 @@ let private print (result: ParseResult<Program>) =
     if ParseResult.hasErrors result then
         dumpDiagnostics result.Diagnostics
 
-    Tree.dump result.Root.RawNode
+    SyntaxUtils.dump result.Root.RawNode
 
 let rec private parserReplImpl () =
     read () |> print

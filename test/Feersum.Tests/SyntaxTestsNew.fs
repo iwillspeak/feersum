@@ -13,9 +13,9 @@ let readSingle line =
     else
         failwithf "Expected single expression but got: %A" result.Diagnostics
 
-let getKind (node: SyntaxNode) = node.Kind |> greenToAst
+let getKind (node: SyntaxNode) = node.Kind |> SyntaxUtils.greenToAst
 
-let getTokenKind (token: SyntaxToken) = token.Kind |> greenToAst
+let getTokenKind (token: SyntaxToken) = token.Kind |> SyntaxUtils.greenToAst
 
 // open SyntaxUtils
 // open SyntaxFactory

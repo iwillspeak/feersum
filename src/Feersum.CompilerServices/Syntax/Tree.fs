@@ -1,36 +1,36 @@
-namespace Feersum.CompilerServices.Syntax
+namespace Feersum.CompilerServices.Syntax.Tree
 
 open Firethorn
 open Firethorn.Green
 open Firethorn.Red
 
-module Tree =
+/// Node kind for each element in the raw tree.
+type AstKind =
+    | ERROR = -1
 
-    /// Node kind for each element in the raw tree.
-    type AstKind =
-        | ERROR = -1
+    // nodes
+    | SCRIPT_PROGRAM = 1
+    | PROGRAM = 2
+    | CONSTANT = 3
+    | SYMBOL = 4
+    | FORM = 5
+    | QUOTED_DATUM = 6
+    | VEC = 7
+    | BYTEVEC = 8
 
-        // nodes
-        | SCRIPT_PROGRAM = 1
-        | PROGRAM = 2
-        | CONSTANT = 3
-        | SYMBOL = 4
-        | FORM = 5
-        | QUOTED_DATUM = 6
-        | VEC = 7
-        | BYTEVEC = 8
+    // tokens
+    | EOF = 101
+    | NUMBER = 102
+    | STRING = 103
+    | BOOLEAN = 104
+    | CHARACTER = 105
+    | IDENTIFIER = 106
+    | ATMOSPHERE = 107
+    | OPEN_PAREN = 108
+    | CLOSE_PAREN = 109
+    | QUOTE = 110
 
-        // tokens
-        | EOF = 101
-        | NUMBER = 102
-        | STRING = 103
-        | BOOLEAN = 104
-        | CHARACTER = 105
-        | IDENTIFIER = 106
-        | ATMOSPHERE = 107
-        | OPEN_PAREN = 108
-        | CLOSE_PAREN = 109
-        | QUOTE = 110
+module SyntaxUtils =
 
     /// Convert an AST Kind to a raw `SyntaxKind`
     let astToGreen (kind: AstKind) = SyntaxKind(int kind)
@@ -43,147 +43,170 @@ module Tree =
     /// Debug dump. Writes a debug representation of the tree to stdout.
     let dump = Debug.debugDump (Debug.mappedFormatter greenToAst)
 
-    [<AutoOpen>]
-    module private Utils =
+open SyntaxUtils
 
-        /// Predicate funtion to filter tokesn by AST Kind
-        let tokenOfKind (kind: AstKind) (token: SyntaxToken) = token.Kind = (kind |> astToGreen)
+[<AutoOpen>]
+module private Utils =
 
-    /// Root type in the AST Tree. All node types should inherit from this
-    /// either directly or indeirectly .
-    [<AbstractClass>]
-    type AstItem(red: NodeOrToken<SyntaxNode, SyntaxToken>) =
+    /// Predicate funtion to filter tokesn by AST Kind
+    let tokenOfKind (kind: AstKind) (token: SyntaxToken) = token.Kind = (kind |> astToGreen)
 
-        /// Get the Syntax range of the item
-        member public _.SyntaxRange =
-            red
-            |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
+/// ------------------------ Syntax Tree Types --------------------------------
+///
+/// The syntax tree is made up of three laysers. The red and green layers come
+/// from the Firethorn library. This last layer is a colleciton of classes that
+/// 'query' the underlying untyped tree to provide structured access to the
+/// data.
+/// 
 
-        member _.Text =
-            red
-            |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
+/// Root type in the AST Tree. All node types should inherit from this
+/// either directly or indeirectly .
+[<AbstractClass>]
+type AstItem internal (red: NodeOrToken<SyntaxNode, SyntaxToken>) =
 
-        override _.ToString() =
-            red
-            |> NodeOrToken.consolidate (fun n -> n.ToString()) (fun t -> t.ToString())
+    /// Get the Syntax range of the item
+    member public _.SyntaxRange =
+        red
+        |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
 
-    [<AbstractClass>]
-    type AstNode(red: SyntaxNode) =
+    member _.Text =
+        red
+        |> NodeOrToken.consolidate (fun n -> n.Green.ToString()) (fun t -> t.Green.Text)
 
-        inherit AstItem(red |> Node)
+    override _.ToString() =
+        red
+        |> NodeOrToken.consolidate (fun n -> n.ToString()) (fun t -> t.ToString())
 
-        member public _.RawNode = red
+[<AbstractClass>]
+type AstNode internal (red: SyntaxNode) =
 
-    [<AbstractClass>]
-    type AstToken(red: SyntaxToken) =
+    inherit AstItem(red |> Node)
 
-        inherit AstItem(red |> Token)
+    member public _.RawNode = red
 
-        member public _.RawToken = red
+[<AbstractClass>]
+type AstToken internal (red: SyntaxToken) =
 
-    /// Form syntax wrapper
-    type Form(red: SyntaxNode) =
+    inherit AstItem(red |> Token)
 
-        inherit AstNode(red)
+    member public _.RawToken = red
 
-        member public _.OpeningParen =
-            red.ChildrenWithTokens()
-            |> Seq.choose (NodeOrToken.asToken)
-            |> Seq.tryFind (tokenOfKind AstKind.OPEN_PAREN)
+/// Form syntax wrapper
+type Form internal (red: SyntaxNode) =
 
-        member public _.Body = red.Children()
+    inherit AstNode(red)
 
-        member public _.ClosingParen =
-            red.ChildrenWithTokens()
-            |> Seq.choose (NodeOrToken.asToken)
-            |> Seq.tryFind (tokenOfKind AstKind.CLOSE_PAREN)
+    member public _.OpeningParen =
+        red.ChildrenWithTokens()
+        |> Seq.choose (NodeOrToken.asToken)
+        |> Seq.tryFind (tokenOfKind AstKind.OPEN_PAREN)
 
-        static member TryCast(red: SyntaxNode) : Option<Form> =
-            if red.Kind = (AstKind.FORM |> astToGreen) then
-                Some(new Form(red))
-            else
-                None
+    // FIXME: This should return a seq of expression, not raw syntax noddes
+    member public _.Body = red.Children()
 
-    /// Number node in the syntax tree.
-    type Number(red: SyntaxToken) =
+    member public _.ClosingParen =
+        red.ChildrenWithTokens()
+        |> Seq.choose (NodeOrToken.asToken)
+        |> Seq.tryFind (tokenOfKind AstKind.CLOSE_PAREN)
 
-        inherit AstToken(red)
+    static member TryCast(red: SyntaxNode) : Option<Form> =
+        if red.Kind = (AstKind.FORM |> astToGreen) then
+            Some(new Form(red))
+        else
+            None
 
-        static member TryCast(red: SyntaxToken) : Option<Number> =
-            if red.Kind = (AstKind.NUMBER |> astToGreen) then
-                Some(new Number(red))
-            else
-                None
+/// Number node in the syntax tree.
+type Number internal (red: SyntaxToken) =
 
-        member public x.Value =
-            match red.Green.Text |> System.Double.TryParse with
-            | (true, value) -> value
-            | _ -> 0.0
+    inherit AstToken(red)
 
-    type Symbol(red: SyntaxNode) =
+    member public x.Value =
+        match red.Green.Text |> System.Double.TryParse with
+        | (true, value) -> value
+        | _ -> 0.0
 
-        inherit AstNode(red)
+    static member TryCast(red: SyntaxToken) : Option<Number> =
+        if red.Kind = (AstKind.NUMBER |> astToGreen) then
+            Some(new Number(red))
+        else
+            None
 
-        static member TryCast(red: SyntaxNode) =
-            if (red.Kind = (AstKind.SYMBOL |> astToGreen)) then
-                Some(new Symbol(red))
-            else
-                None
+type Symbol internal (red: SyntaxNode) =
 
-    type ConstantValue =
-        | Number of Number
-        | Error
+    inherit AstNode(red)
 
-    type Constant(red: SyntaxNode) =
+    static member TryCast(red: SyntaxNode) =
+        if (red.Kind = (AstKind.SYMBOL |> astToGreen)) then
+            Some(new Symbol(red))
+        else
+            None
 
-        inherit AstNode(red)
+type ConstantValue =
+    | Number of Number
+    | Error
 
-        member public _.Value =
-            red.ChildrenWithTokens()
-            |> Seq.choose (NodeOrToken.asToken)
-            |> Seq.tryExactlyOne
-            |> Option.bind (Number.TryCast)
-            |> Option.map (ConstantValue.Number)
+/// Constant value. This is a self-evaluating expression that contains a sngle
+/// constant datum.
+type Constant(red: SyntaxNode) =
 
-        static member TryCast(red: SyntaxNode) =
-            if red.Kind = (AstKind.CONSTANT |> astToGreen) then
-                new Constant(red) |> Some
-            else
-                None
+    inherit AstNode(red)
 
-    type Expression =
-        | Form of Form
-        | Constant of Constant
-        | Symbol of Symbol
+    // FIXME: This needs to handle other types of constant values
+    member public _.Value =
+        red.ChildrenWithTokens()
+        |> Seq.choose (NodeOrToken.asToken)
+        |> Seq.tryExactlyOne
+        |> Option.bind (Number.TryCast)
+        |> Option.map (ConstantValue.Number)
 
-    module Expression =
-        let tryCast (node: SyntaxNode) =
-            match node.Kind |> greenToAst with
-            | AstKind.FORM -> Some(Expression.Form(new Form(node)))
-            | AstKind.SYMBOL -> Some(Expression.Symbol(new Symbol(node)))
-            | AstKind.CONSTANT -> Some(Expression.Constant(new Constant(node)))
-            | _ -> None
+    static member TryCast(red: SyntaxNode) =
+        if red.Kind = (AstKind.CONSTANT |> astToGreen) then
+            new Constant(red) |> Some
+        else
+            None
 
-    /// Root AST type for script expressions.
-    type ScriptProgram(red: SyntaxNode) =
+/// Expression value. This is the set of all expression types. Expressions can
+/// be either a simple datum (`Constant`), an identifier `Symbol`, or a comple
+/// `Form` datum.
+type Expression =
+    | Form of Form
+    | Constant of Constant
+    | Symbol of Symbol
 
-        inherit AstNode(red)
+module Expression =
+    let tryCast (node: SyntaxNode) =
+        match node.Kind |> greenToAst with
+        | AstKind.FORM -> Some(Expression.Form(new Form(node)))
+        | AstKind.SYMBOL -> Some(Expression.Symbol(new Symbol(node)))
+        | AstKind.CONSTANT -> Some(Expression.Constant(new Constant(node)))
+        | _ -> None
 
-        member _.Body =
-            red.Children()
-            |> Seq.choose (Expression.tryCast)
-            |> Seq.tryExactlyOne
+/// Root AST type for script expressions.
+type ScriptProgram internal (red: SyntaxNode) =
 
-    /// Wrapper type to represent an entire parsed program. This represents the
-    /// contents of a single compilation unit.
-    type Program(red: SyntaxNode) =
+    inherit AstNode(red)
 
-        inherit AstNode(red)
+    member _.Body =
+        red.Children()
+        |> Seq.choose (Expression.tryCast)
+        |> Seq.tryExactlyOne
 
-        member _.Body = red.Children() |> Seq.choose (Expression.tryCast)
+    static member TryCast(red: SyntaxNode) =
+        if red.Kind = (AstKind.PROGRAM |> astToGreen) then
+            Some(new ScriptProgram(red))
+        else
+            None
 
-        static member TryCast(red: SyntaxNode) =
-            if red.Kind = (AstKind.PROGRAM |> astToGreen) then
-                Some(new Program(red))
-            else
-                None
+/// Wrapper type to represent an entire parsed program. This represents the
+/// contents of a single compilation unit.
+type Program internal (red: SyntaxNode) =
+
+    inherit AstNode(red)
+
+    member _.Body = red.Children() |> Seq.choose (Expression.tryCast)
+
+    static member TryCast(red: SyntaxNode) =
+        if red.Kind = (AstKind.PROGRAM |> astToGreen) then
+            Some(new Program(red))
+        else
+            None
