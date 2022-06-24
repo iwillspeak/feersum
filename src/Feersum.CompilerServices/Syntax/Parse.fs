@@ -7,12 +7,15 @@ open Firethorn.Red
 
 open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Syntax.Tree
 
 open Lex
-open Tree
 
+/// Private module to contain all the diagnostic kinds that the parser emits.
 module private ParserDiagnostics =
 
+    /// Generic parse error diagnostic. This is raised when no more specific
+    /// error is available.
     let parseError = DiagnosticKind.Create DiagnosticLevel.Error 10 "Parse error"
 
 /// Type to represent parse results.
@@ -88,7 +91,7 @@ module private ParserState =
     /// Finalise the parse state
     let finalise (builder: GreenNodeBuilder) rootKind state =
         let root =
-            builder.BuildRoot(rootKind |> Tree.astToGreen)
+            builder.BuildRoot(rootKind |> SyntaxUtils.astToGreen)
             |> SyntaxNode.CreateRoot
 
         { Diagnostics = state.Diagnostics
@@ -124,7 +127,7 @@ let private eat (builder: GreenNodeBuilder) kind state =
         | Some token -> token.Lexeme
         | None -> ""
 
-    builder.Token(kind |> astToGreen, lexeme)
+    builder.Token(kind |> SyntaxUtils.astToGreen, lexeme)
     state
 
 /// Expect a given token kind, or buffer a diagnostic otherwise.
@@ -140,7 +143,7 @@ let private expect (builder: GreenNodeBuilder) tokenKind nodeKind state =
 // =============================== Parsers ===================================
 
 let private parseConstant (builder: GreenNodeBuilder) state =
-    builder.StartNode(AstKind.CONSTANT |> astToGreen)
+    builder.StartNode(AstKind.CONSTANT |> SyntaxUtils.astToGreen)
 
     let mutable state = state
 
@@ -174,13 +177,13 @@ let private skipAtmosphere (builder: GreenNodeBuilder) state =
     state
 
 let private parseIdentifier (builder: GreenNodeBuilder) state =
-    builder.StartNode(AstKind.SYMBOL |> astToGreen)
+    builder.StartNode(AstKind.SYMBOL |> SyntaxUtils.astToGreen)
     let state = expect builder TokenKind.Identifier AstKind.IDENTIFIER state
     builder.FinishNode()
     state
 
 let rec private parseQuote (builder: GreenNodeBuilder) state =
-    builder.StartNode(AstKind.QUOTED_DATUM |> astToGreen)
+    builder.StartNode(AstKind.QUOTED_DATUM |> SyntaxUtils.astToGreen)
 
     let state =
         state
@@ -213,20 +216,20 @@ and private parseFormTail builder state =
     state
 
 and private parseForm (builder: GreenNodeBuilder) state =
-    builder.StartNode(AstKind.FORM |> astToGreen)
+    builder.StartNode(AstKind.FORM |> SyntaxUtils.astToGreen)
 
     expect builder TokenKind.OpenBracket AstKind.OPEN_PAREN state
     |> parseFormTail builder
 
 
 and private parseVec (builder: GreenNodeBuilder) state =
-    builder.StartNode(AstKind.VEC |> astToGreen)
+    builder.StartNode(AstKind.VEC |> SyntaxUtils.astToGreen)
 
     expect builder TokenKind.VectorPrefix AstKind.OPEN_PAREN state
     |> parseFormTail builder
 
 and private parseBytevec (builder: GreenNodeBuilder) state =
-    builder.StartNode(AstKind.BYTEVEC |> astToGreen)
+    builder.StartNode(AstKind.BYTEVEC |> SyntaxUtils.astToGreen)
 
     // TODO: Strinctly speaking this should be many numbers, not many
     //       expressions. We can always deal with that later on in semantic
