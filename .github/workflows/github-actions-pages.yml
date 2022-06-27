@@ -8,10 +8,13 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
     - uses: actions/checkout@v3
     - name: Install Docket
-      run: cargo install docket
+      run: cargo install docket --no-default-features --features syntect-hl 
     - name: Run Docket
       run: docket -s docs -t _site
     - name: Push artifact
