@@ -1,7 +1,14 @@
-name: GitHub Actions Demo
-on: [push]
+name: Build Docs
+
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
-  Explore-GitHub-Actions:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+    - uses: actions/checkout@v3
+    - name: Install Docket
+      run: cargo install docket
+    - name: Run Docket
+      run: docket -s docs -t _site
