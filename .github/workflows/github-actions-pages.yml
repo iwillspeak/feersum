@@ -16,8 +16,6 @@ jobs:
       run: docket -s docs -t _site
     - name: Push artifact
       uses: actions/upload-pages-artifact@v0
-    - name: Deploy Pages
-      uses: actions/deploy-pages@v1
   deploy:
     name: Deploy
     permissions:
