@@ -14,3 +14,5 @@ jobs:
       run: cargo install docket
     - name: Run Docket
       run: docket -s docs -t _site
+    - name: Push artifact
+      uses: actions/upload-pages-artifact@0
