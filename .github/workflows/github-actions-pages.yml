@@ -15,4 +15,5 @@ jobs:
     - name: Run Docket
       run: docket -s docs -t _site
     - name: Push artifact
-      uses: actions/upload-pages-artifact@0
+      uses: actions/upload-pages-artifact@v0
+
