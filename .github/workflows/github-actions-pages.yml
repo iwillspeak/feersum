@@ -23,6 +23,10 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v1
