@@ -77,12 +77,8 @@ type AstItem internal (red: NodeOrToken<SyntaxNode, SyntaxToken>) =
         red
         |> NodeOrToken.consolidate (fun n -> n.ToString()) (fun t -> t.ToString())
 
-[<AbstractClass>]
-type AstNode internal (red: SyntaxNode) =
 
-    inherit AstItem(red |> Node)
-
-    member public _.RawNode = red
+// *********** TOKENS
 
 [<AbstractClass>]
 type AstToken internal (red: SyntaxToken) =
@@ -91,10 +87,70 @@ type AstToken internal (red: SyntaxToken) =
 
     member public _.RawToken = red
 
+[<AbstractClass>]
+type ConstantValue internal (red: SyntaxToken) =
+
+    inherit AstToken(red)
+
+    static member TryCast(red: SyntaxToken) =
+        match (red.Kind |> greenToAst) with
+        | AstKind.STRING -> Some(new StrVal(red) :> ConstantValue)
+        | AstKind.NUMBER -> Some(new NumVal(red))
+        | AstKind.BOOLEAN -> Some(new BoolVal(red))
+        | AstKind.CHARACTER -> Some(new CharVal(red))
+        | _ -> None
+
+/// Number node in the syntax tree.
+and NumVal internal (red: SyntaxToken) =
+
+    inherit ConstantValue(red)
+
+    member public x.Value =
+        match red.Green.Text |> System.Double.TryParse with
+        | (true, value) -> value
+        | _ -> 0.0
+
+/// String node in the syntax tree.
+and StrVal internal (red: SyntaxToken) =
+
+    inherit ConstantValue(red)
+
+    member public x.Value =
+        // FIXME: Cook the string here.
+        red.Green.Text
+
+
+/// Boolean node in the syntax tree.
+and BoolVal internal (red: SyntaxToken) =
+
+    inherit ConstantValue(red)
+
+    member public x.Value =
+        x.Text.StartsWith("#t")
+
+
+/// Character node in the syntax tree.
+and CharVal internal (red: SyntaxToken) =
+
+    inherit ConstantValue(red)
+
+    member public x.Value =
+        // TODO: Cook this character
+        x.Text[1]
+
+// *********** NODES
+
+[<AbstractClass>]
+type AstNode internal (red: SyntaxNode) =
+
+    inherit AstItem(red |> Node)
+
+    member public _.RawNode = red
+
 /// Form syntax wrapper
 type Form internal (red: SyntaxNode) =
 
-    inherit AstNode(red)
+    inherit Expression(red)
 
     member public _.OpeningParen =
         red.ChildrenWithTokens()
@@ -102,83 +158,58 @@ type Form internal (red: SyntaxNode) =
         |> Seq.tryFind (tokenOfKind AstKind.OPEN_PAREN)
 
     // FIXME: This should return a seq of expression, not raw syntax noddes
-    member public _.Body = red.Children()
+    member public _.Body =
+        red.Children()
+        |> Seq.choose Expression.TryCast
 
     member public _.ClosingParen =
         red.ChildrenWithTokens()
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryFind (tokenOfKind AstKind.CLOSE_PAREN)
 
-    static member TryCast(red: SyntaxNode) : Option<Form> =
-        if red.Kind = (AstKind.FORM |> astToGreen) then
-            Some(new Form(red))
-        else
-            None
 
-/// Number node in the syntax tree.
-type Number internal (red: SyntaxToken) =
+/// Symbolic identifier node. This wraps an indentifier token when it is used
+/// as a symbol in the source text.
+and Symbol internal (red: SyntaxNode) =
 
-    inherit AstToken(red)
+    inherit Expression(red)
 
-    member public x.Value =
-        match red.Green.Text |> System.Double.TryParse with
-        | (true, value) -> value
-        | _ -> 0.0
+/// This is a self-evaluating expression that contains a sngle constant datum.
+and Constant internal (red: SyntaxNode) =
 
-    static member TryCast(red: SyntaxToken) : Option<Number> =
-        if red.Kind = (AstKind.NUMBER |> astToGreen) then
-            Some(new Number(red))
-        else
-            None
+    inherit Expression(red)
 
-type Symbol internal (red: SyntaxNode) =
-
-    inherit AstNode(red)
-
-    static member TryCast(red: SyntaxNode) =
-        if (red.Kind = (AstKind.SYMBOL |> astToGreen)) then
-            Some(new Symbol(red))
-        else
-            None
-
-type ConstantValue =
-    | Number of Number
-    | Error
-
-/// Constant value. This is a self-evaluating expression that contains a sngle
-/// constant datum.
-type Constant(red: SyntaxNode) =
-
-    inherit AstNode(red)
-
-    // FIXME: This needs to handle other types of constant values
     member public _.Value =
         red.ChildrenWithTokens()
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryExactlyOne
-        |> Option.bind (Number.TryCast)
-        |> Option.map (ConstantValue.Number)
+        |> Option.bind (ConstantValue.TryCast)
 
-    static member TryCast(red: SyntaxNode) =
-        if red.Kind = (AstKind.CONSTANT |> astToGreen) then
-            new Constant(red) |> Some
-        else
-            None
+/// Quoted datum node
+and Quoted internal (red: SyntaxNode) =
+
+    inherit Expression(red)
+
+/// Vector constant node
+and Vec internal (red: SyntaxNode) =
+
+    inherit Expression(red)
+
+/// Byte Vector constant node
+and ByteVec internal (red: SyntaxNode) =
+
+    inherit Expression(red)
 
 /// Expression value. This is the set of all expression types. Expressions can
 /// be either a simple datum (`Constant`), an identifier `Symbol`, or a comple
 /// `Form` datum.
-type Expression =
-    | Form of Form
-    | Constant of Constant
-    | Symbol of Symbol
+and Expression internal (red: SyntaxNode) =
 
-module Expression =
-    let tryCast (node: SyntaxNode) =
+    static member TryCast (node: SyntaxNode) =
         match node.Kind |> greenToAst with
-        | AstKind.FORM -> Some(Expression.Form(new Form(node)))
-        | AstKind.SYMBOL -> Some(Expression.Symbol(new Symbol(node)))
-        | AstKind.CONSTANT -> Some(Expression.Constant(new Constant(node)))
+        | AstKind.FORM -> Some(new Form(node) :> Expression)
+        | AstKind.SYMBOL -> Some(new Symbol(node))
+        | AstKind.CONSTANT -> Some(new Constant(node))
         | _ -> None
 
 /// Root AST type for script expressions.
@@ -188,7 +219,7 @@ type ScriptProgram internal (red: SyntaxNode) =
 
     member _.Body =
         red.Children()
-        |> Seq.choose (Expression.tryCast)
+        |> Seq.choose (Expression.TryCast)
         |> Seq.tryExactlyOne
 
     static member TryCast(red: SyntaxNode) =
@@ -203,7 +234,7 @@ type Program internal (red: SyntaxNode) =
 
     inherit AstNode(red)
 
-    member _.Body = red.Children() |> Seq.choose (Expression.tryCast)
+    member _.Body = red.Children() |> Seq.choose (Expression.TryCast)
 
     static member TryCast(red: SyntaxNode) =
         if red.Kind = (AstKind.PROGRAM |> astToGreen) then
