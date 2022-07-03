@@ -79,6 +79,9 @@ type Diagnostic =
           Message = message }
 
     /// Format the diagnostic for output.
+    ///
+    /// The output format shold conform to the [MSBuild "Canonical Error
+    /// Format"](https://github.com/dotnet/msbuild/blob/94c28cca4cdb22f2cac279e3fd8d86aa4d061848/src/Shared/CanonicalError.cs#L12-L51)
     override d.ToString() =
         let normaliseName (stream: string) =
             if Path.IsPathRooted(stream) then
@@ -91,18 +94,30 @@ type Diagnostic =
         | Point p ->
             sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
         | Span (s, e) ->
-            sprintf
-                "%s(%d,%d,%d,%d): %s: %s"
-                (s.Source |> normaliseName)
-                s.Line
-                s.Col
-                e.Line
-                e.Col
-                d.MessagePrefix
-                d.FormattedMessage
+            // If both points are on the same line then we can use the a more
+            // compact format.
+            if s.Line = e.Line then
+                sprintf
+                    "%s(%d,%d-%d): %s: %s"
+                    (s.Source |> normaliseName)
+                    s.Line
+                    s.Col
+                    e.Col
+                    d.MessagePrefix
+                    d.FormattedMessage
+            else 
+                sprintf
+                    "%s(%d,%d,%d,%d): %s: %s"
+                    (s.Source |> normaliseName)
+                    s.Line
+                    s.Col
+                    e.Line
+                    e.Col
+                    d.MessagePrefix
+                    d.FormattedMessage
 
     /// Formatted value for the message
-    member private d.FormattedMessage = sprintf "%s %s" d.Kind.Title d.Message
+    member private d.FormattedMessage = sprintf "[%s] %s" d.Kind.Title d.Message
 
     /// Prefix for the message. Used to summarise the diagnostic kind.
     member private d.MessagePrefix =

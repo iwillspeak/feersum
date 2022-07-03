@@ -59,6 +59,11 @@ type BoundLiteral =
         | SyntaxConstant.Boolean b -> BoundLiteral.Boolean b
         | SyntaxConstant.Str s -> BoundLiteral.Str s
 
+/// Bound Datum Element
+///
+/// Represents a form or atom when used as a data element rather than as a
+/// program element. Used to hold the contents of quoted expressions, as well
+/// as the lements winthin a vector literal.
 and BoundDatum =
     | Compound of BoundDatum list
     | SelfEval of BoundLiteral
