@@ -7,6 +7,7 @@ open Firethorn.Red
 
 open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Tree
 
 open Lex

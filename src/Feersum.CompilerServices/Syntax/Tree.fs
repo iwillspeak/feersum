@@ -4,6 +4,7 @@ open Firethorn
 open Firethorn.Green
 open Firethorn.Red
 
+
 /// Node kind for each element in the raw tree.
 type AstKind =
     | ERROR = -1
@@ -57,10 +58,10 @@ module private Utils =
 /// from the Firethorn library. This last layer is a colleciton of classes that
 /// 'query' the underlying untyped tree to provide structured access to the
 /// data.
-/// 
-
+///
 /// Root type in the AST Tree. All node types should inherit from this
 /// either directly or indeirectly .
+
 [<AbstractClass>]
 type AstItem internal (red: NodeOrToken<SyntaxNode, SyntaxToken>) =
 
@@ -125,8 +126,7 @@ and BoolVal internal (red: SyntaxToken) =
 
     inherit ConstantValue(red)
 
-    member public x.Value =
-        x.Text.StartsWith("#t")
+    member public x.Value = x.Text.StartsWith("#t")
 
 
 /// Character node in the syntax tree.
@@ -157,10 +157,7 @@ type Form internal (red: SyntaxNode) =
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryFind (tokenOfKind AstKind.OPEN_PAREN)
 
-    // FIXME: This should return a seq of expression, not raw syntax noddes
-    member public _.Body =
-        red.Children()
-        |> Seq.choose Expression.TryCast
+    member public _.Body = red.Children() |> Seq.choose Expression.TryCast
 
     member public _.ClosingParen =
         red.ChildrenWithTokens()
@@ -204,8 +201,9 @@ and ByteVec internal (red: SyntaxNode) =
 /// be either a simple datum (`Constant`), an identifier `Symbol`, or a comple
 /// `Form` datum.
 and Expression internal (red: SyntaxNode) =
+    inherit AstNode(red)
 
-    static member TryCast (node: SyntaxNode) =
+    static member TryCast(node: SyntaxNode) =
         match node.Kind |> greenToAst with
         | AstKind.FORM -> Some(new Form(node) :> Expression)
         | AstKind.SYMBOL -> Some(new Symbol(node))
@@ -241,3 +239,21 @@ type Program internal (red: SyntaxNode) =
             Some(new Program(red))
         else
             None
+
+
+/// Active patterns to make working with elements in the syntax tree more
+/// ergonomic.
+[<AutoOpen>]
+module Patterns =
+
+    open Feersum.CompilerServices.Ice
+
+    /// Pattern to match on known expression types
+    let (|ByteVec|Vec|Form|Constant|Symbol|) (expr: Expression) =
+        match expr with
+        | :? ByteVec as b -> ByteVec b
+        | :? Vec as v -> Vec v
+        | :? Form as f -> Form f
+        | :? Constant as c -> Constant c
+        | :? Symbol as s -> Symbol s
+        | _ -> icef "Unexpected expression type: %A" (expr.GetType())

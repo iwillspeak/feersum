@@ -1,48 +1,8 @@
 namespace Feersum.CompilerServices.Diagnostics
 
+open Feersum.CompilerServices.Text
+
 open System.IO
-
-/// A point in the source text
-type TextPoint =
-    // FIXME: this _should_ just be the offset into the file, with line and
-    // other information resolved later from a workspace or similar. We're stuck
-    // like this for the time being though becuase of FParsec.
-    { Source: string
-      Line: int64
-      Col: int64 }
-
-    static member public FromExternal(position: FParsec.Position) : TextPoint =
-        TextPoint.FromParts(position.StreamName, position.Line, position.Column)
-
-    static member public FromParts(source: string, line: int64, col: int64) =
-        { Source = source
-          Line = line
-          Col = col }
-
-/// A lcation in the source text
-///
-/// A text position represents either a single `Point` in the source text that
-/// lies 'between' two characters, or a `Span` that encompases a range of text.
-type TextLocation =
-    | Span of TextPoint * TextPoint
-    | Point of TextPoint
-    | Missing
-
-    /// Get the start of the text location. This returns a cursor that lies just
-    /// before any text represented by this locaiton.
-    member x.Start =
-        match x with
-        | Span (s, _) -> s
-        | Point p -> p
-        | Missing -> TextPoint.FromParts("missing", 0, 0)
-
-    /// Get the end of the text location. This returns a cursot that lies just
-    /// after any text represented by this location.
-    member x.End =
-        match x with
-        | Span (_, e) -> e
-        | Point p -> p
-        | Missing -> TextPoint.FromParts("missing", 0, 0)
 
 /// Level of diagnostic. Used to tell warnings from errors.
 type DiagnosticLevel =

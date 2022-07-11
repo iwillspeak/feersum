@@ -1,9 +1,12 @@
 module SyntaxTestsNew
 
 open Xunit
-open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.Tree
 open Firethorn.Red
+open Feersum.CompilerServices.Utils
+open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Text
+open Feersum.CompilerServices.Syntax.Tree
+open Feersum.CompilerServices.Syntax.Parse
 
 let readSingle line =
     let result = Parse.readRaw Parse.ReadMode.Script "repl" line
@@ -235,3 +238,23 @@ let ``multiple diagnostics on error`` () =
     let source = "(- 1 § (display \"foo\")"
     let result = Parse.readExpr source
     Assert.True(List.length result.Diagnostics > 1)
+
+[<Fact>]
+let ``syntax shim test`` () =
+    let body = "(+ 1 2)"
+    let doc = TextDocument.fromParts "a/file/path.scm" body
+    let tree =
+        readProgram doc.Path body
+        |> ParseResult.toResult
+        |> Result.map (fun x -> 
+            x.Body
+            |> Seq.map (SyntaxShim.transformExpr doc)
+            |> Seq.exactlyOne)
+        |> Result.unwrap
+
+    printfn "@%A" tree.Location
+
+    Assert.Equal(1L, tree.Location.Start.Line)
+    Assert.Equal(0L, tree.Location.Start.Col)
+    Assert.Equal(1L, tree.Location.End.Line)
+    Assert.Equal(7L, tree.Location.End.Col)

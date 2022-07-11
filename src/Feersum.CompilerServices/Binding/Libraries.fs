@@ -1,6 +1,7 @@
 namespace Feersum.CompilerServices.Binding
 
 open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Utils
 

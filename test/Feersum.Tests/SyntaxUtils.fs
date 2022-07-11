@@ -3,6 +3,7 @@ module SyntaxUtils
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.LegacyParse
 open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Text
 open System.IO
 
 /// Helpers for fabricating syntax elements
