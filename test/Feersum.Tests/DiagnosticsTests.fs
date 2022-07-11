@@ -1,6 +1,7 @@
 module DiagnosticsTests
 
 open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Text
 open Xunit
 
 let errKind = DiagnosticKind.Create Error 123 "test diagnostic"

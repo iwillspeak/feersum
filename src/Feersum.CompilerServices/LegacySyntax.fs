@@ -5,6 +5,7 @@ open System.Globalization
 open System.Text
 
 open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Text
 
 /// Constant or literal value in the syntax tree
 type SyntaxConstant =

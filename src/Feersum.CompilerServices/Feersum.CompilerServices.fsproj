@@ -11,11 +11,13 @@
     <Compile Include="Ice.fs" />
     <Compile Include="Utils.fs" />
     <Compile Include="Options.fs" />
+    <Compile Include="Text.fs" />
     <Compile Include="Diagnostics.fs" />
     <Compile Include="LegacySyntax.fs" />
     <Compile Include="Syntax/Lex.fs" />
     <Compile Include="Syntax/Tree.fs" />
     <Compile Include="Syntax/Parse.fs" />
+    <Compile Include="Syntax/SyntaxShim.fs" />
     <Compile Include="Scope.fs" />
     <Compile Include="Binding/Libraries.fs" />
     <Compile Include="Binding/Macros.fs" />

@@ -2,7 +2,7 @@ module Feersum.CompilerServices.Syntax.Lex
 
 open System
 open System.Text
-open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Text
 
 /// Token kinds for the language.
 type TokenKind =

@@ -8,7 +8,7 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Macros
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Utils
-open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Text
 
 
 let private parse pattern literals =

@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Feersum\Feersum.fsproj" />
+    <ProjectReference Include="..\..\src\Feersum.CompilerServices\Feersum.CompilerServices.fsproj" />
     <ProjectReference Include="..\..\src\Feersum.Core\Feersum.Core.scmproj" />
   </ItemGroup>
   <ItemGroup>
