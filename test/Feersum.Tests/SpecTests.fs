@@ -202,13 +202,15 @@ let ``Test new lexer`` s =
             (Lex.tokenise sourceText "test.scm")
                 .GetEnumerator()
 
-        use timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
-
+        let mutable bail = 0
         let mutable errors = 0
         let expectFail = s.Contains("bad")
 
         while lexer.MoveNext() do
-            timeout.Token.ThrowIfCancellationRequested()
+            bail <- bail + 1
+            if bail > 1_000_000 then
+                failwith "Failed to make progress in parse"
+
             let { Kind = kind; Lexeme = token } = lexer.Current
 
             if kind = TokenKind.Error then
