@@ -68,7 +68,7 @@
         "type": "shell",
         "dependsOn": "build",
         "args": [
-          "${workspaceFolder}/src/Feersum/bin/Debug/net6.0/Feersum.dll",
+          "${workspaceFolder}/src/Feersum/bin/Debug/net7.0/Feersum.dll",
           "--configuration",
           "Debug",
           "-o",
