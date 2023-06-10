@@ -24,6 +24,6 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 set -euo pipefail
 
 dotnet build --configuration Release src/Feersum && \
-    dotnet src/Feersum/bin/Release/net6.0/Feersum.dll ${specname} \
+    dotnet src/Feersum/bin/Release/net7.0/Feersum.dll ${specname} \
         --outputtype exe -o ${specbin} && \
     dotnet ${specbin}

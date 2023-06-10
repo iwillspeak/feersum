@@ -14,11 +14,11 @@
     "Framework": {
       "type": "parameter",
       "datatype": "choice",
-      "defaultValue": "net6.0",
-      "replaces": "net6.0",
+      "defaultValue": "net7.0",
+      "replaces": "net7.0",
       "choices": [
         {
-          "choice": "net6.0",
+          "choice": "net7.0",
           "description": "Target .NET 6"
         },
         {
