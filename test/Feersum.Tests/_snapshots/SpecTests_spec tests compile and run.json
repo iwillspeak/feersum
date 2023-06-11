@@ -91,8 +91,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Generic bind error"
+          "Code": 32,
+          "Title": "Ill-formed special form"
         },
         "Location": {
           "Case": "Span",
@@ -354,8 +354,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Generic bind error"
+          "Code": 35,
+          "Title": "Reference to undefined symbol"
         },
         "Location": {
           "Case": "Span",
@@ -372,7 +372,7 @@
             }
           ]
         },
-        "Message": "reference to undefined symbol another"
+        "Message": "The symbol another is not defined in the current context"
       },
       {
         "Kind": {
@@ -702,8 +702,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Generic bind error"
+          "Code": 36,
+          "Title": "Invalid import declaration"
         },
         "Location": {
           "Case": "Span",
@@ -727,8 +727,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Generic bind error"
+          "Code": 36,
+          "Title": "Invalid import declaration"
         },
         "Location": {
           "Case": "Span",
@@ -777,8 +777,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Generic bind error"
+          "Code": 36,
+          "Title": "Invalid import declaration"
         },
         "Location": {
           "Case": "Span",
@@ -841,8 +841,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Generic bind error"
+          "Code": 37,
+          "Title": "Use of uninitialised variable"
         },
         "Location": {
           "Case": "Span",
@@ -866,8 +866,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Generic bind error"
+          "Code": 37,
+          "Title": "Use of uninitialised variable"
         },
         "Location": {
           "Case": "Span",
@@ -891,8 +891,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Generic bind error"
+          "Code": 37,
+          "Title": "Use of uninitialised variable"
         },
         "Location": {
           "Case": "Span",
