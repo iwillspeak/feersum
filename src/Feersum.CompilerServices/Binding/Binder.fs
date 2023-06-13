@@ -285,7 +285,10 @@ module private Impl =
 
             if seenDot then
                 if afterDot.IsSome then
-                    ctx.Diagnostics.Emit BinderDiagnostics.patternBindError formal.Location "Only expect single ID after dot"
+                    ctx.Diagnostics.Emit
+                        BinderDiagnostics.patternBindError
+                        formal.Location
+                        "Only expect single ID after dot"
 
                 match formal.Kind with
                 | AstNodeKind.Ident (id) -> (formals, true, Some(id))
@@ -297,7 +300,11 @@ module private Impl =
                 | AstNodeKind.Dot -> (formals, true, None)
                 | AstNodeKind.Ident (id) -> (id :: formals, false, None)
                 | _ ->
-                    ctx.Diagnostics.Emit BinderDiagnostics.patternBindError formal.Location "Expected ID or dot in formals"
+                    ctx.Diagnostics.Emit
+                        BinderDiagnostics.patternBindError
+                        formal.Location
+                        "Expected ID or dot in formals"
+
                     acc
 
         let (fmls, sawDot, dotted) = List.fold f ([], false, None) formals
