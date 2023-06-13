@@ -208,6 +208,7 @@ let ``Test new lexer`` s =
 
         while lexer.MoveNext() do
             bail <- bail + 1
+
             if bail > 1_000_000 then
                 failwith "Failed to make progress in parse"
 

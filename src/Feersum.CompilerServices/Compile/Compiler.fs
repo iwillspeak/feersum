@@ -334,29 +334,41 @@ module private Utils =
         | BoundExpr.SequencePoint (inner, location) ->
             let pos = ctx.IL.Body.Instructions.Count
             recurse inner
-            // FIXME: Hidden sequence points for missing locations?
-            if ctx.EmitSymbols
-               && location <> TextLocation.Missing then
+
+            if ctx.EmitSymbols then
                 let ins = ctx.IL.Body.Instructions[pos]
-                let s = location.Start
-                let e = location.End
 
-                let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.Source)
+                if location = TextLocation.Missing then
+                    let point = Cil.SequencePoint(ins, null)
 
-                if not found then
-                    doc <- Document(Path.GetFullPath(s.Source))
-                    doc.Language <- DocumentLanguage.Other
-                    doc.LanguageGuid <- Guid("c70c3e24-e471-4637-8129-10f771417dbb")
-                    doc.LanguageVendor <- DocumentLanguageVendor.Other
-                    doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
-                    ctx.DebugDocuments[ s.Source ] <- doc
+                    point.StartLine <- 0xfeefee
+                    point.EndLine <- 0xfeefee
+                    point.StartColumn <- 0
+                    point.EndColumn <- 0
+                    ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
 
-                let point = Cil.SequencePoint(ins, doc)
-                point.StartLine <- int s.Line
-                point.StartColumn <- int s.Col
-                point.EndLine <- int e.Line
-                point.EndColumn <- int e.Col
-                ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
+                else
+                    let s = location.Start
+                    let e = location.End
+
+                    let mutable (found, doc) = ctx.DebugDocuments.TryGetValue(s.Source)
+
+                    if not found then
+                        doc <- Document(Path.GetFullPath(s.Source))
+                        doc.Language <- DocumentLanguage.Other
+                        doc.LanguageGuid <- Guid("c70c3e24-e471-4637-8129-10f771417dbb")
+                        doc.LanguageVendor <- DocumentLanguageVendor.Other
+                        doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
+                        // TODO: Set HashAlgorithm here, and store the SHA1 of the
+                        //       debug document.
+                        ctx.DebugDocuments[ s.Source ] <- doc
+
+                    let point = Cil.SequencePoint(ins, doc)
+                    point.StartLine <- int s.Line
+                    point.StartColumn <- int s.Col
+                    point.EndLine <- int e.Line
+                    point.EndColumn <- int e.Col
+                    ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
         | BoundExpr.Literal l -> emitLiteral ctx l
         | BoundExpr.Seq s -> emitSequence ctx tail s
         | BoundExpr.Application (ap, args) -> emitApplication ctx tail ap args

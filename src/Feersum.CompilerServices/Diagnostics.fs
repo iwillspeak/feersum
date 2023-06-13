@@ -65,7 +65,7 @@ type Diagnostic =
                     e.Col
                     d.MessagePrefix
                     d.FormattedMessage
-            else 
+            else
                 sprintf
                     "%s(%d,%d,%d,%d): %s: %s"
                     (s.Source |> normaliseName)

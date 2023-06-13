@@ -243,10 +243,11 @@ let ``multiple diagnostics on error`` () =
 let ``syntax shim test`` () =
     let body = "(+ 1 2)"
     let doc = TextDocument.fromParts "a/file/path.scm" body
+
     let tree =
         readProgram doc.Path body
         |> ParseResult.toResult
-        |> Result.map (fun x -> 
+        |> Result.map (fun x ->
             x.Body
             |> Seq.map (SyntaxShim.transformExpr doc)
             |> Seq.exactlyOne)
