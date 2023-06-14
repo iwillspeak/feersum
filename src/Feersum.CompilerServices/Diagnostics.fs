@@ -53,7 +53,7 @@ type Diagnostic =
         | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.FormattedMessage
         | Point p ->
             sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
-        | Span (s, e) ->
+        | Span(s, e) ->
             // If both points are on the same line then we can use the a more
             // compact format.
             if s.Line = e.Line then
@@ -121,6 +121,4 @@ module Diagnostics =
 
     /// Write the diagnostics to the standard error
     let dumpDiagnostics diags =
-        diags
-        |> List.rev
-        |> Seq.iter (fun x -> eprintfn "%s" (x.ToString()))
+        diags |> List.rev |> Seq.iter (fun x -> eprintfn "%s" (x.ToString()))

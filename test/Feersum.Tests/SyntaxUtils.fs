@@ -42,8 +42,8 @@ let public basedStreamName basePath =
 /// Transform a location with the given Path Re-Writer
 let public sanitiseLocationWith rewriter =
     function
-    | Point (p) -> Point(rewriter p)
-    | Span (s, e) -> Span(rewriter s, rewriter e)
+    | Point(p) -> Point(rewriter p)
+    | Span(s, e) -> Span(rewriter s, rewriter e)
     | Missing -> Missing
 
 /// Location Re-writer that uses the `fixedStreamName` Path Re-writer
@@ -61,16 +61,17 @@ let rec public sanitiseNodeWith rewriter (node: AstNode) =
 
 and private sanitiseKind rewriter =
     function
-    | Form (f) -> List.map (sanitiseNodeWith rewriter) f |> Form
-    | Seq (s) -> List.map (sanitiseNodeWith rewriter) s |> Seq
-    | Quoted (q) -> sanitiseNodeWith rewriter q |> Quoted
-    | Vector (v) -> List.map (sanitiseNodeWith rewriter) v |> Vector
+    | Form(f) -> List.map (sanitiseNodeWith rewriter) f |> Form
+    | Seq(s) -> List.map (sanitiseNodeWith rewriter) s |> Seq
+    | Quoted(q) -> sanitiseNodeWith rewriter q |> Quoted
+    | Vector(v) -> List.map (sanitiseNodeWith rewriter) v |> Vector
     | other -> other
 
 /// Transofrm a diagnostics list with the given Location Re-Writer `rewriter`
 let public sanitiseDiagnosticsWith rewriter (diags: Diagnostic list) =
     let sanitiseDiag d =
-        { d with Diagnostic.Location = rewriter (d.Location) }
+        { d with
+            Diagnostic.Location = rewriter (d.Location) }
 
     List.map (sanitiseDiag) diags
 

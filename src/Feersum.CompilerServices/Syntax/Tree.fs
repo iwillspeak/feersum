@@ -117,12 +117,8 @@ module private Utils =
     let cookIdentifier (token: SyntaxToken) =
         let tokenText = token.Green.Text
 
-        if
-            tokenText.StartsWith('|')
-            && tokenText.EndsWith('|')
-        then
-            tokenText[1 .. (tokenText.Length - 2)]
-            |> cookString
+        if tokenText.StartsWith('|') && tokenText.EndsWith('|') then
+            tokenText[1 .. (tokenText.Length - 2)] |> cookString
         else
             tokenText
 
@@ -142,16 +138,14 @@ type AstItem internal (red: NodeOrToken<SyntaxNode, SyntaxToken>) =
 
     /// Get the Syntax range of the item
     member public _.SyntaxRange =
-        red
-        |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
+        red |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
 
     member _.Text =
         red
         |> NodeOrToken.consolidate (fun n -> n.Green.ToString()) (fun t -> t.Green.Text)
 
     override _.ToString() =
-        red
-        |> NodeOrToken.consolidate (fun n -> n.ToString()) (fun t -> t.ToString())
+        red |> NodeOrToken.consolidate (fun n -> n.ToString()) (fun t -> t.ToString())
 
 
 // *********** TOKENS
@@ -297,10 +291,7 @@ type ScriptProgram internal (red: SyntaxNode) =
 
     inherit AstNode(red)
 
-    member _.Body =
-        red.Children()
-        |> Seq.choose (Expression.TryCast)
-        |> Seq.tryExactlyOne
+    member _.Body = red.Children() |> Seq.choose (Expression.TryCast) |> Seq.tryExactlyOne
 
     static member TryCast(red: SyntaxNode) =
         if red.Kind = (AstKind.PROGRAM |> astToGreen) then

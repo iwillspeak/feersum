@@ -45,9 +45,7 @@ module Result =
     /// then `Ok` is returned with the inner values as a list. If any result is
     /// `Error` the first such is returned.
     let collect results =
-        results
-        |> collectAll
-        |> Result.mapError (List.head)
+        results |> collectAll |> Result.mapError (List.head)
 
     /// Extract the value from a result, or fallback to a default value.
     let okOr fallback =
@@ -68,4 +66,4 @@ module Option =
     let ofResult =
         function
         | Result.Ok o -> Some(o)
-        | Error () -> None
+        | Error() -> None

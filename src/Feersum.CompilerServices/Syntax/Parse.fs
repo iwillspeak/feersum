@@ -77,7 +77,8 @@ module private ParserState =
 
     /// Buffer a raw diagnostic at this position
     let bufferDiagnosticRaw state diagnostic =
-        { state with ParserState.Diagnostics = (diagnostic :: state.Diagnostics) }
+        { state with
+            ParserState.Diagnostics = (diagnostic :: state.Diagnostics) }
 
     /// Buffer a diagnostic at the current token in the parser state.
     let bufferDiagnostic state diagKind message =
@@ -86,14 +87,12 @@ module private ParserState =
             | Some token -> token.Location
             | _ -> Missing
 
-        Diagnostic.Create diagKind pos message
-        |> bufferDiagnosticRaw state
+        Diagnostic.Create diagKind pos message |> bufferDiagnosticRaw state
 
     /// Finalise the parse state
     let finalise (builder: GreenNodeBuilder) rootKind state =
         let root =
-            builder.BuildRoot(rootKind |> SyntaxUtils.astToGreen)
-            |> SyntaxNode.CreateRoot
+            builder.BuildRoot(rootKind |> SyntaxUtils.astToGreen) |> SyntaxNode.CreateRoot
 
         { Diagnostics = state.Diagnostics
           Root = root }
@@ -169,10 +168,7 @@ let private parseConstant (builder: GreenNodeBuilder) state =
 let private skipAtmosphere (builder: GreenNodeBuilder) state =
     let mutable state = state
 
-    while lookingAtAny
-              [ TokenKind.Whitespace
-                TokenKind.Comment ]
-              state do
+    while lookingAtAny [ TokenKind.Whitespace; TokenKind.Comment ] state do
         state <- eat builder AstKind.ATMOSPHERE state
 
     state
@@ -187,9 +183,7 @@ let rec private parseQuote (builder: GreenNodeBuilder) state =
     builder.StartNode(AstKind.QUOTED_DATUM |> SyntaxUtils.astToGreen)
 
     let state =
-        state
-        |> expect builder TokenKind.Quote AstKind.QUOTE
-        |> parseExpr builder
+        state |> expect builder TokenKind.Quote AstKind.QUOTE |> parseExpr builder
 
     builder.FinishNode()
     state
@@ -203,12 +197,7 @@ and private parseAtom builder state =
 and private parseFormTail builder state =
     let mutable state = state
 
-    while not (
-        lookingAtAny
-            [ TokenKind.EndOfFile
-              TokenKind.CloseBracket ]
-            state
-    ) do
+    while not (lookingAtAny [ TokenKind.EndOfFile; TokenKind.CloseBracket ] state) do
         state <- parseExpr builder state
 
     let state = expect builder TokenKind.CloseBracket AstKind.CLOSE_PAREN state
@@ -289,13 +278,11 @@ let readRaw mode name (line: string) =
 
 /// Read a sequence of expressions as a program from the given `input`.
 let readProgram name input =
-    readRaw Program name input
-    |> ParseResult.map (fun x -> new Program(x))
+    readRaw Program name input |> ParseResult.map (fun x -> new Program(x))
 
 /// Read a single expression from the named input `line`.
 let readExpr1 name line =
-    readRaw Script name line
-    |> ParseResult.map (fun x -> new ScriptProgram(x))
+    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x))
 
 /// Read a single expression from the input `line` using an implicit name.
 let readExpr = readExpr1 "repl"

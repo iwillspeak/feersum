@@ -36,19 +36,19 @@ module private EnvUtils =
     /// Get the local variable used to store the current method's environment
     let getLocal =
         function
-        | Standard (local, _, _) -> local |> Some
+        | Standard(local, _, _) -> local |> Some
         | _ -> None
 
     /// Get the type part of the environment info.
     let rec getType =
         function
-        | Standard (_, ty, _) -> ty
+        | Standard(_, ty, _) -> ty
         | Link inner -> getType inner
 
     /// Get the parent of the given environment.
     let rec getParent =
         function
-        | Standard (_, _, parent) -> parent
+        | Standard(_, _, parent) -> parent
         | Link inner -> Some(inner)
 
 /// Type to Hold Context While Emitting IL
@@ -89,9 +89,7 @@ module private Utils =
     /// Set the attributes on a given method to mark it as compiler generated code
     let markAsCompilerGenerated (core: CoreTypes) (method: MethodDefinition) =
         let addSimpleAttr (attrCtor: MethodReference) =
-            attrCtor
-            |> CustomAttribute
-            |> method.CustomAttributes.Add
+            attrCtor |> CustomAttribute |> method.CustomAttributes.Add
 
         addSimpleAttr core.CompGenCtor
         addSimpleAttr core.NonUserCodeCtor
@@ -99,9 +97,7 @@ module private Utils =
 
     /// Mark a type as compiler generated.
     let markTypeAsCompilerGenerated (core: CoreTypes) (ty: TypeDefinition) =
-        core.CompGenCtor
-        |> CustomAttribute
-        |> ty.CustomAttributes.Add
+        core.CompGenCtor |> CustomAttribute |> ty.CustomAttributes.Add
 
     /// Mark the assembly as supporting debugging
     let markAsDebuggable (core: CoreTypes) (assm: AssemblyDefinition) =
@@ -213,7 +209,7 @@ module private Utils =
                 let export = Map.tryFind id ctx.Exports
 
                 match export with
-                | Some (exportedName) ->
+                | Some(exportedName) ->
                     markWithExportedName ctx.Core newField exportedName
                     newField.Attributes <- newField.Attributes ||| FieldAttributes.Public
                     ()
@@ -270,7 +266,7 @@ module private Utils =
         captured
         |> Option.iter (
             Seq.iter (function
-                | Environment (idx, Arg a) ->
+                | Environment(idx, Arg a) ->
                     ctx.IL.Emit(OpCodes.Ldloc, envLocal)
                     ctx.IL.Emit(OpCodes.Ldarg, argToParam ctx a)
                     ctx.IL.Emit(OpCodes.Stfld, ty.Fields[idx])
@@ -288,28 +284,28 @@ module private Utils =
     /// to read and write values from a captured environment.
     let rec private walkCaptureChain ctx envInfo from f =
         match from with
-        | StorageRef.Captured (from) ->
+        | StorageRef.Captured(from) ->
             let parent =
                 match envInfo with
-                | Standard (_, ty, parent) ->
+                | Standard(_, ty, parent) ->
                     ctx.IL.Emit(OpCodes.Ldfld, ty.Fields[ty.Fields.Count - 1])
                     parent |> Option.unwrap
                 | Link l -> l
 
             walkCaptureChain ctx parent from f
-        | StorageRef.Environment (idx, _) -> f envInfo idx
+        | StorageRef.Environment(idx, _) -> f envInfo idx
         | _ -> icef "Unexpected storage in capture chain %A" from
 
     /// Given an environment at the top of the stack emit a load of the slot `idx`
     let private readFromEnv ctx envInfo (idx: int) =
         match envInfo with
-        | Standard (_, ty, _) -> ctx.IL.Emit(OpCodes.Ldfld, ty.Fields[idx])
+        | Standard(_, ty, _) -> ctx.IL.Emit(OpCodes.Ldfld, ty.Fields[idx])
         | Link l -> icef "Attempt to read from link environment %A at index %d" l idx
 
     /// Given an environment at the top of the stack emit a store to the slot `idx`
     let private writeToEnv ctx (temp: VariableDefinition) envInfo (idx: int) =
         match envInfo with
-        | Standard (_, ty, _) ->
+        | Standard(_, ty, _) ->
             ctx.IL.Emit(OpCodes.Ldloc, temp)
             ctx.IL.Emit(OpCodes.Stfld, ty.Fields[idx])
         | Link l -> icef "Attempt to write to link environment %A at index %d" l idx
@@ -331,7 +327,7 @@ module private Utils =
         match expr with
         | BoundExpr.Nop -> emitUnspecified ctx
         | BoundExpr.Error -> ice "Attempt to lower an error expression"
-        | BoundExpr.SequencePoint (inner, location) ->
+        | BoundExpr.SequencePoint(inner, location) ->
             let pos = ctx.IL.Body.Instructions.Count
             recurse inner
 
@@ -361,7 +357,7 @@ module private Utils =
                         doc.LanguageVendorGuid <- Guid("98378869-1abf-441b-9307-3bcca9a024cd")
                         // TODO: Set HashAlgorithm here, and store the SHA1 of the
                         //       debug document.
-                        ctx.DebugDocuments[ s.Source ] <- doc
+                        ctx.DebugDocuments[s.Source] <- doc
 
                     let point = Cil.SequencePoint(ins, doc)
                     point.StartLine <- int s.Line
@@ -371,20 +367,20 @@ module private Utils =
                     ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
         | BoundExpr.Literal l -> emitLiteral ctx l
         | BoundExpr.Seq s -> emitSequence ctx tail s
-        | BoundExpr.Application (ap, args) -> emitApplication ctx tail ap args
-        | BoundExpr.Store (storage, maybeVal) ->
+        | BoundExpr.Application(ap, args) -> emitApplication ctx tail ap args
+        | BoundExpr.Store(storage, maybeVal) ->
             // TODO: Could we just elide the whole definition if there is no value.
             //       If we have nothing to store it would save a lot of code. In the
             //       case we are storing to a field we _might_ need to call
             //       `emitField` still.
             match maybeVal with
-            | Some (expr) -> emitExpression ctx false expr
+            | Some(expr) -> emitExpression ctx false expr
             | None -> ctx.IL.Emit(OpCodes.Ldnull)
 
             ctx.IL.Emit(OpCodes.Dup)
             writeTo ctx storage
         | BoundExpr.Load storage -> readFrom ctx storage
-        | BoundExpr.If (cond, ifTrue, maybeIfFalse) ->
+        | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
             let lblTrue = ctx.IL.Create(OpCodes.Nop)
             let lblNotBool = ctx.IL.Create(OpCodes.Nop)
             let lblEnd = ctx.IL.Create(OpCodes.Nop)
@@ -438,11 +434,11 @@ module private Utils =
                 //       block. Or stop using `nops` all over the place as
                 //       labels and instead.
                 ctx.IL.Append(lblEnd)
-        | BoundExpr.Lambda (formals, body) -> emitLambda ctx formals body
-        | BoundExpr.Library (name, mangledName, exports, body) -> emitLibrary ctx name mangledName exports body
+        | BoundExpr.Lambda(formals, body) -> emitLambda ctx formals body
+        | BoundExpr.Library(name, mangledName, exports, body) -> emitLibrary ctx name mangledName exports body
         | BoundExpr.Import name ->
             match Map.tryFind name ctx.Initialisers with
-            | Some (initialiser) -> ctx.IL.Emit(OpCodes.Call, initialiser)
+            | Some(initialiser) -> ctx.IL.Emit(OpCodes.Call, initialiser)
             | None -> emitUnspecified ctx
         | BoundExpr.Quoted quoted -> emitQuoted ctx quoted
 
@@ -486,12 +482,7 @@ module private Utils =
             ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Double)
         | BoundLiteral.Str s -> ctx.IL.Emit(OpCodes.Ldstr, s)
         | BoundLiteral.Boolean b ->
-            ctx.IL.Emit(
-                if b then
-                    OpCodes.Ldc_I4_1
-                else
-                    OpCodes.Ldc_I4_0
-            )
+            ctx.IL.Emit(if b then OpCodes.Ldc_I4_1 else OpCodes.Ldc_I4_0)
 
             ctx.IL.Emit(OpCodes.Box, ctx.Assm.MainModule.TypeSystem.Boolean)
         | BoundLiteral.Character c ->
@@ -558,22 +549,22 @@ module private Utils =
     and writeTo ctx storage =
         match storage with
         | StorageRef.Macro m -> icef "Can't re-define macro %s" m.Name
-        | StorageRef.Global (mangledPrefix, loc) ->
+        | StorageRef.Global(mangledPrefix, loc) ->
             match loc with
             | Method id -> icef "Can't re-define builtin %s" id
             | Field id ->
                 let field = getField ctx mangledPrefix id
                 ctx.IL.Emit(OpCodes.Stsfld, field)
-        | StorageRef.Local (idx) -> ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
-        | StorageRef.Arg (idx) -> ctx.IL.Emit(OpCodes.Starg, idx |> argToParam ctx)
-        | StorageRef.Environment (idx, _) ->
+        | StorageRef.Local(idx) -> ctx.IL.Emit(OpCodes.Stloc, idx |> localToVariable ctx)
+        | StorageRef.Arg(idx) -> ctx.IL.Emit(OpCodes.Starg, idx |> argToParam ctx)
+        | StorageRef.Environment(idx, _) ->
             let temp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
             ctx.IL.Emit(OpCodes.Stloc, temp)
 
             ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
             writeToEnv ctx temp (ctx.Environment |> Option.unwrap) idx
-        | StorageRef.Captured (from) ->
+        | StorageRef.Captured(from) ->
             let temp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
             ctx.IL.Emit(OpCodes.Stloc, temp)
@@ -586,7 +577,7 @@ module private Utils =
     and readFrom ctx storage =
         match storage with
         | StorageRef.Macro m -> icef "Invalid macro application %s" m.Name
-        | StorageRef.Global (ty, loc) ->
+        | StorageRef.Global(ty, loc) ->
             match loc with
             | Method id ->
                 let meth = getExternMethod ctx ty id
@@ -594,12 +585,12 @@ module private Utils =
             | Field id ->
                 let field = getField ctx ty id
                 ctx.IL.Emit(OpCodes.Ldsfld, field)
-        | StorageRef.Local (idx) -> ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)
-        | StorageRef.Arg (idx) -> ctx.IL.Emit(OpCodes.Ldarg, idx |> argToParam ctx)
-        | StorageRef.Environment (idx, _) ->
+        | StorageRef.Local(idx) -> ctx.IL.Emit(OpCodes.Ldloc, idx |> localToVariable ctx)
+        | StorageRef.Arg(idx) -> ctx.IL.Emit(OpCodes.Ldarg, idx |> argToParam ctx)
+        | StorageRef.Environment(idx, _) ->
             ctx.IL.Emit(OpCodes.Ldloc, getEnvironment ctx)
             readFromEnv ctx (ctx.Environment |> Option.unwrap) idx
-        | StorageRef.Captured (from) ->
+        | StorageRef.Captured(from) ->
             // start at the parent environment, and walk up
             ctx.IL.Emit(OpCodes.Ldarg_0)
             walkCaptureChain ctx (getParentEnv ctx |> Option.unwrap) from (readFromEnv ctx)
@@ -652,7 +643,9 @@ module private Utils =
             args
         |> ignore
 
-        if tail then ctx.IL.Emit(OpCodes.Tail)
+        if tail then
+            ctx.IL.Emit(OpCodes.Tail)
+
         ctx.IL.Emit(OpCodes.Callvirt, ctx.Core.FuncObjInvoke)
 
     /// Emit a Lambda Reference
@@ -677,7 +670,7 @@ module private Utils =
         | Some env ->
             // load the this pointer
             match env with
-            | Standard (local, _, _) -> ctx.IL.Emit(OpCodes.Ldloc, local)
+            | Standard(local, _, _) -> ctx.IL.Emit(OpCodes.Ldloc, local)
             | Link _ -> ctx.IL.Emit(OpCodes.Ldarg_0)
 
             emitMethodToInstanceFunc ctx method
@@ -701,8 +694,7 @@ module private Utils =
             if hasEnv ctx then
                 MethodAttributes.Public
             else
-                MethodAttributes.Public
-                ||| MethodAttributes.Static
+                MethodAttributes.Public ||| MethodAttributes.Static
 
         let methodDecl =
             MethodDefinition(name, attrs, ctx.Assm.MainModule.TypeSystem.Object)
@@ -719,7 +711,7 @@ module private Utils =
         match formals with
         | Simple id -> addParam id
         | List fmls -> Seq.iter addParam fmls
-        | DottedList (fmls, dotted) ->
+        | DottedList(fmls, dotted) ->
             Seq.iter addParam fmls
             addParam dotted
 
@@ -735,9 +727,7 @@ module private Utils =
         let buildEnv envSize =
             let parentTy = ctx.Environment |> Option.map (EnvUtils.getType)
 
-            let envTy =
-                sprintf "<%s>$Env" name
-                |> makeEnvironmentType ctx.Assm parentTy envSize
+            let envTy = sprintf "<%s>$Env" name |> makeEnvironmentType ctx.Assm parentTy envSize
 
             markTypeAsCompilerGenerated ctx.Core envTy
 
@@ -767,7 +757,7 @@ module private Utils =
                 )
 
             match envSize with
-            | Some (0) -> ctx.Environment |> Option.map Link
+            | Some(0) -> ctx.Environment |> Option.map Link
             | Some caps -> buildEnv caps |> Some
             | None -> None
 
@@ -786,7 +776,7 @@ module private Utils =
         match ctx.Environment with
         | Some e ->
             match e with
-            | Standard (local, ty, parent) -> initialiseEnvironment ctx local ty parent root.EnvMappings
+            | Standard(local, ty, parent) -> initialiseEnvironment ctx local ty parent root.EnvMappings
             | Link _ -> ()
         | None -> ()
 
@@ -804,14 +794,10 @@ module private Utils =
             // If we have an environment tell the debugger about it
             ctx.Environment
             |> Option.bind (EnvUtils.getLocal)
-            |> Option.iter (fun env ->
-                VariableDebugInformation(env, "capture-environment")
-                |> scope.Variables.Add)
+            |> Option.iter (fun env -> VariableDebugInformation(env, "capture-environment") |> scope.Variables.Add)
 
             ctx.Locals
-            |> List.iteri (fun idx var ->
-                VariableDebugInformation(var, sprintf "local%d" idx)
-                |> scope.Variables.Add)
+            |> List.iteri (fun idx var -> VariableDebugInformation(var, sprintf "local%d" idx) |> scope.Variables.Add)
 
             methodDecl.DebugInformation.Scope <- scope
 
@@ -908,7 +894,7 @@ module private Utils =
                 (sprintf "Expected exactly %d arguments" expectedArgCount)
 
             List.fold unpackArg 0 fmls |> ignore
-        | DottedList (fmls, dotted) ->
+        | DottedList(fmls, dotted) ->
             let expectedArgCount = List.length fmls
 
             raiseArgCountMismatch
@@ -963,7 +949,7 @@ module private Utils =
             |> Seq.fold
                 (fun state (name, storage) ->
                     match storage with
-                    | StorageRef.Global (mangled, item) ->
+                    | StorageRef.Global(mangled, item) ->
                         let (exports, reExports) = state
 
                         if mangled = mangledName then
@@ -1055,11 +1041,7 @@ module Compilation =
         let name =
             let stem = Path.GetFileNameWithoutExtension(outputName)
 
-            AssemblyNameDefinition(
-                stem,
-                options.Version
-                |> Option.defaultValue (Version(1, 0))
-            )
+            AssemblyNameDefinition(stem, options.Version |> Option.defaultValue (Version(1, 0)))
 
         use resolver = new DefaultAssemblyResolver()
         List.iter (resolver.AddSearchDirectory) target.MSCoreLibLocations
@@ -1128,8 +1110,7 @@ module Compilation =
             let mainMethod =
                 MethodDefinition(
                     "Main",
-                    MethodAttributes.Public
-                    ||| MethodAttributes.Static,
+                    MethodAttributes.Public ||| MethodAttributes.Static,
                     assm.MainModule.TypeSystem.Int32
                 )
 
@@ -1146,7 +1127,7 @@ module Compilation =
         let mutable writerParams = WriterParameters()
 
         match symbolStream with
-        | Some (stream) ->
+        | Some(stream) ->
             writerParams.SymbolStream <- stream
             writerParams.WriteSymbols <- true
             writerParams.SymbolWriterProvider <- PortablePdbWriterProvider()
@@ -1175,10 +1156,7 @@ module Compilation =
         let (refTys, allLibs) =
             options.References
             |> Seq.map (Builtins.loadReferencedSignatures)
-            |> Seq.append (
-                Seq.singleton
-                <| Builtins.loadCoreSignatures target
-            )
+            |> Seq.append (Seq.singleton <| Builtins.loadCoreSignatures target)
             |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> (List.append tys aTys, List.append sigs aSigs)) ([], [])
 
         let scope =
@@ -1262,10 +1240,9 @@ module Compilation =
             let result =
                 compile options outputStream (Path.GetFileName(output)) (symbols |> Option.ofObj) ast
 
-            if result.Diagnostics.IsEmpty
-               && options.OutputType = OutputType.Exe then
+            if result.Diagnostics.IsEmpty && options.OutputType = OutputType.Exe then
                 match result.EmittedAssemblyName with
-                | Some (assemblyName) -> Runtime.writeRuntimeConfig options output assemblyName outDir
+                | Some(assemblyName) -> Runtime.writeRuntimeConfig options output assemblyName outDir
                 | None -> ()
 
             result.Diagnostics

@@ -163,7 +163,7 @@ let ``identifier literals`` raw (cooked: string) =
     Assert.Equal(AstKind.IDENTIFIER, identTok |> getTokenKind)
 
     match script.Body with
-    | Some (Symbol s) -> Assert.Equal(cooked, s.CookedValue)
+    | Some(Symbol s) -> Assert.Equal(cooked, s.CookedValue)
     | _ -> failwithf "Expected identifier but got %A" script.Body
 
 // [<Theory>]
@@ -199,11 +199,7 @@ let ``parse block comments`` () =
     Assert.Equal(AstKind.CONSTANT, readSingle "#| this is a comment |#1" |> getKind)
     Assert.Equal(AstKind.CONSTANT, readSingle "1#| this is a comment |#" |> getKind)
 
-    Assert.Equal(
-        AstKind.CONSTANT,
-        readSingle "#| this #| is a |# comment |#1"
-        |> getKind
-    )
+    Assert.Equal(AstKind.CONSTANT, readSingle "#| this #| is a |# comment |#1" |> getKind)
 
 // [<Theory>]
 // [<InlineData('a')>]
@@ -256,10 +252,7 @@ let ``syntax shim test`` () =
     let tree =
         readProgram doc.Path body
         |> ParseResult.toResult
-        |> Result.map (fun x ->
-            x.Body
-            |> Seq.map (SyntaxShim.transformExpr doc)
-            |> Seq.exactlyOne)
+        |> Result.map (fun x -> x.Body |> Seq.map (SyntaxShim.transformExpr doc) |> Seq.exactlyOne)
         |> Result.unwrap
 
     printfn "@%A" tree.Location

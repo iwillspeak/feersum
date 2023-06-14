@@ -57,7 +57,8 @@ type LibrarySignature<'a> =
 module private Utils =
     /// Map the exports in a given library signature
     let mapExports mapper signature =
-        { signature with Exports = signature.Exports |> mapper }
+        { signature with
+            Exports = signature.Exports |> mapper }
 
     /// Recognise a list of strings as a library name
     let parseLibraryName (diags: DiagnosticBag) name =
@@ -80,8 +81,8 @@ module private Utils =
 
         let parseNameElement element =
             match element.Kind with
-            | AstNodeKind.Constant (SyntaxConstant.Number (namePart)) -> Ok(namePart |> sprintf "%g")
-            | AstNodeKind.Ident (namePart) ->
+            | AstNodeKind.Constant(SyntaxConstant.Number(namePart)) -> Ok(namePart |> sprintf "%g")
+            | AstNodeKind.Ident(namePart) ->
                 if Seq.exists (isInvalidChar) (namePart.ToCharArray()) then
                     "Library names should not contain complex characters"
                     |> Diagnostic.Create LibraryDiagnostics.improperLibraryName element.Location
@@ -101,20 +102,18 @@ module private Utils =
     /// Try and parse a node as an identifier
     let parseIdentifier =
         function
-        | { Kind = AstNodeKind.Ident (id) } -> Ok(id)
+        | { Kind = AstNodeKind.Ident(id) } -> Ok(id)
         | node ->
             Result.Error(Diagnostic.Create LibraryDiagnostics.invalidLibraryName node.Location "Expected identifier")
 
     /// Parse a list of identifiers into a list of strings
     let parseIdentifierList idents =
-        idents
-        |> List.map parseIdentifier
-        |> Result.collect
+        idents |> List.map parseIdentifier |> Result.collect
 
     /// Parse a library declaration form
     let rec parseLibraryDeclaration (diags: DiagnosticBag) declaration =
         match declaration.Kind with
-        | AstNodeKind.Form ({ Kind = AstNodeKind.Ident (special) } :: body) ->
+        | AstNodeKind.Form({ Kind = AstNodeKind.Ident(special) } :: body) ->
             parseLibraryDeclarationForm diags declaration.Location special body
         | _ ->
             diags.Emit LibraryDiagnostics.malformedLibraryDecl declaration.Location "Expected library declaration"
@@ -122,14 +121,8 @@ module private Utils =
 
     and parseLibraryDeclarationForm diags position special body =
         match special with
-        | "export" ->
-            body
-            |> List.choose (parseExportDeclaration diags)
-            |> LibraryDeclaration.Export
-        | "import" ->
-            body
-            |> List.map (parseImportDeclaration diags)
-            |> LibraryDeclaration.Import
+        | "export" -> body |> List.choose (parseExportDeclaration diags) |> LibraryDeclaration.Export
+        | "import" -> body |> List.map (parseImportDeclaration diags) |> LibraryDeclaration.Import
         | "begin" -> LibraryDeclaration.Begin body
         | s ->
             sprintf "Unrecognised library declaration %s" s
@@ -139,13 +132,13 @@ module private Utils =
 
     and tryParseRename rename =
         match rename with
-        | [ { Kind = AstNodeKind.Ident (int) }; { Kind = AstNodeKind.Ident (ext) } ] -> Ok({ From = int; To = ext })
+        | [ { Kind = AstNodeKind.Ident(int) }; { Kind = AstNodeKind.Ident(ext) } ] -> Ok({ From = int; To = ext })
         | _ -> Result.Error("invalid rename")
 
     and parseExportDeclaration diags export =
         match export.Kind with
-        | AstNodeKind.Ident (plain) -> Some(ExportSet.Plain plain)
-        | AstNodeKind.Form ({ Kind = AstNodeKind.Ident ("rename") } :: rename) ->
+        | AstNodeKind.Ident(plain) -> Some(ExportSet.Plain plain)
+        | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename") } :: rename) ->
             match rename |> tryParseRename with
             | Ok renamed -> Some(ExportSet.Renamed renamed)
             | Result.Error e ->
@@ -158,21 +151,21 @@ module private Utils =
     and parseImportDeclaration diags import =
         let parseImportForm parser fromSet body resultCollector =
             match parser body with
-            | Ok (bound) -> resultCollector (parseImportDeclaration diags fromSet, bound)
-            | Result.Error (diag) ->
+            | Ok(bound) -> resultCollector (parseImportDeclaration diags fromSet, bound)
+            | Result.Error(diag) ->
                 diags.Add(diag)
                 ImportSet.Error
 
         match import.Kind with
-        | AstNodeKind.Form ({ Kind = AstNodeKind.Ident ("only") } :: (fromSet :: filters)) ->
+        | AstNodeKind.Form({ Kind = AstNodeKind.Ident("only") } :: (fromSet :: filters)) ->
             parseImportForm (parseIdentifierList) fromSet filters ImportSet.Only
-        | AstNodeKind.Form ({ Kind = AstNodeKind.Ident ("except") } :: (fromSet :: filters)) ->
+        | AstNodeKind.Form({ Kind = AstNodeKind.Ident("except") } :: (fromSet :: filters)) ->
             parseImportForm (parseIdentifierList) fromSet filters ImportSet.Except
-        | AstNodeKind.Form ({ Kind = AstNodeKind.Ident ("rename") } :: (fromSet :: renames)) ->
+        | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename") } :: (fromSet :: renames)) ->
             let parseRenames renames =
                 let parseRename node =
                     match node with
-                    | { Kind = AstNodeKind.Form (f) } ->
+                    | { Kind = AstNodeKind.Form(f) } ->
                         tryParseRename (f)
                         |> Result.mapError (Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl node.Location)
                     | _ ->
@@ -183,11 +176,11 @@ module private Utils =
                 renames |> List.map parseRename |> Result.collect
 
             parseImportForm (parseRenames) fromSet renames ImportSet.Renamed
-        | AstNodeKind.Form ([ { Kind = AstNodeKind.Ident ("prefix") }; fromSet; prefix ]) ->
+        | AstNodeKind.Form([ { Kind = AstNodeKind.Ident("prefix") }; fromSet; prefix ]) ->
             parseImportForm (parseIdentifier) fromSet prefix ImportSet.Prefix
         | _ ->
             match parseLibraryName diags import with
-            | Ok (name) -> ImportSet.Plain name
+            | Ok(name) -> ImportSet.Plain name
             | Result.Error _ -> ImportSet.Error
 
 
@@ -206,11 +199,7 @@ module Libraries =
     /// Recursively check a library name matches
     let rec matchLibraryName left right =
         match (left, right) with
-        | (l :: lrest, r :: rrest) ->
-            if l = r then
-                matchLibraryName lrest rrest
-            else
-                false
+        | (l :: lrest, r :: rrest) -> if l = r then matchLibraryName lrest rrest else false
         | ([], []) -> true
         | _ -> false
 
@@ -218,24 +207,24 @@ module Libraries =
     let rec resolveImport libraries =
         function
         | ImportSet.Error -> Result.Error "invalid import set"
-        | ImportSet.Except (inner, except) ->
+        | ImportSet.Except(inner, except) ->
             resolveImport libraries inner
             |> Result.map (mapExports (List.filter (fun (id, _) -> List.contains id except |> not)))
-        | ImportSet.Only (inner, only) ->
+        | ImportSet.Only(inner, only) ->
             resolveImport libraries inner
             |> Result.map (mapExports (List.filter (fun (id, _) -> List.contains id only)))
         | ImportSet.Plain lib ->
             match Seq.tryFind (fun signature -> matchLibraryName lib signature.LibraryName) libraries with
-            | Some (signature) -> Ok(signature)
+            | Some(signature) -> Ok(signature)
             | _ ->
                 lib
                 |> prettifyLibraryName
                 |> sprintf "Could not find library %s"
                 |> Result.Error
-        | ImportSet.Prefix (inner, prefix) ->
+        | ImportSet.Prefix(inner, prefix) ->
             resolveImport libraries inner
             |> Result.map (mapExports (List.map (fun (name, storage) -> (prefix + name, storage))))
-        | ImportSet.Renamed (inner, renames) ->
+        | ImportSet.Renamed(inner, renames) ->
             let processRenames (name, storage) =
                 match List.tryFind (fun (x: SymbolRename) -> x.From = name) renames with
                 | Some rename -> (rename.To, storage)

@@ -28,12 +28,7 @@ let createCtor (assm: AssemblyDefinition) builder =
         )
 
     let objConstructor =
-        assm
-            .MainModule
-            .TypeSystem
-            .Object
-            .Resolve()
-            .GetConstructors()
+        assm.MainModule.TypeSystem.Object.Resolve().GetConstructors()
         |> Seq.find (fun x -> x.Parameters.Count = 0)
         |> assm.MainModule.ImportReference
 

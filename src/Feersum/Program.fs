@@ -48,7 +48,7 @@ let private compileAll (options: CompilationOptions) output sources =
 
     let outputPath =
         match output with
-        | Some (path) -> path
+        | Some(path) -> path
         | None -> Path.ChangeExtension(mainSource, options.DefaultExtension)
 
     match Compilation.compileFiles options outputPath sources with
@@ -78,25 +78,15 @@ let main argv =
         printVersion ()
         exit 0
 
-    let buildConfig =
-        args.TryGetResult Configuration
-        |> Option.defaultValue Release
+    let buildConfig = args.TryGetResult Configuration |> Option.defaultValue Release
 
-    let outputType =
-        args.TryGetResult OutputType
-        |> Option.defaultValue Exe
+    let outputType = args.TryGetResult OutputType |> Option.defaultValue Exe
 
     let options =
         { CompilationOptions.Create buildConfig outputType with
-            Version =
-                args.TryGetResult AssemblyVersion
-                |> Option.map Version.Parse
-            References =
-                args.GetResults Reference
-                |> List.append coreReferences
-            GenerateDepsFiles =
-                (args.TryGetResult GenerateDeps)
-                |> Option.defaultValue true
+            Version = args.TryGetResult AssemblyVersion |> Option.map Version.Parse
+            References = args.GetResults Reference |> List.append coreReferences
+            GenerateDepsFiles = (args.TryGetResult GenerateDeps) |> Option.defaultValue true
             MsCorePaths = args.GetResults CoreLibPath }
 
     match args.GetResult(Compile, defaultValue = []), args.TryGetResult(Output) with
@@ -106,7 +96,7 @@ let main argv =
     | [ "parserepl" ], None ->
         runParserRepl ()
         0
-    | [], Some (output) ->
+    | [], Some(output) ->
         eprintfn "No source files provided for output %s" output
         exit -1
     | files, output -> compileAll options output files

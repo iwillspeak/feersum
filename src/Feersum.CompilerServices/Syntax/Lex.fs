@@ -61,20 +61,7 @@ type private LexState =
 
 /// Charcters, other than alphabetics, that can start an identifier.
 let private specialInitial =
-    [ '!'
-      '$'
-      '%'
-      '&'
-      '*'
-      '/'
-      ':'
-      '<'
-      '='
-      '>'
-      '?'
-      '^'
-      '_'
-      '~' ]
+    [ '!'; '$'; '%'; '&'; '*'; '/'; ':'; '<'; '='; '>'; '?'; '^'; '_'; '~' ]
     |> Set.ofList
 
 /// Characters that can appear after an explicit sign at the beginning of
@@ -132,10 +119,7 @@ let public tokenise input name =
                 // then we _may_ be parsing `+.`, `-.`, or `.`. Only `.` is not
                 // actually an identifier. Handle that case here rather than
                 // having two separate states for dot after sign and plain dot.
-                if lexeme = "." then
-                    TokenKind.Dot
-                else
-                    TokenKind.Identifier
+                if lexeme = "." then TokenKind.Dot else TokenKind.Identifier
             | Number
             | NumberSuffix -> TokenKind.Number
             | Bool _ -> TokenKind.Boolean
@@ -179,11 +163,7 @@ let public tokenise input name =
             | '+' -> Some(LexState.PerculiarIdentifierSeenSign)
             | '"' -> Some(LexState.String)
             | '|' -> Some(LexState.LiteralIdentifier)
-            | c when
-                Char.IsLetter(c)
-                || (Set.contains c specialInitial)
-                ->
-                Some(LexState.Identifier)
+            | c when Char.IsLetter(c) || (Set.contains c specialInitial) -> Some(LexState.Identifier)
             | c when Char.IsDigit(c) -> Some(LexState.Number)
             | _ -> Some(LexState.Error)
         | SingleLineComment ->
@@ -219,9 +199,11 @@ let public tokenise input name =
                     Some(LexState.MultiLineDone)
             | _ -> Some(LexState.InMultiLine n)
         | Identifier ->
-            if Char.IsLetterOrDigit c
-               || Set.contains c specialInitial
-               || Set.contains c specialSubsequent then
+            if
+                Char.IsLetterOrDigit c
+                || Set.contains c specialInitial
+                || Set.contains c specialSubsequent
+            then
                 Some(LexState.Identifier)
             else
                 None
@@ -248,12 +230,9 @@ let public tokenise input name =
             | c when Char.IsDigit(c) -> Some(LexState.NumberSuffix)
             | _ -> None
         | Number ->
-            if Char.IsDigit(c) then
-                Some(LexState.Number)
-            else if c = '.' then
-                Some(LexState.NumberSuffix)
-            else
-                None
+            if Char.IsDigit(c) then Some(LexState.Number)
+            else if c = '.' then Some(LexState.NumberSuffix)
+            else None
         | NumberSuffix ->
             if Char.IsDigit(c) then
                 Some(LexState.NumberSuffix)
@@ -281,12 +260,8 @@ let public tokenise input name =
                 Some(LexState.CharHex)
             else
                 None
-        | CharNamed ->
-            if Char.IsLetter(c) then
-                Some(LexState.CharNamed)
-            else
-                None
-        | Bool (next, suffix) ->
+        | CharNamed -> if Char.IsLetter(c) then Some(LexState.CharNamed) else None
+        | Bool(next, suffix) ->
             if c = next then
                 Some(LexState.ComplexToken(suffix, TokenKind.Boolean))
             else
@@ -295,13 +270,9 @@ let public tokenise input name =
             match c with
             | c when Char.IsWhiteSpace(c) -> Some(LexState.Whitespace)
             | _ -> None
-        | ComplexToken (remaining, kind) ->
+        | ComplexToken(remaining, kind) ->
             match remaining with
-            | [ single ] ->
-                if c = single then
-                    Some(LexState.SimpleToken kind)
-                else
-                    None
+            | [ single ] -> if c = single then Some(LexState.SimpleToken kind) else None
             | expected :: rest ->
                 if c = expected then
                     Some(LexState.ComplexToken(rest, kind))
@@ -331,9 +302,7 @@ let public tokenise input name =
                 yield tokenForState (lexeme.ToString()) state (TextLocation.Point(TextPoint.FromParts(name, line, col)))
                 lexeme <- lexeme.Clear().Append(char)
 
-                state <-
-                    nextTransition Start char
-                    |> Option.defaultValue Error
+                state <- nextTransition Start char |> Option.defaultValue Error
             | Some next ->
                 state <- next
                 lexeme <- lexeme.Append(char)

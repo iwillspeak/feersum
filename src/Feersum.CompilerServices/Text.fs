@@ -30,7 +30,7 @@ type public TextLocation =
     /// before any text represented by this locaiton.
     member x.Start =
         match x with
-        | Span (s, _) -> s
+        | Span(s, _) -> s
         | Point p -> p
         | Missing -> TextPoint.FromParts("missing", 0, 0)
 
@@ -38,7 +38,7 @@ type public TextLocation =
     /// after any text represented by this location.
     member x.End =
         match x with
-        | Span (_, e) -> e
+        | Span(_, e) -> e
         | Point p -> p
         | Missing -> TextPoint.FromParts("missing", 0, 0)
 
@@ -59,8 +59,8 @@ module public TextDocument =
 
     let private offsetToLineCol lines offset =
         match List.tryFindIndex (fun x -> x > offset) lines with
-        | Some (0) -> (1, offset)
-        | Some (idx) -> (idx, offset - lines[idx - 1])
+        | Some(0) -> (1, offset)
+        | Some(idx) -> (idx, offset - lines[idx - 1])
         | None ->
             let lineCount = List.length lines
 
