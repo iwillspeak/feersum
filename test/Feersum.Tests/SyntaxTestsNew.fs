@@ -8,6 +8,14 @@ open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
 
+let readScriptExpr line =
+    let result = Parse.readExpr1 "repl" line
+
+    if result.Diagnostics |> List.isEmpty then
+        result.Root
+    else
+        failwithf "Expected single expression but got errors: %A" result.Diagnostics
+
 let readSingle line =
     let result = Parse.readRaw Parse.ReadMode.Script "repl" line
 
@@ -142,7 +150,8 @@ let ``extended identifier characters`` ident =
 [<InlineData(@"|H\x65;llo|", "Hello")>]
 [<InlineData(@"|\x3BB;|", "λ")>]
 let ``identifier literals`` raw (cooked: string) =
-    let tree = readSingle raw
+    let script = readScriptExpr raw
+    let tree = script.RawNode.Children() |> Seq.exactlyOne
 
     Assert.Equal(AstKind.SYMBOL, tree |> getKind)
 
@@ -153,9 +162,9 @@ let ``identifier literals`` raw (cooked: string) =
 
     Assert.Equal(AstKind.IDENTIFIER, identTok |> getTokenKind)
 
-    // FIXME: Assert on the value of cooked. Probably parse as typed tree
-    //        instead here and access the value through that.
-    cooked |> ignore
+    match script.Body with
+    | Some (Symbol s) -> Assert.Equal(cooked, s.CookedValue)
+    | _ -> failwithf "Expected identifier but got %A" script.Body
 
 // [<Theory>]
 // [<InlineData("\\a", '\a')>]

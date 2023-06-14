@@ -45,12 +45,87 @@ module SyntaxUtils =
     let dump = Debug.debugDump (Debug.mappedFormatter greenToAst)
 
 open SyntaxUtils
+open System.Text
 
 [<AutoOpen>]
 module private Utils =
 
     /// Predicate funtion to filter tokesn by AST Kind
     let tokenOfKind (kind: AstKind) (token: SyntaxToken) = token.Kind = (kind |> astToGreen)
+
+    type CookingState =
+        | Plain
+        | InEscape
+        | InHex of string
+
+    /// Cook a stirng value, replacing escapes with values
+    let cookString (s: string) =
+
+        let cookChar ((state: CookingState), sb: StringBuilder) (ch: char) =
+            match state with
+            | Plain ->
+                match ch with
+                | '\\' -> (InEscape, sb)
+                | _ -> (Plain, sb.Append(ch))
+            | InHex buff ->
+                match ch with
+                | ';' -> (Plain, sb.Append((char) (int buff)))
+                | '0'
+                | '1'
+                | '2'
+                | '3'
+                | '4'
+                | '5'
+                | '6'
+                | '7'
+                | '8'
+                | '9'
+                | 'a'
+                | 'b'
+                | 'c'
+                | 'd'
+                | 'e'
+                | 'f'
+                | 'A'
+                | 'B'
+                | 'C'
+                | 'D'
+                | 'E'
+                | 'F' -> (InHex(buff + (string ch)), sb)
+                | _ -> (Plain, sb.AppendFormat("\\x{0}{1}", buff[2..], ch))
+            | InEscape ->
+                match ch with
+                | 'a' -> (Plain, sb.Append('\a'))
+                | 'b' -> (Plain, sb.Append('\b'))
+                | 't' -> (Plain, sb.Append('\t'))
+                | 'n' -> (Plain, sb.Append('\n'))
+                | 'v' -> (Plain, sb.Append('\v'))
+                | 'f' -> (Plain, sb.Append('\f'))
+                | 'r' -> (Plain, sb.Append('\r'))
+                | 'x' -> (InHex "0x", sb)
+                | _ -> (Plain, sb.AppendFormat("\\{0}", ch))
+
+        s
+        |> Seq.fold (cookChar) (CookingState.Plain, StringBuilder())
+        |> snd
+        |> (fun x -> x.ToString())
+
+
+    /// Cook the value of an identifier. This takes the raw identifier and
+    /// converts it into a 'cooked' form, expanding out escaped values and
+    /// replacing them with the true characters.
+    let cookIdentifier (token: SyntaxToken) =
+        let tokenText = token.Green.Text
+
+        if
+            tokenText.StartsWith('|')
+            && tokenText.EndsWith('|')
+        then
+            tokenText[1 .. (tokenText.Length - 2)]
+            |> cookString
+        else
+            tokenText
+
 
 /// ------------------------ Syntax Tree Types --------------------------------
 ///
@@ -170,6 +245,13 @@ type Form internal (red: SyntaxNode) =
 and Symbol internal (red: SyntaxNode) =
 
     inherit Expression(red)
+
+    member public _.CookedValue =
+        red.ChildrenWithTokens()
+        |> Seq.choose (NodeOrToken.asToken)
+        |> Seq.tryExactlyOne
+        |> Option.map (cookIdentifier)
+        |> Option.defaultValue ""
 
 /// This is a self-evaluating expression that contains a sngle constant datum.
 and Constant internal (red: SyntaxNode) =
