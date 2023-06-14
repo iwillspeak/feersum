@@ -33,8 +33,8 @@ let rec private repl evaluator =
         match (read >> evaluator) () with
         | Result.Ok _ -> ()
         | Result.Error diags -> dumpDiagnostics (diags)
-    with
-    | ex -> eprintfn "Exception: %A" ex
+    with ex ->
+        eprintfn "Exception: %A" ex
 
     repl evaluator
 
@@ -45,6 +45,8 @@ let runRepl () =
     ReadLine.HistoryEnabled <- true
     printVersion ()
 
-    let options = { defaultScriptOptions with References = coreReferences }
+    let options =
+        { defaultScriptOptions with
+            References = coreReferences }
 
     evalWith options >> Result.map print |> repl

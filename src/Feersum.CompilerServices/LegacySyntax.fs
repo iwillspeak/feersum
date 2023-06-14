@@ -95,10 +95,11 @@ module LegacyParse =
         let block, blockRef = createParserForwardedToRef ()
 
         let blockBody =
-            choice [ block
-                     skipMany1 (skipNoneOf "|#")
-                     attempt (skipChar '|' >>. skipNoneOf "#")
-                     skipChar '#' ]
+            choice
+                [ block
+                  skipMany1 (skipNoneOf "|#")
+                  attempt (skipChar '|' >>. skipNoneOf "#")
+                  skipChar '#' ]
 
         blockRef.Value <- between (skipString "#|") (skipString "|#") (skipMany blockBody)
 
@@ -168,27 +169,23 @@ module LegacyParse =
 
     let private parseChar =
         let namedChar =
-            choice [ stringReturn "alarm" '\u0007'
-                     stringReturn "backspace" '\u0008'
-                     stringReturn "delete" '\u007F'
-                     stringReturn "escape" '\u001B'
-                     stringReturn "newline" '\u000A'
-                     stringReturn "null" '\u0000'
-                     stringReturn "return" '\u000D'
-                     stringReturn "space" ' '
-                     stringReturn "tab" '\u0009' ]
+            choice
+                [ stringReturn "alarm" '\u0007'
+                  stringReturn "backspace" '\u0008'
+                  stringReturn "delete" '\u007F'
+                  stringReturn "escape" '\u001B'
+                  stringReturn "newline" '\u000A'
+                  stringReturn "null" '\u0000'
+                  stringReturn "return" '\u000D'
+                  stringReturn "space" ' '
+                  stringReturn "tab" '\u0009' ]
 
         let hexChar = attempt (skipChar 'x' >>. hexScalarValue)
 
-        spannedNode
-            (Character >> Constant)
-            (skipString @"#\"
-             >>. (namedChar <|> hexChar <|> anyChar))
+        spannedNode (Character >> Constant) (skipString @"#\" >>. (namedChar <|> hexChar <|> anyChar))
 
     let inline private isIdentifierChar c =
-        isAsciiLetter c
-        || isDigit c
-        || isAnyOf "!$%&*/:<=>?@^_~+-." c
+        isAsciiLetter c || isDigit c || isAnyOf "!$%&*/:<=>?@^_~+-." c
 
     let private parseIdent =
         let simpleIdent = many1SatisfyL isIdentifierChar "identifier"
@@ -200,8 +197,7 @@ module LegacyParse =
         spannedNode Ident (simpleIdent <|> identLiteral)
 
     let private parseDot =
-        (skipChar '.'
-         >>? notFollowedBy (satisfy isIdentifierChar))
+        (skipChar '.' >>? notFollowedBy (satisfy isIdentifierChar))
         |> spannedNodeOfKind Dot
 
     let private parseQuoted = skipAnyOf "’'" >>. parseForm |> spannedNode Quoted
@@ -209,14 +205,15 @@ module LegacyParse =
     let private parseAtom =
         // The order is important here. Numbers have higher priority than
         // symbols / identifiers. The `.` token must come before identifier.
-        choice [ parseStr
-                 parseVec
-                 parseByteVec
-                 parseChar
-                 parseNum
-                 parseBool
-                 parseDot
-                 parseIdent ]
+        choice
+            [ parseStr
+              parseVec
+              parseByteVec
+              parseChar
+              parseNum
+              parseBool
+              parseDot
+              parseIdent ]
 
     let private parseApplication =
         between (skipChar '(') (expectCharClosing ')') (many parseForm)
@@ -228,18 +225,14 @@ module LegacyParse =
     let private parse: Parser<AstNode, State> =
         let problem = sprintf "unexpected character %c"
 
-        (many (
-            parseForm
-            <|> ((skipUnrecognised problem) >>% errorNode)
-        ))
-        .>> eof
+        (many (parseForm <|> ((skipUnrecognised problem) >>% errorNode))) .>> eof
         |> spannedNode Seq
 
     /// Unpack a `ParseResult` into a Plain `Result`
     let private unpack =
         function
-        | Success (node, s, _) -> (node, s.Diagnostics.Take)
-        | Failure (mess, err, s) ->
+        | Success(node, s, _) -> (node, s.Diagnostics.Take)
+        | Failure(mess, err, s) ->
             s.Diagnostics.Emit LegacySyntaxDiagnostics.fparsecFailure (Point(TextPoint.FromExternal(err.Position))) mess
 
             s.Diagnostics.Emit
@@ -251,18 +244,15 @@ module LegacyParse =
 
     /// Read a single expression from the named input text
     let readExpr1 name line : (AstNode * Diagnostic list) =
-        runParserOnString parse State.Empty name line
-        |> unpack
+        runParserOnString parse State.Empty name line |> unpack
 
     /// Read a single expression from the input text
     let readExpr = readExpr1 "repl"
 
     /// Read an expression from source code on disk
     let parseFile path : (AstNode * Diagnostic list) =
-        runParserOnFile parse State.Empty path Encoding.UTF8
-        |> unpack
+        runParserOnFile parse State.Empty path Encoding.UTF8 |> unpack
 
     /// Read an expression from a stream of source code
     let parseStream name stream : (AstNode * Diagnostic list) =
-        runParserOnStream parse State.Empty name stream Encoding.UTF8
-        |> unpack
+        runParserOnStream parse State.Empty name stream Encoding.UTF8 |> unpack

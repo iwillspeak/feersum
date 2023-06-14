@@ -78,9 +78,7 @@ module private ExternUtils =
 
         let exports = ty.Fields |> findExported (fun x -> Field(x.Name))
 
-        let builtins =
-            ty.Methods
-            |> findExported (fun x -> Method(x.Name))
+        let builtins = ty.Methods |> findExported (fun x -> Method(x.Name))
 
         let reExports =
             ty.CustomAttributes
@@ -89,10 +87,7 @@ module private ExternUtils =
                     let exportedItem =
                         let id = unpackStringArg attr 2
 
-                        if unpackBoolArg attr 3 then
-                            Method(id)
-                        else
-                            Field(id)
+                        if unpackBoolArg attr 3 then Method(id) else Field(id)
 
                     let libTy = attr.ConstructorArguments[1].Value :?> TypeReference
 
@@ -100,25 +95,19 @@ module private ExternUtils =
                 else
                     None)
 
-        Seq.concat [ exports
-                     builtins
-                     reExports ]
-        |> List.ofSeq
+        Seq.concat [ exports; builtins; reExports ] |> List.ofSeq
 
     /// Try to convert a given type definition into a library signature.
     let tryGetSignatureFromType (ty: TypeDefinition) =
         ty.CustomAttributes
         |> Seq.tryPick (fun attr ->
             if attr.AttributeType.Name = "LispLibraryAttribute" then
-                Some(attr.ConstructorArguments[0].Value :?> CustomAttributeArgument [])
+                Some(attr.ConstructorArguments[0].Value :?> CustomAttributeArgument[])
             else
                 None)
         |> Option.map (fun name ->
             (ty,
-             { LibraryName =
-                 name
-                 |> Seq.map (fun a -> a.Value.ToString())
-                 |> List.ofSeq
+             { LibraryName = name |> Seq.map (fun a -> a.Value.ToString()) |> List.ofSeq
                Exports = getExports ty }))
 
 // --------------------  Builtin Macro Definitions -----------------------------
@@ -133,7 +122,7 @@ module private BuiltinMacros =
             icef "Error in builtin macro: %A" errs
 
         match node with
-        | { Kind = AstNodeKind.Seq ([ n ]) } -> n
+        | { Kind = AstNodeKind.Seq([ n ]) } -> n
         | n -> n
         |> Macros.parseSyntaxRules id
         |> Result.unwrap
@@ -197,11 +186,7 @@ module private BuiltinMacros =
     let coreMacros =
         { LibraryName = [ "feersum"; "builtin"; "macros" ]
           Exports =
-            [ macroAnd
-              macroOr
-              macroWhen
-              macroUnless
-              macroCond ]
+            [ macroAnd; macroOr; macroWhen; macroUnless; macroCond ]
             |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
 
 // ------------------------ Public Builtins API --------------------------------
@@ -217,21 +202,17 @@ module Builtins =
         let getType name =
             externAssms
             |> Seq.pick (fun (assm: AssemblyDefinition) ->
-                assm.MainModule.Types
-                |> Seq.tryFind (fun x -> x.FullName = name))
+                assm.MainModule.Types |> Seq.tryFind (fun x -> x.FullName = name))
 
         let getImportedType name =
-            getType name
-            |> lispAssm.MainModule.ImportReference
+            getType name |> lispAssm.MainModule.ImportReference
 
         let getResolvedType name = (getImportedType name).Resolve()
 
         let getCtorBy pred typeName =
             let ty = getResolvedType typeName
 
-            ty.GetConstructors()
-            |> Seq.find pred
-            |> lispAssm.MainModule.ImportReference
+            ty.GetConstructors() |> Seq.find pred |> lispAssm.MainModule.ImportReference
 
         let getSingleCtor = getCtorBy (fun _ -> true)
 
@@ -243,24 +224,17 @@ module Builtins =
         // bound generic instance.
         let objTy = lispAssm.MainModule.TypeSystem.Object
 
-        let genericArgs =
-            [| objTy.MakeArrayType() :> TypeReference
-               objTy |]
+        let genericArgs = [| objTy.MakeArrayType() :> TypeReference; objTy |]
 
         let funcTy =
-            (getType "System.Func`2")
-                .MakeGenericInstanceType(genericArgs)
-                .Resolve()
+            (getType "System.Func`2").MakeGenericInstanceType(genericArgs).Resolve()
 
         let funcCtor =
             lispAssm.MainModule.ImportReference(funcTy.GetConstructors() |> Seq.head)
             |> makeHostInstanceGeneric genericArgs
 
         let funcInvoke =
-            lispAssm.MainModule.ImportReference(
-                funcTy.GetMethods()
-                |> Seq.find (fun m -> m.Name = "Invoke")
-            )
+            lispAssm.MainModule.ImportReference(funcTy.GetMethods() |> Seq.find (fun m -> m.Name = "Invoke"))
             |> makeHostInstanceGeneric genericArgs
 
         let getMethod typeName methodName =
@@ -298,14 +272,11 @@ module Builtins =
     let loadReferencedSignatures (name: string) =
         /// Folds a sequence of references into a single pair of lists
         let combineSignatures sigs =
-            sigs
-            |> Seq.fold (fun (tys, sigs) (t, s) -> (t :: tys, s :: sigs)) ([], [])
+            sigs |> Seq.fold (fun (tys, sigs) (t, s) -> (t :: tys, s :: sigs)) ([], [])
 
         use assm = Mono.Cecil.AssemblyDefinition.ReadAssembly(name, assmReadParams)
 
-        assm.MainModule.Types
-        |> Seq.choose tryGetSignatureFromType
-        |> combineSignatures
+        assm.MainModule.Types |> Seq.choose tryGetSignatureFromType |> combineSignatures
 
     /// The core library signature
     let loadCoreSignatures target =
@@ -319,15 +290,13 @@ module Builtins =
     let importCore (targetAssm: AssemblyDefinition) target =
 
         let coreAssemblies =
-            target.LispCoreLocation
-            :: target.MSCoreLibLocations
+            target.LispCoreLocation :: target.MSCoreLibLocations
             |> List.map (fun x -> AssemblyDefinition.ReadAssembly(x, assmReadParams))
 
         try
             loadCoreTypes targetAssm coreAssemblies
         finally
-            coreAssemblies
-            |> List.iter (fun assm -> (assm :> IDisposable).Dispose())
+            coreAssemblies |> List.iter (fun assm -> (assm :> IDisposable).Dispose())
 
     /// Load the assembly and retrieve the name from it.
     let getAssemblyName (path: string) =

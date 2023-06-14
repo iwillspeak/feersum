@@ -27,14 +27,7 @@ let ``Evaluate atoms`` () =
 
 [<Fact>]
 let ``Evaluate lists`` () =
-    Assert.Equal(
-        "132",
-        feeri (
-            Seq [ Boolean false |> constant
-                  Number 132.0 |> constant ]
-            |> node
-        )
-    )
+    Assert.Equal("132", feeri (Seq [ Boolean false |> constant; Number 132.0 |> constant ] |> node))
 
     Assert.Equal("#t", feeri (Seq [ Boolean true |> constant ] |> node))
 
@@ -47,11 +40,13 @@ let ``Evaluate lambdas returns`` () =
     Assert.Equal(
         "123",
         feeri (
-            Form [ Form [ Ident "lambda" |> node
-                          Form [ Ident "x" |> node ] |> node
-                          Ident "x" |> node ]
-                   |> node
-                   Number 123.0 |> constant ]
+            Form
+                [ Form
+                      [ Ident "lambda" |> node
+                        Form [ Ident "x" |> node ] |> node
+                        Ident "x" |> node ]
+                  |> node
+                  Number 123.0 |> constant ]
             |> node
         )
     )
@@ -61,28 +56,17 @@ let ``Evaluate builtins`` () =
     Assert.Equal(
         "19",
         feeri (
-            Form [ Ident "+" |> node
-                   Number 10.0 |> constant
-                   Number 9.0 |> constant ]
+            Form [ Ident "+" |> node; Number 10.0 |> constant; Number 9.0 |> constant ]
             |> node
         )
     )
 
-    Assert.Equal(
-        "901",
-        feeri (
-            Form [ Ident "+" |> node
-                   Number 901.0 |> constant ]
-            |> node
-        )
-    )
+    Assert.Equal("901", feeri (Form [ Ident "+" |> node; Number 901.0 |> constant ] |> node))
 
     Assert.Equal(
         "90",
         feeri (
-            Form [ Ident "*" |> node
-                   Number 10.0 |> constant
-                   Number 9.0 |> constant ]
+            Form [ Ident "*" |> node; Number 10.0 |> constant; Number 9.0 |> constant ]
             |> node
         )
     )
@@ -90,12 +74,11 @@ let ``Evaluate builtins`` () =
     Assert.Equal(
         "901",
         feeri (
-            Form [ Ident "+" |> node
-                   Form [ Ident "*" |> node
-                          Number 100.0 |> constant
-                          Number 9.0 |> constant ]
-                   |> node
-                   Number 1.0 |> constant ]
+            Form
+                [ Ident "+" |> node
+                  Form [ Ident "*" |> node; Number 100.0 |> constant; Number 9.0 |> constant ]
+                  |> node
+                  Number 1.0 |> constant ]
             |> node
         )
     )
@@ -103,9 +86,7 @@ let ``Evaluate builtins`` () =
     Assert.Equal(
         "1",
         feeri (
-            Form [ Ident "-" |> node
-                   Number 10.0 |> constant
-                   Number 9.0 |> constant ]
+            Form [ Ident "-" |> node; Number 10.0 |> constant; Number 9.0 |> constant ]
             |> node
         )
     )
@@ -113,9 +94,7 @@ let ``Evaluate builtins`` () =
     Assert.Equal(
         "2",
         feeri (
-            Form [ Ident "/" |> node
-                   Number 16.0 |> constant
-                   Number 8.0 |> constant ]
+            Form [ Ident "/" |> node; Number 16.0 |> constant; Number 8.0 |> constant ]
             |> node
         )
     )
@@ -154,14 +133,7 @@ let ``evaluate artithemtic ops`` expr result =
 let ``comp ops return true for simple cases`` op =
     Assert.Equal("#t", feeri (Form [ Ident op |> node ] |> node))
 
-    Assert.Equal(
-        "#t",
-        feeri (
-            Form [ Ident op |> node
-                   Number 123.456 |> constant ]
-            |> node
-        )
-    )
+    Assert.Equal("#t", feeri (Form [ Ident op |> node; Number 123.456 |> constant ] |> node))
 
 [<Theory>]
 [<InlineData("(= 23 4234 234)", "#f")>]

@@ -74,8 +74,7 @@ module Macros =
 
     /// Create an error result with a diagnostic at `location`
     let private errAt location message =
-        Diagnostic.Create macroExpansionError location message
-        |> Result.Error
+        Diagnostic.Create macroExpansionError location message |> Result.Error
 
     /// Parse a (a ... . b) or (a ...) form. This is used to parse both patterns and
     /// templates for transformers.
@@ -101,7 +100,7 @@ module Macros =
 
                     let (element, rest) =
                         match rest with
-                        | { Kind = AstNodeKind.Ident (id) } :: rest when id = elipsis ->
+                        | { Kind = AstNodeKind.Ident(id) } :: rest when id = elipsis ->
                             (element |> Result.map onRepeated, rest)
                         | _ -> (element |> Result.map onSingle, rest)
 
@@ -138,7 +137,7 @@ module Macros =
             match ast.Kind with
             | AstNodeKind.Form g -> matchForm patterns None g
             | _ -> Result.Error()
-        | MacroPattern.DottedForm (patterns, tail) ->
+        | MacroPattern.DottedForm(patterns, tail) ->
             match ast.Kind with
             | AstNodeKind.Form g -> matchForm patterns (Some(tail)) g
             | _ -> Result.Error()
@@ -162,14 +161,12 @@ module Macros =
     /// is forwarded to `matchRepeated`.
     and private matchForm patterns maybeTail syntax =
         match patterns with
-        | MacroPattern.Repeat (repeat) :: pats -> matchRepeated repeat pats maybeTail syntax []
+        | MacroPattern.Repeat(repeat) :: pats -> matchRepeated repeat pats maybeTail syntax []
         | headPat :: patterns ->
             match syntax with
             | head :: rest ->
                 macroMatch headPat head
-                |> Result.bind (fun vars ->
-                    matchForm patterns maybeTail rest
-                    |> Result.map (MacroBindings.Union vars))
+                |> Result.bind (fun vars -> matchForm patterns maybeTail rest |> Result.map (MacroBindings.Union vars))
             | [] -> Result.Error()
         | [] ->
             match maybeTail with
@@ -198,7 +195,10 @@ module Macros =
     /// to backtracking.
     and private matchRepeated repeat patterns maybeTail syntax repeatedBindings =
         match matchForm patterns maybeTail syntax with
-        | Ok vars -> Ok { vars with Repeated = repeatedBindings |> List.rev }
+        | Ok vars ->
+            Ok
+                { vars with
+                    Repeated = repeatedBindings |> List.rev }
         | _ ->
             match syntax with
             | head :: syntax ->
@@ -221,9 +221,9 @@ module Macros =
         | Quoted q -> (Result.Ok q, 0)
         | Subst v ->
             match List.tryFind (fun (id, _) -> id = v) bindings.Bindings with
-            | Some (_, syntax) -> (Result.Ok syntax, 1)
+            | Some(_, syntax) -> (Result.Ok syntax, 1)
             | None -> (Result.Error(sprintf "Reference to unbound substitution %s" v), 0)
-        | Form (location, templateElements) ->
+        | Form(location, templateElements) ->
             let elements = List.map (fun t -> macroExpandElement t bindings) templateElements
 
             let substs = List.sumBy (getCount) elements
@@ -249,15 +249,11 @@ module Macros =
                 function
                 | (Result.Error _, 0) :: rest -> collectRepeat rest
                 | (Result.Error e, n) :: _ -> Result.Error e
-                | (Result.Ok node, _) :: rest ->
-                    collectRepeat rest
-                    |> Result.map (fun rest -> node :: rest)
+                | (Result.Ok node, _) :: rest -> collectRepeat rest |> Result.map (fun rest -> node :: rest)
                 | [] -> Result.Ok []
 
             let repeated =
-                bindings.Repeated
-                |> List.map (macroExpandTemplate t)
-                |> collectRepeat
+                bindings.Repeated |> List.map (macroExpandTemplate t) |> collectRepeat
 
             (repeated, 0)
 
@@ -323,14 +319,14 @@ module Macros =
         | MacroPattern.Variable v -> [ v ]
         | MacroPattern.Repeat r -> findBound r
         | MacroPattern.Form body -> Seq.map (findBound) body |> List.concat
-        | MacroPattern.DottedForm (body, extra) ->
+        | MacroPattern.DottedForm(body, extra) ->
             List.append (Seq.map (findBound) body |> List.concat) (findBound extra)
         | _ -> []
 
     /// Parse a single macro transformer from a syntax node
     let private parseTransformer id elip literals =
         function
-        | { Kind = AstNodeKind.Form ([ pat; template ]) } ->
+        | { Kind = AstNodeKind.Form([ pat; template ]) } ->
             parsePattern elip literals pat
             |> Result.bind (fun pat ->
                 let bound = findBound pat
@@ -343,7 +339,7 @@ module Macros =
     let private parseTransformers id elip literals body =
         List.map
             (function
-            | { Kind = AstNodeKind.Ident (id) } -> Ok(id)
+            | { Kind = AstNodeKind.Ident(id) } -> Ok(id)
             | n -> errAt n.Location "Expected an identifier in macro literals")
             literals
         |> Result.collect
@@ -354,9 +350,9 @@ module Macros =
     /// Parse the body of a syntax rules form.
     let private parseSyntaxRulesBody id loc syntax =
         match syntax with
-        | { Kind = AstNodeKind.Ident (elip) } :: { Kind = AstNodeKind.Form (literals) } :: body ->
+        | { Kind = AstNodeKind.Ident(elip) } :: { Kind = AstNodeKind.Form(literals) } :: body ->
             parseTransformers id elip literals body
-        | { Kind = AstNodeKind.Form (literals) } :: body -> parseTransformers id "..." literals body
+        | { Kind = AstNodeKind.Form(literals) } :: body -> parseTransformers id "..." literals body
         | _ -> errAt loc "Ill-formed syntax rules."
         |> Result.map (fun transformers ->
             { Name = id
@@ -365,6 +361,6 @@ module Macros =
     /// Parse a syntax rules expression into a macro definition.
     let public parseSyntaxRules id syntaxRulesSyn =
         match syntaxRulesSyn with
-        | { Kind = AstNodeKind.Form ({ Kind = AstNodeKind.Ident ("syntax-rules") } :: body) } ->
+        | { Kind = AstNodeKind.Form({ Kind = AstNodeKind.Ident("syntax-rules") } :: body) } ->
             parseSyntaxRulesBody id syntaxRulesSyn.Location body
         | _ -> errAt syntaxRulesSyn.Location "Expected `syntax-rules` special form"

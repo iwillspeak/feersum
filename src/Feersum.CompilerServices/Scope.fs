@@ -25,7 +25,8 @@ module Scope =
     let insert scope id value =
         let entry = { Value = value; Id = id }
 
-        { scope with Entries = entry :: scope.Entries }
+        { scope with
+            Entries = entry :: scope.Entries }
 
     /// Create a scope from the initial environment map
     let fromMap map = Map.fold insert empty map

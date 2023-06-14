@@ -7,8 +7,7 @@ open Feersum.CompilerServices.Syntax.Lex
 open Feersum.CompilerServices.Text
 
 let private p name line col =
-    TextPoint.FromParts(name, line, col)
-    |> TextLocation.Point
+    TextPoint.FromParts(name, line, col) |> TextLocation.Point
 
 /// Grab the kind from a syntax token pair.
 let private getKind token =
@@ -101,13 +100,7 @@ let ``Lexer lex single token`` (token, kind) =
 
     let (line, col) =
         token
-        |> Seq.fold
-            (fun (line, col) char ->
-                if char = '\n' then
-                    (line + 1, 0)
-                else
-                    (line, col + 1))
-            (1, 0)
+        |> Seq.fold (fun (line, col) char -> if char = '\n' then (line + 1, 0) else (line, col + 1)) (1, 0)
 
     Assert.Equal(
         [ { Kind = kind

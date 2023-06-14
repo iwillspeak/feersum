@@ -61,15 +61,11 @@ let private runExampleAsync host (exePath: string) =
     // p.StartInfo.RedirectStandardInput <- true
     p.StartInfo.RedirectStandardOutput <- true
     p.StartInfo.RedirectStandardError <- true
-    p.StartInfo.Environment[ "FEERSUM_TESTING" ] <- "test-sentinel"
+    p.StartInfo.Environment["FEERSUM_TESTING"] <- "test-sentinel"
     Assert.True(p.Start())
 
     task {
-        let! output =
-            Task.WhenAll(
-                [| p.StandardOutput.ReadToEndAsync()
-                   p.StandardError.ReadToEndAsync() |]
-            )
+        let! output = Task.WhenAll([| p.StandardOutput.ReadToEndAsync(); p.StandardError.ReadToEndAsync() |])
 
         let! exit = p.WaitForExitAsync()
 
@@ -89,7 +85,7 @@ let private parseDirectives (sourcePath: string) =
             let m = Regex.Match(line, ";+\s*!(depends):(.+)")
 
             if m.Success then
-                Some((m.Groups[ 1 ].Value.ToLowerInvariant(), m.Groups[2].Value))
+                Some((m.Groups[1].Value.ToLowerInvariant(), m.Groups[2].Value))
             else
                 None
         else
@@ -103,10 +99,8 @@ let private parseDirectives (sourcePath: string) =
 let public getRunTestData () =
     executableSpecs
     |> Seq.collect (fun spec ->
-        [ [| spec :> obj
-             BuildConfiguration.Debug :> obj |]
-          [| spec :> obj
-             BuildConfiguration.Release :> obj |] ])
+        [ [| spec :> obj; BuildConfiguration.Debug :> obj |]
+          [| spec :> obj; BuildConfiguration.Release :> obj |] ])
 
 [<Theory>]
 [<MemberDataAttribute("getRunTestData")>]
@@ -114,12 +108,10 @@ let rec ``spec tests compile and run`` specPath configuration =
     let sourcePath = Path.Join(specDir, specPath)
 
     let options =
-        { (CompilationOptions.Create configuration Exe) with GenerateDepsFiles = true }
+        { (CompilationOptions.Create configuration Exe) with
+            GenerateDepsFiles = true }
 
-    let binDir =
-        [| specBin
-           options.Configuration |> string |]
-        |> Path.Combine
+    let binDir = [| specBin; options.Configuration |> string |] |> Path.Combine
 
     let shouldFail = sourcePath.Contains "fail"
 
@@ -175,13 +167,11 @@ let rec ``spec tests compile and run`` specPath configuration =
             if not shouldFail then
                 failwithf "Compilation error: %A" diags
 
-            (diags |> diagSanitiser)
-                .ShouldMatchSnapshot(snapshotId)
+            (diags |> diagSanitiser).ShouldMatchSnapshot(snapshotId)
     }
 
 let public getParseTestData () =
-    Seq.append librarySpecs executableSpecs
-    |> Seq.map (fun x -> [| x |])
+    Seq.append librarySpecs executableSpecs |> Seq.map (fun x -> [| x |])
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
@@ -198,9 +188,7 @@ let ``Test new lexer`` s =
     task {
         let! sourceText = File.ReadAllTextAsync(Path.Join(specDir, s))
 
-        let lexer =
-            (Lex.tokenise sourceText "test.scm")
-                .GetEnumerator()
+        let lexer = (Lex.tokenise sourceText "test.scm").GetEnumerator()
 
         let mutable bail = 0
         let mutable errors = 0

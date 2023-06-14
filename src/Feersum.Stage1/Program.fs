@@ -36,23 +36,15 @@ let main argv =
 
     let args = parser.Parse(argv)
 
-    let buildConfig =
-        args.TryGetResult Configuration
-        |> Option.defaultValue Release
+    let buildConfig = args.TryGetResult Configuration |> Option.defaultValue Release
 
-    let outputType =
-        args.TryGetResult OutputType
-        |> Option.defaultValue Exe
+    let outputType = args.TryGetResult OutputType |> Option.defaultValue Exe
 
     let options =
         { CompilationOptions.Create buildConfig outputType with
-            Version =
-                args.TryGetResult AssemblyVersion
-                |> Option.map Version.Parse
+            Version = args.TryGetResult AssemblyVersion |> Option.map Version.Parse
             References = args.GetResults Reference
-            GenerateDepsFiles =
-                (args.TryGetResult GenerateDeps)
-                |> Option.defaultValue true
+            GenerateDepsFiles = (args.TryGetResult GenerateDeps) |> Option.defaultValue true
             MsCorePaths = args.GetResults CoreLibPath }
 
     let diags =

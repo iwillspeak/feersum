@@ -12,9 +12,7 @@ open Feersum.CompilerServices.Text
 
 
 let private parse pattern literals =
-    match (readSingleNode pattern)
-          |> parsePattern "..." literals
-        with
+    match (readSingleNode pattern) |> parsePattern "..." literals with
     | Result.Ok p -> p
     | Result.Error e -> failwithf "Could not parse macro pattern %A" e
 
@@ -43,10 +41,7 @@ let rec private pp syntax =
     match syntax.Kind with
     | Constant c -> ppConst c
     | Ident id -> id
-    | Form f ->
-        List.map (pp) f
-        |> String.concat " "
-        |> sprintf "(%s)"
+    | Form f -> List.map (pp) f |> String.concat " " |> sprintf "(%s)"
     | x -> failwithf "unsupported syntax kind %A" x
 
 let private assertMatches pattern syntax =
@@ -143,13 +138,11 @@ let ``simple form patterns`` () =
     Assert.Equal(
         MacroBindings.Empty,
         assertMatches
-            (MacroPattern.Form [ MacroPattern.Constant(Boolean false)
-                                 MacroPattern.Constant(Str "frob")
-                                 MacroPattern.Constant(Number 123.56) ])
-            (Form [ constant (Boolean false)
-                    constant (Str "frob")
-                    number 123.56 ]
-             |> node)
+            (MacroPattern.Form
+                [ MacroPattern.Constant(Boolean false)
+                  MacroPattern.Constant(Str "frob")
+                  MacroPattern.Constant(Number 123.56) ])
+            (Form [ constant (Boolean false); constant (Str "frob"); number 123.56 ] |> node)
     )
 
     let testNode = (number 123.4)
@@ -200,9 +193,7 @@ let ``macro parse tests`` pattern syntax shouldMatch =
 
 [<Fact>]
 let ``custom elipsis patterns`` () =
-    let pattern =
-        parsePattern ":::" [] (readSingleNode "(a :::)")
-        |> Result.unwrap
+    let pattern = parsePattern ":::" [] (readSingleNode "(a :::)") |> Result.unwrap
 
     Assert.Equal(MacroPattern.Form [ MacroPattern.Repeat(MacroPattern.Variable "a") ], pattern)
 

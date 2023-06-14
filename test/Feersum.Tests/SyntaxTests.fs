@@ -17,9 +17,7 @@ let sanitise =
 [<Fact>]
 let ``parse seqs`` () =
     Assert.Equal(
-        Seq [ Number 1.0 |> Constant |> node
-              Number 23.0 |> Constant |> node ]
-        |> node,
+        Seq [ Number 1.0 |> Constant |> node; Number 23.0 |> Constant |> node ] |> node,
         readMany "1 23" |> sanitise
     )
 
@@ -27,9 +25,11 @@ let ``parse seqs`` () =
     Assert.Equal(Seq [] |> node, readMany "" |> sanitise)
 
     Assert.Equal(
-        Seq [ Form [ Ident "+" |> node
-                     Number 12.0 |> Constant |> node
-                     Number 34.0 |> Constant |> node ]
+        Seq
+            [ Form
+                  [ Ident "+" |> node
+                    Number 12.0 |> Constant |> node
+                    Number 34.0 |> Constant |> node ]
               |> node
               Boolean false |> Constant |> node ]
         |> node,
