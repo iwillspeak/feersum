@@ -152,8 +152,12 @@ let rec ``spec tests compile and run`` specPath configuration =
         let exePath = artifactpath options specPath
         let specName = specPath |> normalisePath
 
-        let snapshotId =
-            Core.SnapshotId(snapDir, "SpecTests", nameof (``spec tests compile and run``), specName, false)
+        let snapSettings = 
+            SnapshotSettings.New()
+                .SnapshotDirectory(snapDir)
+                .SnapshotClassName("SpecTests")
+                .SnapshotTestName(nameof (``spec tests compile and run``))
+                .StoreSnapshotsPerClass(false)
 
         match Compilation.compileFile options exePath sourcePath with
         | [] ->
@@ -162,12 +166,12 @@ let rec ``spec tests compile and run`` specPath configuration =
 
             let! r = runExampleAsync "dotnet" exePath
 
-            r.ShouldMatchSnapshot(snapshotId)
+            r.ShouldMatchChildSnapshot(specName, snapSettings)
         | diags ->
             if not shouldFail then
                 failwithf "Compilation error: %A" diags
 
-            (diags |> diagSanitiser).ShouldMatchSnapshot(snapshotId)
+            (diags |> diagSanitiser).ShouldMatchChildSnapshot(specName, snapSettings)
     }
 
 let public getParseTestData () =
@@ -180,7 +184,11 @@ let ``spec tests parse result`` s =
         Parse.readRaw Parse.Program s (File.ReadAllText(Path.Join(specDir, s)))
         |> ParseResult.map (SyntaxUtils.prettyPrint >> (fun x -> x.ReplaceLineEndings("\n")))
 
-    root.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s |> normalisePath))
+    let snapSettings =
+        SnapshotSettings.New()
+            .SnapshotClassName("Parse")
+            .SnapshotTestName(s |> normalisePath)
+    root.ShouldMatchSnapshot(snapSettings)
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
