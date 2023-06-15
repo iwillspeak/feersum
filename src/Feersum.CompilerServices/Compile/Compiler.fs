@@ -1022,6 +1022,7 @@ module private Utils =
         il.Emit(OpCodes.Ret)
 
 module Compilation =
+    open Feersum.CompilerServices.Syntax.Parse
 
     /// Emit a Bound Expression to .NET
     ///
@@ -1214,17 +1215,14 @@ module Compilation =
             else
                 output
 
-        let ast, diagnostics =
-            let nodes, diagnostics =
-                List.map LegacyParse.parseFile sources
-                |> List.fold (fun (nodes, diags) (n, d) -> (List.append nodes [ n ], List.append d diags)) ([], [])
+        let result =
+            Seq.map (Parse.parseFile) sources
+            |> Async.Parallel
+            |> Async.RunSynchronously
+            |> ParseResult.fold (fun (progs) (p) -> List.append progs [ p ]) []
 
-            { Location = TextLocation.Missing
-              Kind = LegacyNodeKind.Seq(nodes) },
-            diagnostics
-
-        if Diagnostics.hasErrors diagnostics then
-            diagnostics
+        if Diagnostics.hasErrors result.Diagnostics then
+            result.Diagnostics
         else
 
             // Open the output streams. We don't use an `Option` directly here for
@@ -1238,7 +1236,7 @@ module Compilation =
                 | BuildConfiguration.Release -> null
 
             let result =
-                compile options outputStream (Path.GetFileName(output)) (symbols |> Option.ofObj) ast
+                compile options outputStream (Path.GetFileName(output)) (symbols |> Option.ofObj) result.Root
 
             if result.Diagnostics.IsEmpty && options.OutputType = OutputType.Exe then
                 match result.EmittedAssemblyName with
