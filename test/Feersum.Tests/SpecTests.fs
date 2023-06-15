@@ -12,9 +12,9 @@ open Snapper
 open System.Diagnostics
 open SyntaxUtils
 open System.Text
-open System.Threading
-open System
 open System.Threading.Tasks
+open Feersum.CompilerServices.Syntax.Parse
+open Feersum.CompilerServices.Syntax.Tree
 
 // This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
@@ -176,11 +176,11 @@ let public getParseTestData () =
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
 let ``spec tests parse result`` s =
-    let node, diagnostics = LegacyParse.parseFile (Path.Join(specDir, s))
+    let root =
+        Parse.readRaw Parse.Program s (File.ReadAllText(Path.Join(specDir, s)))
+        |> ParseResult.map (SyntaxUtils.prettyPrint >> (fun x -> x.ReplaceLineEndings("\n")))
 
-    let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
-
-    tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s |> normalisePath))
+    root.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s |> normalisePath))
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]

@@ -43,6 +43,9 @@ module SyntaxUtils =
     /// Debug dump. Writes a debug representation of the tree to stdout.
     let dump = Debug.debugDump (Debug.mappedFormatter greenToAst)
 
+    /// Pretty print the syntax tree to a string, with mapped node names
+    let prettyPrint = Debug.debugToString (Debug.mappedFormatter greenToAst)
+
 open SyntaxUtils
 open System.Text
 
