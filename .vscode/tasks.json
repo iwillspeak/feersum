@@ -85,12 +85,15 @@
       "label": "update-snapshots",
       "command": "dotnet",
       "type": "shell",
+      "dependsOn": "build",
       "args": [
         "test",
+        "--no-build",
         "/nologo",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary",
-        "-v=n"
+        "--logger:'console;verbosity=normal'",
+        "-v:q"
       ],
       "group": "test",
       "presentation": {
