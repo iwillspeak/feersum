@@ -4,7 +4,6 @@ open Firethorn
 open Firethorn.Green
 open Firethorn.Red
 
-
 /// Node kind for each element in the raw tree.
 type AstKind =
     | ERROR = -1
@@ -103,7 +102,7 @@ module private Utils =
                 | 'f' -> (Plain, sb.Append('\f'))
                 | 'r' -> (Plain, sb.Append('\r'))
                 | 'x' -> (InHex "0x", sb)
-                | _ -> (Plain, sb.AppendFormat("\\{0}", ch))
+                | _ -> (Plain, sb.Append(ch))
 
         s
         |> Seq.fold (cookChar) (CookingState.Plain, StringBuilder())
@@ -186,9 +185,8 @@ and StrVal internal (red: SyntaxToken) =
     inherit ConstantValue(red)
 
     member public x.Value =
-        // FIXME: Cook the string here.
-        red.Green.Text
-
+        let text = red.Green.Text
+        text[1 .. text.Length - 2] |> cookString
 
 /// Boolean node in the syntax tree.
 and BoolVal internal (red: SyntaxToken) =
@@ -203,9 +201,28 @@ and CharVal internal (red: SyntaxToken) =
 
     inherit ConstantValue(red)
 
-    member public x.Value =
-        // TODO: Cook this character
-        x.Text[1]
+    member public _.Value =
+        let charText = red.Green.Text
+
+        if charText.Length = 3 then
+            Some(charText[2])
+        else if charText.StartsWith("#\\x") then
+            match System.Int32.TryParse(charText[3..], System.Globalization.NumberStyles.HexNumber, null) with
+            | true, hex -> Some((char) hex)
+            | _ -> None
+        else
+            match charText[2..] with
+            | "alarm" -> Some('\u0007')
+            | "backspace" -> Some('\u0008')
+            | "delete" -> Some('\u007F')
+            | "escape" -> Some('\u001B')
+            | "newline" -> Some('\u000A')
+            | "null" -> Some('\u0000')
+            | "return" -> Some('\u000D')
+            | "space" -> Some(' ')
+            | "tab" -> Some('\u0009')
+            | _ -> None
+
 
 // *********** NODES
 
@@ -322,11 +339,37 @@ module Patterns =
     open Feersum.CompilerServices.Ice
 
     /// Pattern to match on known expression types
+    let (|ByteVecNode|VecNode|FormNode|ConstantNode|SymbolNode|) (expr: Expression) =
+        match expr with
+        | :? ByteVec as b -> ByteVecNode b
+        | :? Vec as v -> VecNode v
+        | :? Form as f -> FormNode f
+        | :? Constant as c -> ConstantNode c
+        | :? Symbol as s -> SymbolNode s
+        | _ -> icef "Unexpected expression type: %A" (expr.GetType())
+
+    /// Ergonomic pattern to match the useful inner parts of an expression
     let (|ByteVec|Vec|Form|Constant|Symbol|) (expr: Expression) =
         match expr with
-        | :? ByteVec as b -> ByteVec b
-        | :? Vec as v -> Vec v
-        | :? Form as f -> Form f
-        | :? Constant as c -> Constant c
-        | :? Symbol as s -> Symbol s
-        | _ -> icef "Unexpected expression type: %A" (expr.GetType())
+        | ByteVecNode b -> ByteVec
+        | VecNode v -> Vec
+        | FormNode f -> Form(f.Body |> List.ofSeq)
+        | ConstantNode c -> Constant c.Value
+        | SymbolNode s -> Symbol s.CookedValue
+
+    /// Pattern to match on known constant types
+    let (|NumValNode|StrValNode|BoolValNode|CharValNode|) (cnst: ConstantValue) =
+        match cnst with
+        | :? NumVal as n -> NumValNode n
+        | :? StrVal as s -> StrValNode s
+        | :? BoolVal as b -> BoolValNode b
+        | :? CharVal as c -> CharValNode c
+        | _ -> icef "Unexpected constant type: %A" (cnst.GetType())
+
+    /// Ergonomic pattern to match the inner parts of a constant value
+    let (|NumVal|StrVal|BoolVal|CharVal|) (cnst: ConstantValue) =
+        match cnst with
+        | NumValNode n -> NumVal n.Value
+        | StrValNode s -> StrVal s.Value
+        | BoolValNode b -> BoolVal b.Value
+        | CharValNode c -> CharVal c.Value
