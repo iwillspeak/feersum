@@ -8,57 +8,62 @@ open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
 
-let readScriptExpr line =
-    let result = Parse.readExpr1 "repl" line
-
-    if result.Diagnostics |> List.isEmpty then
-        result.Root
-    else
-        failwithf "Expected single expression but got errors: %A" result.Diagnostics
-
-let readSingle line =
-    let result = Parse.readRaw Parse.ReadMode.Script "repl" line
-
-    if result.Diagnostics |> List.isEmpty then
-        result.Root.Children() |> Seq.exactlyOne
-    else
-        failwithf "Expected single expression but got: %A" result.Diagnostics
-
-let getKind (node: SyntaxNode) = node.Kind |> SyntaxUtils.greenToAst
-
-let getTokenKind (token: SyntaxToken) = token.Kind |> SyntaxUtils.greenToAst
-
-// open SyntaxUtils
-// open SyntaxFactory
-
 // TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
 //       invalid hex escapes, bad identifiers and so on.
 
-// let sanitise =
-//     sanitiseNodeWith (function
-//         | _ -> dummyLocation)
+[<AutoOpen>]
+module private Utils =
 
-// [<Fact>]
-// let ``parse seqs`` () =
-//     Assert.Equal(
-//         Seq [ Number 1.0 |> Constant |> node
-//               Number 23.0 |> Constant |> node ]
-//         |> node,
-//         readMany "1 23" |> sanitise
-//     )
+    let readScript line =
+        let result = Parse.readExpr1 "repl" line
 
-//     Assert.Equal(Seq [ Boolean true |> Constant |> node ] |> node, readMany "#t" |> sanitise)
-//     Assert.Equal(Seq [] |> node, readMany "" |> sanitise)
+        if result.Diagnostics |> List.isEmpty then
+            result.Root
+        else
+            failwithf "Expected single expression but got errors: %A in source: %s" result.Diagnostics line
 
-//     Assert.Equal(
-//         Seq [ Form [ Ident "+" |> node
-//                      Number 12.0 |> Constant |> node
-//                      Number 34.0 |> Constant |> node ]
-//               |> node
-//               Boolean false |> Constant |> node ]
-//         |> node,
-//         readMany "(+ 12 34) #f" |> sanitise
-//     )
+    let readScriptExpr line =
+        match (readScript line).Body with
+        | Some expr -> expr
+        | None -> failwithf "Expected single expression in %s" line
+
+    let readProgExprs line =
+        let result = Parse.readProgram "repl" line
+
+        if result.Diagnostics |> List.isEmpty then
+            result.Root.Body
+        else
+            failwithf "Expected program but got errors: %A in source %s" result.Diagnostics line
+
+    let readSingle line =
+        let result = Parse.readRaw Parse.ReadMode.Script "repl" line
+
+        if result.Diagnostics |> List.isEmpty then
+            result.Root.Children() |> Seq.exactlyOne
+        else
+            failwithf "Expected single expression but got: %A" result.Diagnostics
+
+    let getKind (node: SyntaxNode) = node.Kind |> SyntaxUtils.greenToAst
+
+    let getTokenKind (token: SyntaxToken) = token.Kind |> SyntaxUtils.greenToAst
+
+[<Fact>]
+let ``parse happy path`` () =
+
+    match readProgExprs "1 23" |> List.ofSeq with
+    | [ Constant(Some(NumVal 1.0)); Constant(Some(NumVal 23.0)) ] -> ()
+    | x -> failwithf "Parse test failure, got %A" x
+
+    match readProgExprs "#t" |> List.ofSeq with
+    | [ Constant(Some(BoolVal true)) ] -> ()
+    | x -> failwithf "Parse test failure, got %A" x
+
+    Assert.Empty(readProgExprs "")
+
+    match readProgExprs "(+ 12 34) #f" |> List.ofSeq with
+    | [ Form [ Symbol "+"; Constant(Some(NumVal 12.0)); Constant(Some(NumVal 34.0)) ]; Constant(Some(BoolVal false)) ] ->
+        ()
+    | x -> failwithf "Parse test failure, got %A" x
 
 [<Fact>]
 let ``parse atoms`` () =
@@ -150,7 +155,7 @@ let ``extended identifier characters`` ident =
 [<InlineData(@"|H\x65;llo|", "Hello")>]
 [<InlineData(@"|\x3BB;|", "λ")>]
 let ``identifier literals`` raw (cooked: string) =
-    let script = readScriptExpr raw
+    let script = readScript raw
     let tree = script.RawNode.Children() |> Seq.exactlyOne
 
     Assert.Equal(AstKind.SYMBOL, tree |> getKind)
@@ -163,36 +168,43 @@ let ``identifier literals`` raw (cooked: string) =
     Assert.Equal(AstKind.IDENTIFIER, identTok |> getTokenKind)
 
     match script.Body with
-    | Some(Symbol s) -> Assert.Equal(cooked, s.CookedValue)
+    | Some(SymbolNode s) -> Assert.Equal(cooked, s.CookedValue)
     | _ -> failwithf "Expected identifier but got %A" script.Body
 
-// [<Theory>]
-// [<InlineData("\\a", '\a')>]
-// [<InlineData("\\b", '\b')>]
-// [<InlineData("\\t", '\t')>]
-// [<InlineData("\\n", '\n')>]
-// [<InlineData("\\v", '\v')>]
-// [<InlineData("\\f", '\f')>]
-// [<InlineData("\\r", '\r')>]
-// [<InlineData("\\\\", '\\')>]
-// [<InlineData("\\\"", '"')>]
-// [<InlineData("\\x0000A;", '\n')>]
-// [<InlineData("\\x41;", 'A')>]
-// [<InlineData("\\x1234;", '\u1234')>]
-// let ``parse escaped characters`` escaped char =
-//     Assert.Equal(Str(char |> string) |> Constant, readSingle (sprintf "\"%s\"" escaped))
+[<Theory>]
+[<InlineData("\\a", '\a')>]
+[<InlineData("\\b", '\b')>]
+[<InlineData("\\t", '\t')>]
+[<InlineData("\\n", '\n')>]
+[<InlineData("\\v", '\v')>]
+[<InlineData("\\f", '\f')>]
+[<InlineData("\\r", '\r')>]
+[<InlineData("\\\\", '\\')>]
+[<InlineData("\\\"", '"')>]
+[<InlineData("\\x0000A;", '\n')>]
+[<InlineData("\\x41;", 'A')>]
+[<InlineData("\\x1234;", '\u1234')>]
+let ``parse escaped characters`` escaped char =
+    match readScriptExpr (sprintf "\"%s\"" escaped) with
+    | Constant(Some(StrVal s)) ->
+        Assert.Equal(1, s.Length)
+        Assert.Equal(char, s[0])
+    | _ -> failwith "Expected string"
 
-// [<Fact>]
-// let ``parse datum comment`` () =
-//     Assert.Equal(
-//         Number 1.0 |> Constant,
-//         readSingle
-//             "#;(= n 1)
-//             1        ;Base case: return 1"
-//     )
+[<Fact>]
+let ``parse datum comment`` () =
+    let checkFor num (parsed: Expression) =
+        match parsed with
+        | Constant(Some(NumValNode n)) -> Assert.Equal(num, n.Value)
+        | _ -> failwith "Expected constant value"
 
-//     Assert.Equal(Number 123.0 |> Constant, readSingle "#;(= n 1)123")
-//     Assert.Equal(Number 456.0 |> Constant, readSingle "#;123 456")
+    "#;(= n 1)
+        1        ;Base case: return 1"
+    |> readScriptExpr
+    |> checkFor 1.0
+
+    "#;(= n 1)123" |> readScriptExpr |> checkFor 123.0
+    "#;123 456" |> readScriptExpr |> checkFor 456.0
 
 [<Fact>]
 let ``parse block comments`` () =
@@ -201,42 +213,49 @@ let ``parse block comments`` () =
 
     Assert.Equal(AstKind.CONSTANT, readSingle "#| this #| is a |# comment |#1" |> getKind)
 
-// [<Theory>]
-// [<InlineData('a')>]
-// [<InlineData('b')>]
-// [<InlineData('A')>]
-// [<InlineData(' ')>]
-// [<InlineData('#')>]
-// [<InlineData('\\')>]
-// [<InlineData('+')>]
-// [<InlineData('.')>]
-// [<InlineData('(')>]
-// [<InlineData('?')>]
-// [<InlineData('€')>]
-// [<InlineData('§')>]
-// [<InlineData('±')>]
-// let ``parse simple character literals`` char =
-//     Assert.Equal(Character char |> Constant, readSingle (@"#\" + string char))
+[<Theory>]
+[<InlineData('a')>]
+[<InlineData('b')>]
+[<InlineData('A')>]
+[<InlineData(' ')>]
+[<InlineData('#')>]
+[<InlineData('\\')>]
+[<InlineData('+')>]
+[<InlineData('.')>]
+[<InlineData('(')>]
+[<InlineData('?')>]
+[<InlineData('€')>]
+[<InlineData('§')>]
+[<InlineData('±')>]
+let ``parse simple character literals`` char =
+    match readScriptExpr (@"#\" + string char) with
+    | Constant(Some(CharVal(Some c))) -> Assert.Equal(char, c)
+    | _ -> failwith "Expected character value"
 
-// [<Theory>]
-// [<InlineData("alarm", '\u0007')>]
-// [<InlineData("backspace", '\u0008')>]
-// [<InlineData("delete", '\u007F')>]
-// [<InlineData("escape", '\u001B')>]
-// [<InlineData("newline", '\u000A')>]
-// [<InlineData("null", '\u0000')>]
-// [<InlineData("return", '\u000D')>]
-// [<InlineData("space", ' ')>]
-// [<InlineData("tab", '\u0009')>]
-// let ``parse named characters`` name char =
-//     Assert.Equal(Character char |> Constant, readSingle (@"#\" + name))
+[<Theory>]
+[<InlineData("alarm", '\u0007')>]
+[<InlineData("backspace", '\u0008')>]
+[<InlineData("delete", '\u007F')>]
+[<InlineData("escape", '\u001B')>]
+[<InlineData("newline", '\u000A')>]
+[<InlineData("null", '\u0000')>]
+[<InlineData("return", '\u000D')>]
+[<InlineData("space", ' ')>]
+[<InlineData("tab", '\u0009')>]
+let ``parse named characters`` name char =
+    match readScriptExpr (@"#\" + name) with
+    | Constant(Some(CharVal(Some c))) -> Assert.Equal(char, c)
+    | _ -> failwith "Expected character value"
 
-// [<Theory>]
-// [<InlineData(@"#\x03BB", 'λ')>]
-// [<InlineData(@"#\x03bb", 'λ')>]
-// [<InlineData(@"#\x20", ' ')>]
-// let ``parse hex characters`` hex char =
-//     Assert.Equal(Character char |> Constant, readSingle hex)
+[<Theory>]
+[<InlineData(@"#\x03BB", 'λ')>]
+[<InlineData(@"#\x03bb", 'λ')>]
+[<InlineData(@"#\x20", ' ')>]
+[<InlineData(@"#\x", 'x')>]
+let ``parse hex characters`` hex char =
+    match readScriptExpr hex with
+    | Constant(Some(CharVal(Some c))) -> Assert.Equal(char, c)
+    | _ -> failwith "Expected character value"
 
 [<Fact>]
 let ``multiple diagnostics on error`` () =
@@ -254,8 +273,6 @@ let ``syntax shim test`` () =
         |> ParseResult.toResult
         |> Result.map (fun x -> x.Body |> Seq.map (SyntaxShim.transformExpr doc) |> Seq.exactlyOne)
         |> Result.unwrap
-
-    printfn "@%A" tree.Location
 
     Assert.Equal(1L, tree.Location.Start.Line)
     Assert.Equal(0L, tree.Location.Start.Col)

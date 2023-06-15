@@ -165,21 +165,28 @@ let private parseConstant (builder: GreenNodeBuilder) state =
     builder.FinishNode()
     state
 
-let private skipAtmosphere (builder: GreenNodeBuilder) state =
-    let mutable state = state
-
-    while lookingAtAny [ TokenKind.Whitespace; TokenKind.Comment ] state do
-        state <- eat builder AstKind.ATMOSPHERE state
-
-    state
-
 let private parseIdentifier (builder: GreenNodeBuilder) state =
     builder.StartNode(AstKind.SYMBOL |> SyntaxUtils.astToGreen)
     let state = expect builder TokenKind.Identifier AstKind.IDENTIFIER state
     builder.FinishNode()
     state
 
-let rec private parseQuote (builder: GreenNodeBuilder) state =
+let rec private skipAtmosphere (builder: GreenNodeBuilder) state =
+    let mutable state = state
+
+    while lookingAtAny [ TokenKind.Whitespace; TokenKind.Comment; TokenKind.DatumCommentMarker ] state do
+        match currentKind state with
+        | TokenKind.DatumCommentMarker ->
+            builder.StartNode(AstKind.ATMOSPHERE |> SyntaxUtils.astToGreen)
+
+            state <- state |> eat builder AstKind.ATMOSPHERE |> parseExpr builder
+
+            builder.FinishNode()
+        | _ -> state <- eat builder AstKind.ATMOSPHERE state
+
+    state
+
+and private parseQuote (builder: GreenNodeBuilder) state =
     builder.StartNode(AstKind.QUOTED_DATUM |> SyntaxUtils.astToGreen)
 
     let state =

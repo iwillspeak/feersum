@@ -37,26 +37,6 @@
       "presentation": {
         "reveal": "silent"
       },
-<<<<<<< HEAD
-      {
-        "label": "runcompiler",
-        "command": "dotnet",
-        "type": "shell",
-        "dependsOn": "build",
-        "args": [
-          "${workspaceFolder}/src/Feersum/bin/Debug/net7.0/Feersum.dll",
-          "--configuration",
-          "Debug",
-          "-o",
-          "${workspaceFolder}/spec/bin/",
-          "${input:scmToCompile}"
-        ],
-        "group": "build",
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": "$msCompile"
-=======
       "problemMatcher": "$msCompile"
     },
     {
@@ -76,7 +56,6 @@
       "group": {
         "kind": "test",
         "isDefault": true
->>>>>>> 0f9f9a2 (Reformat JSON Config)
       },
       "presentation": {
         "reveal": "silent"

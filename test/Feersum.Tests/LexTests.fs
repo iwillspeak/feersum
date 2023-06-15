@@ -9,18 +9,8 @@ open Feersum.CompilerServices.Text
 let private p name line col =
     TextPoint.FromParts(name, line, col) |> TextLocation.Point
 
-/// Grab the kind from a syntax token pair.
-let private getKind token =
-    let (kind, _) = token
-    kind
-
-/// Grab the value from a syntax token pair.
-let private getValue token =
-    let (_, value) = token
-    value
-
 [<Fact>]
-let ``Empty input text always returns end of file`` () =
+let ``Empty input text contains no tokens`` () =
     let tokens = tokenise "" "test.scm"
 
     Assert.Empty(tokens)

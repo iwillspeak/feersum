@@ -10,7 +10,7 @@ type LegacyNodeKind<'a> = Feersum.CompilerServices.Syntax.AstNodeKind<'a>
 let rec transformExpr (doc: TextDocument) (expr: Expression) : LegacyNode =
     let kind =
         match expr with
-        | Form f -> f.Body |> Seq.map (transformExpr doc) |> List.ofSeq |> LegacyNodeKind.Form
+        | FormNode f -> f.Body |> Seq.map (transformExpr doc) |> List.ofSeq |> LegacyNodeKind.Form
         | _ ->
             // TODO: All the other node kinds
             LegacyNodeKind.Error
