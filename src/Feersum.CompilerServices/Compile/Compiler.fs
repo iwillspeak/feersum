@@ -1044,7 +1044,7 @@ module Compilation =
             AssemblyNameDefinition(stem, options.Version |> Option.defaultValue (Version(1, 0)))
 
         use resolver = new DefaultAssemblyResolver()
-        List.iter (resolver.AddSearchDirectory) target.MSCoreLibLocations
+        List.iter (resolver.AddSearchDirectory) target.FrameworkLibLocations
         let moduleParams = ModuleParameters()
 
         moduleParams.Kind <-
@@ -1149,9 +1149,9 @@ module Compilation =
     /// name of the output.
     let compile options outputStream outputName symbolStream node =
         let target =
-            match options.MsCorePaths with
+            match options.FrameworkAssmPaths with
             | [] -> TargetResolve.fromCurrentRuntime
-            | paths -> TargetResolve.fromMsCoreLibPaths paths
+            | paths -> TargetResolve.fromFrameworkPaths paths
 
         let (refTys, allLibs) =
             options.References
