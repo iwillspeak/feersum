@@ -87,7 +87,7 @@ let main argv =
             Version = args.TryGetResult AssemblyVersion |> Option.map Version.Parse
             References = args.GetResults Reference |> List.append coreReferences
             GenerateDepsFiles = (args.TryGetResult GenerateDeps) |> Option.defaultValue true
-            MsCorePaths = args.GetResults CoreLibPath }
+            FrameworkAssmPaths = args.GetResults CoreLibPath }
 
     match args.GetResult(Compile, defaultValue = []), args.TryGetResult(Output) with
     | [], None ->

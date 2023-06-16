@@ -290,7 +290,7 @@ module Builtins =
     let importCore (targetAssm: AssemblyDefinition) target =
 
         let coreAssemblies =
-            target.LispCoreLocation :: target.MSCoreLibLocations
+            target.LispCoreLocation :: target.FrameworkLibLocations
             |> List.map (fun x -> AssemblyDefinition.ReadAssembly(x, assmReadParams))
 
         try

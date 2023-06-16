@@ -3,7 +3,7 @@ namespace Feersum.CompilerServices.Targets
 /// Resolved targetPaths for SDK reference assemblies.
 type TargetInfo =
     { LispCoreLocation: string
-      MSCoreLibLocations: string list }
+      FrameworkLibLocations: string list }
 
 module TargetResolve =
 
@@ -11,14 +11,14 @@ module TargetResolve =
     //        of SDK resoltuion.
     let private serehfaAssmLoc = typeof<Serehfa.ConsPair>.Assembly.Location
 
-    let private mscorelibAssmLoc = typeof<obj>.Assembly.Location
+    let private mscorlibAssmLoc = typeof<obj>.Assembly.Location
 
     /// Return a `TargetInfo` for the currently running process.
     let public fromCurrentRuntime =
         { LispCoreLocation = serehfaAssmLoc
-          MSCoreLibLocations = [ mscorelibAssmLoc ] }
+          FrameworkLibLocations = [ mscorlibAssmLoc ] }
 
-    // Return a `TargetInfo` for the given MSCoreLib path.
-    let public fromMsCoreLibPaths path =
+    /// Return a `TargetInfo` for the given framework assembly paths
+    let public fromFrameworkPaths paths =
         { LispCoreLocation = serehfaAssmLoc
-          MSCoreLibLocations = path }
+          FrameworkLibLocations = paths }
