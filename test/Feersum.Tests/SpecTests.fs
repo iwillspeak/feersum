@@ -67,7 +67,7 @@ let private runExampleAsync host (exePath: string) =
     task {
         let! output = Task.WhenAll([| p.StandardOutput.ReadToEndAsync(); p.StandardError.ReadToEndAsync() |])
 
-        let! exit = p.WaitForExitAsync()
+        let! _ = p.WaitForExitAsync()
 
         return
             { Output = output[0] |> normaliseEndings
@@ -114,6 +114,7 @@ let rec ``spec tests compile and run`` specPath configuration =
     let binDir = [| specBin; options.Configuration |> string |] |> Path.Combine
 
     let shouldFail = sourcePath.Contains "fail"
+    let shouldRun = sourcePath.Contains "norun" |> not
 
     let mutable references = [ typeof<Feersum.Core.LispProgram>.Assembly.Location ]
 
@@ -165,9 +166,10 @@ let rec ``spec tests compile and run`` specPath configuration =
             if shouldFail then
                 failwith "Expected compilation failure!"
 
-            let! r = runExampleAsync "dotnet" exePath
+            if shouldRun then
+                let! r = runExampleAsync "dotnet" exePath
 
-            r.ShouldMatchChildSnapshot(specName, snapSettings)
+                r.ShouldMatchChildSnapshot(specName, snapSettings)
         | diags ->
             if not shouldFail then
                 failwithf "Compilation error: %A" diags
