@@ -201,7 +201,7 @@ let ``Test new lexer`` s =
     task {
         let! sourceText = File.ReadAllTextAsync(Path.Join(specDir, s))
 
-        let lexer = (Lex.tokenise sourceText "test.scm").GetEnumerator()
+        let lexer = (Lex.tokenise sourceText).GetEnumerator()
 
         let mutable bail = 0
         let mutable errors = 0

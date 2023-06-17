@@ -18,8 +18,8 @@ Feersum Scheme Compiler - 0.2.6
 §> 
 ```
 
-> note, current limitations preven REPL expressions from accessing the results
-> of previous expressions. Each expression must be a complete Scheme fomr on a
+> note, current limitations prevent REPL expressions from accessing the results
+> of previous evaluations. Each expression must be a complete Scheme form on a
 > single line.
 >
 > Check out <https://github.com/iwillspeak/feersum/issues/35> to track progress

@@ -58,16 +58,18 @@ module public TextDocument =
           LineStarts = lineStarts body }
 
     let private offsetToLineCol lines offset =
+        // TODO: This method returns 1-based line indexes, and 0-based column
+        //       indexes. Is that what we _want_?
         match List.tryFindIndex (fun x -> x > offset) lines with
         | Some(0) -> (1, offset)
         | Some(idx) -> (idx, offset - lines[idx - 1])
         | None ->
-            let lineCount = List.length lines
+            let linebreakCount = List.length lines
 
-            if lineCount = 0 then
+            if linebreakCount = 0 then
                 (1, offset)
             else
-                (lineCount, offset - (List.last lines))
+                (linebreakCount + 1, offset - (List.last lines))
 
     let public offsetToPoint document offset =
         let (line, col) = offsetToLineCol document.LineStarts offset
