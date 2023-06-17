@@ -152,8 +152,9 @@ let rec ``spec tests compile and run`` specPath configuration =
         let exePath = artifactpath options specPath
         let specName = specPath |> normalisePath
 
-        let snapSettings = 
-            SnapshotSettings.New()
+        let snapSettings =
+            SnapshotSettings
+                .New()
                 .SnapshotDirectory(snapDir)
                 .SnapshotClassName("SpecTests")
                 .SnapshotTestName(nameof (``spec tests compile and run``))
@@ -185,9 +186,11 @@ let ``spec tests parse result`` s =
         |> ParseResult.map (SyntaxUtils.prettyPrint >> (fun x -> x.ReplaceLineEndings("\n")))
 
     let snapSettings =
-        SnapshotSettings.New()
+        SnapshotSettings
+            .New()
             .SnapshotClassName("Parse")
             .SnapshotTestName(s |> normalisePath)
+
     root.ShouldMatchSnapshot(snapSettings)
 
 [<Theory>]

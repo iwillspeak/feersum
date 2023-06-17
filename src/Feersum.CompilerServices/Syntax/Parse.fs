@@ -153,9 +153,14 @@ let private parseConstant (builder: GreenNodeBuilder) state =
         | TokenKind.Number -> AstKind.NUMBER
         | TokenKind.Boolean -> AstKind.BOOLEAN
         | TokenKind.Character -> AstKind.CHARACTER
-        | _ ->
+        | k ->
             state <-
-                sprintf "Unexpected token %A" (currentKind state)
+                sprintf
+                    "Unexpected token %A '%s'"
+                    k
+                    (List.tryHead state.Tokens
+                     |> Option.map (fun t -> t.Lexeme)
+                     |> Option.defaultValue "")
                 |> ParserState.bufferDiagnostic state ParserDiagnostics.parseError
 
             AstKind.ERROR
@@ -202,10 +207,25 @@ and private parseAtom builder state =
     | _ -> parseConstant builder state
 
 and private parseFormTail builder state =
-    let mutable state = state
+    let mutable state = state |> skipAtmosphere builder
 
-    while not (lookingAtAny [ TokenKind.EndOfFile; TokenKind.CloseBracket ] state) do
+    while not (lookingAtAny [ TokenKind.EndOfFile; TokenKind.Dot; TokenKind.CloseBracket ] state) do
         state <- parseExpr builder state
+
+    if lookingAt TokenKind.Dot state then
+        builder.StartNode(AstKind.DOTTED_TAIL |> SyntaxUtils.astToGreen)
+
+        state <- state |> eat builder (AstKind.DOT) |> skipAtmosphere builder
+
+        // Check we aren't going to consume the last part of a malformed form
+        // as our error token. This isn't really required for well-formed source
+        // but makes the trees for malformed code more readable
+        if lookingAt TokenKind.CloseBracket state then
+            state <- ParserState.bufferDiagnostic state ParserDiagnostics.parseError "Expected expression after `.`"
+        else
+            state <- parseExpr builder state
+
+        builder.FinishNode()
 
     let state = expect builder TokenKind.CloseBracket AstKind.CLOSE_PAREN state
     builder.FinishNode()
