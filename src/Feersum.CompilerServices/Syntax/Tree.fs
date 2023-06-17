@@ -17,6 +17,7 @@ type AstKind =
     | QUOTED_DATUM = 6
     | VEC = 7
     | BYTEVEC = 8
+    | DOTTED_TAIL = 9
 
     // tokens
     | EOF = 101
@@ -29,6 +30,7 @@ type AstKind =
     | OPEN_PAREN = 108
     | CLOSE_PAREN = 109
     | QUOTE = 110
+    | DOT = 111
 
 module SyntaxUtils =
 
@@ -248,11 +250,23 @@ type Form internal (red: SyntaxNode) =
 
     member public _.Body = red.Children() |> Seq.choose Expression.TryCast
 
+    member public _.DottedTail = red.Children() |> Seq.tryPick DottedTail.TryCast
+
     member public _.ClosingParen =
         red.ChildrenWithTokens()
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryFind (tokenOfKind AstKind.CLOSE_PAREN)
 
+and DottedTail internal (red: SyntaxNode) =
+
+    inherit AstNode(red)
+
+    member public _.Body = red.Children() |> Seq.tryPick (Expression.TryCast)
+
+    static member TryCast(node: SyntaxNode) =
+        match node.Kind |> greenToAst with
+        | AstKind.DOTTED_TAIL -> DottedTail(node) |> Some
+        | _ -> None
 
 /// Symbolic identifier node. This wraps an indentifier token when it is used
 /// as a symbol in the source text.
@@ -352,11 +366,16 @@ module Patterns =
         | _ -> icef "Unexpected expression type: %A" (expr.GetType())
 
     /// Ergonomic pattern to match the useful inner parts of an expression
-    let (|ByteVec|Vec|Form|Constant|Symbol|) (expr: Expression) =
+    let (|ByteVec|Vec|Form|DottedForm|Constant|Symbol|) (expr: Expression) =
         match expr with
         | ByteVecNode b -> ByteVec
         | VecNode v -> Vec
-        | FormNode f -> Form(f.Body |> List.ofSeq)
+        | FormNode f ->
+            let mainBody = (f.Body |> List.ofSeq)
+
+            match f.DottedTail with
+            | None -> Form mainBody
+            | Some tail -> DottedForm(mainBody, tail.Body)
         | ConstantNode c -> Constant c.Value
         | SymbolNode s -> Symbol s.CookedValue
 
