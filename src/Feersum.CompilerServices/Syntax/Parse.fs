@@ -5,7 +5,6 @@ open System.IO
 open Firethorn.Green
 open Firethorn.Red
 
-open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Tree
@@ -60,13 +59,15 @@ module ParseResult =
 /// directly. The main parser API is via the `read*` functions.
 type private ParserState =
     { Tokens: LexicalToken list
+      Document: TextDocument
       Diagnostics: Diagnostic list }
 
 module private ParserState =
 
     /// Create a new parser state from the given sequence of tokens
-    let fromTokens tokens =
+    let fromParts tokens doc =
         { Tokens = List.ofSeq tokens
+          Document = doc
           Diagnostics = [] }
 
     /// Bump the token enumerator, returning the current token and new state.
@@ -84,8 +85,10 @@ module private ParserState =
     let bufferDiagnostic state diagKind message =
         let pos =
             match List.tryHead state.Tokens with
-            | Some token -> token.Location
-            | _ -> Missing
+            | Some token -> token.Offset
+            | _ -> 0
+            |> TextDocument.offsetToPoint state.Document
+            |> TextLocation.Point
 
         Diagnostic.Create diagKind pos message |> bufferDiagnosticRaw state
 
@@ -295,7 +298,9 @@ let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxNo
 
 /// Read a raw syntax tree from the given input.
 let readRaw mode name (line: string) =
-    let parseState = Lex.tokenise line name |> ParserState.fromTokens
+    let doc = TextDocument.fromParts name line
+    let tokens = Lex.tokenise line
+    let parseState = ParserState.fromParts tokens doc
 
     let builder = GreenNodeBuilder()
 

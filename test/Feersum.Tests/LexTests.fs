@@ -11,7 +11,7 @@ let private p name line col =
 
 [<Fact>]
 let ``Empty input text contains no tokens`` () =
-    let tokens = tokenise "" "test.scm"
+    let tokens = tokenise ""
 
     Assert.Empty(tokens)
 
@@ -86,16 +86,12 @@ let ``Empty input text contains no tokens`` () =
 [<InlineData("-..10", TokenKind.Identifier)>]
 [<InlineData("+-.0", TokenKind.Identifier)>]
 let ``Lexer lex single token`` (token, kind) =
-    let tokens = Lex.tokenise token "test.scm"
-
-    let (line, col) =
-        token
-        |> Seq.fold (fun (line, col) char -> if char = '\n' then (line + 1, 0) else (line, col + 1)) (1, 0)
+    let tokens = Lex.tokenise token
 
     Assert.Equal(
         [ { Kind = kind
             Lexeme = token
-            Location = (p "test.scm" line col) } ],
+            Offset = token.Length } ],
         tokens
     )
 
@@ -103,7 +99,7 @@ let ``Lexer lex single token`` (token, kind) =
 let ``Lexer happy path`` () =
 
     let tokens =
-        Lex.tokenise "(display #| hello |# world)" "test.scm"
+        Lex.tokenise "(display #| hello |# world)"
         |> Seq.map (fun token -> token.Kind, token.Lexeme)
 
     Assert.Equal(

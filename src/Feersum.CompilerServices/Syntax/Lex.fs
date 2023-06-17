@@ -28,7 +28,7 @@ type TokenKind =
 type LexicalToken =
     { Kind: TokenKind
       Lexeme: string
-      Location: TextLocation }
+      Offset: Firethorn.TextLength }
 
 /// States in our lexer's state machine.
 type private LexState =
@@ -102,7 +102,7 @@ let private hexDigits =
 
 /// Tokenise the input text. Returns an enumerable sequence of the tokens within
 /// the text.
-let public tokenise input name =
+let public tokenise input =
 
     let tokenForState lexeme state pos =
         let kind =
@@ -139,7 +139,7 @@ let public tokenise input name =
 
         { Kind = kind
           Lexeme = lexeme
-          Location = pos }
+          Offset = pos }
 
     /// Get the next transition, if any, for the current `state` and `c`. This
     /// returns `Some` if a transition exists, and `None` if no transition is
@@ -286,20 +286,15 @@ let public tokenise input name =
 
     let mutable state = Start
     let mutable lexeme = StringBuilder()
-    let mutable line = 1
-    let mutable col = 0
+    let mutable offset = 0
 
     seq {
         for char in input do
-            match char with
-            | '\n' ->
-                col <- 0
-                line <- line + 1
-            | _ -> col <- col + 1
+            offset <- offset + 1
 
             match nextTransition state char with
             | None ->
-                yield tokenForState (lexeme.ToString()) state (TextLocation.Point(TextPoint.FromParts(name, line, col)))
+                yield tokenForState (lexeme.ToString()) state offset
                 lexeme <- lexeme.Clear().Append(char)
 
                 state <- nextTransition Start char |> Option.defaultValue Error
@@ -308,5 +303,5 @@ let public tokenise input name =
                 lexeme <- lexeme.Append(char)
 
         if state <> Start then
-            yield tokenForState (lexeme.ToString()) state (TextLocation.Point(TextPoint.FromParts(name, line, col)))
+            yield tokenForState (lexeme.ToString()) state offset
     }
