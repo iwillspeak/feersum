@@ -8,6 +8,7 @@
     <ProjectReference Include="..\..\src\Feersum.Core\Feersum.Core.scmproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TextTests.fs" />
     <Compile Include="DiagnosticsTests.fs" />
     <Compile Include="OptionsTests.fs" />
     <Compile Include="SyntaxUtils.fs" />

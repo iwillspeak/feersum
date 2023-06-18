@@ -275,6 +275,6 @@ let ``syntax shim test`` () =
         |> Result.unwrap
 
     Assert.Equal(1L, tree.Location.Start.Line)
-    Assert.Equal(0L, tree.Location.Start.Col)
+    Assert.Equal(1L, tree.Location.Start.Col)
     Assert.Equal(1L, tree.Location.End.Line)
-    Assert.Equal(7L, tree.Location.End.Col)
+    Assert.Equal(8L, tree.Location.End.Col)
