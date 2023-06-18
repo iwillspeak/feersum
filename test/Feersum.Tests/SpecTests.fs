@@ -183,9 +183,14 @@ let public getParseTestData () =
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
 let ``spec tests parse result`` s =
+    let sourcePath = Path.Join(specDir, s)
+
     let root =
-        Parse.readRaw Parse.Program s (File.ReadAllText(Path.Join(specDir, s)))
+        Parse.readRaw Parse.Program sourcePath (File.ReadAllText(sourcePath))
         |> ParseResult.map (SyntaxUtils.prettyPrint >> (fun x -> x.ReplaceLineEndings("\n")))
+        |> (fun r ->
+            { r with
+                Diagnostics = diagSanitiser r.Diagnostics })
 
     let snapSettings =
         SnapshotSettings
