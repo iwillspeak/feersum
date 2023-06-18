@@ -286,6 +286,8 @@ let public tokenise input =
 
     let mutable state = Start
     let mutable lexeme = StringBuilder()
+    // TODO: we should probably stop tracking offset in the tokens and instead
+    ///      keep track as we eat their lexemes in the parser.
     let mutable offset = 0
 
     seq {

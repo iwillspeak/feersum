@@ -86,7 +86,11 @@ module private ParserState =
         let pos =
             match List.tryHead state.Tokens with
             | Some token -> token.Offset
-            | _ -> 0
+            | _ ->
+                // FIXME: If we have no tokens let the diagnostic should
+                // probably point to the beginning of the file rather than the
+                // end of it.
+                0
             |> TextDocument.offsetToPoint state.Document
             |> TextLocation.Point
 

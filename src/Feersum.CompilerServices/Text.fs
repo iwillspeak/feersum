@@ -57,19 +57,22 @@ module public TextDocument =
         { Path = path
           LineStarts = lineStarts body }
 
+    /// Turn a character offset into a document into a hunan line column value.
+    /// That is a 0-baesd character offset into the file ebcomes a 1-based pair
+    /// of line and column.
     let private offsetToLineCol lines offset =
-        // TODO: This method returns 1-based line indexes, and 0-based column
-        //       indexes. Is that what we _want_?
-        match List.tryFindIndex (fun x -> x > offset) lines with
-        | Some(0) -> (1, offset)
-        | Some(idx) -> (idx, offset - lines[idx - 1])
-        | None ->
-            let linebreakCount = List.length lines
+        let (lineIdx, colIdx) =
+            match List.tryFindIndexBack (fun x -> x < offset) lines with
+            | Some(idx) ->
+                // The `idx` line break occurs before this line. If tis is the
+                // break at index 0, we're on the line at index 1.
+                (idx + 1, offset - lines[idx] - 1)
+            | None ->
+                // no linebreak occurs before the offset, so we must be on the
+                // first line.
+                (0, offset)
 
-            if linebreakCount = 0 then
-                (1, offset)
-            else
-                (linebreakCount + 1, offset - (List.last lines))
+        (lineIdx + 1, colIdx + 1)
 
     let public offsetToPoint document offset =
         let (line, col) = offsetToLineCol document.LineStarts offset
