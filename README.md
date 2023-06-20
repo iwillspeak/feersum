@@ -38,13 +38,13 @@ To create an SDK style scheme project and build it with `dotnet build` first
 install the `Feersum.Templates` template pack:
 
 ```
-$ dotnet new --install Feersum.Templates::*
+$ dotnet new install Feersum.Templates::*
 ```
 
 Then from the command line:
 
 ```
-$ dotnet new scm-console --language Scheme
+$ dotnet new scm-console
 ```
 
 This generates a new console application project in the current directory.
