@@ -44,14 +44,14 @@ $ dotnet new --install Feersum.Templates::*
 Then from the command line:
 
 ```
-$ dotnet new console --language Scheme
+$ dotnet new scm-console --language Scheme
 ```
 
 This generates a new console application project in the current directory.
 Compile and run with `dotnet build` and `dotnet run` as usual! Other templates
 are available:
 
- * `classlib` - Generate a .NET class library project.
+ * `scm-classlib` - Generate a .NET class library project.
  * `scmlib` - Generate s Scheme library definition file.
 
 # Planned Features

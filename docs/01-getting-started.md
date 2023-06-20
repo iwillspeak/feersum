@@ -10,7 +10,7 @@ Once you have the tool installed you can access a Scheme Read, Eval, Print, Loop
 be evaluated and see their representation printed back to you:
 
 ```
-Feersum Scheme Compiler - 0.2.5
+Feersum Scheme Compiler - 0.2.6
 §> "Hello, Schemer!"
 }= "Hello, Schemer!"
 §> (+ 1 9)  
