@@ -5,6 +5,21 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+  <PropertyGroup>
+    <!-- Package metadata that is shared amongst all packages. -->
+    <PackageTags>Feersum;LISP;Scheme;Compiler;functional;programming</PackageTags>
+    <Authors>Will Speak</Authors>
+    <Description>
+    Feersum Scheme is a Scheme implementation that compiles to .NET. Feersum provides a command line tool for batch compliation, a Scheme REPL, and a .NET SDK for MSBuild support.
+    </Description>
+    <PackageProjectUrl>https://docs.feersum-scheme.net/</PackageProjectUrl>
+    <PackageIcon>PackageIcon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(IsPackable)' == 'true' ">
+    <None Include="$(MSBuildThisFileDirectory)eng/PackageIcon.png" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
       <PrivateAssets>all</PrivateAssets>
