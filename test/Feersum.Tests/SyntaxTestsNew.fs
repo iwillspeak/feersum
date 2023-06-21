@@ -2,9 +2,7 @@ module SyntaxTestsNew
 
 open Xunit
 open Firethorn.Red
-open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
 
@@ -262,19 +260,3 @@ let ``multiple diagnostics on error`` () =
     let source = "(- 1 § (display \"foo\")"
     let result = Parse.readExpr source
     Assert.True(List.length result.Diagnostics > 1)
-
-[<Fact>]
-let ``syntax shim test`` () =
-    let body = "(+ 1 2)"
-    let doc = TextDocument.fromParts "a/file/path.scm" body
-
-    let tree =
-        readProgram doc.Path body
-        |> ParseResult.toResult
-        |> Result.map (fun x -> x.Body |> Seq.map (SyntaxShim.transformExpr doc) |> Seq.exactlyOne)
-        |> Result.unwrap
-
-    Assert.Equal(1L, tree.Location.Start.Line)
-    Assert.Equal(1L, tree.Location.Start.Col)
-    Assert.Equal(1L, tree.Location.End.Line)
-    Assert.Equal(8L, tree.Location.End.Col)

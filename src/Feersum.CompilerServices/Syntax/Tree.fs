@@ -297,15 +297,27 @@ and Quoted internal (red: SyntaxNode) =
 
     inherit Expression(red)
 
+    member x.Inner =
+        x.RawNode.Children()
+        |> Seq.tryPick (Expression.TryCast)
+
 /// Vector constant node
 and Vec internal (red: SyntaxNode) =
 
     inherit Expression(red)
 
+    member x.Body =
+        x.RawNode.Children()
+        |> Seq.choose(Expression.TryCast)
+
 /// Byte Vector constant node
 and ByteVec internal (red: SyntaxNode) =
 
     inherit Expression(red)
+
+    member x.Body =
+        x.RawNode.Children()
+        |> Seq.choose (Expression.TryCast)
 
 /// Expression value. This is the set of all expression types. Expressions can
 /// be either a simple datum (`Constant`), an identifier `Symbol`, or a comple
@@ -316,8 +328,11 @@ and Expression internal (red: SyntaxNode) =
     static member TryCast(node: SyntaxNode) =
         match node.Kind |> greenToAst with
         | AstKind.FORM -> Some(new Form(node) :> Expression)
+        | AstKind.VEC -> Some(new Vec(node))
+        | AstKind.BYTEVEC -> Some(new ByteVec(node))
         | AstKind.SYMBOL -> Some(new Symbol(node))
         | AstKind.CONSTANT -> Some(new Constant(node))
+        | AstKind.QUOTED_DATUM -> Some(new Quoted(node))
         | _ -> None
 
 /// Root AST type for script expressions.
@@ -356,17 +371,18 @@ module Patterns =
     open Feersum.CompilerServices.Ice
 
     /// Pattern to match on known expression types
-    let (|ByteVecNode|VecNode|FormNode|ConstantNode|SymbolNode|) (expr: Expression) =
+    let (|ByteVecNode|VecNode|FormNode|ConstantNode|SymbolNode|QuotedNode|) (expr: Expression) =
         match expr with
         | :? ByteVec as b -> ByteVecNode b
         | :? Vec as v -> VecNode v
         | :? Form as f -> FormNode f
         | :? Constant as c -> ConstantNode c
         | :? Symbol as s -> SymbolNode s
+        | :? Quoted as q -> QuotedNode q
         | _ -> icef "Unexpected expression type: %A" (expr.GetType())
 
     /// Ergonomic pattern to match the useful inner parts of an expression
-    let (|ByteVec|Vec|Form|DottedForm|Constant|Symbol|) (expr: Expression) =
+    let (|ByteVec|Vec|Form|DottedForm|Constant|Symbol|Quoted|) (expr: Expression) =
         match expr with
         | ByteVecNode b -> ByteVec
         | VecNode v -> Vec
@@ -378,6 +394,7 @@ module Patterns =
             | Some tail -> DottedForm(mainBody, tail.Body)
         | ConstantNode c -> Constant c.Value
         | SymbolNode s -> Symbol s.CookedValue
+        | QuotedNode q -> Quoted q.Inner
 
     /// Pattern to match on known constant types
     let (|NumValNode|StrValNode|BoolValNode|CharValNode|) (cnst: ConstantValue) =
