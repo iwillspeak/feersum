@@ -61,7 +61,7 @@ type private LexState =
 
 /// Charcters, other than alphabetics, that can start an identifier.
 let private specialInitial =
-    [ '!'; '$'; '%'; '&'; '*'; '/'; ':'; '<'; '='; '>'; '?'; '^'; '_'; '~' ]
+    [ '!'; '$'; '%'; '&'; '*'; '/'; ':'; '<'; '='; '>'; '?'; '@'; '^'; '_'; '~' ]
     |> Set.ofList
 
 /// Characters that can appear after an explicit sign at the beginning of

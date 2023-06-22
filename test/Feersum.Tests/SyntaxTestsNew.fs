@@ -115,7 +115,7 @@ let ``parse identifiers`` ident =
 [<InlineData("=")>]
 [<InlineData(">")>]
 [<InlineData("?")>]
-// [<InlineData("@")>] TODO: Is this a valid identifier or not?
+[<InlineData("@")>]
 [<InlineData("^")>]
 [<InlineData("_")>]
 [<InlineData("~")>]
