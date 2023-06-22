@@ -1,6 +1,6 @@
 module Feersum.Repl
 
-open System
+open ReadLineReboot
 
 open Feersum.Version
 open Feersum.CompilerServices.Syntax

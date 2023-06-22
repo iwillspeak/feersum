@@ -1,6 +1,6 @@
 module Feersum.ParseRepl
 
-open System
+open ReadLineReboot
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax
