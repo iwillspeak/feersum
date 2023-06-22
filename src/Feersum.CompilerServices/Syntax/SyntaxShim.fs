@@ -15,34 +15,26 @@ let rec transformExpr (doc: TextDocument) (expr: Expression) : LegacyNode =
             |> Seq.choose (function
                 | Constant c ->
                     match c with
-                    | Some(NumVal n) -> Some((byte)n)
+                    | Some(NumVal n) -> Some((byte) n)
                     | _ -> None
                 | _ -> None)
             |> List.ofSeq
             |> LegacyNodeKind.ByteVector
-        | VecNode n ->
-            n.Body
-            |> Seq.map (transformExpr doc)
-            |> List.ofSeq
-            |> LegacyNodeKind.Vector
+        | VecNode n -> n.Body |> Seq.map (transformExpr doc) |> List.ofSeq |> LegacyNodeKind.Vector
         | FormNode f -> f.Body |> Seq.map (transformExpr doc) |> List.ofSeq |> LegacyNodeKind.Form
         | ConstantNode c ->
             c.Value
-            |> Option.map (
-                function
+            |> Option.map (function
                 | NumVal n -> SyntaxConstant.Number n
                 | StrVal s -> SyntaxConstant.Str s
-                | CharVal c -> SyntaxConstant.Character (Option.defaultValue '\u0000' c)
+                | CharVal c -> SyntaxConstant.Character(Option.defaultValue '\u0000' c)
                 | BoolVal b -> SyntaxConstant.Boolean b)
             |> Option.map (LegacyNodeKind.Constant)
             |> Option.defaultValue LegacyNodeKind.Error
-        | SymbolNode s ->
-            s.CookedValue |> LegacyNodeKind.Ident
+        | SymbolNode s -> s.CookedValue |> LegacyNodeKind.Ident
         | QuotedNode q ->
             match q.Inner with
-            | Some(quoted) ->
-                transformExpr doc quoted
-                |> LegacyNodeKind.Quoted
+            | Some(quoted) -> transformExpr doc quoted |> LegacyNodeKind.Quoted
             | _ -> LegacyNodeKind.Error
 
     { Kind = kind

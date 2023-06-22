@@ -297,27 +297,21 @@ and Quoted internal (red: SyntaxNode) =
 
     inherit Expression(red)
 
-    member x.Inner =
-        x.RawNode.Children()
-        |> Seq.tryPick (Expression.TryCast)
+    member x.Inner = x.RawNode.Children() |> Seq.tryPick (Expression.TryCast)
 
 /// Vector constant node
 and Vec internal (red: SyntaxNode) =
 
     inherit Expression(red)
 
-    member x.Body =
-        x.RawNode.Children()
-        |> Seq.choose(Expression.TryCast)
+    member x.Body = x.RawNode.Children() |> Seq.choose (Expression.TryCast)
 
 /// Byte Vector constant node
 and ByteVec internal (red: SyntaxNode) =
 
     inherit Expression(red)
 
-    member x.Body =
-        x.RawNode.Children()
-        |> Seq.choose (Expression.TryCast)
+    member x.Body = x.RawNode.Children() |> Seq.choose (Expression.TryCast)
 
 /// Expression value. This is the set of all expression types. Expressions can
 /// be either a simple datum (`Constant`), an identifier `Symbol`, or a comple
