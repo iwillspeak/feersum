@@ -17,7 +17,7 @@ namespace Serehfa
         public static object SymbolEquals(object[] args)
         {
             CheckAtLeastArgs(args, 2);
-            if (!(args[0] is Ident comparand))
+            if (args[0] is not Ident comparand)
             {
                 return false;
             }

@@ -12,7 +12,7 @@ namespace Serehfa
         public static object StringEquals(object[] args)
         {
             CheckAtLeastArgs(args, 2);
-            if (!(args[0] is string comparand))
+            if (args[0] is not string comparand)
             {
                 return false;
             }

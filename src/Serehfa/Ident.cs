@@ -6,7 +6,7 @@ namespace Serehfa
 {
     public class Ident
     {
-        private string _id;
+        private readonly string _id;
 
         public Ident(string id)
         {

@@ -9,7 +9,7 @@ namespace Serehfa
     /// </summary>
     public class Undefined
     {
-        private static Lazy<Undefined> s_Instance = new Lazy<Undefined>();
+        private static readonly Lazy<Undefined> s_Instance = new();
 
         /// <summary>Shared instance of the undefined type. References to this
         /// are emitted by the compiler when an undefined value is required.
