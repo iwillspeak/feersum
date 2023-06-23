@@ -23,7 +23,7 @@ namespace Serehfa
         public static object BooleanEq(object[] args)
         {
             CheckAtLeastArgs(args, 2);
-            if (!(args[0] is bool comparand))
+            if (args[0] is not bool comparand)
             {
                 return false;
             }

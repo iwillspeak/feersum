@@ -28,6 +28,6 @@ namespace Serehfa
             }
         }
 
-        private static Random s_RandomInstance = new Random();
+        private static readonly Random s_RandomInstance = new();
     }
 }

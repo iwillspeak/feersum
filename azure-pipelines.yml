@@ -54,9 +54,9 @@ jobs:
       #        a spurious re-build for some reason and ends up in NETSDK1085
       #   https://github.com/dotnet/fsharp/issues/12320
       dotnet pack --configuration $(configuration) --output=$(Build.ArtifactStagingDirectory)
-      # Check code format. Fantomas for F#, dotnet-format for C#
+      # Check code format. Fantomas for F#, dotnet format for C#
       dotnet tool run fantomas --check .
-      dotnet tool run dotnet-format --check
+      dotnet format --verify-no-changes
   - task: PublishTestResults@2
     condition: always()
     inputs:
