@@ -2,7 +2,6 @@ namespace Feersum.CompilerServices.Compile
 
 open Mono.Cecil
 open Mono.Cecil.Rocks
-open Mono.Cecil.Cil
 
 open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Compile.MonoHelpers

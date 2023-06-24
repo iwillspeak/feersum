@@ -32,6 +32,12 @@ type Diagnostic =
       Location: TextLocation
       Message: string }
 
+    static member private MultiRangeDisabled =
+        System.Environment.GetEnvironmentVariable("TERM_PROGRAM")
+        |> Option.ofObj
+        |> Option.map (fun x -> x.Contains("vscode"))
+        |> Option.defaultValue false
+
     /// Create a new error diagnostic at the given `location`.`
     static member Create kind location message =
         { Kind = kind
@@ -40,8 +46,9 @@ type Diagnostic =
 
     /// Format the diagnostic for output.
     ///
-    /// The output format shold conform to the [MSBuild "Canonical Error
-    /// Format"](https://github.com/dotnet/msbuild/blob/94c28cca4cdb22f2cac279e3fd8d86aa4d061848/src/Shared/CanonicalError.cs#L12-L51)
+    /// The output format shold conform to the
+    /// [MSBuild "Canonical Error Format"](https://github.com/dotnet/msbuild/blob/94c28cca4cdb22f2cac279e3fd8d86aa4d061848/src/Shared/CanonicalError.cs#L12-L51)
+    /// and [VisualStudio Format for Diagnostics](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-diagnostic-format-for-tasks)
     override d.ToString() =
         let normaliseName (stream: string) =
             if Path.IsPathRooted(stream) then
@@ -49,14 +56,21 @@ type Diagnostic =
             else
                 Path.Join(Directory.GetCurrentDirectory(), stream)
 
+        let writeAtPoint p =
+            sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
+
         match d.Location with
         | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.FormattedMessage
-        | Point p ->
-            sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
+        | Point p -> writeAtPoint p
         | Span(s, e) ->
+
+            // Disable multi-range to that clicktrough works in VS Code.
+            if Diagnostic.MultiRangeDisabled then
+                writeAtPoint s
+
             // If both points are on the same line then we can use the a more
             // compact format.
-            if s.Line = e.Line then
+            elif s.Line = e.Line then
                 sprintf
                     "%s(%d,%d-%d): %s: %s"
                     (s.Source |> normaliseName)
