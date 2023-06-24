@@ -165,7 +165,7 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 1,
+          "Code": 10,
           "Title": "Parse error"
         },
         "Location": {
@@ -173,152 +173,12 @@
           "Fields": [
             {
               "Source": "fail/bad-strings-and-idents.scm",
-              "Line": 7,
-              "Col": 5
+              "Line": 11,
+              "Col": 1
             }
           ]
         },
-        "Message": "Missing closing '|'"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 1,
-          "Title": "Parse error"
-        },
-        "Location": {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Source": "fail/bad-strings-and-idents.scm",
-              "Line": 7,
-              "Col": 5
-            }
-          ]
-        },
-        "Message": "Expected ';'"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 1,
-          "Title": "Parse error"
-        },
-        "Location": {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Source": "fail/bad-strings-and-idents.scm",
-              "Line": 7,
-              "Col": 5
-            }
-          ]
-        },
-        "Message": "Expected hex character literal"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 1,
-          "Title": "Parse error"
-        },
-        "Location": {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Source": "fail/bad-strings-and-idents.scm",
-              "Line": 6,
-              "Col": 5
-            }
-          ]
-        },
-        "Message": "Expected hex character literal"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 1,
-          "Title": "Parse error"
-        },
-        "Location": {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Source": "fail/bad-strings-and-idents.scm",
-              "Line": 5,
-              "Col": 4
-            }
-          ]
-        },
-        "Message": "Invalid code unit"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 1,
-          "Title": "Parse error"
-        },
-        "Location": {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Source": "fail/bad-strings-and-idents.scm",
-              "Line": 3,
-              "Col": 4
-            }
-          ]
-        },
-        "Message": "Invalid code unit"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 1,
-          "Title": "Parse error"
-        },
-        "Location": {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Source": "fail/bad-strings-and-idents.scm",
-              "Line": 2,
-              "Col": 6
-            }
-          ]
-        },
-        "Message": "Expected ';'"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 1,
-          "Title": "Parse error"
-        },
-        "Location": {
-          "Case": "Point",
-          "Fields": [
-            {
-              "Source": "fail/bad-strings-and-idents.scm",
-              "Line": 1,
-              "Col": 4
-            }
-          ]
-        },
-        "Message": "Expected hex character literal"
+        "Message": "Unexpected token Error '|\\x\n'"
       }
     ]
   },
@@ -393,7 +253,7 @@
             {
               "Source": "fail/macrofails.scm",
               "Line": 16,
-              "Col": 12
+              "Col": 14
             }
           ]
         },
@@ -940,25 +800,20 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 21,
-          "Title": "Invalid library name"
+          "Code": 10,
+          "Title": "Parse error"
         },
         "Location": {
-          "Case": "Span",
+          "Case": "Point",
           "Fields": [
             {
               "Source": "fail/bad-library-names-parsefail.scm",
-              "Line": 1,
-              "Col": 17
-            },
-            {
-              "Source": "fail/bad-library-names-parsefail.scm",
-              "Line": 1,
-              "Col": 18
+              "Line": 2,
+              "Col": 1
             }
           ]
         },
-        "Message": "Expected library name"
+        "Message": "Expected expression after `.`"
       }
     ]
   }

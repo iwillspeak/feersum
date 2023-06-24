@@ -106,7 +106,13 @@ module private Utils =
                 | 'v' -> (Plain, sb.Append('\v'))
                 | 'f' -> (Plain, sb.Append('\f'))
                 | 'r' -> (Plain, sb.Append('\r'))
-                | 'x' -> (InHex "0x", sb)
+                // FIXME: The InHex is seeded with 0x0 here rather than just 0x
+                //        because otherwise \x; will mean we try and parse an
+                //        empty string as a hex character. Do we need to parse
+                //        these parts of the string properlty in the lexer
+                //        rather than waiting until cooking? Should cooking
+                //        return a `Result` rather than a plain string?
+                | 'x' -> (InHex "0x0", sb)
                 | _ -> (Plain, sb.Append(ch))
 
         s

@@ -9,9 +9,6 @@ type public TextPoint =
       Line: int64
       Col: int64 }
 
-    static member public FromExternal(position: FParsec.Position) : TextPoint =
-        TextPoint.FromParts(position.StreamName, position.Line, position.Column)
-
     static member public FromParts(source: string, line: int64, col: int64) =
         { Source = source
           Line = line

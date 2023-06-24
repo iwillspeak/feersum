@@ -7,38 +7,39 @@ open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Syntax.Parse
 
 open SyntaxUtils.SyntaxFactory
+open SyntaxUtils
+
+let readExpr = LegacyParse.readExpr
 
 [<AutoOpen>]
 module private Utils =
-
-    open SyntaxUtils
 
     let sanitise =
         sanitiseNodeWith (function
             | _ -> dummyLocation)
 
-    let readExpr source =
-        let doc = TextDocument.fromParts "repl" source
+// let readExpr source =
+//     let doc = TextDocument.fromParts "repl" source
 
-        let tree =
-            readProgram doc.Path source |> ParseResult.map (SyntaxShim.transformProgram doc)
+//     let tree =
+//         readProgram doc.Path source |> ParseResult.map (SyntaxShim.transformProgram doc)
 
-        (tree.Root, tree.Diagnostics)
+//     (tree.Root, tree.Diagnostics)
 
-    /// Read a single expression node from the input string
-    let public readSingleNode input =
-        match readExpr input with
-        | ({ Kind = Seq exprs }, []) -> (List.exactlyOne exprs)
-        | (expr, []) -> expr
-        | (_, diag) -> failwithf "Expected single expression but got: %A" diag
+// /// Read a single expression node from the input string
+// let public readSingleNode input =
+//     match readExpr input with
+//     | ({ Kind = Seq exprs }, []) -> (List.exactlyOne exprs)
+//     | (expr, []) -> expr
+//     | (_, diag) -> failwithf "Expected single expression but got: %A" diag
 
-    /// Helper to read a single AST kind from the given `input`
-    let public readSingle input = (readSingleNode input).Kind
+// /// Helper to read a single AST kind from the given `input`
+// let public readSingle input = (readSingleNode input).Kind
 
-    let public readMany input =
-        match readExpr input with
-        | (read, []) -> read
-        | (_, diag) -> failwithf "Expected one or more expressions but got: %A" diag
+// let public readMany input =
+//     match readExpr input with
+//     | (read, []) -> read
+//     | (_, diag) -> failwithf "Expected one or more expressions but got: %A" diag
 
 [<Fact>]
 let ``syntax shim test`` () =

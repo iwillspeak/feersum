@@ -15,11 +15,10 @@
     <Compile Include="Options.fs" />
     <Compile Include="Text.fs" />
     <Compile Include="Diagnostics.fs" />
-    <Compile Include="LegacySyntax.fs" />
     <Compile Include="Syntax/Lex.fs" />
     <Compile Include="Syntax/Tree.fs" />
     <Compile Include="Syntax/Parse.fs" />
-    <Compile Include="Syntax/SyntaxShim.fs" />
+    <Compile Include="Syntax/Legacy.fs" />
     <Compile Include="Scope.fs" />
     <Compile Include="Binding/Libraries.fs" />
     <Compile Include="Binding/Macros.fs" />
@@ -36,7 +35,6 @@
     <ProjectReference Include="..\Serehfa\Serehfa.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FParsec" Version="1.1.1" />
     <PackageReference Include="Firethorn" Version="0.4.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
