@@ -39,7 +39,7 @@
             (cons (car args) (flatten (cdr args)))))
         (core-apply-vec fun (list->vector (flatten args)))))
     (export vector vector? vector-length vector-set! vector-ref make-vector 
-        string=? string->number null? cons list make-list pair? list? car cdr
+        string=? string->number string-append null? cons list make-list pair? list? car cdr
         set-car! set-cdr! length symbol? symbol=? symbol->string string->symbol
         eqv? eq? equal? bytevector? make-bytevector bytevector bytevector-length
         bytevector-u8-set! bytevector-u8-ref not boolean? boolean=? zero? + - /

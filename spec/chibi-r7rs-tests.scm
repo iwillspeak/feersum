@@ -1482,12 +1482,12 @@
 ;; (test "ab" (substring "abc" 0 2))
 ;; (test "bc" (substring "abc" 1 3))
 
-;; (test "" (string-append ""))
-;; (test "" (string-append "" ""))
-;; (test "abc" (string-append "" "abc"))
-;; (test "abc" (string-append "abc" ""))
-;; (test "abcde" (string-append "abc" "de"))
-;; (test "abcdef" (string-append "abc" "de" "f"))
+(test "" (string-append ""))
+(test "" (string-append "" ""))
+(test "abc" (string-append "" "abc"))
+(test "abc" (string-append "abc" ""))
+(test "abcde" (string-append "abc" "de"))
+(test "abcdef" (string-append "abc" "de" "f"))
 
 ;; (test '() (string->list ""))
 ;; (test '(#\a) (string->list "a"))
