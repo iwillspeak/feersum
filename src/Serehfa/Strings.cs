@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Serehfa.Attributes;
 
 namespace Serehfa
@@ -36,6 +37,21 @@ namespace Serehfa
 
             var (input, bae) = UnpackArgs<string, double>(args);
             return (double)Convert.ToUInt64(input, (int)bae);
+        }
+
+        [LispExport("string-append")]
+        public static object StringAppend(object[] args)
+        {
+            CheckAtLeastArgs(args, 1);
+
+            var sb = new StringBuilder(Unpack<string>(args[0]));
+            for (int i = 1; i < args.Length; i++)
+            {
+                var toAppend = Unpack<string>(args[i]);
+                sb.Append(toAppend);
+            }
+
+            return sb.ToString();
         }
     }
 }
