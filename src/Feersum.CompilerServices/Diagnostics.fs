@@ -15,6 +15,9 @@ type DiagnosticLevel =
 /// Kind for a diagnostic. This holds all the information for a diagnostic that
 /// is not related to the specific instance of that diagnostic. That is the
 /// level, code, etc.
+/// 
+/// TODO: Do we want to ad a `category` to this? E.g. `parse error` rather than
+///       just `error`?
 type DiagnosticKind =
     { Level: DiagnosticLevel
       Code: int
@@ -32,11 +35,14 @@ type Diagnostic =
       Location: TextLocation
       Message: string }
 
-    static member private MultiRangeDisabled =
+    /// Feature flag to disable mult-range shorthand `(<line>,<col>-<col>)` in
+    /// VS Codde. This shorthand format can't be parsed properly as a location
+    /// in that editor.
+    static member private MultiRangeEnabled =
         System.Environment.GetEnvironmentVariable("TERM_PROGRAM")
         |> Option.ofObj
-        |> Option.map (fun x -> x.Contains("vscode"))
-        |> Option.defaultValue false
+        |> Option.map (fun x -> x.Contains("vscode") |> not)
+        |> Option.defaultValue true
 
     /// Create a new error diagnostic at the given `location`.`
     static member Create kind location message =
@@ -56,21 +62,14 @@ type Diagnostic =
             else
                 Path.Join(Directory.GetCurrentDirectory(), stream)
 
-        let writeAtPoint p =
-            sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
-
         match d.Location with
         | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.FormattedMessage
-        | Point p -> writeAtPoint p
+        | Point p -> sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
         | Span(s, e) ->
-
-            // Disable multi-range to that clicktrough works in VS Code.
-            if Diagnostic.MultiRangeDisabled then
-                writeAtPoint s
 
             // If both points are on the same line then we can use the a more
             // compact format.
-            elif s.Line = e.Line then
+            if s.Line = e.Line && Diagnostic.MultiRangeEnabled then
                 sprintf
                     "%s(%d,%d-%d): %s: %s"
                     (s.Source |> normaliseName)
