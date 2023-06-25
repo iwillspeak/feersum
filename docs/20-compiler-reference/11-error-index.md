@@ -11,3 +11,5 @@ Currently the diagnostic categories are:
  * `20-29` - Library declaration and use.
  * `30-39` - Binder diagnostics.
  * `40-49` - Macro definition and expansion.
+
+TODO: Fill out the index with the current errors for reference.
