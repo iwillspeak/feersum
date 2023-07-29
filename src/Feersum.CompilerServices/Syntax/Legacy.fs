@@ -103,8 +103,6 @@ module private LegacySyntaxDiagnostics =
 
     let parseError = DiagnosticKind.Create DiagnosticLevel.Error 1 "Parse error"
 
-    let fparsecFailure = DiagnosticKind.Create DiagnosticLevel.Error 2 "FParsec failure"
-
 /// The parser state. Used to collect
 type State =
     { Diagnostics: DiagnosticBag }
