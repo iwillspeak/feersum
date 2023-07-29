@@ -10,16 +10,13 @@ type private CaptureConversionCtx =
 /// expression. The returned list only contains _directly_ captured values.
 let rec private findCaptured =
     function
-    | Application (app, args) -> List.append (findCaptured app) (List.collect findCaptured args)
-    | If (cond, cons, els) ->
+    | Application(app, args) -> List.append (findCaptured app) (List.collect findCaptured args)
+    | If(cond, cons, els) ->
         (findCaptured cond)
         |> List.append (findCaptured cons)
-        |> List.append (
-            Option.map findCaptured els
-            |> Option.defaultValue []
-        )
-    | Seq (exprs) -> List.collect findCaptured exprs
-    | Lambda (formals, body) ->
+        |> List.append (Option.map findCaptured els |> Option.defaultValue [])
+    | Seq(exprs) -> List.collect findCaptured exprs
+    | Lambda(formals, body) ->
         let isFree =
             function
             | Arg _
@@ -27,10 +24,8 @@ let rec private findCaptured =
             | _ -> false
 
         body.Captures |> List.filter isFree
-    | Store (_, v) ->
-        Option.map findCaptured v
-        |> Option.defaultValue []
-    | SequencePoint (inner, _) -> findCaptured inner
+    | Store(_, v) -> Option.map findCaptured v |> Option.defaultValue []
+    | SequencePoint(inner, _) -> findCaptured inner
     | e -> []
 
 /// Finds all local variables in the given node. This is later used to compact
@@ -42,21 +37,16 @@ let rec private findLocals node =
         | _ -> Set.empty
 
     match node with
-    | Load (storage) -> fromStorage storage
-    | Application (app, args) -> Set.union (findLocals app) (Seq.map (findLocals) args |> Set.unionMany)
-    | If (cond, cons, els) ->
+    | Load(storage) -> fromStorage storage
+    | Application(app, args) -> Set.union (findLocals app) (Seq.map (findLocals) args |> Set.unionMany)
+    | If(cond, cons, els) ->
         (findLocals cond)
         |> Set.union (findLocals cons)
-        |> Set.union (
-            Option.map (findLocals) els
-            |> Option.defaultValue Set.empty
-        )
-    | Seq (exprs) -> Seq.map (findLocals) exprs |> Set.unionMany
-    | SequencePoint (inner, _) -> findLocals inner
-    | Store (storage, v) ->
-        let inner =
-            Option.map (findLocals) v
-            |> Option.defaultValue Set.empty
+        |> Set.union (Option.map (findLocals) els |> Option.defaultValue Set.empty)
+    | Seq(exprs) -> Seq.map (findLocals) exprs |> Set.unionMany
+    | SequencePoint(inner, _) -> findLocals inner
+    | Store(storage, v) ->
+        let inner = Option.map (findLocals) v |> Option.defaultValue Set.empty
 
         Set.union (fromStorage storage) inner
     | e -> Set.empty
@@ -74,23 +64,18 @@ let private mappingsForExpr expr =
     let uncapturedLocals = Set.difference (findLocals expr) captured
 
     let localReWrites =
-        uncapturedLocals
-        |> Seq.indexed
-        |> Seq.map (fun (i, s) -> (s, Local i))
+        uncapturedLocals |> Seq.indexed |> Seq.map (fun (i, s) -> (s, Local i))
 
-    Seq.append captureReWrites localReWrites
-    |> Map.ofSeq
+    Seq.append captureReWrites localReWrites |> Map.ofSeq
 
 /// Re-write a storage location to move captured values to the environment.
 let rec private rewriteStorage ctx =
     function
     | Captured s ->
         match ctx.Parent with
-        | Some (parent) -> Captured(rewriteStorage parent s)
+        | Some(parent) -> Captured(rewriteStorage parent s)
         | None -> ice "Capture chain does not match nesting"
-    | s ->
-        Map.tryFind s ctx.Mappings
-        |> Option.defaultValue s
+    | s -> Map.tryFind s ctx.Mappings |> Option.defaultValue s
 
 /// Re-write the environment size, if needed.
 let private rewriteEnv env mappings =
@@ -121,11 +106,11 @@ let private rewriteLocals locals mappings =
 let rec private rewriteExpression ctx =
     function
     | Load s -> Load(rewriteStorage ctx s)
-    | Store (s, v) -> Store(rewriteStorage ctx s, Option.map (rewriteExpression ctx) v)
-    | Application (app, args) -> Application(rewriteExpression ctx app, List.map (rewriteExpression ctx) args)
-    | If (cond, cons, els) ->
+    | Store(s, v) -> Store(rewriteStorage ctx s, Option.map (rewriteExpression ctx) v)
+    | Application(app, args) -> Application(rewriteExpression ctx app, List.map (rewriteExpression ctx) args)
+    | If(cond, cons, els) ->
         If(rewriteExpression ctx cond, rewriteExpression ctx cons, Option.map (rewriteExpression ctx) els)
-    | Seq (exprs) ->
+    | Seq(exprs) ->
         // This pair of functions allows us to flatten out nested sequences into
         // a simpler representation.
         let consolidate =
@@ -144,9 +129,9 @@ let rec private rewriteExpression ctx =
         |> Seq.map ((rewriteExpression ctx) >> unfurl)
         |> List.concat
         |> consolidate
-    | Lambda (formals, root) -> Lambda(formals, (rewriteRoot (Some(ctx)) root))
-    | SequencePoint (inner, location) -> SequencePoint((rewriteExpression ctx inner), location)
-    | Library (name, mangledName, exports, body) -> Library(name, mangledName, exports, rewriteRoot None body)
+    | Lambda(formals, root) -> Lambda(formals, (rewriteRoot (Some(ctx)) root))
+    | SequencePoint(inner, location) -> SequencePoint((rewriteExpression ctx inner), location)
+    | Library(name, mangledName, exports, body) -> Library(name, mangledName, exports, rewriteRoot None body)
     | e -> e
 
 /// Re-write an expression tree root. This node represents a top level
@@ -157,7 +142,7 @@ and private rewriteRoot parent root =
     // context so needs to be done before we create a derived `ctx`.
     let captures =
         match parent with
-        | Some (ctx) -> List.map (rewriteStorage ctx) root.Captures
+        | Some(ctx) -> List.map (rewriteStorage ctx) root.Captures
         | _ -> root.Captures
     // find out what is captured
     let ctx =
@@ -175,4 +160,5 @@ and private rewriteRoot parent root =
 
 /// Lower a bound tree to a form better suited for the emit phase.
 let lower (ast: BoundSyntaxTree) =
-    { ast with Root = rewriteRoot None ast.Root }
+    { ast with
+        Root = rewriteRoot None ast.Root }

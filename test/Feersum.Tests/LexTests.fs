@@ -3,29 +3,17 @@ module LexTests
 open Xunit
 
 open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Lex
+open Feersum.CompilerServices.Text
 
-/// Grab the kind from a syntax token pair.
-let private getKind token =
-    let (kind, _) = token
-    kind
-
-/// Grab the value from a syntax token pair.
-let private getValue token =
-    let (_, value) = token
-    value
+let private p name line col =
+    TextPoint.FromParts(name, line, col) |> TextLocation.Point
 
 [<Fact>]
-let ``Empty input text always returns end of file`` () =
-    let lexer = Lexer("", "test.scm")
+let ``Empty input text contains no tokens`` () =
+    let tokens = tokenise ""
 
-    Assert.True(lexer.Done)
-    Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
-    lexer.Bump()
-    Assert.True(lexer.Done)
-    Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
-    lexer.Bump()
-    Assert.True(lexer.Done)
-    Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
+    Assert.Empty(tokens)
 
 [<Theory>]
 [<InlineData(" ", TokenKind.Whitespace)>]
@@ -88,34 +76,39 @@ let ``Empty input text always returns end of file`` () =
 [<InlineData("#f", TokenKind.Boolean)>]
 [<InlineData("#true", TokenKind.Boolean)>]
 [<InlineData("#false", TokenKind.Boolean)>]
+[<InlineData(".100", TokenKind.Number)>]
+[<InlineData("+.345", TokenKind.Number)>]
+[<InlineData("-.67", TokenKind.Number)>]
+[<InlineData("+89", TokenKind.Number)>]
+[<InlineData("-100", TokenKind.Number)>]
+[<InlineData("+89.0", TokenKind.Number)>]
+[<InlineData("-100.", TokenKind.Number)>]
+[<InlineData("-..10", TokenKind.Identifier)>]
+[<InlineData("+-.0", TokenKind.Identifier)>]
 let ``Lexer lex single token`` (token, kind) =
-    let lexer = Lexer(token, "test.scm")
+    let tokens = Lex.tokenise token
 
-    Assert.Equal(kind, lexer.Current |> getKind)
-    Assert.Equal(kind, lexer.Current |> getKind)
-    Assert.Equal(token, lexer.Current |> getValue)
-    Assert.False(lexer.Done)
-    lexer.Bump()
-    Assert.Equal(TokenKind.EndOfFile, lexer.Current |> getKind)
-    Assert.True(lexer.Done)
+    Assert.Equal(
+        [ { Kind = kind
+            Lexeme = token
+            Offset = token.Length } ],
+        tokens
+    )
 
 [<Fact>]
 let ``Lexer happy path`` () =
 
-    let lexer = Lexer("(display #| hello |# world)", "test.scm")
+    let tokens =
+        Lex.tokenise "(display #| hello |# world)"
+        |> Seq.map (fun token -> token.Kind, token.Lexeme)
 
-    let checkTok expectedKind expectedValue =
-        let (kind, value) = lexer.Current
-        Assert.Equal(expectedKind, kind)
-        Assert.Equal(expectedValue, value)
-        lexer.Bump()
-
-    checkTok TokenKind.OpenBracket "("
-    checkTok TokenKind.Identifier "display"
-    checkTok TokenKind.Whitespace " "
-    checkTok TokenKind.Comment "#| hello |#"
-    checkTok TokenKind.Whitespace " "
-    checkTok TokenKind.Identifier "world"
-    checkTok TokenKind.CloseBracket ")"
-    checkTok TokenKind.EndOfFile ""
-    checkTok TokenKind.EndOfFile ""
+    Assert.Equal(
+        [ TokenKind.OpenBracket, "("
+          TokenKind.Identifier, "display"
+          TokenKind.Whitespace, " "
+          TokenKind.Comment, "#| hello |#"
+          TokenKind.Whitespace, " "
+          TokenKind.Identifier, "world"
+          TokenKind.CloseBracket, ")" ],
+        tokens
+    )

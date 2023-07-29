@@ -1,7 +1,8 @@
-namespace Feersum.CompilerServices.Syntax
+module Feersum.CompilerServices.Syntax.Lex
 
 open System
-open Feersum.CompilerServices.Diagnostics
+open System.Text
+open Feersum.CompilerServices.Text
 
 /// Token kinds for the language.
 type TokenKind =
@@ -22,6 +23,12 @@ type TokenKind =
     | BytevectorPrefix = 14
     | Error = 99
     | EndOfFile = 100
+
+/// Token in our lexical pass
+type LexicalToken =
+    { Kind: TokenKind
+      Lexeme: string
+      Offset: Firethorn.TextLength }
 
 /// States in our lexer's state machine.
 type private LexState =
@@ -50,128 +57,54 @@ type private LexState =
     | Whitespace
     | Error
 
-[<AutoOpen>]
-module private Charsets =
-    /// Charcters, other than alphabetics, that can start an identifier.
-    let specialInitial =
-        [ '!'
-          '$'
-          '%'
-          '&'
-          '*'
-          '/'
-          ':'
-          '<'
-          '='
-          '>'
-          '?'
-          '^'
-          '_'
-          '~' ]
-        |> Set.ofList
+// =============================== Utilities ==================================
 
-    /// Characters that can appear after an explicit sign at the beginning of
-    /// an identifier.
-    let signSubseqent = [ '-'; '+'; '@' ] |> Set.ofList
+/// Charcters, other than alphabetics, that can start an identifier.
+let private specialInitial =
+    [ '!'; '$'; '%'; '&'; '*'; '/'; ':'; '<'; '='; '>'; '?'; '^'; '_'; '~' ]
+    |> Set.ofList
 
-    /// Non-alphanumeric characters that can appear after the start of a plain
-    /// identifier.
-    let specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
+/// Characters that can appear after an explicit sign at the beginning of
+/// an identifier.
+let private signSubseqent = [ '-'; '+'; '@' ] |> Set.ofList
 
-    /// Hexadecimal digits, in both upper and lower case.
-    let hexDigits =
-        [ '0'
-          '1'
-          '2'
-          '3'
-          '4'
-          '5'
-          '6'
-          '7'
-          '8'
-          '9'
-          'a'
-          'b'
-          'c'
-          'd'
-          'e'
-          'f'
-          'A'
-          'B'
-          'C'
-          'D'
-          'E'
-          'F' ]
-        |> Set.ofList
+/// Non-alphanumeric characters that can appear after the start of a plain
+/// identifier.
+let private specialSubsequent = [ '+'; '-'; '.'; '@' ] |> Set.ofList
 
-/// The lexical analyser. This tokenises the input buffer and exposes the
-/// `Current` token. The next token can be retrieved by calling `Bump`.
-type Lexer(input: string, name: string) =
+/// Hexadecimal digits, in both upper and lower case.
+let private hexDigits =
+    [ '0'
+      '1'
+      '2'
+      '3'
+      '4'
+      '5'
+      '6'
+      '7'
+      '8'
+      '9'
+      'a'
+      'b'
+      'c'
+      'd'
+      'e'
+      'f'
+      'A'
+      'B'
+      'C'
+      'D'
+      'E'
+      'F' ]
+    |> Set.ofList
 
-    // The input text as a string
-    let buffer = input
-    let name = name
+// =============================== Public API ==================================
 
-    let mutable tokenStart = 0
-    let mutable line = 0
-    let mutable lastLineStart = 0
+/// Tokenise the input text. Returns an enumerable sequence of the tokens within
+/// the text.
+let public tokenise input =
 
-    let mutable current = None
-
-    // Retrieve the current token.
-    member self.Current =
-        match current with
-        | Some token -> token
-        | None ->
-            let nextToken = self.GetNextToken()
-            current <- Some(nextToken)
-            nextToken
-
-    /// Advance past the current token.
-    member _.Bump() =
-        current <- None
-        ()
-
-    /// Check if there are more tokens the lexer could produce.
-    member self.Done =
-        if tokenStart < buffer.Length then
-            false
-        else
-            let (kind, _) = self.Current
-            kind = TokenKind.EndOfFile
-
-    /// Get the current location for in this lexer.
-    member _.Position =
-        TextPoint.FromParts(name, line, int64 <| tokenStart - lastLineStart)
-        |> TextLocation.Point
-
-    /// Attempt to advance the lexer to another token. No further tokens are
-    /// available then `TokenKind.EndOfFile` is always returned.
-    member private self.GetNextToken() =
-
-        let mutable state = LexState.Start
-        let mutable currentChar = tokenStart
-        let mutable tokenEnd = currentChar
-        let mutable finished = false
-
-        while not finished && currentChar < buffer.Length do
-
-            let c = buffer[currentChar]
-
-            // FIXME: handle other newlines than \n and \r\n
-            if c = '\n' then
-                line <- line + 1
-                lastLineStart <- currentChar + 1
-
-            let nextState = self.NextTransition(state, c)
-
-            match nextState with
-            | Some next ->
-                state <- next
-                tokenEnd <- currentChar
-                currentChar <- currentChar + 1
-            | None -> finished <- true
-
+    let tokenForState lexeme state pos =
         let kind =
             match state with
             | Start -> TokenKind.EndOfFile
@@ -182,12 +115,11 @@ type Lexer(input: string, name: string) =
             | PerculiarIdentifierSeenSign
             | Identifier -> TokenKind.Identifier
             | PerculiarIdentifierSeenDot ->
-                // Slices in F# are _inclusive_ this is effectively checking if
-                // the identifier is ony a single `.` character.
-                if tokenEnd = tokenStart then
-                    TokenKind.Dot
-                else
-                    TokenKind.Identifier
+                // If we are in a 'perculiar identifier' just having seen a dot
+                // then we _may_ be parsing `+.`, `-.`, or `.`. Only `.` is not
+                // actually an identifier. Handle that case here rather than
+                // having two separate states for dot after sign and plain dot.
+                if lexeme = "." then TokenKind.Dot else TokenKind.Identifier
             | Number
             | NumberSuffix -> TokenKind.Number
             | Bool _ -> TokenKind.Boolean
@@ -205,15 +137,14 @@ type Lexer(input: string, name: string) =
             | InMultiLineSeenHash _
             | InMultiLineSeenBar _ -> TokenKind.Error
 
-        let tokenValue = buffer[tokenStart..tokenEnd]
-        tokenStart <- currentChar
-
-        (kind, tokenValue)
+        { Kind = kind
+          Lexeme = lexeme
+          Offset = pos }
 
     /// Get the next transition, if any, for the current `state` and `c`. This
     /// returns `Some` if a transition exists, and `None` if no transition is
     /// available.
-    member private _.NextTransition(state: LexState, c: char) =
+    let nextTransition state c =
 
         match state with
         | Start ->
@@ -232,11 +163,7 @@ type Lexer(input: string, name: string) =
             | '+' -> Some(LexState.PerculiarIdentifierSeenSign)
             | '"' -> Some(LexState.String)
             | '|' -> Some(LexState.LiteralIdentifier)
-            | c when
-                Char.IsLetter(c)
-                || (Set.contains c specialInitial)
-                ->
-                Some(LexState.Identifier)
+            | c when Char.IsLetter(c) || (Set.contains c specialInitial) -> Some(LexState.Identifier)
             | c when Char.IsDigit(c) -> Some(LexState.Number)
             | _ -> Some(LexState.Error)
         | SingleLineComment ->
@@ -272,9 +199,11 @@ type Lexer(input: string, name: string) =
                     Some(LexState.MultiLineDone)
             | _ -> Some(LexState.InMultiLine n)
         | Identifier ->
-            if Char.IsLetterOrDigit c
-               || Set.contains c specialInitial
-               || Set.contains c specialSubsequent then
+            if
+                Char.IsLetterOrDigit c
+                || Set.contains c specialInitial
+                || Set.contains c specialSubsequent
+            then
                 Some(LexState.Identifier)
             else
                 None
@@ -287,6 +216,7 @@ type Lexer(input: string, name: string) =
                 ->
                 Some(LexState.Identifier)
             | '.' -> Some(LexState.PerculiarIdentifierSeenDot)
+            | c when Char.IsDigit(c) -> Some(LexState.Number)
             | _ -> None
         | PerculiarIdentifierSeenDot ->
             match c with
@@ -297,14 +227,12 @@ type Lexer(input: string, name: string) =
                 || Set.contains c signSubseqent
                 ->
                 Some(LexState.Identifier)
+            | c when Char.IsDigit(c) -> Some(LexState.NumberSuffix)
             | _ -> None
         | Number ->
-            if Char.IsDigit(c) then
-                Some(LexState.Number)
-            else if c = '.' then
-                Some(LexState.NumberSuffix)
-            else
-                None
+            if Char.IsDigit(c) then Some(LexState.Number)
+            else if c = '.' then Some(LexState.NumberSuffix)
+            else None
         | NumberSuffix ->
             if Char.IsDigit(c) then
                 Some(LexState.NumberSuffix)
@@ -332,12 +260,8 @@ type Lexer(input: string, name: string) =
                 Some(LexState.CharHex)
             else
                 None
-        | CharNamed ->
-            if Char.IsLetter(c) then
-                Some(LexState.CharNamed)
-            else
-                None
-        | Bool (next, suffix) ->
+        | CharNamed -> if Char.IsLetter(c) then Some(LexState.CharNamed) else None
+        | Bool(next, suffix) ->
             if c = next then
                 Some(LexState.ComplexToken(suffix, TokenKind.Boolean))
             else
@@ -346,13 +270,9 @@ type Lexer(input: string, name: string) =
             match c with
             | c when Char.IsWhiteSpace(c) -> Some(LexState.Whitespace)
             | _ -> None
-        | ComplexToken (remaining, kind) ->
+        | ComplexToken(remaining, kind) ->
             match remaining with
-            | [ single ] ->
-                if c = single then
-                    Some(LexState.SimpleToken kind)
-                else
-                    None
+            | [ single ] -> if c = single then Some(LexState.SimpleToken kind) else None
             | expected :: rest ->
                 if c = expected then
                     Some(LexState.ComplexToken(rest, kind))
@@ -363,3 +283,27 @@ type Lexer(input: string, name: string) =
         | Error
         | SimpleToken _
         | MultiLineDone -> None
+
+    let mutable state = Start
+    let mutable lexeme = StringBuilder()
+    // TODO: we should probably stop tracking offset in the tokens and instead
+    ///      keep track as we eat their lexemes in the parser.
+    let mutable offset = 0
+
+    seq {
+        for char in input do
+            offset <- offset + 1
+
+            match nextTransition state char with
+            | None ->
+                yield tokenForState (lexeme.ToString()) state offset
+                lexeme <- lexeme.Clear().Append(char)
+
+                state <- nextTransition Start char |> Option.defaultValue Error
+            | Some next ->
+                state <- next
+                lexeme <- lexeme.Append(char)
+
+        if state <> Start then
+            yield tokenForState (lexeme.ToString()) state offset
+    }

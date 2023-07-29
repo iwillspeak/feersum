@@ -38,13 +38,10 @@ let evalWith options ast =
 
         try
             Ok(mainMethod.Invoke(null, Array.empty<obj>))
-        with
-        | :? TargetInvocationException as ex ->
+        with :? TargetInvocationException as ex ->
             // Unwrap target invocation exceptions a little to make the REPL a
             // bit of a nicer experience
-            ExceptionDispatchInfo
-                .Capture(ex.InnerException)
-                .Throw()
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw()
 
             Error([])
 

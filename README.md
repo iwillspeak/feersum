@@ -70,8 +70,8 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Multi-statement support in the REPL.
  * [ ] Debugging support
    * [x] Bound tree contains sequence points for debuging
+   * [x] Stop at entry, and step in.
    * [ ] Debuggable REPL. Embedded source in PDBs?
-   * [ ] Stop at entry, and step in.
  * [x] MSBUILD SDK support so `.scmproj` can be defined.
    * [x] Proper support for different target frameworks
  * [x] Scheme library and import support.

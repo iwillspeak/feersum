@@ -6,14 +6,15 @@ open Xunit
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Lex
 open System.IO
 open Snapper
 open System.Diagnostics
 open SyntaxUtils
 open System.Text
-open System.Threading
-open System
 open System.Threading.Tasks
+open Feersum.CompilerServices.Syntax.Parse
+open Feersum.CompilerServices.Syntax.Tree
 
 // This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
@@ -48,7 +49,7 @@ let specsOfType extension =
 let executableSpecs = specsOfType "scm"
 let librarySpecs = specsOfType "sld"
 
-let private runExampleAsync references host (exePath: string) =
+let private runExampleAsync host (exePath: string) =
 
     let p = new Process()
     p.StartInfo <- ProcessStartInfo(host)
@@ -60,17 +61,13 @@ let private runExampleAsync references host (exePath: string) =
     // p.StartInfo.RedirectStandardInput <- true
     p.StartInfo.RedirectStandardOutput <- true
     p.StartInfo.RedirectStandardError <- true
-    p.StartInfo.Environment[ "FEERSUM_TESTING" ] <- "test-sentinel"
+    p.StartInfo.Environment["FEERSUM_TESTING"] <- "test-sentinel"
     Assert.True(p.Start())
 
     task {
-        let! output =
-            Task.WhenAll(
-                [| p.StandardOutput.ReadToEndAsync()
-                   p.StandardError.ReadToEndAsync() |]
-            )
+        let! output = Task.WhenAll([| p.StandardOutput.ReadToEndAsync(); p.StandardError.ReadToEndAsync() |])
 
-        let! exit = p.WaitForExitAsync()
+        let! _ = p.WaitForExitAsync()
 
         return
             { Output = output[0] |> normaliseEndings
@@ -88,7 +85,7 @@ let private parseDirectives (sourcePath: string) =
             let m = Regex.Match(line, ";+\s*!(depends):(.+)")
 
             if m.Success then
-                Some((m.Groups[ 1 ].Value.ToLowerInvariant(), m.Groups[2].Value))
+                Some((m.Groups[1].Value.ToLowerInvariant(), m.Groups[2].Value))
             else
                 None
         else
@@ -102,10 +99,8 @@ let private parseDirectives (sourcePath: string) =
 let public getRunTestData () =
     executableSpecs
     |> Seq.collect (fun spec ->
-        [ [| spec :> obj
-             BuildConfiguration.Debug :> obj |]
-          [| spec :> obj
-             BuildConfiguration.Release :> obj |] ])
+        [ [| spec :> obj; BuildConfiguration.Debug :> obj |]
+          [| spec :> obj; BuildConfiguration.Release :> obj |] ])
 
 [<Theory>]
 [<MemberDataAttribute("getRunTestData")>]
@@ -113,14 +108,13 @@ let rec ``spec tests compile and run`` specPath configuration =
     let sourcePath = Path.Join(specDir, specPath)
 
     let options =
-        { (CompilationOptions.Create configuration Exe) with GenerateDepsFiles = true }
+        { (CompilationOptions.Create configuration Exe) with
+            GenerateDepsFiles = true }
 
-    let binDir =
-        [| specBin
-           options.Configuration |> string |]
-        |> Path.Combine
+    let binDir = [| specBin; options.Configuration |> string |] |> Path.Combine
 
     let shouldFail = sourcePath.Contains "fail"
+    let shouldRun = sourcePath.Contains "norun" |> not
 
     let mutable references = [ typeof<Feersum.Core.LispProgram>.Assembly.Location ]
 
@@ -159,61 +153,73 @@ let rec ``spec tests compile and run`` specPath configuration =
         let exePath = artifactpath options specPath
         let specName = specPath |> normalisePath
 
-        let snapshotId =
-            Core.SnapshotId(snapDir, "SpecTests", nameof (``spec tests compile and run``), specName, false)
+        let snapSettings =
+            SnapshotSettings
+                .New()
+                .SnapshotDirectory(snapDir)
+                .SnapshotClassName("SpecTests")
+                .SnapshotTestName(nameof (``spec tests compile and run``))
+                .StoreSnapshotsPerClass(false)
 
         match Compilation.compileFile options exePath sourcePath with
         | [] ->
             if shouldFail then
                 failwith "Expected compilation failure!"
 
-            let! r = runExampleAsync references "dotnet" exePath
+            if shouldRun then
+                let! r = runExampleAsync "dotnet" exePath
 
-            r.ShouldMatchSnapshot(snapshotId)
+                r.ShouldMatchChildSnapshot(specName, snapSettings)
         | diags ->
             if not shouldFail then
                 failwithf "Compilation error: %A" diags
 
-            (diags |> diagSanitiser)
-                .ShouldMatchSnapshot(snapshotId)
+            (diags |> diagSanitiser).ShouldMatchChildSnapshot(specName, snapSettings)
     }
 
 let public getParseTestData () =
-    Seq.append librarySpecs executableSpecs
-    |> Seq.map (fun x -> [| x |])
+    Seq.append librarySpecs executableSpecs |> Seq.map (fun x -> [| x |])
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
 let ``spec tests parse result`` s =
-    let node, diagnostics = Parse.parseFile (Path.Join(specDir, s))
+    let root =
+        Parse.readRaw Parse.Program s (File.ReadAllText(Path.Join(specDir, s)))
+        |> ParseResult.map (SyntaxUtils.prettyPrint >> (fun x -> x.ReplaceLineEndings("\n")))
 
-    let tree = (node |> nodeSanitiser, diagnostics |> diagSanitiser)
+    let snapSettings =
+        SnapshotSettings
+            .New()
+            .SnapshotClassName("Parse")
+            .SnapshotTestName(s |> normalisePath)
 
-    tree.ShouldMatchSnapshot(Core.SnapshotId(snapDir, "Parse", s |> normalisePath))
+    root.ShouldMatchSnapshot(snapSettings)
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
 let ``Test new lexer`` s =
     task {
         let! sourceText = File.ReadAllTextAsync(Path.Join(specDir, s))
-        let lexer = Lexer(sourceText, "test.scm")
 
-        use timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2.0))
+        let lexer = (Lex.tokenise sourceText).GetEnumerator()
 
+        let mutable bail = 0
         let mutable errors = 0
         let expectFail = s.Contains("bad")
 
-        while not lexer.Done do
-            timeout.Token.ThrowIfCancellationRequested()
-            let (kind, token) = lexer.Current
+        while lexer.MoveNext() do
+            bail <- bail + 1
+
+            if bail > 1_000_000 then
+                failwith "Failed to make progress in parse"
+
+            let { Kind = kind; Lexeme = token } = lexer.Current
 
             if kind = TokenKind.Error then
                 if not expectFail then
                     printfn "Unexpected error token %s" token
 
                 errors <- errors + 1
-
-            lexer.Bump()
 
         // We expect error tokens in the lexer fail cases.
         if not expectFail then

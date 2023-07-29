@@ -25,7 +25,7 @@ type CompilationOptions =
     { Configuration: BuildConfiguration
       OutputType: OutputType
       Version: Version option
-      MsCorePaths: string list
+      FrameworkAssmPaths: string list
       GenerateDepsFiles: bool
       References: string list }
 
@@ -34,7 +34,7 @@ type CompilationOptions =
         { Configuration = configuration
           OutputType = outputType
           Version = None
-          MsCorePaths = []
+          FrameworkAssmPaths = []
           GenerateDepsFiles = false
           References = [] }
 
