@@ -11,7 +11,7 @@ open Feersum.Core
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec private read () : AstNode =
+let rec private read () : LegacyNode =
     let line = ReadLine.Read("§> ")
 
     match LegacyParse.readExpr line with

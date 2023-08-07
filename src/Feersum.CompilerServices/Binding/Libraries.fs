@@ -38,7 +38,7 @@ type ImportSet =
 type LibraryDeclaration =
     | Export of ExportSet list
     | Import of ImportSet list
-    | Begin of AstNode list
+    | Begin of LegacyNode list
     | Error
 
 /// Library Definition
@@ -81,8 +81,8 @@ module private Utils =
 
         let parseNameElement element =
             match element.Kind with
-            | AstNodeKind.Constant(SyntaxConstant.Number(namePart)) -> Ok(namePart |> sprintf "%g")
-            | AstNodeKind.Ident(namePart) ->
+            | LegacyNodeKind.Constant(LegacySyntaxConstant.Number(namePart)) -> Ok(namePart |> sprintf "%g")
+            | LegacyNodeKind.Ident(namePart) ->
                 if Seq.exists (isInvalidChar) (namePart.ToCharArray()) then
                     "Library names should not contain complex characters"
                     |> Diagnostic.Create LibraryDiagnostics.improperLibraryName element.Location
@@ -94,7 +94,7 @@ module private Utils =
                 Result.Error(())
 
         match name.Kind with
-        | AstNodeKind.Form x -> x |> List.map (parseNameElement) |> Result.collect
+        | LegacyNodeKind.Form x -> x |> List.map (parseNameElement) |> Result.collect
         | _ ->
             diags.Emit LibraryDiagnostics.invalidLibraryName name.Location "Expected library name"
             Result.Error(())
@@ -102,7 +102,7 @@ module private Utils =
     /// Try and parse a node as an identifier
     let parseIdentifier =
         function
-        | { Kind = AstNodeKind.Ident(id) } -> Ok(id)
+        | { Kind = LegacyNodeKind.Ident(id) } -> Ok(id)
         | node ->
             Result.Error(Diagnostic.Create LibraryDiagnostics.invalidLibraryName node.Location "Expected identifier")
 
@@ -113,7 +113,7 @@ module private Utils =
     /// Parse a library declaration form
     let rec parseLibraryDeclaration (diags: DiagnosticBag) declaration =
         match declaration.Kind with
-        | AstNodeKind.Form({ Kind = AstNodeKind.Ident(special) } :: body) ->
+        | LegacyNodeKind.Form({ Kind = LegacyNodeKind.Ident(special) } :: body) ->
             parseLibraryDeclarationForm diags declaration.Location special body
         | _ ->
             diags.Emit LibraryDiagnostics.malformedLibraryDecl declaration.Location "Expected library declaration"
@@ -132,13 +132,13 @@ module private Utils =
 
     and tryParseRename rename =
         match rename with
-        | [ { Kind = AstNodeKind.Ident(int) }; { Kind = AstNodeKind.Ident(ext) } ] -> Ok({ From = int; To = ext })
+        | [ { Kind = LegacyNodeKind.Ident(int) }; { Kind = LegacyNodeKind.Ident(ext) } ] -> Ok({ From = int; To = ext })
         | _ -> Result.Error("invalid rename")
 
     and parseExportDeclaration diags export =
         match export.Kind with
-        | AstNodeKind.Ident(plain) -> Some(ExportSet.Plain plain)
-        | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename") } :: rename) ->
+        | LegacyNodeKind.Ident(plain) -> Some(ExportSet.Plain plain)
+        | LegacyNodeKind.Form({ Kind = LegacyNodeKind.Ident("rename") } :: rename) ->
             match rename |> tryParseRename with
             | Ok renamed -> Some(ExportSet.Renamed renamed)
             | Result.Error e ->
@@ -157,15 +157,15 @@ module private Utils =
                 ImportSet.Error
 
         match import.Kind with
-        | AstNodeKind.Form({ Kind = AstNodeKind.Ident("only") } :: (fromSet :: filters)) ->
+        | LegacyNodeKind.Form({ Kind = LegacyNodeKind.Ident("only") } :: (fromSet :: filters)) ->
             parseImportForm (parseIdentifierList) fromSet filters ImportSet.Only
-        | AstNodeKind.Form({ Kind = AstNodeKind.Ident("except") } :: (fromSet :: filters)) ->
+        | LegacyNodeKind.Form({ Kind = LegacyNodeKind.Ident("except") } :: (fromSet :: filters)) ->
             parseImportForm (parseIdentifierList) fromSet filters ImportSet.Except
-        | AstNodeKind.Form({ Kind = AstNodeKind.Ident("rename") } :: (fromSet :: renames)) ->
+        | LegacyNodeKind.Form({ Kind = LegacyNodeKind.Ident("rename") } :: (fromSet :: renames)) ->
             let parseRenames renames =
                 let parseRename node =
                     match node with
-                    | { Kind = AstNodeKind.Form(f) } ->
+                    | { Kind = LegacyNodeKind.Form(f) } ->
                         tryParseRename (f)
                         |> Result.mapError (Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl node.Location)
                     | _ ->
@@ -176,7 +176,7 @@ module private Utils =
                 renames |> List.map parseRename |> Result.collect
 
             parseImportForm (parseRenames) fromSet renames ImportSet.Renamed
-        | AstNodeKind.Form([ { Kind = AstNodeKind.Ident("prefix") }; fromSet; prefix ]) ->
+        | LegacyNodeKind.Form([ { Kind = LegacyNodeKind.Ident("prefix") }; fromSet; prefix ]) ->
             parseImportForm (parseIdentifier) fromSet prefix ImportSet.Prefix
         | _ ->
             match parseLibraryName diags import with

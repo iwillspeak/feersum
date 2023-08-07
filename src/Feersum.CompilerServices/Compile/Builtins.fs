@@ -121,7 +121,7 @@ module private BuiltinMacros =
             icef "Error in builtin macro: %A" errs
 
         match node with
-        | { Kind = AstNodeKind.Seq([ n ]) } -> n
+        | { Kind = LegacyNodeKind.Seq([ n ]) } -> n
         | n -> n
         |> Macros.parseSyntaxRules id
         |> Result.unwrap

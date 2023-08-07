@@ -15,7 +15,7 @@ type DiagnosticLevel =
 /// Kind for a diagnostic. This holds all the information for a diagnostic that
 /// is not related to the specific instance of that diagnostic. That is the
 /// level, code, etc.
-/// 
+///
 /// TODO: Do we want to ad a `category` to this? E.g. `parse error` rather than
 ///       just `error`?
 type DiagnosticKind =
@@ -64,7 +64,8 @@ type Diagnostic =
 
         match d.Location with
         | Missing -> sprintf "feersum: %s: %s" d.MessagePrefix d.FormattedMessage
-        | Point p -> sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
+        | Point p ->
+            sprintf "%s(%d,%d): %s: %s" (p.Source |> normaliseName) p.Line p.Col d.MessagePrefix d.FormattedMessage
         | Span(s, e) ->
 
             // If both points are on the same line then we can use the a more

@@ -18,10 +18,11 @@ module SyntaxFactory =
           Location = dummyLocation }
 
     /// Create a syntax node from a constant value
-    let constant c = c |> AstNodeKind.Constant |> node
+    let constant c = c |> LegacyNodeKind.Constant |> node
 
     /// Create a syntax node from a given number
-    let number n = n |> SyntaxConstant.Number |> constant
+    let number n =
+        n |> LegacySyntaxConstant.Number |> constant
 
 /// Transform the StreamName in a Position
 ///
@@ -55,8 +56,8 @@ let public basedLocation basePath =
     sanitiseLocationWith (basedStreamName basePath)
 
 /// Transform a syntax node with the given Location Re-Writer
-let rec public sanitiseNodeWith rewriter (node: AstNode) =
-    { AstNode.Kind = node.Kind |> sanitiseKind rewriter
+let rec public sanitiseNodeWith rewriter (node: LegacyNode) =
+    { LegacyNode.Kind = node.Kind |> sanitiseKind rewriter
       Location = node.Location |> rewriter }
 
 and private sanitiseKind rewriter =
