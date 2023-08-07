@@ -1220,7 +1220,7 @@ module Compilation =
                 |> List.fold (fun (nodes, diags) (n, d) -> (List.append nodes [ n ], List.append d diags)) ([], [])
 
             { Location = TextLocation.Missing
-              Kind = AstNodeKind.Seq(nodes) },
+              Kind = LegacyNodeKind.Seq(nodes) },
             diagnostics
 
         if Diagnostics.hasErrors diagnostics then

@@ -33,8 +33,8 @@ let private tryExpand macroPat transformer bindings =
 
 let private ppConst =
     function
-    | SyntaxConstant.Number n -> n.ToString("g")
-    | SyntaxConstant.Boolean b -> if b then "#t" else "#f"
+    | LegacySyntaxConstant.Number n -> n.ToString("g")
+    | LegacySyntaxConstant.Boolean b -> if b then "#t" else "#f"
     | c -> failwithf "unsupported constant %A" c
 
 let rec private pp syntax =

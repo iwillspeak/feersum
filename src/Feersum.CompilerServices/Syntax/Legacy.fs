@@ -1,22 +1,19 @@
 namespace Feersum.CompilerServices.Syntax
 
-open System.Globalization
-open System.Text
-
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 
 /// Constant or literal value in the syntax tree
-type SyntaxConstant =
+type LegacySyntaxConstant =
     | Number of double
     | Str of string
     | Boolean of bool
     | Character of char
 
 /// Type of nodes in our syntax tree
-type AstNodeKind<'t> =
+type LegacyNodeKind<'t> =
     | Ident of string
-    | Constant of SyntaxConstant
+    | Constant of LegacySyntaxConstant
     | Dot
     | Form of 't list
     | Seq of 't list
@@ -26,12 +23,9 @@ type AstNodeKind<'t> =
     | Error
 
 /// A node in our syntax tree.
-type AstNode =
-    { Kind: AstNodeKind<AstNode>
+type LegacyNode =
+    { Kind: LegacyNodeKind<LegacyNode>
       Location: TextLocation }
-
-type LegacyNode = AstNode
-type LegacyNodeKind<'a> = AstNodeKind<'a>
 
 module SyntaxShim =
 
@@ -62,10 +56,10 @@ module SyntaxShim =
             | ConstantNode c ->
                 c.Value
                 |> Option.map (function
-                    | NumVal n -> SyntaxConstant.Number n
-                    | StrVal s -> SyntaxConstant.Str s
-                    | CharVal c -> SyntaxConstant.Character(Option.defaultValue '\u0000' c)
-                    | BoolVal b -> SyntaxConstant.Boolean b)
+                    | NumVal n -> LegacySyntaxConstant.Number n
+                    | StrVal s -> LegacySyntaxConstant.Str s
+                    | CharVal c -> LegacySyntaxConstant.Character(Option.defaultValue '\u0000' c)
+                    | BoolVal b -> LegacySyntaxConstant.Boolean b)
                 |> Option.map (LegacyNodeKind.Constant)
                 |> Option.defaultValue LegacyNodeKind.Error
             | SymbolNode s -> s.CookedValue |> LegacyNodeKind.Ident
@@ -99,19 +93,6 @@ module SyntaxShim =
         { Kind = body
           Location = TextDocument.rangeToLocation doc prog.SyntaxRange }
 
-module private LegacySyntaxDiagnostics =
-
-    let parseError = DiagnosticKind.Create DiagnosticLevel.Error 1 "Parse error"
-
-/// The parser state. Used to collect
-type State =
-    { Diagnostics: DiagnosticBag }
-
-    member s.Emit pos message =
-        s.Diagnostics.Emit LegacySyntaxDiagnostics.parseError (TextLocation.Point(pos)) message
-
-    static member Empty = { Diagnostics = DiagnosticBag.Empty }
-
 module LegacyParse =
 
     open Feersum.CompilerServices.Syntax.Parse
@@ -127,18 +108,12 @@ module LegacyParse =
 
 
     /// Read a single expression from the named input text
-    let readExpr1 name line : (AstNode * Diagnostic list) = runParserOnString name line
+    let readExpr1 name line : (LegacyNode * Diagnostic list) = runParserOnString name line
 
     /// Read a single expression from the input text
     let readExpr = readExpr1 "repl"
 
     /// Read an expression from source code on disk
-    let parseFile path : (AstNode * Diagnostic list) =
+    let parseFile path : (LegacyNode * Diagnostic list) =
         let source = File.ReadAllText(path)
         runParserOnString path source
-
-    /// Read an expression from a stream of source code
-    let parseStream name (stream: Stream) : (AstNode * Diagnostic list) =
-        use reader = new StreamReader(stream)
-        let source = reader.ReadToEnd()
-        runParserOnString name source
