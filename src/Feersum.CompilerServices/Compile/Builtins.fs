@@ -112,20 +112,24 @@ module private ExternUtils =
 // --------------------  Builtin Macro Definitions -----------------------------
 
 module private BuiltinMacros =
+    open Feersum.CompilerServices.Text
 
     /// Parse a builtin macro from syntax rules
     let private parseBuiltinMacro id rules =
-        let (node, errs) = LegacyParse.readExpr1 (sprintf "builtin-%s" id) rules
+        let textDoc = TextDocument.fromParts (sprintf "builtin-%s" id) rules
+        let result = Parse.readExpr1 textDoc.Path rules
 
-        if hasErrors errs then
-            icef "Error in builtin macro: %A" errs
+        if hasErrors result.Diagnostics then
+            icef "Error in builtin macro: %A" result.Diagnostics
 
-        match node with
-        | { Kind = LegacyNodeKind.Seq([ n ]) } -> n
-        | n -> n
-        |> Macros.parseSyntaxRules id
-        |> Result.unwrap
-
+        match result.Root.Body with
+        | Some expr ->
+            match expr |> SyntaxShim.transformExpr textDoc with
+            | { Kind = LegacyNodeKind.Seq([ n ]) } -> n
+            | n -> n
+            |> Macros.parseSyntaxRules id
+            |> Result.unwrap
+        | None -> icef "no body in builtin macro %A" result.Root.Text
 
     /// Builtin `and` Macro
     let private macroAnd =
