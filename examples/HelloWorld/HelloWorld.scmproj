@@ -4,7 +4,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>True</PackAsTool>
-    <TargetFrameworks>netcoreapp3.1;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
   </PropertyGroup>
 
   <!-- Default compile items. We don't to just glob default compile items because ordering matters. -->
