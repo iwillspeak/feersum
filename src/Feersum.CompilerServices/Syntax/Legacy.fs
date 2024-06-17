@@ -98,7 +98,7 @@ module LegacyParse =
     open Feersum.CompilerServices.Syntax.Parse
     open System.IO
 
-    let runParserOnString name source =
+    let private runParserOnString name source =
         let doc = TextDocument.fromParts name source
 
         let tree =
@@ -108,7 +108,7 @@ module LegacyParse =
 
 
     /// Read a single expression from the named input text
-    let readExpr1 name line : (LegacyNode * Diagnostic list) = runParserOnString name line
+    let private readExpr1 name line : (LegacyNode * Diagnostic list) = runParserOnString name line
 
     /// Read a single expression from the input text
     let readExpr = readExpr1 "repl"
