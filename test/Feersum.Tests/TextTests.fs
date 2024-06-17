@@ -27,6 +27,6 @@ let ``text document points`` () =
 
     c (1, 1) 0
     c (6, 1) (body.LastIndexOf("990"))
-    c (7, 1) (body.LastIndexOf("0") + 2)
+    c (7, 1) (body.Length)
     c (2, 2) (body.IndexOf("let"))
     c (4, 10) (body.IndexOf("lines and comments"))
