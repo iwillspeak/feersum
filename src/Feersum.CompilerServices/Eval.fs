@@ -24,10 +24,10 @@ let cilExternalRepr (object: Object) = Write.GetExternalRepresentation(object)
 /// main method on that.
 ///
 /// The script is compiled using `options`
-let evalWith options ast =
+let evalWith options input =
     use memStream = new MemoryStream()
 
-    let result = Compilation.compile options memStream "evalCtx" None ast
+    let result = Compilation.compile options memStream "evalCtx" None input
 
     if not result.Diagnostics.IsEmpty then
         Error(result.Diagnostics)

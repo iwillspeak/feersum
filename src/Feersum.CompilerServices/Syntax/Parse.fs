@@ -46,10 +46,10 @@ module ParseResult =
 
     /// Fold a set of parse results into a signle result
     let public fold folder seed results =
-        let (state, diags) = 
+        let (state, diags) =
             Seq.fold (fun (state, diags) r -> (folder state r.Root, List.append diags r.Diagnostics)) (seed, []) results
-        { Diagnostics = diags
-          Root = state }
+
+        { Diagnostics = diags; Root = state }
 
     /// Convert a parser response into a plain result type
     ///

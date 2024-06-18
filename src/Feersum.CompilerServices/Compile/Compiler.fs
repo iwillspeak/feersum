@@ -16,6 +16,7 @@ open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Compile.MonoHelpers
 open Feersum.CompilerServices.Targets
 open Feersum.CompilerServices.Utils
+open Feersum.CompilerServices.Syntax.Tree
 
 /// Capture Environment Kind
 ///
@@ -73,6 +74,11 @@ type EmitCtx =
 type CompileResult =
     { Diagnostics: Diagnostic list
       EmittedAssemblyName: AssemblyNameDefinition option }
+
+[<RequireQualifiedAccess>]
+type CompileInput =
+    | Program of (TextDocument * Program) list
+    | Script of TextDocument * ScriptProgram
 
 [<AutoOpen>]
 module private Utils =
@@ -1148,7 +1154,7 @@ module Compilation =
     /// the expression and writes out the corresponding .NET IL to an `Assembly`
     /// at `outputStream`. The `outputName` controls the root namespace and assembly
     /// name of the output.
-    let compile options outputStream outputName symbolStream node =
+    let compile options outputStream outputName symbolStream (input: CompileInput) =
         let target =
             match options.FrameworkAssmPaths with
             | [] -> TargetResolve.fromCurrentRuntime
@@ -1166,7 +1172,17 @@ module Compilation =
             else
                 Binder.emptyScope
 
-        let bound = Binder.bind scope allLibs node
+        let progs =
+            match input with
+            | CompileInput.Program progs -> List.map (fun (doc, prog) -> SyntaxShim.transformProgram doc prog) progs
+            | CompileInput.Script(doc, script) ->
+                script.Body |> Option.toList |> List.map (SyntaxShim.transformExpr doc)
+
+        let input =
+            { Kind = LegacyNodeKind.Seq progs
+              Location = TextLocation.Missing }
+
+        let bound = Binder.bind scope allLibs input
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then
@@ -1216,9 +1232,11 @@ module Compilation =
                 output
 
         let result =
-            Seq.map (Parse.parseFile) sources
-            |> Async.Parallel
-            |> Async.RunSynchronously
+            sources
+            |> Seq.map (fun path ->
+                let contents = File.ReadAllText(path)
+                let doc = TextDocument.fromParts path contents
+                Parse.readProgram path contents |> ParseResult.map (fun r -> doc, r))
             |> ParseResult.fold (fun (progs) (p) -> List.append progs [ p ]) []
 
         if Diagnostics.hasErrors result.Diagnostics then
@@ -1236,7 +1254,12 @@ module Compilation =
                 | BuildConfiguration.Release -> null
 
             let result =
-                compile options outputStream (Path.GetFileName(output)) (symbols |> Option.ofObj) result.Root
+                compile
+                    options
+                    outputStream
+                    (Path.GetFileName(output))
+                    (symbols |> Option.ofObj)
+                    (CompileInput.Program result.Root)
 
             if result.Diagnostics.IsEmpty && options.OutputType = OutputType.Exe then
                 match result.EmittedAssemblyName with

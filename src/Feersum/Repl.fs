@@ -7,16 +7,20 @@ open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Eval
 open Feersum.CompilerServices.Diagnostics
 open Feersum.Core
+open Feersum.CompilerServices.Compile
+open Feersum.CompilerServices.Syntax.Tree
+open Feersum.CompilerServices.Text
+open Feersum.CompilerServices.Syntax.Parse
 
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec private read () : LegacyNode =
+let rec private read () : CompileInput =
     let line = ReadLine.Read("§> ")
 
-    match LegacyParse.readExpr line with
-    | (node, []) -> node
-    | (_, diagnostics) ->
+    match Parse.readExpr1 "repl" line |> ParseResult.toResult with
+    | Result.Ok tree -> CompileInput.Script(TextDocument.fromParts "repl" line, tree)
+    | Result.Error diagnostics ->
         diagnostics |> dumpDiagnostics
         read ()
 
