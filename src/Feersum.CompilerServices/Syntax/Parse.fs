@@ -295,6 +295,7 @@ and private parseExprSeq builder endKinds state =
 let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
     skipAtmosphere builder state
     |> parseExprSeq builder [ TokenKind.EndOfFile ]
+    |> expect builder TokenKind.EndOfFile AstKind.EOF
     |> ParserState.finalise builder AstKind.PROGRAM
 
 /// Parse Expression
@@ -303,6 +304,7 @@ let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxN
 let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
     skipAtmosphere builder state
     |> parseExpr builder
+    |> expect builder TokenKind.EndOfFile AstKind.EOF
     |> ParserState.finalise builder AstKind.SCRIPT_PROGRAM
 
 // =============================== Public API ==================================

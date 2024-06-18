@@ -8,7 +8,6 @@ open Feersum.CompilerServices.Eval
 open Feersum.CompilerServices.Diagnostics
 open Feersum.Core
 open Feersum.CompilerServices.Compile
-open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Parse
 
