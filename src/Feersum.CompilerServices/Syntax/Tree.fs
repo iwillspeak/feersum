@@ -147,16 +147,24 @@ module private Utils =
 type AstItem internal (red: NodeOrToken<SyntaxNode, SyntaxToken>) =
 
     /// Get the Syntax range of the item
-    member public _.SyntaxRange =
-        red |> NodeOrToken.consolidate (fun n -> n.Range) (fun t -> t.Range)
+    member public _.SyntaxRange = red |> NodeOrToken.consolidate _.Range _.Range
 
     member _.Text =
         red
-        |> NodeOrToken.consolidate (fun n -> n.Green.ToString()) (fun t -> t.Green.Text)
+        |> NodeOrToken.consolidate
+            (fun n ->
+                Walk.walk n
+                |> Seq.fold
+                    (fun (sb: StringBuilder) ev ->
+                        match ev with
+                        | OnToken t -> sb.Append(t.Green.Text)
+                        | _ -> sb)
+                    (new StringBuilder())
+                |> _.ToString())
+            _.Green.Text
 
     override _.ToString() =
-        red |> NodeOrToken.consolidate (fun n -> n.ToString()) (fun t -> t.ToString())
-
+        red |> NodeOrToken.consolidate _.ToString() _.ToString()
 
 // *********** TOKENS
 
