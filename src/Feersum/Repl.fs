@@ -15,10 +15,23 @@ open Feersum.CompilerServices.Syntax.Parse
 /// syntax tree. If the input can't be parsed then read
 /// again.
 let rec private read () : CompileInput =
-    let line = ReadLine.Read("§> ")
+    let rec readWithState prompt previous =
+        let line = ReadLine.Read(prompt)
+        let source =
+            match previous with
+            | Some prefix -> prefix + "\n" + line
+            | None -> line
 
-    match Parse.readExpr1 "repl" line |> ParseResult.toResult with
-    | Result.Ok tree -> CompileInput.Script(TextDocument.fromParts "repl" line, tree)
+        match Parse.readExpr1 "repl" source |> ParseResult.toResult with
+        | Result.Ok tree -> CompileInput.Script(TextDocument.fromParts "repl" source, tree) |> Ok
+        | Result.Error diagnostics ->
+            if line = "" && source.EndsWith("\n\n") then
+                Result.Error(diagnostics)
+            else
+                readWithState "+> " (Some(source))
+            
+    match readWithState "§> " None with
+    | Result.Ok input -> input
     | Result.Error diagnostics ->
         diagnostics |> dumpDiagnostics
         read ()
