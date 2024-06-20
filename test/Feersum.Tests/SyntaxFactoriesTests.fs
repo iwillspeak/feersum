@@ -78,3 +78,13 @@ let ``string constants`` str =
     | _ -> failwith "Node structure invalid"
 
     checkReparse node
+
+[<Fact>]
+let ``quotation exprs`` () =
+    let node = numVal 101 |> quoted
+
+    match node with
+    | Quoted(Some(Constant(Some(NumVal 101.0)))) -> ()
+    | _ -> failwith "Node strucutre invalid"
+
+    checkReparse node

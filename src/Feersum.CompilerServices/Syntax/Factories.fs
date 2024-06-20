@@ -37,6 +37,22 @@ let charVal (c: char) = constant AstKind.CHARACTER c
 /// Emit a syntax tree reperesenting a single string value
 let strVal (s: string) = constant AstKind.STRING s
 
+/// Wrap an Expression with a Quotation
+///
+/// Creates a new `Quotation`, wrapping the innter `Expression` to convert it
+/// into a datum.
+let quoted (e: Expression) =
+    new Quoted(
+        SyntaxNode.CreateRoot(
+            GreenNode.Create(
+                AstKind.QUOTED_DATUM |> SyntaxUtils.astToGreen,
+                [ GreenToken.Create(AstKind.QUOTE |> SyntaxUtils.astToGreen, "'")
+                  |> GreenElement.Token
+                  e.RawNode.Green |> GreenElement.Node ]
+            )
+        )
+    )
+
 /// Wrap Expression as Script
 ///
 /// Creates a new root `ScriptProgram` from the given `Expression`

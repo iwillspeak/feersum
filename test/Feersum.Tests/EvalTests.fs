@@ -3,8 +3,6 @@ module EvalTests
 open Xunit
 
 open Feersum.CompilerServices.Eval
-open Feersum.CompilerServices.Syntax
-open SyntaxUtils
 open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Compile
@@ -36,9 +34,16 @@ let ``evaluate atoms`` () =
     Assert.Equal("123.456", interpScr (numVal 123.456 |> scriptProgram))
 
 [<Fact>]
-let ``Evaluate lists`` () =
-    Assert.Equal("132", interpProg (program [ boolVal false; numVal 132.0 ]))
+let ``evaluate quoted atoms`` () =
+    Assert.Equal("#t", interpScr (boolVal true |> quoted |> scriptProgram))
+    Assert.Equal("#f", interpScr (boolVal false |> quoted |> scriptProgram))
+    Assert.Equal(@"""hello""", interpScr (strVal "hello" |> quoted |> scriptProgram))
+    Assert.Equal("1337", interpScr (numVal 1337.0 |> quoted |> scriptProgram))
+    Assert.Equal("123.456", interpScr (numVal 123.456 |> quoted |> scriptProgram))
 
+[<Fact>]
+let ``evaluate seqs`` () =
+    Assert.Equal("132", interpProg (program [ boolVal false; numVal 132.0 ]))
     Assert.Equal("#t", interpProg (program [ boolVal true ]))
 
 [<Fact>]
