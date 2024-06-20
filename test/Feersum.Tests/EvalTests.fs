@@ -5,38 +5,47 @@ open Xunit
 open Feersum.CompilerServices.Eval
 open Feersum.CompilerServices.Syntax
 open SyntaxUtils
-open SyntaxFactory
 open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Text
+open Feersum.CompilerServices.Syntax.Factories
+open Feersum.CompilerServices.Syntax.Tree
 
-let feeri = eval >> Result.unwrap >> cilExternalRepr
+let private feeri = eval >> Result.unwrap >> cilExternalRepr
+
+let private interpProg (prog: Program) =
+    let doc = TextDocument.fromParts "test" prog.Text
+    CompileInput.Program [ (doc, prog) ] |> feeri
+
+let private interpScr (scr: ScriptProgram) =
+    let doc = TextDocument.fromParts "test" scr.Text
+    CompileInput.Script(doc, scr) |> feeri
 
 let private tryReadSingle expr =
     let script = readExpr expr |> ParseResult.toResult |> Result.unwrap
     let doc = TextDocument.fromParts "test" expr
     CompileInput.Script(doc, script)
 
+[<Fact>]
+let ``evaluate atoms`` () =
+    Assert.Equal("#t", interpScr (boolVal true |> scriptProgram))
+    Assert.Equal("#f", interpScr (boolVal false |> scriptProgram))
+    Assert.Equal(@"""hello""", interpScr (strVal "hello" |> scriptProgram))
+    Assert.Equal("1337", interpScr (numVal 1337.0 |> scriptProgram))
+    Assert.Equal("123.456", interpScr (numVal 123.456 |> scriptProgram))
+
+[<Fact>]
+let ``Evaluate lists`` () =
+    Assert.Equal("132", interpProg (program [ boolVal false; numVal 132.0 ]))
+
+    Assert.Equal("#t", interpProg (program [ boolVal true ]))
+
+[<Fact>]
+let ``Evaluate empty program`` () =
+    Assert.Equal("; Unspecified value", interpProg ([] |> program))
+
 // FIXME: Eval of legacy node types
-
-// [<Fact>]
-// let ``Evaluate atoms`` () =
-//     Assert.Equal("#t", feeri (Boolean true |> constant))
-//     Assert.Equal("#f", feeri (Boolean false |> constant))
-//     Assert.Equal(@"""hello""", feeri (Str "hello" |> constant))
-//     Assert.Equal("1337", feeri (Number 1337.0 |> constant))
-//     Assert.Equal("123.456", feeri (Number 123.456 |> constant))
-
-// [<Fact>]
-// let ``Evaluate lists`` () =
-//     Assert.Equal("132", feeri (Seq [ Boolean false |> constant; Number 132.0 |> constant ] |> node))
-
-//     Assert.Equal("#t", feeri (Seq [ Boolean true |> constant ] |> node))
-
-// [<Fact>]
-// let ``Evaluate empty program`` () =
-//     Assert.Equal("; Unspecified value", feeri (Seq [] |> node))
 
 // [<Fact>]
 // let ``Evaluate lambdas returns`` () =

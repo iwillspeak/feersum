@@ -33,6 +33,32 @@ let boolVal (b: bool) = constant AstKind.BOOLEAN b
 let charVal (c: char) = constant AstKind.CHARACTER c
 
 /// Create aString Value Constant
-/// 
+///
 /// Emit a syntax tree reperesenting a single string value
 let strVal (s: string) = constant AstKind.STRING s
+
+/// Wrap Expression as Script
+///
+/// Creates a new root `ScriptProgram` from the given `Expression`
+let scriptProgram (expr: Expression) : ScriptProgram =
+    new ScriptProgram(
+        SyntaxNode.CreateRoot(
+            GreenNode.Create(
+                AstKind.SCRIPT_PROGRAM |> SyntaxUtils.astToGreen,
+                [ expr.RawNode.Green |> GreenElement.Node ]
+            )
+        )
+    )
+
+/// Wrap Expressions as Full Program
+///
+/// Creates a new root `Program` from the given `Expression` sequence
+let program (exprs: seq<Expression>) : Program =
+    new Program(
+        SyntaxNode.CreateRoot(
+            GreenNode.Create(
+                AstKind.PROGRAM |> SyntaxUtils.astToGreen,
+                exprs |> Seq.map ((_.RawNode.Green) >> GreenElement.Node) |> List.ofSeq
+            )
+        )
+    )
