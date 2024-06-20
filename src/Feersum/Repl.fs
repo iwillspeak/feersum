@@ -17,6 +17,7 @@ open Feersum.CompilerServices.Syntax.Parse
 let rec private read () : CompileInput =
     let rec readWithState prompt previous =
         let line = ReadLine.Read(prompt)
+
         let source =
             match previous with
             | Some prefix -> prefix + "\n" + line
@@ -29,7 +30,7 @@ let rec private read () : CompileInput =
                 Result.Error(diagnostics)
             else
                 readWithState "+> " (Some(source))
-            
+
     match readWithState "§> " None with
     | Result.Ok input -> input
     | Result.Error diagnostics ->
