@@ -5,17 +5,21 @@ open Firethorn.Green
 open Firethorn.Red
 open Serehfa
 
+let private tok kind text =
+    GreenToken.Create(kind |> SyntaxUtils.astToGreen, text) |> GreenElement.Token
+
+let private atmosphere = tok AstKind.ATMOSPHERE
+let private space = atmosphere " "
+
 let private constant kind value =
     new Constant(
         SyntaxNode.CreateRoot(
             GreenNode.Create(
                 AstKind.CONSTANT |> SyntaxUtils.astToGreen,
-                [ GreenToken.Create(kind |> SyntaxUtils.astToGreen, Write.GetExternalRepresentation(value))
-                  |> GreenElement.Token ]
+                [ tok kind (Write.GetExternalRepresentation(value)) ]
             )
         )
     )
-
 
 /// Create a Numeric Value Constant
 ///
@@ -46,10 +50,40 @@ let quoted (e: Expression) =
         SyntaxNode.CreateRoot(
             GreenNode.Create(
                 AstKind.QUOTED_DATUM |> SyntaxUtils.astToGreen,
-                [ GreenToken.Create(AstKind.QUOTE |> SyntaxUtils.astToGreen, "'")
-                  |> GreenElement.Token
-                  e.RawNode.Green |> GreenElement.Node ]
+                [ tok AstKind.QUOTE "'"; e.RawNode.Green |> GreenElement.Node ]
             )
+        )
+    )
+
+/// Wrap a String as an Identifier Node
+///
+/// Produces a single well-formed symbol node contianing a single identifier.
+let symbol ident =
+    new Symbol(
+        SyntaxNode.CreateRoot(
+            GreenNode.Create(
+                AstKind.SYMBOL |> SyntaxUtils.astToGreen,
+                [ tok AstKind.IDENTIFIER (Write.GetExternalRepresentation(new Ident(ident))) ]
+            )
+        )
+    )
+
+/// Wrap a List of Expressions as a Form
+///
+/// Produces a simple well-formed form expression from a list of containing expressions.
+let form (exprs: Expression list) =
+    let close = tok AstKind.CLOSE_PAREN ")"
+    let toNode (x: Expression) = x.RawNode.Green |> GreenElement.Node
+
+    let rec mapTail (exprs: Expression list) =
+        match exprs with
+        | [] -> [ close ]
+        | [ single ] -> [ single |> toNode; close ]
+        | head :: tail -> (head |> toNode) :: (space :: (mapTail tail))
+
+    new Form(
+        SyntaxNode.CreateRoot(
+            GreenNode.Create(AstKind.FORM |> SyntaxUtils.astToGreen, tok AstKind.OPEN_PAREN "(" :: mapTail exprs)
         )
     )
 

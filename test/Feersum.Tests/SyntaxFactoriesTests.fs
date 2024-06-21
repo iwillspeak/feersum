@@ -88,3 +88,33 @@ let ``quotation exprs`` () =
     | _ -> failwith "Node strucutre invalid"
 
     checkReparse node
+
+[<Fact>]
+let ``simple forms`` () =
+    let node = form [ numVal 123; boolVal false ]
+
+    Assert.Equal("(123 #f)", node.Text)
+
+    Assert.True(node.DottedTail.IsNone)
+
+    match node with
+    | Form([ Constant(Some(NumVal 123.0)); Constant(Some(BoolVal false)) ]) -> ()
+    | _ -> failwith "Node structure invalid"
+
+    checkReparse node
+
+[<Theory>]
+[<InlineData("hello", "hello")>]
+[<InlineData("scheme program", "|scheme program|")>]
+[<InlineData("\t\n", "|\\x9;\\xA;|")>]
+[<InlineData("", "||")>]
+let ``identifier symbol exprs`` ident expected =
+    let node = symbol ident
+
+    Assert.Equal(expected, node.Text)
+
+    match node with
+    | Symbol id -> Assert.Equal(ident, id)
+    | _ -> failwith "Node strucutre invalid"
+
+    checkReparse node
