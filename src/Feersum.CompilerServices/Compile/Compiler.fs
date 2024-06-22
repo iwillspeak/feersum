@@ -388,26 +388,29 @@ module private Utils =
         | BoundExpr.Load storage -> readFrom ctx storage
         | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
             let lblTrue = ctx.IL.Create(OpCodes.Nop)
-            let lblNotBool = ctx.IL.Create(OpCodes.Nop)
             let lblEnd = ctx.IL.Create(OpCodes.Nop)
+            let condTemp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
             // ILAAA       : <expression for cond>
-            // ILBBB       : dup
+            // ILAAA       : stloc condTemp
+            // ILBBB       : ldloc condTemp
             // ILBBB       : isinst bool
-            // ILBBB       : brfalse ILlblNotBool
-            // ILBBB       : brtrue ILlblTrue
-            // ILCCC       : <false expression>
+            // ILBBB       : brfalse ILlblTrue
+            // ILCCC       : ldloc condTemp
+            // ILCCC       : brtrue ILlblTrue
+            // ILDDD       : <false expression>
             // ILXXX       : br ILlblEnd ; or just `ret` for tail calls
-            // ILlblNotBool: pop
             // ILlblTrue   : <true expression>
             // ILlblEnd    : nop ; only if not tail call
 
             emitExpression ctx false cond
 
-            ctx.IL.Emit(OpCodes.Dup)
+            ctx.IL.Emit(OpCodes.Stloc, condTemp)
+            ctx.IL.Emit(OpCodes.Ldloc, condTemp)
             ctx.IL.Emit(OpCodes.Isinst, ctx.Assm.MainModule.TypeSystem.Boolean)
-            ctx.IL.Emit(OpCodes.Brfalse, lblNotBool)
+            ctx.IL.Emit(OpCodes.Brfalse, lblTrue)
 
+            ctx.IL.Emit(OpCodes.Ldloc, condTemp)
             ctx.IL.Emit(OpCodes.Unbox_Any, ctx.Assm.MainModule.TypeSystem.Boolean)
             ctx.IL.Emit(OpCodes.Brtrue, lblTrue)
 
@@ -429,8 +432,6 @@ module private Utils =
             else
                 ctx.IL.Emit(OpCodes.Br, lblEnd)
 
-            ctx.IL.Append(lblNotBool)
-            ctx.IL.Emit(OpCodes.Pop)
             ctx.IL.Append(lblTrue)
             recurse ifTrue
 
