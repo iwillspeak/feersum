@@ -1,115 +1,116 @@
 using System;
-using System.Text;
-using Serehfa.Attributes;
 using System.Runtime.InteropServices;
+using System.Text;
 
-namespace Serehfa
+using Serehfa.Attributes;
+
+namespace Serehfa;
+
+using static ArgHelpers;
+
+[LispLibrary("scheme", "write")]
+public static class Write
 {
-    using static ArgHelpers;
-
-    [LispLibrary("scheme", "write")]
-    public static class Write
+    static Write()
     {
-        static Write()
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            Console.OutputEncoding = Encoding.UTF8;
+        }
+    }
+
+    /// <summary>
+    /// The newline method. This is a prime candidate for being moved to
+    /// a pure scheme definition.
+    /// </summary>
+    [LispExport("newline")]
+    public static object Newline(object[] args)
+    {
+        CheckNoArgs(args);
+
+        Console.WriteLine();
+
+        return Undefined.Instance;
+    }
+
+    /// <summary>
+    /// Display builtin. This is intended for user-readable output rather than
+    /// any machine readable round tripping. Printing out strings &amp; chars should
+    /// display their raw form. All other objects is up to the implementation.
+    /// 
+    /// This implementation calls `ToString` on the underlying .NET object and
+    /// uses that directly.
+    /// </summary>
+    [LispExport("display")]
+    public static object Display(object[] args)
+    {
+        var obj = UnpackArgs<object>(args);
+
+        var repr = GetDisplayRepresentation(obj);
+
+        Console.Write(repr);
+
+        return Undefined.Instance;
+    }
+
+    /// <summary>
+    /// Write builtin. This is intended for round-trippable and machine
+    /// readable output.
+    /// </summary>
+    [LispExport("write")]
+    public static object WriteExternal(object[] args)
+    {
+        var obj = UnpackArgs<object>(args);
+
+        var repr = GetExternalRepresentation(obj);
+
+        Console.Write(repr);
+
+        return Undefined.Instance;
+    }
+
+    public static string GetDisplayRepresentation(object o) => o switch
+    {
+        string s => s,
+        char c => c.ToString(),
+        _ => GetExternalRepresentation(o),
+    };
+
+    public static string GetExternalRepresentation(object o) => o switch
+    {
+        bool b => b ? "#t" : "#f",
+        double d => d.ToString("G0"),
+        string s => EscapeString(s),
+        char c => char.IsLetterOrDigit(c) || char.IsPunctuation(c) ?
+            @"#\" + c : $@"#\x{Convert.ToUInt32(c):x4}",
+        null => "'()",
+        Func<object[], object> f => $"#<compiledProcedure {f.Method}>",
+        object[] v => Vectors.GetExternalRepresentation(v),
+        byte[] v => ByteVectors.GetExternalRepresentation(v),
+        _ => o.ToString(),
+    };
+
+    private static string EscapeString(string s)
+    {
+        var sb = new StringBuilder();
+        sb.Append("\"");
+        foreach (var c in s)
+        {
+            if (c == '\\' || c == '\"')
             {
-                Console.OutputEncoding = Encoding.UTF8;
+                sb.AppendFormat(@"\{0}", c);
+            }
+            else if (char.IsLetterOrDigit(c) || char.IsPunctuation(c) || c == ' ')
+            {
+                sb.Append(c);
+            }
+            else
+            {
+                sb.AppendFormat(@"\x{0:x4};", Convert.ToUInt32(c));
             }
         }
 
-        /// <summary>
-        /// The newline method. This is a prime candidate for being moved to
-        /// a pure scheme definition.
-        /// </summary>
-        [LispExport("newline")]
-        public static object Newline(object[] args)
-        {
-            CheckNoArgs(args);
-
-            Console.WriteLine();
-
-            return Undefined.Instance;
-        }
-
-        /// <summary>
-        /// Display builtin. This is intended for user-readable output rather than
-        /// any machine readable round tripping. Printing out strings &amp; chars should
-        /// display their raw form. All other objects is up to the implementation.
-        /// 
-        /// This implementation calls `ToString` on the underlying .NET object and
-        /// uses that directly.
-        /// </summary>
-        [LispExport("display")]
-        public static object Display(object[] args)
-        {
-            var obj = UnpackArgs<object>(args);
-
-            var repr = GetDisplayRepresentation(obj);
-
-            Console.Write(repr);
-
-            return Undefined.Instance;
-        }
-
-        /// <summary>
-        /// Write builtin. This is intended for round-trippable and machine
-        /// readable output.
-        /// </summary>
-        [LispExport("write")]
-        public static object WriteExternal(object[] args)
-        {
-            var obj = UnpackArgs<object>(args);
-
-            var repr = GetExternalRepresentation(obj);
-
-            Console.Write(repr);
-
-            return Undefined.Instance;
-        }
-
-        public static string GetDisplayRepresentation(object o) => o switch
-        {
-            string s => s,
-            char c => c.ToString(),
-            _ => GetExternalRepresentation(o),
-        };
-
-        public static string GetExternalRepresentation(object o) => o switch
-        {
-            bool b => b ? "#t" : "#f",
-            double d => d.ToString("G0"),
-            string s => EscapeString(s),
-            char c => char.IsLetterOrDigit(c) || char.IsPunctuation(c) ?
-                @"#\" + c : $@"#\x{Convert.ToUInt32(c):x4}",
-            null => "'()",
-            Func<object[], object> f => $"#<compiledProcedure {f.Method}>",
-            object[] v => Vectors.GetExternalRepresentation(v),
-            byte[] v => ByteVectors.GetExternalRepresentation(v),
-            _ => o.ToString(),
-        };
-
-        private static string EscapeString(string s)
-        {
-            var sb = new StringBuilder();
-            sb.Append("\"");
-            foreach (var c in s)
-            {
-                if (c == '\\' || c == '\"')
-                {
-                    sb.AppendFormat(@"\{0}", c);
-                }
-                else if (char.IsLetterOrDigit(c) || char.IsPunctuation(c) || c == ' ')
-                {
-                    sb.Append(c);
-                }
-                else
-                {
-                    sb.AppendFormat(@"\x{0:x4};", Convert.ToUInt32(c));
-                }
-            }
-            sb.Append("\"");
-            return sb.ToString();
-        }
+        sb.Append("\"");
+        return sb.ToString();
     }
 }
