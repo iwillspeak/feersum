@@ -1,0 +1,70 @@
+PROGRAM: (0..112)
+  FORM: (0..29)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..28)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..12)
+        IDENTIFIER: (9..12) "not"
+      ATMOSPHERE: (12..13) " "
+      SYMBOL: (13..14)
+        IDENTIFIER: (13..14) "a"
+      ATMOSPHERE: (14..15) " "
+      SYMBOL: (15..19)
+        IDENTIFIER: (15..19) "real"
+      ATMOSPHERE: (19..20) " "
+      SYMBOL: (20..27)
+        IDENTIFIER: (20..27) "library"
+      CLOSE_PAREN: (27..28) ")"
+    CLOSE_PAREN: (28..29) ")"
+  ATMOSPHERE: (29..30) "
+"
+  FORM: (30..47)
+    OPEN_PAREN: (30..31) "("
+    SYMBOL: (31..37)
+      IDENTIFIER: (31..37) "import"
+    ATMOSPHERE: (37..38) " "
+    SYMBOL: (38..46)
+      IDENTIFIER: (38..46) "badthing"
+    CLOSE_PAREN: (46..47) ")"
+  ATMOSPHERE: (47..48) "
+"
+  FORM: (48..112)
+    OPEN_PAREN: (48..49) "("
+    SYMBOL: (49..63)
+      IDENTIFIER: (49..63) "define-library"
+    ATMOSPHERE: (63..64) " "
+    FORM: (64..70)
+      OPEN_PAREN: (64..65) "("
+      SYMBOL: (65..69)
+        IDENTIFIER: (65..69) "test"
+      CLOSE_PAREN: (69..70) ")"
+    ATMOSPHERE: (70..75) "
+    "
+    FORM: (75..111)
+      OPEN_PAREN: (75..76) "("
+      SYMBOL: (76..82)
+        IDENTIFIER: (76..82) "import"
+      ATMOSPHERE: (82..83) " "
+      FORM: (83..110)
+        OPEN_PAREN: (83..84) "("
+        SYMBOL: (84..88)
+          IDENTIFIER: (84..88) "only"
+        ATMOSPHERE: (88..89) " "
+        FORM: (89..103)
+          OPEN_PAREN: (89..90) "("
+          SYMBOL: (90..94)
+            IDENTIFIER: (90..94) "test"
+          ATMOSPHERE: (94..95) " "
+          SYMBOL: (95..102)
+            IDENTIFIER: (95..102) "greeter"
+          CLOSE_PAREN: (102..103) ")"
+        ATMOSPHERE: (103..104) " "
+        SYMBOL: (104..109)
+          IDENTIFIER: (104..109) "greet"
+        CLOSE_PAREN: (109..110) ")"
+      CLOSE_PAREN: (110..111) ")"
+    CLOSE_PAREN: (111..112) ")"
+  EOF: (112..112) ""

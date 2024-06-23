@@ -1,0 +1,102 @@
+PROGRAM: (0..272)
+  ATMOSPHERE: (0..66) ";; The `begin` special form takes a sequence and returns the value"
+  ATMOSPHERE: (66..67) "
+"
+  ATMOSPHERE: (67..93) ";; of the last expression."
+  ATMOSPHERE: (93..94) "
+"
+  FORM: (94..262)
+    OPEN_PAREN: (94..95) "("
+    SYMBOL: (95..100)
+      IDENTIFIER: (95..100) "begin"
+    ATMOSPHERE: (100..105) "
+    "
+    CONSTANT: (105..107)
+      NUMBER: (105..107) "12"
+    ATMOSPHERE: (107..112) "
+    "
+    FORM: (112..164)
+      OPEN_PAREN: (112..113) "("
+      SYMBOL: (113..118)
+        IDENTIFIER: (113..118) "begin"
+      ATMOSPHERE: (118..128) " 
+        "
+      CONSTANT: (128..135)
+        STRING: (128..135) ""hello""
+      ATMOSPHERE: (135..144) "
+        "
+      CONSTANT: (144..147)
+        NUMBER: (144..147) "123"
+      ATMOSPHERE: (147..156) "
+        "
+      CONSTANT: (156..163)
+        STRING: (156..163) ""world""
+      CLOSE_PAREN: (163..164) ")"
+    ATMOSPHERE: (164..169) "
+    "
+    CONSTANT: (169..182)
+      STRING: (169..182) ""hello world""
+    ATMOSPHERE: (182..187) "
+    "
+    FORM: (187..261)
+      OPEN_PAREN: (187..188) "("
+      SYMBOL: (188..190)
+        IDENTIFIER: (188..190) "if"
+      ATMOSPHERE: (190..191) " "
+      FORM: (191..210)
+        OPEN_PAREN: (191..192) "("
+        SYMBOL: (192..197)
+          IDENTIFIER: (192..197) "begin"
+        ATMOSPHERE: (197..198) " "
+        CONSTANT: (198..200)
+          BOOLEAN: (198..200) "#f"
+        ATMOSPHERE: (200..201) " "
+        CONSTANT: (201..203)
+          BOOLEAN: (201..203) "#t"
+        ATMOSPHERE: (203..204) " "
+        CONSTANT: (204..206)
+          BOOLEAN: (204..206) "#f"
+        ATMOSPHERE: (206..207) " "
+        CONSTANT: (207..209)
+          BOOLEAN: (207..209) "#t"
+        CLOSE_PAREN: (209..210) ")"
+      ATMOSPHERE: (210..219) "
+        "
+      FORM: (219..235)
+        OPEN_PAREN: (219..220) "("
+        SYMBOL: (220..225)
+          IDENTIFIER: (220..225) "begin"
+        ATMOSPHERE: (225..226) " "
+        CONSTANT: (226..227)
+          NUMBER: (226..227) "1"
+        ATMOSPHERE: (227..228) " "
+        CONSTANT: (228..229)
+          NUMBER: (228..229) "2"
+        ATMOSPHERE: (229..230) " "
+        CONSTANT: (230..231)
+          NUMBER: (230..231) "3"
+        ATMOSPHERE: (231..232) " "
+        CONSTANT: (232..234)
+          NUMBER: (232..234) "45"
+        CLOSE_PAREN: (234..235) ")"
+      ATMOSPHERE: (235..244) "
+        "
+      FORM: (244..260)
+        OPEN_PAREN: (244..245) "("
+        SYMBOL: (245..250)
+          IDENTIFIER: (245..250) "begin"
+        ATMOSPHERE: (250..251) " "
+        CONSTANT: (251..253)
+          NUMBER: (251..253) "-2"
+        ATMOSPHERE: (253..254) " "
+        CONSTANT: (254..256)
+          NUMBER: (254..256) "-3"
+        ATMOSPHERE: (256..257) " "
+        CONSTANT: (257..259)
+          NUMBER: (257..259) "-9"
+        CLOSE_PAREN: (259..260) ")"
+      CLOSE_PAREN: (260..261) ")"
+    CLOSE_PAREN: (261..262) ")"
+  ATMOSPHERE: (262..265) "   "
+  ATMOSPHERE: (265..272) "; ~> 45"
+  EOF: (272..272) ""

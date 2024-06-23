@@ -1,0 +1,36 @@
+PROGRAM: (0..46)
+  FORM: (0..16)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "define"
+    ATMOSPHERE: (7..8) " "
+    SYMBOL: (8..11)
+      IDENTIFIER: (8..11) "foo"
+    ATMOSPHERE: (11..12) " "
+    CONSTANT: (12..15)
+      NUMBER: (12..15) "100"
+    CLOSE_PAREN: (15..16) ")"
+  ATMOSPHERE: (16..17) "
+"
+  FORM: (17..37)
+    OPEN_PAREN: (17..18) "("
+    SYMBOL: (18..24)
+      IDENTIFIER: (18..24) "define"
+    ATMOSPHERE: (24..25) " "
+    SYMBOL: (25..28)
+      IDENTIFIER: (25..28) "bar"
+    ATMOSPHERE: (28..29) " "
+    CONSTANT: (29..36)
+      STRING: (29..36) ""hello""
+    CLOSE_PAREN: (36..37) ")"
+  ATMOSPHERE: (37..38) "
+"
+  SYMBOL: (38..41)
+    IDENTIFIER: (38..41) "foo"
+  ATMOSPHERE: (41..42) "
+"
+  SYMBOL: (42..45)
+    IDENTIFIER: (42..45) "bar"
+  ATMOSPHERE: (45..46) "
+"
+  EOF: (46..46) ""

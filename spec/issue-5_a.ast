@@ -1,0 +1,87 @@
+PROGRAM: (0..171)
+  FORM: (0..41)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..21)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..20)
+        IDENTIFIER: (16..20) "base"
+      CLOSE_PAREN: (20..21) ")"
+    ATMOSPHERE: (21..26) "
+    "
+    FORM: (26..40)
+      OPEN_PAREN: (26..27) "("
+      SYMBOL: (27..33)
+        IDENTIFIER: (27..33) "scheme"
+      ATMOSPHERE: (33..34) " "
+      SYMBOL: (34..39)
+        IDENTIFIER: (34..39) "write"
+      CLOSE_PAREN: (39..40) ")"
+    CLOSE_PAREN: (40..41) ")"
+  ATMOSPHERE: (41..42) "
+"
+  FORM: (42..140)
+    OPEN_PAREN: (42..43) "("
+    FORM: (43..133)
+      OPEN_PAREN: (43..44) "("
+      SYMBOL: (44..50)
+        IDENTIFIER: (44..50) "lambda"
+      ATMOSPHERE: (50..51) " "
+      FORM: (51..54)
+        OPEN_PAREN: (51..52) "("
+        SYMBOL: (52..53)
+          IDENTIFIER: (52..53) "a"
+        CLOSE_PAREN: (53..54) ")"
+      ATMOSPHERE: (54..59) "
+    "
+      FORM: (59..126)
+        OPEN_PAREN: (59..60) "("
+        SYMBOL: (60..67)
+          IDENTIFIER: (60..67) "display"
+        ATMOSPHERE: (67..76) "
+        "
+        FORM: (76..125)
+          OPEN_PAREN: (76..77) "("
+          SYMBOL: (77..79)
+            IDENTIFIER: (77..79) "if"
+          ATMOSPHERE: (79..80) " "
+          CONSTANT: (80..82)
+            BOOLEAN: (80..82) "#f"
+          ATMOSPHERE: (82..97) "
+              "
+          FORM: (97..110)
+            OPEN_PAREN: (97..98) "("
+            SYMBOL: (98..104)
+              IDENTIFIER: (98..104) "lambda"
+            ATMOSPHERE: (104..105) " "
+            FORM: (105..107)
+              OPEN_PAREN: (105..106) "("
+              CLOSE_PAREN: (106..107) ")"
+            ATMOSPHERE: (107..108) " "
+            SYMBOL: (108..109)
+              IDENTIFIER: (108..109) "a"
+            CLOSE_PAREN: (109..110) ")"
+          ATMOSPHERE: (110..123) "
+            "
+          SYMBOL: (123..124)
+            IDENTIFIER: (123..124) "a"
+          CLOSE_PAREN: (124..125) ")"
+        CLOSE_PAREN: (125..126) ")"
+      ATMOSPHERE: (126..131) "
+    "
+      SYMBOL: (131..132)
+        IDENTIFIER: (131..132) "a"
+      CLOSE_PAREN: (132..133) ")"
+    ATMOSPHERE: (133..136) "
+  "
+    CONSTANT: (136..139)
+      NUMBER: (136..139) "101"
+    CLOSE_PAREN: (139..140) ")"
+  ATMOSPHERE: (140..141) " "
+  ATMOSPHERE: (141..171) "; -> should be 101, but is '()"
+  EOF: (171..171) ""

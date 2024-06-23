@@ -1,0 +1,170 @@
+PROGRAM: (0..267)
+  FORM: (0..41)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..21)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..20)
+        IDENTIFIER: (16..20) "base"
+      CLOSE_PAREN: (20..21) ")"
+    ATMOSPHERE: (21..26) "
+    "
+    FORM: (26..40)
+      OPEN_PAREN: (26..27) "("
+      SYMBOL: (27..33)
+        IDENTIFIER: (27..33) "scheme"
+      ATMOSPHERE: (33..34) " "
+      SYMBOL: (34..39)
+        IDENTIFIER: (34..39) "write"
+      CLOSE_PAREN: (39..40) ")"
+    CLOSE_PAREN: (40..41) ")"
+  ATMOSPHERE: (41..43) "
+
+"
+  ATMOSPHERE: (43..56) "; 1 1 2 3 5 8"
+  ATMOSPHERE: (56..57) "
+"
+  ATMOSPHERE: (57..70) "; 1 2 3 4 5 6"
+  ATMOSPHERE: (70..72) "
+
+"
+  FORM: (72..236)
+    OPEN_PAREN: (72..73) "("
+    SYMBOL: (73..79)
+      IDENTIFIER: (73..79) "define"
+    ATMOSPHERE: (79..80) " "
+    FORM: (80..87)
+      OPEN_PAREN: (80..81) "("
+      SYMBOL: (81..84)
+        IDENTIFIER: (81..84) "fib"
+      ATMOSPHERE: (84..85) " "
+      SYMBOL: (85..86)
+        IDENTIFIER: (85..86) "n"
+      CLOSE_PAREN: (86..87) ")"
+    ATMOSPHERE: (87..92) "
+    "
+    FORM: (92..212)
+      OPEN_PAREN: (92..93) "("
+      SYMBOL: (93..99)
+        IDENTIFIER: (93..99) "define"
+      ATMOSPHERE: (99..100) " "
+      FORM: (100..123)
+        OPEN_PAREN: (100..101) "("
+        SYMBOL: (101..111)
+          IDENTIFIER: (101..111) "fib-helper"
+        ATMOSPHERE: (111..112) " "
+        SYMBOL: (112..113)
+          IDENTIFIER: (112..113) "n"
+        ATMOSPHERE: (113..114) " "
+        SYMBOL: (114..118)
+          IDENTIFIER: (114..118) "last"
+        ATMOSPHERE: (118..119) " "
+        SYMBOL: (119..122)
+          IDENTIFIER: (119..122) "cur"
+        CLOSE_PAREN: (122..123) ")"
+      ATMOSPHERE: (123..132) "
+        "
+      FORM: (132..211)
+        OPEN_PAREN: (132..133) "("
+        SYMBOL: (133..135)
+          IDENTIFIER: (133..135) "if"
+        ATMOSPHERE: (135..136) " "
+        FORM: (136..144)
+          OPEN_PAREN: (136..137) "("
+          SYMBOL: (137..139)
+            IDENTIFIER: (137..139) "<="
+          ATMOSPHERE: (139..140) " "
+          SYMBOL: (140..141)
+            IDENTIFIER: (140..141) "n"
+          ATMOSPHERE: (141..142) " "
+          CONSTANT: (142..143)
+            NUMBER: (142..143) "2"
+          CLOSE_PAREN: (143..144) ")"
+        ATMOSPHERE: (144..157) "
+            "
+        SYMBOL: (157..160)
+          IDENTIFIER: (157..160) "cur"
+        ATMOSPHERE: (160..173) "
+            "
+        FORM: (173..210)
+          OPEN_PAREN: (173..174) "("
+          SYMBOL: (174..184)
+            IDENTIFIER: (174..184) "fib-helper"
+          ATMOSPHERE: (184..185) " "
+          FORM: (185..192)
+            OPEN_PAREN: (185..186) "("
+            SYMBOL: (186..187)
+              IDENTIFIER: (186..187) "-"
+            ATMOSPHERE: (187..188) " "
+            SYMBOL: (188..189)
+              IDENTIFIER: (188..189) "n"
+            ATMOSPHERE: (189..190) " "
+            CONSTANT: (190..191)
+              NUMBER: (190..191) "1"
+            CLOSE_PAREN: (191..192) ")"
+          ATMOSPHERE: (192..193) " "
+          SYMBOL: (193..196)
+            IDENTIFIER: (193..196) "cur"
+          ATMOSPHERE: (196..197) " "
+          FORM: (197..209)
+            OPEN_PAREN: (197..198) "("
+            SYMBOL: (198..199)
+              IDENTIFIER: (198..199) "+"
+            ATMOSPHERE: (199..200) " "
+            SYMBOL: (200..203)
+              IDENTIFIER: (200..203) "cur"
+            ATMOSPHERE: (203..204) " "
+            SYMBOL: (204..208)
+              IDENTIFIER: (204..208) "last"
+            CLOSE_PAREN: (208..209) ")"
+          CLOSE_PAREN: (209..210) ")"
+        CLOSE_PAREN: (210..211) ")"
+      CLOSE_PAREN: (211..212) ")"
+    ATMOSPHERE: (212..217) "
+    "
+    FORM: (217..235)
+      OPEN_PAREN: (217..218) "("
+      SYMBOL: (218..228)
+        IDENTIFIER: (218..228) "fib-helper"
+      ATMOSPHERE: (228..229) " "
+      SYMBOL: (229..230)
+        IDENTIFIER: (229..230) "n"
+      ATMOSPHERE: (230..231) " "
+      CONSTANT: (231..232)
+        NUMBER: (231..232) "1"
+      ATMOSPHERE: (232..233) " "
+      CONSTANT: (233..234)
+        NUMBER: (233..234) "1"
+      CLOSE_PAREN: (234..235) ")"
+    CLOSE_PAREN: (235..236) ")"
+  ATMOSPHERE: (236..239) "
+
+
+"
+  FORM: (239..257)
+    OPEN_PAREN: (239..240) "("
+    SYMBOL: (240..247)
+      IDENTIFIER: (240..247) "display"
+    ATMOSPHERE: (247..248) " "
+    FORM: (248..256)
+      OPEN_PAREN: (248..249) "("
+      SYMBOL: (249..252)
+        IDENTIFIER: (249..252) "fib"
+      ATMOSPHERE: (252..253) " "
+      CONSTANT: (253..255)
+        NUMBER: (253..255) "40"
+      CLOSE_PAREN: (255..256) ")"
+    CLOSE_PAREN: (256..257) ")"
+  FORM: (257..266)
+    OPEN_PAREN: (257..258) "("
+    SYMBOL: (258..265)
+      IDENTIFIER: (258..265) "newline"
+    CLOSE_PAREN: (265..266) ")"
+  ATMOSPHERE: (266..267) "
+"
+  EOF: (267..267) ""

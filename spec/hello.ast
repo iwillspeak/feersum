@@ -1,0 +1,26 @@
+PROGRAM: (0..46)
+  FORM: (0..23)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..22)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..21)
+        IDENTIFIER: (16..21) "write"
+      CLOSE_PAREN: (21..22) ")"
+    CLOSE_PAREN: (22..23) ")"
+  ATMOSPHERE: (23..24) "
+"
+  FORM: (24..46)
+    OPEN_PAREN: (24..25) "("
+    SYMBOL: (25..32)
+      IDENTIFIER: (25..32) "display"
+    ATMOSPHERE: (32..33) " "
+    CONSTANT: (33..45)
+      STRING: (33..45) ""helloworld""
+    CLOSE_PAREN: (45..46) ")"
+  EOF: (46..46) ""

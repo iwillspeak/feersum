@@ -1,0 +1,392 @@
+PROGRAM: (0..1136)
+  FORM: (0..41)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..21)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..20)
+        IDENTIFIER: (16..20) "base"
+      CLOSE_PAREN: (20..21) ")"
+    ATMOSPHERE: (21..26) "
+    "
+    FORM: (26..40)
+      OPEN_PAREN: (26..27) "("
+      SYMBOL: (27..33)
+        IDENTIFIER: (27..33) "scheme"
+      ATMOSPHERE: (33..34) " "
+      SYMBOL: (34..39)
+        IDENTIFIER: (34..39) "write"
+      CLOSE_PAREN: (39..40) ")"
+    CLOSE_PAREN: (40..41) ")"
+  ATMOSPHERE: (41..42) "
+"
+  ATMOSPHERE: (42..88) ";; Implementation of the Sieve of Eratosthenes"
+  ATMOSPHERE: (88..89) "
+"
+  ATMOSPHERE: (89..143) ";; https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes"
+  ATMOSPHERE: (143..144) "
+"
+  FORM: (144..1030)
+    OPEN_PAREN: (144..145) "("
+    SYMBOL: (145..151)
+      IDENTIFIER: (145..151) "define"
+    ATMOSPHERE: (151..152) " "
+    FORM: (152..168)
+      OPEN_PAREN: (152..153) "("
+      SYMBOL: (153..165)
+        IDENTIFIER: (153..165) "eratosthenes"
+      ATMOSPHERE: (165..166) " "
+      SYMBOL: (166..167)
+        IDENTIFIER: (166..167) "n"
+      CLOSE_PAREN: (167..168) ")"
+    ATMOSPHERE: (168..173) "
+    "
+    ATMOSPHERE: (173..223) ";; Mark multiples of the given prime in the vector"
+    ATMOSPHERE: (223..228) "
+    "
+    FORM: (228..552)
+      OPEN_PAREN: (228..229) "("
+      SYMBOL: (229..235)
+        IDENTIFIER: (229..235) "define"
+      ATMOSPHERE: (235..236) " "
+      FORM: (236..261)
+        OPEN_PAREN: (236..237) "("
+        SYMBOL: (237..251)
+          IDENTIFIER: (237..251) "mark-multiples"
+        ATMOSPHERE: (251..252) " "
+        SYMBOL: (252..253)
+          IDENTIFIER: (252..253) "p"
+        ATMOSPHERE: (253..254) " "
+        SYMBOL: (254..260)
+          IDENTIFIER: (254..260) "marked"
+        CLOSE_PAREN: (260..261) ")"
+      ATMOSPHERE: (261..270) "
+        "
+      FORM: (270..506)
+        OPEN_PAREN: (270..271) "("
+        SYMBOL: (271..277)
+          IDENTIFIER: (271..277) "define"
+        ATMOSPHERE: (277..278) " "
+        FORM: (278..308)
+          OPEN_PAREN: (278..279) "("
+          SYMBOL: (279..296)
+            IDENTIFIER: (279..296) "mark-multiples-at"
+          ATMOSPHERE: (296..297) " "
+          SYMBOL: (297..298)
+            IDENTIFIER: (297..298) "p"
+          ATMOSPHERE: (298..299) " "
+          SYMBOL: (299..300)
+            IDENTIFIER: (299..300) "m"
+          ATMOSPHERE: (300..301) " "
+          SYMBOL: (301..307)
+            IDENTIFIER: (301..307) "marked"
+          CLOSE_PAREN: (307..308) ")"
+        ATMOSPHERE: (308..321) "
+            "
+        FORM: (321..505)
+          OPEN_PAREN: (321..322) "("
+          SYMBOL: (322..324)
+            IDENTIFIER: (322..324) "if"
+          ATMOSPHERE: (324..325) " "
+          FORM: (325..354)
+            OPEN_PAREN: (325..326) "("
+            SYMBOL: (326..328)
+              IDENTIFIER: (326..328) ">="
+            ATMOSPHERE: (328..329) " "
+            SYMBOL: (329..330)
+              IDENTIFIER: (329..330) "m"
+            ATMOSPHERE: (330..331) " "
+            FORM: (331..353)
+              OPEN_PAREN: (331..332) "("
+              SYMBOL: (332..345)
+                IDENTIFIER: (332..345) "vector-length"
+              ATMOSPHERE: (345..346) " "
+              SYMBOL: (346..352)
+                IDENTIFIER: (346..352) "marked"
+              CLOSE_PAREN: (352..353) ")"
+            CLOSE_PAREN: (353..354) ")"
+          ATMOSPHERE: (354..371) "
+                "
+          SYMBOL: (371..377)
+            IDENTIFIER: (371..377) "marked"
+          ATMOSPHERE: (377..394) "
+                "
+          FORM: (394..504)
+            OPEN_PAREN: (394..395) "("
+            SYMBOL: (395..400)
+              IDENTIFIER: (395..400) "begin"
+            ATMOSPHERE: (400..421) "
+                    "
+            FORM: (421..446)
+              OPEN_PAREN: (421..422) "("
+              SYMBOL: (422..433)
+                IDENTIFIER: (422..433) "vector-set!"
+              ATMOSPHERE: (433..434) " "
+              SYMBOL: (434..440)
+                IDENTIFIER: (434..440) "marked"
+              ATMOSPHERE: (440..441) " "
+              SYMBOL: (441..442)
+                IDENTIFIER: (441..442) "m"
+              ATMOSPHERE: (442..443) " "
+              CONSTANT: (443..445)
+                BOOLEAN: (443..445) "#t"
+              CLOSE_PAREN: (445..446) ")"
+            ATMOSPHERE: (446..467) "
+                    "
+            FORM: (467..503)
+              OPEN_PAREN: (467..468) "("
+              SYMBOL: (468..485)
+                IDENTIFIER: (468..485) "mark-multiples-at"
+              ATMOSPHERE: (485..486) " "
+              SYMBOL: (486..487)
+                IDENTIFIER: (486..487) "p"
+              ATMOSPHERE: (487..488) " "
+              FORM: (488..495)
+                OPEN_PAREN: (488..489) "("
+                SYMBOL: (489..490)
+                  IDENTIFIER: (489..490) "+"
+                ATMOSPHERE: (490..491) " "
+                SYMBOL: (491..492)
+                  IDENTIFIER: (491..492) "m"
+                ATMOSPHERE: (492..493) " "
+                SYMBOL: (493..494)
+                  IDENTIFIER: (493..494) "p"
+                CLOSE_PAREN: (494..495) ")"
+              ATMOSPHERE: (495..496) " "
+              SYMBOL: (496..502)
+                IDENTIFIER: (496..502) "marked"
+              CLOSE_PAREN: (502..503) ")"
+            CLOSE_PAREN: (503..504) ")"
+          CLOSE_PAREN: (504..505) ")"
+        CLOSE_PAREN: (505..506) ")"
+      ATMOSPHERE: (506..515) "
+        "
+      FORM: (515..551)
+        OPEN_PAREN: (515..516) "("
+        SYMBOL: (516..533)
+          IDENTIFIER: (516..533) "mark-multiples-at"
+        ATMOSPHERE: (533..534) " "
+        SYMBOL: (534..535)
+          IDENTIFIER: (534..535) "p"
+        ATMOSPHERE: (535..536) " "
+        FORM: (536..543)
+          OPEN_PAREN: (536..537) "("
+          SYMBOL: (537..538)
+            IDENTIFIER: (537..538) "*"
+          ATMOSPHERE: (538..539) " "
+          SYMBOL: (539..540)
+            IDENTIFIER: (539..540) "p"
+          ATMOSPHERE: (540..541) " "
+          SYMBOL: (541..542)
+            IDENTIFIER: (541..542) "p"
+          CLOSE_PAREN: (542..543) ")"
+        ATMOSPHERE: (543..544) " "
+        SYMBOL: (544..550)
+          IDENTIFIER: (544..550) "marked"
+        CLOSE_PAREN: (550..551) ")"
+      CLOSE_PAREN: (551..552) ")"
+    ATMOSPHERE: (552..557) "
+    "
+    ATMOSPHERE: (557..613) ";; main prime sieve. Recursively marks multiples of each"
+    ATMOSPHERE: (613..618) "
+    "
+    ATMOSPHERE: (618..667) ";; prime and builds up a list of them as it goes."
+    ATMOSPHERE: (667..672) "
+    "
+    FORM: (672..995)
+      OPEN_PAREN: (672..673) "("
+      SYMBOL: (673..679)
+        IDENTIFIER: (673..679) "define"
+      ATMOSPHERE: (679..680) " "
+      FORM: (680..701)
+        OPEN_PAREN: (680..681) "("
+        SYMBOL: (681..684)
+          IDENTIFIER: (681..684) "siv"
+        ATMOSPHERE: (684..685) " "
+        SYMBOL: (685..686)
+          IDENTIFIER: (685..686) "p"
+        ATMOSPHERE: (686..687) " "
+        SYMBOL: (687..693)
+          IDENTIFIER: (687..693) "marked"
+        ATMOSPHERE: (693..694) " "
+        SYMBOL: (694..700)
+          IDENTIFIER: (694..700) "primes"
+        CLOSE_PAREN: (700..701) ")"
+      ATMOSPHERE: (701..710) "
+        "
+      FORM: (710..994)
+        OPEN_PAREN: (710..711) "("
+        SYMBOL: (711..713)
+          IDENTIFIER: (711..713) "if"
+        ATMOSPHERE: (713..714) " "
+        FORM: (714..743)
+          OPEN_PAREN: (714..715) "("
+          SYMBOL: (715..717)
+            IDENTIFIER: (715..717) ">="
+          ATMOSPHERE: (717..718) " "
+          SYMBOL: (718..719)
+            IDENTIFIER: (718..719) "p"
+          ATMOSPHERE: (719..720) " "
+          FORM: (720..742)
+            OPEN_PAREN: (720..721) "("
+            SYMBOL: (721..734)
+              IDENTIFIER: (721..734) "vector-length"
+            ATMOSPHERE: (734..735) " "
+            SYMBOL: (735..741)
+              IDENTIFIER: (735..741) "marked"
+            CLOSE_PAREN: (741..742) ")"
+          CLOSE_PAREN: (742..743) ")"
+        ATMOSPHERE: (743..756) "
+            "
+        SYMBOL: (756..762)
+          IDENTIFIER: (756..762) "primes"
+        ATMOSPHERE: (762..775) "
+            "
+        ATMOSPHERE: (775..838) ";; If the item is marked, it is a multiple of some other prime."
+        ATMOSPHERE: (838..851) "
+            "
+        FORM: (851..993)
+          OPEN_PAREN: (851..852) "("
+          SYMBOL: (852..854)
+            IDENTIFIER: (852..854) "if"
+          ATMOSPHERE: (854..855) " "
+          FORM: (855..876)
+            OPEN_PAREN: (855..856) "("
+            SYMBOL: (856..866)
+              IDENTIFIER: (856..866) "vector-ref"
+            ATMOSPHERE: (866..867) " "
+            SYMBOL: (867..873)
+              IDENTIFIER: (867..873) "marked"
+            ATMOSPHERE: (873..874) " "
+            SYMBOL: (874..875)
+              IDENTIFIER: (874..875) "p"
+            CLOSE_PAREN: (875..876) ")"
+          ATMOSPHERE: (876..893) "
+                "
+          FORM: (893..920)
+            OPEN_PAREN: (893..894) "("
+            SYMBOL: (894..897)
+              IDENTIFIER: (894..897) "siv"
+            ATMOSPHERE: (897..898) " "
+            FORM: (898..905)
+              OPEN_PAREN: (898..899) "("
+              SYMBOL: (899..900)
+                IDENTIFIER: (899..900) "+"
+              ATMOSPHERE: (900..901) " "
+              CONSTANT: (901..902)
+                NUMBER: (901..902) "1"
+              ATMOSPHERE: (902..903) " "
+              SYMBOL: (903..904)
+                IDENTIFIER: (903..904) "p"
+              CLOSE_PAREN: (904..905) ")"
+            ATMOSPHERE: (905..906) " "
+            SYMBOL: (906..912)
+              IDENTIFIER: (906..912) "marked"
+            ATMOSPHERE: (912..913) " "
+            SYMBOL: (913..919)
+              IDENTIFIER: (913..919) "primes"
+            CLOSE_PAREN: (919..920) ")"
+          ATMOSPHERE: (920..937) "
+                "
+          FORM: (937..992)
+            OPEN_PAREN: (937..938) "("
+            SYMBOL: (938..941)
+              IDENTIFIER: (938..941) "siv"
+            ATMOSPHERE: (941..942) " "
+            FORM: (942..949)
+              OPEN_PAREN: (942..943) "("
+              SYMBOL: (943..944)
+                IDENTIFIER: (943..944) "+"
+              ATMOSPHERE: (944..945) " "
+              CONSTANT: (945..946)
+                NUMBER: (945..946) "1"
+              ATMOSPHERE: (946..947) " "
+              SYMBOL: (947..948)
+                IDENTIFIER: (947..948) "p"
+              CLOSE_PAREN: (948..949) ")"
+            ATMOSPHERE: (949..950) " "
+            FORM: (950..975)
+              OPEN_PAREN: (950..951) "("
+              SYMBOL: (951..965)
+                IDENTIFIER: (951..965) "mark-multiples"
+              ATMOSPHERE: (965..966) " "
+              SYMBOL: (966..967)
+                IDENTIFIER: (966..967) "p"
+              ATMOSPHERE: (967..968) " "
+              SYMBOL: (968..974)
+                IDENTIFIER: (968..974) "marked"
+              CLOSE_PAREN: (974..975) ")"
+            ATMOSPHERE: (975..976) " "
+            FORM: (976..991)
+              OPEN_PAREN: (976..977) "("
+              SYMBOL: (977..981)
+                IDENTIFIER: (977..981) "cons"
+              ATMOSPHERE: (981..982) " "
+              SYMBOL: (982..983)
+                IDENTIFIER: (982..983) "p"
+              ATMOSPHERE: (983..984) " "
+              SYMBOL: (984..990)
+                IDENTIFIER: (984..990) "primes"
+              CLOSE_PAREN: (990..991) ")"
+            CLOSE_PAREN: (991..992) ")"
+          CLOSE_PAREN: (992..993) ")"
+        CLOSE_PAREN: (993..994) ")"
+      CLOSE_PAREN: (994..995) ")"
+    ATMOSPHERE: (995..1000) "
+    "
+    FORM: (1000..1029)
+      OPEN_PAREN: (1000..1001) "("
+      SYMBOL: (1001..1004)
+        IDENTIFIER: (1001..1004) "siv"
+      ATMOSPHERE: (1004..1005) " "
+      CONSTANT: (1005..1006)
+        NUMBER: (1005..1006) "2"
+      ATMOSPHERE: (1006..1007) " "
+      FORM: (1007..1025)
+        OPEN_PAREN: (1007..1008) "("
+        SYMBOL: (1008..1019)
+          IDENTIFIER: (1008..1019) "make-vector"
+        ATMOSPHERE: (1019..1020) " "
+        SYMBOL: (1020..1021)
+          IDENTIFIER: (1020..1021) "n"
+        ATMOSPHERE: (1021..1022) " "
+        CONSTANT: (1022..1024)
+          BOOLEAN: (1022..1024) "#f"
+        CLOSE_PAREN: (1024..1025) ")"
+      ATMOSPHERE: (1025..1026) " "
+      FORM: (1026..1028)
+        OPEN_PAREN: (1026..1027) "("
+        CLOSE_PAREN: (1027..1028) ")"
+      CLOSE_PAREN: (1028..1029) ")"
+    CLOSE_PAREN: (1029..1030) ")"
+  ATMOSPHERE: (1030..1032) "
+
+"
+  ATMOSPHERE: (1032..1069) ";; ;; Display the first 10,000 primes"
+  ATMOSPHERE: (1069..1070) "
+"
+  ATMOSPHERE: (1070..1104) ";; (display (eratosthenes 104730))"
+  ATMOSPHERE: (1104..1105) "
+"
+  FORM: (1105..1135)
+    OPEN_PAREN: (1105..1106) "("
+    SYMBOL: (1106..1113)
+      IDENTIFIER: (1106..1113) "display"
+    ATMOSPHERE: (1113..1114) " "
+    FORM: (1114..1134)
+      OPEN_PAREN: (1114..1115) "("
+      SYMBOL: (1115..1127)
+        IDENTIFIER: (1115..1127) "eratosthenes"
+      ATMOSPHERE: (1127..1128) " "
+      CONSTANT: (1128..1133)
+        NUMBER: (1128..1133) "10000"
+      CLOSE_PAREN: (1133..1134) ")"
+    CLOSE_PAREN: (1134..1135) ")"
+  ATMOSPHERE: (1135..1136) "
+"
+  EOF: (1136..1136) ""

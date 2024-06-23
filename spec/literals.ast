@@ -1,0 +1,20 @@
+PROGRAM: (0..25)
+  CONSTANT: (0..1)
+    NUMBER: (0..1) "1"
+  ATMOSPHERE: (1..2) "
+"
+  CONSTANT: (2..15)
+    STRING: (2..15) ""hello world""
+  ATMOSPHERE: (15..16) "
+"
+  CONSTANT: (16..18)
+    BOOLEAN: (16..18) "#t"
+  ATMOSPHERE: (18..19) "
+"
+  CONSTANT: (19..21)
+    BOOLEAN: (19..21) "#f"
+  ATMOSPHERE: (21..22) "
+"
+  CONSTANT: (22..25)
+    NUMBER: (22..25) "123"
+  EOF: (25..25) ""

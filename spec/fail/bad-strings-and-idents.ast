@@ -1,0 +1,37 @@
+PROGRAM: (0..193)
+  ATMOSPHERE: (0..76) ";; FIXME: Almost none of these generate parser errors any more. We should be"
+  ATMOSPHERE: (76..77) "
+"
+  ATMOSPHERE: (77..141) ";;        more strict about what we accept as strings or idents."
+  ATMOSPHERE: (141..143) "
+
+"
+  CONSTANT: (143..148)
+    STRING: (143..148) ""\x;""
+  ATMOSPHERE: (148..149) "
+"
+  CONSTANT: (149..155)
+    STRING: (149..155) ""\x20""
+  ATMOSPHERE: (155..156) "
+"
+  CONSTANT: (156..171)
+    STRING: (156..171) ""\x10000;\"
+'|""
+  ATMOSPHERE: (171..172) "
+"
+  CONSTANT: (172..180)
+    CHARACTER: (172..180) "#\x12345"
+  ATMOSPHERE: (180..181) "
+"
+  QUOTED_DATUM: (181..188)
+    QUOTE: (181..182) "'"
+    SYMBOL: (182..187)
+      IDENTIFIER: (182..187) "|\x;|"
+    ATMOSPHERE: (187..188) "
+"
+  QUOTED_DATUM: (188..193)
+    QUOTE: (188..189) "'"
+    CONSTANT: (189..193)
+      ERROR: (189..193) "|\x
+"
+  EOF: (193..193) ""

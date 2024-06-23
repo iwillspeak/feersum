@@ -1,0 +1,64 @@
+PROGRAM: (0..81)
+  FORM: (0..14)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "define"
+    ATMOSPHERE: (7..8) " "
+    SYMBOL: (8..13)
+      IDENTIFIER: (8..13) "world"
+    CLOSE_PAREN: (13..14) ")"
+  ATMOSPHERE: (14..15) "
+"
+  FORM: (15..39)
+    OPEN_PAREN: (15..16) "("
+    SYMBOL: (16..22)
+      IDENTIFIER: (16..22) "define"
+    ATMOSPHERE: (22..23) " "
+    FORM: (23..30)
+      OPEN_PAREN: (23..24) "("
+      SYMBOL: (24..29)
+        IDENTIFIER: (24..29) "hello"
+      CLOSE_PAREN: (29..30) ")"
+    ATMOSPHERE: (30..31) " "
+    FORM: (31..38)
+      OPEN_PAREN: (31..32) "("
+      SYMBOL: (32..37)
+        IDENTIFIER: (32..37) "world"
+      CLOSE_PAREN: (37..38) ")"
+    CLOSE_PAREN: (38..39) ")"
+  ATMOSPHERE: (39..40) "
+"
+  FORM: (40..72)
+    OPEN_PAREN: (40..41) "("
+    SYMBOL: (41..45)
+      IDENTIFIER: (41..45) "set!"
+    ATMOSPHERE: (45..46) " "
+    SYMBOL: (46..51)
+      IDENTIFIER: (46..51) "world"
+    ATMOSPHERE: (51..52) " "
+    FORM: (52..71)
+      OPEN_PAREN: (52..53) "("
+      SYMBOL: (53..59)
+        IDENTIFIER: (53..59) "lambda"
+      ATMOSPHERE: (59..60) " "
+      FORM: (60..62)
+        OPEN_PAREN: (60..61) "("
+        CLOSE_PAREN: (61..62) ")"
+      ATMOSPHERE: (62..63) " "
+      FORM: (63..70)
+        OPEN_PAREN: (63..64) "("
+        SYMBOL: (64..69)
+          IDENTIFIER: (64..69) "hello"
+        CLOSE_PAREN: (69..70) ")"
+      CLOSE_PAREN: (70..71) ")"
+    CLOSE_PAREN: (71..72) ")"
+  ATMOSPHERE: (72..73) "
+"
+  FORM: (73..80)
+    OPEN_PAREN: (73..74) "("
+    SYMBOL: (74..79)
+      IDENTIFIER: (74..79) "hello"
+    CLOSE_PAREN: (79..80) ")"
+  ATMOSPHERE: (80..81) "
+"
+  EOF: (81..81) ""
