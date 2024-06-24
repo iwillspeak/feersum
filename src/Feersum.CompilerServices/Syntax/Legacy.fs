@@ -96,7 +96,6 @@ module SyntaxShim =
 module LegacyParse =
 
     open Feersum.CompilerServices.Syntax.Parse
-    open System.IO
 
     let private runParserOnString name source =
         let doc = TextDocument.fromParts name source
@@ -112,8 +111,3 @@ module LegacyParse =
 
     /// Read a single expression from the input text
     let readExpr = readExpr1 "repl"
-
-    /// Read an expression from source code on disk
-    let parseFile path : (LegacyNode * Diagnostic list) =
-        let source = File.ReadAllText(path)
-        runParserOnString path source

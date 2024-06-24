@@ -1,0 +1,91 @@
+PROGRAM: (0..189)
+  FORM: (0..24)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..15)
+      IDENTIFIER: (1..15) "define-library"
+    ATMOSPHERE: (15..16) " "
+    CONSTANT: (16..23)
+      STRING: (16..23) "\"hello\""
+    CLOSE_PAREN: (23..24) ")"
+  ATMOSPHERE: (24..25) "\n"
+  FORM: (25..64)
+    OPEN_PAREN: (25..26) "("
+    SYMBOL: (26..40)
+      IDENTIFIER: (26..40) "define-library"
+    ATMOSPHERE: (40..41) " "
+    FORM: (41..63)
+      OPEN_PAREN: (41..42) "("
+      SYMBOL: (42..48)
+        IDENTIFIER: (42..48) "scheme"
+      ATMOSPHERE: (48..49) " "
+      SYMBOL: (49..62)
+        IDENTIFIER: (49..62) "|silly'chars|"
+      CLOSE_PAREN: (62..63) ")"
+    CLOSE_PAREN: (63..64) ")"
+  ATMOSPHERE: (64..65) "\n"
+  FORM: (65..91)
+    OPEN_PAREN: (65..66) "("
+    SYMBOL: (66..80)
+      IDENTIFIER: (66..80) "define-library"
+    ATMOSPHERE: (80..81) " "
+    FORM: (81..90)
+      OPEN_PAREN: (81..82) "("
+      SYMBOL: (82..86)
+        IDENTIFIER: (82..86) "some"
+      ATMOSPHERE: (86..87) " "
+      QUOTED_DATUM: (87..89)
+        QUOTE: (87..88) "'"
+        SYMBOL: (88..89)
+          IDENTIFIER: (88..89) "t"
+      CLOSE_PAREN: (89..90) ")"
+    CLOSE_PAREN: (90..91) ")"
+  ATMOSPHERE: (91..92) "\n"
+  FORM: (92..124)
+    OPEN_PAREN: (92..93) "("
+    SYMBOL: (93..107)
+      IDENTIFIER: (93..107) "define-library"
+    ATMOSPHERE: (107..108) " "
+    FORM: (108..123)
+      OPEN_PAREN: (108..109) "("
+      SYMBOL: (109..113)
+        IDENTIFIER: (109..113) "srfi"
+      ATMOSPHERE: (113..114) " "
+      SYMBOL: (114..119)
+        IDENTIFIER: (114..119) "trust"
+      ATMOSPHERE: (119..120) " "
+      SYMBOL: (120..122)
+        IDENTIFIER: (120..122) "me"
+      CLOSE_PAREN: (122..123) ")"
+    CLOSE_PAREN: (123..124) ")"
+  ATMOSPHERE: (124..125) "\n"
+  FORM: (125..188)
+    OPEN_PAREN: (125..126) "("
+    SYMBOL: (126..140)
+      IDENTIFIER: (126..140) "define-library"
+    ATMOSPHERE: (140..141) " "
+    FORM: (141..157)
+      OPEN_PAREN: (141..142) "("
+      SYMBOL: (142..149)
+        IDENTIFIER: (142..149) "missing"
+      ATMOSPHERE: (149..150) " "
+      SYMBOL: (150..156)
+        IDENTIFIER: (150..156) "export"
+      CLOSE_PAREN: (156..157) ")"
+    ATMOSPHERE: (157..162) "\n    "
+    FORM: (162..187)
+      OPEN_PAREN: (162..163) "("
+      SYMBOL: (163..169)
+        IDENTIFIER: (163..169) "export"
+      ATMOSPHERE: (169..170) " "
+      SYMBOL: (170..172)
+        IDENTIFIER: (170..172) "we"
+      ATMOSPHERE: (172..173) " "
+      SYMBOL: (173..180)
+        IDENTIFIER: (173..180) "|don't|"
+      ATMOSPHERE: (180..181) " "
+      SYMBOL: (181..186)
+        IDENTIFIER: (181..186) "exist"
+      CLOSE_PAREN: (186..187) ")"
+    CLOSE_PAREN: (187..188) ")"
+  ATMOSPHERE: (188..189) "\n"
+  EOF: (189..189) ""

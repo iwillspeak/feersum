@@ -1,0 +1,8 @@
+PROGRAM: (0..33)
+  CONSTANT: (0..13)
+    STRING: (0..13) "\"hello world\""
+  ATMOSPHERE: (13..14) "\n"
+  CONSTANT: (14..32)
+    STRING: (14..32) "\"stuff and things\""
+  ATMOSPHERE: (32..33) "\n"
+  EOF: (33..33) ""

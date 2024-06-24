@@ -18,6 +18,7 @@
     <Compile Include="Syntax/Lex.fs" />
     <Compile Include="Syntax/Tree.fs" />
     <Compile Include="Syntax/Parse.fs" />
+    <Compile Include="Syntax/Factories.fs" />
     <Compile Include="Syntax/Legacy.fs" />
     <Compile Include="Scope.fs" />
     <Compile Include="Binding/Libraries.fs" />
@@ -35,8 +36,8 @@
     <ProjectReference Include="..\Serehfa\Serehfa.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Firethorn" Version="0.4.0" />
+    <PackageReference Include="Firethorn" Version="0.4.1" />
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.0" />
   </ItemGroup>
 </Project>
