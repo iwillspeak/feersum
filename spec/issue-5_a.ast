@@ -12,8 +12,7 @@ PROGRAM: (0..171)
       SYMBOL: (16..20)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
-    ATMOSPHERE: (21..26) "
-    "
+    ATMOSPHERE: (21..26) "\n    "
     FORM: (26..40)
       OPEN_PAREN: (26..27) "("
       SYMBOL: (27..33)
@@ -23,8 +22,7 @@ PROGRAM: (0..171)
         IDENTIFIER: (34..39) "write"
       CLOSE_PAREN: (39..40) ")"
     CLOSE_PAREN: (40..41) ")"
-  ATMOSPHERE: (41..42) "
-"
+  ATMOSPHERE: (41..42) "\n"
   FORM: (42..140)
     OPEN_PAREN: (42..43) "("
     FORM: (43..133)
@@ -37,14 +35,12 @@ PROGRAM: (0..171)
         SYMBOL: (52..53)
           IDENTIFIER: (52..53) "a"
         CLOSE_PAREN: (53..54) ")"
-      ATMOSPHERE: (54..59) "
-    "
+      ATMOSPHERE: (54..59) "\n    "
       FORM: (59..126)
         OPEN_PAREN: (59..60) "("
         SYMBOL: (60..67)
           IDENTIFIER: (60..67) "display"
-        ATMOSPHERE: (67..76) "
-        "
+        ATMOSPHERE: (67..76) "\n        "
         FORM: (76..125)
           OPEN_PAREN: (76..77) "("
           SYMBOL: (77..79)
@@ -52,8 +48,7 @@ PROGRAM: (0..171)
           ATMOSPHERE: (79..80) " "
           CONSTANT: (80..82)
             BOOLEAN: (80..82) "#f"
-          ATMOSPHERE: (82..97) "
-              "
+          ATMOSPHERE: (82..97) "\n              "
           FORM: (97..110)
             OPEN_PAREN: (97..98) "("
             SYMBOL: (98..104)
@@ -66,19 +61,16 @@ PROGRAM: (0..171)
             SYMBOL: (108..109)
               IDENTIFIER: (108..109) "a"
             CLOSE_PAREN: (109..110) ")"
-          ATMOSPHERE: (110..123) "
-            "
+          ATMOSPHERE: (110..123) "\n            "
           SYMBOL: (123..124)
             IDENTIFIER: (123..124) "a"
           CLOSE_PAREN: (124..125) ")"
         CLOSE_PAREN: (125..126) ")"
-      ATMOSPHERE: (126..131) "
-    "
+      ATMOSPHERE: (126..131) "\n    "
       SYMBOL: (131..132)
         IDENTIFIER: (131..132) "a"
       CLOSE_PAREN: (132..133) ")"
-    ATMOSPHERE: (133..136) "
-  "
+    ATMOSPHERE: (133..136) "\n  "
     CONSTANT: (136..139)
       NUMBER: (136..139) "101"
     CLOSE_PAREN: (139..140) ")"

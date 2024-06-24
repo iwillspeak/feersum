@@ -10,8 +10,7 @@ PROGRAM: (0..46)
     CONSTANT: (12..15)
       NUMBER: (12..15) "100"
     CLOSE_PAREN: (15..16) ")"
-  ATMOSPHERE: (16..17) "
-"
+  ATMOSPHERE: (16..17) "\n"
   FORM: (17..37)
     OPEN_PAREN: (17..18) "("
     SYMBOL: (18..24)
@@ -21,16 +20,13 @@ PROGRAM: (0..46)
       IDENTIFIER: (25..28) "bar"
     ATMOSPHERE: (28..29) " "
     CONSTANT: (29..36)
-      STRING: (29..36) ""hello""
+      STRING: (29..36) "\"hello\""
     CLOSE_PAREN: (36..37) ")"
-  ATMOSPHERE: (37..38) "
-"
+  ATMOSPHERE: (37..38) "\n"
   SYMBOL: (38..41)
     IDENTIFIER: (38..41) "foo"
-  ATMOSPHERE: (41..42) "
-"
+  ATMOSPHERE: (41..42) "\n"
   SYMBOL: (42..45)
     IDENTIFIER: (42..45) "bar"
-  ATMOSPHERE: (45..46) "
-"
+  ATMOSPHERE: (45..46) "\n"
   EOF: (46..46) ""

@@ -1,43 +1,34 @@
 PROGRAM: (0..272)
   ATMOSPHERE: (0..66) ";; The `begin` special form takes a sequence and returns the value"
-  ATMOSPHERE: (66..67) "
-"
+  ATMOSPHERE: (66..67) "\n"
   ATMOSPHERE: (67..93) ";; of the last expression."
-  ATMOSPHERE: (93..94) "
-"
+  ATMOSPHERE: (93..94) "\n"
   FORM: (94..262)
     OPEN_PAREN: (94..95) "("
     SYMBOL: (95..100)
       IDENTIFIER: (95..100) "begin"
-    ATMOSPHERE: (100..105) "
-    "
+    ATMOSPHERE: (100..105) "\n    "
     CONSTANT: (105..107)
       NUMBER: (105..107) "12"
-    ATMOSPHERE: (107..112) "
-    "
+    ATMOSPHERE: (107..112) "\n    "
     FORM: (112..164)
       OPEN_PAREN: (112..113) "("
       SYMBOL: (113..118)
         IDENTIFIER: (113..118) "begin"
-      ATMOSPHERE: (118..128) " 
-        "
+      ATMOSPHERE: (118..128) " \n        "
       CONSTANT: (128..135)
-        STRING: (128..135) ""hello""
-      ATMOSPHERE: (135..144) "
-        "
+        STRING: (128..135) "\"hello\""
+      ATMOSPHERE: (135..144) "\n        "
       CONSTANT: (144..147)
         NUMBER: (144..147) "123"
-      ATMOSPHERE: (147..156) "
-        "
+      ATMOSPHERE: (147..156) "\n        "
       CONSTANT: (156..163)
-        STRING: (156..163) ""world""
+        STRING: (156..163) "\"world\""
       CLOSE_PAREN: (163..164) ")"
-    ATMOSPHERE: (164..169) "
-    "
+    ATMOSPHERE: (164..169) "\n    "
     CONSTANT: (169..182)
-      STRING: (169..182) ""hello world""
-    ATMOSPHERE: (182..187) "
-    "
+      STRING: (169..182) "\"hello world\""
+    ATMOSPHERE: (182..187) "\n    "
     FORM: (187..261)
       OPEN_PAREN: (187..188) "("
       SYMBOL: (188..190)
@@ -60,8 +51,7 @@ PROGRAM: (0..272)
         CONSTANT: (207..209)
           BOOLEAN: (207..209) "#t"
         CLOSE_PAREN: (209..210) ")"
-      ATMOSPHERE: (210..219) "
-        "
+      ATMOSPHERE: (210..219) "\n        "
       FORM: (219..235)
         OPEN_PAREN: (219..220) "("
         SYMBOL: (220..225)
@@ -79,8 +69,7 @@ PROGRAM: (0..272)
         CONSTANT: (232..234)
           NUMBER: (232..234) "45"
         CLOSE_PAREN: (234..235) ")"
-      ATMOSPHERE: (235..244) "
-        "
+      ATMOSPHERE: (235..244) "\n        "
       FORM: (244..260)
         OPEN_PAREN: (244..245) "("
         SYMBOL: (245..250)

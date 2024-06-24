@@ -9,8 +9,7 @@ PROGRAM: (0..1158)
       SYMBOL: (17..23)
         IDENTIFIER: (17..23) "dragon"
       CLOSE_PAREN: (23..24) ")"
-    ATMOSPHERE: (24..29) "
-    "
+    ATMOSPHERE: (24..29) "\n    "
     FORM: (29..70)
       OPEN_PAREN: (29..30) "("
       SYMBOL: (30..36)
@@ -24,8 +23,7 @@ PROGRAM: (0..1158)
         SYMBOL: (45..49)
           IDENTIFIER: (45..49) "base"
         CLOSE_PAREN: (49..50) ")"
-      ATMOSPHERE: (50..55) "
-    "
+      ATMOSPHERE: (50..55) "\n    "
       FORM: (55..69)
         OPEN_PAREN: (55..56) "("
         SYMBOL: (56..62)
@@ -35,8 +33,7 @@ PROGRAM: (0..1158)
           IDENTIFIER: (63..68) "write"
         CLOSE_PAREN: (68..69) ")"
       CLOSE_PAREN: (69..70) ")"
-    ATMOSPHERE: (70..75) "
-    "
+    ATMOSPHERE: (70..75) "\n    "
     FORM: (75..90)
       OPEN_PAREN: (75..76) "("
       SYMBOL: (76..82)
@@ -45,15 +42,12 @@ PROGRAM: (0..1158)
       SYMBOL: (83..89)
         IDENTIFIER: (83..89) "dragon"
       CLOSE_PAREN: (89..90) ")"
-    ATMOSPHERE: (90..95) "
-    "
+    ATMOSPHERE: (90..95) "\n    "
     FORM: (95..1126)
       OPEN_PAREN: (95..96) "("
       SYMBOL: (96..101)
         IDENTIFIER: (96..101) "begin"
-      ATMOSPHERE: (101..111) "
-
-        "
+      ATMOSPHERE: (101..111) "\n\n        "
       FORM: (111..295)
         OPEN_PAREN: (111..112) "("
         SYMBOL: (112..118)
@@ -70,18 +64,16 @@ PROGRAM: (0..1158)
           SYMBOL: (132..135)
             IDENTIFIER: (132..135) "arg"
           CLOSE_PAREN: (135..136) ")"
-        ATMOSPHERE: (136..149) "
-            "
+        ATMOSPHERE: (136..149) "\n            "
         FORM: (149..168)
           OPEN_PAREN: (149..150) "("
           SYMBOL: (150..157)
             IDENTIFIER: (150..157) "display"
           ATMOSPHERE: (157..158) " "
           CONSTANT: (158..167)
-            STRING: (158..167) ""turtle.""
+            STRING: (158..167) "\"turtle.\""
           CLOSE_PAREN: (167..168) ")"
-        ATMOSPHERE: (168..181) "
-            "
+        ATMOSPHERE: (168..181) "\n            "
         FORM: (181..194)
           OPEN_PAREN: (181..182) "("
           SYMBOL: (182..189)
@@ -90,18 +82,16 @@ PROGRAM: (0..1158)
           SYMBOL: (190..193)
             IDENTIFIER: (190..193) "cmd"
           CLOSE_PAREN: (193..194) ")"
-        ATMOSPHERE: (194..207) "
-            "
+        ATMOSPHERE: (194..207) "\n            "
         FORM: (207..220)
           OPEN_PAREN: (207..208) "("
           SYMBOL: (208..215)
             IDENTIFIER: (208..215) "display"
           ATMOSPHERE: (215..216) " "
           CONSTANT: (216..219)
-            STRING: (216..219) ""(""
+            STRING: (216..219) "\"(\""
           CLOSE_PAREN: (219..220) ")"
-        ATMOSPHERE: (220..233) "
-            "
+        ATMOSPHERE: (220..233) "\n            "
         FORM: (233..246)
           OPEN_PAREN: (233..234) "("
           SYMBOL: (234..241)
@@ -110,27 +100,23 @@ PROGRAM: (0..1158)
           SYMBOL: (242..245)
             IDENTIFIER: (242..245) "arg"
           CLOSE_PAREN: (245..246) ")"
-        ATMOSPHERE: (246..259) "
-            "
+        ATMOSPHERE: (246..259) "\n            "
         FORM: (259..272)
           OPEN_PAREN: (259..260) "("
           SYMBOL: (260..267)
             IDENTIFIER: (260..267) "display"
           ATMOSPHERE: (267..268) " "
           CONSTANT: (268..271)
-            STRING: (268..271) "")""
+            STRING: (268..271) "\")\""
           CLOSE_PAREN: (271..272) ")"
-        ATMOSPHERE: (272..285) "
-            "
+        ATMOSPHERE: (272..285) "\n            "
         FORM: (285..294)
           OPEN_PAREN: (285..286) "("
           SYMBOL: (286..293)
             IDENTIFIER: (286..293) "newline"
           CLOSE_PAREN: (293..294) ")"
         CLOSE_PAREN: (294..295) ")"
-      ATMOSPHERE: (295..305) "
-
-        "
+      ATMOSPHERE: (295..305) "\n\n        "
       FORM: (305..476)
         OPEN_PAREN: (305..306) "("
         SYMBOL: (306..312)
@@ -141,64 +127,58 @@ PROGRAM: (0..1158)
           SYMBOL: (314..318)
             IDENTIFIER: (314..318) "init"
           CLOSE_PAREN: (318..319) ")"
-        ATMOSPHERE: (319..332) "
-            "
+        ATMOSPHERE: (319..332) "\n            "
         FORM: (332..357)
           OPEN_PAREN: (332..333) "("
           SYMBOL: (333..340)
             IDENTIFIER: (333..340) "display"
           ATMOSPHERE: (340..341) " "
           CONSTANT: (341..356)
-            STRING: (341..356) ""import turtle""
+            STRING: (341..356) "\"import turtle\""
           CLOSE_PAREN: (356..357) ")"
         FORM: (357..366)
           OPEN_PAREN: (357..358) "("
           SYMBOL: (358..365)
             IDENTIFIER: (358..365) "newline"
           CLOSE_PAREN: (365..366) ")"
-        ATMOSPHERE: (366..379) "
-            "
+        ATMOSPHERE: (366..379) "\n            "
         FORM: (379..398)
           OPEN_PAREN: (379..380) "("
           SYMBOL: (380..387)
             IDENTIFIER: (380..387) "command"
           ATMOSPHERE: (387..388) " "
           CONSTANT: (388..395)
-            STRING: (388..395) ""speed""
+            STRING: (388..395) "\"speed\""
           ATMOSPHERE: (395..396) " "
           CONSTANT: (396..397)
             NUMBER: (396..397) "0"
           CLOSE_PAREN: (397..398) ")"
-        ATMOSPHERE: (398..411) "
-            "
+        ATMOSPHERE: (398..411) "\n            "
         FORM: (411..437)
           OPEN_PAREN: (411..412) "("
           SYMBOL: (412..419)
             IDENTIFIER: (412..419) "command"
           ATMOSPHERE: (419..420) " "
           CONSTANT: (420..428)
-            STRING: (420..428) ""tracer""
+            STRING: (420..428) "\"tracer\""
           ATMOSPHERE: (428..429) " "
           CONSTANT: (429..436)
-            STRING: (429..436) ""False""
+            STRING: (429..436) "\"False\""
           CLOSE_PAREN: (436..437) ")"
-        ATMOSPHERE: (437..450) "
-            "
+        ATMOSPHERE: (437..450) "\n            "
         FORM: (450..475)
           OPEN_PAREN: (450..451) "("
           SYMBOL: (451..458)
             IDENTIFIER: (451..458) "command"
           ATMOSPHERE: (458..459) " "
           CONSTANT: (459..471)
-            STRING: (459..471) ""showturtle""
+            STRING: (459..471) "\"showturtle\""
           ATMOSPHERE: (471..472) " "
           CONSTANT: (472..474)
-            STRING: (472..474) """"
+            STRING: (472..474) "\"\""
           CLOSE_PAREN: (474..475) ")"
         CLOSE_PAREN: (475..476) ")"
-      ATMOSPHERE: (476..486) "
-
-        "
+      ATMOSPHERE: (476..486) "\n\n        "
       FORM: (486..537)
         OPEN_PAREN: (486..487) "("
         SYMBOL: (487..493)
@@ -209,24 +189,20 @@ PROGRAM: (0..1158)
           SYMBOL: (495..503)
             IDENTIFIER: (495..503) "finalise"
           CLOSE_PAREN: (503..504) ")"
-        ATMOSPHERE: (504..517) "
-            "
+        ATMOSPHERE: (504..517) "\n            "
         FORM: (517..536)
           OPEN_PAREN: (517..518) "("
           SYMBOL: (518..525)
             IDENTIFIER: (518..525) "command"
           ATMOSPHERE: (525..526) " "
           CONSTANT: (526..532)
-            STRING: (526..532) ""done""
+            STRING: (526..532) "\"done\""
           ATMOSPHERE: (532..533) " "
           CONSTANT: (533..535)
-            STRING: (533..535) """"
+            STRING: (533..535) "\"\""
           CLOSE_PAREN: (535..536) ")"
         CLOSE_PAREN: (536..537) ")"
-      ATMOSPHERE: (537..548) "
-
-
-        "
+      ATMOSPHERE: (537..548) "\n\n\n        "
       FORM: (548..953)
         OPEN_PAREN: (548..549) "("
         SYMBOL: (549..555)
@@ -246,8 +222,7 @@ PROGRAM: (0..1158)
           SYMBOL: (579..582)
             IDENTIFIER: (579..582) "dir"
           CLOSE_PAREN: (582..583) ")"
-        ATMOSPHERE: (583..596) "
-            "
+        ATMOSPHERE: (583..596) "\n            "
         FORM: (596..952)
           OPEN_PAREN: (596..597) "("
           SYMBOL: (597..599)
@@ -264,21 +239,19 @@ PROGRAM: (0..1158)
             SYMBOL: (605..609)
               IDENTIFIER: (605..609) "iter"
             CLOSE_PAREN: (609..610) ")"
-          ATMOSPHERE: (610..627) "
-                "
+          ATMOSPHERE: (610..627) "\n                "
           FORM: (627..646)
             OPEN_PAREN: (627..628) "("
             SYMBOL: (628..635)
               IDENTIFIER: (628..635) "command"
             ATMOSPHERE: (635..636) " "
             CONSTANT: (636..640)
-              STRING: (636..640) ""fd""
+              STRING: (636..640) "\"fd\""
             ATMOSPHERE: (640..641) " "
             SYMBOL: (641..645)
               IDENTIFIER: (641..645) "size"
             CLOSE_PAREN: (645..646) ")"
-          ATMOSPHERE: (646..663) "
-                "
+          ATMOSPHERE: (646..663) "\n                "
           FORM: (663..951)
             OPEN_PAREN: (663..664) "("
             SYMBOL: (664..667)
@@ -303,8 +276,7 @@ PROGRAM: (0..1158)
                     NUMBER: (683..684) "1"
                   CLOSE_PAREN: (684..685) ")"
                 CLOSE_PAREN: (685..686) ")"
-              ATMOSPHERE: (686..709) "
-                      "
+              ATMOSPHERE: (686..709) "\n                      "
               FORM: (709..732)
                 OPEN_PAREN: (709..710) "("
                 SYMBOL: (710..714)
@@ -322,8 +294,7 @@ PROGRAM: (0..1158)
                     NUMBER: (723..730) "0.70711"
                   CLOSE_PAREN: (730..731) ")"
                 CLOSE_PAREN: (731..732) ")"
-              ATMOSPHERE: (732..755) "
-                      "
+              ATMOSPHERE: (732..755) "\n                      "
               FORM: (755..795)
                 OPEN_PAREN: (755..756) "("
                 SYMBOL: (756..763)
@@ -349,15 +320,14 @@ PROGRAM: (0..1158)
                     CLOSE_PAREN: (782..783) ")"
                   ATMOSPHERE: (783..784) " "
                   CONSTANT: (784..788)
-                    STRING: (784..788) ""lt""
+                    STRING: (784..788) "\"lt\""
                   ATMOSPHERE: (788..789) " "
                   CONSTANT: (789..793)
-                    STRING: (789..793) ""rt""
+                    STRING: (789..793) "\"rt\""
                   CLOSE_PAREN: (793..794) ")"
                 CLOSE_PAREN: (794..795) ")"
               CLOSE_PAREN: (795..796) ")"
-            ATMOSPHERE: (796..821) "
-                        "
+            ATMOSPHERE: (796..821) "\n                        "
             FORM: (821..850)
               OPEN_PAREN: (821..822) "("
               SYMBOL: (822..833)
@@ -374,8 +344,7 @@ PROGRAM: (0..1158)
                 SYMBOL: (845..849)
                   IDENTIFIER: (845..849) "left"
               CLOSE_PAREN: (849..850) ")"
-            ATMOSPHERE: (850..875) "
-                        "
+            ATMOSPHERE: (850..875) "\n                        "
             FORM: (875..895)
               OPEN_PAREN: (875..876) "("
               SYMBOL: (876..883)
@@ -387,8 +356,7 @@ PROGRAM: (0..1158)
               CONSTANT: (892..894)
                 NUMBER: (892..894) "90"
               CLOSE_PAREN: (894..895) ")"
-            ATMOSPHERE: (895..920) "
-                        "
+            ATMOSPHERE: (895..920) "\n                        "
             FORM: (920..950)
               OPEN_PAREN: (920..921) "("
               SYMBOL: (921..932)
@@ -408,9 +376,7 @@ PROGRAM: (0..1158)
             CLOSE_PAREN: (950..951) ")"
           CLOSE_PAREN: (951..952) ")"
         CLOSE_PAREN: (952..953) ")"
-      ATMOSPHERE: (953..963) "
-
-        "
+      ATMOSPHERE: (953..963) "\n\n        "
       FORM: (963..1107)
         OPEN_PAREN: (963..964) "("
         SYMBOL: (964..970)
@@ -424,22 +390,20 @@ PROGRAM: (0..1158)
           SYMBOL: (979..983)
             IDENTIFIER: (979..983) "iter"
           CLOSE_PAREN: (983..984) ")"
-        ATMOSPHERE: (984..997) "
-            "
+        ATMOSPHERE: (984..997) "\n            "
         FORM: (997..1003)
           OPEN_PAREN: (997..998) "("
           SYMBOL: (998..1002)
             IDENTIFIER: (998..1002) "init"
           CLOSE_PAREN: (1002..1003) ")"
-        ATMOSPHERE: (1003..1016) "
-            "
+        ATMOSPHERE: (1003..1016) "\n            "
         FORM: (1016..1042)
           OPEN_PAREN: (1016..1017) "("
           SYMBOL: (1017..1024)
             IDENTIFIER: (1017..1024) "command"
           ATMOSPHERE: (1024..1025) " "
           CONSTANT: (1025..1029)
-            STRING: (1025..1029) ""rt""
+            STRING: (1025..1029) "\"rt\""
           ATMOSPHERE: (1029..1030) " "
           FORM: (1030..1041)
             OPEN_PAREN: (1030..1031) "("
@@ -453,8 +417,7 @@ PROGRAM: (0..1158)
               IDENTIFIER: (1036..1040) "iter"
             CLOSE_PAREN: (1040..1041) ")"
           CLOSE_PAREN: (1041..1042) ")"
-        ATMOSPHERE: (1042..1055) "
-            "
+        ATMOSPHERE: (1042..1055) "\n            "
         FORM: (1055..1083)
           OPEN_PAREN: (1055..1056) "("
           SYMBOL: (1056..1067)
@@ -471,22 +434,17 @@ PROGRAM: (0..1158)
             SYMBOL: (1078..1082)
               IDENTIFIER: (1078..1082) "left"
           CLOSE_PAREN: (1082..1083) ")"
-        ATMOSPHERE: (1083..1096) "
-            "
+        ATMOSPHERE: (1083..1096) "\n            "
         FORM: (1096..1106)
           OPEN_PAREN: (1096..1097) "("
           SYMBOL: (1097..1105)
             IDENTIFIER: (1097..1105) "finalise"
           CLOSE_PAREN: (1105..1106) ")"
         CLOSE_PAREN: (1106..1107) ")"
-      ATMOSPHERE: (1107..1125) "
-        
-        "
+      ATMOSPHERE: (1107..1125) "\n        \n        "
       CLOSE_PAREN: (1125..1126) ")"
     CLOSE_PAREN: (1126..1127) ")"
-  ATMOSPHERE: (1127..1129) "
-
-"
+  ATMOSPHERE: (1127..1129) "\n\n"
   FORM: (1129..1146)
     OPEN_PAREN: (1129..1130) "("
     SYMBOL: (1130..1136)
@@ -498,9 +456,7 @@ PROGRAM: (0..1158)
         IDENTIFIER: (1138..1144) "dragon"
       CLOSE_PAREN: (1144..1145) ")"
     CLOSE_PAREN: (1145..1146) ")"
-  ATMOSPHERE: (1146..1148) "
-
-"
+  ATMOSPHERE: (1146..1148) "\n\n"
   FORM: (1148..1158)
     OPEN_PAREN: (1148..1149) "("
     SYMBOL: (1149..1155)

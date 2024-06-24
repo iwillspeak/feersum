@@ -12,8 +12,7 @@ PROGRAM: (0..208)
       SYMBOL: (16..20)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
-    ATMOSPHERE: (21..26) "
-    "
+    ATMOSPHERE: (21..26) "\n    "
     FORM: (26..40)
       OPEN_PAREN: (26..27) "("
       SYMBOL: (27..33)
@@ -23,8 +22,7 @@ PROGRAM: (0..208)
         IDENTIFIER: (34..39) "write"
       CLOSE_PAREN: (39..40) ")"
     CLOSE_PAREN: (40..41) ")"
-  ATMOSPHERE: (41..42) "
-"
+  ATMOSPHERE: (41..42) "\n"
   FORM: (42..84)
     OPEN_PAREN: (42..43) "("
     SYMBOL: (43..50)
@@ -61,8 +59,7 @@ PROGRAM: (0..208)
         CLOSE_PAREN: (81..82) ")"
       CLOSE_PAREN: (82..83) ")"
     CLOSE_PAREN: (83..84) ")"
-  ATMOSPHERE: (84..85) "
-"
+  ATMOSPHERE: (84..85) "\n"
   FORM: (85..140)
     OPEN_PAREN: (85..86) "("
     SYMBOL: (86..93)
@@ -111,8 +108,7 @@ PROGRAM: (0..208)
         CLOSE_PAREN: (137..138) ")"
       CLOSE_PAREN: (138..139) ")"
     CLOSE_PAREN: (139..140) ")"
-  ATMOSPHERE: (140..141) "
-"
+  ATMOSPHERE: (140..141) "\n"
   FORM: (141..208)
     OPEN_PAREN: (141..142) "("
     FORM: (142..202)
@@ -127,8 +123,7 @@ PROGRAM: (0..208)
           SYMBOL: (152..153)
             IDENTIFIER: (152..153) "a"
           CLOSE_PAREN: (153..154) ")"
-        ATMOSPHERE: (154..159) "
-    "
+        ATMOSPHERE: (154..159) "\n    "
         FORM: (159..188)
           OPEN_PAREN: (159..160) "("
           SYMBOL: (160..166)
@@ -139,8 +134,7 @@ PROGRAM: (0..208)
             SYMBOL: (168..169)
               IDENTIFIER: (168..169) "b"
             CLOSE_PAREN: (169..170) ")"
-          ATMOSPHERE: (170..180) " 
-        "
+          ATMOSPHERE: (170..180) " \n        "
           FORM: (180..187)
             OPEN_PAREN: (180..181) "("
             SYMBOL: (181..182)
@@ -154,8 +148,7 @@ PROGRAM: (0..208)
             CLOSE_PAREN: (186..187) ")"
           CLOSE_PAREN: (187..188) ")"
         CLOSE_PAREN: (188..189) ")"
-      ATMOSPHERE: (189..192) "
-  "
+      ATMOSPHERE: (189..192) "\n  "
       FORM: (192..201)
         OPEN_PAREN: (192..193) "("
         SYMBOL: (193..194)
@@ -168,8 +161,7 @@ PROGRAM: (0..208)
           NUMBER: (197..200) "123"
         CLOSE_PAREN: (200..201) ")"
       CLOSE_PAREN: (201..202) ")"
-    ATMOSPHERE: (202..204) "
- "
+    ATMOSPHERE: (202..204) "\n "
     CONSTANT: (204..207)
       NUMBER: (204..207) "246"
     CLOSE_PAREN: (207..208) ")"

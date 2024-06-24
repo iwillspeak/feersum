@@ -12,8 +12,7 @@ PROGRAM: (0..1136)
       SYMBOL: (16..20)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
-    ATMOSPHERE: (21..26) "
-    "
+    ATMOSPHERE: (21..26) "\n    "
     FORM: (26..40)
       OPEN_PAREN: (26..27) "("
       SYMBOL: (27..33)
@@ -23,14 +22,11 @@ PROGRAM: (0..1136)
         IDENTIFIER: (34..39) "write"
       CLOSE_PAREN: (39..40) ")"
     CLOSE_PAREN: (40..41) ")"
-  ATMOSPHERE: (41..42) "
-"
+  ATMOSPHERE: (41..42) "\n"
   ATMOSPHERE: (42..88) ";; Implementation of the Sieve of Eratosthenes"
-  ATMOSPHERE: (88..89) "
-"
+  ATMOSPHERE: (88..89) "\n"
   ATMOSPHERE: (89..143) ";; https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes"
-  ATMOSPHERE: (143..144) "
-"
+  ATMOSPHERE: (143..144) "\n"
   FORM: (144..1030)
     OPEN_PAREN: (144..145) "("
     SYMBOL: (145..151)
@@ -44,11 +40,9 @@ PROGRAM: (0..1136)
       SYMBOL: (166..167)
         IDENTIFIER: (166..167) "n"
       CLOSE_PAREN: (167..168) ")"
-    ATMOSPHERE: (168..173) "
-    "
+    ATMOSPHERE: (168..173) "\n    "
     ATMOSPHERE: (173..223) ";; Mark multiples of the given prime in the vector"
-    ATMOSPHERE: (223..228) "
-    "
+    ATMOSPHERE: (223..228) "\n    "
     FORM: (228..552)
       OPEN_PAREN: (228..229) "("
       SYMBOL: (229..235)
@@ -65,8 +59,7 @@ PROGRAM: (0..1136)
         SYMBOL: (254..260)
           IDENTIFIER: (254..260) "marked"
         CLOSE_PAREN: (260..261) ")"
-      ATMOSPHERE: (261..270) "
-        "
+      ATMOSPHERE: (261..270) "\n        "
       FORM: (270..506)
         OPEN_PAREN: (270..271) "("
         SYMBOL: (271..277)
@@ -86,8 +79,7 @@ PROGRAM: (0..1136)
           SYMBOL: (301..307)
             IDENTIFIER: (301..307) "marked"
           CLOSE_PAREN: (307..308) ")"
-        ATMOSPHERE: (308..321) "
-            "
+        ATMOSPHERE: (308..321) "\n            "
         FORM: (321..505)
           OPEN_PAREN: (321..322) "("
           SYMBOL: (322..324)
@@ -110,18 +102,15 @@ PROGRAM: (0..1136)
                 IDENTIFIER: (346..352) "marked"
               CLOSE_PAREN: (352..353) ")"
             CLOSE_PAREN: (353..354) ")"
-          ATMOSPHERE: (354..371) "
-                "
+          ATMOSPHERE: (354..371) "\n                "
           SYMBOL: (371..377)
             IDENTIFIER: (371..377) "marked"
-          ATMOSPHERE: (377..394) "
-                "
+          ATMOSPHERE: (377..394) "\n                "
           FORM: (394..504)
             OPEN_PAREN: (394..395) "("
             SYMBOL: (395..400)
               IDENTIFIER: (395..400) "begin"
-            ATMOSPHERE: (400..421) "
-                    "
+            ATMOSPHERE: (400..421) "\n                    "
             FORM: (421..446)
               OPEN_PAREN: (421..422) "("
               SYMBOL: (422..433)
@@ -136,8 +125,7 @@ PROGRAM: (0..1136)
               CONSTANT: (443..445)
                 BOOLEAN: (443..445) "#t"
               CLOSE_PAREN: (445..446) ")"
-            ATMOSPHERE: (446..467) "
-                    "
+            ATMOSPHERE: (446..467) "\n                    "
             FORM: (467..503)
               OPEN_PAREN: (467..468) "("
               SYMBOL: (468..485)
@@ -164,8 +152,7 @@ PROGRAM: (0..1136)
             CLOSE_PAREN: (503..504) ")"
           CLOSE_PAREN: (504..505) ")"
         CLOSE_PAREN: (505..506) ")"
-      ATMOSPHERE: (506..515) "
-        "
+      ATMOSPHERE: (506..515) "\n        "
       FORM: (515..551)
         OPEN_PAREN: (515..516) "("
         SYMBOL: (516..533)
@@ -190,14 +177,11 @@ PROGRAM: (0..1136)
           IDENTIFIER: (544..550) "marked"
         CLOSE_PAREN: (550..551) ")"
       CLOSE_PAREN: (551..552) ")"
-    ATMOSPHERE: (552..557) "
-    "
+    ATMOSPHERE: (552..557) "\n    "
     ATMOSPHERE: (557..613) ";; main prime sieve. Recursively marks multiples of each"
-    ATMOSPHERE: (613..618) "
-    "
+    ATMOSPHERE: (613..618) "\n    "
     ATMOSPHERE: (618..667) ";; prime and builds up a list of them as it goes."
-    ATMOSPHERE: (667..672) "
-    "
+    ATMOSPHERE: (667..672) "\n    "
     FORM: (672..995)
       OPEN_PAREN: (672..673) "("
       SYMBOL: (673..679)
@@ -217,8 +201,7 @@ PROGRAM: (0..1136)
         SYMBOL: (694..700)
           IDENTIFIER: (694..700) "primes"
         CLOSE_PAREN: (700..701) ")"
-      ATMOSPHERE: (701..710) "
-        "
+      ATMOSPHERE: (701..710) "\n        "
       FORM: (710..994)
         OPEN_PAREN: (710..711) "("
         SYMBOL: (711..713)
@@ -241,15 +224,12 @@ PROGRAM: (0..1136)
               IDENTIFIER: (735..741) "marked"
             CLOSE_PAREN: (741..742) ")"
           CLOSE_PAREN: (742..743) ")"
-        ATMOSPHERE: (743..756) "
-            "
+        ATMOSPHERE: (743..756) "\n            "
         SYMBOL: (756..762)
           IDENTIFIER: (756..762) "primes"
-        ATMOSPHERE: (762..775) "
-            "
+        ATMOSPHERE: (762..775) "\n            "
         ATMOSPHERE: (775..838) ";; If the item is marked, it is a multiple of some other prime."
-        ATMOSPHERE: (838..851) "
-            "
+        ATMOSPHERE: (838..851) "\n            "
         FORM: (851..993)
           OPEN_PAREN: (851..852) "("
           SYMBOL: (852..854)
@@ -266,8 +246,7 @@ PROGRAM: (0..1136)
             SYMBOL: (874..875)
               IDENTIFIER: (874..875) "p"
             CLOSE_PAREN: (875..876) ")"
-          ATMOSPHERE: (876..893) "
-                "
+          ATMOSPHERE: (876..893) "\n                "
           FORM: (893..920)
             OPEN_PAREN: (893..894) "("
             SYMBOL: (894..897)
@@ -291,8 +270,7 @@ PROGRAM: (0..1136)
             SYMBOL: (913..919)
               IDENTIFIER: (913..919) "primes"
             CLOSE_PAREN: (919..920) ")"
-          ATMOSPHERE: (920..937) "
-                "
+          ATMOSPHERE: (920..937) "\n                "
           FORM: (937..992)
             OPEN_PAREN: (937..938) "("
             SYMBOL: (938..941)
@@ -337,8 +315,7 @@ PROGRAM: (0..1136)
           CLOSE_PAREN: (992..993) ")"
         CLOSE_PAREN: (993..994) ")"
       CLOSE_PAREN: (994..995) ")"
-    ATMOSPHERE: (995..1000) "
-    "
+    ATMOSPHERE: (995..1000) "\n    "
     FORM: (1000..1029)
       OPEN_PAREN: (1000..1001) "("
       SYMBOL: (1001..1004)
@@ -364,15 +341,11 @@ PROGRAM: (0..1136)
         CLOSE_PAREN: (1027..1028) ")"
       CLOSE_PAREN: (1028..1029) ")"
     CLOSE_PAREN: (1029..1030) ")"
-  ATMOSPHERE: (1030..1032) "
-
-"
+  ATMOSPHERE: (1030..1032) "\n\n"
   ATMOSPHERE: (1032..1069) ";; ;; Display the first 10,000 primes"
-  ATMOSPHERE: (1069..1070) "
-"
+  ATMOSPHERE: (1069..1070) "\n"
   ATMOSPHERE: (1070..1104) ";; (display (eratosthenes 104730))"
-  ATMOSPHERE: (1104..1105) "
-"
+  ATMOSPHERE: (1104..1105) "\n"
   FORM: (1105..1135)
     OPEN_PAREN: (1105..1106) "("
     SYMBOL: (1106..1113)
@@ -387,6 +360,5 @@ PROGRAM: (0..1136)
         NUMBER: (1128..1133) "10000"
       CLOSE_PAREN: (1133..1134) ")"
     CLOSE_PAREN: (1134..1135) ")"
-  ATMOSPHERE: (1135..1136) "
-"
+  ATMOSPHERE: (1135..1136) "\n"
   EOF: (1136..1136) ""

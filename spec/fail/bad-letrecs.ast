@@ -13,9 +13,7 @@ PROGRAM: (0..389)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
     CLOSE_PAREN: (21..22) ")"
-  ATMOSPHERE: (22..24) "
-
-"
+  ATMOSPHERE: (22..24) "\n\n"
   FORM: (24..246)
     OPEN_PAREN: (24..25) "("
     SYMBOL: (25..31)
@@ -42,8 +40,7 @@ PROGRAM: (0..389)
         CLOSE_PAREN: (52..53) ")"
       ATMOSPHERE: (53..54) " "
       ATMOSPHERE: (54..104) "; Can't reference second here, it isn't intialised"
-      ATMOSPHERE: (104..109) "
-    "
+      ATMOSPHERE: (104..109) "\n    "
       FORM: (109..123)
         OPEN_PAREN: (109..110) "("
         SYMBOL: (110..116)
@@ -55,16 +52,13 @@ PROGRAM: (0..389)
       CLOSE_PAREN: (123..124) ")"
     ATMOSPHERE: (124..135) "           "
     ATMOSPHERE: (135..179) "; Can't reference first here, initialisation"
-    ATMOSPHERE: (179..210) "
-                              "
+    ATMOSPHERE: (179..210) "\n                              "
     ATMOSPHERE: (210..234) "; order isn't specified."
-    ATMOSPHERE: (234..239) "
-    "
+    ATMOSPHERE: (234..239) "\n    "
     SYMBOL: (239..245)
       IDENTIFIER: (239..245) "second"
     CLOSE_PAREN: (245..246) ")"
-  ATMOSPHERE: (246..247) "
-"
+  ATMOSPHERE: (246..247) "\n"
   FORM: (247..388)
     OPEN_PAREN: (247..248) "("
     SYMBOL: (248..255)
@@ -91,8 +85,7 @@ PROGRAM: (0..389)
         CLOSE_PAREN: (278..279) ")"
       ATMOSPHERE: (279..280) " "
       ATMOSPHERE: (280..320) "; Can't referenc second, not initialised"
-      ATMOSPHERE: (320..325) "
-    "
+      ATMOSPHERE: (320..325) "\n    "
       FORM: (325..339)
         OPEN_PAREN: (325..326) "("
         SYMBOL: (326..332)
@@ -104,11 +97,9 @@ PROGRAM: (0..389)
       CLOSE_PAREN: (339..340) ")"
     ATMOSPHERE: (340..354) "              "
     ATMOSPHERE: (354..376) "; This is actually OK."
-    ATMOSPHERE: (376..381) "
-    "
+    ATMOSPHERE: (376..381) "\n    "
     SYMBOL: (381..387)
       IDENTIFIER: (381..387) "second"
     CLOSE_PAREN: (387..388) ")"
-  ATMOSPHERE: (388..389) "
-"
+  ATMOSPHERE: (388..389) "\n"
   EOF: (389..389) ""

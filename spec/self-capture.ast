@@ -12,8 +12,7 @@ PROGRAM: (0..818)
       SYMBOL: (16..20)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
-    ATMOSPHERE: (21..26) "
-    "
+    ATMOSPHERE: (21..26) "\n    "
     FORM: (26..40)
       OPEN_PAREN: (26..27) "("
       SYMBOL: (27..33)
@@ -23,36 +22,25 @@ PROGRAM: (0..818)
         IDENTIFIER: (34..39) "write"
       CLOSE_PAREN: (39..40) ")"
     CLOSE_PAREN: (40..41) ")"
-  ATMOSPHERE: (41..43) "
-
-"
+  ATMOSPHERE: (41..43) "\n\n"
   ATMOSPHERE: (43..92) ";; Captured Local Compaction (shadow locals) Test"
-  ATMOSPHERE: (92..93) "
-"
+  ATMOSPHERE: (92..93) "\n"
   ATMOSPHERE: (93..94) ";"
-  ATMOSPHERE: (94..95) "
-"
+  ATMOSPHERE: (94..95) "\n"
   ATMOSPHERE: (95..174) "; In this example `foo` has two locals. The first is the function `bar` and the"
-  ATMOSPHERE: (174..175) "
-"
+  ATMOSPHERE: (174..175) "\n"
   ATMOSPHERE: (175..248) "; second is the initial value `baz`. Once we have performed free variable"
-  ATMOSPHERE: (248..249) "
-"
+  ATMOSPHERE: (248..249) "\n"
   ATMOSPHERE: (249..324) "; analysis on the function we identify that `Local 0` (bar) is captured. We"
-  ATMOSPHERE: (324..325) "
-"
+  ATMOSPHERE: (324..325) "\n"
   ATMOSPHERE: (325..405) "; want the Lower pass to re-write `baz` from `Local 1` down to `Local 0` in this"
-  ATMOSPHERE: (405..406) "
-"
+  ATMOSPHERE: (405..406) "\n"
   ATMOSPHERE: (406..484) "; case, as well as re-writing the references to the captured value to the env."
-  ATMOSPHERE: (484..485) "
-"
+  ATMOSPHERE: (484..485) "\n"
   ATMOSPHERE: (485..486) ";"
-  ATMOSPHERE: (486..487) "
-"
+  ATMOSPHERE: (486..487) "\n"
   ATMOSPHERE: (487..572) ";                    captures, locals -- Lower --> captures, locals                  "
-  ATMOSPHERE: (572..573) "
-"
+  ATMOSPHERE: (572..573) "\n"
   FORM: (573..791)
     OPEN_PAREN: (573..574) "("
     SYMBOL: (574..580)
@@ -65,8 +53,7 @@ PROGRAM: (0..818)
       CLOSE_PAREN: (585..586) ")"
     ATMOSPHERE: (586..592) "      "
     ATMOSPHERE: (592..637) "; [], [Local 0; Local 1]     -> [], [Local 0]"
-    ATMOSPHERE: (637..640) "
-  "
+    ATMOSPHERE: (637..640) "\n  "
     FORM: (640..760)
       OPEN_PAREN: (640..641) "("
       SYMBOL: (641..647)
@@ -82,8 +69,7 @@ PROGRAM: (0..818)
         CLOSE_PAREN: (654..655) ")"
       ATMOSPHERE: (655..657) "  "
       ATMOSPHERE: (657..713) "; [Local 0], [Arg 0]         -> [Environment 0], [Arg 0]"
-      ATMOSPHERE: (713..718) "
-    "
+      ATMOSPHERE: (713..718) "\n    "
       FORM: (718..759)
         OPEN_PAREN: (718..719) "("
         SYMBOL: (719..721)
@@ -100,12 +86,10 @@ PROGRAM: (0..818)
           CONSTANT: (727..729)
             NUMBER: (727..729) "10"
           CLOSE_PAREN: (729..730) ")"
-        ATMOSPHERE: (730..737) "
-      "
+        ATMOSPHERE: (730..737) "\n      "
         SYMBOL: (737..738)
           IDENTIFIER: (737..738) "x"
-        ATMOSPHERE: (738..745) "
-      "
+        ATMOSPHERE: (738..745) "\n      "
         FORM: (745..758)
           OPEN_PAREN: (745..746) "("
           SYMBOL: (746..749)
@@ -125,8 +109,7 @@ PROGRAM: (0..818)
           CLOSE_PAREN: (757..758) ")"
         CLOSE_PAREN: (758..759) ")"
       CLOSE_PAREN: (759..760) ")"
-    ATMOSPHERE: (760..763) "
-  "
+    ATMOSPHERE: (760..763) "\n  "
     FORM: (763..778)
       OPEN_PAREN: (763..764) "("
       SYMBOL: (764..770)
@@ -138,8 +121,7 @@ PROGRAM: (0..818)
       CONSTANT: (775..777)
         NUMBER: (775..777) "10"
       CLOSE_PAREN: (777..778) ")"
-    ATMOSPHERE: (778..781) "
-  "
+    ATMOSPHERE: (778..781) "\n  "
     FORM: (781..790)
       OPEN_PAREN: (781..782) "("
       SYMBOL: (782..785)
@@ -149,9 +131,7 @@ PROGRAM: (0..818)
         IDENTIFIER: (786..789) "baz"
       CLOSE_PAREN: (789..790) ")"
     CLOSE_PAREN: (790..791) ")"
-  ATMOSPHERE: (791..793) "
-
-"
+  ATMOSPHERE: (791..793) "\n\n"
   FORM: (793..808)
     OPEN_PAREN: (793..794) "("
     SYMBOL: (794..801)
@@ -168,6 +148,5 @@ PROGRAM: (0..818)
     SYMBOL: (809..816)
       IDENTIFIER: (809..816) "newline"
     CLOSE_PAREN: (816..817) ")"
-  ATMOSPHERE: (817..818) "
-"
+  ATMOSPHERE: (817..818) "\n"
   EOF: (818..818) ""

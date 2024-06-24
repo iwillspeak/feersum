@@ -12,8 +12,7 @@ PROGRAM: (0..199)
       SYMBOL: (16..31)
         IDENTIFIER: (16..31) "process-context"
       CLOSE_PAREN: (31..32) ")"
-    ATMOSPHERE: (32..35) "
-  "
+    ATMOSPHERE: (32..35) "\n  "
     FORM: (35..48)
       OPEN_PAREN: (35..36) "("
       SYMBOL: (36..42)
@@ -22,8 +21,7 @@ PROGRAM: (0..199)
       SYMBOL: (43..47)
         IDENTIFIER: (43..47) "base"
       CLOSE_PAREN: (47..48) ")"
-    ATMOSPHERE: (48..51) "
-  "
+    ATMOSPHERE: (48..51) "\n  "
     FORM: (51..65)
       OPEN_PAREN: (51..52) "("
       SYMBOL: (52..58)
@@ -33,9 +31,7 @@ PROGRAM: (0..199)
         IDENTIFIER: (59..64) "write"
       CLOSE_PAREN: (64..65) ")"
     CLOSE_PAREN: (65..66) ")"
-  ATMOSPHERE: (66..68) "
-
-"
+  ATMOSPHERE: (66..68) "\n\n"
   FORM: (68..122)
     OPEN_PAREN: (68..69) "("
     SYMBOL: (69..76)
@@ -47,11 +43,10 @@ PROGRAM: (0..199)
         IDENTIFIER: (78..102) "get-environment-variable"
       ATMOSPHERE: (102..103) " "
       CONSTANT: (103..120)
-        STRING: (103..120) ""FEERSUM_TESTING""
+        STRING: (103..120) "\"FEERSUM_TESTING\""
       CLOSE_PAREN: (120..121) ")"
     CLOSE_PAREN: (121..122) ")"
-  ATMOSPHERE: (122..123) "
-"
+  ATMOSPHERE: (122..123) "\n"
   FORM: (123..186)
     OPEN_PAREN: (123..124) "("
     SYMBOL: (124..131)
@@ -63,7 +58,7 @@ PROGRAM: (0..199)
         IDENTIFIER: (133..138) "assoc"
       ATMOSPHERE: (138..139) " "
       CONSTANT: (139..156)
-        STRING: (139..156) ""FEERSUM_TESTING""
+        STRING: (139..156) "\"FEERSUM_TESTING\""
       ATMOSPHERE: (156..157) " "
       FORM: (157..184)
         OPEN_PAREN: (157..158) "("
@@ -72,9 +67,7 @@ PROGRAM: (0..199)
         CLOSE_PAREN: (183..184) ")"
       CLOSE_PAREN: (184..185) ")"
     CLOSE_PAREN: (185..186) ")"
-  ATMOSPHERE: (186..188) "
-
-"
+  ATMOSPHERE: (186..188) "\n\n"
   FORM: (188..198)
     OPEN_PAREN: (188..189) "("
     SYMBOL: (189..193)
@@ -83,6 +76,5 @@ PROGRAM: (0..199)
     CONSTANT: (194..197)
       NUMBER: (194..197) "123"
     CLOSE_PAREN: (197..198) ")"
-  ATMOSPHERE: (198..199) "
-"
+  ATMOSPHERE: (198..199) "\n"
   EOF: (199..199) ""

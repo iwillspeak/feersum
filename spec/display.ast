@@ -12,8 +12,7 @@ PROGRAM: (0..255)
       SYMBOL: (16..20)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
-    ATMOSPHERE: (21..26) "
-    "
+    ATMOSPHERE: (21..26) "\n    "
     FORM: (26..40)
       OPEN_PAREN: (26..27) "("
       SYMBOL: (27..33)
@@ -23,15 +22,14 @@ PROGRAM: (0..255)
         IDENTIFIER: (34..39) "write"
       CLOSE_PAREN: (39..40) ")"
     CLOSE_PAREN: (40..41) ")"
-  ATMOSPHERE: (41..42) "
-"
+  ATMOSPHERE: (41..42) "\n"
   FORM: (42..54)
     OPEN_PAREN: (42..43) "("
     SYMBOL: (43..50)
       IDENTIFIER: (43..50) "display"
     ATMOSPHERE: (50..51) " "
     CONSTANT: (51..53)
-      STRING: (51..53) """"
+      STRING: (51..53) "\"\""
     CLOSE_PAREN: (53..54) ")"
   FORM: (54..63)
     OPEN_PAREN: (54..55) "("
@@ -40,8 +38,7 @@ PROGRAM: (0..255)
     CLOSE_PAREN: (62..63) ")"
   ATMOSPHERE: (63..64) " "
   ATMOSPHERE: (64..69) "; => "
-  ATMOSPHERE: (69..70) "
-"
+  ATMOSPHERE: (69..70) "\n"
   FORM: (70..82)
     OPEN_PAREN: (70..71) "("
     SYMBOL: (71..78)
@@ -58,8 +55,7 @@ PROGRAM: (0..255)
     CLOSE_PAREN: (90..91) ")"
   ATMOSPHERE: (91..92) " "
   ATMOSPHERE: (92..96) "; =>"
-  ATMOSPHERE: (96..97) "
-"
+  ATMOSPHERE: (96..97) "\n"
   FORM: (97..110)
     OPEN_PAREN: (97..98) "("
     SYMBOL: (98..105)
@@ -75,15 +71,14 @@ PROGRAM: (0..255)
     CLOSE_PAREN: (118..119) ")"
   ATMOSPHERE: (119..120) " "
   ATMOSPHERE: (120..128) "; => 123"
-  ATMOSPHERE: (128..129) "
-"
+  ATMOSPHERE: (128..129) "\n"
   FORM: (129..152)
     OPEN_PAREN: (129..130) "("
     SYMBOL: (130..137)
       IDENTIFIER: (130..137) "display"
     ATMOSPHERE: (137..138) " "
     CONSTANT: (138..151)
-      STRING: (138..151) ""Hello World""
+      STRING: (138..151) "\"Hello World\""
     CLOSE_PAREN: (151..152) ")"
   FORM: (152..165)
     OPEN_PAREN: (152..153) "("
@@ -91,7 +86,7 @@ PROGRAM: (0..255)
       IDENTIFIER: (153..160) "display"
     ATMOSPHERE: (160..161) " "
     CONSTANT: (161..164)
-      CHARACTER: (161..164) "#\!"
+      CHARACTER: (161..164) "#\\!"
     CLOSE_PAREN: (164..165) ")"
   FORM: (165..174)
     OPEN_PAREN: (165..166) "("
@@ -100,8 +95,7 @@ PROGRAM: (0..255)
     CLOSE_PAREN: (173..174) ")"
   ATMOSPHERE: (174..175) " "
   ATMOSPHERE: (175..192) "; => Hello World!"
-  ATMOSPHERE: (192..193) "
-"
+  ATMOSPHERE: (192..193) "\n"
   FORM: (193..240)
     OPEN_PAREN: (193..194) "("
     SYMBOL: (194..201)
@@ -112,7 +106,7 @@ PROGRAM: (0..255)
       FORM: (203..239)
         OPEN_PAREN: (203..204) "("
         CONSTANT: (204..238)
-          STRING: (204..238) ""I \" need \v some \x00; escaping""
+          STRING: (204..238) "\"I \\\" need \\v some \\x00; escaping\""
         CLOSE_PAREN: (238..239) ")"
     CLOSE_PAREN: (239..240) ")"
   FORM: (240..249)

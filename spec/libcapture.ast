@@ -12,8 +12,7 @@ PROGRAM: (0..238)
       SYMBOL: (21..28)
         IDENTIFIER: (21..28) "capture"
       CLOSE_PAREN: (28..29) ")"
-    ATMOSPHERE: (29..34) "
-    "
+    ATMOSPHERE: (29..34) "\n    "
     FORM: (34..49)
       OPEN_PAREN: (34..35) "("
       SYMBOL: (35..41)
@@ -22,14 +21,12 @@ PROGRAM: (0..238)
       SYMBOL: (42..48)
         IDENTIFIER: (42..48) "testit"
       CLOSE_PAREN: (48..49) ")"
-    ATMOSPHERE: (49..54) "
-    "
+    ATMOSPHERE: (49..54) "\n    "
     FORM: (54..169)
       OPEN_PAREN: (54..55) "("
       SYMBOL: (55..60)
         IDENTIFIER: (55..60) "begin"
-      ATMOSPHERE: (60..69) "
-        "
+      ATMOSPHERE: (60..69) "\n        "
       FORM: (69..93)
         OPEN_PAREN: (69..70) "("
         SYMBOL: (70..76)
@@ -39,10 +36,9 @@ PROGRAM: (0..238)
           IDENTIFIER: (77..83) "testit"
         ATMOSPHERE: (83..84) " "
         CONSTANT: (84..92)
-          STRING: (84..92) ""broken""
+          STRING: (84..92) "\"broken\""
         CLOSE_PAREN: (92..93) ")"
-      ATMOSPHERE: (93..102) "
-        "
+      ATMOSPHERE: (93..102) "\n        "
       FORM: (102..168)
         OPEN_PAREN: (102..103) "("
         SYMBOL: (103..106)
@@ -56,11 +52,10 @@ PROGRAM: (0..238)
               IDENTIFIER: (109..120) "replacement"
             ATMOSPHERE: (120..121) " "
             CONSTANT: (121..127)
-              STRING: (121..127) ""pass""
+              STRING: (121..127) "\"pass\""
             CLOSE_PAREN: (127..128) ")"
           CLOSE_PAREN: (128..129) ")"
-        ATMOSPHERE: (129..142) "
-            "
+        ATMOSPHERE: (129..142) "\n            "
         FORM: (142..167)
           OPEN_PAREN: (142..143) "("
           SYMBOL: (143..147)
@@ -75,8 +70,7 @@ PROGRAM: (0..238)
         CLOSE_PAREN: (167..168) ")"
       CLOSE_PAREN: (168..169) ")"
     CLOSE_PAREN: (169..170) ")"
-  ATMOSPHERE: (170..171) "
-"
+  ATMOSPHERE: (170..171) "\n"
   FORM: (171..212)
     OPEN_PAREN: (171..172) "("
     SYMBOL: (172..178)
@@ -90,8 +84,7 @@ PROGRAM: (0..238)
       SYMBOL: (184..191)
         IDENTIFIER: (184..191) "capture"
       CLOSE_PAREN: (191..192) ")"
-    ATMOSPHERE: (192..197) "
-    "
+    ATMOSPHERE: (192..197) "\n    "
     FORM: (197..211)
       OPEN_PAREN: (197..198) "("
       SYMBOL: (198..204)
@@ -101,8 +94,7 @@ PROGRAM: (0..238)
         IDENTIFIER: (205..210) "write"
       CLOSE_PAREN: (210..211) ")"
     CLOSE_PAREN: (211..212) ")"
-  ATMOSPHERE: (212..213) "
-"
+  ATMOSPHERE: (212..213) "\n"
   FORM: (213..229)
     OPEN_PAREN: (213..214) "("
     SYMBOL: (214..221)

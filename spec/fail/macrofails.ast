@@ -13,8 +13,7 @@ PROGRAM: (0..426)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
     CLOSE_PAREN: (21..22) ")"
-  ATMOSPHERE: (22..23) "
-"
+  ATMOSPHERE: (22..23) "\n"
   FORM: (23..147)
     OPEN_PAREN: (23..24) "("
     SYMBOL: (24..37)
@@ -22,8 +21,7 @@ PROGRAM: (0..426)
     ATMOSPHERE: (37..38) " "
     SYMBOL: (38..48)
       IDENTIFIER: (38..48) "test-macro"
-    ATMOSPHERE: (48..53) "
-    "
+    ATMOSPHERE: (48..53) "\n    "
     FORM: (53..146)
       OPEN_PAREN: (53..54) "("
       SYMBOL: (54..66)
@@ -37,8 +35,7 @@ PROGRAM: (0..426)
         SYMBOL: (72..76)
           IDENTIFIER: (72..76) "test"
         CLOSE_PAREN: (76..77) ")"
-      ATMOSPHERE: (77..86) "
-        "
+      ATMOSPHERE: (77..86) "\n        "
       FORM: (86..97)
         OPEN_PAREN: (86..87) "("
         FORM: (87..90)
@@ -52,8 +49,7 @@ PROGRAM: (0..426)
           SYMBOL: (92..96)
             IDENTIFIER: (92..96) "nowt"
         CLOSE_PAREN: (96..97) ")"
-      ATMOSPHERE: (97..106) "
-        "
+      ATMOSPHERE: (97..106) "\n        "
       FORM: (106..145)
         OPEN_PAREN: (106..107) "("
         FORM: (107..126)
@@ -85,16 +81,13 @@ PROGRAM: (0..426)
         CLOSE_PAREN: (144..145) ")"
       CLOSE_PAREN: (145..146) ")"
     CLOSE_PAREN: (146..147) ")"
-  ATMOSPHERE: (147..149) "
-
-"
+  ATMOSPHERE: (147..149) "\n\n"
   FORM: (149..161)
     OPEN_PAREN: (149..150) "("
     SYMBOL: (150..160)
       IDENTIFIER: (150..160) "test-macro"
     CLOSE_PAREN: (160..161) ")"
-  ATMOSPHERE: (161..162) "
-"
+  ATMOSPHERE: (161..162) "\n"
   FORM: (162..185)
     OPEN_PAREN: (162..163) "("
     SYMBOL: (163..173)
@@ -112,8 +105,7 @@ PROGRAM: (0..426)
     CONSTANT: (183..184)
       NUMBER: (183..184) "3"
     CLOSE_PAREN: (184..185) ")"
-  ATMOSPHERE: (185..186) "
-"
+  ATMOSPHERE: (185..186) "\n"
   FORM: (186..212)
     OPEN_PAREN: (186..187) "("
     SYMBOL: (187..197)
@@ -128,15 +120,12 @@ PROGRAM: (0..426)
     SYMBOL: (208..211)
       IDENTIFIER: (208..211) "one"
     CLOSE_PAREN: (211..212) ")"
-  ATMOSPHERE: (212..214) "
-
-"
+  ATMOSPHERE: (212..214) "\n\n"
   FORM: (214..426)
     OPEN_PAREN: (214..215) "("
     SYMBOL: (215..225)
       IDENTIFIER: (215..225) "let-syntax"
-    ATMOSPHERE: (225..230) "
-    "
+    ATMOSPHERE: (225..230) "\n    "
     FORM: (230..405)
       OPEN_PAREN: (230..231) "("
       FORM: (231..404)
@@ -152,8 +141,7 @@ PROGRAM: (0..426)
           FORM: (254..256)
             OPEN_PAREN: (254..255) "("
             CLOSE_PAREN: (255..256) ")"
-          ATMOSPHERE: (256..265) "
-        "
+          ATMOSPHERE: (256..265) "\n        "
           FORM: (265..285)
             OPEN_PAREN: (265..266) "("
             FORM: (266..275)
@@ -179,14 +167,11 @@ PROGRAM: (0..426)
                   IDENTIFIER: (280..283) "..."
                 CLOSE_PAREN: (283..284) ")"
             CLOSE_PAREN: (284..285) ")"
-          ATMOSPHERE: (285..294) "
-        "
+          ATMOSPHERE: (285..294) "\n        "
           ATMOSPHERE: (294..327) "; we expect a diagnostic for both"
-          ATMOSPHERE: (327..336) "
-        "
+          ATMOSPHERE: (327..336) "\n        "
           ATMOSPHERE: (336..366) "; these malformed dotted forms"
-          ATMOSPHERE: (366..375) "
-        "
+          ATMOSPHERE: (366..375) "\n        "
           FORM: (375..393)
             OPEN_PAREN: (375..376) "("
             FORM: (376..381)
@@ -204,16 +189,14 @@ PROGRAM: (0..426)
                 DOT: (383..384) "."
                 ATMOSPHERE: (384..385) " "
                 CONSTANT: (385..391)
-                  STRING: (385..391) ""test""
+                  STRING: (385..391) "\"test\""
               CLOSE_PAREN: (391..392) ")"
             CLOSE_PAREN: (392..393) ")"
-          ATMOSPHERE: (393..402) "
-        "
+          ATMOSPHERE: (393..402) "\n        "
           CLOSE_PAREN: (402..403) ")"
         CLOSE_PAREN: (403..404) ")"
       CLOSE_PAREN: (404..405) ")"
-    ATMOSPHERE: (405..410) "
-    "
+    ATMOSPHERE: (405..410) "\n    "
     FORM: (410..425)
       OPEN_PAREN: (410..411) "("
       SYMBOL: (411..418)

@@ -12,8 +12,7 @@ PROGRAM: (0..182)
       SYMBOL: (16..20)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
-    ATMOSPHERE: (21..26) "
-    "
+    ATMOSPHERE: (21..26) "\n    "
     FORM: (26..40)
       OPEN_PAREN: (26..27) "("
       SYMBOL: (27..33)
@@ -23,9 +22,7 @@ PROGRAM: (0..182)
         IDENTIFIER: (34..39) "write"
       CLOSE_PAREN: (39..40) ")"
     CLOSE_PAREN: (40..41) ")"
-  ATMOSPHERE: (41..43) "
-
-"
+  ATMOSPHERE: (41..43) "\n\n"
   FORM: (43..161)
     OPEN_PAREN: (43..44) "("
     SYMBOL: (44..50)
@@ -39,8 +36,7 @@ PROGRAM: (0..182)
       SYMBOL: (57..58)
         IDENTIFIER: (57..58) "n"
       CLOSE_PAREN: (58..59) ")"
-    ATMOSPHERE: (59..64) "
-    "
+    ATMOSPHERE: (59..64) "\n    "
     FORM: (64..160)
       OPEN_PAREN: (64..65) "("
       SYMBOL: (65..67)
@@ -57,18 +53,15 @@ PROGRAM: (0..182)
         CONSTANT: (73..74)
           NUMBER: (73..74) "0"
         CLOSE_PAREN: (74..75) ")"
-      ATMOSPHERE: (75..84) "
-        "
+      ATMOSPHERE: (75..84) "\n        "
       CONSTANT: (84..85)
         NUMBER: (84..85) "1"
-      ATMOSPHERE: (85..94) "
-        "
+      ATMOSPHERE: (85..94) "\n        "
       FORM: (94..159)
         OPEN_PAREN: (94..95) "("
         SYMBOL: (95..100)
           IDENTIFIER: (95..100) "begin"
-        ATMOSPHERE: (100..113) "
-            "
+        ATMOSPHERE: (100..113) "\n            "
         FORM: (113..131)
           OPEN_PAREN: (113..114) "("
           SYMBOL: (114..120)
@@ -89,8 +82,7 @@ PROGRAM: (0..182)
               NUMBER: (128..129) "1"
             CLOSE_PAREN: (129..130) ")"
           CLOSE_PAREN: (130..131) ")"
-        ATMOSPHERE: (131..144) "
-            "
+        ATMOSPHERE: (131..144) "\n            "
         FORM: (144..158)
           OPEN_PAREN: (144..145) "("
           SYMBOL: (145..146)
@@ -111,9 +103,7 @@ PROGRAM: (0..182)
         CLOSE_PAREN: (158..159) ")"
       CLOSE_PAREN: (159..160) ")"
     CLOSE_PAREN: (160..161) ")"
-  ATMOSPHERE: (161..163) "
-
-"
+  ATMOSPHERE: (161..163) "\n\n"
   FORM: (163..181)
     OPEN_PAREN: (163..164) "("
     SYMBOL: (164..171)

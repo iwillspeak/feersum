@@ -7,8 +7,7 @@ PROGRAM: (0..81)
     SYMBOL: (8..13)
       IDENTIFIER: (8..13) "world"
     CLOSE_PAREN: (13..14) ")"
-  ATMOSPHERE: (14..15) "
-"
+  ATMOSPHERE: (14..15) "\n"
   FORM: (15..39)
     OPEN_PAREN: (15..16) "("
     SYMBOL: (16..22)
@@ -26,8 +25,7 @@ PROGRAM: (0..81)
         IDENTIFIER: (32..37) "world"
       CLOSE_PAREN: (37..38) ")"
     CLOSE_PAREN: (38..39) ")"
-  ATMOSPHERE: (39..40) "
-"
+  ATMOSPHERE: (39..40) "\n"
   FORM: (40..72)
     OPEN_PAREN: (40..41) "("
     SYMBOL: (41..45)
@@ -52,13 +50,11 @@ PROGRAM: (0..81)
         CLOSE_PAREN: (69..70) ")"
       CLOSE_PAREN: (70..71) ")"
     CLOSE_PAREN: (71..72) ")"
-  ATMOSPHERE: (72..73) "
-"
+  ATMOSPHERE: (72..73) "\n"
   FORM: (73..80)
     OPEN_PAREN: (73..74) "("
     SYMBOL: (74..79)
       IDENTIFIER: (74..79) "hello"
     CLOSE_PAREN: (79..80) ")"
-  ATMOSPHERE: (80..81) "
-"
+  ATMOSPHERE: (80..81) "\n"
   EOF: (81..81) ""

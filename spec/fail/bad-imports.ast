@@ -19,8 +19,7 @@ PROGRAM: (0..112)
         IDENTIFIER: (20..27) "library"
       CLOSE_PAREN: (27..28) ")"
     CLOSE_PAREN: (28..29) ")"
-  ATMOSPHERE: (29..30) "
-"
+  ATMOSPHERE: (29..30) "\n"
   FORM: (30..47)
     OPEN_PAREN: (30..31) "("
     SYMBOL: (31..37)
@@ -29,8 +28,7 @@ PROGRAM: (0..112)
     SYMBOL: (38..46)
       IDENTIFIER: (38..46) "badthing"
     CLOSE_PAREN: (46..47) ")"
-  ATMOSPHERE: (47..48) "
-"
+  ATMOSPHERE: (47..48) "\n"
   FORM: (48..112)
     OPEN_PAREN: (48..49) "("
     SYMBOL: (49..63)
@@ -41,8 +39,7 @@ PROGRAM: (0..112)
       SYMBOL: (65..69)
         IDENTIFIER: (65..69) "test"
       CLOSE_PAREN: (69..70) ")"
-    ATMOSPHERE: (70..75) "
-    "
+    ATMOSPHERE: (70..75) "\n    "
     FORM: (75..111)
       OPEN_PAREN: (75..76) "("
       SYMBOL: (76..82)

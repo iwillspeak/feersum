@@ -5,10 +5,9 @@ PROGRAM: (0..189)
       IDENTIFIER: (1..15) "define-library"
     ATMOSPHERE: (15..16) " "
     CONSTANT: (16..23)
-      STRING: (16..23) ""hello""
+      STRING: (16..23) "\"hello\""
     CLOSE_PAREN: (23..24) ")"
-  ATMOSPHERE: (24..25) "
-"
+  ATMOSPHERE: (24..25) "\n"
   FORM: (25..64)
     OPEN_PAREN: (25..26) "("
     SYMBOL: (26..40)
@@ -23,8 +22,7 @@ PROGRAM: (0..189)
         IDENTIFIER: (49..62) "|silly'chars|"
       CLOSE_PAREN: (62..63) ")"
     CLOSE_PAREN: (63..64) ")"
-  ATMOSPHERE: (64..65) "
-"
+  ATMOSPHERE: (64..65) "\n"
   FORM: (65..91)
     OPEN_PAREN: (65..66) "("
     SYMBOL: (66..80)
@@ -41,8 +39,7 @@ PROGRAM: (0..189)
           IDENTIFIER: (88..89) "t"
       CLOSE_PAREN: (89..90) ")"
     CLOSE_PAREN: (90..91) ")"
-  ATMOSPHERE: (91..92) "
-"
+  ATMOSPHERE: (91..92) "\n"
   FORM: (92..124)
     OPEN_PAREN: (92..93) "("
     SYMBOL: (93..107)
@@ -60,8 +57,7 @@ PROGRAM: (0..189)
         IDENTIFIER: (120..122) "me"
       CLOSE_PAREN: (122..123) ")"
     CLOSE_PAREN: (123..124) ")"
-  ATMOSPHERE: (124..125) "
-"
+  ATMOSPHERE: (124..125) "\n"
   FORM: (125..188)
     OPEN_PAREN: (125..126) "("
     SYMBOL: (126..140)
@@ -75,8 +71,7 @@ PROGRAM: (0..189)
       SYMBOL: (150..156)
         IDENTIFIER: (150..156) "export"
       CLOSE_PAREN: (156..157) ")"
-    ATMOSPHERE: (157..162) "
-    "
+    ATMOSPHERE: (157..162) "\n    "
     FORM: (162..187)
       OPEN_PAREN: (162..163) "("
       SYMBOL: (163..169)
@@ -92,6 +87,5 @@ PROGRAM: (0..189)
         IDENTIFIER: (181..186) "exist"
       CLOSE_PAREN: (186..187) ")"
     CLOSE_PAREN: (187..188) ")"
-  ATMOSPHERE: (188..189) "
-"
+  ATMOSPHERE: (188..189) "\n"
   EOF: (189..189) ""

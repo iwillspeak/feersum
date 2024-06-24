@@ -12,8 +12,7 @@ PROGRAM: (0..152)
       SYMBOL: (16..20)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
-    ATMOSPHERE: (21..26) "
-    "
+    ATMOSPHERE: (21..26) "\n    "
     FORM: (26..40)
       OPEN_PAREN: (26..27) "("
       SYMBOL: (27..33)
@@ -23,8 +22,7 @@ PROGRAM: (0..152)
         IDENTIFIER: (34..39) "write"
       CLOSE_PAREN: (39..40) ")"
     CLOSE_PAREN: (40..41) ")"
-  ATMOSPHERE: (41..42) "
-"
+  ATMOSPHERE: (41..42) "\n"
   FORM: (42..134)
     OPEN_PAREN: (42..43) "("
     SYMBOL: (43..49)
@@ -38,8 +36,7 @@ PROGRAM: (0..152)
       SYMBOL: (55..56)
         IDENTIFIER: (55..56) "a"
       CLOSE_PAREN: (56..57) ")"
-    ATMOSPHERE: (57..62) "
-    "
+    ATMOSPHERE: (57..62) "\n    "
     FORM: (62..133)
       OPEN_PAREN: (62..63) "("
       SYMBOL: (63..66)
@@ -55,8 +52,7 @@ PROGRAM: (0..152)
           SYMBOL: (71..72)
             IDENTIFIER: (71..72) "a"
           CLOSE_PAREN: (72..73) ")"
-        ATMOSPHERE: (73..82) "
-        "
+        ATMOSPHERE: (73..82) "\n        "
         FORM: (82..89)
           OPEN_PAREN: (82..83) "("
           SYMBOL: (83..84)
@@ -66,8 +62,7 @@ PROGRAM: (0..152)
             NUMBER: (85..88) "100"
           CLOSE_PAREN: (88..89) ")"
         CLOSE_PAREN: (89..90) ")"
-      ATMOSPHERE: (90..99) "
-        "
+      ATMOSPHERE: (90..99) "\n        "
       FORM: (99..116)
         OPEN_PAREN: (99..100) "("
         SYMBOL: (100..107)
@@ -85,8 +80,7 @@ PROGRAM: (0..152)
             IDENTIFIER: (113..114) "b"
           CLOSE_PAREN: (114..115) ")"
         CLOSE_PAREN: (115..116) ")"
-      ATMOSPHERE: (116..125) "
-        "
+      ATMOSPHERE: (116..125) "\n        "
       FORM: (125..132)
         OPEN_PAREN: (125..126) "("
         SYMBOL: (126..127)
@@ -100,8 +94,7 @@ PROGRAM: (0..152)
         CLOSE_PAREN: (131..132) ")"
       CLOSE_PAREN: (132..133) ")"
     CLOSE_PAREN: (133..134) ")"
-  ATMOSPHERE: (134..135) "
-"
+  ATMOSPHERE: (134..135) "\n"
   FORM: (135..144)
     OPEN_PAREN: (135..136) "("
     SYMBOL: (136..139)

@@ -12,8 +12,7 @@ PROGRAM: (0..502)
       SYMBOL: (16..20)
         IDENTIFIER: (16..20) "base"
       CLOSE_PAREN: (20..21) ")"
-    ATMOSPHERE: (21..26) "
-    "
+    ATMOSPHERE: (21..26) "\n    "
     FORM: (26..40)
       OPEN_PAREN: (26..27) "("
       SYMBOL: (27..33)
@@ -23,8 +22,7 @@ PROGRAM: (0..502)
         IDENTIFIER: (34..39) "write"
       CLOSE_PAREN: (39..40) ")"
     CLOSE_PAREN: (40..41) ")"
-  ATMOSPHERE: (41..42) "
-"
+  ATMOSPHERE: (41..42) "\n"
   FORM: (42..54)
     OPEN_PAREN: (42..43) "("
     SYMBOL: (43..50)
@@ -40,8 +38,7 @@ PROGRAM: (0..502)
     SYMBOL: (55..62)
       IDENTIFIER: (55..62) "newline"
     CLOSE_PAREN: (62..63) ")"
-  ATMOSPHERE: (63..64) "
-"
+  ATMOSPHERE: (63..64) "\n"
   FORM: (64..88)
     OPEN_PAREN: (64..65) "("
     SYMBOL: (65..72)
@@ -50,15 +47,14 @@ PROGRAM: (0..502)
     QUOTED_DATUM: (73..87)
       QUOTE: (73..74) "'"
       CONSTANT: (74..87)
-        STRING: (74..87) ""hello world""
+        STRING: (74..87) "\"hello world\""
     CLOSE_PAREN: (87..88) ")"
   FORM: (88..97)
     OPEN_PAREN: (88..89) "("
     SYMBOL: (89..96)
       IDENTIFIER: (89..96) "newline"
     CLOSE_PAREN: (96..97) ")"
-  ATMOSPHERE: (97..98) "
-"
+  ATMOSPHERE: (97..98) "\n"
   FORM: (98..111)
     OPEN_PAREN: (98..99) "("
     SYMBOL: (99..106)
@@ -75,8 +71,7 @@ PROGRAM: (0..502)
     SYMBOL: (112..119)
       IDENTIFIER: (112..119) "newline"
     CLOSE_PAREN: (119..120) ")"
-  ATMOSPHERE: (120..121) "
-"
+  ATMOSPHERE: (120..121) "\n"
   FORM: (121..139)
     OPEN_PAREN: (121..122) "("
     SYMBOL: (122..129)
@@ -101,8 +96,7 @@ PROGRAM: (0..502)
     SYMBOL: (140..147)
       IDENTIFIER: (140..147) "newline"
     CLOSE_PAREN: (147..148) ")"
-  ATMOSPHERE: (148..149) "
-"
+  ATMOSPHERE: (148..149) "\n"
   FORM: (149..168)
     OPEN_PAREN: (149..150) "("
     SYMBOL: (150..157)
@@ -122,8 +116,7 @@ PROGRAM: (0..502)
     SYMBOL: (169..176)
       IDENTIFIER: (169..176) "newline"
     CLOSE_PAREN: (176..177) ")"
-  ATMOSPHERE: (177..178) "
-"
+  ATMOSPHERE: (177..178) "\n"
   FORM: (178..209)
     OPEN_PAREN: (178..179) "("
     SYMBOL: (179..186)
@@ -135,7 +128,7 @@ PROGRAM: (0..502)
         IDENTIFIER: (188..193) "quote"
       ATMOSPHERE: (193..194) " "
       CONSTANT: (194..207)
-        STRING: (194..207) ""hello world""
+        STRING: (194..207) "\"hello world\""
       CLOSE_PAREN: (207..208) ")"
     CLOSE_PAREN: (208..209) ")"
   FORM: (209..218)
@@ -143,8 +136,7 @@ PROGRAM: (0..502)
     SYMBOL: (210..217)
       IDENTIFIER: (210..217) "newline"
     CLOSE_PAREN: (217..218) ")"
-  ATMOSPHERE: (218..219) "
-"
+  ATMOSPHERE: (218..219) "\n"
   FORM: (219..239)
     OPEN_PAREN: (219..220) "("
     SYMBOL: (220..227)
@@ -165,8 +157,7 @@ PROGRAM: (0..502)
     SYMBOL: (240..247)
       IDENTIFIER: (240..247) "newline"
     CLOSE_PAREN: (247..248) ")"
-  ATMOSPHERE: (248..249) "
-"
+  ATMOSPHERE: (248..249) "\n"
   FORM: (249..274)
     OPEN_PAREN: (249..250) "("
     SYMBOL: (250..257)
@@ -195,8 +186,7 @@ PROGRAM: (0..502)
     SYMBOL: (275..282)
       IDENTIFIER: (275..282) "newline"
     CLOSE_PAREN: (282..283) ")"
-  ATMOSPHERE: (283..284) "
-"
+  ATMOSPHERE: (283..284) "\n"
   FORM: (284..313)
     OPEN_PAREN: (284..285) "("
     SYMBOL: (285..292)
@@ -230,8 +220,7 @@ PROGRAM: (0..502)
     SYMBOL: (314..321)
       IDENTIFIER: (314..321) "newline"
     CLOSE_PAREN: (321..322) ")"
-  ATMOSPHERE: (322..323) "
-"
+  ATMOSPHERE: (322..323) "\n"
   FORM: (323..335)
     OPEN_PAREN: (323..324) "("
     SYMBOL: (324..331)
@@ -247,8 +236,7 @@ PROGRAM: (0..502)
     SYMBOL: (336..343)
       IDENTIFIER: (336..343) "newline"
     CLOSE_PAREN: (343..344) ")"
-  ATMOSPHERE: (344..345) "
-"
+  ATMOSPHERE: (344..345) "\n"
   FORM: (345..363)
     OPEN_PAREN: (345..346) "("
     SYMBOL: (346..353)
@@ -257,15 +245,14 @@ PROGRAM: (0..502)
     QUOTED_DATUM: (354..362)
       QUOTE: (354..355) "'"
       SYMBOL: (355..362)
-        IDENTIFIER: (355..362) "|\x20;|"
+        IDENTIFIER: (355..362) "|\\x20;|"
     CLOSE_PAREN: (362..363) ")"
   FORM: (363..372)
     OPEN_PAREN: (363..364) "("
     SYMBOL: (364..371)
       IDENTIFIER: (364..371) "newline"
     CLOSE_PAREN: (371..372) ")"
-  ATMOSPHERE: (372..373) "
-"
+  ATMOSPHERE: (372..373) "\n"
   FORM: (373..397)
     OPEN_PAREN: (373..374) "("
     SYMBOL: (374..381)
@@ -274,15 +261,14 @@ PROGRAM: (0..502)
     QUOTED_DATUM: (382..396)
       QUOTE: (382..383) "'"
       SYMBOL: (383..396)
-        IDENTIFIER: (383..396) "|test\tident|"
+        IDENTIFIER: (383..396) "|test\\tident|"
     CLOSE_PAREN: (396..397) ")"
   FORM: (397..406)
     OPEN_PAREN: (397..398) "("
     SYMBOL: (398..405)
       IDENTIFIER: (398..405) "newline"
     CLOSE_PAREN: (405..406) ")"
-  ATMOSPHERE: (406..407) "
-"
+  ATMOSPHERE: (406..407) "\n"
   FORM: (407..431)
     OPEN_PAREN: (407..408) "("
     SYMBOL: (408..415)
@@ -298,8 +284,7 @@ PROGRAM: (0..502)
     SYMBOL: (432..439)
       IDENTIFIER: (432..439) "newline"
     CLOSE_PAREN: (439..440) ")"
-  ATMOSPHERE: (440..441) "
-"
+  ATMOSPHERE: (440..441) "\n"
   FORM: (441..453)
     OPEN_PAREN: (441..442) "("
     SYMBOL: (442..449)
@@ -313,8 +298,7 @@ PROGRAM: (0..502)
     SYMBOL: (454..461)
       IDENTIFIER: (454..461) "newline"
     CLOSE_PAREN: (461..462) ")"
-  ATMOSPHERE: (462..463) "
-"
+  ATMOSPHERE: (462..463) "\n"
   FORM: (463..492)
     OPEN_PAREN: (463..464) "("
     SYMBOL: (464..471)
@@ -323,13 +307,12 @@ PROGRAM: (0..502)
     QUOTED_DATUM: (472..491)
       QUOTE: (472..473) "’"
       CONSTANT: (473..491)
-        STRING: (473..491) ""funky-quote-char""
+        STRING: (473..491) "\"funky-quote-char\""
     CLOSE_PAREN: (491..492) ")"
   FORM: (492..501)
     OPEN_PAREN: (492..493) "("
     SYMBOL: (493..500)
       IDENTIFIER: (493..500) "newline"
     CLOSE_PAREN: (500..501) ")"
-  ATMOSPHERE: (501..502) "
-"
+  ATMOSPHERE: (501..502) "\n"
   EOF: (502..502) ""
