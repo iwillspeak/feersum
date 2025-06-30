@@ -13,7 +13,7 @@ public class Ident
         _id = string.Intern(id);
     }
 
-    public bool IsSimple => _id.All(c => char.IsLetterOrDigit(c));
+    public bool IsSimple => _id.All(c => char.IsLetterOrDigit(c)) && _id.Length > 0;
 
     public string Raw => _id;
 

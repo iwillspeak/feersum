@@ -1,0 +1,111 @@
+PROGRAM: (0..238)
+  FORM: (0..170)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..15)
+      IDENTIFIER: (1..15) "define-library"
+    ATMOSPHERE: (15..16) " "
+    FORM: (16..29)
+      OPEN_PAREN: (16..17) "("
+      SYMBOL: (17..20)
+        IDENTIFIER: (17..20) "lib"
+      ATMOSPHERE: (20..21) " "
+      SYMBOL: (21..28)
+        IDENTIFIER: (21..28) "capture"
+      CLOSE_PAREN: (28..29) ")"
+    ATMOSPHERE: (29..34) "\n    "
+    FORM: (34..49)
+      OPEN_PAREN: (34..35) "("
+      SYMBOL: (35..41)
+        IDENTIFIER: (35..41) "export"
+      ATMOSPHERE: (41..42) " "
+      SYMBOL: (42..48)
+        IDENTIFIER: (42..48) "testit"
+      CLOSE_PAREN: (48..49) ")"
+    ATMOSPHERE: (49..54) "\n    "
+    FORM: (54..169)
+      OPEN_PAREN: (54..55) "("
+      SYMBOL: (55..60)
+        IDENTIFIER: (55..60) "begin"
+      ATMOSPHERE: (60..69) "\n        "
+      FORM: (69..93)
+        OPEN_PAREN: (69..70) "("
+        SYMBOL: (70..76)
+          IDENTIFIER: (70..76) "define"
+        ATMOSPHERE: (76..77) " "
+        SYMBOL: (77..83)
+          IDENTIFIER: (77..83) "testit"
+        ATMOSPHERE: (83..84) " "
+        CONSTANT: (84..92)
+          STRING: (84..92) "\"broken\""
+        CLOSE_PAREN: (92..93) ")"
+      ATMOSPHERE: (93..102) "\n        "
+      FORM: (102..168)
+        OPEN_PAREN: (102..103) "("
+        SYMBOL: (103..106)
+          IDENTIFIER: (103..106) "let"
+        ATMOSPHERE: (106..107) " "
+        FORM: (107..129)
+          OPEN_PAREN: (107..108) "("
+          FORM: (108..128)
+            OPEN_PAREN: (108..109) "("
+            SYMBOL: (109..120)
+              IDENTIFIER: (109..120) "replacement"
+            ATMOSPHERE: (120..121) " "
+            CONSTANT: (121..127)
+              STRING: (121..127) "\"pass\""
+            CLOSE_PAREN: (127..128) ")"
+          CLOSE_PAREN: (128..129) ")"
+        ATMOSPHERE: (129..142) "\n            "
+        FORM: (142..167)
+          OPEN_PAREN: (142..143) "("
+          SYMBOL: (143..147)
+            IDENTIFIER: (143..147) "set!"
+          ATMOSPHERE: (147..148) " "
+          SYMBOL: (148..154)
+            IDENTIFIER: (148..154) "testit"
+          ATMOSPHERE: (154..155) " "
+          SYMBOL: (155..166)
+            IDENTIFIER: (155..166) "replacement"
+          CLOSE_PAREN: (166..167) ")"
+        CLOSE_PAREN: (167..168) ")"
+      CLOSE_PAREN: (168..169) ")"
+    CLOSE_PAREN: (169..170) ")"
+  ATMOSPHERE: (170..171) "\n"
+  FORM: (171..212)
+    OPEN_PAREN: (171..172) "("
+    SYMBOL: (172..178)
+      IDENTIFIER: (172..178) "import"
+    ATMOSPHERE: (178..179) " "
+    FORM: (179..192)
+      OPEN_PAREN: (179..180) "("
+      SYMBOL: (180..183)
+        IDENTIFIER: (180..183) "lib"
+      ATMOSPHERE: (183..184) " "
+      SYMBOL: (184..191)
+        IDENTIFIER: (184..191) "capture"
+      CLOSE_PAREN: (191..192) ")"
+    ATMOSPHERE: (192..197) "\n    "
+    FORM: (197..211)
+      OPEN_PAREN: (197..198) "("
+      SYMBOL: (198..204)
+        IDENTIFIER: (198..204) "scheme"
+      ATMOSPHERE: (204..205) " "
+      SYMBOL: (205..210)
+        IDENTIFIER: (205..210) "write"
+      CLOSE_PAREN: (210..211) ")"
+    CLOSE_PAREN: (211..212) ")"
+  ATMOSPHERE: (212..213) "\n"
+  FORM: (213..229)
+    OPEN_PAREN: (213..214) "("
+    SYMBOL: (214..221)
+      IDENTIFIER: (214..221) "display"
+    ATMOSPHERE: (221..222) " "
+    SYMBOL: (222..228)
+      IDENTIFIER: (222..228) "testit"
+    CLOSE_PAREN: (228..229) ")"
+  FORM: (229..238)
+    OPEN_PAREN: (229..230) "("
+    SYMBOL: (230..237)
+      IDENTIFIER: (230..237) "newline"
+    CLOSE_PAREN: (237..238) ")"
+  EOF: (238..238) ""

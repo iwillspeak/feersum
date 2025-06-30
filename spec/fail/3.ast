@@ -1,0 +1,51 @@
+PROGRAM: (0..133)
+  ATMOSPHERE: (0..12) "; expectfail"
+  ATMOSPHERE: (12..13) "\n"
+  FORM: (13..25)
+    OPEN_PAREN: (13..14) "("
+    SYMBOL: (14..20)
+      IDENTIFIER: (14..20) "define"
+    ATMOSPHERE: (20..21) " "
+    SYMBOL: (21..22)
+      IDENTIFIER: (21..22) "n"
+    ATMOSPHERE: (22..23) " "
+    CONSTANT: (23..24)
+      NUMBER: (23..24) "1"
+    CLOSE_PAREN: (24..25) ")"
+  ATMOSPHERE: (25..26) "\n"
+  FORM: (26..133)
+    OPEN_PAREN: (26..27) "("
+    SYMBOL: (27..33)
+      IDENTIFIER: (27..33) "lambda"
+    ATMOSPHERE: (33..34) " "
+    FORM: (34..36)
+      OPEN_PAREN: (34..35) "("
+      CLOSE_PAREN: (35..36) ")"
+    ATMOSPHERE: (36..45) "\n        "
+    FORM: (45..132)
+      OPEN_PAREN: (45..46) "("
+      SYMBOL: (46..50)
+        IDENTIFIER: (46..50) "set!"
+      ATMOSPHERE: (50..51) " "
+      SYMBOL: (51..52)
+        IDENTIFIER: (51..52) "n"
+      ATMOSPHERE: (52..53) " "
+      FORM: (53..60)
+        OPEN_PAREN: (53..54) "("
+        SYMBOL: (54..55)
+          IDENTIFIER: (54..55) "+"
+        ATMOSPHERE: (55..56) " "
+        CONSTANT: (56..57)
+          NUMBER: (56..57) "1"
+        ATMOSPHERE: (57..58) " "
+        SYMBOL: (58..59)
+          IDENTIFIER: (58..59) "n"
+        CLOSE_PAREN: (59..60) ")"
+      ATMOSPHERE: (60..61) " "
+      ATMOSPHERE: (61..121) "; note the `)` is on the next line. This `set!` is malformed"
+      ATMOSPHERE: (121..130) "\n        "
+      SYMBOL: (130..131)
+        IDENTIFIER: (130..131) "n"
+      CLOSE_PAREN: (131..132) ")"
+    CLOSE_PAREN: (132..133) ")"
+  EOF: (133..133) ""

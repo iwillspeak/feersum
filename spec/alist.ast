@@ -1,0 +1,150 @@
+PROGRAM: (0..206)
+  FORM: (0..39)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..22)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..21)
+        IDENTIFIER: (16..21) "write"
+      CLOSE_PAREN: (21..22) ")"
+    ATMOSPHERE: (22..25) "\n  "
+    FORM: (25..38)
+      OPEN_PAREN: (25..26) "("
+      SYMBOL: (26..32)
+        IDENTIFIER: (26..32) "scheme"
+      ATMOSPHERE: (32..33) " "
+      SYMBOL: (33..37)
+        IDENTIFIER: (33..37) "base"
+      CLOSE_PAREN: (37..38) ")"
+    CLOSE_PAREN: (38..39) ")"
+  ATMOSPHERE: (39..40) "\n"
+  FORM: (40..154)
+    OPEN_PAREN: (40..41) "("
+    SYMBOL: (41..54)
+      IDENTIFIER: (41..54) "define-syntax"
+    ATMOSPHERE: (54..55) " "
+    SYMBOL: (55..60)
+      IDENTIFIER: (55..60) "alist"
+    ATMOSPHERE: (60..63) "\n  "
+    FORM: (63..153)
+      OPEN_PAREN: (63..64) "("
+      SYMBOL: (64..76)
+        IDENTIFIER: (64..76) "syntax-rules"
+      ATMOSPHERE: (76..77) " "
+      FORM: (77..79)
+        OPEN_PAREN: (77..78) "("
+        CLOSE_PAREN: (78..79) ")"
+      ATMOSPHERE: (79..85) "\n     "
+      FORM: (85..93)
+        OPEN_PAREN: (85..86) "("
+        FORM: (86..89)
+          OPEN_PAREN: (86..87) "("
+          SYMBOL: (87..88)
+            IDENTIFIER: (87..88) "_"
+          CLOSE_PAREN: (88..89) ")"
+        ATMOSPHERE: (89..90) " "
+        FORM: (90..92)
+          OPEN_PAREN: (90..91) "("
+          CLOSE_PAREN: (91..92) ")"
+        CLOSE_PAREN: (92..93) ")"
+      ATMOSPHERE: (93..99) "\n     "
+      FORM: (99..152)
+        OPEN_PAREN: (99..100) "("
+        FORM: (100..113)
+          OPEN_PAREN: (100..101) "("
+          SYMBOL: (101..102)
+            IDENTIFIER: (101..102) "_"
+          ATMOSPHERE: (102..103) " "
+          SYMBOL: (103..104)
+            IDENTIFIER: (103..104) "x"
+          ATMOSPHERE: (104..105) " "
+          SYMBOL: (105..106)
+            IDENTIFIER: (105..106) "y"
+          ATMOSPHERE: (106..107) " "
+          SYMBOL: (107..108)
+            IDENTIFIER: (107..108) "z"
+          ATMOSPHERE: (108..109) " "
+          SYMBOL: (109..112)
+            IDENTIFIER: (109..112) "..."
+          CLOSE_PAREN: (112..113) ")"
+        ATMOSPHERE: (113..120) "\n      "
+        FORM: (120..151)
+          OPEN_PAREN: (120..121) "("
+          SYMBOL: (121..125)
+            IDENTIFIER: (121..125) "cons"
+          ATMOSPHERE: (125..126) " "
+          FORM: (126..136)
+            OPEN_PAREN: (126..127) "("
+            SYMBOL: (127..131)
+              IDENTIFIER: (127..131) "cons"
+            ATMOSPHERE: (131..132) " "
+            SYMBOL: (132..133)
+              IDENTIFIER: (132..133) "x"
+            ATMOSPHERE: (133..134) " "
+            SYMBOL: (134..135)
+              IDENTIFIER: (134..135) "y"
+            CLOSE_PAREN: (135..136) ")"
+          ATMOSPHERE: (136..137) " "
+          FORM: (137..150)
+            OPEN_PAREN: (137..138) "("
+            SYMBOL: (138..143)
+              IDENTIFIER: (138..143) "alist"
+            ATMOSPHERE: (143..144) " "
+            SYMBOL: (144..145)
+              IDENTIFIER: (144..145) "z"
+            ATMOSPHERE: (145..146) " "
+            SYMBOL: (146..149)
+              IDENTIFIER: (146..149) "..."
+            CLOSE_PAREN: (149..150) ")"
+          CLOSE_PAREN: (150..151) ")"
+        CLOSE_PAREN: (151..152) ")"
+      CLOSE_PAREN: (152..153) ")"
+    CLOSE_PAREN: (153..154) ")"
+  ATMOSPHERE: (154..155) "\n"
+  FORM: (155..196)
+    OPEN_PAREN: (155..156) "("
+    SYMBOL: (156..163)
+      IDENTIFIER: (156..163) "display"
+    ATMOSPHERE: (163..164) " "
+    FORM: (164..195)
+      OPEN_PAREN: (164..165) "("
+      SYMBOL: (165..170)
+        IDENTIFIER: (165..170) "alist"
+      ATMOSPHERE: (170..171) " "
+      QUOTED_DATUM: (171..176)
+        QUOTE: (171..172) "'"
+        SYMBOL: (172..175)
+          IDENTIFIER: (172..175) "foo"
+        ATMOSPHERE: (175..176) " "
+      CONSTANT: (176..178)
+        NUMBER: (176..178) "10"
+      ATMOSPHERE: (178..179) " "
+      QUOTED_DATUM: (179..184)
+        QUOTE: (179..180) "'"
+        SYMBOL: (180..183)
+          IDENTIFIER: (180..183) "bar"
+        ATMOSPHERE: (183..184) " "
+      CONSTANT: (184..186)
+        NUMBER: (184..186) "20"
+      ATMOSPHERE: (186..187) " "
+      QUOTED_DATUM: (187..192)
+        QUOTE: (187..188) "'"
+        SYMBOL: (188..191)
+          IDENTIFIER: (188..191) "baz"
+        ATMOSPHERE: (191..192) " "
+      CONSTANT: (192..194)
+        NUMBER: (192..194) "30"
+      CLOSE_PAREN: (194..195) ")"
+    CLOSE_PAREN: (195..196) ")"
+  FORM: (196..205)
+    OPEN_PAREN: (196..197) "("
+    SYMBOL: (197..204)
+      IDENTIFIER: (197..204) "newline"
+    CLOSE_PAREN: (204..205) ")"
+  ATMOSPHERE: (205..206) "\n"
+  EOF: (206..206) ""

@@ -1,0 +1,11 @@
+PROGRAM: (0..19)
+  FORM: (0..18)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..15)
+      IDENTIFIER: (1..15) "define-library"
+    ATMOSPHERE: (15..16) " "
+    DOTTED_TAIL: (16..17)
+      DOT: (16..17) "."
+    CLOSE_PAREN: (17..18) ")"
+  ATMOSPHERE: (18..19) "\n"
+  EOF: (19..19) ""

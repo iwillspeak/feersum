@@ -44,6 +44,13 @@ module ParseResult =
         { Diagnostics = result.Diagnostics
           Root = result.Root |> mapper }
 
+    /// Fold a set of parse results into a signle result
+    let public fold folder seed results =
+        let (state, diags) =
+            Seq.fold (fun (state, diags) r -> (folder state r.Root, List.append diags r.Diagnostics)) (seed, []) results
+
+        { Diagnostics = diags; Root = state }
+
     /// Convert a parser response into a plain result type
     ///
     /// This drops any tree from the error, but opens up parser responses to
@@ -288,6 +295,7 @@ and private parseExprSeq builder endKinds state =
 let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
     skipAtmosphere builder state
     |> parseExprSeq builder [ TokenKind.EndOfFile ]
+    |> expect builder TokenKind.EndOfFile AstKind.EOF
     |> ParserState.finalise builder AstKind.PROGRAM
 
 /// Parse Expression
@@ -296,6 +304,7 @@ let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxN
 let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
     skipAtmosphere builder state
     |> parseExpr builder
+    |> expect builder TokenKind.EndOfFile AstKind.EOF
     |> ParserState.finalise builder AstKind.SCRIPT_PROGRAM
 
 // =============================== Public API ==================================

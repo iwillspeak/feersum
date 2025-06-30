@@ -1,0 +1,1770 @@
+PROGRAM: (0..2619)
+  FORM: (0..41)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..21)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..20)
+        IDENTIFIER: (16..20) "base"
+      CLOSE_PAREN: (20..21) ")"
+    ATMOSPHERE: (21..26) "\n    "
+    FORM: (26..40)
+      OPEN_PAREN: (26..27) "("
+      SYMBOL: (27..33)
+        IDENTIFIER: (27..33) "scheme"
+      ATMOSPHERE: (33..34) " "
+      SYMBOL: (34..39)
+        IDENTIFIER: (34..39) "write"
+      CLOSE_PAREN: (39..40) ")"
+    CLOSE_PAREN: (40..41) ")"
+  ATMOSPHERE: (41..43) "\n\n"
+  FORM: (43..239)
+    OPEN_PAREN: (43..44) "("
+    SYMBOL: (44..51)
+      IDENTIFIER: (44..51) "display"
+    ATMOSPHERE: (51..52) " "
+    FORM: (52..238)
+      OPEN_PAREN: (52..53) "("
+      SYMBOL: (53..57)
+        IDENTIFIER: (53..57) "list"
+      ATMOSPHERE: (57..62) "\n    "
+      FORM: (62..77)
+        OPEN_PAREN: (62..63) "("
+        SYMBOL: (63..67)
+          IDENTIFIER: (63..67) "list"
+        ATMOSPHERE: (67..68) " "
+        CONSTANT: (68..70)
+          NUMBER: (68..70) "12"
+        ATMOSPHERE: (70..71) " "
+        CONSTANT: (71..73)
+          NUMBER: (71..73) "34"
+        ATMOSPHERE: (73..74) " "
+        CONSTANT: (74..76)
+          NUMBER: (74..76) "56"
+        CLOSE_PAREN: (76..77) ")"
+      ATMOSPHERE: (77..105) "                            "
+      ATMOSPHERE: (105..117) "; (12 34 56)"
+      ATMOSPHERE: (117..122) "\n    "
+      FORM: (122..155)
+        OPEN_PAREN: (122..123) "("
+        SYMBOL: (123..126)
+          IDENTIFIER: (123..126) "cdr"
+        ATMOSPHERE: (126..127) " "
+        FORM: (127..154)
+          OPEN_PAREN: (127..128) "("
+          SYMBOL: (128..131)
+            IDENTIFIER: (128..131) "cdr"
+          ATMOSPHERE: (131..132) " "
+          FORM: (132..153)
+            OPEN_PAREN: (132..133) "("
+            SYMBOL: (133..137)
+              IDENTIFIER: (133..137) "list"
+            ATMOSPHERE: (137..138) " "
+            CONSTANT: (138..141)
+              STRING: (138..141) "\"a\""
+            ATMOSPHERE: (141..142) " "
+            CONSTANT: (142..145)
+              CHARACTER: (142..145) "#\\B"
+            ATMOSPHERE: (145..146) " "
+            CONSTANT: (146..148)
+              BOOLEAN: (146..148) "#f"
+            ATMOSPHERE: (148..149) " "
+            CONSTANT: (149..152)
+              NUMBER: (149..152) "4.0"
+            CLOSE_PAREN: (152..153) ")"
+          CLOSE_PAREN: (153..154) ")"
+        CLOSE_PAREN: (154..155) ")"
+      ATMOSPHERE: (155..165) "          "
+      ATMOSPHERE: (165..178) "; -> (#f 4.0)"
+      ATMOSPHERE: (178..183) "\n    "
+      FORM: (183..224)
+        OPEN_PAREN: (183..184) "("
+        SYMBOL: (184..187)
+          IDENTIFIER: (184..187) "car"
+        ATMOSPHERE: (187..188) " "
+        FORM: (188..223)
+          OPEN_PAREN: (188..189) "("
+          SYMBOL: (189..192)
+            IDENTIFIER: (189..192) "cdr"
+          ATMOSPHERE: (192..193) " "
+          FORM: (193..222)
+            OPEN_PAREN: (193..194) "("
+            SYMBOL: (194..197)
+              IDENTIFIER: (194..197) "car"
+            ATMOSPHERE: (197..198) " "
+            FORM: (198..221)
+              OPEN_PAREN: (198..199) "("
+              SYMBOL: (199..203)
+                IDENTIFIER: (199..203) "list"
+              ATMOSPHERE: (203..204) " "
+              FORM: (204..216)
+                OPEN_PAREN: (204..205) "("
+                SYMBOL: (205..209)
+                  IDENTIFIER: (205..209) "list"
+                ATMOSPHERE: (209..210) " "
+                CONSTANT: (210..211)
+                  NUMBER: (210..211) "1"
+                ATMOSPHERE: (211..212) " "
+                CONSTANT: (212..213)
+                  NUMBER: (212..213) "2"
+                ATMOSPHERE: (213..214) " "
+                CONSTANT: (214..215)
+                  NUMBER: (214..215) "3"
+                CLOSE_PAREN: (215..216) ")"
+              ATMOSPHERE: (216..217) " "
+              CONSTANT: (217..218)
+                NUMBER: (217..218) "4"
+              ATMOSPHERE: (218..219) " "
+              CONSTANT: (219..220)
+                NUMBER: (219..220) "5"
+              CLOSE_PAREN: (220..221) ")"
+            CLOSE_PAREN: (221..222) ")"
+          CLOSE_PAREN: (222..223) ")"
+        CLOSE_PAREN: (223..224) ")"
+      ATMOSPHERE: (224..226) "  "
+      ATMOSPHERE: (226..232) "; -> 2"
+      ATMOSPHERE: (232..237) "\n    "
+      CLOSE_PAREN: (237..238) ")"
+    CLOSE_PAREN: (238..239) ")"
+  ATMOSPHERE: (239..240) "\n"
+  FORM: (240..249)
+    OPEN_PAREN: (240..241) "("
+    SYMBOL: (241..248)
+      IDENTIFIER: (241..248) "newline"
+    CLOSE_PAREN: (248..249) ")"
+  ATMOSPHERE: (249..251) "\n\n"
+  FORM: (251..436)
+    OPEN_PAREN: (251..252) "("
+    SYMBOL: (252..258)
+      IDENTIFIER: (252..258) "define"
+    ATMOSPHERE: (258..259) " "
+    FORM: (259..269)
+      OPEN_PAREN: (259..260) "("
+      SYMBOL: (260..263)
+        IDENTIFIER: (260..263) "rev"
+      ATMOSPHERE: (263..264) " "
+      SYMBOL: (264..268)
+        IDENTIFIER: (264..268) "list"
+      CLOSE_PAREN: (268..269) ")"
+    ATMOSPHERE: (269..274) "\n    "
+    FORM: (274..408)
+      OPEN_PAREN: (274..275) "("
+      SYMBOL: (275..281)
+        IDENTIFIER: (275..281) "define"
+      ATMOSPHERE: (281..282) " "
+      FORM: (282..305)
+        OPEN_PAREN: (282..283) "("
+        SYMBOL: (283..295)
+          IDENTIFIER: (283..295) "rev-with-acc"
+        ATMOSPHERE: (295..296) " "
+        SYMBOL: (296..300)
+          IDENTIFIER: (296..300) "list"
+        ATMOSPHERE: (300..301) " "
+        SYMBOL: (301..304)
+          IDENTIFIER: (301..304) "acc"
+        CLOSE_PAREN: (304..305) ")"
+      ATMOSPHERE: (305..314) "\n        "
+      FORM: (314..407)
+        OPEN_PAREN: (314..315) "("
+        SYMBOL: (315..317)
+          IDENTIFIER: (315..317) "if"
+        ATMOSPHERE: (317..318) " "
+        FORM: (318..330)
+          OPEN_PAREN: (318..319) "("
+          SYMBOL: (319..324)
+            IDENTIFIER: (319..324) "null?"
+          ATMOSPHERE: (324..325) " "
+          SYMBOL: (325..329)
+            IDENTIFIER: (325..329) "list"
+          CLOSE_PAREN: (329..330) ")"
+        ATMOSPHERE: (330..343) "\n            "
+        SYMBOL: (343..346)
+          IDENTIFIER: (343..346) "acc"
+        ATMOSPHERE: (346..359) "\n            "
+        FORM: (359..406)
+          OPEN_PAREN: (359..360) "("
+          SYMBOL: (360..372)
+            IDENTIFIER: (360..372) "rev-with-acc"
+          ATMOSPHERE: (372..373) " "
+          FORM: (373..383)
+            OPEN_PAREN: (373..374) "("
+            SYMBOL: (374..377)
+              IDENTIFIER: (374..377) "cdr"
+            ATMOSPHERE: (377..378) " "
+            SYMBOL: (378..382)
+              IDENTIFIER: (378..382) "list"
+            CLOSE_PAREN: (382..383) ")"
+          ATMOSPHERE: (383..384) " "
+          FORM: (384..405)
+            OPEN_PAREN: (384..385) "("
+            SYMBOL: (385..389)
+              IDENTIFIER: (385..389) "cons"
+            ATMOSPHERE: (389..390) " "
+            FORM: (390..400)
+              OPEN_PAREN: (390..391) "("
+              SYMBOL: (391..394)
+                IDENTIFIER: (391..394) "car"
+              ATMOSPHERE: (394..395) " "
+              SYMBOL: (395..399)
+                IDENTIFIER: (395..399) "list"
+              CLOSE_PAREN: (399..400) ")"
+            ATMOSPHERE: (400..401) " "
+            SYMBOL: (401..404)
+              IDENTIFIER: (401..404) "acc"
+            CLOSE_PAREN: (404..405) ")"
+          CLOSE_PAREN: (405..406) ")"
+        CLOSE_PAREN: (406..407) ")"
+      CLOSE_PAREN: (407..408) ")"
+    ATMOSPHERE: (408..413) "\n    "
+    FORM: (413..435)
+      OPEN_PAREN: (413..414) "("
+      SYMBOL: (414..426)
+        IDENTIFIER: (414..426) "rev-with-acc"
+      ATMOSPHERE: (426..427) " "
+      SYMBOL: (427..431)
+        IDENTIFIER: (427..431) "list"
+      ATMOSPHERE: (431..432) " "
+      FORM: (432..434)
+        OPEN_PAREN: (432..433) "("
+        CLOSE_PAREN: (433..434) ")"
+      CLOSE_PAREN: (434..435) ")"
+    CLOSE_PAREN: (435..436) ")"
+  ATMOSPHERE: (436..438) "\n\n"
+  FORM: (438..470)
+    OPEN_PAREN: (438..439) "("
+    SYMBOL: (439..446)
+      IDENTIFIER: (439..446) "display"
+    ATMOSPHERE: (446..447) " "
+    FORM: (447..469)
+      OPEN_PAREN: (447..448) "("
+      SYMBOL: (448..451)
+        IDENTIFIER: (448..451) "rev"
+      ATMOSPHERE: (451..452) " "
+      FORM: (452..468)
+        OPEN_PAREN: (452..453) "("
+        SYMBOL: (453..457)
+          IDENTIFIER: (453..457) "list"
+        ATMOSPHERE: (457..458) " "
+        CONSTANT: (458..459)
+          NUMBER: (458..459) "1"
+        ATMOSPHERE: (459..460) " "
+        CONSTANT: (460..461)
+          NUMBER: (460..461) "2"
+        ATMOSPHERE: (461..462) " "
+        CONSTANT: (462..463)
+          NUMBER: (462..463) "3"
+        ATMOSPHERE: (463..464) " "
+        CONSTANT: (464..465)
+          NUMBER: (464..465) "4"
+        ATMOSPHERE: (465..466) " "
+        CONSTANT: (466..467)
+          NUMBER: (466..467) "5"
+        CLOSE_PAREN: (467..468) ")"
+      CLOSE_PAREN: (468..469) ")"
+    CLOSE_PAREN: (469..470) ")"
+  ATMOSPHERE: (470..471) "\n"
+  FORM: (471..480)
+    OPEN_PAREN: (471..472) "("
+    SYMBOL: (472..479)
+      IDENTIFIER: (472..479) "newline"
+    CLOSE_PAREN: (479..480) ")"
+  ATMOSPHERE: (480..482) "\n\n"
+  FORM: (482..513)
+    OPEN_PAREN: (482..483) "("
+    SYMBOL: (483..490)
+      IDENTIFIER: (483..490) "display"
+    ATMOSPHERE: (490..491) " "
+    FORM: (491..512)
+      OPEN_PAREN: (491..492) "("
+      SYMBOL: (492..497)
+        IDENTIFIER: (492..497) "list?"
+      ATMOSPHERE: (497..498) " "
+      FORM: (498..511)
+        OPEN_PAREN: (498..499) "("
+        SYMBOL: (499..503)
+          IDENTIFIER: (499..503) "cons"
+        ATMOSPHERE: (503..504) " "
+        CONSTANT: (504..507)
+          STRING: (504..507) "\"a\""
+        ATMOSPHERE: (507..508) " "
+        FORM: (508..510)
+          OPEN_PAREN: (508..509) "("
+          CLOSE_PAREN: (509..510) ")"
+        CLOSE_PAREN: (510..511) ")"
+      CLOSE_PAREN: (511..512) ")"
+    CLOSE_PAREN: (512..513) ")"
+  ATMOSPHERE: (513..514) " "
+  ATMOSPHERE: (514..521) "; -> #t"
+  ATMOSPHERE: (521..522) "\n"
+  FORM: (522..557)
+    OPEN_PAREN: (522..523) "("
+    SYMBOL: (523..530)
+      IDENTIFIER: (523..530) "display"
+    ATMOSPHERE: (530..531) " "
+    FORM: (531..556)
+      OPEN_PAREN: (531..532) "("
+      SYMBOL: (532..537)
+        IDENTIFIER: (532..537) "list?"
+      ATMOSPHERE: (537..538) " "
+      FORM: (538..555)
+        OPEN_PAREN: (538..539) "("
+        SYMBOL: (539..543)
+          IDENTIFIER: (539..543) "cons"
+        ATMOSPHERE: (543..544) " "
+        CONSTANT: (544..547)
+          STRING: (544..547) "\"a\""
+        ATMOSPHERE: (547..548) " "
+        FORM: (548..554)
+          OPEN_PAREN: (548..549) "("
+          SYMBOL: (549..553)
+            IDENTIFIER: (549..553) "list"
+          CLOSE_PAREN: (553..554) ")"
+        CLOSE_PAREN: (554..555) ")"
+      CLOSE_PAREN: (555..556) ")"
+    CLOSE_PAREN: (556..557) ")"
+  ATMOSPHERE: (557..558) " "
+  ATMOSPHERE: (558..565) "; -> #t"
+  ATMOSPHERE: (565..566) "\n"
+  FORM: (566..598)
+    OPEN_PAREN: (566..567) "("
+    SYMBOL: (567..574)
+      IDENTIFIER: (567..574) "display"
+    ATMOSPHERE: (574..575) " "
+    FORM: (575..597)
+      OPEN_PAREN: (575..576) "("
+      SYMBOL: (576..581)
+        IDENTIFIER: (576..581) "list?"
+      ATMOSPHERE: (581..582) " "
+      FORM: (582..596)
+        OPEN_PAREN: (582..583) "("
+        SYMBOL: (583..587)
+          IDENTIFIER: (583..587) "cons"
+        ATMOSPHERE: (587..588) " "
+        CONSTANT: (588..591)
+          STRING: (588..591) "\"a\""
+        ATMOSPHERE: (591..592) " "
+        CONSTANT: (592..595)
+          STRING: (592..595) "\"b\""
+        CLOSE_PAREN: (595..596) ")"
+      CLOSE_PAREN: (596..597) ")"
+    CLOSE_PAREN: (597..598) ")"
+  ATMOSPHERE: (598..599) " "
+  ATMOSPHERE: (599..606) "; -> #f"
+  ATMOSPHERE: (606..607) "\n"
+  FORM: (607..616)
+    OPEN_PAREN: (607..608) "("
+    SYMBOL: (608..615)
+      IDENTIFIER: (608..615) "newline"
+    CLOSE_PAREN: (615..616) ")"
+  ATMOSPHERE: (616..618) "\n\n"
+  FORM: (618..649)
+    OPEN_PAREN: (618..619) "("
+    SYMBOL: (619..626)
+      IDENTIFIER: (619..626) "display"
+    ATMOSPHERE: (626..627) " "
+    FORM: (627..648)
+      OPEN_PAREN: (627..628) "("
+      SYMBOL: (628..633)
+        IDENTIFIER: (628..633) "pair?"
+      ATMOSPHERE: (633..634) " "
+      FORM: (634..647)
+        OPEN_PAREN: (634..635) "("
+        SYMBOL: (635..639)
+          IDENTIFIER: (635..639) "cons"
+        ATMOSPHERE: (639..640) " "
+        CONSTANT: (640..643)
+          STRING: (640..643) "\"a\""
+        ATMOSPHERE: (643..644) " "
+        FORM: (644..646)
+          OPEN_PAREN: (644..645) "("
+          CLOSE_PAREN: (645..646) ")"
+        CLOSE_PAREN: (646..647) ")"
+      CLOSE_PAREN: (647..648) ")"
+    CLOSE_PAREN: (648..649) ")"
+  ATMOSPHERE: (649..650) " "
+  ATMOSPHERE: (650..657) "; -> #t"
+  ATMOSPHERE: (657..658) "\n"
+  FORM: (658..693)
+    OPEN_PAREN: (658..659) "("
+    SYMBOL: (659..666)
+      IDENTIFIER: (659..666) "display"
+    ATMOSPHERE: (666..667) " "
+    FORM: (667..692)
+      OPEN_PAREN: (667..668) "("
+      SYMBOL: (668..673)
+        IDENTIFIER: (668..673) "pair?"
+      ATMOSPHERE: (673..674) " "
+      FORM: (674..691)
+        OPEN_PAREN: (674..675) "("
+        SYMBOL: (675..679)
+          IDENTIFIER: (675..679) "cons"
+        ATMOSPHERE: (679..680) " "
+        CONSTANT: (680..683)
+          STRING: (680..683) "\"a\""
+        ATMOSPHERE: (683..684) " "
+        FORM: (684..690)
+          OPEN_PAREN: (684..685) "("
+          SYMBOL: (685..689)
+            IDENTIFIER: (685..689) "list"
+          CLOSE_PAREN: (689..690) ")"
+        CLOSE_PAREN: (690..691) ")"
+      CLOSE_PAREN: (691..692) ")"
+    CLOSE_PAREN: (692..693) ")"
+  ATMOSPHERE: (693..694) " "
+  ATMOSPHERE: (694..701) "; -> #t"
+  ATMOSPHERE: (701..702) "\n"
+  FORM: (702..734)
+    OPEN_PAREN: (702..703) "("
+    SYMBOL: (703..710)
+      IDENTIFIER: (703..710) "display"
+    ATMOSPHERE: (710..711) " "
+    FORM: (711..733)
+      OPEN_PAREN: (711..712) "("
+      SYMBOL: (712..717)
+        IDENTIFIER: (712..717) "pair?"
+      ATMOSPHERE: (717..718) " "
+      FORM: (718..732)
+        OPEN_PAREN: (718..719) "("
+        SYMBOL: (719..723)
+          IDENTIFIER: (719..723) "cons"
+        ATMOSPHERE: (723..724) " "
+        CONSTANT: (724..727)
+          STRING: (724..727) "\"a\""
+        ATMOSPHERE: (727..728) " "
+        CONSTANT: (728..731)
+          STRING: (728..731) "\"b\""
+        CLOSE_PAREN: (731..732) ")"
+      CLOSE_PAREN: (732..733) ")"
+    CLOSE_PAREN: (733..734) ")"
+  ATMOSPHERE: (734..735) " "
+  ATMOSPHERE: (735..742) "; -> #t"
+  ATMOSPHERE: (742..743) "\n"
+  FORM: (743..752)
+    OPEN_PAREN: (743..744) "("
+    SYMBOL: (744..751)
+      IDENTIFIER: (744..751) "newline"
+    CLOSE_PAREN: (751..752) ")"
+  ATMOSPHERE: (752..754) "\n\n"
+  FORM: (754..782)
+    OPEN_PAREN: (754..755) "("
+    SYMBOL: (755..762)
+      IDENTIFIER: (755..762) "display"
+    ATMOSPHERE: (762..763) " "
+    FORM: (763..781)
+      OPEN_PAREN: (763..764) "("
+      SYMBOL: (764..770)
+        IDENTIFIER: (764..770) "append"
+      ATMOSPHERE: (770..771) " "
+      QUOTED_DATUM: (771..776)
+        QUOTE: (771..772) "’"
+        FORM: (772..775)
+          OPEN_PAREN: (772..773) "("
+          SYMBOL: (773..774)
+            IDENTIFIER: (773..774) "x"
+          CLOSE_PAREN: (774..775) ")"
+        ATMOSPHERE: (775..776) " "
+      QUOTED_DATUM: (776..780)
+        QUOTE: (776..777) "’"
+        FORM: (777..780)
+          OPEN_PAREN: (777..778) "("
+          SYMBOL: (778..779)
+            IDENTIFIER: (778..779) "y"
+          CLOSE_PAREN: (779..780) ")"
+      CLOSE_PAREN: (780..781) ")"
+    CLOSE_PAREN: (781..782) ")"
+  FORM: (782..791)
+    OPEN_PAREN: (782..783) "("
+    SYMBOL: (783..790)
+      IDENTIFIER: (783..790) "newline"
+    CLOSE_PAREN: (790..791) ")"
+  ATMOSPHERE: (791..792) " "
+  ATMOSPHERE: (792..802) "; -> (x y)"
+  ATMOSPHERE: (802..803) "\n"
+  FORM: (803..835)
+    OPEN_PAREN: (803..804) "("
+    SYMBOL: (804..811)
+      IDENTIFIER: (804..811) "display"
+    ATMOSPHERE: (811..812) " "
+    FORM: (812..834)
+      OPEN_PAREN: (812..813) "("
+      SYMBOL: (813..819)
+        IDENTIFIER: (813..819) "append"
+      ATMOSPHERE: (819..820) " "
+      QUOTED_DATUM: (820..825)
+        QUOTE: (820..821) "’"
+        FORM: (821..824)
+          OPEN_PAREN: (821..822) "("
+          SYMBOL: (822..823)
+            IDENTIFIER: (822..823) "a"
+          CLOSE_PAREN: (823..824) ")"
+        ATMOSPHERE: (824..825) " "
+      QUOTED_DATUM: (825..833)
+        QUOTE: (825..826) "’"
+        FORM: (826..833)
+          OPEN_PAREN: (826..827) "("
+          SYMBOL: (827..828)
+            IDENTIFIER: (827..828) "b"
+          ATMOSPHERE: (828..829) " "
+          SYMBOL: (829..830)
+            IDENTIFIER: (829..830) "c"
+          ATMOSPHERE: (830..831) " "
+          SYMBOL: (831..832)
+            IDENTIFIER: (831..832) "d"
+          CLOSE_PAREN: (832..833) ")"
+      CLOSE_PAREN: (833..834) ")"
+    CLOSE_PAREN: (834..835) ")"
+  FORM: (835..844)
+    OPEN_PAREN: (835..836) "("
+    SYMBOL: (836..843)
+      IDENTIFIER: (836..843) "newline"
+    CLOSE_PAREN: (843..844) ")"
+  ATMOSPHERE: (844..845) " "
+  ATMOSPHERE: (845..859) "; -> (a b c d)"
+  ATMOSPHERE: (859..860) "\n"
+  FORM: (860..894)
+    OPEN_PAREN: (860..861) "("
+    SYMBOL: (861..868)
+      IDENTIFIER: (861..868) "display"
+    ATMOSPHERE: (868..869) " "
+    FORM: (869..893)
+      OPEN_PAREN: (869..870) "("
+      SYMBOL: (870..876)
+        IDENTIFIER: (870..876) "append"
+      ATMOSPHERE: (876..877) " "
+      QUOTED_DATUM: (877..886)
+        QUOTE: (877..878) "’"
+        FORM: (878..885)
+          OPEN_PAREN: (878..879) "("
+          SYMBOL: (879..880)
+            IDENTIFIER: (879..880) "a"
+          ATMOSPHERE: (880..881) " "
+          FORM: (881..884)
+            OPEN_PAREN: (881..882) "("
+            SYMBOL: (882..883)
+              IDENTIFIER: (882..883) "b"
+            CLOSE_PAREN: (883..884) ")"
+          CLOSE_PAREN: (884..885) ")"
+        ATMOSPHERE: (885..886) " "
+      QUOTED_DATUM: (886..892)
+        QUOTE: (886..887) "’"
+        FORM: (887..892)
+          OPEN_PAREN: (887..888) "("
+          FORM: (888..891)
+            OPEN_PAREN: (888..889) "("
+            SYMBOL: (889..890)
+              IDENTIFIER: (889..890) "c"
+            CLOSE_PAREN: (890..891) ")"
+          CLOSE_PAREN: (891..892) ")"
+      CLOSE_PAREN: (892..893) ")"
+    CLOSE_PAREN: (893..894) ")"
+  FORM: (894..903)
+    OPEN_PAREN: (894..895) "("
+    SYMBOL: (895..902)
+      IDENTIFIER: (895..902) "newline"
+    CLOSE_PAREN: (902..903) ")"
+  ATMOSPHERE: (903..904) " "
+  ATMOSPHERE: (904..920) "; -> (a (b) (c))"
+  ATMOSPHERE: (920..921) "\n"
+  FORM: (921..955)
+    OPEN_PAREN: (921..922) "("
+    SYMBOL: (922..929)
+      IDENTIFIER: (922..929) "display"
+    ATMOSPHERE: (929..930) " "
+    FORM: (930..954)
+      OPEN_PAREN: (930..931) "("
+      SYMBOL: (931..937)
+        IDENTIFIER: (931..937) "append"
+      ATMOSPHERE: (937..938) " "
+      QUOTED_DATUM: (938..945)
+        QUOTE: (938..939) "’"
+        FORM: (939..944)
+          OPEN_PAREN: (939..940) "("
+          SYMBOL: (940..941)
+            IDENTIFIER: (940..941) "a"
+          ATMOSPHERE: (941..942) " "
+          SYMBOL: (942..943)
+            IDENTIFIER: (942..943) "b"
+          CLOSE_PAREN: (943..944) ")"
+        ATMOSPHERE: (944..945) " "
+      QUOTED_DATUM: (945..953)
+        QUOTE: (945..946) "’"
+        FORM: (946..953)
+          OPEN_PAREN: (946..947) "("
+          SYMBOL: (947..948)
+            IDENTIFIER: (947..948) "c"
+          ATMOSPHERE: (948..949) " "
+          DOTTED_TAIL: (949..952)
+            DOT: (949..950) "."
+            ATMOSPHERE: (950..951) " "
+            SYMBOL: (951..952)
+              IDENTIFIER: (951..952) "d"
+          CLOSE_PAREN: (952..953) ")"
+      CLOSE_PAREN: (953..954) ")"
+    CLOSE_PAREN: (954..955) ")"
+  FORM: (955..964)
+    OPEN_PAREN: (955..956) "("
+    SYMBOL: (956..963)
+      IDENTIFIER: (956..963) "newline"
+    CLOSE_PAREN: (963..964) ")"
+  ATMOSPHERE: (964..965) " "
+  ATMOSPHERE: (965..1005) "; -> (a b c . d) ;; FIXME: quoted pairs!"
+  ATMOSPHERE: (1005..1006) "\n"
+  FORM: (1006..1044)
+    OPEN_PAREN: (1006..1007) "("
+    SYMBOL: (1007..1014)
+      IDENTIFIER: (1007..1014) "display"
+    ATMOSPHERE: (1014..1015) " "
+    FORM: (1015..1043)
+      OPEN_PAREN: (1015..1016) "("
+      SYMBOL: (1016..1022)
+        IDENTIFIER: (1016..1022) "append"
+      ATMOSPHERE: (1022..1023) " "
+      QUOTED_DATUM: (1023..1030)
+        QUOTE: (1023..1024) "’"
+        FORM: (1024..1029)
+          OPEN_PAREN: (1024..1025) "("
+          SYMBOL: (1025..1026)
+            IDENTIFIER: (1025..1026) "a"
+          ATMOSPHERE: (1026..1027) " "
+          SYMBOL: (1027..1028)
+            IDENTIFIER: (1027..1028) "b"
+          CLOSE_PAREN: (1028..1029) ")"
+        ATMOSPHERE: (1029..1030) " "
+      FORM: (1030..1042)
+        OPEN_PAREN: (1030..1031) "("
+        SYMBOL: (1031..1035)
+          IDENTIFIER: (1031..1035) "cons"
+        ATMOSPHERE: (1035..1036) " "
+        QUOTED_DATUM: (1036..1039)
+          QUOTE: (1036..1037) "'"
+          SYMBOL: (1037..1038)
+            IDENTIFIER: (1037..1038) "c"
+          ATMOSPHERE: (1038..1039) " "
+        QUOTED_DATUM: (1039..1041)
+          QUOTE: (1039..1040) "'"
+          SYMBOL: (1040..1041)
+            IDENTIFIER: (1040..1041) "d"
+        CLOSE_PAREN: (1041..1042) ")"
+      CLOSE_PAREN: (1042..1043) ")"
+    CLOSE_PAREN: (1043..1044) ")"
+  FORM: (1044..1053)
+    OPEN_PAREN: (1044..1045) "("
+    SYMBOL: (1045..1052)
+      IDENTIFIER: (1045..1052) "newline"
+    CLOSE_PAREN: (1052..1053) ")"
+  ATMOSPHERE: (1053..1054) " "
+  ATMOSPHERE: (1054..1070) "; -> (a b c . d)"
+  ATMOSPHERE: (1070..1071) "\n"
+  FORM: (1071..1096)
+    OPEN_PAREN: (1071..1072) "("
+    SYMBOL: (1072..1079)
+      IDENTIFIER: (1072..1079) "display"
+    ATMOSPHERE: (1079..1080) " "
+    FORM: (1080..1095)
+      OPEN_PAREN: (1080..1081) "("
+      SYMBOL: (1081..1087)
+        IDENTIFIER: (1081..1087) "append"
+      ATMOSPHERE: (1087..1088) " "
+      QUOTED_DATUM: (1088..1092)
+        QUOTE: (1088..1089) "’"
+        FORM: (1089..1091)
+          OPEN_PAREN: (1089..1090) "("
+          CLOSE_PAREN: (1090..1091) ")"
+        ATMOSPHERE: (1091..1092) " "
+      QUOTED_DATUM: (1092..1094)
+        QUOTE: (1092..1093) "’"
+        SYMBOL: (1093..1094)
+          IDENTIFIER: (1093..1094) "a"
+      CLOSE_PAREN: (1094..1095) ")"
+    CLOSE_PAREN: (1095..1096) ")"
+  FORM: (1096..1105)
+    OPEN_PAREN: (1096..1097) "("
+    SYMBOL: (1097..1104)
+      IDENTIFIER: (1097..1104) "newline"
+    CLOSE_PAREN: (1104..1105) ")"
+  ATMOSPHERE: (1105..1106) " "
+  ATMOSPHERE: (1106..1112) "; -> a"
+  ATMOSPHERE: (1112..1114) "\n\n"
+  FORM: (1114..1142)
+    OPEN_PAREN: (1114..1115) "("
+    SYMBOL: (1115..1122)
+      IDENTIFIER: (1115..1122) "display"
+    ATMOSPHERE: (1122..1123) " "
+    FORM: (1123..1141)
+      OPEN_PAREN: (1123..1124) "("
+      SYMBOL: (1124..1131)
+        IDENTIFIER: (1124..1131) "reverse"
+      ATMOSPHERE: (1131..1132) " "
+      QUOTED_DATUM: (1132..1140)
+        QUOTE: (1132..1133) "’"
+        FORM: (1133..1140)
+          OPEN_PAREN: (1133..1134) "("
+          SYMBOL: (1134..1135)
+            IDENTIFIER: (1134..1135) "a"
+          ATMOSPHERE: (1135..1136) " "
+          SYMBOL: (1136..1137)
+            IDENTIFIER: (1136..1137) "b"
+          ATMOSPHERE: (1137..1138) " "
+          SYMBOL: (1138..1139)
+            IDENTIFIER: (1138..1139) "c"
+          CLOSE_PAREN: (1139..1140) ")"
+      CLOSE_PAREN: (1140..1141) ")"
+    CLOSE_PAREN: (1141..1142) ")"
+  FORM: (1142..1151)
+    OPEN_PAREN: (1142..1143) "("
+    SYMBOL: (1143..1150)
+      IDENTIFIER: (1143..1150) "newline"
+    CLOSE_PAREN: (1150..1151) ")"
+  ATMOSPHERE: (1151..1152) " "
+  ATMOSPHERE: (1152..1164) "; -> (c b a)"
+  ATMOSPHERE: (1164..1165) "\n"
+  FORM: (1165..1205)
+    OPEN_PAREN: (1165..1166) "("
+    SYMBOL: (1166..1173)
+      IDENTIFIER: (1166..1173) "display"
+    ATMOSPHERE: (1173..1174) " "
+    FORM: (1174..1204)
+      OPEN_PAREN: (1174..1175) "("
+      SYMBOL: (1175..1182)
+        IDENTIFIER: (1175..1182) "reverse"
+      ATMOSPHERE: (1182..1183) " "
+      QUOTED_DATUM: (1183..1203)
+        QUOTE: (1183..1184) "’"
+        FORM: (1184..1203)
+          OPEN_PAREN: (1184..1185) "("
+          SYMBOL: (1185..1186)
+            IDENTIFIER: (1185..1186) "a"
+          ATMOSPHERE: (1186..1187) " "
+          FORM: (1187..1192)
+            OPEN_PAREN: (1187..1188) "("
+            SYMBOL: (1188..1189)
+              IDENTIFIER: (1188..1189) "b"
+            ATMOSPHERE: (1189..1190) " "
+            SYMBOL: (1190..1191)
+              IDENTIFIER: (1190..1191) "c"
+            CLOSE_PAREN: (1191..1192) ")"
+          ATMOSPHERE: (1192..1193) " "
+          SYMBOL: (1193..1194)
+            IDENTIFIER: (1193..1194) "d"
+          ATMOSPHERE: (1194..1195) " "
+          FORM: (1195..1202)
+            OPEN_PAREN: (1195..1196) "("
+            SYMBOL: (1196..1197)
+              IDENTIFIER: (1196..1197) "e"
+            ATMOSPHERE: (1197..1198) " "
+            FORM: (1198..1201)
+              OPEN_PAREN: (1198..1199) "("
+              SYMBOL: (1199..1200)
+                IDENTIFIER: (1199..1200) "f"
+              CLOSE_PAREN: (1200..1201) ")"
+            CLOSE_PAREN: (1201..1202) ")"
+          CLOSE_PAREN: (1202..1203) ")"
+      CLOSE_PAREN: (1203..1204) ")"
+    CLOSE_PAREN: (1204..1205) ")"
+  FORM: (1205..1214)
+    OPEN_PAREN: (1205..1206) "("
+    SYMBOL: (1206..1213)
+      IDENTIFIER: (1206..1213) "newline"
+    CLOSE_PAREN: (1213..1214) ")"
+  ATMOSPHERE: (1214..1215) " "
+  ATMOSPHERE: (1215..1239) "; -> ((e (f)) d (b c) a)"
+  ATMOSPHERE: (1239..1241) "\n\n"
+  FORM: (1241..1276)
+    OPEN_PAREN: (1241..1242) "("
+    SYMBOL: (1242..1248)
+      IDENTIFIER: (1242..1248) "define"
+    ATMOSPHERE: (1248..1249) " "
+    SYMBOL: (1249..1258)
+      IDENTIFIER: (1249..1258) "test-list"
+    ATMOSPHERE: (1258..1259) " "
+    QUOTED_DATUM: (1259..1275)
+      QUOTE: (1259..1260) "'"
+      FORM: (1260..1275)
+        OPEN_PAREN: (1260..1261) "("
+        SYMBOL: (1261..1262)
+          IDENTIFIER: (1261..1262) "a"
+        ATMOSPHERE: (1262..1263) " "
+        SYMBOL: (1263..1264)
+          IDENTIFIER: (1263..1264) "b"
+        ATMOSPHERE: (1264..1265) " "
+        SYMBOL: (1265..1266)
+          IDENTIFIER: (1265..1266) "c"
+        ATMOSPHERE: (1266..1267) " "
+        SYMBOL: (1267..1268)
+          IDENTIFIER: (1267..1268) "d"
+        ATMOSPHERE: (1268..1269) " "
+        SYMBOL: (1269..1270)
+          IDENTIFIER: (1269..1270) "e"
+        ATMOSPHERE: (1270..1271) " "
+        SYMBOL: (1271..1272)
+          IDENTIFIER: (1271..1272) "f"
+        ATMOSPHERE: (1272..1273) " "
+        SYMBOL: (1273..1274)
+          IDENTIFIER: (1273..1274) "g"
+        CLOSE_PAREN: (1274..1275) ")"
+    CLOSE_PAREN: (1275..1276) ")"
+  ATMOSPHERE: (1276..1277) "\n"
+  FORM: (1277..1310)
+    OPEN_PAREN: (1277..1278) "("
+    SYMBOL: (1278..1285)
+      IDENTIFIER: (1278..1285) "display"
+    ATMOSPHERE: (1285..1286) " "
+    FORM: (1286..1309)
+      OPEN_PAREN: (1286..1287) "("
+      SYMBOL: (1287..1296)
+        IDENTIFIER: (1287..1296) "list-tail"
+      ATMOSPHERE: (1296..1297) " "
+      SYMBOL: (1297..1306)
+        IDENTIFIER: (1297..1306) "test-list"
+      ATMOSPHERE: (1306..1307) " "
+      CONSTANT: (1307..1308)
+        NUMBER: (1307..1308) "1"
+      CLOSE_PAREN: (1308..1309) ")"
+    CLOSE_PAREN: (1309..1310) ")"
+  FORM: (1310..1319)
+    OPEN_PAREN: (1310..1311) "("
+    SYMBOL: (1311..1318)
+      IDENTIFIER: (1311..1318) "newline"
+    CLOSE_PAREN: (1318..1319) ")"
+  ATMOSPHERE: (1319..1320) "\n"
+  FORM: (1320..1353)
+    OPEN_PAREN: (1320..1321) "("
+    SYMBOL: (1321..1328)
+      IDENTIFIER: (1321..1328) "display"
+    ATMOSPHERE: (1328..1329) " "
+    FORM: (1329..1352)
+      OPEN_PAREN: (1329..1330) "("
+      SYMBOL: (1330..1339)
+        IDENTIFIER: (1330..1339) "list-tail"
+      ATMOSPHERE: (1339..1340) " "
+      SYMBOL: (1340..1349)
+        IDENTIFIER: (1340..1349) "test-list"
+      ATMOSPHERE: (1349..1350) " "
+      CONSTANT: (1350..1351)
+        NUMBER: (1350..1351) "0"
+      CLOSE_PAREN: (1351..1352) ")"
+    CLOSE_PAREN: (1352..1353) ")"
+  FORM: (1353..1362)
+    OPEN_PAREN: (1353..1354) "("
+    SYMBOL: (1354..1361)
+      IDENTIFIER: (1354..1361) "newline"
+    CLOSE_PAREN: (1361..1362) ")"
+  ATMOSPHERE: (1362..1363) "\n"
+  FORM: (1363..1396)
+    OPEN_PAREN: (1363..1364) "("
+    SYMBOL: (1364..1371)
+      IDENTIFIER: (1364..1371) "display"
+    ATMOSPHERE: (1371..1372) " "
+    FORM: (1372..1395)
+      OPEN_PAREN: (1372..1373) "("
+      SYMBOL: (1373..1382)
+        IDENTIFIER: (1373..1382) "list-tail"
+      ATMOSPHERE: (1382..1383) " "
+      SYMBOL: (1383..1392)
+        IDENTIFIER: (1383..1392) "test-list"
+      ATMOSPHERE: (1392..1393) " "
+      CONSTANT: (1393..1394)
+        NUMBER: (1393..1394) "6"
+      CLOSE_PAREN: (1394..1395) ")"
+    CLOSE_PAREN: (1395..1396) ")"
+  FORM: (1396..1405)
+    OPEN_PAREN: (1396..1397) "("
+    SYMBOL: (1397..1404)
+      IDENTIFIER: (1397..1404) "newline"
+    CLOSE_PAREN: (1404..1405) ")"
+  ATMOSPHERE: (1405..1407) "\n\n"
+  FORM: (1407..1442)
+    OPEN_PAREN: (1407..1408) "("
+    SYMBOL: (1408..1415)
+      IDENTIFIER: (1408..1415) "display"
+    ATMOSPHERE: (1415..1418) "\n  "
+    FORM: (1418..1441)
+      OPEN_PAREN: (1418..1419) "("
+      SYMBOL: (1419..1427)
+        IDENTIFIER: (1419..1427) "list-ref"
+      ATMOSPHERE: (1427..1428) " "
+      QUOTED_DATUM: (1428..1439)
+        QUOTE: (1428..1429) "’"
+        FORM: (1429..1438)
+          OPEN_PAREN: (1429..1430) "("
+          SYMBOL: (1430..1431)
+            IDENTIFIER: (1430..1431) "a"
+          ATMOSPHERE: (1431..1432) " "
+          SYMBOL: (1432..1433)
+            IDENTIFIER: (1432..1433) "b"
+          ATMOSPHERE: (1433..1434) " "
+          SYMBOL: (1434..1435)
+            IDENTIFIER: (1434..1435) "c"
+          ATMOSPHERE: (1435..1436) " "
+          SYMBOL: (1436..1437)
+            IDENTIFIER: (1436..1437) "d"
+          CLOSE_PAREN: (1437..1438) ")"
+        ATMOSPHERE: (1438..1439) " "
+      CONSTANT: (1439..1440)
+        NUMBER: (1439..1440) "2"
+      CLOSE_PAREN: (1440..1441) ")"
+    CLOSE_PAREN: (1441..1442) ")"
+  ATMOSPHERE: (1442..1443) " "
+  ATMOSPHERE: (1443..1449) "; =⇒ c"
+  ATMOSPHERE: (1449..1450) "\n"
+  FORM: (1450..1459)
+    OPEN_PAREN: (1450..1451) "("
+    SYMBOL: (1451..1458)
+      IDENTIFIER: (1451..1458) "newline"
+    CLOSE_PAREN: (1458..1459) ")"
+  ATMOSPHERE: (1459..1461) "\n\n"
+  FORM: (1461..1568)
+    OPEN_PAREN: (1461..1462) "("
+    SYMBOL: (1462..1469)
+      IDENTIFIER: (1462..1469) "display"
+    ATMOSPHERE: (1469..1472) "\n  "
+    FORM: (1472..1543)
+      OPEN_PAREN: (1472..1473) "("
+      SYMBOL: (1473..1476)
+        IDENTIFIER: (1473..1476) "let"
+      ATMOSPHERE: (1476..1477) " "
+      FORM: (1477..1507)
+        OPEN_PAREN: (1477..1478) "("
+        FORM: (1478..1506)
+          OPEN_PAREN: (1478..1479) "("
+          SYMBOL: (1479..1481)
+            IDENTIFIER: (1479..1481) "ls"
+          ATMOSPHERE: (1481..1482) " "
+          FORM: (1482..1505)
+            OPEN_PAREN: (1482..1483) "("
+            SYMBOL: (1483..1487)
+              IDENTIFIER: (1483..1487) "list"
+            ATMOSPHERE: (1487..1488) " "
+            QUOTED_DATUM: (1488..1493)
+              QUOTE: (1488..1489) "’"
+              SYMBOL: (1489..1492)
+                IDENTIFIER: (1489..1492) "one"
+              ATMOSPHERE: (1492..1493) " "
+            QUOTED_DATUM: (1493..1498)
+              QUOTE: (1493..1494) "’"
+              SYMBOL: (1494..1497)
+                IDENTIFIER: (1494..1497) "two"
+              ATMOSPHERE: (1497..1498) " "
+            QUOTED_DATUM: (1498..1504)
+              QUOTE: (1498..1499) "’"
+              SYMBOL: (1499..1504)
+                IDENTIFIER: (1499..1504) "five!"
+            CLOSE_PAREN: (1504..1505) ")"
+          CLOSE_PAREN: (1505..1506) ")"
+        CLOSE_PAREN: (1506..1507) ")"
+      ATMOSPHERE: (1507..1512) "\n    "
+      FORM: (1512..1535)
+        OPEN_PAREN: (1512..1513) "("
+        SYMBOL: (1513..1522)
+          IDENTIFIER: (1513..1522) "list-set!"
+        ATMOSPHERE: (1522..1523) " "
+        SYMBOL: (1523..1525)
+          IDENTIFIER: (1523..1525) "ls"
+        ATMOSPHERE: (1525..1526) " "
+        CONSTANT: (1526..1527)
+          NUMBER: (1526..1527) "2"
+        ATMOSPHERE: (1527..1528) " "
+        QUOTED_DATUM: (1528..1534)
+          QUOTE: (1528..1529) "’"
+          SYMBOL: (1529..1534)
+            IDENTIFIER: (1529..1534) "three"
+        CLOSE_PAREN: (1534..1535) ")"
+      ATMOSPHERE: (1535..1540) "\n    "
+      SYMBOL: (1540..1542)
+        IDENTIFIER: (1540..1542) "ls"
+      CLOSE_PAREN: (1542..1543) ")"
+    ATMOSPHERE: (1543..1544) " "
+    ATMOSPHERE: (1544..1564) "; =⇒ (one two three)"
+    ATMOSPHERE: (1564..1567) "\n  "
+    CLOSE_PAREN: (1567..1568) ")"
+  FORM: (1568..1577)
+    OPEN_PAREN: (1568..1569) "("
+    SYMBOL: (1569..1576)
+      IDENTIFIER: (1569..1576) "newline"
+    CLOSE_PAREN: (1576..1577) ")"
+  ATMOSPHERE: (1577..1579) "\n\n"
+  FORM: (1579..1626)
+    OPEN_PAREN: (1579..1580) "("
+    SYMBOL: (1580..1587)
+      IDENTIFIER: (1580..1587) "display"
+    ATMOSPHERE: (1587..1588) " "
+    FORM: (1588..1625)
+      OPEN_PAREN: (1588..1589) "("
+      SYMBOL: (1589..1592)
+        IDENTIFIER: (1589..1592) "eq?"
+      ATMOSPHERE: (1592..1593) " "
+      FORM: (1593..1614)
+        OPEN_PAREN: (1593..1594) "("
+        SYMBOL: (1594..1603)
+          IDENTIFIER: (1594..1603) "list-copy"
+        ATMOSPHERE: (1603..1604) " "
+        SYMBOL: (1604..1613)
+          IDENTIFIER: (1604..1613) "test-list"
+        CLOSE_PAREN: (1613..1614) ")"
+      ATMOSPHERE: (1614..1615) " "
+      SYMBOL: (1615..1624)
+        IDENTIFIER: (1615..1624) "test-list"
+      CLOSE_PAREN: (1624..1625) ")"
+    CLOSE_PAREN: (1625..1626) ")"
+  FORM: (1626..1635)
+    OPEN_PAREN: (1626..1627) "("
+    SYMBOL: (1627..1634)
+      IDENTIFIER: (1627..1634) "newline"
+    CLOSE_PAREN: (1634..1635) ")"
+  ATMOSPHERE: (1635..1636) "\n"
+  FORM: (1636..1659)
+    OPEN_PAREN: (1636..1637) "("
+    SYMBOL: (1637..1644)
+      IDENTIFIER: (1637..1644) "display"
+    ATMOSPHERE: (1644..1645) " "
+    FORM: (1645..1658)
+      OPEN_PAREN: (1645..1646) "("
+      SYMBOL: (1646..1655)
+        IDENTIFIER: (1646..1655) "list-copy"
+      ATMOSPHERE: (1655..1656) " "
+      CONSTANT: (1656..1657)
+        NUMBER: (1656..1657) "2"
+      CLOSE_PAREN: (1657..1658) ")"
+    CLOSE_PAREN: (1658..1659) ")"
+  FORM: (1659..1668)
+    OPEN_PAREN: (1659..1660) "("
+    SYMBOL: (1660..1667)
+      IDENTIFIER: (1660..1667) "newline"
+    CLOSE_PAREN: (1667..1668) ")"
+  ATMOSPHERE: (1668..1671) "\n\n\n"
+  FORM: (1671..1699)
+    OPEN_PAREN: (1671..1672) "("
+    SYMBOL: (1672..1679)
+      IDENTIFIER: (1672..1679) "display"
+    ATMOSPHERE: (1679..1680) " "
+    FORM: (1680..1698)
+      OPEN_PAREN: (1680..1681) "("
+      SYMBOL: (1681..1685)
+        IDENTIFIER: (1681..1685) "memq"
+      ATMOSPHERE: (1685..1686) " "
+      QUOTED_DATUM: (1686..1689)
+        QUOTE: (1686..1687) "’"
+        SYMBOL: (1687..1688)
+          IDENTIFIER: (1687..1688) "a"
+        ATMOSPHERE: (1688..1689) " "
+      QUOTED_DATUM: (1689..1697)
+        QUOTE: (1689..1690) "’"
+        FORM: (1690..1697)
+          OPEN_PAREN: (1690..1691) "("
+          SYMBOL: (1691..1692)
+            IDENTIFIER: (1691..1692) "a"
+          ATMOSPHERE: (1692..1693) " "
+          SYMBOL: (1693..1694)
+            IDENTIFIER: (1693..1694) "b"
+          ATMOSPHERE: (1694..1695) " "
+          SYMBOL: (1695..1696)
+            IDENTIFIER: (1695..1696) "c"
+          CLOSE_PAREN: (1696..1697) ")"
+      CLOSE_PAREN: (1697..1698) ")"
+    CLOSE_PAREN: (1698..1699) ")"
+  FORM: (1699..1708)
+    OPEN_PAREN: (1699..1700) "("
+    SYMBOL: (1700..1707)
+      IDENTIFIER: (1700..1707) "newline"
+    CLOSE_PAREN: (1707..1708) ")"
+  ATMOSPHERE: (1708..1709) " "
+  ATMOSPHERE: (1709..1721) "; -> (a b c)"
+  ATMOSPHERE: (1721..1722) "\n"
+  FORM: (1722..1750)
+    OPEN_PAREN: (1722..1723) "("
+    SYMBOL: (1723..1730)
+      IDENTIFIER: (1723..1730) "display"
+    ATMOSPHERE: (1730..1731) " "
+    FORM: (1731..1749)
+      OPEN_PAREN: (1731..1732) "("
+      SYMBOL: (1732..1736)
+        IDENTIFIER: (1732..1736) "memq"
+      ATMOSPHERE: (1736..1737) " "
+      QUOTED_DATUM: (1737..1740)
+        QUOTE: (1737..1738) "’"
+        SYMBOL: (1738..1739)
+          IDENTIFIER: (1738..1739) "b"
+        ATMOSPHERE: (1739..1740) " "
+      QUOTED_DATUM: (1740..1748)
+        QUOTE: (1740..1741) "’"
+        FORM: (1741..1748)
+          OPEN_PAREN: (1741..1742) "("
+          SYMBOL: (1742..1743)
+            IDENTIFIER: (1742..1743) "a"
+          ATMOSPHERE: (1743..1744) " "
+          SYMBOL: (1744..1745)
+            IDENTIFIER: (1744..1745) "b"
+          ATMOSPHERE: (1745..1746) " "
+          SYMBOL: (1746..1747)
+            IDENTIFIER: (1746..1747) "c"
+          CLOSE_PAREN: (1747..1748) ")"
+      CLOSE_PAREN: (1748..1749) ")"
+    CLOSE_PAREN: (1749..1750) ")"
+  FORM: (1750..1759)
+    OPEN_PAREN: (1750..1751) "("
+    SYMBOL: (1751..1758)
+      IDENTIFIER: (1751..1758) "newline"
+    CLOSE_PAREN: (1758..1759) ")"
+  ATMOSPHERE: (1759..1760) " "
+  ATMOSPHERE: (1760..1770) "; -> (b c)"
+  ATMOSPHERE: (1770..1771) "\n"
+  FORM: (1771..1799)
+    OPEN_PAREN: (1771..1772) "("
+    SYMBOL: (1772..1779)
+      IDENTIFIER: (1772..1779) "display"
+    ATMOSPHERE: (1779..1780) " "
+    FORM: (1780..1798)
+      OPEN_PAREN: (1780..1781) "("
+      SYMBOL: (1781..1785)
+        IDENTIFIER: (1781..1785) "memq"
+      ATMOSPHERE: (1785..1786) " "
+      QUOTED_DATUM: (1786..1789)
+        QUOTE: (1786..1787) "’"
+        SYMBOL: (1787..1788)
+          IDENTIFIER: (1787..1788) "a"
+        ATMOSPHERE: (1788..1789) " "
+      QUOTED_DATUM: (1789..1797)
+        QUOTE: (1789..1790) "’"
+        FORM: (1790..1797)
+          OPEN_PAREN: (1790..1791) "("
+          SYMBOL: (1791..1792)
+            IDENTIFIER: (1791..1792) "b"
+          ATMOSPHERE: (1792..1793) " "
+          SYMBOL: (1793..1794)
+            IDENTIFIER: (1793..1794) "c"
+          ATMOSPHERE: (1794..1795) " "
+          SYMBOL: (1795..1796)
+            IDENTIFIER: (1795..1796) "d"
+          CLOSE_PAREN: (1796..1797) ")"
+      CLOSE_PAREN: (1797..1798) ")"
+    CLOSE_PAREN: (1798..1799) ")"
+  FORM: (1799..1808)
+    OPEN_PAREN: (1799..1800) "("
+    SYMBOL: (1800..1807)
+      IDENTIFIER: (1800..1807) "newline"
+    CLOSE_PAREN: (1807..1808) ")"
+  ATMOSPHERE: (1808..1809) " "
+  ATMOSPHERE: (1809..1816) "; -> #f"
+  ATMOSPHERE: (1816..1817) "\n"
+  FORM: (1817..1854)
+    OPEN_PAREN: (1817..1818) "("
+    SYMBOL: (1818..1825)
+      IDENTIFIER: (1818..1825) "display"
+    ATMOSPHERE: (1825..1826) " "
+    FORM: (1826..1853)
+      OPEN_PAREN: (1826..1827) "("
+      SYMBOL: (1827..1831)
+        IDENTIFIER: (1827..1831) "memq"
+      ATMOSPHERE: (1831..1832) " "
+      FORM: (1832..1841)
+        OPEN_PAREN: (1832..1833) "("
+        SYMBOL: (1833..1837)
+          IDENTIFIER: (1833..1837) "list"
+        ATMOSPHERE: (1837..1838) " "
+        QUOTED_DATUM: (1838..1840)
+          QUOTE: (1838..1839) "’"
+          SYMBOL: (1839..1840)
+            IDENTIFIER: (1839..1840) "a"
+        CLOSE_PAREN: (1840..1841) ")"
+      ATMOSPHERE: (1841..1842) " "
+      QUOTED_DATUM: (1842..1852)
+        QUOTE: (1842..1843) "’"
+        FORM: (1843..1852)
+          OPEN_PAREN: (1843..1844) "("
+          SYMBOL: (1844..1845)
+            IDENTIFIER: (1844..1845) "b"
+          ATMOSPHERE: (1845..1846) " "
+          FORM: (1846..1849)
+            OPEN_PAREN: (1846..1847) "("
+            SYMBOL: (1847..1848)
+              IDENTIFIER: (1847..1848) "a"
+            CLOSE_PAREN: (1848..1849) ")"
+          ATMOSPHERE: (1849..1850) " "
+          SYMBOL: (1850..1851)
+            IDENTIFIER: (1850..1851) "c"
+          CLOSE_PAREN: (1851..1852) ")"
+      CLOSE_PAREN: (1852..1853) ")"
+    CLOSE_PAREN: (1853..1854) ")"
+  FORM: (1854..1863)
+    OPEN_PAREN: (1854..1855) "("
+    SYMBOL: (1855..1862)
+      IDENTIFIER: (1855..1862) "newline"
+    CLOSE_PAREN: (1862..1863) ")"
+  ATMOSPHERE: (1863..1864) " "
+  ATMOSPHERE: (1864..1871) "; -> #f"
+  ATMOSPHERE: (1871..1872) "\n"
+  FORM: (1872..1913)
+    OPEN_PAREN: (1872..1873) "("
+    SYMBOL: (1873..1880)
+      IDENTIFIER: (1873..1880) "display"
+    ATMOSPHERE: (1880..1881) " "
+    FORM: (1881..1912)
+      OPEN_PAREN: (1881..1882) "("
+      SYMBOL: (1882..1888)
+        IDENTIFIER: (1882..1888) "member"
+      ATMOSPHERE: (1888..1889) " "
+      FORM: (1889..1898)
+        OPEN_PAREN: (1889..1890) "("
+        SYMBOL: (1890..1894)
+          IDENTIFIER: (1890..1894) "list"
+        ATMOSPHERE: (1894..1895) " "
+        QUOTED_DATUM: (1895..1897)
+          QUOTE: (1895..1896) "’"
+          SYMBOL: (1896..1897)
+            IDENTIFIER: (1896..1897) "a"
+        CLOSE_PAREN: (1897..1898) ")"
+      ATMOSPHERE: (1898..1901) "\n  "
+      QUOTED_DATUM: (1901..1911)
+        QUOTE: (1901..1902) "’"
+        FORM: (1902..1911)
+          OPEN_PAREN: (1902..1903) "("
+          SYMBOL: (1903..1904)
+            IDENTIFIER: (1903..1904) "b"
+          ATMOSPHERE: (1904..1905) " "
+          FORM: (1905..1908)
+            OPEN_PAREN: (1905..1906) "("
+            SYMBOL: (1906..1907)
+              IDENTIFIER: (1906..1907) "a"
+            CLOSE_PAREN: (1907..1908) ")"
+          ATMOSPHERE: (1908..1909) " "
+          SYMBOL: (1909..1910)
+            IDENTIFIER: (1909..1910) "c"
+          CLOSE_PAREN: (1910..1911) ")"
+      CLOSE_PAREN: (1911..1912) ")"
+    CLOSE_PAREN: (1912..1913) ")"
+  FORM: (1913..1922)
+    OPEN_PAREN: (1913..1914) "("
+    SYMBOL: (1914..1921)
+      IDENTIFIER: (1914..1921) "newline"
+    CLOSE_PAREN: (1921..1922) ")"
+  ATMOSPHERE: (1922..1923) " "
+  ATMOSPHERE: (1923..1935) "; -> ((a) c)"
+  ATMOSPHERE: (1935..1936) "\n"
+  FORM: (1936..1987)
+    OPEN_PAREN: (1936..1937) "("
+    SYMBOL: (1937..1944)
+      IDENTIFIER: (1937..1944) "display"
+    ATMOSPHERE: (1944..1945) " "
+    FORM: (1945..1986)
+      OPEN_PAREN: (1945..1946) "("
+      SYMBOL: (1946..1952)
+        IDENTIFIER: (1946..1952) "member"
+      ATMOSPHERE: (1952..1953) " "
+      CONSTANT: (1953..1956)
+        CHARACTER: (1953..1956) "#\\B"
+      ATMOSPHERE: (1956..1959) "\n  "
+      QUOTED_DATUM: (1959..1976)
+        QUOTE: (1959..1960) "’"
+        FORM: (1960..1973)
+          OPEN_PAREN: (1960..1961) "("
+          CONSTANT: (1961..1964)
+            CHARACTER: (1961..1964) "#\\a"
+          ATMOSPHERE: (1964..1965) " "
+          CONSTANT: (1965..1968)
+            CHARACTER: (1965..1968) "#\\b"
+          ATMOSPHERE: (1968..1969) " "
+          CONSTANT: (1969..1972)
+            CHARACTER: (1969..1972) "#\\c"
+          CLOSE_PAREN: (1972..1973) ")"
+        ATMOSPHERE: (1973..1976) "\n  "
+      SYMBOL: (1976..1985)
+        IDENTIFIER: (1976..1985) "char-ci=?"
+      CLOSE_PAREN: (1985..1986) ")"
+    CLOSE_PAREN: (1986..1987) ")"
+  FORM: (1987..1996)
+    OPEN_PAREN: (1987..1988) "("
+    SYMBOL: (1988..1995)
+      IDENTIFIER: (1988..1995) "newline"
+    CLOSE_PAREN: (1995..1996) ")"
+  ATMOSPHERE: (1996..1997) " "
+  ATMOSPHERE: (1997..2011) "; -> (#\\b #\\c)"
+  ATMOSPHERE: (2011..2012) "\n"
+  FORM: (2012..2047)
+    OPEN_PAREN: (2012..2013) "("
+    SYMBOL: (2013..2020)
+      IDENTIFIER: (2013..2020) "display"
+    ATMOSPHERE: (2020..2021) " "
+    FORM: (2021..2046)
+      OPEN_PAREN: (2021..2022) "("
+      SYMBOL: (2022..2026)
+        IDENTIFIER: (2022..2026) "memq"
+      ATMOSPHERE: (2026..2027) " "
+      CONSTANT: (2027..2030)
+        NUMBER: (2027..2030) "101"
+      ATMOSPHERE: (2030..2031) " "
+      QUOTED_DATUM: (2031..2045)
+        QUOTE: (2031..2032) "’"
+        FORM: (2032..2045)
+          OPEN_PAREN: (2032..2033) "("
+          CONSTANT: (2033..2036)
+            NUMBER: (2033..2036) "100"
+          ATMOSPHERE: (2036..2037) " "
+          CONSTANT: (2037..2040)
+            NUMBER: (2037..2040) "101"
+          ATMOSPHERE: (2040..2041) " "
+          CONSTANT: (2041..2044)
+            NUMBER: (2041..2044) "102"
+          CLOSE_PAREN: (2044..2045) ")"
+      CLOSE_PAREN: (2045..2046) ")"
+    CLOSE_PAREN: (2046..2047) ")"
+  FORM: (2047..2056)
+    OPEN_PAREN: (2047..2048) "("
+    SYMBOL: (2048..2055)
+      IDENTIFIER: (2048..2055) "newline"
+    CLOSE_PAREN: (2055..2056) ")"
+  ATMOSPHERE: (2056..2057) " "
+  ATMOSPHERE: (2057..2073) "; -> unspecified"
+  ATMOSPHERE: (2073..2074) "\n"
+  FORM: (2074..2109)
+    OPEN_PAREN: (2074..2075) "("
+    SYMBOL: (2075..2082)
+      IDENTIFIER: (2075..2082) "display"
+    ATMOSPHERE: (2082..2083) " "
+    FORM: (2083..2108)
+      OPEN_PAREN: (2083..2084) "("
+      SYMBOL: (2084..2088)
+        IDENTIFIER: (2084..2088) "memv"
+      ATMOSPHERE: (2088..2089) " "
+      CONSTANT: (2089..2092)
+        NUMBER: (2089..2092) "101"
+      ATMOSPHERE: (2092..2093) " "
+      QUOTED_DATUM: (2093..2107)
+        QUOTE: (2093..2094) "’"
+        FORM: (2094..2107)
+          OPEN_PAREN: (2094..2095) "("
+          CONSTANT: (2095..2098)
+            NUMBER: (2095..2098) "100"
+          ATMOSPHERE: (2098..2099) " "
+          CONSTANT: (2099..2102)
+            NUMBER: (2099..2102) "101"
+          ATMOSPHERE: (2102..2103) " "
+          CONSTANT: (2103..2106)
+            NUMBER: (2103..2106) "102"
+          CLOSE_PAREN: (2106..2107) ")"
+      CLOSE_PAREN: (2107..2108) ")"
+    CLOSE_PAREN: (2108..2109) ")"
+  FORM: (2109..2118)
+    OPEN_PAREN: (2109..2110) "("
+    SYMBOL: (2110..2117)
+      IDENTIFIER: (2110..2117) "newline"
+    CLOSE_PAREN: (2117..2118) ")"
+  ATMOSPHERE: (2118..2119) " "
+  ATMOSPHERE: (2119..2133) "; -> (101 102)"
+  ATMOSPHERE: (2133..2135) "\n\n"
+  FORM: (2135..2166)
+    OPEN_PAREN: (2135..2136) "("
+    SYMBOL: (2136..2142)
+      IDENTIFIER: (2136..2142) "define"
+    ATMOSPHERE: (2142..2143) " "
+    SYMBOL: (2143..2144)
+      IDENTIFIER: (2143..2144) "e"
+    ATMOSPHERE: (2144..2145) " "
+    QUOTED_DATUM: (2145..2165)
+      QUOTE: (2145..2146) "’"
+      FORM: (2146..2165)
+        OPEN_PAREN: (2146..2147) "("
+        FORM: (2147..2152)
+          OPEN_PAREN: (2147..2148) "("
+          SYMBOL: (2148..2149)
+            IDENTIFIER: (2148..2149) "a"
+          ATMOSPHERE: (2149..2150) " "
+          CONSTANT: (2150..2151)
+            NUMBER: (2150..2151) "1"
+          CLOSE_PAREN: (2151..2152) ")"
+        ATMOSPHERE: (2152..2153) " "
+        FORM: (2153..2158)
+          OPEN_PAREN: (2153..2154) "("
+          SYMBOL: (2154..2155)
+            IDENTIFIER: (2154..2155) "b"
+          ATMOSPHERE: (2155..2156) " "
+          CONSTANT: (2156..2157)
+            NUMBER: (2156..2157) "2"
+          CLOSE_PAREN: (2157..2158) ")"
+        ATMOSPHERE: (2158..2159) " "
+        FORM: (2159..2164)
+          OPEN_PAREN: (2159..2160) "("
+          SYMBOL: (2160..2161)
+            IDENTIFIER: (2160..2161) "c"
+          ATMOSPHERE: (2161..2162) " "
+          CONSTANT: (2162..2163)
+            NUMBER: (2162..2163) "3"
+          CLOSE_PAREN: (2163..2164) ")"
+        CLOSE_PAREN: (2164..2165) ")"
+    CLOSE_PAREN: (2165..2166) ")"
+  ATMOSPHERE: (2166..2167) "\n"
+  FORM: (2167..2188)
+    OPEN_PAREN: (2167..2168) "("
+    SYMBOL: (2168..2175)
+      IDENTIFIER: (2168..2175) "display"
+    ATMOSPHERE: (2175..2176) " "
+    FORM: (2176..2187)
+      OPEN_PAREN: (2176..2177) "("
+      SYMBOL: (2177..2181)
+        IDENTIFIER: (2177..2181) "assq"
+      ATMOSPHERE: (2181..2182) " "
+      QUOTED_DATUM: (2182..2185)
+        QUOTE: (2182..2183) "’"
+        SYMBOL: (2183..2184)
+          IDENTIFIER: (2183..2184) "a"
+        ATMOSPHERE: (2184..2185) " "
+      SYMBOL: (2185..2186)
+        IDENTIFIER: (2185..2186) "e"
+      CLOSE_PAREN: (2186..2187) ")"
+    CLOSE_PAREN: (2187..2188) ")"
+  FORM: (2188..2197)
+    OPEN_PAREN: (2188..2189) "("
+    SYMBOL: (2189..2196)
+      IDENTIFIER: (2189..2196) "newline"
+    CLOSE_PAREN: (2196..2197) ")"
+  ATMOSPHERE: (2197..2198) " "
+  ATMOSPHERE: (2198..2208) "; -> (a 1)"
+  ATMOSPHERE: (2208..2209) "\n"
+  FORM: (2209..2230)
+    OPEN_PAREN: (2209..2210) "("
+    SYMBOL: (2210..2217)
+      IDENTIFIER: (2210..2217) "display"
+    ATMOSPHERE: (2217..2218) " "
+    FORM: (2218..2229)
+      OPEN_PAREN: (2218..2219) "("
+      SYMBOL: (2219..2223)
+        IDENTIFIER: (2219..2223) "assq"
+      ATMOSPHERE: (2223..2224) " "
+      QUOTED_DATUM: (2224..2227)
+        QUOTE: (2224..2225) "’"
+        SYMBOL: (2225..2226)
+          IDENTIFIER: (2225..2226) "b"
+        ATMOSPHERE: (2226..2227) " "
+      SYMBOL: (2227..2228)
+        IDENTIFIER: (2227..2228) "e"
+      CLOSE_PAREN: (2228..2229) ")"
+    CLOSE_PAREN: (2229..2230) ")"
+  FORM: (2230..2239)
+    OPEN_PAREN: (2230..2231) "("
+    SYMBOL: (2231..2238)
+      IDENTIFIER: (2231..2238) "newline"
+    CLOSE_PAREN: (2238..2239) ")"
+  ATMOSPHERE: (2239..2240) " "
+  ATMOSPHERE: (2240..2250) "; -> (b 2)"
+  ATMOSPHERE: (2250..2251) "\n"
+  FORM: (2251..2272)
+    OPEN_PAREN: (2251..2252) "("
+    SYMBOL: (2252..2259)
+      IDENTIFIER: (2252..2259) "display"
+    ATMOSPHERE: (2259..2260) " "
+    FORM: (2260..2271)
+      OPEN_PAREN: (2260..2261) "("
+      SYMBOL: (2261..2265)
+        IDENTIFIER: (2261..2265) "assq"
+      ATMOSPHERE: (2265..2266) " "
+      QUOTED_DATUM: (2266..2269)
+        QUOTE: (2266..2267) "’"
+        SYMBOL: (2267..2268)
+          IDENTIFIER: (2267..2268) "d"
+        ATMOSPHERE: (2268..2269) " "
+      SYMBOL: (2269..2270)
+        IDENTIFIER: (2269..2270) "e"
+      CLOSE_PAREN: (2270..2271) ")"
+    CLOSE_PAREN: (2271..2272) ")"
+  FORM: (2272..2281)
+    OPEN_PAREN: (2272..2273) "("
+    SYMBOL: (2273..2280)
+      IDENTIFIER: (2273..2280) "newline"
+    CLOSE_PAREN: (2280..2281) ")"
+  ATMOSPHERE: (2281..2282) " "
+  ATMOSPHERE: (2282..2289) "; -> #f"
+  ATMOSPHERE: (2289..2290) "\n"
+  FORM: (2290..2337)
+    OPEN_PAREN: (2290..2291) "("
+    SYMBOL: (2291..2298)
+      IDENTIFIER: (2291..2298) "display"
+    ATMOSPHERE: (2298..2299) " "
+    FORM: (2299..2336)
+      OPEN_PAREN: (2299..2300) "("
+      SYMBOL: (2300..2304)
+        IDENTIFIER: (2300..2304) "assq"
+      ATMOSPHERE: (2304..2305) " "
+      FORM: (2305..2314)
+        OPEN_PAREN: (2305..2306) "("
+        SYMBOL: (2306..2310)
+          IDENTIFIER: (2306..2310) "list"
+        ATMOSPHERE: (2310..2311) " "
+        QUOTED_DATUM: (2311..2313)
+          QUOTE: (2311..2312) "’"
+          SYMBOL: (2312..2313)
+            IDENTIFIER: (2312..2313) "a"
+        CLOSE_PAREN: (2313..2314) ")"
+      ATMOSPHERE: (2314..2315) " "
+      QUOTED_DATUM: (2315..2335)
+        QUOTE: (2315..2316) "’"
+        FORM: (2316..2335)
+          OPEN_PAREN: (2316..2317) "("
+          FORM: (2317..2322)
+            OPEN_PAREN: (2317..2318) "("
+            FORM: (2318..2321)
+              OPEN_PAREN: (2318..2319) "("
+              SYMBOL: (2319..2320)
+                IDENTIFIER: (2319..2320) "a"
+              CLOSE_PAREN: (2320..2321) ")"
+            CLOSE_PAREN: (2321..2322) ")"
+          ATMOSPHERE: (2322..2323) " "
+          FORM: (2323..2328)
+            OPEN_PAREN: (2323..2324) "("
+            FORM: (2324..2327)
+              OPEN_PAREN: (2324..2325) "("
+              SYMBOL: (2325..2326)
+                IDENTIFIER: (2325..2326) "b"
+              CLOSE_PAREN: (2326..2327) ")"
+            CLOSE_PAREN: (2327..2328) ")"
+          ATMOSPHERE: (2328..2329) " "
+          FORM: (2329..2334)
+            OPEN_PAREN: (2329..2330) "("
+            FORM: (2330..2333)
+              OPEN_PAREN: (2330..2331) "("
+              SYMBOL: (2331..2332)
+                IDENTIFIER: (2331..2332) "c"
+              CLOSE_PAREN: (2332..2333) ")"
+            CLOSE_PAREN: (2333..2334) ")"
+          CLOSE_PAREN: (2334..2335) ")"
+      CLOSE_PAREN: (2335..2336) ")"
+    CLOSE_PAREN: (2336..2337) ")"
+  FORM: (2337..2346)
+    OPEN_PAREN: (2337..2338) "("
+    SYMBOL: (2338..2345)
+      IDENTIFIER: (2338..2345) "newline"
+    CLOSE_PAREN: (2345..2346) ")"
+  ATMOSPHERE: (2346..2347) " "
+  ATMOSPHERE: (2347..2354) "; -> #f"
+  ATMOSPHERE: (2354..2355) "\n"
+  FORM: (2355..2403)
+    OPEN_PAREN: (2355..2356) "("
+    SYMBOL: (2356..2363)
+      IDENTIFIER: (2356..2363) "display"
+    ATMOSPHERE: (2363..2364) " "
+    FORM: (2364..2402)
+      OPEN_PAREN: (2364..2365) "("
+      SYMBOL: (2365..2370)
+        IDENTIFIER: (2365..2370) "assoc"
+      ATMOSPHERE: (2370..2371) " "
+      FORM: (2371..2380)
+        OPEN_PAREN: (2371..2372) "("
+        SYMBOL: (2372..2376)
+          IDENTIFIER: (2372..2376) "list"
+        ATMOSPHERE: (2376..2377) " "
+        QUOTED_DATUM: (2377..2379)
+          QUOTE: (2377..2378) "’"
+          SYMBOL: (2378..2379)
+            IDENTIFIER: (2378..2379) "a"
+        CLOSE_PAREN: (2379..2380) ")"
+      ATMOSPHERE: (2380..2381) " "
+      QUOTED_DATUM: (2381..2401)
+        QUOTE: (2381..2382) "’"
+        FORM: (2382..2401)
+          OPEN_PAREN: (2382..2383) "("
+          FORM: (2383..2388)
+            OPEN_PAREN: (2383..2384) "("
+            FORM: (2384..2387)
+              OPEN_PAREN: (2384..2385) "("
+              SYMBOL: (2385..2386)
+                IDENTIFIER: (2385..2386) "a"
+              CLOSE_PAREN: (2386..2387) ")"
+            CLOSE_PAREN: (2387..2388) ")"
+          ATMOSPHERE: (2388..2389) " "
+          FORM: (2389..2394)
+            OPEN_PAREN: (2389..2390) "("
+            FORM: (2390..2393)
+              OPEN_PAREN: (2390..2391) "("
+              SYMBOL: (2391..2392)
+                IDENTIFIER: (2391..2392) "b"
+              CLOSE_PAREN: (2392..2393) ")"
+            CLOSE_PAREN: (2393..2394) ")"
+          ATMOSPHERE: (2394..2395) " "
+          FORM: (2395..2400)
+            OPEN_PAREN: (2395..2396) "("
+            FORM: (2396..2399)
+              OPEN_PAREN: (2396..2397) "("
+              SYMBOL: (2397..2398)
+                IDENTIFIER: (2397..2398) "c"
+              CLOSE_PAREN: (2398..2399) ")"
+            CLOSE_PAREN: (2399..2400) ")"
+          CLOSE_PAREN: (2400..2401) ")"
+      CLOSE_PAREN: (2401..2402) ")"
+    CLOSE_PAREN: (2402..2403) ")"
+  FORM: (2403..2412)
+    OPEN_PAREN: (2403..2404) "("
+    SYMBOL: (2404..2411)
+      IDENTIFIER: (2404..2411) "newline"
+    CLOSE_PAREN: (2411..2412) ")"
+  ATMOSPHERE: (2412..2413) " "
+  ATMOSPHERE: (2413..2423) "; -> ((a))"
+  ATMOSPHERE: (2423..2424) "\n"
+  FORM: (2424..2468)
+    OPEN_PAREN: (2424..2425) "("
+    SYMBOL: (2425..2432)
+      IDENTIFIER: (2425..2432) "display"
+    ATMOSPHERE: (2432..2433) " "
+    FORM: (2433..2467)
+      OPEN_PAREN: (2433..2434) "("
+      SYMBOL: (2434..2439)
+        IDENTIFIER: (2434..2439) "assoc"
+      ATMOSPHERE: (2439..2440) " "
+      CONSTANT: (2440..2443)
+        NUMBER: (2440..2443) "2.0"
+      ATMOSPHERE: (2443..2444) " "
+      QUOTED_DATUM: (2444..2465)
+        QUOTE: (2444..2445) "’"
+        FORM: (2445..2464)
+          OPEN_PAREN: (2445..2446) "("
+          FORM: (2446..2451)
+            OPEN_PAREN: (2446..2447) "("
+            CONSTANT: (2447..2448)
+              NUMBER: (2447..2448) "1"
+            ATMOSPHERE: (2448..2449) " "
+            CONSTANT: (2449..2450)
+              NUMBER: (2449..2450) "1"
+            CLOSE_PAREN: (2450..2451) ")"
+          ATMOSPHERE: (2451..2452) " "
+          FORM: (2452..2457)
+            OPEN_PAREN: (2452..2453) "("
+            CONSTANT: (2453..2454)
+              NUMBER: (2453..2454) "2"
+            ATMOSPHERE: (2454..2455) " "
+            CONSTANT: (2455..2456)
+              NUMBER: (2455..2456) "4"
+            CLOSE_PAREN: (2456..2457) ")"
+          ATMOSPHERE: (2457..2458) " "
+          FORM: (2458..2463)
+            OPEN_PAREN: (2458..2459) "("
+            CONSTANT: (2459..2460)
+              NUMBER: (2459..2460) "3"
+            ATMOSPHERE: (2460..2461) " "
+            CONSTANT: (2461..2462)
+              NUMBER: (2461..2462) "9"
+            CLOSE_PAREN: (2462..2463) ")"
+          CLOSE_PAREN: (2463..2464) ")"
+        ATMOSPHERE: (2464..2465) " "
+      SYMBOL: (2465..2466)
+        IDENTIFIER: (2465..2466) "="
+      CLOSE_PAREN: (2466..2467) ")"
+    CLOSE_PAREN: (2467..2468) ")"
+  FORM: (2468..2477)
+    OPEN_PAREN: (2468..2469) "("
+    SYMBOL: (2469..2476)
+      IDENTIFIER: (2469..2476) "newline"
+    CLOSE_PAREN: (2476..2477) ")"
+  ATMOSPHERE: (2477..2478) " "
+  ATMOSPHERE: (2478..2488) "; -> (2 4)"
+  ATMOSPHERE: (2488..2489) "\n"
+  FORM: (2489..2530)
+    OPEN_PAREN: (2489..2490) "("
+    SYMBOL: (2490..2497)
+      IDENTIFIER: (2490..2497) "display"
+    ATMOSPHERE: (2497..2498) " "
+    FORM: (2498..2529)
+      OPEN_PAREN: (2498..2499) "("
+      SYMBOL: (2499..2503)
+        IDENTIFIER: (2499..2503) "assq"
+      ATMOSPHERE: (2503..2504) " "
+      CONSTANT: (2504..2505)
+        NUMBER: (2504..2505) "5"
+      ATMOSPHERE: (2505..2506) " "
+      QUOTED_DATUM: (2506..2528)
+        QUOTE: (2506..2507) "’"
+        FORM: (2507..2528)
+          OPEN_PAREN: (2507..2508) "("
+          FORM: (2508..2513)
+            OPEN_PAREN: (2508..2509) "("
+            CONSTANT: (2509..2510)
+              NUMBER: (2509..2510) "2"
+            ATMOSPHERE: (2510..2511) " "
+            CONSTANT: (2511..2512)
+              NUMBER: (2511..2512) "3"
+            CLOSE_PAREN: (2512..2513) ")"
+          ATMOSPHERE: (2513..2514) " "
+          FORM: (2514..2519)
+            OPEN_PAREN: (2514..2515) "("
+            CONSTANT: (2515..2516)
+              NUMBER: (2515..2516) "5"
+            ATMOSPHERE: (2516..2517) " "
+            CONSTANT: (2517..2518)
+              NUMBER: (2517..2518) "7"
+            CLOSE_PAREN: (2518..2519) ")"
+          ATMOSPHERE: (2519..2520) " "
+          FORM: (2520..2527)
+            OPEN_PAREN: (2520..2521) "("
+            CONSTANT: (2521..2523)
+              NUMBER: (2521..2523) "11"
+            ATMOSPHERE: (2523..2524) " "
+            CONSTANT: (2524..2526)
+              NUMBER: (2524..2526) "13"
+            CLOSE_PAREN: (2526..2527) ")"
+          CLOSE_PAREN: (2527..2528) ")"
+      CLOSE_PAREN: (2528..2529) ")"
+    CLOSE_PAREN: (2529..2530) ")"
+  FORM: (2530..2539)
+    OPEN_PAREN: (2530..2531) "("
+    SYMBOL: (2531..2538)
+      IDENTIFIER: (2531..2538) "newline"
+    CLOSE_PAREN: (2538..2539) ")"
+  ATMOSPHERE: (2539..2540) " "
+  ATMOSPHERE: (2540..2556) "; -> unspecified"
+  ATMOSPHERE: (2556..2557) "\n"
+  FORM: (2557..2598)
+    OPEN_PAREN: (2557..2558) "("
+    SYMBOL: (2558..2565)
+      IDENTIFIER: (2558..2565) "display"
+    ATMOSPHERE: (2565..2566) " "
+    FORM: (2566..2597)
+      OPEN_PAREN: (2566..2567) "("
+      SYMBOL: (2567..2571)
+        IDENTIFIER: (2567..2571) "assv"
+      ATMOSPHERE: (2571..2572) " "
+      CONSTANT: (2572..2573)
+        NUMBER: (2572..2573) "5"
+      ATMOSPHERE: (2573..2574) " "
+      QUOTED_DATUM: (2574..2596)
+        QUOTE: (2574..2575) "’"
+        FORM: (2575..2596)
+          OPEN_PAREN: (2575..2576) "("
+          FORM: (2576..2581)
+            OPEN_PAREN: (2576..2577) "("
+            CONSTANT: (2577..2578)
+              NUMBER: (2577..2578) "2"
+            ATMOSPHERE: (2578..2579) " "
+            CONSTANT: (2579..2580)
+              NUMBER: (2579..2580) "3"
+            CLOSE_PAREN: (2580..2581) ")"
+          ATMOSPHERE: (2581..2582) " "
+          FORM: (2582..2587)
+            OPEN_PAREN: (2582..2583) "("
+            CONSTANT: (2583..2584)
+              NUMBER: (2583..2584) "5"
+            ATMOSPHERE: (2584..2585) " "
+            CONSTANT: (2585..2586)
+              NUMBER: (2585..2586) "7"
+            CLOSE_PAREN: (2586..2587) ")"
+          ATMOSPHERE: (2587..2588) " "
+          FORM: (2588..2595)
+            OPEN_PAREN: (2588..2589) "("
+            CONSTANT: (2589..2591)
+              NUMBER: (2589..2591) "11"
+            ATMOSPHERE: (2591..2592) " "
+            CONSTANT: (2592..2594)
+              NUMBER: (2592..2594) "13"
+            CLOSE_PAREN: (2594..2595) ")"
+          CLOSE_PAREN: (2595..2596) ")"
+      CLOSE_PAREN: (2596..2597) ")"
+    CLOSE_PAREN: (2597..2598) ")"
+  FORM: (2598..2607)
+    OPEN_PAREN: (2598..2599) "("
+    SYMBOL: (2599..2606)
+      IDENTIFIER: (2599..2606) "newline"
+    CLOSE_PAREN: (2606..2607) ")"
+  ATMOSPHERE: (2607..2608) " "
+  ATMOSPHERE: (2608..2618) "; -> (5 7)"
+  ATMOSPHERE: (2618..2619) "\n"
+  EOF: (2619..2619) ""

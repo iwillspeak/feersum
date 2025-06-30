@@ -1,0 +1,156 @@
+PROGRAM: (0..190)
+  FORM: (0..40)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "define"
+    ATMOSPHERE: (7..8) " "
+    SYMBOL: (8..9)
+      IDENTIFIER: (8..9) "x"
+    ATMOSPHERE: (9..10) " "
+    FORM: (10..39)
+      OPEN_PAREN: (10..11) "("
+      SYMBOL: (11..17)
+        IDENTIFIER: (11..17) "lambda"
+      ATMOSPHERE: (17..18) " "
+      SYMBOL: (18..19)
+        IDENTIFIER: (18..19) "y"
+      ATMOSPHERE: (19..24) "\n    "
+      FORM: (24..38)
+        OPEN_PAREN: (24..25) "("
+        SYMBOL: (25..31)
+          IDENTIFIER: (25..31) "lambda"
+        ATMOSPHERE: (31..32) " "
+        SYMBOL: (32..33)
+          IDENTIFIER: (32..33) "z"
+        ATMOSPHERE: (33..34) " "
+        CONSTANT: (34..37)
+          NUMBER: (34..37) "100"
+        CLOSE_PAREN: (37..38) ")"
+      CLOSE_PAREN: (38..39) ")"
+    CLOSE_PAREN: (39..40) ")"
+  ATMOSPHERE: (40..41) "\n"
+  FORM: (41..83)
+    OPEN_PAREN: (41..42) "("
+    SYMBOL: (42..48)
+      IDENTIFIER: (42..48) "define"
+    ATMOSPHERE: (48..49) " "
+    SYMBOL: (49..50)
+      IDENTIFIER: (49..50) "y"
+    ATMOSPHERE: (50..51) " "
+    FORM: (51..82)
+      OPEN_PAREN: (51..52) "("
+      SYMBOL: (52..58)
+        IDENTIFIER: (52..58) "lambda"
+      ATMOSPHERE: (58..59) " "
+      SYMBOL: (59..60)
+        IDENTIFIER: (59..60) "y"
+      ATMOSPHERE: (60..65) "\n    "
+      FORM: (65..81)
+        OPEN_PAREN: (65..66) "("
+        SYMBOL: (66..72)
+          IDENTIFIER: (66..72) "lambda"
+        ATMOSPHERE: (72..73) " "
+        SYMBOL: (73..74)
+          IDENTIFIER: (73..74) "z"
+        ATMOSPHERE: (74..75) " "
+        CONSTANT: (75..80)
+          NUMBER: (75..80) "23123"
+        CLOSE_PAREN: (80..81) ")"
+      CLOSE_PAREN: (81..82) ")"
+    CLOSE_PAREN: (82..83) ")"
+  ATMOSPHERE: (83..84) "\n"
+  FORM: (84..109)
+    OPEN_PAREN: (84..85) "("
+    SYMBOL: (85..91)
+      IDENTIFIER: (85..91) "define"
+    ATMOSPHERE: (91..92) " "
+    SYMBOL: (92..93)
+      IDENTIFIER: (92..93) "z"
+    ATMOSPHERE: (93..94) " "
+    FORM: (94..108)
+      OPEN_PAREN: (94..95) "("
+      SYMBOL: (95..101)
+        IDENTIFIER: (95..101) "lambda"
+      ATMOSPHERE: (101..102) " "
+      SYMBOL: (102..103)
+        IDENTIFIER: (102..103) "y"
+      ATMOSPHERE: (103..104) " "
+      CONSTANT: (104..107)
+        NUMBER: (104..107) "123"
+      CLOSE_PAREN: (107..108) ")"
+    CLOSE_PAREN: (108..109) ")"
+  ATMOSPHERE: (109..110) "\n"
+  FORM: (110..140)
+    OPEN_PAREN: (110..111) "("
+    SYMBOL: (111..117)
+      IDENTIFIER: (111..117) "define"
+    ATMOSPHERE: (117..118) " "
+    SYMBOL: (118..119)
+      IDENTIFIER: (118..119) "a"
+    ATMOSPHERE: (119..120) " "
+    FORM: (120..139)
+      OPEN_PAREN: (120..121) "("
+      SYMBOL: (121..127)
+        IDENTIFIER: (121..127) "lambda"
+      ATMOSPHERE: (127..128) " "
+      FORM: (128..135)
+        OPEN_PAREN: (128..129) "("
+        SYMBOL: (129..130)
+          IDENTIFIER: (129..130) "a"
+        ATMOSPHERE: (130..131) " "
+        SYMBOL: (131..132)
+          IDENTIFIER: (131..132) "b"
+        ATMOSPHERE: (132..133) " "
+        SYMBOL: (133..134)
+          IDENTIFIER: (133..134) "c"
+        CLOSE_PAREN: (134..135) ")"
+      ATMOSPHERE: (135..136) " "
+      CONSTANT: (136..138)
+        NUMBER: (136..138) "20"
+      CLOSE_PAREN: (138..139) ")"
+    CLOSE_PAREN: (139..140) ")"
+  ATMOSPHERE: (140..141) "\n"
+  FORM: (141..175)
+    OPEN_PAREN: (141..142) "("
+    SYMBOL: (142..148)
+      IDENTIFIER: (142..148) "define"
+    ATMOSPHERE: (148..149) " "
+    SYMBOL: (149..150)
+      IDENTIFIER: (149..150) "b"
+    ATMOSPHERE: (150..151) " "
+    FORM: (151..174)
+      OPEN_PAREN: (151..152) "("
+      SYMBOL: (152..158)
+        IDENTIFIER: (152..158) "lambda"
+      ATMOSPHERE: (158..159) " "
+      FORM: (159..168)
+        OPEN_PAREN: (159..160) "("
+        SYMBOL: (160..161)
+          IDENTIFIER: (160..161) "a"
+        ATMOSPHERE: (161..162) " "
+        SYMBOL: (162..163)
+          IDENTIFIER: (162..163) "b"
+        ATMOSPHERE: (163..164) " "
+        DOTTED_TAIL: (164..167)
+          DOT: (164..165) "."
+          ATMOSPHERE: (165..166) " "
+          SYMBOL: (166..167)
+            IDENTIFIER: (166..167) "c"
+        CLOSE_PAREN: (167..168) ")"
+      ATMOSPHERE: (168..169) " "
+      CONSTANT: (169..173)
+        NUMBER: (169..173) "1234"
+      CLOSE_PAREN: (173..174) ")"
+    CLOSE_PAREN: (174..175) ")"
+  ATMOSPHERE: (175..176) "\n"
+  FORM: (176..181)
+    OPEN_PAREN: (176..177) "("
+    FORM: (177..180)
+      OPEN_PAREN: (177..178) "("
+      SYMBOL: (178..179)
+        IDENTIFIER: (178..179) "x"
+      CLOSE_PAREN: (179..180) ")"
+    CLOSE_PAREN: (180..181) ")"
+  ATMOSPHERE: (181..182) " "
+  ATMOSPHERE: (182..190) "; -> 100"
+  EOF: (190..190) ""

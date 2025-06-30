@@ -1,0 +1,244 @@
+PROGRAM: (0..539)
+  FORM: (0..41)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..21)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..20)
+        IDENTIFIER: (16..20) "base"
+      CLOSE_PAREN: (20..21) ")"
+    ATMOSPHERE: (21..26) "\n    "
+    FORM: (26..40)
+      OPEN_PAREN: (26..27) "("
+      SYMBOL: (27..33)
+        IDENTIFIER: (27..33) "scheme"
+      ATMOSPHERE: (33..34) " "
+      SYMBOL: (34..39)
+        IDENTIFIER: (34..39) "write"
+      CLOSE_PAREN: (39..40) ")"
+    CLOSE_PAREN: (40..41) ")"
+  ATMOSPHERE: (41..42) "\n"
+  FORM: (42..296)
+    OPEN_PAREN: (42..43) "("
+    SYMBOL: (43..50)
+      IDENTIFIER: (43..50) "display"
+    ATMOSPHERE: (50..51) " "
+    FORM: (51..295)
+      OPEN_PAREN: (51..52) "("
+      SYMBOL: (52..56)
+        IDENTIFIER: (52..56) "list"
+      ATMOSPHERE: (56..63) " \n\n    "
+      ATMOSPHERE: (63..86) ";; byte vector literals"
+      ATMOSPHERE: (86..91) "\n    "
+      BYTEVEC: (91..96)
+        OPEN_PAREN: (91..95) "#u8("
+        CLOSE_PAREN: (95..96) ")"
+      ATMOSPHERE: (96..101) "\n    "
+      BYTEVEC: (101..109)
+        OPEN_PAREN: (101..105) "#u8("
+        CONSTANT: (105..108)
+          NUMBER: (105..108) "255"
+        CLOSE_PAREN: (108..109) ")"
+      ATMOSPHERE: (109..114) "\n    "
+      BYTEVEC: (114..126)
+        OPEN_PAREN: (114..118) "#u8("
+        ATMOSPHERE: (118..119) " "
+        CONSTANT: (119..120)
+          NUMBER: (119..120) "1"
+        ATMOSPHERE: (120..121) " "
+        CONSTANT: (121..122)
+          NUMBER: (121..122) "2"
+        ATMOSPHERE: (122..123) " "
+        CONSTANT: (123..124)
+          NUMBER: (123..124) "3"
+        ATMOSPHERE: (124..125) " "
+        CLOSE_PAREN: (125..126) ")"
+      ATMOSPHERE: (126..132) "\n\n    "
+      FORM: (132..151)
+        OPEN_PAREN: (132..133) "("
+        SYMBOL: (133..144)
+          IDENTIFIER: (133..144) "bytevector?"
+        ATMOSPHERE: (144..145) " "
+        BYTEVEC: (145..150)
+          OPEN_PAREN: (145..149) "#u8("
+          CLOSE_PAREN: (149..150) ")"
+        CLOSE_PAREN: (150..151) ")"
+      ATMOSPHERE: (151..156) "\n    "
+      FORM: (156..186)
+        OPEN_PAREN: (156..157) "("
+        SYMBOL: (157..168)
+          IDENTIFIER: (157..168) "bytevector?"
+        ATMOSPHERE: (168..169) " "
+        BYTEVEC: (169..185)
+          OPEN_PAREN: (169..173) "#u8("
+          CONSTANT: (173..176)
+            NUMBER: (173..176) "128"
+          ATMOSPHERE: (176..177) " "
+          CONSTANT: (177..180)
+            NUMBER: (177..180) "254"
+          ATMOSPHERE: (180..181) " "
+          CONSTANT: (181..184)
+            NUMBER: (181..184) "255"
+          CLOSE_PAREN: (184..185) ")"
+        CLOSE_PAREN: (185..186) ")"
+      ATMOSPHERE: (186..192) "\n\n    "
+      ATMOSPHERE: (192..218) ";; byte vector constructor"
+      ATMOSPHERE: (218..223) "\n    "
+      FORM: (223..235)
+        OPEN_PAREN: (223..224) "("
+        SYMBOL: (224..234)
+          IDENTIFIER: (224..234) "bytevector"
+        CLOSE_PAREN: (234..235) ")"
+      ATMOSPHERE: (235..240) "\n    "
+      FORM: (240..260)
+        OPEN_PAREN: (240..241) "("
+        SYMBOL: (241..251)
+          IDENTIFIER: (241..251) "bytevector"
+        ATMOSPHERE: (251..252) " "
+        CONSTANT: (252..253)
+          NUMBER: (252..253) "1"
+        ATMOSPHERE: (253..254) " "
+        CONSTANT: (254..255)
+          NUMBER: (254..255) "2"
+        ATMOSPHERE: (255..256) " "
+        CONSTANT: (256..257)
+          NUMBER: (256..257) "4"
+        ATMOSPHERE: (257..258) " "
+        CONSTANT: (258..259)
+          NUMBER: (258..259) "5"
+        CLOSE_PAREN: (259..260) ")"
+      ATMOSPHERE: (260..265) "\n    "
+      FORM: (265..288)
+        OPEN_PAREN: (265..266) "("
+        SYMBOL: (266..281)
+          IDENTIFIER: (266..281) "make-bytevector"
+        ATMOSPHERE: (281..282) " "
+        CONSTANT: (282..284)
+          NUMBER: (282..284) "10"
+        ATMOSPHERE: (284..285) " "
+        CONSTANT: (285..287)
+          NUMBER: (285..287) "90"
+        CLOSE_PAREN: (287..288) ")"
+      ATMOSPHERE: (288..294) "\n\n    "
+      CLOSE_PAREN: (294..295) ")"
+    CLOSE_PAREN: (295..296) ")"
+  FORM: (296..305)
+    OPEN_PAREN: (296..297) "("
+    SYMBOL: (297..304)
+      IDENTIFIER: (297..304) "newline"
+    CLOSE_PAREN: (304..305) ")"
+  ATMOSPHERE: (305..307) "\n\n"
+  FORM: (307..342)
+    OPEN_PAREN: (307..308) "("
+    SYMBOL: (308..314)
+      IDENTIFIER: (308..314) "define"
+    ATMOSPHERE: (314..315) " "
+    SYMBOL: (315..326)
+      IDENTIFIER: (315..326) "test-vector"
+    ATMOSPHERE: (326..327) " "
+    BYTEVEC: (327..341)
+      OPEN_PAREN: (327..331) "#u8("
+      CONSTANT: (331..332)
+        NUMBER: (331..332) "1"
+      ATMOSPHERE: (332..333) " "
+      CONSTANT: (333..334)
+        NUMBER: (333..334) "2"
+      ATMOSPHERE: (334..335) " "
+      CONSTANT: (335..336)
+        NUMBER: (335..336) "3"
+      ATMOSPHERE: (336..337) " "
+      CONSTANT: (337..338)
+        NUMBER: (337..338) "4"
+      ATMOSPHERE: (338..339) " "
+      CONSTANT: (339..340)
+        NUMBER: (339..340) "5"
+      CLOSE_PAREN: (340..341) ")"
+    CLOSE_PAREN: (341..342) ")"
+  ATMOSPHERE: (342..343) "\n"
+  FORM: (343..384)
+    OPEN_PAREN: (343..344) "("
+    SYMBOL: (344..351)
+      IDENTIFIER: (344..351) "display"
+    ATMOSPHERE: (351..352) " "
+    FORM: (352..383)
+      OPEN_PAREN: (352..353) "("
+      SYMBOL: (353..370)
+        IDENTIFIER: (353..370) "bytevector-length"
+      ATMOSPHERE: (370..371) " "
+      SYMBOL: (371..382)
+        IDENTIFIER: (371..382) "test-vector"
+      CLOSE_PAREN: (382..383) ")"
+    CLOSE_PAREN: (383..384) ")"
+  FORM: (384..393)
+    OPEN_PAREN: (384..385) "("
+    SYMBOL: (385..392)
+      IDENTIFIER: (385..392) "newline"
+    CLOSE_PAREN: (392..393) ")"
+  ATMOSPHERE: (393..394) "\n"
+  FORM: (394..437)
+    OPEN_PAREN: (394..395) "("
+    SYMBOL: (395..402)
+      IDENTIFIER: (395..402) "display"
+    ATMOSPHERE: (402..403) " "
+    FORM: (403..436)
+      OPEN_PAREN: (403..404) "("
+      SYMBOL: (404..421)
+        IDENTIFIER: (404..421) "bytevector-u8-ref"
+      ATMOSPHERE: (421..422) " "
+      SYMBOL: (422..433)
+        IDENTIFIER: (422..433) "test-vector"
+      ATMOSPHERE: (433..434) " "
+      CONSTANT: (434..435)
+        NUMBER: (434..435) "3"
+      CLOSE_PAREN: (435..436) ")"
+    CLOSE_PAREN: (436..437) ")"
+  FORM: (437..446)
+    OPEN_PAREN: (437..438) "("
+    SYMBOL: (438..445)
+      IDENTIFIER: (438..445) "newline"
+    CLOSE_PAREN: (445..446) ")"
+  ATMOSPHERE: (446..447) "\n"
+  FORM: (447..485)
+    OPEN_PAREN: (447..448) "("
+    SYMBOL: (448..466)
+      IDENTIFIER: (448..466) "bytevector-u8-set!"
+    ATMOSPHERE: (466..467) " "
+    SYMBOL: (467..478)
+      IDENTIFIER: (467..478) "test-vector"
+    ATMOSPHERE: (478..479) " "
+    CONSTANT: (479..480)
+      NUMBER: (479..480) "3"
+    ATMOSPHERE: (480..481) " "
+    CONSTANT: (481..484)
+      NUMBER: (481..484) "101"
+    CLOSE_PAREN: (484..485) ")"
+  ATMOSPHERE: (485..486) "\n"
+  FORM: (486..529)
+    OPEN_PAREN: (486..487) "("
+    SYMBOL: (487..494)
+      IDENTIFIER: (487..494) "display"
+    ATMOSPHERE: (494..495) " "
+    FORM: (495..528)
+      OPEN_PAREN: (495..496) "("
+      SYMBOL: (496..513)
+        IDENTIFIER: (496..513) "bytevector-u8-ref"
+      ATMOSPHERE: (513..514) " "
+      SYMBOL: (514..525)
+        IDENTIFIER: (514..525) "test-vector"
+      ATMOSPHERE: (525..526) " "
+      CONSTANT: (526..527)
+        NUMBER: (526..527) "3"
+      CLOSE_PAREN: (527..528) ")"
+    CLOSE_PAREN: (528..529) ")"
+  FORM: (529..538)
+    OPEN_PAREN: (529..530) "("
+    SYMBOL: (530..537)
+      IDENTIFIER: (530..537) "newline"
+    CLOSE_PAREN: (537..538) ")"
+  ATMOSPHERE: (538..539) "\n"
+  EOF: (539..539) ""
