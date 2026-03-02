@@ -104,8 +104,7 @@ type StorageRef =
 
     override this.GetHashCode() =
         match this with
-        | Macro m ->
-            System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(m)
+        | Macro m -> System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(m)
         | Local i -> hash ("Local", i)
         | Global(n, t) -> hash ("Global", n, t)
         | Arg i -> hash ("Arg", i)
@@ -423,7 +422,11 @@ module private Impl =
             |> BoundLiteral.ByteVector
             |> BoundExpr.Literal
         | VecNode v ->
-            v.Body |> Seq.map (bindDatum ctx) |> List.ofSeq |> BoundLiteral.Vector |> BoundExpr.Literal
+            v.Body
+            |> Seq.map (bindDatum ctx)
+            |> List.ofSeq
+            |> BoundLiteral.Vector
+            |> BoundExpr.Literal
         | FormNode f ->
             let body = f.Body |> List.ofSeq
 
@@ -451,10 +454,7 @@ module private Impl =
             match q.Inner with
             | Some inner -> bindQuoted ctx inner
             | None ->
-                ctx.Diagnostics.Emit
-                    BinderDiagnostics.patternBindError
-                    (getNodeLocation ctx node)
-                    "Empty quotation"
+                ctx.Diagnostics.Emit BinderDiagnostics.patternBindError (getNodeLocation ctx node) "Empty quotation"
 
                 BoundExpr.Error
 
@@ -472,7 +472,12 @@ module private Impl =
                 // We represent the dot as an Ident "." element to match legacy behavior.
                 let tailDatum = tail.Body |> Option.map (bindDatum ctx) |> Option.toList
                 BoundDatum.Compound(List.append body (BoundDatum.Ident "." :: tailDatum))
-        | VecNode v -> v.Body |> Seq.map (bindDatum ctx) |> List.ofSeq |> BoundLiteral.Vector |> BoundDatum.SelfEval
+        | VecNode v ->
+            v.Body
+            |> Seq.map (bindDatum ctx)
+            |> List.ofSeq
+            |> BoundLiteral.Vector
+            |> BoundDatum.SelfEval
         | ByteVecNode b ->
             b.Body
             |> Seq.choose (function
@@ -834,6 +839,7 @@ module Binder =
             units
             |> List.collect (fun (doc, exprs) ->
                 ctx.CurrentDocument <- Some doc
+
                 match bindSequence ctx exprs with
                 | BoundExpr.Seq stmts -> stmts
                 | x -> [ x ])
