@@ -4,6 +4,8 @@ open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Tree
+open Feersum.CompilerServices.Syntax.Factories
 open Feersum.CompilerServices.Utils
 
 /// The macro pattern type. Used in syntax cases to define the form that a
@@ -20,7 +22,7 @@ type MacroPattern =
 /// Macro template specify how to convert a match into new syntax. They are
 /// effecively patterns for the syntax, with holes to be filled in by matches.
 type MacroTemplate =
-    | Quoted of LegacyNode
+    | Quoted of Expression
     | Subst of string
     | Form of TextLocation * MacroTemplateElement list
     | DottedForm of MacroTemplateElement list * MacroTemplate
@@ -38,7 +40,7 @@ type Macro =
       Transformers: MacroTransformer list }
 
 /// The binding of a macro variable to syntax.
-type MacroBinding = (string * LegacyNode)
+type MacroBinding = (string * Expression)
 
 /// Collection of bindings produced by a macro match
 type MacroBindings =
@@ -76,41 +78,37 @@ module Macros =
     let private errAt location message =
         Diagnostic.Create macroExpansionError location message |> Result.Error
 
-    /// Parse a (a ... . b) or (a ...) form. This is used to parse both patterns and
-    /// templates for transformers.
-    let private parseMacroForm form elipsis recurse onRepeated onSingle onDotted onForm =
-        let rec parseForm maybeDot nodes =
-            match maybeDot with
-            | Some loc ->
-                ([],
-                 match nodes with
-                 | [ n ] -> recurse n
-                 | _ -> errAt loc "Only expected a single element after dot"
-                 |> Some)
-            | None ->
-                match nodes with
-                | { Kind = LegacyNodeKind.Dot
-                    Location = l } :: _ -> ([], errAt l "Invalid dotted form" |> Some)
-                | node :: rest ->
-                    let element = recurse node
+    /// Parse a (a ... . b) or (a ...) form body. Handles elipsis detection.
+    /// `body` is the list of elements before any dotted tail; `tailOpt` is the
+    /// optional tail element (from a DottedForm).
+    let private parseMacroFormBody
+        (body: Expression list)
+        (tailOpt: Expression option)
+        elipsis
+        recurse
+        onRepeated
+        onSingle
+        onDotted
+        onForm
+        =
+        let rec parseBody nodes =
+            match nodes with
+            | node :: rest ->
+                let element = recurse node
 
-                    let (maybeDot, rest) =
-                        match rest with
-                        | { Kind = LegacyNodeKind.Dot
-                            Location = l } :: rest -> (Some(l), rest)
-                        | _ -> (None, rest)
+                let (element, rest) =
+                    match rest with
+                    | (Symbol id) :: rest when id = elipsis -> (element |> Result.map onRepeated, rest)
+                    | _ -> (element |> Result.map onSingle, rest)
 
-                    let (element, rest) =
-                        match rest with
-                        | { Kind = LegacyNodeKind.Ident(id) } :: rest when id = elipsis ->
-                            (element |> Result.map onRepeated, rest)
-                        | _ -> (element |> Result.map onSingle, rest)
+                let (templates, maybeDotElement) = parseBody rest
+                (element :: templates, maybeDotElement)
+            | [] ->
+                match tailOpt with
+                | Some tailNode -> ([], recurse tailNode |> Some)
+                | None -> ([], None)
 
-                    let (templates, maybeDotElement) = parseForm maybeDot rest
-                    (element :: templates, maybeDotElement)
-                | [] -> ([], None)
-
-        let (elements, maybeDotElement) = parseForm None form
+        let (elements, maybeDotElement) = parseBody body
 
         match maybeDotElement with
         | Some dot ->
@@ -122,31 +120,41 @@ module Macros =
                 | _ -> dot)
         | None -> elements |> Result.collect |> Result.map onForm
 
+    /// Convert a ConstantValue to a LegacySyntaxConstant for pattern comparison
+    let private toMacroConst (cv: ConstantValue) : LegacySyntaxConstant option =
+        match cv with
+        | NumVal n -> Some(LegacySyntaxConstant.Number n)
+        | StrVal s -> Some(LegacySyntaxConstant.Str s)
+        | BoolVal b -> Some(LegacySyntaxConstant.Boolean b)
+        | CharVal c -> c |> Option.map LegacySyntaxConstant.Character
+
     /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
     /// pattern matches. Returns `Err` if the pattern does not match the given node.
-    let rec macroMatch (pat: MacroPattern) (ast: LegacyNode) : Result<MacroBindings, unit> =
+    let rec macroMatch (pat: MacroPattern) (ast: Expression) : Result<MacroBindings, unit> =
         match pat with
         | Constant c ->
-            match ast.Kind with
-            | LegacyNodeKind.Constant k ->
-                if k = c then
-                    Result.Ok MacroBindings.Empty
-                else
-                    Result.Error()
+            match ast with
+            | ConstantNode cn ->
+                match cn.Value |> Option.bind toMacroConst with
+                | Some k when k = c -> Result.Ok MacroBindings.Empty
+                | _ -> Result.Error()
             | _ -> Result.Error()
         | Variable v -> Result.Ok(MacroBindings.FromVariable v ast)
         | MacroPattern.Form patterns ->
-            match ast.Kind with
-            | LegacyNodeKind.Form g -> matchForm patterns None g
+            match ast with
+            | FormNode f -> matchForm patterns None (f.Body |> List.ofSeq) None
             | _ -> Result.Error()
         | MacroPattern.DottedForm(patterns, tail) ->
-            match ast.Kind with
-            | LegacyNodeKind.Form g -> matchForm patterns (Some(tail)) g
+            match ast with
+            | FormNode f ->
+                let body = f.Body |> List.ofSeq
+                let tailExpr = f.DottedTail |> Option.bind (_.Body)
+                matchForm patterns (Some tail) body tailExpr
             | _ -> Result.Error()
         | Underscore -> Result.Ok MacroBindings.Empty
         | Literal literal ->
-            match ast.Kind with
-            | LegacyNodeKind.Ident id ->
+            match ast with
+            | Symbol id ->
                 if id = literal then
                     Result.Ok MacroBindings.Empty
                 else
@@ -159,35 +167,36 @@ module Macros =
             ice "Repeat at top level"
 
     /// Try to match a list of patterns and, optionally, a tail form against the
-    /// contents of a form. If the pattern list contains any elipsis the heavy
-    /// lifting is forwarded to `matchRepeated`.
-    and private matchForm patterns maybeTail syntax =
+    /// contents of a form body. `body` is the list of body elements,
+    /// `tailExpr` is the optional parsed tail expression from a DottedForm.
+    and private matchForm patterns maybeTailPat body tailExpr =
         match patterns with
-        | MacroPattern.Repeat(repeat) :: pats -> matchRepeated repeat pats maybeTail syntax []
+        | MacroPattern.Repeat(repeat) :: pats -> matchRepeated repeat pats maybeTailPat body tailExpr []
         | headPat :: patterns ->
-            match syntax with
+            match body with
             | head :: rest ->
                 macroMatch headPat head
-                |> Result.bind (fun vars -> matchForm patterns maybeTail rest |> Result.map (MacroBindings.Union vars))
+                |> Result.bind (fun vars ->
+                    matchForm patterns maybeTailPat rest tailExpr |> Result.map (MacroBindings.Union vars))
             | [] -> Result.Error()
         | [] ->
-            match maybeTail with
+            match maybeTailPat with
             | Some tailPattern ->
-                match syntax with
-                | [ single ] -> macroMatch tailPattern single
-                | other ->
-                    match tailPattern with
-                    | Underscore -> Result.Ok MacroBindings.Empty
-                    | Variable v ->
-                        Result.Ok(
-                            MacroBindings.FromVariable
-                                v
-                                { Kind = LegacyNodeKind.Form(other)
-                                  Location = Missing }
-                        )
-                    | _ -> Result.Error()
+                match tailExpr with
+                | Some single -> macroMatch tailPattern single
+                | None ->
+                    // No tail expression, but pattern expects one.
+                    // Match remaining body elements as a list.
+                    match body with
+                    | [ single ] -> macroMatch tailPattern single
+                    | other ->
+                        match tailPattern with
+                        | Underscore -> Result.Ok MacroBindings.Empty
+                        | Variable v ->
+                            Result.Ok(MacroBindings.FromVariable v (Factories.form other :> Expression))
+                        | _ -> Result.Error()
             | None ->
-                if List.isEmpty syntax then
+                if List.isEmpty body && tailExpr.IsNone then
                     Ok MacroBindings.Empty
                 else
                     Result.Error()
@@ -195,17 +204,18 @@ module Macros =
     /// Try and match a repeated pattern. This effectively re-matches the tail
     /// patterns until no further matches of repeat are required in a manner similar
     /// to backtracking.
-    and private matchRepeated repeat patterns maybeTail syntax repeatedBindings =
-        match matchForm patterns maybeTail syntax with
+    and private matchRepeated repeat patterns maybeTailPat body tailExpr repeatedBindings =
+        match matchForm patterns maybeTailPat body tailExpr with
         | Ok vars ->
             Ok
                 { vars with
                     Repeated = repeatedBindings |> List.rev }
         | _ ->
-            match syntax with
-            | head :: syntax ->
+            match body with
+            | head :: rest ->
                 macroMatch repeat head
-                |> Result.bind (fun x -> matchRepeated repeat patterns maybeTail syntax (x :: repeatedBindings))
+                |> Result.bind (fun x ->
+                    matchRepeated repeat patterns maybeTailPat rest tailExpr (x :: repeatedBindings))
             | _ ->
                 // Ran out of repeats and tail never matched
                 Result.Error()
@@ -225,7 +235,7 @@ module Macros =
             match List.tryFind (fun (id, _) -> id = v) bindings.Bindings with
             | Some(_, syntax) -> (Result.Ok syntax, 1)
             | None -> (Result.Error(sprintf "Reference to unbound substitution %s" v), 0)
-        | Form(location, templateElements) ->
+        | MacroTemplate.Form(location, templateElements) ->
             let elements = List.map (fun t -> macroExpandElement t bindings) templateElements
 
             let substs = List.sumBy (getCount) elements
@@ -234,9 +244,7 @@ module Macros =
                 elements
                 |> List.map (getNode)
                 |> Result.collect
-                |> Result.map (fun expanded ->
-                    { Kind = LegacyNodeKind.Form(expanded |> List.concat)
-                      Location = location })
+                |> Result.map (fun expanded -> Factories.form (expanded |> List.concat) :> Expression)
 
             (elements, substs)
         | DottedForm _ -> unimpl "Dotted forms in macro expansion are not yet supported"
@@ -260,7 +268,7 @@ module Macros =
             (repeated, 0)
 
     /// Apply a macro to a given syntax node
-    let macroApply (macro: Macro) syntax =
+    let macroApply (macro: Macro) (syntax: Expression) (loc: TextLocation) =
         let rec macroTryApply transfomers =
             match transfomers with
             | (p, t) :: rest ->
@@ -270,45 +278,60 @@ module Macros =
             | [] -> Result.Error "No pattern matched the syntax"
 
         macroTryApply macro.Transformers
-        |> Result.mapError (Diagnostic.Create macroExpansionError syntax.Location)
+        |> Result.mapError (Diagnostic.Create macroExpansionError loc)
 
     /// Try to parse a pattern from the given syntax.
-    let rec public parsePattern elipsis literals syntax =
+    let rec public parsePattern elipsis literals (syntax: Expression) =
         let recurse = parsePattern elipsis literals
-        let e = errAt syntax.Location
+        let e = errAt TextLocation.Missing
 
-        match syntax.Kind with
-        | LegacyNodeKind.Constant c -> Ok(MacroPattern.Constant c)
-        | LegacyNodeKind.Dot -> e "Unexpected dot"
-        | LegacyNodeKind.Ident id ->
-            match id with
+        match syntax with
+        | ConstantNode c ->
+            match c.Value |> Option.bind toMacroConst with
+            | Some mc -> Ok(MacroPattern.Constant mc)
+            | None -> e "Invalid constant in macro pattern"
+        | SymbolNode s ->
+            match s.CookedValue with
             | "_" -> MacroPattern.Underscore
             | l when List.contains l literals -> MacroPattern.Literal l
             | v -> MacroPattern.Variable v
             |> Ok
-        | LegacyNodeKind.Form f ->
-            parseMacroForm f elipsis (recurse) (MacroPattern.Repeat) (id) (MacroPattern.DottedForm) (MacroPattern.Form)
-        | LegacyNodeKind.Vector _
-        | LegacyNodeKind.ByteVector _
-        | LegacyNodeKind.Quoted _ -> e "Unsupported pattern element"
-        | LegacyNodeKind.Seq _
-        | LegacyNodeKind.Error -> e "Invalid macro pattern"
+        | FormNode f ->
+            let body = f.Body |> List.ofSeq
+            let tailOpt = f.DottedTail |> Option.bind (_.Body)
+
+            parseMacroFormBody
+                body
+                tailOpt
+                elipsis
+                (recurse)
+                (MacroPattern.Repeat)
+                (id)
+                (MacroPattern.DottedForm)
+                (MacroPattern.Form)
+        | VecNode _
+        | ByteVecNode _
+        | QuotedNode _ -> e "Unsupported pattern element"
 
     /// Parse a macro template specification from a syntax tree.
-    let rec public parseTemplate elipsis bound syntax =
+    let rec public parseTemplate elipsis bound (syntax: Expression) =
         let recurse = parseTemplate elipsis bound
 
-        match syntax.Kind with
-        | LegacyNodeKind.Form f ->
-            parseMacroForm
-                f
+        match syntax with
+        | FormNode f ->
+            let body = f.Body |> List.ofSeq
+            let tailOpt = f.DottedTail |> Option.bind (_.Body)
+
+            parseMacroFormBody
+                body
+                tailOpt
                 elipsis
                 (recurse)
                 (MacroTemplateElement.Repeated)
                 (MacroTemplateElement.Template)
                 (MacroTemplate.DottedForm)
-                (fun x -> MacroTemplate.Form(syntax.Location, x))
-        | LegacyNodeKind.Ident id ->
+                (fun x -> MacroTemplate.Form(TextLocation.Missing, x))
+        | Symbol id ->
             if List.contains id bound then
                 MacroTemplate.Subst id
             else
@@ -326,43 +349,54 @@ module Macros =
         | _ -> []
 
     /// Parse a single macro transformer from a syntax node
-    let private parseTransformer id elip literals =
-        function
-        | { Kind = LegacyNodeKind.Form([ pat; template ]) } ->
-            parsePattern elip literals pat
-            |> Result.bind (fun pat ->
-                let bound = findBound pat
+    let private parseTransformer id elip literals (syntax: Expression) =
+        match syntax with
+        | FormNode f when f.DottedTail.IsNone ->
+            let body = f.Body |> List.ofSeq
 
-                parseTemplate elip bound template
-                |> Result.map (fun template -> (pat, template)))
-        | n -> errAt n.Location "Ill-formed syntax case"
+            match body with
+            | [ pat; template ] ->
+                parsePattern elip literals pat
+                |> Result.bind (fun pat ->
+                    let bound = findBound pat
+
+                    parseTemplate elip bound template
+                    |> Result.map (fun tmpl -> (pat, tmpl)))
+            | _ -> errAt TextLocation.Missing "Ill-formed syntax case"
+        | _ -> errAt TextLocation.Missing "Ill-formed syntax case"
 
     // Parse a list of syntax transformers
-    let private parseTransformers id elip literals body =
+    let private parseTransformers id elip (lits: Expression list) (body: Expression list) =
         List.map
             (function
-            | { Kind = LegacyNodeKind.Ident(id) } -> Ok(id)
-            | n -> errAt n.Location "Expected an identifier in macro literals")
-            literals
+            | SymbolNode s -> Ok(s.CookedValue)
+            | _ -> errAt TextLocation.Missing "Expected an identifier in macro literals")
+            lits
         |> Result.collect
         |> Result.bind (fun literals ->
             List.map (fun case -> parseTransformer id elip literals case) body
             |> Result.collect)
 
     /// Parse the body of a syntax rules form.
-    let private parseSyntaxRulesBody id loc syntax =
+    let private parseSyntaxRulesBody id loc (syntax: Expression list) =
         match syntax with
-        | { Kind = LegacyNodeKind.Ident(elip) } :: { Kind = LegacyNodeKind.Form(literals) } :: body ->
-            parseTransformers id elip literals body
-        | { Kind = LegacyNodeKind.Form(literals) } :: body -> parseTransformers id "..." literals body
+        | SymbolNode elipNode :: FormNode litsNode :: body ->
+            parseTransformers id elipNode.CookedValue (litsNode.Body |> List.ofSeq) body
+        | FormNode litsNode :: body ->
+            parseTransformers id "..." (litsNode.Body |> List.ofSeq) body
         | _ -> errAt loc "Ill-formed syntax rules."
         |> Result.map (fun transformers ->
             { Name = id
               Transformers = transformers })
 
     /// Parse a syntax rules expression into a macro definition.
-    let public parseSyntaxRules id syntaxRulesSyn =
+    let public parseSyntaxRules id (syntaxRulesSyn: Expression) =
         match syntaxRulesSyn with
-        | { Kind = LegacyNodeKind.Form({ Kind = LegacyNodeKind.Ident("syntax-rules") } :: body) } ->
-            parseSyntaxRulesBody id syntaxRulesSyn.Location body
-        | _ -> errAt syntaxRulesSyn.Location "Expected `syntax-rules` special form"
+        | FormNode f when f.DottedTail.IsNone ->
+            let body = f.Body |> List.ofSeq
+
+            match body with
+            | SymbolNode s :: body when s.CookedValue = "syntax-rules" ->
+                parseSyntaxRulesBody id TextLocation.Missing body
+            | _ -> errAt TextLocation.Missing "Expected `syntax-rules` special form"
+        | _ -> errAt TextLocation.Missing "Expected `syntax-rules` special form"

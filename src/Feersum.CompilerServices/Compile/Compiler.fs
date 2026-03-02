@@ -1175,15 +1175,12 @@ module Compilation =
 
         let progs =
             match input with
-            | CompileInput.Program progs -> List.map (fun (doc, prog) -> SyntaxShim.transformProgram doc prog) progs
+            | CompileInput.Program progs ->
+                progs |> List.map (fun (doc, prog) -> (doc, prog.Body |> List.ofSeq))
             | CompileInput.Script(doc, script) ->
-                script.Body |> Option.toList |> List.map (SyntaxShim.transformExpr doc)
+                [ (doc, script.Body |> Option.toList) ]
 
-        let input =
-            { Kind = LegacyNodeKind.Seq progs
-              Location = TextLocation.Missing }
-
-        let bound = Binder.bind scope allLibs input
+        let bound = Binder.bind scope allLibs progs
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then
