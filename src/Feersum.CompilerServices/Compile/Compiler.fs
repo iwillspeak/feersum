@@ -1175,10 +1175,8 @@ module Compilation =
 
         let progs =
             match input with
-            | CompileInput.Program progs ->
-                progs |> List.map (fun (doc, prog) -> (doc, prog.Body |> List.ofSeq))
-            | CompileInput.Script(doc, script) ->
-                [ (doc, script.Body |> Option.toList) ]
+            | CompileInput.Program progs -> progs |> List.map (fun (doc, prog) -> (doc, prog.Body |> List.ofSeq))
+            | CompileInput.Script(doc, script) -> [ (doc, script.Body |> Option.toList) ]
 
         let bound = Binder.bind scope allLibs progs
 

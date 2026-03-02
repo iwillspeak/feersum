@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - 'noci/**'
+      - 'noci-*'
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build and test
+        shell: pwsh
+        run: |
+          chcp 65001
+          dotnet build --configuration Release
+          dotnet test --no-build --configuration Release --logger 'trx' --logger 'console;verbosity=normal'
+      - name: Publish test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-windows
+          path: '**/TestResults/*.trx'
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build, test, and pack
+        run: |
+          set -euxo pipefail
+          dotnet tool restore
+          dotnet build --configuration Release
+          dotnet test --no-build --configuration Release --logger 'trx' --logger 'console;verbosity=normal'
+          # FIXME: The pack command below _should_ use --no-build too. Problem is
+          #        that doing so when an F# project depends on a C# one causes
+          #        a spurious re-build for some reason and ends up in NETSDK1085
+          #   https://github.com/dotnet/fsharp/issues/12320
+          dotnet pack --configuration Release --output ./artifacts
+          # Check code format. Fantomas for F#, dotnet format for C#
+          dotnet tool run fantomas --check .
+          dotnet format --verify-no-changes
+      - name: Publish test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-linux
+          path: '**/TestResults/*.trx'
+      - name: Upload NuGet packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts/*.nupkg
+
+  publish-github-packages:
+    runs-on: ubuntu-latest
+    needs: build-linux
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Download NuGet packages
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts
+      - name: Publish to GitHub Packages
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            --skip-duplicate
+
+  publish-nuget:
+    runs-on: ubuntu-latest
+    needs: build-linux
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Download NuGet packages
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts
+      - name: Publish to NuGet.org
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key ${{ secrets.NuGetOrgApiKey }} \
+            --source "https://api.nuget.org/v3/index.json" \
+            --skip-duplicate

@@ -209,7 +209,8 @@ let ``macro parse tests`` pattern syntax shouldMatch =
 
 [<Fact>]
 let ``custom elipsis patterns`` () =
-    let pattern = parsePattern ":::" [] (readSingleExpression "(a :::)") |> Result.unwrap
+    let pattern =
+        parsePattern ":::" [] (readSingleExpression "(a :::)") |> Result.unwrap
 
     Assert.Equal(MacroPattern.Form [ MacroPattern.Repeat(MacroPattern.Variable "a") ], pattern)
 

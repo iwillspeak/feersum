@@ -177,7 +177,8 @@ module Macros =
             | head :: rest ->
                 macroMatch headPat head
                 |> Result.bind (fun vars ->
-                    matchForm patterns maybeTailPat rest tailExpr |> Result.map (MacroBindings.Union vars))
+                    matchForm patterns maybeTailPat rest tailExpr
+                    |> Result.map (MacroBindings.Union vars))
             | [] -> Result.Error()
         | [] ->
             match maybeTailPat with
@@ -192,8 +193,7 @@ module Macros =
                     | other ->
                         match tailPattern with
                         | Underscore -> Result.Ok MacroBindings.Empty
-                        | Variable v ->
-                            Result.Ok(MacroBindings.FromVariable v (Factories.form other :> Expression))
+                        | Variable v -> Result.Ok(MacroBindings.FromVariable v (Factories.form other :> Expression))
                         | _ -> Result.Error()
             | None ->
                 if List.isEmpty body && tailExpr.IsNone then
@@ -360,8 +360,7 @@ module Macros =
                 |> Result.bind (fun pat ->
                     let bound = findBound pat
 
-                    parseTemplate elip bound template
-                    |> Result.map (fun tmpl -> (pat, tmpl)))
+                    parseTemplate elip bound template |> Result.map (fun tmpl -> (pat, tmpl)))
             | _ -> errAt TextLocation.Missing "Ill-formed syntax case"
         | _ -> errAt TextLocation.Missing "Ill-formed syntax case"
 
@@ -382,8 +381,7 @@ module Macros =
         match syntax with
         | SymbolNode elipNode :: FormNode litsNode :: body ->
             parseTransformers id elipNode.CookedValue (litsNode.Body |> List.ofSeq) body
-        | FormNode litsNode :: body ->
-            parseTransformers id "..." (litsNode.Body |> List.ofSeq) body
+        | FormNode litsNode :: body -> parseTransformers id "..." (litsNode.Body |> List.ofSeq) body
         | _ -> errAt loc "Ill-formed syntax rules."
         |> Result.map (fun transformers ->
             { Name = id
