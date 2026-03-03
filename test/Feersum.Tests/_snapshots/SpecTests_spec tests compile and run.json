@@ -214,6 +214,19 @@
           "Level": {
             "Case": "Error"
           },
+          "Code": 40,
+          "Title": "Macro expansion error"
+        },
+        "Location": {
+          "Case": "Missing"
+        },
+        "Message": "Invalid dotted form"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
           "Code": 35,
           "Title": "Reference to undefined symbol"
         },
@@ -233,31 +246,6 @@
           ]
         },
         "Message": "The symbol another is not defined in the current context"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 40,
-          "Title": "Macro expansion error"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/macrofails.scm",
-              "Line": 16,
-              "Col": 11
-            },
-            {
-              "Source": "fail/macrofails.scm",
-              "Line": 16,
-              "Col": 14
-            }
-          ]
-        },
-        "Message": "Invalid dotted form"
       },
       {
         "Kind": {
