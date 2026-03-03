@@ -10,8 +10,8 @@
 
 (let-syntax
     ((another (syntax-rules ()
-        ((_ a ...) '(a ...)))))
-    #t)
+        ((_ a ...) a))))
+    (another 1 2 3))
 
 ; another is not in scope here - expect a diagnostic
 (another 1 2 3)

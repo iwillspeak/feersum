@@ -1,13 +1,168 @@
-PROGRAM: (0..72)
-  ATMOSPHERE: (0..60) "; A dotted form with no preceding elements is a reader error"
-  ATMOSPHERE: (60..61) "\n"
-  FORM: (61..71)
-    OPEN_PAREN: (61..62) "("
-    DOTTED_TAIL: (62..70)
-      DOT: (62..63) "."
-      ATMOSPHERE: (63..64) " "
-      CONSTANT: (64..70)
-        STRING: (64..70) "\"test\""
-    CLOSE_PAREN: (70..71) ")"
-  ATMOSPHERE: (71..72) "\n"
-  EOF: (72..72) ""
+PROGRAM: (0..737)
+  ATMOSPHERE: (0..52) "; Plain scope: each variant of malformed dotted form"
+  ATMOSPHERE: (52..54) "\n\n"
+  ATMOSPHERE: (54..83) "; ( . a) - no head before dot"
+  ATMOSPHERE: (83..84) "\n"
+  FORM: (84..97)
+    OPEN_PAREN: (84..85) "("
+    DOTTED_TAIL: (85..96)
+      DOT: (85..86) "."
+      ATMOSPHERE: (86..87) " "
+      CONSTANT: (87..96)
+        STRING: (87..96) "\"no head\""
+    CLOSE_PAREN: (96..97) ")"
+  ATMOSPHERE: (97..98) "\n"
+  ATMOSPHERE: (98..125) "; (.) - no head and no tail"
+  ATMOSPHERE: (125..126) "\n"
+  FORM: (126..129)
+    OPEN_PAREN: (126..127) "("
+    DOTTED_TAIL: (127..128)
+      DOT: (127..128) "."
+    CLOSE_PAREN: (128..129) ")"
+  ATMOSPHERE: (129..130) "\n"
+  ATMOSPHERE: (130..157) "; (a .) - no tail after dot"
+  ATMOSPHERE: (157..158) "\n"
+  FORM: (158..163)
+    OPEN_PAREN: (158..159) "("
+    SYMBOL: (159..160)
+      IDENTIFIER: (159..160) "a"
+    ATMOSPHERE: (160..161) " "
+    DOTTED_TAIL: (161..162)
+      DOT: (161..162) "."
+    CLOSE_PAREN: (162..163) ")"
+  ATMOSPHERE: (163..165) "\n\n"
+  ATMOSPHERE: (165..233) "; In define-syntax: malformed dotted forms in patterns and templates"
+  ATMOSPHERE: (233..234) "\n"
+  FORM: (234..496)
+    OPEN_PAREN: (234..235) "("
+    SYMBOL: (235..248)
+      IDENTIFIER: (235..248) "define-syntax"
+    ATMOSPHERE: (248..249) " "
+    SYMBOL: (249..258)
+      IDENTIFIER: (249..258) "bad-macro"
+    ATMOSPHERE: (258..263) "\n    "
+    FORM: (263..495)
+      OPEN_PAREN: (263..264) "("
+      SYMBOL: (264..276)
+        IDENTIFIER: (264..276) "syntax-rules"
+      ATMOSPHERE: (276..277) " "
+      FORM: (277..279)
+        OPEN_PAREN: (277..278) "("
+        CLOSE_PAREN: (278..279) ")"
+      ATMOSPHERE: (279..288) "\n        "
+      ATMOSPHERE: (288..331) "; (. _) invalid pattern: no head before dot"
+      ATMOSPHERE: (331..340) "\n        "
+      FORM: (340..350)
+        OPEN_PAREN: (340..341) "("
+        FORM: (341..346)
+          OPEN_PAREN: (341..342) "("
+          DOTTED_TAIL: (342..345)
+            DOT: (342..343) "."
+            ATMOSPHERE: (343..344) " "
+            SYMBOL: (344..345)
+              IDENTIFIER: (344..345) "_"
+          CLOSE_PAREN: (345..346) ")"
+        ATMOSPHERE: (346..347) " "
+        CONSTANT: (347..349)
+          BOOLEAN: (347..349) "#f"
+        CLOSE_PAREN: (349..350) ")"
+      ATMOSPHERE: (350..359) "\n        "
+      ATMOSPHERE: (359..402) "; (.) invalid template: no head and no tail"
+      ATMOSPHERE: (402..411) "\n        "
+      FORM: (411..420)
+        OPEN_PAREN: (411..412) "("
+        FORM: (412..415)
+          OPEN_PAREN: (412..413) "("
+          SYMBOL: (413..414)
+            IDENTIFIER: (413..414) "_"
+          CLOSE_PAREN: (414..415) ")"
+        ATMOSPHERE: (415..416) " "
+        FORM: (416..419)
+          OPEN_PAREN: (416..417) "("
+          DOTTED_TAIL: (417..418)
+            DOT: (417..418) "."
+          CLOSE_PAREN: (418..419) ")"
+        CLOSE_PAREN: (419..420) ")"
+      ATMOSPHERE: (420..429) "\n        "
+      ATMOSPHERE: (429..472) "; (b .) invalid template: no tail after dot"
+      ATMOSPHERE: (472..481) "\n        "
+      FORM: (481..494)
+        OPEN_PAREN: (481..482) "("
+        FORM: (482..487)
+          OPEN_PAREN: (482..483) "("
+          SYMBOL: (483..484)
+            IDENTIFIER: (483..484) "_"
+          ATMOSPHERE: (484..485) " "
+          SYMBOL: (485..486)
+            IDENTIFIER: (485..486) "b"
+          CLOSE_PAREN: (486..487) ")"
+        ATMOSPHERE: (487..488) " "
+        FORM: (488..493)
+          OPEN_PAREN: (488..489) "("
+          SYMBOL: (489..490)
+            IDENTIFIER: (489..490) "b"
+          ATMOSPHERE: (490..491) " "
+          DOTTED_TAIL: (491..492)
+            DOT: (491..492) "."
+          CLOSE_PAREN: (492..493) ")"
+        CLOSE_PAREN: (493..494) ")"
+      CLOSE_PAREN: (494..495) ")"
+    CLOSE_PAREN: (495..496) ")"
+  ATMOSPHERE: (496..498) "\n\n"
+  ATMOSPHERE: (498..557) "; In define-library: malformed dotted forms in library body"
+  ATMOSPHERE: (557..558) "\n"
+  FORM: (558..736)
+    OPEN_PAREN: (558..559) "("
+    SYMBOL: (559..573)
+      IDENTIFIER: (559..573) "define-library"
+    ATMOSPHERE: (573..574) " "
+    FORM: (574..595)
+      OPEN_PAREN: (574..575) "("
+      SYMBOL: (575..579)
+        IDENTIFIER: (575..579) "fail"
+      ATMOSPHERE: (579..580) " "
+      SYMBOL: (580..586)
+        IDENTIFIER: (580..586) "dotted"
+      ATMOSPHERE: (586..587) " "
+      SYMBOL: (587..594)
+        IDENTIFIER: (587..594) "library"
+      CLOSE_PAREN: (594..595) ")"
+    ATMOSPHERE: (595..600) "\n    "
+    FORM: (600..735)
+      OPEN_PAREN: (600..601) "("
+      SYMBOL: (601..606)
+        IDENTIFIER: (601..606) "begin"
+      ATMOSPHERE: (606..615) "\n        "
+      ATMOSPHERE: (615..634) "; ( . a) in library"
+      ATMOSPHERE: (634..643) "\n        "
+      FORM: (643..656)
+        OPEN_PAREN: (643..644) "("
+        DOTTED_TAIL: (644..655)
+          DOT: (644..645) "."
+          ATMOSPHERE: (645..646) " "
+          CONSTANT: (646..655)
+            STRING: (646..655) "\"library\""
+        CLOSE_PAREN: (655..656) ")"
+      ATMOSPHERE: (656..665) "\n        "
+      ATMOSPHERE: (665..681) "; (.) in library"
+      ATMOSPHERE: (681..690) "\n        "
+      FORM: (690..693)
+        OPEN_PAREN: (690..691) "("
+        DOTTED_TAIL: (691..692)
+          DOT: (691..692) "."
+        CLOSE_PAREN: (692..693) ")"
+      ATMOSPHERE: (693..702) "\n        "
+      ATMOSPHERE: (702..720) "; (c .) in library"
+      ATMOSPHERE: (720..729) "\n        "
+      FORM: (729..734)
+        OPEN_PAREN: (729..730) "("
+        SYMBOL: (730..731)
+          IDENTIFIER: (730..731) "c"
+        ATMOSPHERE: (731..732) " "
+        DOTTED_TAIL: (732..733)
+          DOT: (732..733) "."
+        CLOSE_PAREN: (733..734) ")"
+      CLOSE_PAREN: (734..735) ")"
+    CLOSE_PAREN: (735..736) ")"
+  ATMOSPHERE: (736..737) "\n"
+  EOF: (737..737) ""
