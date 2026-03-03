@@ -108,22 +108,17 @@ module Macros =
                 | Some tailNode -> ([], recurse tailNode |> Some)
                 | None -> ([], None)
 
-        // (. x) — empty body with a dotted tail — is an invalid dotted form
-        if body.IsEmpty && tailOpt.IsSome then
-            errAt TextLocation.Missing "Invalid dotted form"
-        else
+        let (elements, maybeDotElement) = parseBody body
 
-            let (elements, maybeDotElement) = parseBody body
-
-            match maybeDotElement with
-            | Some dot ->
-                elements
-                |> Result.collect
-                |> Result.bind (fun elements ->
-                    match dot with
-                    | Ok d -> Ok(onDotted (elements, d))
-                    | _ -> dot)
-            | None -> elements |> Result.collect |> Result.map onForm
+        match maybeDotElement with
+        | Some dot ->
+            elements
+            |> Result.collect
+            |> Result.bind (fun elements ->
+                match dot with
+                | Ok d -> Ok(onDotted (elements, d))
+                | _ -> dot)
+        | None -> elements |> Result.collect |> Result.map onForm
 
     /// Convert a ConstantValue to a LegacySyntaxConstant for pattern comparison
     let private toMacroConst (cv: ConstantValue) : LegacySyntaxConstant option =

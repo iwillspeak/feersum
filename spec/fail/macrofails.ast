@@ -1,4 +1,4 @@
-PROGRAM: (0..426)
+PROGRAM: (0..366)
   FORM: (0..22)
     OPEN_PAREN: (0..1) "("
     SYMBOL: (1..7)
@@ -121,19 +121,19 @@ PROGRAM: (0..426)
       IDENTIFIER: (208..211) "one"
     CLOSE_PAREN: (211..212) ")"
   ATMOSPHERE: (212..214) "\n\n"
-  FORM: (214..426)
+  FORM: (214..296)
     OPEN_PAREN: (214..215) "("
     SYMBOL: (215..225)
       IDENTIFIER: (215..225) "let-syntax"
     ATMOSPHERE: (225..230) "\n    "
-    FORM: (230..405)
+    FORM: (230..288)
       OPEN_PAREN: (230..231) "("
-      FORM: (231..404)
+      FORM: (231..287)
         OPEN_PAREN: (231..232) "("
         SYMBOL: (232..239)
           IDENTIFIER: (232..239) "another"
         ATMOSPHERE: (239..240) " "
-        FORM: (240..403)
+        FORM: (240..286)
           OPEN_PAREN: (240..241) "("
           SYMBOL: (241..253)
             IDENTIFIER: (241..253) "syntax-rules"
@@ -167,49 +167,28 @@ PROGRAM: (0..426)
                   IDENTIFIER: (280..283) "..."
                 CLOSE_PAREN: (283..284) ")"
             CLOSE_PAREN: (284..285) ")"
-          ATMOSPHERE: (285..294) "\n        "
-          ATMOSPHERE: (294..327) "; we expect a diagnostic for both"
-          ATMOSPHERE: (327..336) "\n        "
-          ATMOSPHERE: (336..366) "; these malformed dotted forms"
-          ATMOSPHERE: (366..375) "\n        "
-          FORM: (375..393)
-            OPEN_PAREN: (375..376) "("
-            FORM: (376..381)
-              OPEN_PAREN: (376..377) "("
-              DOTTED_TAIL: (377..380)
-                DOT: (377..378) "."
-                ATMOSPHERE: (378..379) " "
-                SYMBOL: (379..380)
-                  IDENTIFIER: (379..380) "_"
-              CLOSE_PAREN: (380..381) ")"
-            ATMOSPHERE: (381..382) " "
-            FORM: (382..392)
-              OPEN_PAREN: (382..383) "("
-              DOTTED_TAIL: (383..391)
-                DOT: (383..384) "."
-                ATMOSPHERE: (384..385) " "
-                CONSTANT: (385..391)
-                  STRING: (385..391) "\"test\""
-              CLOSE_PAREN: (391..392) ")"
-            CLOSE_PAREN: (392..393) ")"
-          ATMOSPHERE: (393..402) "\n        "
-          CLOSE_PAREN: (402..403) ")"
-        CLOSE_PAREN: (403..404) ")"
-      CLOSE_PAREN: (404..405) ")"
-    ATMOSPHERE: (405..410) "\n    "
-    FORM: (410..425)
-      OPEN_PAREN: (410..411) "("
-      SYMBOL: (411..418)
-        IDENTIFIER: (411..418) "another"
-      ATMOSPHERE: (418..419) " "
-      CONSTANT: (419..420)
-        NUMBER: (419..420) "1"
-      ATMOSPHERE: (420..421) " "
-      CONSTANT: (421..422)
-        NUMBER: (421..422) "2"
-      ATMOSPHERE: (422..423) " "
-      CONSTANT: (423..424)
-        NUMBER: (423..424) "3"
-      CLOSE_PAREN: (424..425) ")"
-    CLOSE_PAREN: (425..426) ")"
-  EOF: (426..426) ""
+          CLOSE_PAREN: (285..286) ")"
+        CLOSE_PAREN: (286..287) ")"
+      CLOSE_PAREN: (287..288) ")"
+    ATMOSPHERE: (288..293) "\n    "
+    CONSTANT: (293..295)
+      BOOLEAN: (293..295) "#t"
+    CLOSE_PAREN: (295..296) ")"
+  ATMOSPHERE: (296..298) "\n\n"
+  ATMOSPHERE: (298..350) "; another is not in scope here - expect a diagnostic"
+  ATMOSPHERE: (350..351) "\n"
+  FORM: (351..366)
+    OPEN_PAREN: (351..352) "("
+    SYMBOL: (352..359)
+      IDENTIFIER: (352..359) "another"
+    ATMOSPHERE: (359..360) " "
+    CONSTANT: (360..361)
+      NUMBER: (360..361) "1"
+    ATMOSPHERE: (361..362) " "
+    CONSTANT: (362..363)
+      NUMBER: (362..363) "2"
+    ATMOSPHERE: (363..364) " "
+    CONSTANT: (364..365)
+      NUMBER: (364..365) "3"
+    CLOSE_PAREN: (365..366) ")"
+  EOF: (366..366) ""
