@@ -10,9 +10,8 @@
 
 (let-syntax
     ((another (syntax-rules ()
-        ((_ a ...) '(a ...))
-        ; we expect a diagnostic for both
-        ; these malformed dotted forms
-        ((. _) (. "test"))
-        )))
-    (another 1 2 3))
+        ((_ a ...) '(a ...)))))
+    #t)
+
+; another is not in scope here - expect a diagnostic
+(another 1 2 3)

@@ -1,0 +1,13 @@
+PROGRAM: (0..72)
+  ATMOSPHERE: (0..60) "; A dotted form with no preceding elements is a reader error"
+  ATMOSPHERE: (60..61) "\n"
+  FORM: (61..71)
+    OPEN_PAREN: (61..62) "("
+    DOTTED_TAIL: (62..70)
+      DOT: (62..63) "."
+      ATMOSPHERE: (63..64) " "
+      CONSTANT: (64..70)
+        STRING: (64..70) "\"test\""
+    CLOSE_PAREN: (70..71) ")"
+  ATMOSPHERE: (71..72) "\n"
+  EOF: (72..72) ""

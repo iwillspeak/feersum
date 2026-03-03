@@ -222,11 +222,16 @@ and private parseAtom builder state =
 
 and private parseFormTail builder state =
     let mutable state = state |> skipAtmosphere builder
+    let mutable hasBody = false
 
     while not (lookingAtAny [ TokenKind.EndOfFile; TokenKind.Dot; TokenKind.CloseBracket ] state) do
         state <- parseExpr builder state
+        hasBody <- true
 
     if lookingAt TokenKind.Dot state then
+        if not hasBody then
+            state <- ParserState.bufferDiagnostic state ParserDiagnostics.parseError "Invalid dotted form"
+
         builder.StartNode(AstKind.DOTTED_TAIL |> SyntaxUtils.astToGreen)
 
         state <- state |> eat builder (AstKind.DOT) |> skipAtmosphere builder
