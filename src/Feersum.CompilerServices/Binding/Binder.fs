@@ -141,9 +141,10 @@ type BoundLiteral =
 ///
 /// Represents a form or atom when used as a data element rather than as a
 /// program element. Used to hold the contents of quoted expressions, as well
-/// as the lements winthin a vector literal.
+/// as the elements within a vector literal.
 and BoundDatum =
     | Compound of BoundDatum list
+    | Pair of BoundDatum list * BoundDatum
     | SelfEval of BoundLiteral
     | Ident of string
     | Quoted of BoundDatum
@@ -468,10 +469,15 @@ module private Impl =
             match f.DottedTail with
             | None -> BoundDatum.Compound body
             | Some tail ->
-                // FIXME: Dotted pairs in quoted forms are not correctly supported.
-                // We represent the dot as an Ident "." element to match legacy behavior.
-                let tailDatum = tail.Body |> Option.map (bindDatum ctx) |> Option.toList
-                BoundDatum.Compound(List.append body (BoundDatum.Ident "." :: tailDatum))
+                match tail.Body with
+                | Some tailExpr -> BoundDatum.Pair(body, bindDatum ctx tailExpr)
+                | None ->
+                    ctx.Diagnostics.Emit
+                        BinderDiagnostics.malformedDatum
+                        (getNodeLocation ctx node)
+                        "invalid dotted pair in quoted expression"
+
+                    BoundDatum.Compound body
         | VecNode v ->
             v.Body
             |> Seq.map (bindDatum ctx)
