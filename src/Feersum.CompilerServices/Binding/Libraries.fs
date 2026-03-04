@@ -135,7 +135,10 @@ module private Utils =
 
     and parseLibraryDeclarationForm diags doc position special body =
         match special with
-        | "export" -> body |> List.choose (parseExportDeclaration diags doc) |> LibraryDeclaration.Export
+        | "export" ->
+            body
+            |> List.choose (parseExportDeclaration diags doc)
+            |> LibraryDeclaration.Export
         | "import" -> body |> List.map (parseImportDeclaration diags doc) |> LibraryDeclaration.Import
         | "begin" -> LibraryDeclaration.Begin body
         | s ->
