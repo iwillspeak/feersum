@@ -5,3 +5,7 @@
 # specs would fail as diagnostics have different byte indices.
 *.scm text eol=lf
 *.sld text eol=lf
+
+# AST snapshot files are generated with LF line endings and must not be
+# converted to CRLF on Windows, otherwise snapshot comparison tests fail.
+*.ast text eol=lf

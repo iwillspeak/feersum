@@ -196,6 +196,7 @@ let rec ``spec tests parse result`` s =
                 Diagnostics = diagSanitiser r.Diagnostics })
 
     let astPath = Path.ChangeExtension(sourcePath, "ast")
+
     if shouldUpdateSnapshots then
         File.WriteAllText(astPath, root.Root)
     else
