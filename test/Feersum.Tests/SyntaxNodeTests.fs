@@ -1,7 +1,7 @@
-module SyntaxShimTests
+module SyntaxNodeTests
 
 open Xunit
-open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Syntax.Parse
@@ -9,7 +9,7 @@ open Feersum.CompilerServices.Syntax.Parse
 open SyntaxUtils.SyntaxFactory
 open SyntaxUtils
 
-let readExpr = LegacyParse.readExpr
+let readExpr = SyntaxNode.readFromString "repl"
 
 [<AutoOpen>]
 module private Utils =
@@ -27,7 +27,7 @@ let ``syntax shim test`` () =
     let tree =
         readProgram doc.Path body
         |> ParseResult.toResult
-        |> Result.map (fun x -> x.Body |> Seq.map (SyntaxShim.transformExpr doc) |> Seq.exactlyOne)
+        |> Result.map (fun x -> x.Body |> Seq.map (SyntaxNode.ofExpression doc) |> Seq.exactlyOne)
         |> Result.unwrap
 
     Assert.Equal(1L, tree.Location.Start.Line)

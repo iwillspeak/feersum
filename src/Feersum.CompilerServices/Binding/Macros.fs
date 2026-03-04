@@ -9,7 +9,7 @@ open Feersum.CompilerServices.Utils
 /// The macro pattern type. Used in syntax cases to define the form that a
 /// macro should match.
 type MacroPattern =
-    | Constant of LegacySyntaxConstant
+    | Constant of SyntaxConstant
     | Underscore
     | Literal of string
     | Variable of string
@@ -20,7 +20,7 @@ type MacroPattern =
 /// Macro template specify how to convert a match into new syntax. They are
 /// effecively patterns for the syntax, with holes to be filled in by matches.
 type MacroTemplate =
-    | Quoted of LegacyNode
+    | Quoted of SyntaxNode
     | Subst of string
     | Form of TextLocation * MacroTemplateElement list
     | DottedForm of MacroTemplateElement list * MacroTemplate
@@ -38,7 +38,7 @@ type Macro =
       Transformers: MacroTransformer list }
 
 /// The binding of a macro variable to syntax.
-type MacroBinding = (string * LegacyNode)
+type MacroBinding = (string * SyntaxNode)
 
 /// Collection of bindings produced by a macro match
 type MacroBindings =
@@ -89,20 +89,18 @@ module Macros =
                  |> Some)
             | None ->
                 match nodes with
-                | { Kind = LegacyNodeKind.Dot
-                    Location = l } :: _ -> ([], errAt l "Invalid dotted form" |> Some)
+                | { Kind = NodeKind.Dot; Location = l } :: _ -> ([], errAt l "Invalid dotted form" |> Some)
                 | node :: rest ->
                     let element = recurse node
 
                     let (maybeDot, rest) =
                         match rest with
-                        | { Kind = LegacyNodeKind.Dot
-                            Location = l } :: rest -> (Some(l), rest)
+                        | { Kind = NodeKind.Dot; Location = l } :: rest -> (Some(l), rest)
                         | _ -> (None, rest)
 
                     let (element, rest) =
                         match rest with
-                        | { Kind = LegacyNodeKind.Ident(id) } :: rest when id = elipsis ->
+                        | { Kind = NodeKind.Ident(id) } :: rest when id = elipsis ->
                             (element |> Result.map onRepeated, rest)
                         | _ -> (element |> Result.map onSingle, rest)
 
@@ -124,11 +122,11 @@ module Macros =
 
     /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
     /// pattern matches. Returns `Err` if the pattern does not match the given node.
-    let rec macroMatch (pat: MacroPattern) (ast: LegacyNode) : Result<MacroBindings, unit> =
+    let rec macroMatch (pat: MacroPattern) (ast: SyntaxNode) : Result<MacroBindings, unit> =
         match pat with
         | Constant c ->
             match ast.Kind with
-            | LegacyNodeKind.Constant k ->
+            | NodeKind.Constant k ->
                 if k = c then
                     Result.Ok MacroBindings.Empty
                 else
@@ -137,16 +135,16 @@ module Macros =
         | Variable v -> Result.Ok(MacroBindings.FromVariable v ast)
         | MacroPattern.Form patterns ->
             match ast.Kind with
-            | LegacyNodeKind.Form g -> matchForm patterns None g
+            | NodeKind.Form g -> matchForm patterns None g
             | _ -> Result.Error()
         | MacroPattern.DottedForm(patterns, tail) ->
             match ast.Kind with
-            | LegacyNodeKind.Form g -> matchForm patterns (Some(tail)) g
+            | NodeKind.Form g -> matchForm patterns (Some(tail)) g
             | _ -> Result.Error()
         | Underscore -> Result.Ok MacroBindings.Empty
         | Literal literal ->
             match ast.Kind with
-            | LegacyNodeKind.Ident id ->
+            | NodeKind.Ident id ->
                 if id = literal then
                     Result.Ok MacroBindings.Empty
                 else
@@ -182,7 +180,7 @@ module Macros =
                         Result.Ok(
                             MacroBindings.FromVariable
                                 v
-                                { Kind = LegacyNodeKind.Form(other)
+                                { Kind = NodeKind.Form(other)
                                   Location = Missing }
                         )
                     | _ -> Result.Error()
@@ -235,7 +233,7 @@ module Macros =
                 |> List.map (getNode)
                 |> Result.collect
                 |> Result.map (fun expanded ->
-                    { Kind = LegacyNodeKind.Form(expanded |> List.concat)
+                    { Kind = NodeKind.Form(expanded |> List.concat)
                       Location = location })
 
             (elements, substs)
@@ -278,28 +276,28 @@ module Macros =
         let e = errAt syntax.Location
 
         match syntax.Kind with
-        | LegacyNodeKind.Constant c -> Ok(MacroPattern.Constant c)
-        | LegacyNodeKind.Dot -> e "Unexpected dot"
-        | LegacyNodeKind.Ident id ->
+        | NodeKind.Constant c -> Ok(MacroPattern.Constant c)
+        | NodeKind.Dot -> e "Unexpected dot"
+        | NodeKind.Ident id ->
             match id with
             | "_" -> MacroPattern.Underscore
             | l when List.contains l literals -> MacroPattern.Literal l
             | v -> MacroPattern.Variable v
             |> Ok
-        | LegacyNodeKind.Form f ->
+        | NodeKind.Form f ->
             parseMacroForm f elipsis (recurse) (MacroPattern.Repeat) (id) (MacroPattern.DottedForm) (MacroPattern.Form)
-        | LegacyNodeKind.Vector _
-        | LegacyNodeKind.ByteVector _
-        | LegacyNodeKind.Quoted _ -> e "Unsupported pattern element"
-        | LegacyNodeKind.Seq _
-        | LegacyNodeKind.Error -> e "Invalid macro pattern"
+        | NodeKind.Vector _
+        | NodeKind.ByteVector _
+        | NodeKind.Quoted _ -> e "Unsupported pattern element"
+        | NodeKind.Seq _
+        | NodeKind.Error -> e "Invalid macro pattern"
 
     /// Parse a macro template specification from a syntax tree.
     let rec public parseTemplate elipsis bound syntax =
         let recurse = parseTemplate elipsis bound
 
         match syntax.Kind with
-        | LegacyNodeKind.Form f ->
+        | NodeKind.Form f ->
             parseMacroForm
                 f
                 elipsis
@@ -308,7 +306,7 @@ module Macros =
                 (MacroTemplateElement.Template)
                 (MacroTemplate.DottedForm)
                 (fun x -> MacroTemplate.Form(syntax.Location, x))
-        | LegacyNodeKind.Ident id ->
+        | NodeKind.Ident id ->
             if List.contains id bound then
                 MacroTemplate.Subst id
             else
@@ -328,7 +326,7 @@ module Macros =
     /// Parse a single macro transformer from a syntax node
     let private parseTransformer id elip literals =
         function
-        | { Kind = LegacyNodeKind.Form([ pat; template ]) } ->
+        | { Kind = NodeKind.Form([ pat; template ]) } ->
             parsePattern elip literals pat
             |> Result.bind (fun pat ->
                 let bound = findBound pat
@@ -341,7 +339,7 @@ module Macros =
     let private parseTransformers id elip literals body =
         List.map
             (function
-            | { Kind = LegacyNodeKind.Ident(id) } -> Ok(id)
+            | { Kind = NodeKind.Ident(id) } -> Ok(id)
             | n -> errAt n.Location "Expected an identifier in macro literals")
             literals
         |> Result.collect
@@ -352,9 +350,9 @@ module Macros =
     /// Parse the body of a syntax rules form.
     let private parseSyntaxRulesBody id loc syntax =
         match syntax with
-        | { Kind = LegacyNodeKind.Ident(elip) } :: { Kind = LegacyNodeKind.Form(literals) } :: body ->
+        | { Kind = NodeKind.Ident(elip) } :: { Kind = NodeKind.Form(literals) } :: body ->
             parseTransformers id elip literals body
-        | { Kind = LegacyNodeKind.Form(literals) } :: body -> parseTransformers id "..." literals body
+        | { Kind = NodeKind.Form(literals) } :: body -> parseTransformers id "..." literals body
         | _ -> errAt loc "Ill-formed syntax rules."
         |> Result.map (fun transformers ->
             { Name = id
@@ -363,6 +361,6 @@ module Macros =
     /// Parse a syntax rules expression into a macro definition.
     let public parseSyntaxRules id syntaxRulesSyn =
         match syntaxRulesSyn with
-        | { Kind = LegacyNodeKind.Form({ Kind = LegacyNodeKind.Ident("syntax-rules") } :: body) } ->
+        | { Kind = NodeKind.Form({ Kind = NodeKind.Ident("syntax-rules") } :: body) } ->
             parseSyntaxRulesBody id syntaxRulesSyn.Location body
         | _ -> errAt syntaxRulesSyn.Location "Expected `syntax-rules` special form"

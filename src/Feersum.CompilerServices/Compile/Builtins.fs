@@ -124,8 +124,8 @@ module private BuiltinMacros =
 
         match result.Root.Body with
         | Some expr ->
-            match expr |> SyntaxShim.transformExpr textDoc with
-            | { Kind = LegacyNodeKind.Seq([ n ]) } -> n
+            match expr |> SyntaxNode.ofExpression textDoc with
+            | { Kind = NodeKind.Seq([ n ]) } -> n
             | n -> n
             |> Macros.parseSyntaxRules id
             |> Result.unwrap

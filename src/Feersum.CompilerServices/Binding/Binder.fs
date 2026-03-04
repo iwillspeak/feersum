@@ -76,10 +76,10 @@ type BoundLiteral =
 
     static member FromConstant =
         function
-        | LegacySyntaxConstant.Number n -> BoundLiteral.Number n
-        | LegacySyntaxConstant.Character c -> BoundLiteral.Character c
-        | LegacySyntaxConstant.Boolean b -> BoundLiteral.Boolean b
-        | LegacySyntaxConstant.Str s -> BoundLiteral.Str s
+        | SyntaxConstant.Number n -> BoundLiteral.Number n
+        | SyntaxConstant.Character c -> BoundLiteral.Character c
+        | SyntaxConstant.Boolean b -> BoundLiteral.Boolean b
+        | SyntaxConstant.Str s -> BoundLiteral.Str s
 
 /// Bound Datum Element
 ///
@@ -284,14 +284,14 @@ module private Impl =
                         "Only expect single ID after dot"
 
                 match formal.Kind with
-                | LegacyNodeKind.Ident(id) -> (formals, true, Some(id))
+                | NodeKind.Ident(id) -> (formals, true, Some(id))
                 | _ ->
                     ctx.Diagnostics.Emit BinderDiagnostics.patternBindError formal.Location "Expected ID after dot"
                     acc
             else
                 match formal.Kind with
-                | LegacyNodeKind.Dot -> (formals, true, None)
-                | LegacyNodeKind.Ident(id) -> (id :: formals, false, None)
+                | NodeKind.Dot -> (formals, true, None)
+                | NodeKind.Ident(id) -> (id :: formals, false, None)
                 | _ ->
                     ctx.Diagnostics.Emit
                         BinderDiagnostics.patternBindError
@@ -325,8 +325,8 @@ module private Impl =
     ///   * Any of the list patterns supported by `bindFormalsList`
     let private bindFormals ctx formals =
         match formals.Kind with
-        | LegacyNodeKind.Ident(id) -> BoundFormals.Simple(id)
-        | LegacyNodeKind.Form(formals) -> bindFormalsList ctx formals
+        | NodeKind.Ident(id) -> BoundFormals.Simple(id)
+        | NodeKind.Form(formals) -> bindFormalsList ctx formals
         | _ ->
             "Unrecognised formal parameter list. Must be an ID or list pattern"
             |> ctx.Diagnostics.Emit BinderDiagnostics.invalidParameterPattern formals.Location
@@ -339,9 +339,9 @@ module private Impl =
         // Bind each of the definitions
         let parseBindingSpec decl bindings =
             match decl with
-            | { Kind = LegacyNodeKind.Form(binding) } ->
+            | { Kind = NodeKind.Form(binding) } ->
                 match binding with
-                | [ { Kind = LegacyNodeKind.Ident id }; body ] -> (id, body) :: bindings
+                | [ { Kind = NodeKind.Ident id }; body ] -> (id, body) :: bindings
                 | _ ->
                     ctx.Diagnostics.Emit BinderDiagnostics.letBindError decl.Location "Invalid binding form"
                     bindings
@@ -350,7 +350,7 @@ module private Impl =
                 bindings
 
         match node with
-        | { Kind = LegacyNodeKind.Form(decls) } -> List.foldBack (parseBindingSpec) decls []
+        | { Kind = NodeKind.Form(decls) } -> List.foldBack (parseBindingSpec) decls []
         | _ ->
             ctx.Diagnostics.Emit BinderDiagnostics.letBindError node.Location "Expected binding list"
             []
@@ -370,16 +370,16 @@ module private Impl =
     /// references storage locations.
     let rec bindInContext ctx node =
         match node.Kind with
-        | LegacyNodeKind.Error -> ice "Attempt to bind an error node."
-        | LegacyNodeKind.Constant c -> BoundLiteral.FromConstant c |> BoundExpr.Literal
-        | LegacyNodeKind.Vector v -> List.map (bindDatum ctx) v |> BoundLiteral.Vector |> BoundExpr.Literal
-        | LegacyNodeKind.ByteVector bv -> BoundExpr.Literal(BoundLiteral.ByteVector bv)
-        | LegacyNodeKind.Dot ->
+        | NodeKind.Error -> ice "Attempt to bind an error node."
+        | NodeKind.Constant c -> BoundLiteral.FromConstant c |> BoundExpr.Literal
+        | NodeKind.Vector v -> List.map (bindDatum ctx) v |> BoundLiteral.Vector |> BoundExpr.Literal
+        | NodeKind.ByteVector bv -> BoundExpr.Literal(BoundLiteral.ByteVector bv)
+        | NodeKind.Dot ->
             ctx.Diagnostics.Emit BinderDiagnostics.patternBindError node.Location "Unexpected dot"
             BoundExpr.Error
-        | LegacyNodeKind.Seq s -> bindSequence ctx s
-        | LegacyNodeKind.Form f -> bindForm ctx f node
-        | LegacyNodeKind.Ident id ->
+        | NodeKind.Seq s -> bindSequence ctx s
+        | NodeKind.Form f -> bindForm ctx f node
+        | NodeKind.Ident id ->
             match BinderCtx.tryFindBinding ctx id with
             | Some s -> BoundExpr.Load(s)
             | None ->
@@ -387,19 +387,19 @@ module private Impl =
                 |> ctx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol node.Location
 
                 BoundExpr.Error
-        | LegacyNodeKind.Quoted q -> bindQuoted ctx q
+        | NodeKind.Quoted q -> bindQuoted ctx q
 
     and private bindDatum ctx node =
         match node.Kind with
-        | LegacyNodeKind.Ident i -> BoundDatum.Ident i
-        | LegacyNodeKind.Constant c -> BoundDatum.SelfEval(BoundLiteral.FromConstant c)
-        | LegacyNodeKind.Dot -> BoundDatum.Ident "." // FIXME: This is definitely not right
-        | LegacyNodeKind.Form f
-        | LegacyNodeKind.Seq f -> List.map (bindDatum ctx) f |> BoundDatum.Compound
-        | LegacyNodeKind.Quoted q -> bindDatum ctx q |> BoundDatum.Quoted
-        | LegacyNodeKind.Vector v -> List.map (bindDatum ctx) v |> BoundLiteral.Vector |> BoundDatum.SelfEval
-        | LegacyNodeKind.ByteVector v -> BoundLiteral.ByteVector v |> BoundDatum.SelfEval
-        | LegacyNodeKind.Error ->
+        | NodeKind.Ident i -> BoundDatum.Ident i
+        | NodeKind.Constant c -> BoundDatum.SelfEval(BoundLiteral.FromConstant c)
+        | NodeKind.Dot -> BoundDatum.Ident "." // FIXME: This is definitely not right
+        | NodeKind.Form f
+        | NodeKind.Seq f -> List.map (bindDatum ctx) f |> BoundDatum.Compound
+        | NodeKind.Quoted q -> bindDatum ctx q |> BoundDatum.Quoted
+        | NodeKind.Vector v -> List.map (bindDatum ctx) v |> BoundLiteral.Vector |> BoundDatum.SelfEval
+        | NodeKind.ByteVector v -> BoundLiteral.ByteVector v |> BoundDatum.SelfEval
+        | NodeKind.Error ->
             ctx.Diagnostics.Emit BinderDiagnostics.malformedDatum node.Location "invalid item in quoted expression"
             BoundDatum.Ident("<ERROR>")
 
@@ -524,29 +524,29 @@ module private Impl =
             List.append imports boundBodies |> BoundExpr.Seq |> BinderCtx.intoRoot libCtx
         )
 
-    and private bindForm ctx (form: LegacyNode list) node =
+    and private bindForm ctx (form: SyntaxNode list) node =
         let illFormed formName =
             illFormedInCtx ctx node.Location formName
 
         match form with
-        | { Kind = LegacyNodeKind.Ident("if") } :: body ->
+        | { Kind = NodeKind.Ident("if") } :: body ->
             let b = bindWithSequencePoint ctx
 
             match body with
             | [ cond; ifTrue; ifFalse ] -> BoundExpr.If((b cond), (b ifTrue), Some(b ifFalse))
             | [ cond; ifTrue ] -> BoundExpr.If((b cond), (b ifTrue), None)
             | _ -> illFormed "if"
-        | { Kind = LegacyNodeKind.Ident("begin") } :: body -> bindSequence ctx body
-        | { Kind = LegacyNodeKind.Ident("define") } :: body ->
+        | { Kind = NodeKind.Ident("begin") } :: body -> bindSequence ctx body
+        | { Kind = NodeKind.Ident("define") } :: body ->
             match body with
-            | [ { Kind = LegacyNodeKind.Ident id } ] ->
+            | [ { Kind = NodeKind.Ident id } ] ->
                 let storage = BinderCtx.addBinding ctx id
                 BoundExpr.Store(storage, None)
-            | [ { Kind = LegacyNodeKind.Ident id }; value ] ->
+            | [ { Kind = NodeKind.Ident id }; value ] ->
                 let storage = BinderCtx.addBinding ctx id
                 let value = bindInContext ctx value
                 BoundExpr.Store(storage, Some(value))
-            | ({ Kind = LegacyNodeKind.Form({ Kind = LegacyNodeKind.Ident id } :: formals) }) :: body ->
+            | ({ Kind = NodeKind.Form({ Kind = NodeKind.Ident id } :: formals) }) :: body ->
                 // Add the binding for this lambda to the scope _before_ lowering
                 // the body. This makes recursive calls possible.
                 BinderCtx.addBinding ctx id |> ignore
@@ -558,13 +558,13 @@ module private Impl =
                 let storage = (BinderCtx.tryFindBinding ctx id).Value
                 BoundExpr.Store(storage, Some(lambda))
             | _ -> illFormed "define"
-        | { Kind = LegacyNodeKind.Ident("lambda") } :: body ->
+        | { Kind = NodeKind.Ident("lambda") } :: body ->
             match body with
             | formals :: body ->
                 let boundFormals = bindFormals ctx formals
                 bindLambdaBody ctx boundFormals body
             | _ -> illFormed "lambda"
-        | { Kind = LegacyNodeKind.Ident("let") } :: body ->
+        | { Kind = NodeKind.Ident("let") } :: body ->
             bindLet ctx "let" body node.Location (fun bindingSpecs ->
 
                 // Bind the body of each binding spec first
@@ -580,7 +580,7 @@ module private Impl =
                         BoundExpr.Store(storage, Some(body)))
 
                 boundDecls)
-        | { Kind = LegacyNodeKind.Ident("let*") } :: body ->
+        | { Kind = NodeKind.Ident("let*") } :: body ->
             bindLet
                 ctx
                 "let*"
@@ -592,8 +592,8 @@ module private Impl =
                     let body = bindInContext ctx body
                     let storage = BinderCtx.addBinding ctx id
                     BoundExpr.Store(storage, Some(body))))
-        | ({ Kind = LegacyNodeKind.Ident("letrec") } as head) :: body
-        | ({ Kind = LegacyNodeKind.Ident("letrec*") } as head) :: body ->
+        | ({ Kind = NodeKind.Ident("letrec") } as head) :: body
+        | ({ Kind = NodeKind.Ident("letrec*") } as head) :: body ->
             bindLet ctx "letrec" body node.Location (fun bindingSpecs ->
 
 
@@ -635,7 +635,7 @@ module private Impl =
                         |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
                         |> ctx.Diagnostics.Emit BinderDiagnostics.uninitialisedVariale location)
 
-                let isLetrecStar = head.Kind = LegacyNodeKind.Ident("letrec*")
+                let isLetrecStar = head.Kind = NodeKind.Ident("letrec*")
 
                 // Now all the IDs are in scope, bind the initialisers
                 let boundDecls =
@@ -650,7 +650,7 @@ module private Impl =
                         BoundExpr.Store(storage, Some(bound)))
 
                 boundDecls)
-        | { Kind = LegacyNodeKind.Ident("let-syntax") } :: body ->
+        | { Kind = NodeKind.Ident("let-syntax") } :: body ->
             bindLet ctx "let-syntax" body node.Location (fun bindingSpecs ->
 
                 Seq.iter
@@ -661,10 +661,10 @@ module private Impl =
                     bindingSpecs
 
                 [])
-        | { Kind = LegacyNodeKind.Ident("set!")
+        | { Kind = NodeKind.Ident("set!")
             Location = l } :: body ->
             match body with
-            | [ { Kind = LegacyNodeKind.Ident(id) }; value ] ->
+            | [ { Kind = NodeKind.Ident(id) }; value ] ->
                 let value = bindInContext ctx value
 
                 match BinderCtx.tryFindBinding ctx id with
@@ -675,13 +675,13 @@ module private Impl =
 
                     BoundExpr.Error
             | _ -> illFormed "set!"
-        | { Kind = LegacyNodeKind.Ident("quote") } :: body ->
+        | { Kind = NodeKind.Ident("quote") } :: body ->
             match body with
             | [ item ] -> bindQuoted ctx item
             | _ -> illFormed "quote"
-        | { Kind = LegacyNodeKind.Ident("define-syntax") } :: body ->
+        | { Kind = NodeKind.Ident("define-syntax") } :: body ->
             match body with
-            | [ { Kind = LegacyNodeKind.Ident(id) }; syntaxRules ] ->
+            | [ { Kind = NodeKind.Ident(id) }; syntaxRules ] ->
                 match Macros.parseSyntaxRules id syntaxRules with
                 | Ok(macro) ->
                     BinderCtx.addMacro ctx id macro
@@ -690,7 +690,7 @@ module private Impl =
                     ctx.Diagnostics.Add e
                     BoundExpr.Error
             | _ -> illFormed "define-syntax"
-        | { Kind = LegacyNodeKind.Ident("define-library") } :: body ->
+        | { Kind = NodeKind.Ident("define-library") } :: body ->
             match body with
             | name :: body ->
                 match Libraries.parseLibraryDefinition name body with
@@ -701,7 +701,7 @@ module private Impl =
                     ctx.Diagnostics.Append diags
                     BoundExpr.Error
             | _ -> illFormed "define-library"
-        | { Kind = LegacyNodeKind.Ident("import") } :: body ->
+        | { Kind = NodeKind.Ident("import") } :: body ->
             body
             |> List.map (fun item ->
                 Libraries.parseImport ctx.Diagnostics item
@@ -710,7 +710,7 @@ module private Impl =
                 |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
                 |> Result.okOr BoundExpr.Error)
             |> BoundExpr.Seq
-        | { Kind = LegacyNodeKind.Ident("case") } :: body -> unimpl "Case expressions not yet implemented"
+        | { Kind = NodeKind.Ident("case") } :: body -> unimpl "Case expressions not yet implemented"
         | head :: rest -> bindApplication ctx head rest node
         | [] -> BoundExpr.Literal BoundLiteral.Null
 

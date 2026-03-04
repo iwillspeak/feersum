@@ -1,7 +1,6 @@
 module SyntaxUtils
 
-open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.LegacyParse
+open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 open System.IO
@@ -18,11 +17,10 @@ module SyntaxFactory =
           Location = dummyLocation }
 
     /// Create a syntax node from a constant value
-    let constant c = c |> LegacyNodeKind.Constant |> node
+    let constant c = c |> NodeKind.Constant |> node
 
     /// Create a syntax node from a given number
-    let number n =
-        n |> LegacySyntaxConstant.Number |> constant
+    let number n = n |> SyntaxConstant.Number |> constant
 
 /// Transform the StreamName in a Position
 ///
@@ -56,8 +54,8 @@ let public basedLocation basePath =
     sanitiseLocationWith (basedStreamName basePath)
 
 /// Transform a syntax node with the given Location Re-Writer
-let rec public sanitiseNodeWith rewriter (node: LegacyNode) =
-    { LegacyNode.Kind = node.Kind |> sanitiseKind rewriter
+let rec public sanitiseNodeWith rewriter (node: SyntaxNode) =
+    { SyntaxNode.Kind = node.Kind |> sanitiseKind rewriter
       Location = node.Location |> rewriter }
 
 and private sanitiseKind rewriter =
@@ -78,8 +76,8 @@ let public sanitiseDiagnosticsWith rewriter (diags: Diagnostic list) =
 
 /// Read a single expression node from the input string
 let public readSingleNode input =
-    match readExpr input with
-    | ({ Kind = Seq exprs }, []) -> (List.exactlyOne exprs)
+    match SyntaxNode.readFromString "repl" input with
+    | ({ Kind = NodeKind.Seq exprs }, []) -> (List.exactlyOne exprs)
     | (expr, []) -> expr
     | (_, diag) -> failwithf "Expected single expression but got: %A" diag
 
@@ -87,6 +85,6 @@ let public readSingleNode input =
 let public readSingle input = (readSingleNode input).Kind
 
 let public readMany input =
-    match readExpr input with
+    match SyntaxNode.readFromString "repl" input with
     | (read, []) -> read
     | (_, diag) -> failwithf "Expected one or more expressions but got: %A" diag

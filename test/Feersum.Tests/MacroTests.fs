@@ -6,7 +6,6 @@ open SyntaxUtils
 open SyntaxFactory
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Macros
-open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Text
 
@@ -33,8 +32,8 @@ let private tryExpand macroPat transformer bindings =
 
 let private ppConst =
     function
-    | LegacySyntaxConstant.Number n -> n.ToString("g")
-    | LegacySyntaxConstant.Boolean b -> if b then "#t" else "#f"
+    | SyntaxConstant.Number n -> n.ToString("g")
+    | SyntaxConstant.Boolean b -> if b then "#t" else "#f"
     | c -> failwithf "unsupported constant %A" c
 
 let rec private pp syntax =

@@ -18,8 +18,8 @@
     <Compile Include="Syntax/Lex.fs" />
     <Compile Include="Syntax/Tree.fs" />
     <Compile Include="Syntax/Parse.fs" />
-    <Compile Include="Syntax/Legacy.fs" />
     <Compile Include="Scope.fs" />
+    <Compile Include="Binding/BinderNode.fs" />
     <Compile Include="Binding/Libraries.fs" />
     <Compile Include="Binding/Macros.fs" />
     <Compile Include="Binding/Binder.fs" />

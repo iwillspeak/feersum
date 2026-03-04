@@ -1216,11 +1216,11 @@ module Compilation =
 
         let ast, diagnostics =
             let nodes, diagnostics =
-                List.map LegacyParse.parseFile sources
+                List.map SyntaxNode.parseFile sources
                 |> List.fold (fun (nodes, diags) (n, d) -> (List.append nodes [ n ], List.append d diags)) ([], [])
 
             { Location = TextLocation.Missing
-              Kind = LegacyNodeKind.Seq(nodes) },
+              Kind = NodeKind.Seq(nodes) },
             diagnostics
 
         if Diagnostics.hasErrors diagnostics then

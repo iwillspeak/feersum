@@ -3,7 +3,7 @@ module Feersum.Repl
 open ReadLineReboot
 
 open Feersum.Version
-open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Eval
 open Feersum.CompilerServices.Diagnostics
 open Feersum.Core
@@ -11,10 +11,10 @@ open Feersum.Core
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec private read () : LegacyNode =
+let rec private read () : SyntaxNode =
     let line = ReadLine.Read("§> ")
 
-    match LegacyParse.readExpr line with
+    match SyntaxNode.readFromString "repl" line with
     | (node, []) -> node
     | (_, diagnostics) ->
         diagnostics |> dumpDiagnostics

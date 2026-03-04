@@ -3,8 +3,7 @@ module EvalTests
 open Xunit
 
 open Feersum.CompilerServices.Eval
-open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.LegacyParse
+open Feersum.CompilerServices.Binding
 open SyntaxUtils
 open SyntaxFactory
 open Feersum.CompilerServices.Utils
@@ -13,7 +12,7 @@ let feeri = eval >> Result.unwrap >> cilExternalRepr
 
 
 let private tryReadSingle expr =
-    match readExpr expr with
+    match SyntaxNode.readFromString "repl" expr with
     | (o, []) -> o
     | (_, diagnostics) -> failwithf "parse error %A" diagnostics
 
