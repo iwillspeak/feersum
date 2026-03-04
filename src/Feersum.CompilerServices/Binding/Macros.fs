@@ -8,17 +8,10 @@ open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Factories
 open Feersum.CompilerServices.Utils
 
-/// Constant value for use in macro patterns
-type MacroConstant =
-    | Number of double
-    | Str of string
-    | Boolean of bool
-    | Character of char
-
 /// The macro pattern type. Used in syntax cases to define the form that a
 /// macro should match.
 type MacroPattern =
-    | Constant of MacroConstant
+    | Constant of ConstantValue
     | Underscore
     | Literal of string
     | Variable of string
@@ -127,13 +120,14 @@ module Macros =
                 | _ -> dot)
         | None -> elements |> Result.collect |> Result.map onForm
 
-    /// Convert a ConstantValue to a MacroConstant for pattern comparison
-    let private toMacroConst (cv: ConstantValue) : MacroConstant option =
-        match cv with
-        | NumVal n -> Some(MacroConstant.Number n)
-        | StrVal s -> Some(MacroConstant.Str s)
-        | BoolVal b -> Some(MacroConstant.Boolean b)
-        | CharVal c -> c |> Option.map MacroConstant.Character
+    /// Compare two ConstantValues by their extracted values
+    let private constantsMatch (pat: ConstantValue) (cv: ConstantValue) =
+        match pat, cv with
+        | NumVal p, NumVal n -> p = n
+        | StrVal p, StrVal s -> p = s
+        | BoolVal p, BoolVal b -> p = b
+        | CharVal p, CharVal c -> p = c
+        | _ -> false
 
     /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
     /// pattern matches. Returns `Err` if the pattern does not match the given node.
@@ -142,8 +136,8 @@ module Macros =
         | Constant c ->
             match ast with
             | ConstantNode cn ->
-                match cn.Value |> Option.bind toMacroConst with
-                | Some k when k = c -> Result.Ok MacroBindings.Empty
+                match cn.Value with
+                | Some k when constantsMatch c k -> Result.Ok MacroBindings.Empty
                 | _ -> Result.Error()
             | _ -> Result.Error()
         | Variable v -> Result.Ok(MacroBindings.FromVariable v ast)
@@ -294,8 +288,8 @@ module Macros =
 
         match syntax with
         | ConstantNode c ->
-            match c.Value |> Option.bind toMacroConst with
-            | Some mc -> Ok(MacroPattern.Constant mc)
+            match c.Value with
+            | Some cv -> Ok(MacroPattern.Constant cv)
             | None -> e "Invalid constant in macro pattern"
         | SymbolNode s ->
             match s.CookedValue with

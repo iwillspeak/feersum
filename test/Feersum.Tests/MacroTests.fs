@@ -61,23 +61,30 @@ let private assertMatches pattern syntax =
     | Result.Ok bindings -> bindings
     | o -> failwithf "Pattern variable did not match %A" o
 
+/// Extract the inner ConstantValue from a constant Expression factory result
+let private cv (e: Expression) =
+    match e with
+    | Constant(Some c) -> c
+    | _ -> failwith "Expected constant with value"
+
 [<Fact>]
 let ``patterns with constant number`` () =
 
-    let testConstantMatch (c: MacroConstant) (exprFactory: unit -> Expression) =
-        let pattern = MacroPattern.Constant c
+    let testConstantMatch (exprFactory: unit -> Expression) =
+        let expr = exprFactory ()
+        let pattern = MacroPattern.Constant(cv expr)
 
-        match macroMatch pattern (exprFactory ()) with
+        match macroMatch pattern expr with
         | Result.Ok _ -> ()
         | Result.Error e -> failwithf "%A" e
 
-    testConstantMatch (Number 101.0) (fun () -> numVal 101.0)
-    testConstantMatch (Number 0.0) (fun () -> numVal 0.0)
-    testConstantMatch (Character 'a') (fun () -> charVal 'a')
-    testConstantMatch (Boolean true) (fun () -> boolVal true)
-    testConstantMatch (Boolean false) (fun () -> boolVal false)
-    testConstantMatch (Str "") (fun () -> strVal "")
-    testConstantMatch (Str "§2") (fun () -> strVal "§2")
+    testConstantMatch (fun () -> numVal 101.0)
+    testConstantMatch (fun () -> numVal 0.0)
+    testConstantMatch (fun () -> charVal 'a')
+    testConstantMatch (fun () -> boolVal true)
+    testConstantMatch (fun () -> boolVal false)
+    testConstantMatch (fun () -> strVal "")
+    testConstantMatch (fun () -> strVal "§2")
 
 [<Theory>]
 [<InlineData("if", "if", true)>]
@@ -151,9 +158,9 @@ let ``simple form patterns`` () =
         MacroBindings.Empty,
         assertMatches
             (MacroPattern.Form
-                [ MacroPattern.Constant(Boolean false)
-                  MacroPattern.Constant(Str "frob")
-                  MacroPattern.Constant(Number 123.56) ])
+                [ MacroPattern.Constant(cv (boolVal false))
+                  MacroPattern.Constant(cv (strVal "frob"))
+                  MacroPattern.Constant(cv (numVal 123.56)) ])
             (form [ boolVal false; strVal "frob"; numVal 123.56 ])
     )
 
@@ -173,7 +180,7 @@ let ``dotted form patterns`` () =
     // interesting test though, so we'll keep it for now.
     Assert.Equal(
         MacroBindings.Empty,
-        assertMatches (MacroPattern.DottedForm([], MacroPattern.Constant(Number 123.4))) (form [ numVal 123.4 ])
+        assertMatches (MacroPattern.DottedForm([], MacroPattern.Constant(cv (numVal 123.4)))) (form [ numVal 123.4 ])
     )
 
     // (head . tail) - compare bound values by pp since Firethorn creates new
