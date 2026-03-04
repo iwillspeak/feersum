@@ -37,8 +37,6 @@ let sanitiser =
     (basedLocation specDir)
     >> sanitiseLocationWith (sanitiseStreamNameWith normalisePath)
 
-let nodeSanitiser = sanitiseNodeWith (sanitiser)
-
 let diagSanitiser =
     sanitiseDiagnosticsWith (sanitiser)
     >> List.sortByDescending (fun x -> x.Location.Start)
