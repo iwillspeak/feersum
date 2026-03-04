@@ -474,10 +474,31 @@ module private Utils =
             ctx.IL.Emit(OpCodes.Ldstr, id)
             ctx.IL.Emit(OpCodes.Newobj, ctx.Core.IdentCtor)
 
+        let quotePair head tail =
+            let ret = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
+
+            // * start with the tail element
+            emitQuoted ctx tail
+            ctx.IL.Emit(OpCodes.Stloc, ret)
+
+            // * Build up list using the head elements
+            head
+            |> List.toSeq
+            |> Seq.rev
+            |> Seq.iter (fun q ->
+                emitQuoted ctx q
+                ctx.IL.Emit(OpCodes.Ldloc, ret)
+                ctx.IL.Emit(OpCodes.Newobj, ctx.Core.ConsCtor)
+                ctx.IL.Emit(OpCodes.Stloc, ret))
+
+            // * return the result
+            ctx.IL.Emit(OpCodes.Ldloc, ret)
+
         match quoted with
         | BoundDatum.SelfEval c -> emitLiteral ctx c
         | BoundDatum.Compound [] -> emitLiteral ctx (BoundLiteral.Null)
         | BoundDatum.Compound s -> quoteSequence s
+        | BoundDatum.Pair(head, tail) -> quotePair head tail
         | BoundDatum.Quoted q -> [ BoundDatum.Ident "quote"; q ] |> quoteSequence
         | BoundDatum.Ident id -> quoteIdent id
 

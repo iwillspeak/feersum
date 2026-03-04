@@ -1149,21 +1149,20 @@
 (test '(a) (cons 'a '()))
 (test '((a) b c d) (cons '(a) '(b c d)))
 (test '("a" b c) (cons "a" '(b c)))
-;;; FIXME: Quoting of dotted forms
-;; (test '(a . 3) (cons 'a 3))
-;; (test '((a b) . c) (cons '(a b) 'c))
+(test '(a . 3) (cons 'a 3))
+(test '((a b) . c) (cons '(a b) 'c))
 
 (test 'a (car '(a b c)))
 (test '(a) (car '((a) b c d)))
 (test 1 (car '(1 . 2)))
 
 (test '(b c d) (cdr '((a) b c d)))
-;; (test 2 (cdr '(1 . 2)))  ; FIXME: Quoting of dotted forms
+(test 2 (cdr '(1 . 2)))
 (define (g) '(constant-list))
 
 (test #t (list? '(a b c)))
 (test #t (list? '()))
-;; (test #f (list? '(a . b)))  ; FIXME: Quoting of dotted forms
+(test #f (list? '(a . b)))
 ; FIXME: recurse in `list?` ; (test #f (let ((x (list 'a))) (set-cdr! x x) (list? x)))
 
 (test '(3 3) (make-list 2 3))
