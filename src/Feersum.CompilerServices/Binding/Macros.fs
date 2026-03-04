@@ -8,10 +8,17 @@ open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Factories
 open Feersum.CompilerServices.Utils
 
+/// Constant value for use in macro patterns
+type MacroConstant =
+    | Number of double
+    | Str of string
+    | Boolean of bool
+    | Character of char
+
 /// The macro pattern type. Used in syntax cases to define the form that a
 /// macro should match.
 type MacroPattern =
-    | Constant of LegacySyntaxConstant
+    | Constant of MacroConstant
     | Underscore
     | Literal of string
     | Variable of string
@@ -120,13 +127,13 @@ module Macros =
                 | _ -> dot)
         | None -> elements |> Result.collect |> Result.map onForm
 
-    /// Convert a ConstantValue to a LegacySyntaxConstant for pattern comparison
-    let private toMacroConst (cv: ConstantValue) : LegacySyntaxConstant option =
+    /// Convert a ConstantValue to a MacroConstant for pattern comparison
+    let private toMacroConst (cv: ConstantValue) : MacroConstant option =
         match cv with
-        | NumVal n -> Some(LegacySyntaxConstant.Number n)
-        | StrVal s -> Some(LegacySyntaxConstant.Str s)
-        | BoolVal b -> Some(LegacySyntaxConstant.Boolean b)
-        | CharVal c -> c |> Option.map LegacySyntaxConstant.Character
+        | NumVal n -> Some(MacroConstant.Number n)
+        | StrVal s -> Some(MacroConstant.Str s)
+        | BoolVal b -> Some(MacroConstant.Boolean b)
+        | CharVal c -> c |> Option.map MacroConstant.Character
 
     /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
     /// pattern matches. Returns `Err` if the pattern does not match the given node.

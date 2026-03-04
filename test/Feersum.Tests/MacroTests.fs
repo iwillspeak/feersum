@@ -64,7 +64,7 @@ let private assertMatches pattern syntax =
 [<Fact>]
 let ``patterns with constant number`` () =
 
-    let testConstantMatch (c: LegacySyntaxConstant) (exprFactory: unit -> Expression) =
+    let testConstantMatch (c: MacroConstant) (exprFactory: unit -> Expression) =
         let pattern = MacroPattern.Constant c
 
         match macroMatch pattern (exprFactory ()) with
