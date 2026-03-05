@@ -183,7 +183,7 @@ let public getParseTestData () =
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
-let ``spec tests parse result`` s =
+let rec ``spec tests parse result`` s =
     let sourcePath = Path.Join(specDir, s)
 
     let root =
