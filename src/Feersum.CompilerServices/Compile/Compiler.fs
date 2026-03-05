@@ -64,7 +64,6 @@ type EmitCtx =
       EmitSymbols: bool
       Exports: Map<string, string>
       Externs: Map<string, TypeDefinition>
-      ParentEnvironment: EnvInfo option
       Environment: EnvInfo option
       ProgramTy: TypeDefinition
       mutable Initialisers: Map<string, MethodReference>
@@ -83,8 +82,11 @@ type CompileInput =
 [<AutoOpen>]
 module private Utils =
 
-    /// Get the Parent Environment from the current emit context
-    let getParentEnv ctx = ctx.ParentEnvironment
+    /// Get the Parent Environment from the current emit context. This is
+    /// derived from the current environment's parent link rather than being
+    /// stored separately.
+    let getParentEnv ctx =
+        ctx.Environment |> Option.bind EnvUtils.getParent
 
     /// Predicate to check if the current emit context has a parent environment.
     let hasParentEnv = getParentEnv >> Option.isSome
@@ -671,21 +673,23 @@ module private Utils =
         let lambdaId = ctx.NextLambda
         ctx.NextLambda <- lambdaId + 1
 
-        let _, thunk =
+        let _, (thunk: MethodDefinition) =
             emitNamedLambda ctx (sprintf "%s:lambda%d" ctx.ScopePrefix lambdaId) formals body
 
         let method = thunk :> MethodReference
 
-        // Create a `Func` instance with the appropriate `this` pointer.
-        match ctx.Environment with
-        | Some env ->
-            // load the this pointer
-            match env with
-            | Standard(local, _, _) -> ctx.IL.Emit(OpCodes.Ldloc, local)
-            | Link _ -> ctx.IL.Emit(OpCodes.Ldarg_0)
+        // Create a `Func` instance with the appropriate `this` pointer. If the
+        // child lambda was emitted as an instance method it needs the current
+        // environment as its `this` pointer.
+        if thunk.IsStatic then
+            emitMethodToFunc ctx method
+        else
+            match ctx.Environment with
+            | Some(Standard(local, _, _)) -> ctx.IL.Emit(OpCodes.Ldloc, local)
+            | Some(Link _) -> ctx.IL.Emit(OpCodes.Ldarg_0)
+            | None -> ice "Instance method thunk but parent has no environment to capture from"
 
             emitMethodToInstanceFunc ctx method
-        | _ -> emitMethodToFunc ctx method
 
     /// Emit a Named Lambda Body
     ///
@@ -701,8 +705,24 @@ module private Utils =
     /// parameters.
     and public emitNamedLambda (ctx: EmitCtx) name formals root =
 
+        // Get the size of environment object required to hold any captured values
+        // in `envMappings`. The return from this has two main meanings:
+        //
+        //  * `0` -> Only the parent environment link is captured.
+        //  * `n` -> An environment with `n` slots is required.
+        let envSize =
+            root.EnvMappings
+            |> Option.map (
+                Seq.sumBy (function
+                    | Environment _ -> 1
+                    | _ -> 0)
+            )
+
+        // A method is an instance method iff it captures from a parent
+        // environment. This is the case when captures are required and the
+        // parent context has an environment to capture from.
         let attrs =
-            if hasEnv ctx then
+            if envSize.IsSome && ctx.Environment.IsSome then
                 MethodAttributes.Public
             else
                 MethodAttributes.Public ||| MethodAttributes.Static
@@ -754,19 +774,6 @@ module private Utils =
             Standard(envLocal, envTy, ctx.Environment)
 
         let env =
-            // Get get the size of environment object required to hold any captured values
-            // in `envMappings`. The return from this has two main meanings:
-            //
-            //  * `0` -> Only the parent environment link is captured.
-            //  * `n` -> An environment with `n` slots is required.
-            let envSize =
-                root.EnvMappings
-                |> Option.map (
-                    Seq.sumBy (function
-                        | Environment _ -> 1
-                        | _ -> 0)
-                )
-
             match envSize with
             | Some(0) -> ctx.Environment |> Option.map Link
             | Some caps -> buildEnv caps |> Some
@@ -780,7 +787,6 @@ module private Utils =
                 Locals = locals
                 Parameters = List.rev parameters
                 Environment = env
-                ParentEnvironment = ctx.Environment
                 IL = methodDecl.Body.GetILProcessor()
                 ScopePrefix = name }
 
@@ -991,7 +997,6 @@ module private Utils =
                 Parameters = []
                 Exports = exports |> Map.ofSeq
                 Environment = None
-                ParentEnvironment = None
                 ScopePrefix = "$ROOT" }
 
         let bodyParams = BoundFormals.List([])
@@ -1108,7 +1113,6 @@ module Compilation =
               Parameters = []
               EmitSymbols = symbolStream.IsSome
               Environment = None
-              ParentEnvironment = None
               ScopePrefix = "$ROOT"
               Assm = assm }
 

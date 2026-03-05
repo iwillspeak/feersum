@@ -1,4 +1,4 @@
-PROGRAM: (0..208)
+PROGRAM: (0..384)
   FORM: (0..41)
     OPEN_PAREN: (0..1) "("
     SYMBOL: (1..7)
@@ -165,4 +165,78 @@ PROGRAM: (0..208)
     CONSTANT: (204..207)
       NUMBER: (204..207) "246"
     CLOSE_PAREN: (207..208) ")"
-  EOF: (208..208) ""
+  ATMOSPHERE: (208..209) "\n"
+  ATMOSPHERE: (209..264) ";; Test non-capturing lambda inside a capturing context"
+  ATMOSPHERE: (264..265) "\n"
+  FORM: (265..384)
+    OPEN_PAREN: (265..266) "("
+    SYMBOL: (266..273)
+      IDENTIFIER: (266..273) "display"
+    ATMOSPHERE: (273..274) " "
+    FORM: (274..383)
+      OPEN_PAREN: (274..275) "("
+      FORM: (275..378)
+        OPEN_PAREN: (275..276) "("
+        SYMBOL: (276..282)
+          IDENTIFIER: (276..282) "lambda"
+        ATMOSPHERE: (282..283) " "
+        FORM: (283..286)
+          OPEN_PAREN: (283..284) "("
+          SYMBOL: (284..285)
+            IDENTIFIER: (284..285) "x"
+          CLOSE_PAREN: (285..286) ")"
+        ATMOSPHERE: (286..291) "\n    "
+        FORM: (291..314)
+          OPEN_PAREN: (291..292) "("
+          SYMBOL: (292..298)
+            IDENTIFIER: (292..298) "define"
+          ATMOSPHERE: (298..299) " "
+          FORM: (299..311)
+            OPEN_PAREN: (299..300) "("
+            SYMBOL: (300..310)
+              IDENTIFIER: (300..310) "captures-x"
+            CLOSE_PAREN: (310..311) ")"
+          ATMOSPHERE: (311..312) " "
+          SYMBOL: (312..313)
+            IDENTIFIER: (312..313) "x"
+          CLOSE_PAREN: (313..314) ")"
+        ATMOSPHERE: (314..319) "\n    "
+        FORM: (319..343)
+          OPEN_PAREN: (319..320) "("
+          SYMBOL: (320..326)
+            IDENTIFIER: (320..326) "define"
+          ATMOSPHERE: (326..327) " "
+          FORM: (327..339)
+            OPEN_PAREN: (327..328) "("
+            SYMBOL: (328..338)
+              IDENTIFIER: (328..338) "no-capture"
+            CLOSE_PAREN: (338..339) ")"
+          ATMOSPHERE: (339..340) " "
+          CONSTANT: (340..342)
+            NUMBER: (340..342) "42"
+          CLOSE_PAREN: (342..343) ")"
+        ATMOSPHERE: (343..348) "\n    "
+        FORM: (348..377)
+          OPEN_PAREN: (348..349) "("
+          SYMBOL: (349..350)
+            IDENTIFIER: (349..350) "+"
+          ATMOSPHERE: (350..351) " "
+          FORM: (351..363)
+            OPEN_PAREN: (351..352) "("
+            SYMBOL: (352..362)
+              IDENTIFIER: (352..362) "captures-x"
+            CLOSE_PAREN: (362..363) ")"
+          ATMOSPHERE: (363..364) " "
+          FORM: (364..376)
+            OPEN_PAREN: (364..365) "("
+            SYMBOL: (365..375)
+              IDENTIFIER: (365..375) "no-capture"
+            CLOSE_PAREN: (375..376) ")"
+          CLOSE_PAREN: (376..377) ")"
+        CLOSE_PAREN: (377..378) ")"
+      ATMOSPHERE: (378..381) "\n  "
+      CONSTANT: (381..382)
+        NUMBER: (381..382) "8"
+      CLOSE_PAREN: (382..383) ")"
+    CLOSE_PAREN: (383..384) ")"
+  EOF: (384..384) ""
