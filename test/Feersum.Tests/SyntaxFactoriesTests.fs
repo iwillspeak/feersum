@@ -85,7 +85,7 @@ let ``quotation exprs`` () =
 
     match node with
     | Quoted(Some(Constant(Some(NumVal 101.0)))) -> ()
-    | _ -> failwith "Node strucutre invalid"
+    | _ -> failwith "Node structure invalid"
 
     checkReparse node
 

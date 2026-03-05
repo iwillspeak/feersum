@@ -44,12 +44,12 @@ module ParseResult =
         { Diagnostics = result.Diagnostics
           Root = result.Root |> mapper }
 
-    /// Fold a set of parse results into a signle result
+    /// Fold a set of parse results into a single result
     let public fold folder seed results =
-        let (state, diags) =
-            Seq.fold (fun (state, diags) r -> (folder state r.Root, List.append diags r.Diagnostics)) (seed, []) results
+        let (state, diagsRev) =
+            Seq.fold (fun (state, diagsRev) r -> (folder state r.Root, List.revAppend r.Diagnostics diagsRev)) (seed, []) results
 
-        { Diagnostics = diags; Root = state }
+        { Diagnostics = List.rev diagsRev; Root = state }
 
     /// Convert a parser response into a plain result type
     ///

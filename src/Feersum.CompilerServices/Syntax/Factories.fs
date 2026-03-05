@@ -28,7 +28,7 @@ let numVal (n: double) = constant AstKind.NUMBER n
 
 /// Create a Boolean Value Constant
 ///
-/// Emit a syntax tree reprsenting a single boolean value
+/// Emit a syntax tree representing a single boolean value
 let boolVal (b: bool) = constant AstKind.BOOLEAN b
 
 /// Create a Character Value Constant

@@ -183,7 +183,7 @@ let public getParseTestData () =
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
-let rec ``spec tests parse result`` s =
+let ``spec tests parse result`` s =
     let sourcePath = Path.Join(specDir, s)
 
     let root =
@@ -208,7 +208,8 @@ let rec ``spec tests parse result`` s =
             .SnapshotTestName(nameof (``spec tests parse result``))
             .StoreSnapshotsPerClass(false)
 
-    root.Diagnostics.ShouldMatchChildSnapshot(s, snapSettings)
+    let childSnapshotName = Path.GetFileName s
+    root.Diagnostics.ShouldMatchChildSnapshot(childSnapshotName, snapSettings)
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
