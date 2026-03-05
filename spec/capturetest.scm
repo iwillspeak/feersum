@@ -7,3 +7,9 @@
         (= a b)))
   (* 2 123))
  246)
+;; Test non-capturing lambda inside a capturing context
+(display ((lambda (x)
+    (define (captures-x) x)
+    (define (no-capture) 42)
+    (+ (captures-x) (no-capture)))
+  8))
