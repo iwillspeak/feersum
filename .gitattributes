@@ -8,4 +8,7 @@
 
 # AST snapshot files are generated with LF line endings and must not be
 # converted to CRLF on Windows, otherwise snapshot comparison tests fail.
-*.ast text eol=lf
+*.ast text eol=lf linguist-generated=true
+
+# Snapper files are generated
+_snapshots/*.json linguist-generated=true
