@@ -1,6 +1,6 @@
 # Feersum — Agent Guide
 
-Feersum is a Scheme compiler for .NET written in F#. It targets .NET 6 and is
+Feersum is a Scheme compiler for .NET written in F#. It targets .NET 8 and is
 distributed as a .NET tool and MSBuild SDK. The compiler follows a classic
 multi-pass pipeline: **parse → bind → lower → emit**.
 
