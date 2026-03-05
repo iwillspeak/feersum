@@ -687,7 +687,7 @@ module private Utils =
             match ctx.Environment with
             | Some(Standard(local, _, _)) -> ctx.IL.Emit(OpCodes.Ldloc, local)
             | Some(Link _) -> ctx.IL.Emit(OpCodes.Ldarg_0)
-            | None -> ice "Instance method thunk without parent environment"
+            | None -> ice "Instance method thunk but parent has no environment to capture from"
 
             emitMethodToInstanceFunc ctx method
 
