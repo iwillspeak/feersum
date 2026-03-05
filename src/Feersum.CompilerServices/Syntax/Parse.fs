@@ -230,7 +230,7 @@ and private parseFormTail builder state =
 
     if lookingAt TokenKind.Dot state then
         if not hasBody then
-            state <- ParserState.bufferDiagnostic state ParserDiagnostics.parseError "Invalid dotted form"
+            state <- ParserState.bufferDiagnostic state ParserDiagnostics.parseError "Dotted form requires at least one element before '.'"
 
         builder.StartNode(AstKind.DOTTED_TAIL |> SyntaxUtils.astToGreen)
 
