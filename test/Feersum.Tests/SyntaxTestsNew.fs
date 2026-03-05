@@ -5,6 +5,7 @@ open Firethorn.Red
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
+open Feersum.CompilerServices.Text
 
 // TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
 //       invalid hex escapes, bad identifiers and so on.
@@ -260,3 +261,16 @@ let ``multiple diagnostics on error`` () =
     let source = "(- 1 § (display \"foo\")"
     let result = Parse.readExpr source
     Assert.True(List.length result.Diagnostics > 1)
+
+[<Fact>]
+let ``parse preserves source location`` () =
+    let source = "(+ 1 2)"
+    let doc = TextDocument.fromParts "test.scm" source
+    let result = Parse.readExpr1 doc.Path source
+    Assert.Empty(result.Diagnostics)
+    let expr = result.Root.Body.Value
+    let loc = TextDocument.rangeToLocation doc expr.SyntaxRange
+    Assert.Equal(1L, loc.Start.Line)
+    Assert.Equal(1L, loc.Start.Col)
+    Assert.Equal(1L, loc.End.Line)
+    Assert.Equal(8L, loc.End.Col)

@@ -44,6 +44,13 @@ module ParseResult =
         { Diagnostics = result.Diagnostics
           Root = result.Root |> mapper }
 
+    /// Fold a set of parse results into a single result
+    let public fold folder seed results =
+        let resultList = results |> Seq.toList
+        let state = List.fold (fun s r -> folder s r.Root) seed resultList
+        let diags = List.foldBack (fun r acc -> r.Diagnostics @ acc) resultList []
+        { Diagnostics = diags; Root = state }
+
     /// Convert a parser response into a plain result type
     ///
     /// This drops any tree from the error, but opens up parser responses to
@@ -215,11 +222,20 @@ and private parseAtom builder state =
 
 and private parseFormTail builder state =
     let mutable state = state |> skipAtmosphere builder
+    let mutable hasBody = false
 
     while not (lookingAtAny [ TokenKind.EndOfFile; TokenKind.Dot; TokenKind.CloseBracket ] state) do
         state <- parseExpr builder state
+        hasBody <- true
 
     if lookingAt TokenKind.Dot state then
+        if not hasBody then
+            state <-
+                ParserState.bufferDiagnostic
+                    state
+                    ParserDiagnostics.parseError
+                    "Dotted form requires at least one element before '.'"
+
         builder.StartNode(AstKind.DOTTED_TAIL |> SyntaxUtils.astToGreen)
 
         state <- state |> eat builder (AstKind.DOT) |> skipAtmosphere builder
@@ -288,6 +304,7 @@ and private parseExprSeq builder endKinds state =
 let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
     skipAtmosphere builder state
     |> parseExprSeq builder [ TokenKind.EndOfFile ]
+    |> expect builder TokenKind.EndOfFile AstKind.EOF
     |> ParserState.finalise builder AstKind.PROGRAM
 
 /// Parse Expression
@@ -296,6 +313,7 @@ let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxN
 let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
     skipAtmosphere builder state
     |> parseExpr builder
+    |> expect builder TokenKind.EndOfFile AstKind.EOF
     |> ParserState.finalise builder AstKind.SCRIPT_PROGRAM
 
 // =============================== Public API ==================================

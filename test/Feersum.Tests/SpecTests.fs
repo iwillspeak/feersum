@@ -16,6 +16,9 @@ open System.Threading.Tasks
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Syntax.Tree
 
+let private shouldUpdateSnapshots =
+    System.Environment.GetEnvironmentVariable("UpdateSnapshots") = "true"
+
 // This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
     { Output: string
@@ -33,8 +36,6 @@ let normalisePath (path: string) = path.Replace("\\", "/")
 let sanitiser =
     (basedLocation specDir)
     >> sanitiseLocationWith (sanitiseStreamNameWith normalisePath)
-
-let nodeSanitiser = sanitiseNodeWith (sanitiser)
 
 let diagSanitiser =
     sanitiseDiagnosticsWith (sanitiser)
@@ -182,7 +183,7 @@ let public getParseTestData () =
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
-let ``spec tests parse result`` s =
+let rec ``spec tests parse result`` s =
     let sourcePath = Path.Join(specDir, s)
 
     let root =
@@ -192,13 +193,23 @@ let ``spec tests parse result`` s =
             { r with
                 Diagnostics = diagSanitiser r.Diagnostics })
 
+    let astPath = Path.ChangeExtension(sourcePath, "ast")
+
+    if shouldUpdateSnapshots then
+        File.WriteAllText(astPath, root.Root)
+    else
+        Assert.Equal(File.ReadAllText(astPath), root.Root)
+
     let snapSettings =
         SnapshotSettings
             .New()
-            .SnapshotClassName("Parse")
-            .SnapshotTestName(s |> normalisePath)
+            .SnapshotDirectory(snapDir)
+            .SnapshotClassName("ParseDiagnostics")
+            .SnapshotTestName(nameof (``spec tests parse result``))
+            .StoreSnapshotsPerClass(false)
 
-    root.ShouldMatchSnapshot(snapSettings)
+    let childSnapshotName = Path.GetFileName s
+    root.Diagnostics.ShouldMatchChildSnapshot(childSnapshotName, snapSettings)
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]

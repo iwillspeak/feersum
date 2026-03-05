@@ -4,10 +4,6 @@ open Xunit
 
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Lex
-open Feersum.CompilerServices.Text
-
-let private p name line col =
-    TextPoint.FromParts(name, line, col) |> TextLocation.Point
 
 [<Fact>]
 let ``Empty input text contains no tokens`` () =

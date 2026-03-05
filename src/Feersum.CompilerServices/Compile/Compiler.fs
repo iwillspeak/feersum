@@ -16,6 +16,7 @@ open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Compile.MonoHelpers
 open Feersum.CompilerServices.Targets
 open Feersum.CompilerServices.Utils
+open Feersum.CompilerServices.Syntax.Tree
 
 /// Capture Environment Kind
 ///
@@ -73,6 +74,11 @@ type EmitCtx =
 type CompileResult =
     { Diagnostics: Diagnostic list
       EmittedAssemblyName: AssemblyNameDefinition option }
+
+[<RequireQualifiedAccess>]
+type CompileInput =
+    | Program of (TextDocument * Program) list
+    | Script of TextDocument * ScriptProgram
 
 [<AutoOpen>]
 module private Utils =
@@ -382,26 +388,29 @@ module private Utils =
         | BoundExpr.Load storage -> readFrom ctx storage
         | BoundExpr.If(cond, ifTrue, maybeIfFalse) ->
             let lblTrue = ctx.IL.Create(OpCodes.Nop)
-            let lblNotBool = ctx.IL.Create(OpCodes.Nop)
             let lblEnd = ctx.IL.Create(OpCodes.Nop)
+            let condTemp = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
             // ILAAA       : <expression for cond>
-            // ILBBB       : dup
+            // ILAAA       : stloc condTemp
+            // ILBBB       : ldloc condTemp
             // ILBBB       : isinst bool
-            // ILBBB       : brfalse ILlblNotBool
-            // ILBBB       : brtrue ILlblTrue
-            // ILCCC       : <false expression>
+            // ILBBB       : brfalse ILlblTrue
+            // ILCCC       : ldloc condTemp
+            // ILCCC       : brtrue ILlblTrue
+            // ILDDD       : <false expression>
             // ILXXX       : br ILlblEnd ; or just `ret` for tail calls
-            // ILlblNotBool: pop
             // ILlblTrue   : <true expression>
             // ILlblEnd    : nop ; only if not tail call
 
             emitExpression ctx false cond
 
-            ctx.IL.Emit(OpCodes.Dup)
+            ctx.IL.Emit(OpCodes.Stloc, condTemp)
+            ctx.IL.Emit(OpCodes.Ldloc, condTemp)
             ctx.IL.Emit(OpCodes.Isinst, ctx.Assm.MainModule.TypeSystem.Boolean)
-            ctx.IL.Emit(OpCodes.Brfalse, lblNotBool)
+            ctx.IL.Emit(OpCodes.Brfalse, lblTrue)
 
+            ctx.IL.Emit(OpCodes.Ldloc, condTemp)
             ctx.IL.Emit(OpCodes.Unbox_Any, ctx.Assm.MainModule.TypeSystem.Boolean)
             ctx.IL.Emit(OpCodes.Brtrue, lblTrue)
 
@@ -423,8 +432,6 @@ module private Utils =
             else
                 ctx.IL.Emit(OpCodes.Br, lblEnd)
 
-            ctx.IL.Append(lblNotBool)
-            ctx.IL.Emit(OpCodes.Pop)
             ctx.IL.Append(lblTrue)
             recurse ifTrue
 
@@ -443,11 +450,14 @@ module private Utils =
         | BoundExpr.Quoted quoted -> emitQuoted ctx quoted
 
     and emitQuoted ctx (quoted: BoundDatum) =
-        let quoteSequence s =
+        let quoteList s tail =
             let ret = makeTemp ctx ctx.Assm.MainModule.TypeSystem.Object
 
-            // * start with null
-            ctx.IL.Emit(OpCodes.Ldnull)
+            // * start with null or the dotted tail element
+            match tail with
+            | None -> ctx.IL.Emit(OpCodes.Ldnull)
+            | Some t -> emitQuoted ctx t
+
             ctx.IL.Emit(OpCodes.Stloc, ret)
 
             // * Build up list
@@ -470,8 +480,9 @@ module private Utils =
         match quoted with
         | BoundDatum.SelfEval c -> emitLiteral ctx c
         | BoundDatum.Compound [] -> emitLiteral ctx (BoundLiteral.Null)
-        | BoundDatum.Compound s -> quoteSequence s
-        | BoundDatum.Quoted q -> [ BoundDatum.Ident "quote"; q ] |> quoteSequence
+        | BoundDatum.Compound s -> quoteList s None
+        | BoundDatum.Pair(head, tail) -> quoteList head (Some tail)
+        | BoundDatum.Quoted q -> quoteList [ BoundDatum.Ident "quote"; q ] None
         | BoundDatum.Ident id -> quoteIdent id
 
     and emitLiteral ctx =
@@ -1022,6 +1033,7 @@ module private Utils =
         il.Emit(OpCodes.Ret)
 
 module Compilation =
+    open Feersum.CompilerServices.Syntax.Parse
 
     /// Emit a Bound Expression to .NET
     ///
@@ -1147,7 +1159,7 @@ module Compilation =
     /// the expression and writes out the corresponding .NET IL to an `Assembly`
     /// at `outputStream`. The `outputName` controls the root namespace and assembly
     /// name of the output.
-    let compile options outputStream outputName symbolStream node =
+    let compile options outputStream outputName symbolStream (input: CompileInput) =
         let target =
             match options.FrameworkAssmPaths with
             | [] -> TargetResolve.fromCurrentRuntime
@@ -1165,7 +1177,12 @@ module Compilation =
             else
                 Binder.emptyScope
 
-        let bound = Binder.bind scope allLibs node
+        let progs =
+            match input with
+            | CompileInput.Program progs -> progs |> List.map (fun (doc, prog) -> (doc, prog.Body |> List.ofSeq))
+            | CompileInput.Script(doc, script) -> [ (doc, script.Body |> Option.toList) ]
+
+        let bound = Binder.bind scope allLibs progs
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then
@@ -1214,17 +1231,16 @@ module Compilation =
             else
                 output
 
-        let ast, diagnostics =
-            let nodes, diagnostics =
-                List.map LegacyParse.parseFile sources
-                |> List.fold (fun (nodes, diags) (n, d) -> (List.append nodes [ n ], List.append d diags)) ([], [])
+        let result =
+            sources
+            |> Seq.map (fun path ->
+                let contents = File.ReadAllText(path)
+                let doc = TextDocument.fromParts path contents
+                Parse.readProgram path contents |> ParseResult.map (fun r -> doc, r))
+            |> ParseResult.fold (fun (progs) (p) -> List.append progs [ p ]) []
 
-            { Location = TextLocation.Missing
-              Kind = LegacyNodeKind.Seq(nodes) },
-            diagnostics
-
-        if Diagnostics.hasErrors diagnostics then
-            diagnostics
+        if Diagnostics.hasErrors result.Diagnostics then
+            result.Diagnostics
         else
 
             // Open the output streams. We don't use an `Option` directly here for
@@ -1238,7 +1254,12 @@ module Compilation =
                 | BuildConfiguration.Release -> null
 
             let result =
-                compile options outputStream (Path.GetFileName(output)) (symbols |> Option.ofObj) ast
+                compile
+                    options
+                    outputStream
+                    (Path.GetFileName(output))
+                    (symbols |> Option.ofObj)
+                    (CompileInput.Program result.Root)
 
             if result.Diagnostics.IsEmpty && options.OutputType = OutputType.Exe then
                 match result.EmittedAssemblyName with

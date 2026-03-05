@@ -8,9 +8,7 @@ let versionString =
     let simpleVersion = assm.GetName().Version
 
     let infoVersinoAttr =
-        Assembly
-            .GetExecutingAssembly()
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+        Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
 
     match infoVersinoAttr with
     | null -> simpleVersion.ToString()

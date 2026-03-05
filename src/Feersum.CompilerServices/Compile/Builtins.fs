@@ -123,12 +123,7 @@ module private BuiltinMacros =
             icef "Error in builtin macro: %A" result.Diagnostics
 
         match result.Root.Body with
-        | Some expr ->
-            match expr |> SyntaxShim.transformExpr textDoc with
-            | { Kind = LegacyNodeKind.Seq([ n ]) } -> n
-            | n -> n
-            |> Macros.parseSyntaxRules id
-            |> Result.unwrap
+        | Some expr -> Macros.parseSyntaxRules id expr |> Result.unwrap
         | None -> icef "no body in builtin macro %A" result.Root.Text
 
     /// Builtin `and` Macro
