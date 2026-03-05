@@ -86,19 +86,19 @@ module private Utils =
             | _ -> false
 
         let parseNameElement (element: Expression) =
-            let loc = nodeLocation doc element
+            let loc () = nodeLocation doc element
 
             match element with
             | Constant(Some(NumVal n)) -> Ok(n |> sprintf "%g")
             | Symbol namePart ->
                 if Seq.exists (isInvalidChar) (namePart.ToCharArray()) then
                     "Library names should not contain complex characters"
-                    |> Diagnostic.Create LibraryDiagnostics.improperLibraryName loc
+                    |> Diagnostic.Create LibraryDiagnostics.improperLibraryName (loc ())
                     |> diags.Add
 
                 Ok(namePart)
             | _ ->
-                diags.Emit LibraryDiagnostics.invalidLibraryName loc "Invalid library name part"
+                diags.Emit LibraryDiagnostics.invalidLibraryName (loc ()) "Invalid library name part"
                 Result.Error(())
 
         match name with
@@ -153,7 +153,7 @@ module private Utils =
         | _ -> Result.Error("invalid rename")
 
     and parseExportDeclaration (diags: DiagnosticBag) (doc: TextDocument option) (export: Expression) =
-        let loc = nodeLocation doc export
+        let loc () = nodeLocation doc export
 
         match export with
         | Symbol plain -> Some(ExportSet.Plain plain)
@@ -161,10 +161,10 @@ module private Utils =
             match tryParseRename doc rename with
             | Ok renamed -> Some(ExportSet.Renamed renamed)
             | Result.Error e ->
-                diags.Emit LibraryDiagnostics.malformedLibraryDecl loc e
+                diags.Emit LibraryDiagnostics.malformedLibraryDecl (loc ()) e
                 None
         | _ ->
-            diags.Emit LibraryDiagnostics.malformedLibraryDecl loc "Invalid export element"
+            diags.Emit LibraryDiagnostics.malformedLibraryDecl (loc ()) "Invalid export element"
             None
 
     and parseImportDeclaration (diags: DiagnosticBag) (doc: TextDocument option) (import: Expression) =
@@ -183,17 +183,18 @@ module private Utils =
         | Form(Symbol "rename" :: fromSet :: renames) ->
             let parseRenames (renames: Expression list) =
                 let parseRename (node: Expression) =
+                    let loc () = nodeLocation doc node
+
                     match node with
                     | Form f ->
                         tryParseRename doc f
-                        |> Result.mapError (
-                            Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl (nodeLocation doc node)
-                        )
+                        |> Result.mapError (fun e ->
+                            Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl (loc ()) e)
                     | _ ->
                         Result.Error(
                             Diagnostic.Create
                                 LibraryDiagnostics.malformedLibraryDecl
-                                (nodeLocation doc node)
+                                (loc ())
                                 "Expected rename"
                         )
 
