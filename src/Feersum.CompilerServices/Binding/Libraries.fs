@@ -192,10 +192,7 @@ module private Utils =
                             Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl (loc ()) e)
                     | _ ->
                         Result.Error(
-                            Diagnostic.Create
-                                LibraryDiagnostics.malformedLibraryDecl
-                                (loc ())
-                                "Expected rename"
+                            Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl (loc ()) "Expected rename"
                         )
 
                 renames |> List.map parseRename |> Result.collect
