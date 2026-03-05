@@ -10,8 +10,8 @@ multi-pass pipeline: **parse → bind → lower → emit**.
 |------|----------|
 | `src/Feersum/` | Compiler executable (F#) |
 | `src/Feersum.CompilerServices/` | Core compiler passes — syntax, binding, lowering, emit |
-| `src/Feersum.Core/` | Runtime support types shared by compiled programs |
-| `src/Serehfa/` | Scheme standard library (written in Scheme and C#) |
+| `src/Feersum.Core/` | Scheme core libraries (`.scmproj`), e.g. `base.sld`, `lists.sld` |
+| `src/Serehfa/` | Runtime support and builtin implementations (C# + Scheme) |
 | `src/Feersum.Sdk/` | MSBuild SDK targets for `.scmproj` files |
 | `src/Feersum.Templates/` | `dotnet new` templates |
 | `spec/` | Snapshot-tested Scheme source files (`.scm`) and expected ASTs (`.ast`) |
@@ -21,7 +21,7 @@ multi-pass pipeline: **parse → bind → lower → emit**.
 
 ## Compiler Pipeline
 
-1. **Parse** (`Syntax.fs`) — text → `AstNode` tree with position info; errors
+1. **Parse** (`src/Feersum.CompilerServices/Syntax/Parse.fs`, AST wrappers in `src/Feersum.CompilerServices/Syntax/Tree.fs`) — text → `AstNode` tree with position info; errors
    produce stub nodes rather than hard failures.
 2. **Bind** (`Binding/Binder.fs`) — `AstNode` → typed bound tree; resolves
    variables to `StorageRef`s, recognises special forms, identifies captures.
@@ -44,7 +44,7 @@ dotnet test
 UpdateSnapshots=true dotnet test
 
 # Compile a single Scheme file
-dotnet src/Feersum/bin/Debug/net6.0/Feersum.dll yourfile.scm
+dotnet run --project src/Feersum -- yourfile.scm
 ```
 
 The VS Code tasks `build`, `test`, and `update-snapshots` wrap the commands
