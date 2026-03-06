@@ -113,7 +113,7 @@ module NodeKey =
 
 `SyntaxRange.Start` is the absolute byte offset already computed by the red
 tree. Within any single parsed document, all *sibling* expressions at the same
-nestinglevel have distinct start positions. However, a parent `Form` node and
+nesting level have distinct start positions. However, a parent `Form` node and
 its first child share the same start offset — so `(DocId, offset)` alone is not
 quite sufficient as a key for parsed source trees. For parsed source nodes this
 is handled by always keying on the *leaf* (symbol, constant) nodes when doing
