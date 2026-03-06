@@ -9,7 +9,7 @@
 
     <!-- Use GITHUB_REF_NAME (GitHub Actions) or BRANCH_NAME (other/local) -->
     <_BranchName Condition="'$(GITHUB_REF_NAME)' != ''">$(GITHUB_REF_NAME)</_BranchName>
-    <_BranchName Condition="'$(BRANCH_NAME)' != ''">$(BRANCH_NAME)</_BranchName>
+    <_BranchName Condition="'$(_BranchName)' == '' AND '$(BRANCH_NAME)' != ''">$(BRANCH_NAME)</_BranchName>
     <MinVerDefaultPreReleasePhase Condition="'$(_BranchName)' == 'main'">beta</MinVerDefaultPreReleasePhase>
   </PropertyGroup>
   <PropertyGroup>
