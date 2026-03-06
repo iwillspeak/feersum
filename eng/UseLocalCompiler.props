@@ -20,7 +20,7 @@
     <ProjectReference Include="$(MSBuildThisFileDirectory)..\src\Feersum\Feersum.fsproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <Private>false</Private>
-      <SetTargetFramework>TargetFramework=net8.0</SetTargetFramework>
+      <GlobalPropertiesToRemove>TargetFramework</GlobalPropertiesToRemove>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
     </ProjectReference>
   </ItemGroup>
