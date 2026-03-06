@@ -23,7 +23,7 @@
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);GenerateVersionedProjects</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
   
-  <Target Name="GenerateVersionedProjects" BeforeTargets="BeforeBuild;GenerateNuspec" DependsOnTargets="PrepareForBuild;GetVersion">
+  <Target Name="GenerateVersionedProjects" BeforeTargets="BeforeBuild;GenerateNuspec" DependsOnTargets="PrepareForBuild;MinVer">
     <Message Text="Re-Targeting projects to $(Version) for pack" />
 
     <ItemGroup>

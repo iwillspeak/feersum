@@ -1,9 +1,16 @@
 <Project>
   <PropertyGroup>
-    <UpdateVersionProperties>true</UpdateVersionProperties>
-    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Replaces next-version: 0.1.0 from GitVersion.yml -->
+    <MinVerMinimumMajorMinor>0.1</MinVerMinimumMajorMinor>
+
+    <!-- Use GITHUB_REF_NAME (GitHub Actions) or BRANCH_NAME (other/local) -->
+    <_BranchName Condition="'$(GITHUB_REF_NAME)' != ''">$(GITHUB_REF_NAME)</_BranchName>
+    <_BranchName Condition="'$(BRANCH_NAME)' != ''">$(BRANCH_NAME)</_BranchName>
+    <MinVerDefaultPreReleasePhase Condition="'$(_BranchName)' == 'main'">beta</MinVerDefaultPreReleasePhase>
   </PropertyGroup>
   <PropertyGroup>
     <!-- Package metadata that is shared amongst all packages. -->
@@ -21,7 +28,7 @@
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
+    <PackageReference Include="MinVer" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>build</IncludeAssets>
     </PackageReference>
