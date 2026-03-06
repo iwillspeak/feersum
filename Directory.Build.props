@@ -1,9 +1,21 @@
 <Project>
   <PropertyGroup>
-    <UpdateVersionProperties>true</UpdateVersionProperties>
-    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Replaces next-version: 0.1.0 from GitVersion.yml -->
+    <MinVerMinimumMajorMinor>0.1</MinVerMinimumMajorMinor>
+
+    <!-- Use GITHUB_REF_NAME (GitHub Actions) or BRANCH_NAME (other/local) -->
+    <_BranchName Condition="'$(GITHUB_REF_NAME)' != ''">$(GITHUB_REF_NAME)</_BranchName>
+    <_BranchName Condition="'$(_BranchName)' == '' AND '$(BRANCH_NAME)' != ''">$(BRANCH_NAME)</_BranchName>
+    <BranchSlug Condition="'$(BranchSlug)' == ''">$(_BranchName)</BranchSlug>
+    <BranchSlug>$([System.Text.RegularExpressions.Regex]::Replace('$(BranchSlug)', '[^a-zA-Z0-9]+', '-'))</BranchSlug>
+    <BranchSlug>$(BranchSlug.Trim('-'))</BranchSlug>
+    <MinVerDefaultPreReleaseIdentifiers Condition="'$(MinVerDefaultPreReleaseIdentifiers)' == '' AND '$(BranchSlug)' == 'main'">beta.0</MinVerDefaultPreReleaseIdentifiers>
+    <MinVerDefaultPreReleaseIdentifiers Condition="'$(MinVerDefaultPreReleaseIdentifiers)' == ''  AND '$(BranchSlug)' != ''">$(BranchSlug).0</MinVerDefaultPreReleaseIdentifiers>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
   <PropertyGroup>
     <!-- Package metadata that is shared amongst all packages. -->
@@ -21,7 +33,7 @@
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
+    <PackageReference Include="MinVer" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>build</IncludeAssets>
     </PackageReference>
