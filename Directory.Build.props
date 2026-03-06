@@ -14,7 +14,7 @@
     <BranchSlug>$([System.Text.RegularExpressions.Regex]::Replace('$(BranchSlug)', '[^a-zA-Z0-9]+', '-'))</BranchSlug>
     <BranchSlug>$(BranchSlug.Trim('-'))</BranchSlug>
     <MinVerDefaultPreReleaseIdentifiers Condition="'$(MinVerDefaultPreReleaseIdentifiers)' == '' AND '$(BranchSlug)' == 'main'">beta.0</MinVerDefaultPreReleaseIdentifiers>
-    <MinVerDefaultPreReleaseIdentifiers Condition="'$(MinVerDefaultPreReleaseIdentifiers)' == ''">$(BranchSlug).0</MinVerDefaultPreReleaseIdentifiers>
+    <MinVerDefaultPreReleaseIdentifiers Condition="'$(MinVerDefaultPreReleaseIdentifiers)' == ''  AND '$(BranchSlug)' != ''">$(BranchSlug).0</MinVerDefaultPreReleaseIdentifiers>
     <MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
   <PropertyGroup>
