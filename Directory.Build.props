@@ -10,8 +10,11 @@
     <!-- Use GITHUB_REF_NAME (GitHub Actions) or BRANCH_NAME (other/local) -->
     <_BranchName Condition="'$(GITHUB_REF_NAME)' != ''">$(GITHUB_REF_NAME)</_BranchName>
     <_BranchName Condition="'$(_BranchName)' == '' AND '$(BRANCH_NAME)' != ''">$(BRANCH_NAME)</_BranchName>
-    <MinVerDefaultPreReleasePhase Condition="'$(MinVerDefaultPreReleasePhase)' == '' AND '$(_BranchName)' == 'main'">beta</MinVerDefaultPreReleasePhase>
-    <MinVerDefaultPreReleasePhase Condition="'$(MinVerDefaultPreReleasePhase)' == ''">$(_BranchName)</MinVerDefaultPreReleasePhase>
+    <BranchSlug Condition="'$(BranchSlug)' == ''">$(_BranchName)</BranchSlug>
+    <BranchSlug>$([System.Text.RegularExpressions.Regex]::Replace('$(BranchSlug)', '[^a-zA-Z0-9]+', '-'))</BranchSlug>
+    <BranchSlug>$(BranchSlug.Trim('-'))</BranchSlug>
+    <MinVerDefaultPreReleasePhase Condition="'$(MinVerDefaultPreReleasePhase)' == '' AND '$(BranchSlug)' == 'main'">beta</MinVerDefaultPreReleasePhase>
+    <MinVerDefaultPreReleasePhase Condition="'$(MinVerDefaultPreReleasePhase)' == ''">$(BranchSlug)</MinVerDefaultPreReleasePhase>
   </PropertyGroup>
   <PropertyGroup>
     <!-- Package metadata that is shared amongst all packages. -->
