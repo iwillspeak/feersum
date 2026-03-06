@@ -13,8 +13,8 @@
     <BranchSlug Condition="'$(BranchSlug)' == ''">$(_BranchName)</BranchSlug>
     <BranchSlug>$([System.Text.RegularExpressions.Regex]::Replace('$(BranchSlug)', '[^a-zA-Z0-9]+', '-'))</BranchSlug>
     <BranchSlug>$(BranchSlug.Trim('-'))</BranchSlug>
-    <MinVerDefaultPreReleasePhase Condition="'$(MinVerDefaultPreReleasePhase)' == '' AND '$(BranchSlug)' == 'main'">beta</MinVerDefaultPreReleasePhase>
-    <MinVerDefaultPreReleasePhase Condition="'$(MinVerDefaultPreReleasePhase)' == ''">$(BranchSlug)</MinVerDefaultPreReleasePhase>
+    <MinVerDefaultPreReleaseIdentifiers Condition="'$(MinVerDefaultPreReleaseIdentifiers)' == '' AND '$(BranchSlug)' == 'main'">beta.0</MinVerDefaultPreReleasePhase>
+    <MinVerDefaultPreReleaseIdentifiers Condition="'$(MinVerDefaultPreReleaseIdentifiers)' == ''">$(BranchSlug).0</MinVerDefaultPreReleasePhase>
   </PropertyGroup>
   <PropertyGroup>
     <!-- Package metadata that is shared amongst all packages. -->
