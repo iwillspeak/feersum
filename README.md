@@ -4,7 +4,8 @@
 </p>
 <h1 align="center"><samp>(feersum . scheme)</samp></h1>
 <p align="center">
-<a href=https://dev.azure.com/iwillspeak/GitHub/_build/latest?definitionId=4&branchName=main"><img alt="Build Status" src="https://dev.azure.com/iwillspeak/GitHub/_apis/build/status/iwillspeak.feersum?branchName=main" /></a>
+<a href="https://github.com/iwillspeak/feersum/actions/workflows/ci.yml"><img alt="Build Status" src="https://github.com/iwillspeak/feersum/actions/workflows/ci.yml/badge.svg" /></a>
+<a href="https://github.com/iwillspeak/feersum/actions/workflows/github-actions-pages.yml"><img alt="Build Docs" src="https://github.com/iwillspeak/feersum/actions/workflows/github-actions-pages.yml/badge.svg" /></a>
 <a href="https://www.nuget.org/packages/Feersum"><img alt="Feersum on NuGet.org" src="https://buildstats.info/nuget/Feersum?includePreReleases=true" /></a>
 </p>
 
