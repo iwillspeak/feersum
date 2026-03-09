@@ -10,18 +10,18 @@ open Feersum.CompilerServices
 open Feersum.CompilerServices.Compile
 
 /// Create a `RuntimeLibrary` from the given parts
-let private intoRuntimeLib kind name version (path: string) deps =
+let private intoRuntimeLib kind name version assetName deps =
     RuntimeLibrary(
         kind,
         name,
         version,
         "",
-        [ RuntimeAssetGroup("", Seq.singleton (Path.GetFileName(path))) ],
+        [ RuntimeAssetGroup("", Seq.singleton assetName |> Seq.cast<string>) ],
         [],
         [],
         deps,
         false,
-        Path.GetDirectoryName(path),
+        "",
         ""
     )
 
@@ -69,8 +69,7 @@ let public writeRuntimeConfig
                 {| Tfm = (sprintf "%s%i.%i" tfmPrefix tfVersion.Major tfVersion.Minor)
                    Framework =
                     {| Name = "Microsoft.NETCore.App"
-                       Version = tfVersion.ToString() |}
-                   AdditionalProbingPaths = [| outputDir |] |} |}
+                       Version = tfVersion.ToString() |} |} |}
 
         let mutable opts = JsonSerializerOptions(JsonSerializerDefaults.Web)
 
@@ -82,10 +81,20 @@ let public writeRuntimeConfig
             JsonSerializer.Serialize(config, opts)
         )
 
-        // Copy reference assemblies into the output directory so the .NET host
-        // can find them via the app-base-directory probe (the deps.json `path`
-        // field was used for direct lookup in .NET 8 but is no longer reliable
-        // as an absolute probe path in .NET 10+).
+        // Emit a .runtimeconfig.dev.json overlay. The .NET host merges this file
+        // with the base runtimeconfig at startup; reference assemblies are copied
+        // into the output directory so the app-base probe can find them flat.
+        let devConfig =
+            {| RuntimeOptions =
+                {| AdditionalProbingPaths = [| outputDir |] |} |}
+
+        File.WriteAllText(
+            Path.Combine(outputDir, assemblyName.Name + ".runtimeconfig.dev.json"),
+            JsonSerializer.Serialize(devConfig, opts)
+        )
+
+        // Copy reference assemblies into the output directory so the app-base-directory
+        // probe finds them flat alongside the compiled binary.
         referencePaths
         |> List.iter (fun r ->
             let dest = Path.Combine(outputDir, Path.GetFileName(r))
@@ -97,15 +106,15 @@ let public writeRuntimeConfig
             referencePaths
             |> List.map (fun r ->
                 let name = Builtins.getAssemblyName r
-                Dependency(Path.GetFileName(r), name.Version.ToString()))
+                Dependency(name.Name, name.Version.ToString()))
 
         let refLibs =
             Seq.zip referencePaths deps
-            |> Seq.map (fun (ref, dep) -> intoRuntimeLib "reference" dep.Name dep.Version ref [])
+            |> Seq.map (fun (ref, dep) -> intoRuntimeLib "reference" dep.Name dep.Version (Path.GetFileName(ref)) [])
 
         let baseLibs =
             [ deps
-              |> intoRuntimeLib "project" assemblyName.Name (assemblyName.Version.ToString()) assemblyPath ]
+              |> intoRuntimeLib "project" assemblyName.Name (assemblyName.Version.ToString()) (Path.GetFileName(assemblyPath)) ]
 
         let libs = Seq.append baseLibs refLibs
 
