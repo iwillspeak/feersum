@@ -52,6 +52,18 @@ let public writeRuntimeConfig
             else
                 "net"
 
+        let sehrefa = typeof<Serehfa.ConsPair>.Assembly
+
+        let referencePaths =
+            // FIXME: We shouldn't be worrying about adding the core
+            // library to the references like this. Feels like a job
+            // for the options or the compilation before us.
+            if List.contains (Path.GetFileName(sehrefa.Location)) options.References then
+                options.References
+            else
+                sehrefa.Location :: options.References
+            |> List.map (Path.GetFullPath)
+
         let config =
             {| RuntimeOptions =
                 {| Tfm = (sprintf "%s%i.%i" tfmPrefix tfVersion.Major tfVersion.Minor)
@@ -70,17 +82,16 @@ let public writeRuntimeConfig
             JsonSerializer.Serialize(config, opts)
         )
 
-        let sehrefa = typeof<Serehfa.ConsPair>.Assembly
+        // Copy reference assemblies into the output directory so the .NET host
+        // can find them via the app-base-directory probe (the deps.json `path`
+        // field was used for direct lookup in .NET 8 but is no longer reliable
+        // as an absolute probe path in .NET 10+).
+        referencePaths
+        |> List.iter (fun r ->
+            let dest = Path.Combine(outputDir, Path.GetFileName(r))
 
-        let referencePaths =
-            // FIXME: We shouldn't be worrying about adding the core
-            // library to the references like this. Feels like a job
-            // for the options or the compilation before us.
-            if List.contains (Path.GetFileName(sehrefa.Location)) options.References then
-                options.References
-            else
-                sehrefa.Location :: options.References
-            |> List.map (Path.GetFullPath)
+            if not (Path.GetFullPath(r) = Path.GetFullPath(dest)) then
+                File.Copy(r, dest, overwrite = true))
 
         let deps =
             referencePaths
