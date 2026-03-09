@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      dev-dependencies:
+        patterns:
+          - "MinVer"
+          - "Microsoft.SourceLink.GitHub"
+          - "Microsoft.NET.Test.Sdk"
+          - "xunit*"
+          - "snapper"
+          - "coverlet*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
