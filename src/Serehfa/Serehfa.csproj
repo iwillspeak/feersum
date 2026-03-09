@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Condition=" '$(TargetFramework)' == 'netstandard2.0' "
-                       Include="System.ValueTuple" Version="4.6.2" />
+                       Include="System.ValueTuple" />
   </ItemGroup>
 
 </Project>
