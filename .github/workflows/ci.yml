@@ -27,6 +27,7 @@ jobs:
       - name: Build and test
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
           chcp 65001
           dotnet build --configuration Release
           dotnet test --no-build --configuration Release --logger 'trx' --logger 'console;verbosity=normal'
