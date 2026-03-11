@@ -171,7 +171,7 @@ let rec illum (expr: Expression) : Stx =
     | { Kind = NodeKind.Seq children } ->
         children |> List.map (fun c -> illum c.Underlying) |> Stx.Form
     | { Kind = NodeKind.Dot(head, tail) } ->
-        // Dotted forms expanded as needed
+        // TODO: dotted pairs need a dedicated Stx variant (see Open Question 4)
         Stx.Form [ illum head.Underlying; illum tail.Underlying ]
 ```
 
