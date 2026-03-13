@@ -270,7 +270,7 @@ let ``parse preserves source location`` () =
     Assert.Empty(result.Diagnostics)
     let expr = result.Root.Body.Value
     let loc = TextDocument.rangeToLocation doc expr.SyntaxRange
-    Assert.Equal(1L, loc.Start.Line)
-    Assert.Equal(1L, loc.Start.Col)
-    Assert.Equal(1L, loc.End.Line)
-    Assert.Equal(8L, loc.End.Col)
+    Assert.Equal(1, loc.Start.Line)
+    Assert.Equal(1, loc.Start.Col)
+    Assert.Equal(1, loc.End.Line)
+    Assert.Equal(8, loc.End.Col)
