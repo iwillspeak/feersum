@@ -2,9 +2,9 @@
 
 Feersum is a .NET compiler. It is built using a mixture of [F#][], [C#][], and
 [Scheme][]. The compiler itself lives in the `src/Feersum` project and is an F#
-exectuable. The project structure is roughly as follows:
+executable. The project structure is roughly as follows:
 
- * `src/` - Main compiler source code. These projects are packed and publisehd
+ * `src/` - Main compiler source code. These projects are packed and published
     as NuGet packages.
  * `spec/` - Scheme files that cover compilation use cases. These files are used
     in two ways: First we parse them and assert that the parser produces the
@@ -18,32 +18,32 @@ exectuable. The project structure is roughly as follows:
  * `test/` - .NET tests that cover parts of the compiler. This includes the
     stubs that run the `spec/` tests in `SpecTests.fs`.
 
-## Compiler Strucutre
+## Compiler Structure
 
 The compiler itself is split into 4 main passes: parse, bind, lower, and emit.
 
- * [**Parse**][]: In this phase we convert the input text into a stuctured tree of
+ * [**Parse**][]: In this phase we convert the input text into a structured tree of
    `Syntax::AstNode`s. Position information for each node is tracked. Missing
-   nodes are stubed out with error information. This ensures that all source
+   nodes are stubbed out with error information. This ensures that all source
    text _should_ parse into _some form_ of syntax tree.
  * [**Bind**][]: The raw syntax tree from the parse phase is converted into a
    semantic, or "bound" tree by the bind phase. We walk each node recursively
    binding inner parts of the tree. In this phase variables are resolved to
-   storage locations (`Storageref`s), special formas are recognised and handled
+   storage locations (`StorageRef`s), special forms are recognised and handled
    by specific branches in the binder at this stage. Some minimal re-writing of
    the tree's structure takes place to better encode the semantics of the
    program.
 
-   In the bind phase we also identify captrued variables but _don't_ move their
+   In the bind phase we also identify captured variables but _don't_ move their
    storage locations into environment slots. This takes place later in the
    `Lower` phase.
- * [**Lower**][]: In thise phase references to captured variables are re-written
+ * [**Lower**][]: In this phase references to captured variables are re-written
    to refer to their environment location. This ensures that all captured values
-   are hoisted into the environment immeidately on entering a scope rather than
+   are hoisted into the environment immediately on entering a scope rather than
    lazily at the point of use. An introduction to this process is available [on
    my blog][captivating].
 
-   The lower phase also performs some other transforms to simplfiy some areas of
+   The lower phase also performs some other transforms to simplify some areas of
    the tree before IL code is emitted.
  * [**Emit**][]: The final phase of the compiler is to write out .NET Common
    Intermediary Language (CIL) bytecode to an Assembly. To perform this task we
@@ -54,14 +54,14 @@ The compiler itself is split into 4 main passes: parse, bind, lower, and emit.
    variables or fields. We represent global scheme values as public static
    fields. Private definitions that don't escape the given block and aren't
    captured live as locals. For captured values a slot index into an `object[]`
-   in the `Envrionment` type is used.
+   in the `Environment` type is used.
 
    Methods without a closure are emitted as static methods. Methods with a
-   clousre are emitted as instance methods on the `Enrivonment` type.
+   closure are emitted as instance methods on the `Environment` type.
 
    All function calls are typed as calls to `Func<object[], object>`. When a
    Scheme function is emitted a companion *thunk* is also generated that unpacks
-   the arguments array from the `object[]` and calls the real implementaiton.
+   the arguments array from the `object[]` and calls the real implementation.
 
  [F#]: https://docs.microsoft.com/en-gb/dotnet/fsharp/
  [C#]: https://docs.microsoft.com/en-gb/dotnet/csharp/

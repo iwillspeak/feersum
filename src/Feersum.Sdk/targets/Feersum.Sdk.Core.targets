@@ -67,7 +67,7 @@
     </ItemGroup>
 
     <PropertyGroup>
-      <!-- The path to the compiler exectuable. -->
+      <!-- The path to the compiler executable. -->
       <FeersumCompilerPath Condition=" '$(FeersumCompilerPath)' == '' ">$(PkgFeersum)/tools/net8.0/any/Feersum.dll</FeersumCompilerPath>
       <DotNetPath>$(DOTNET_HOST_PATH)</DotNetPath>
       <DotNetPath Condition=" '$(DotNetPath)' == '' ">dotnet</DotNetPath>

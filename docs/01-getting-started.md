@@ -8,7 +8,7 @@ toolchain.
 
 Install the tool globally with `dotnet tool install -g Feersum`. Once
 installed Feersum will be available on the command line as `feersum-scheme`. You
-can alais this to `scheme` if you are brave enough to use Feersum as your
+can alias this to `scheme` if you are brave enough to use Feersum as your
 _default_ scheme implementation.
 
 Once you have the tool installed you can access a Scheme Read, Eval, Print, Loop
@@ -51,7 +51,7 @@ Check out [the `examples/` folder][example-projects] for more information.
 
 [example-projects]: https://github.com/iwillspeak/feersum/blob/main/examples/
 
-The `scm-console` and `scm-classib` templates create `.scmproj` MSBuild projects
+The `scm-console` and `scm-classlib` templates create `.scmproj` MSBuild projects
 which reference the shared `Feersum.SDK` package:
 
 ```xml

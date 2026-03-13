@@ -1,6 +1,6 @@
-# Scheme Langauge Reference
+# Scheme Language Reference
 
-Feersum scheme aims to implement the [R7RS Small language specifiaction][spec].
+Feersum scheme aims to implement the [R7RS Small language specification][spec].
 The compiler and language are in the early stages of development. Many areas of
 the spec are yet to be implemented.
 
@@ -12,6 +12,6 @@ the spec are yet to be implemented.
 
  * [Special Forms](./special-forms/)
  * [Standard Procedures](./standard-procedures/)
- * [SICP in Feersum SCheme](https://github.com/iwillspeak/SicpFeersum)
+ * [SICP in Feersum Scheme](https://github.com/iwillspeak/SicpFeersum)
 
  [spec]: https://small.r7rs.org/
