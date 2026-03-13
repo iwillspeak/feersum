@@ -325,6 +325,11 @@ module private Utils =
         ||| TypeAttributes.Abstract
         ||| TypeAttributes.Sealed
 
+    /// PDB sentinel value indicating a compiler-generated sequence point with no
+    /// corresponding source location. See ECMA-335 and the Portable PDB spec.
+    [<Literal>]
+    let private HiddenSequencePointLine = 0xfeefee
+
     /// Emit a Single Bound Expression
     ///
     /// Emits the code for a single function into the given assembly. For some more

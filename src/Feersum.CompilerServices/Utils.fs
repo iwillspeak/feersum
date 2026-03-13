@@ -1,5 +1,8 @@
 namespace Feersum.CompilerServices.Utils
 
+open Feersum.CompilerServices.Ice
+
+
 module Result =
 
     /// Unwrap a `Result` into the inner value. Useful for testing, or in cases
@@ -7,7 +10,7 @@ module Result =
     let unwrap =
         function
         | Ok x -> x
-        | Error e -> failwithf "Called unwrap on `Error`: %A" e
+        | Error e -> icef "Called unwrap on `Error`: %A" e
 
     /// Check if the result is OK
     let isOk =
@@ -26,6 +29,7 @@ module Result =
     /// encoutnered then an `Error` is returned containing all the erorrs.
     let collectAll input =
         let rec decompose =
+        
             function
             | [] -> ([], [])
             | head :: rest ->
@@ -60,7 +64,7 @@ module Option =
     let unwrap =
         function
         | Some s -> s
-        | None -> failwith "Called unwrap on a `None`."
+        | None -> ice "Called unwrap on a `None`."
 
     /// Turn a result with a unit error into an option
     let ofResult =
