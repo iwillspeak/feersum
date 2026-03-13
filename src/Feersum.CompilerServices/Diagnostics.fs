@@ -38,7 +38,7 @@ type Diagnostic =
     /// Feature flag to disable mult-range shorthand `(<line>,<col>-<col>)` in
     /// VS Codde. This shorthand format can't be parsed properly as a location
     /// in that editor.
-    static member private MultiRangeEnabled =
+    static let multiRangeEnabled =
         System.Environment.GetEnvironmentVariable("TERM_PROGRAM")
         |> Option.ofObj
         |> Option.map (fun x -> x.Contains("vscode") |> not)
@@ -70,7 +70,7 @@ type Diagnostic =
 
             // If both points are on the same line then we can use the a more
             // compact format.
-            if s.Line = e.Line && Diagnostic.MultiRangeEnabled then
+            if s.Line = e.Line && multiRangeEnabled then
                 sprintf
                     "%s(%d,%d-%d): %s: %s"
                     (s.Source |> normaliseName)
