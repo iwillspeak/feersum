@@ -85,11 +85,11 @@ Three concepts underpin the design:
    template can only ever resolve to what `x` meant where the macro was written.
 
 Returning to the motivating example: when `(or 100 200)` is expanded the
-template `((lambda x (if x x b)) a)` is wrapped in a closure over the
-definition-time environment. When that closure is later expanded, the `x` in
-the template resolves to a freshly stamped identifier created during
-`expandLam` — one that is entirely distinct from any `x` the caller might have
-in scope. No GUIDs required.
+template `(let (temp 100) (if temp temp (or 200)))` is wrapped in a closure over
+the definition-time environment. When that closure is later expanded, the `x` in
+the template resolves to a freshly stamped identifier created during `expandLam`
+— one that is entirely distinct from any `x` the caller might have in scope. No
+GUIDs required.
 
 ---
 
@@ -107,8 +107,8 @@ new synthetic trees.
 
 Additionally, Firethorn green nodes contain no position information, and the
 red tree's `TextRange` is an absolute byte-offset pair into the _source file_ —
-there is nothing meaningful there for synthetic factory nodes, which all get
-`Offset = 0`.
+there is nothing meaningful there for synthetic factory nodes, which all start
+at `Offset = 0`.
 
 The design therefore introduces a new _syntax tree_ (`Stx`) that sits between
 the Firethorn-backed CST and the binder. This tree carries identifier stamps,
@@ -139,7 +139,8 @@ type Stx =
     /// A named reference with a unique stamp.
     | Ident of Ident
     /// A compound form — an application, special form, or macro call.
-    | Form of Stx list
+    /// Contains the main body and an optional dotted tail.
+    | Form of Stx list * Stx option
     /// A syntactic closure: syntax to be expanded in a captured environment.
     | Closure of Stx * StxEnv
 
@@ -158,21 +159,29 @@ and SpecialFormKind = Lam | Let | If | Define | DefSyn | Quote (* … *)
 and Transformer = Stx -> StxEnv -> Stx
 ```
 
-The `illum` function walks the Firethorn `Expression` tree and produces the
+The `illum` function walks the `Expression` tree and produces the
 initial `Stx`, assigning stamp `0` to every symbol:
 
 ```fsharp
 let rec illum (expr: Expression) : Stx =
-    match SyntaxNode.ofExpression expr with
-    | { Kind = NodeKind.Atom(SyntaxConstant.Symbol s) } ->
-        Stx.Ident { Name = s; Stamp = 0 }
-    | { Kind = NodeKind.Atom c } ->
-        Stx.Literal c
-    | { Kind = NodeKind.Seq children } ->
-        children |> List.map (fun c -> illum c.Underlying) |> Stx.Form
-    | { Kind = NodeKind.Dot(head, tail) } ->
-        // TODO: dotted pairs need a dedicated Stx variant (see Open Question 4)
-        Stx.Form [ illum head.Underlying; illum tail.Underlying ]
+    match expr with
+    | SymbolNode s ->
+        Stx.Ident { Name = s.CookedValue; Stamp = 0 }
+    | ConstantNode c ->
+        match c.Value with
+        | Some v -> Stx.Literal v
+        | None -> failwith "Constant node with no value"
+    | FormNode f ->
+        let mainBody = (f.Body |> List.ofSeq) |> List.map illum
+        let dotted = f.DottedTail |> Option.map (fun t -> illum t.Body)
+        Stx.Form (mainBody, dotted)
+    | QuotedNode q ->
+        let innerStx = match q.Inner with
+                       | Some expr -> illum expr
+                       | None -> failwith "Quoted expression with no inner expression"
+        Stx.Form ([ Stx.Ident { Name = "quote"; Stamp = 0 }; innerStx ], None)
+    | VecNode _ | ByteVecNode _ ->
+        failwith "Vector illumination not yet supported"
 ```
 
 ### Syntax Environment Helpers
@@ -328,12 +337,14 @@ resolved head identifier:
 ```fsharp
 let rec expand (stx: Stx) (stxEnv: StxEnv) : Stx option * StxEnv =
     match stx with
-    | Stx.Literal _ | Stx.Form [] -> (Some stx, stxEnv)
+    | Stx.Literal _ -> (Some stx, stxEnv)
     | Stx.Ident id ->
         match resolve id stxEnv with
         | Var resolved -> (Some(Stx.Ident resolved), stxEnv)
         | _ -> failwith "syntax item in value position"
-    | Stx.Form(head :: args) ->
+    | Stx.Form([], _) ->
+        (Some stx, stxEnv)  // Empty form
+    | Stx.Form(head :: args, dotted) ->
         match head with
         | Stx.Ident id ->
             match resolve id stxEnv with
@@ -341,15 +352,17 @@ let rec expand (stx: Stx) (stxEnv: StxEnv) : Stx option * StxEnv =
                 let expanded = transformer stx stxEnv
                 (Some expanded, stxEnv)
             | SpecialForm Lam ->
-                (Some(expandLam head args stxEnv), stxEnv)
+                (Some(expandLam head args dotted stxEnv), stxEnv)
             | SpecialForm DefSyn ->
-                expandDefSyn args stxEnv
+                expandDefSyn args dotted stxEnv
             | _ ->
-                let expanded = List.map (expandOne stxEnv) (head :: args)
-                (Some(Stx.Form expanded), stxEnv)
+                let expandedArgs = List.map (expandOne stxEnv) (head :: args)
+                let expandedDotted = Option.map (expandOne stxEnv) dotted
+                (Some(Stx.Form(expandedArgs, expandedDotted)), stxEnv)
         | _ ->
-            let expanded = List.map (expandOne stxEnv) (head :: args)
-            (Some(Stx.Form expanded), stxEnv)
+            let expandedArgs = List.map (expandOne stxEnv) (head :: args)
+            let expandedDotted = Option.map (expandOne stxEnv) dotted
+            (Some(Stx.Form(expandedArgs, expandedDotted)), stxEnv)
     | Stx.Closure(inner, env) ->
         let (result, _) = expand inner env
         (result, stxEnv)
@@ -372,9 +385,9 @@ let makeSynTransformer
     (macroName: string) : Transformer =
   fun (callStx: Stx) (useEnv: StxEnv) ->
     match callStx with
-    | Stx.Form(_ :: callArgs) ->
+    | Stx.Form(head :: callArgs, dotted) ->
       let tryRule (rule: MacroRule) =
-        match matchPatternArgs rule callArgs useEnv with
+        match matchPatternArgs rule callArgs dotted useEnv with
         | Some bindings ->
           let substituted = applyTemplate rule.Template bindings
           Some(Stx.Closure(substituted, defEnv))
@@ -518,12 +531,7 @@ debug document objects with a lookup over `DocTable` `SourceFile` entries.
    producing a dedicated `DebugDocuments` map that the emitter already
    understands.
 
-4. **`DottedForm` in templates**: currently `unimpl "Dotted forms in macro
-   expansion are not yet supported"`. The `Stx` tree needs a representation for
-   dotted pairs. Implement in the same work item as the closure mechanism,
-   since dotted-form handling follows the same expand/close pattern.
-
-5. **Interaction with `syntax-rules` ellipsis**: the current `Repeated` template
+4. **Interaction with `syntax-rules` ellipsis**: the current `Repeated` template
    node interacts with pattern matching and substitution. Ensure that repeated
    elements are expanded within a closure that carries the correct
    definition-time environment, and that each expansion iteration receives
