@@ -17,8 +17,8 @@ A Scheme compiler for .NET written in F#. Progress
 # Contributing
 
 Feersum is in active development. Contributions are welcome. See
-[CONTRIBUTING][contributing] for more imformation. For an introduction to
-buiding and testing the compiler, as well as a discussion of the high-level
+[CONTRIBUTING][contributing] for more information. For an introduction to
+building and testing the compiler, as well as a discussion of the high-level
 structure check out the [DEVGUIDE][devguide].
 
 # Getting Started using Feersum
@@ -53,7 +53,7 @@ Compile and run with `dotnet build` and `dotnet run` as usual! Other templates
 are available:
 
  * `scm-classlib` - Generate a .NET class library project.
- * `scmlib` - Generate s Scheme library definition file.
+ * `scmlib` - Generate a Scheme library definition file.
 
 # Planned Features
 
