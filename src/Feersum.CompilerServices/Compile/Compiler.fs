@@ -368,10 +368,10 @@ module private Utils =
                         ctx.DebugDocuments[s.Source] <- doc
 
                     let point = Cil.SequencePoint(ins, doc)
-                    point.StartLine <- int s.Line
-                    point.StartColumn <- int s.Col
-                    point.EndLine <- int e.Line
-                    point.EndColumn <- int e.Col
+                    point.StartLine <- s.Line
+                    point.StartColumn <- s.Col
+                    point.EndLine <- e.Line
+                    point.EndColumn <- e.Col
                     ctx.IL.Body.Method.DebugInformation.SequencePoints.Add point
         | BoundExpr.Literal l -> emitLiteral ctx l
         | BoundExpr.Seq s -> emitSequence ctx tail s
