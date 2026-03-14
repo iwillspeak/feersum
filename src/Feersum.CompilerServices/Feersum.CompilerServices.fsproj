@@ -28,6 +28,8 @@
     <Compile Include="Compile/MonoHelpers.fs" />
     <Compile Include="Compile/Builtins.fs" />
     <Compile Include="Compile/Runtime.fs" />
+    <Compile Include="Compile/EmitContext.fs" /><Compile Include="Compile/Emit.fs" />
+    
     <Compile Include="Compile/Compiler.fs" />
     <Compile Include="Eval.fs" />
   </ItemGroup>
