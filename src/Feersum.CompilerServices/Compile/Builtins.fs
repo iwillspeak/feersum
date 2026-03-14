@@ -197,10 +197,20 @@ module Builtins =
     /// intrisics.
     let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<AssemblyDefinition>) =
 
+        let loadedAssemblies =
+            lazy
+                (externAssms
+                 |> Seq.map (fun a -> sprintf "  - %s" a.Name.Name)
+                 |> String.concat "\n")
+
         let getType name =
             externAssms
-            |> Seq.pick (fun (assm: AssemblyDefinition) ->
+            |> Seq.tryPick (fun (assm: AssemblyDefinition) ->
                 assm.MainModule.Types |> Seq.tryFind (fun x -> x.FullName = name))
+            |> Option.defaultWith (fun () ->
+                let loadedAssms = loadedAssemblies.Force()
+
+                icef "Failed to find type '%s' in loaded assemblies:\n%s" name loadedAssms)
 
         let getImportedType name =
             getType name |> lispAssm.MainModule.ImportReference
@@ -210,7 +220,10 @@ module Builtins =
         let getCtorBy pred typeName =
             let ty = getResolvedType typeName
 
-            ty.GetConstructors() |> Seq.find pred |> lispAssm.MainModule.ImportReference
+            ty.GetConstructors()
+            |> Seq.tryFind pred
+            |> Option.defaultWith (fun () -> icef "No constructor matching predicate found on type '%s'" typeName)
+            |> lispAssm.MainModule.ImportReference
 
         let getSingleCtor = getCtorBy (fun _ -> true)
 
@@ -228,18 +241,27 @@ module Builtins =
             (getType "System.Func`2").MakeGenericInstanceType(genericArgs).Resolve()
 
         let funcCtor =
-            lispAssm.MainModule.ImportReference(funcTy.GetConstructors() |> Seq.head)
+            funcTy.GetConstructors()
+            |> Seq.toArray
+            |> function
+                | [||] -> icef "No constructor found on System.Func`2"
+                | ctors -> ctors[0]
+            |> lispAssm.MainModule.ImportReference
             |> makeHostInstanceGeneric genericArgs
 
         let funcInvoke =
-            lispAssm.MainModule.ImportReference(funcTy.GetMethods() |> Seq.find (fun m -> m.Name = "Invoke"))
+            funcTy.GetMethods()
+            |> Seq.tryFind (fun m -> m.Name = "Invoke")
+            |> Option.defaultWith (fun () -> icef "Invoke method not found on System.Func`2")
+            |> lispAssm.MainModule.ImportReference
             |> makeHostInstanceGeneric genericArgs
 
         let getMethod typeName methodName =
             let ty = getResolvedType typeName
 
             ty.GetMethods()
-            |> Seq.find (fun m -> m.Name = methodName)
+            |> Seq.tryFind (fun m -> m.Name = methodName)
+            |> Option.defaultWith (fun () -> icef "Method '%s' not found on type '%s'" methodName typeName)
             |> lispAssm.MainModule.ImportReference
 
         { ConsTy = getImportedType "Serehfa.ConsPair"
