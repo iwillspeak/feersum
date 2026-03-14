@@ -3,6 +3,7 @@ module internal Feersum.CompilerServices.Compile.Instrumentation
 open System.Collections.Generic
 open System.Diagnostics
 open System.Diagnostics.Metrics
+open System
 
 /// The source name used for all Feersum compiler instrumentation.
 ///
