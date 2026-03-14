@@ -46,7 +46,8 @@ let phaseDuration =
 /// such as `bind`, `lower`, and `emit`.
 let inline withPhase (phase: string) (f: unit -> 'a) : 'a =
     use _ = activitySource.StartActivity(phase)
-    let sw = Stopwatch.StartNew()
+    let startTimestamp = Stopwatch.GetTimestamp()
     let result = f ()
-    phaseDuration.Record(sw.Elapsed.TotalMilliseconds, KeyValuePair("phase", phase :> obj))
+    let elapsed = Stopwatch.GetElapsedTime(startTimestamp)
+    phaseDuration.Record(elapsed.TotalMilliseconds, KeyValuePair("phase", phase :> obj))
     result
