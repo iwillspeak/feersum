@@ -1,4 +1,4 @@
-﻿// Learn more about F# at http://fsharp.org
+﻿module Feersum.Program
 
 open System.IO
 open System
@@ -12,6 +12,7 @@ open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Compile
 open Feersum.ParseRepl
+open Feersum.Telemetry
 
 /// Command line arguments type. Encompasses the options that the compiler
 /// supports.
@@ -24,6 +25,7 @@ type CliArguments =
     | AssemblyVersion of ver: string
     | [<AltCommandLine("-r")>] Reference of path: string
     | [<AltCommandLine("-o")>] Output of out: string
+    | Trace of toFile: string option
     | [<MainCommand>] Compile of source_file: string list
 
     interface IArgParserTemplate with
@@ -37,6 +39,7 @@ type CliArguments =
             | AssemblyVersion _ -> "Specify the version for the generated assembly."
             | Reference _ -> "Compiled Scheme assembly to reference."
             | Output _ -> "The output path to write compilation results to."
+            | Trace _ -> "Emit compiler telemetry to console or a file."
             | Compile _ -> "Scheme source files for compilation."
 
 /// Compile a collection of files file printing an error if
@@ -78,25 +81,44 @@ let main argv =
         printVersion ()
         exit 0
 
-    let buildConfig = args.TryGetResult Configuration |> Option.defaultValue Release
+    // Set up tracing if requested
+    let traceHandle =
+        match args.TryGetResult Trace with
+        | Some None -> Some(Telemetry.traceTo Console.Out.WriteLine)
+        | Some(Some path) ->
+            let stream = new StreamWriter(File.Open(path, FileMode.Create, FileAccess.Write))
 
-    let outputType = args.TryGetResult OutputType |> Option.defaultValue Exe
+            Some(
+                Telemetry.traceTo (fun msg ->
+                    stream.WriteLine msg
+                    stream.Flush())
+            )
+        | None -> None
 
-    let options =
-        { CompilationOptions.Create buildConfig outputType with
-            Version = args.TryGetResult AssemblyVersion |> Option.map Version.Parse
-            References = args.GetResults Reference |> List.append coreReferences
-            GenerateDepsFiles = (args.TryGetResult GenerateDeps) |> Option.defaultValue true
-            FrameworkAssmPaths = args.GetResults CoreLibPath }
+    try
+        let buildConfig = args.TryGetResult Configuration |> Option.defaultValue Release
 
-    match args.GetResult(Compile, defaultValue = []), args.TryGetResult(Output) with
-    | [], None ->
-        runRepl ()
-        0
-    | [ "parserepl" ], None ->
-        runParserRepl ()
-        0
-    | [], Some(output) ->
-        eprintfn "No source files provided for output %s" output
-        exit -1
-    | files, output -> compileAll options output files
+        let outputType = args.TryGetResult OutputType |> Option.defaultValue Exe
+
+        let options =
+            { CompilationOptions.Create buildConfig outputType with
+                Version = args.TryGetResult AssemblyVersion |> Option.map Version.Parse
+                References = args.GetResults Reference |> List.append coreReferences
+                GenerateDepsFiles = (args.TryGetResult GenerateDeps) |> Option.defaultValue true
+                FrameworkAssmPaths = args.GetResults CoreLibPath }
+
+        match args.GetResult(Compile, defaultValue = []), args.TryGetResult(Output) with
+        | [], None ->
+            runRepl ()
+            0
+        | [ "parserepl" ], None ->
+            runParserRepl ()
+            0
+        | [], Some(output) ->
+            eprintfn "No source files provided for output %s" output
+            exit -1
+        | files, output -> compileAll options output files
+    finally
+        match traceHandle with
+        | Some(handle) -> handle.Dispose()
+        | None -> ()

@@ -30,6 +30,7 @@
     <Compile Include="Compile/Runtime.fs" />
     <Compile Include="Compile/EmitContext.fs" />
     <Compile Include="Compile/Emit.fs" />
+    <Compile Include="Compile/Instrumentation.fs" />
     <Compile Include="Compile/Compiler.fs" />
     <Compile Include="Eval.fs" />
   </ItemGroup>

@@ -58,16 +58,21 @@ module Compilation =
             | CompileInput.Program progs -> progs |> List.map (fun (doc, prog) -> (doc, prog.Body |> List.ofSeq))
             | CompileInput.Script(doc, script) -> [ (doc, script.Body |> Option.toList) ]
 
-        let bound = Binder.bind scope allLibs progs
+        let bound = Instrumentation.withPhase "bind" (Binder.bind scope allLibs) progs
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then
                 bound
-                |> Lower.lower
-                |> Emit.emit options target outputStream outputName symbolStream refTys
+                |> Instrumentation.withPhase "lower" Lower.lower
+                |> Instrumentation.withPhase "emit" (fun lowered ->
+                    Emit.emit options target outputStream outputName symbolStream refTys lowered)
                 |> Some
             else
                 None
+
+        Instrumentation.compilationCount.Add(1L)
+
+        Instrumentation.compilationErrors.Add(bound.Diagnostics |> Seq.sumBy (fun d -> if isError d then 1L else 0L))
 
         { Diagnostics = bound.Diagnostics
           EmittedAssemblyName = assmName }
