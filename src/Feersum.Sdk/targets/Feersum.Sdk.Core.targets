@@ -59,12 +59,6 @@
 
     <ItemGroup>
         <SchemeCompileItems Include="@(Compile)" />
-        <CoreLibReference Include="@(ReferencePath)" Condition=" '%(Filename)' == 'System.Runtime' OR
-                                                                 '%(Filename)' == 'netstandard' OR
-                                                                 '%(Filename)' == 'System.Diagnostics.Debug' OR
-                                                                 '%(Filename)' == 'System.Core' OR
-                                                                 '%(Filename)' == 'mscorlib' " />
-        <StandardReference Include="@(ReferencePath)" Exclude="@(CoreLibReference)" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -77,9 +71,8 @@
     <Error Condition="!Exists($(FeersumCompilerPath))" Text="Compiler build output is missing" />
 
     <PropertyGroup>
-      <!-- References to the runtime's core library -->
-      <CoreLibReferences>@(CoreLibReference->'--corelibpath "%(Identity)"', ' ')</CoreLibReferences>
-      <LibReferences>@(StandardReference->'--reference "%(Identity)"', ' ')</LibReferences>
+      <!-- References to the runtime framework libraries. Pass all references as core library paths. -->
+      <CoreLibReferences>@(ReferencePath->'--corelibpath "%(Identity)"', ' ')</CoreLibReferences>
       <!-- Normalised versions of the configuration and output type to match the compiler's options. -->
       <NormalisedConfiguration Condition=" '$(Configuration)' == 'Release' ">Release</NormalisedConfiguration>
       <NormalisedConfiguration Condition=" '$(NormalisedConfiguration)' == '' ">Debug</NormalisedConfiguration>
@@ -88,7 +81,7 @@
       <ConfigParams>--configuration $(NormalisedConfiguration) --outputtype $(NormalisedOutputType) --generatedeps false</ConfigParams>
       <ConfigParams Condition=" '$(AssemblyVersion)' != '' ">$(ConfigParams) --assemblyversion $(AssemblyVersion)</ConfigParams>
       <!-- Formatted build command. This invokes `dotnet` to run the compiler. -->
-      <BuildCommand>"$(DotNetPath)" "$(FeersumCompilerPath)" $(CoreLibReferences) $(LibReferences) $(ConfigParams) -o "@(IntermediateAssembly)" @(SchemeCompileItems->'"%(Identity)"', ' ')</BuildCommand>
+      <BuildCommand>"$(DotNetPath)" "$(FeersumCompilerPath)" $(CoreLibReferences) $(ConfigParams) -o "@(IntermediateAssembly)" @(SchemeCompileItems->'"%(Identity)"', ' ')</BuildCommand>
     </PropertyGroup>
 
     <Exec Command="$(BuildCommand)" EchoOff="true" />
