@@ -91,9 +91,11 @@ the template resolves to a freshly stamped identifier created during `expandLam`
 — one that is entirely distinct from any `x` the caller might have in scope. No
 GUIDs required.
 
----
-
 ## The Core Data Structures
+
+There are two main data structures involved in this new approach to macro expansion: the `Stx` tree, and the `StxEnv`. The tree serves as a standardised input and output format from expansion. The environment is flowed down the stack and allows identifiers to be resolved to their matching syntax items.
+
+These two come together at the `Stx.Closure` variant. In this a node in the `Stx` tree is substituted for another with a captured environment. This happens at two places: when a macro invocation replaces a form with fabricated syntax, and where a substitution is made into the template containing syntax from the call site.
 
 ### Why Not Modify the Firethorn Tree?
 
@@ -108,12 +110,23 @@ new synthetic trees.
 Additionally, Firethorn green nodes contain no position information, and the
 red tree's `TextRange` is an absolute byte-offset pair into the _source file_ —
 there is nothing meaningful there for synthetic factory nodes, which all start
-at `Offset = 0`.
+at `Offset = 0` but have no corresponding text document.
 
 The design therefore introduces a new _syntax tree_ (`Stx`) that sits between
 the Firethorn-backed CST and the binder. This tree carries identifier stamps,
 syntax environments, and closures directly in its structure, rather than
 relying on side tables keyed by node identity.
+
+### Position and Provenance
+
+Within the current Firethorn `Expression` tree each node has rich position information. All items in the tree, both nodes and tokens, have a `TextRange`. A pair of byte-offsets into their corresponding `TextDocument`. For binding we need access to this information to allow rich diagnostics. Each node in the `Stx` tree will have a `TextRange`. For nodes with an underlying syntax representation this will be lifted directly from the `Expression` tree. For syntax closures this will defer to the inner syntax.
+
+In addition to knowing the range of a node we also need to know the document that a given node should be associated with. This is referred to as provenance. To avoid bloating the tree we rely on the fact that syntax provenance can only change at two locations:
+
+ * From the outer document to the macro _template_ document at the call site
+ * From the macro template to the outer document at a substitution site
+ 
+Both of these locations are covered by a syntax closure. Where the main nodes carry position information the closure will carry provenance information. Each closure will have either `MacroAp of string * DocId` or `MacroSubst of string DocId`. This allows us to construct a chain of `Provenance` which represents the current expansion stack. The innermost document can be used for debug and diagnostic information, and the full stack allows for detailed "additional context" to compiler messages.
 
 ### The `Stx` Tree
 
@@ -134,24 +147,18 @@ module Ident =
         { Name = name; Stamp = s }
 
 type Stx =
-    /// A constant value (number, boolean, string, etc.).
-    | Literal of SyntaxConstant
-    /// A named reference with a unique stamp.
+    | Literal of SyntaxConstant * 
     | Ident of Ident
     /// A compound form — an application, special form, or macro call.
     /// Contains the main body and an optional dotted tail.
     | Form of Stx list * Stx option
-    /// A syntactic closure: syntax to be expanded in a captured environment.
     | Closure of Stx * StxEnv
 
 and StxEnv = Map<string, StxBinding>
 
 and StxBinding =
-    /// A binding to a variable — the identifier records the stamped name.
     | Var of Ident
-    /// A known special form (lambda, let, define, if, …).
     | SpecialForm of SpecialFormKind
-    /// A macro transformer.
     | Macro of Transformer
 
 and SpecialFormKind = Lam | Let | If | Define | DefSyn | Quote (* … *)
@@ -167,21 +174,7 @@ let rec illum (expr: Expression) : Stx =
     match expr with
     | SymbolNode s ->
         Stx.Ident { Name = s.CookedValue; Stamp = 0 }
-    | ConstantNode c ->
-        match c.Value with
-        | Some v -> Stx.Literal v
-        | None -> failwith "Constant node with no value"
-    | FormNode f ->
-        let mainBody = (f.Body |> List.ofSeq) |> List.map illum
-        let dotted = f.DottedTail |> Option.map (fun t -> illum t.Body)
-        Stx.Form (mainBody, dotted)
-    | QuotedNode q ->
-        let innerStx = match q.Inner with
-                       | Some expr -> illum expr
-                       | None -> failwith "Quoted expression with no inner expression"
-        Stx.Form ([ Stx.Ident { Name = "quote"; Stamp = 0 }; innerStx ], None)
-    | VecNode _ | ByteVecNode _ ->
-        failwith "Vector illumination not yet supported"
+	// .....
 ```
 
 ### Syntax Environment Helpers
@@ -227,60 +220,16 @@ This is what prevents accidental capture at binding sites. Thinking back to the
 nested lambda example `((lambda x (+ x ((lambda x (+ x x)) x))) 10)`, the two
 `x` binders end up as `x.1` and `x.2` rather than competing for the same name.
 
-### `DocId` and `NodeKey`
-
-Source-location tracking is orthogonal to hygiene but shares the same expansion
-context. The `DocId` / `NodeKey` scheme provides globally-unique, traversal-
-stable keys for syntax nodes.
-
-```fsharp
-/// An opaque identifier for a "document" — a source file, a macro template
-/// parse, or a single macro application's synthetic tree.
-[<Struct>] type DocId = DocId of int
-
-module DocId =
-    let fresh () : DocId = ...  // atomically incrementing counter
-
-/// A globally unique, traversal-stable key for any syntax node.
-[<Struct>]
-type NodeKey = { Doc: DocId; Offset: int }
-
-module NodeKey =
-    let ofNode (doc: DocId) (expr: Expression) : NodeKey =
-        { Doc = doc; Offset = expr.SyntaxRange.Start }
-```
-
-`SyntaxRange.Start` is the absolute byte offset already computed by the red
-tree. Within any single parsed document, all *sibling* expressions at the same
-nesting level have distinct start positions. However, a parent `Form` node and
-its first child share the same start offset — so `(DocId, offset)` alone is not
-quite sufficient as a key for parsed source trees. For parsed source nodes this
-is handled by always keying on the *leaf* (symbol, constant) nodes when doing
-scope lookups; we never need to look up a `Form` node by location. The
-constraint that matters is: within one `DocId`, no two leaf nodes that the
-binder resolves share a start offset.
-
-Synthetic nodes from `Factories.fs` all have `SyntaxRange.Start = 0`. They are
-given a dedicated `DocId` for their macro application context, and within that
-context `macroExpand` assigns sequential offsets `0, 1, 2, …` to introduced
-nodes as it recurses, so they are unique within the application `DocId`.
-
 ### The `DocTable`
 
 The `DocTable` is a single registry that maps `DocId` values to richer metadata
 about the document they represent.
 
 ```fsharp
-type DocumentKind =
-    /// A source file parsed from disk or a REPL input.
-    | SourceFile of TextDocument
-    /// The static parse of a macro template body (from `syntax-rules`).
-    | MacroTemplate of path: string * definedAt: TextLocation
-    /// A single macro application — synthetic nodes created during template
-    /// instantiation.  One fresh DocId is assigned per `macroApply` call.
-    | MacroApplication of macroName: string * callSiteKey: NodeKey
+type SourceFile =
+	| Source of string * TextDocument
 
-type DocTable = Map<DocId, DocumentKind>
+type DocTable = Map<DocId, SourceFile>
 ```
 
 The `DocTable` serves several purposes that are currently scattered across
@@ -289,7 +238,7 @@ different parts of the compiler:
 | Problem today | Solution via `DocTable` |
 |---|---|
 | `BinderCtx.CurrentDocument: TextDocument option` is threaded through the binder to convert `SyntaxRange` to `TextLocation` | Look up `SourceFile(doc)` in `DocTable` to convert on demand |
-| Macro expansion trace is entirely lost — errors show `Missing` locations | Follow `MacroApplication.callSiteKey.Doc` chain in `DocTable.describeOrigin` |
+| Macro expansion trace is entirely lost — errors show `Missing` locations | Follow `MacroApplication.callSiteKey.Doc` chain in `Provenance.describeOrigin` |
 | `EmitCtx` keeps a `Dictionary<string, Document>` of debug documents keyed by path string | Iterate `SourceFile` entries in `DocTable` instead |
 
 Location resolution and chain description become straightforward operations on
@@ -300,24 +249,9 @@ module DocTable =
     /// Resolve a NodeKey to a TextLocation for diagnostics / sequence points.
     let tryResolveLocation (table: DocTable) (key: NodeKey) : TextLocation =
         match Map.tryFind key.Doc table with
-        | Some(SourceFile doc)         -> TextDocument.rangeToLocation doc { Start = key.Offset; End = key.Offset }
-        | Some(MacroTemplate(path, _)) -> (* best-effort from template offset *)
+        | Some(SourceFile.Source doc)         -> TextDocument.rangeToLocation doc { Start = key.Offset; End = key.Offset }
         | _                            -> TextLocation.Missing
-
-    /// Build a human-readable expansion chain for use in diagnostics.
-    /// Returns lines like ["expanded from 'or' at bar.scm:11:1"; ...]
-    let rec describeOrigin (table: DocTable) (doc: DocId) : string list =
-        match Map.tryFind doc table with
-        | Some(SourceFile d)                       -> [ d.Path ]
-        | Some(MacroTemplate(path, loc))           -> [ sprintf "%s (macro template at %A)" path loc ]
-        | Some(MacroApplication(name, callKey))    ->
-            let loc = tryResolveLocation table callKey
-            sprintf "expanded from macro '%s' at %A" name loc
-            :: describeOrigin table callKey.Doc
-        | None -> []
 ```
-
----
 
 ## Changes to Macro Expansion
 
@@ -510,29 +444,22 @@ debug document objects with a lookup over `DocTable` `SourceFile` entries.
 
 ## Open Questions
 
-1. **Illumination boundary**: the `illum` function converts the Firethorn
+1. ~~**Illumination boundary**: the `illum` function converts the Firethorn
    `Expression` tree into a `Stx` tree. Decide whether illumination happens
    eagerly for the entire program up front, or lazily as each form is
    encountered during expansion. Eager illumination is simpler; lazy
    illumination avoids creating `Stx` nodes for code that is never reached
-   (e.g. dead branches in `cond`).
+   (e.g. dead branches in `cond`).~~ Eagerly
 
-2. **Synthetic offset counter threading**: the design uses a sequential counter
-   `n` threaded through the `macroExpand` recursion for `NodeKey` assignment.
-   This must be passed explicitly (not a mutable thread-local) so that the
-   expansion of each `Repeated` element gets a distinct block of offsets.
-   Decide whether to return the updated counter from each recursive call, or
-   pre-count the template's synthetic nodes before expansion begins.
-
-3. **`DocTable` in `EmitCtx`**: the CIL emit phase currently constructs a
+3. ~~**`DocTable` in `EmitCtx`**: the CIL emit phase currently constructs a
    `Document` per unique `TextLocation.Source` string. Replacing that with a
    `DocTable` lookup requires threading `DocTable` into `EmitCtx`. Consider
    whether this translation is better done at the binder→lower boundary instead,
    producing a dedicated `DebugDocuments` map that the emitter already
-   understands.
+   understands.~~ Having the Binder produce debug documents sounds like a good idea.
 
-4. **Interaction with `syntax-rules` ellipsis**: the current `Repeated` template
+4. ~~**Interaction with `syntax-rules` ellipsis**: the current `Repeated` template
    node interacts with pattern matching and substitution. Ensure that repeated
    elements are expanded within a closure that carries the correct
    definition-time environment, and that each expansion iteration receives
-   correctly-stamped binder names.
+   correctly-stamped binder names.~~ This _should_ all flow out of the macro match. Hopefully the arguments we bind to the parameters are modelled correctly still as `Stx` rather than `Expression`. Source provenance for _all_ substitutions should actually be the same, just the template parameter name that varies.
