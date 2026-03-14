@@ -1,0 +1,134 @@
+PROGRAM: (0..344)
+  ATMOSPHERE: (0..72) "; Nested capture test: multiple levels of lambdas capturing from parents"
+  ATMOSPHERE: (72..73) "\n"
+  ATMOSPHERE: (73..140) "; The Lower pass must handle capture chains where each lambda level"
+  ATMOSPHERE: (140..141) "\n"
+  ATMOSPHERE: (141..187) "; reintroduces values captured from its parent"
+  ATMOSPHERE: (187..189) "\n\n"
+  FORM: (189..211)
+    OPEN_PAREN: (189..190) "("
+    SYMBOL: (190..196)
+      IDENTIFIER: (190..196) "import"
+    ATMOSPHERE: (196..197) " "
+    FORM: (197..210)
+      OPEN_PAREN: (197..198) "("
+      SYMBOL: (198..204)
+        IDENTIFIER: (198..204) "scheme"
+      ATMOSPHERE: (204..205) " "
+      SYMBOL: (205..209)
+        IDENTIFIER: (205..209) "base"
+      CLOSE_PAREN: (209..210) ")"
+    CLOSE_PAREN: (210..211) ")"
+  ATMOSPHERE: (211..213) "\n\n"
+  FORM: (213..281)
+    OPEN_PAREN: (213..214) "("
+    SYMBOL: (214..220)
+      IDENTIFIER: (214..220) "define"
+    ATMOSPHERE: (220..221) " "
+    FORM: (221..232)
+      OPEN_PAREN: (221..222) "("
+      SYMBOL: (222..229)
+        IDENTIFIER: (222..229) "level-1"
+      ATMOSPHERE: (229..230) " "
+      SYMBOL: (230..231)
+        IDENTIFIER: (230..231) "a"
+      CLOSE_PAREN: (231..232) ")"
+    ATMOSPHERE: (232..235) "\n  "
+    FORM: (235..280)
+      OPEN_PAREN: (235..236) "("
+      SYMBOL: (236..242)
+        IDENTIFIER: (236..242) "lambda"
+      ATMOSPHERE: (242..243) " "
+      FORM: (243..246)
+        OPEN_PAREN: (243..244) "("
+        SYMBOL: (244..245)
+          IDENTIFIER: (244..245) "b"
+        CLOSE_PAREN: (245..246) ")"
+      ATMOSPHERE: (246..251) "\n    "
+      FORM: (251..279)
+        OPEN_PAREN: (251..252) "("
+        SYMBOL: (252..258)
+          IDENTIFIER: (252..258) "lambda"
+        ATMOSPHERE: (258..259) " "
+        FORM: (259..262)
+          OPEN_PAREN: (259..260) "("
+          SYMBOL: (260..261)
+            IDENTIFIER: (260..261) "c"
+          CLOSE_PAREN: (261..262) ")"
+        ATMOSPHERE: (262..269) "\n      "
+        FORM: (269..278)
+          OPEN_PAREN: (269..270) "("
+          SYMBOL: (270..271)
+            IDENTIFIER: (270..271) "+"
+          ATMOSPHERE: (271..272) " "
+          SYMBOL: (272..273)
+            IDENTIFIER: (272..273) "a"
+          ATMOSPHERE: (273..274) " "
+          SYMBOL: (274..275)
+            IDENTIFIER: (274..275) "b"
+          ATMOSPHERE: (275..276) " "
+          SYMBOL: (276..277)
+            IDENTIFIER: (276..277) "c"
+          CLOSE_PAREN: (277..278) ")"
+        CLOSE_PAREN: (278..279) ")"
+      CLOSE_PAREN: (279..280) ")"
+    CLOSE_PAREN: (280..281) ")"
+  ATMOSPHERE: (281..283) "\n\n"
+  FORM: (283..343)
+    OPEN_PAREN: (283..284) "("
+    SYMBOL: (284..287)
+      IDENTIFIER: (284..287) "let"
+    ATMOSPHERE: (287..288) " "
+    FORM: (288..307)
+      OPEN_PAREN: (288..289) "("
+      FORM: (289..306)
+        OPEN_PAREN: (289..290) "("
+        SYMBOL: (290..292)
+          IDENTIFIER: (290..292) "f1"
+        ATMOSPHERE: (292..293) " "
+        FORM: (293..305)
+          OPEN_PAREN: (293..294) "("
+          SYMBOL: (294..301)
+            IDENTIFIER: (294..301) "level-1"
+          ATMOSPHERE: (301..302) " "
+          CONSTANT: (302..304)
+            NUMBER: (302..304) "10"
+          CLOSE_PAREN: (304..305) ")"
+        CLOSE_PAREN: (305..306) ")"
+      CLOSE_PAREN: (306..307) ")"
+    ATMOSPHERE: (307..310) "\n  "
+    FORM: (310..342)
+      OPEN_PAREN: (310..311) "("
+      SYMBOL: (311..314)
+        IDENTIFIER: (311..314) "let"
+      ATMOSPHERE: (314..315) " "
+      FORM: (315..329)
+        OPEN_PAREN: (315..316) "("
+        FORM: (316..328)
+          OPEN_PAREN: (316..317) "("
+          SYMBOL: (317..319)
+            IDENTIFIER: (317..319) "f2"
+          ATMOSPHERE: (319..320) " "
+          FORM: (320..327)
+            OPEN_PAREN: (320..321) "("
+            SYMBOL: (321..323)
+              IDENTIFIER: (321..323) "f1"
+            ATMOSPHERE: (323..324) " "
+            CONSTANT: (324..326)
+              NUMBER: (324..326) "20"
+            CLOSE_PAREN: (326..327) ")"
+          CLOSE_PAREN: (327..328) ")"
+        CLOSE_PAREN: (328..329) ")"
+      ATMOSPHERE: (329..334) "\n    "
+      FORM: (334..341)
+        OPEN_PAREN: (334..335) "("
+        SYMBOL: (335..337)
+          IDENTIFIER: (335..337) "f2"
+        ATMOSPHERE: (337..338) " "
+        CONSTANT: (338..340)
+          NUMBER: (338..340) "30"
+        CLOSE_PAREN: (340..341) ")"
+      CLOSE_PAREN: (341..342) ")"
+    CLOSE_PAREN: (342..343) ")"
+  ATMOSPHERE: (343..344) "\n"
+  EOF: (344..344) ""
