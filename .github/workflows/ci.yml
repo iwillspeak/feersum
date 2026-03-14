@@ -29,8 +29,8 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           chcp 65001
-          dotnet build --configuration Release
-          dotnet test --no-build --configuration Release --logger 'trx' --logger 'console;verbosity=normal'
+          dotnet build --configuration Release || exit $LASTEXITCODE
+          dotnet test --no-build --configuration Release --logger 'trx' --logger 'console;verbosity=normal' || exit $LASTEXITCODE
       - name: Publish test results
         uses: actions/upload-artifact@v7
         if: always()
