@@ -72,17 +72,13 @@
       <FeersumCompilerPath Condition=" '$(FeersumCompilerPath)' == '' ">$(PkgFeersum)/tools/net8.0/any/Feersum.dll</FeersumCompilerPath>
       <DotNetPath>$(DOTNET_HOST_PATH)</DotNetPath>
       <DotNetPath Condition=" '$(DotNetPath)' == '' ">dotnet</DotNetPath>
-      
-      <!-- For .NET Framework, include mscorlib from the framework reference assemblies -->
-      <MscorlibPath Condition=" '$(NetFrameworkReferenceAssemblyPath)' != '' ">$(NetFrameworkReferenceAssemblyPath)</MscorlibPath>
     </PropertyGroup>
 
     <Error Condition="!Exists($(FeersumCompilerPath))" Text="Compiler build output is missing" />
 
     <PropertyGroup>
-      <!-- References to the runtime's core library and user libraries -->
+      <!-- References to the runtime's core library -->
       <CoreLibReferences>@(CoreLibReference->'--corelibpath "%(Identity)"', ' ')</CoreLibReferences>
-      <CoreLibReferences Condition=" '$(MscorlibPath)' != '' " >$(CoreLibReferences) --corelibpath "$(MscorlibPath)\mscorlib.dll"</CoreLibReferences>
       <LibReferences>@(StandardReference->'--reference "%(Identity)"', ' ')</LibReferences>
       <!-- Normalised versions of the configuration and output type to match the compiler's options. -->
       <NormalisedConfiguration Condition=" '$(Configuration)' == 'Release' ">Release</NormalisedConfiguration>
