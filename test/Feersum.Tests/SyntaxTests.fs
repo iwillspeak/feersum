@@ -7,9 +7,6 @@ open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Text
 
-// TODO: negative cases for a lot of these parsers. e.g. unterminated strings,
-//       invalid hex escapes, bad identifiers and so on.
-
 [<AutoOpen>]
 module private Utils =
 
@@ -274,3 +271,80 @@ let ``parse preserves source location`` () =
     Assert.Equal(1, loc.Start.Col)
     Assert.Equal(1, loc.End.Line)
     Assert.Equal(8, loc.End.Col)
+
+// Negative test cases for error handling
+module ErrorHandling =
+
+    [<Theory>]
+    [<InlineData("\"hello")>]
+    [<InlineData("\"unclosed")>]
+    [<InlineData("\"multi\nline")>]
+    let ``unterminated strings produce diagnostics`` source =
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Theory>]
+    [<InlineData("|unclosed identifier")>]
+    let ``unterminated identifier literals produce diagnostics`` source =
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Theory>]
+    [<InlineData("(+ 1 2")>]
+    [<InlineData("(list (nested")>]
+    [<InlineData("(a (b (c")>]
+    let ``unterminated forms produce diagnostics`` source =
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Theory>]
+    [<InlineData("#(1 2")>]
+    [<InlineData("#(unclosed")>]
+    let ``unterminated vectors produce diagnostics`` source =
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Theory>]
+    [<InlineData("#u8(1 2")>]
+    let ``unterminated byte vectors produce diagnostics`` source =
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Theory>]
+    [<InlineData("#| unclosed comment")>]
+    [<InlineData("#| outer #| inner |#")>]
+    let ``unterminated block comments produce diagnostics`` source =
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Fact>]
+    let ``nested unterminated block comments produce diagnostics`` () =
+        let source = "#| outer #| inner |# still unclosed"
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Fact>]
+    let ``mismatched brackets in nested structures produce diagnostics`` () =
+        let source = "(list [1 2)"
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Fact>]
+    let ``parser recovers from errors and produces stub nodes`` () =
+        let source = "(- 1 § (display \"foo\")"
+        let result = Parse.readExpr source
+        // Should have diagnostics but still produce a parse tree
+        Assert.NotEmpty(result.Diagnostics)
+        Assert.NotNull(result.Root)
+
+    [<Fact>]
+    let ``unterminated character literal produces diagnostic`` () =
+        let source = "#\\"
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
+
+    [<Fact>]
+    let ``invalid characters in source produce diagnostics`` () =
+        let source = "(+ 1 § 2)"
+        let result = Parse.readExpr1 "test" source
+        Assert.NotEmpty(result.Diagnostics)
