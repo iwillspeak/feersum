@@ -59,13 +59,13 @@ module Compilation =
             | CompileInput.Script(doc, script) -> [ (doc, script.Body |> Option.toList) ]
 
         let bound =
-            Instrumentation.withPhase "bind" (fun () -> Binder.bind scope allLibs progs)
+            Instrumentation.withPhase "bind" (fun () -> Binder.bind scope allLibs progs) ()
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then
-                let lowered = Instrumentation.withPhase "lower" (fun () -> Lower.lower bound)
-
-                Instrumentation.withPhase "emit" (fun () ->
+                bound
+                |> Instrumentation.withPhase "lower" Lower.lower
+                |> Instrumentation.withPhase "emit" (fun lowered ->
                     Emit.emit options target outputStream outputName symbolStream refTys lowered)
                 |> Some
             else

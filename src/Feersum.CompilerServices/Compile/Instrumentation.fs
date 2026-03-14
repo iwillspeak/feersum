@@ -43,11 +43,12 @@ let phaseDuration =
 /// Run a compiler pass, recording its duration and creating a tracing span.
 ///
 /// The `phase` tag is used to distinguish between different compiler passes
-/// such as `bind`, `lower`, and `emit`.
-let inline withPhase (phase: string) (f: unit -> 'a) : 'a =
+/// such as `bind`, `lower`, and `emit`. The pass function `f` takes `x` as
+/// input, enabling pipeline-style usage with `|>`.
+let inline withPhase (phase: string) (f: 'a -> 'b) (x: 'a) : 'b =
     use _ = activitySource.StartActivity(phase)
     let startTimestamp = Stopwatch.GetTimestamp()
-    let result = f ()
+    let result = f x
     let elapsed = Stopwatch.GetElapsedTime(startTimestamp)
     phaseDuration.Record(elapsed.TotalMilliseconds, KeyValuePair("phase", phase :> obj))
     result
