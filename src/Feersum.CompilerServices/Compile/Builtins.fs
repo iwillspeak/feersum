@@ -197,14 +197,17 @@ module Builtins =
     /// intrisics.
     let private loadCoreTypes (lispAssm: AssemblyDefinition) (externAssms: seq<AssemblyDefinition>) =
 
+        // Materialize the sequence once to avoid multiple enumeration of a potentially non-replayable seq.
+        let externAssmsArray = externAssms |> Seq.toArray
+
         let loadedAssemblies =
             lazy
-                (externAssms
+                (externAssmsArray
                  |> Seq.map (fun a -> sprintf "  - %s" a.Name.Name)
                  |> String.concat "\n")
 
         let getType name =
-            externAssms
+            externAssmsArray
             |> Seq.tryPick (fun (assm: AssemblyDefinition) ->
                 assm.MainModule.Types |> Seq.tryFind (fun x -> x.FullName = name))
             |> Option.defaultWith (fun () ->
