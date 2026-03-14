@@ -62,6 +62,7 @@
         <CoreLibReference Include="@(ReferencePath)" Condition=" '%(Filename)' == 'System.Runtime' OR
                                                                  '%(Filename)' == 'netstandard' OR
                                                                  '%(Filename)' == 'System.Diagnostics.Debug' OR
+                                                                 '%(Filename)' == 'System.Core' OR
                                                                  '%(Filename)' == 'mscorlib' " />
         <StandardReference Include="@(ReferencePath)" Exclude="@(CoreLibReference)" />
     </ItemGroup>
