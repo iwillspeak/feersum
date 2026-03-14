@@ -1,0 +1,95 @@
+PROGRAM: (0..329)
+  ATMOSPHERE: (0..79) "; Simple capture test: an inner lambda captures a variable from an outer lambda"
+  ATMOSPHERE: (79..80) "\n"
+  ATMOSPHERE: (80..150) "; The Lower pass should rewrite the reference to x in the inner lambda"
+  ATMOSPHERE: (150..151) "\n"
+  ATMOSPHERE: (151..219) "; to use environment slot indexing instead of direct local reference"
+  ATMOSPHERE: (219..221) "\n\n"
+  FORM: (221..243)
+    OPEN_PAREN: (221..222) "("
+    SYMBOL: (222..228)
+      IDENTIFIER: (222..228) "import"
+    ATMOSPHERE: (228..229) " "
+    FORM: (229..242)
+      OPEN_PAREN: (229..230) "("
+      SYMBOL: (230..236)
+        IDENTIFIER: (230..236) "scheme"
+      ATMOSPHERE: (236..237) " "
+      SYMBOL: (237..241)
+        IDENTIFIER: (237..241) "base"
+      CLOSE_PAREN: (241..242) ")"
+    CLOSE_PAREN: (242..243) ")"
+  ATMOSPHERE: (243..245) "\n\n"
+  FORM: (245..291)
+    OPEN_PAREN: (245..246) "("
+    SYMBOL: (246..252)
+      IDENTIFIER: (246..252) "define"
+    ATMOSPHERE: (252..253) " "
+    FORM: (253..267)
+      OPEN_PAREN: (253..254) "("
+      SYMBOL: (254..264)
+        IDENTIFIER: (254..264) "make-adder"
+      ATMOSPHERE: (264..265) " "
+      SYMBOL: (265..266)
+        IDENTIFIER: (265..266) "n"
+      CLOSE_PAREN: (266..267) ")"
+    ATMOSPHERE: (267..270) "\n  "
+    FORM: (270..290)
+      OPEN_PAREN: (270..271) "("
+      SYMBOL: (271..277)
+        IDENTIFIER: (271..277) "lambda"
+      ATMOSPHERE: (277..278) " "
+      FORM: (278..281)
+        OPEN_PAREN: (278..279) "("
+        SYMBOL: (279..280)
+          IDENTIFIER: (279..280) "x"
+        CLOSE_PAREN: (280..281) ")"
+      ATMOSPHERE: (281..282) " "
+      FORM: (282..289)
+        OPEN_PAREN: (282..283) "("
+        SYMBOL: (283..284)
+          IDENTIFIER: (283..284) "+"
+        ATMOSPHERE: (284..285) " "
+        SYMBOL: (285..286)
+          IDENTIFIER: (285..286) "x"
+        ATMOSPHERE: (286..287) " "
+        SYMBOL: (287..288)
+          IDENTIFIER: (287..288) "n"
+        CLOSE_PAREN: (288..289) ")"
+      CLOSE_PAREN: (289..290) ")"
+    CLOSE_PAREN: (290..291) ")"
+  ATMOSPHERE: (291..293) "\n\n"
+  FORM: (293..328)
+    OPEN_PAREN: (293..294) "("
+    SYMBOL: (294..297)
+      IDENTIFIER: (294..297) "let"
+    ATMOSPHERE: (297..298) " "
+    FORM: (298..319)
+      OPEN_PAREN: (298..299) "("
+      FORM: (299..318)
+        OPEN_PAREN: (299..300) "("
+        SYMBOL: (300..301)
+          IDENTIFIER: (300..301) "f"
+        ATMOSPHERE: (301..302) " "
+        FORM: (302..317)
+          OPEN_PAREN: (302..303) "("
+          SYMBOL: (303..313)
+            IDENTIFIER: (303..313) "make-adder"
+          ATMOSPHERE: (313..314) " "
+          CONSTANT: (314..316)
+            NUMBER: (314..316) "10"
+          CLOSE_PAREN: (316..317) ")"
+        CLOSE_PAREN: (317..318) ")"
+      CLOSE_PAREN: (318..319) ")"
+    ATMOSPHERE: (319..322) "\n  "
+    FORM: (322..327)
+      OPEN_PAREN: (322..323) "("
+      SYMBOL: (323..324)
+        IDENTIFIER: (323..324) "f"
+      ATMOSPHERE: (324..325) " "
+      CONSTANT: (325..326)
+        NUMBER: (325..326) "5"
+      CLOSE_PAREN: (326..327) ")"
+    CLOSE_PAREN: (327..328) ")"
+  ATMOSPHERE: (328..329) "\n"
+  EOF: (329..329) ""

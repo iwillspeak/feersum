@@ -1,20 +1,22 @@
 namespace Feersum.CompilerServices.Text
 
 /// A point in the source text
+///
+/// This represents a resolved position within a source. It is used to model
+/// locations for diagnostics and other "human facing" features. For general
+/// locations within the compiler we use `Firethorn.TextRange` which is
+/// a simple byte offset.
 type public TextPoint =
-    // FIXME: this _should_ just be the offset into the file, with line and
-    // other information resolved later from a workspace or similar. We're stuck
-    // like this for the time being though becuase of FParsec.
     { Source: string
-      Line: int64
-      Col: int64 }
+      Line: int
+      Col: int }
 
-    static member public FromParts(source: string, line: int64, col: int64) =
+    static member public FromParts(source: string, line: int, col: int) =
         { Source = source
           Line = line
           Col = col }
 
-/// A lcation in the source text
+/// A location in the source text
 ///
 /// A text position represents either a single `Point` in the source text that
 /// lies 'between' two characters, or a `Span` that encompases a range of text.
@@ -54,25 +56,25 @@ module public TextDocument =
         { Path = path
           LineStarts = lineStarts body }
 
-    /// Turn a character offset into a document into a hunan line column value.
-    /// That is a 0-baesd character offset into the file ebcomes a 1-based pair
+    /// Turn a character offset into a document into a human line column value.
+    /// That is a 0-based character offset into the file becomes a 1-based pair
     /// of line and column.
     let private offsetToLineCol lines offset =
-        let (lineIdx, colIdx) =
+        let lineIdx, colIdx =
             match List.tryFindIndexBack (fun x -> x < offset) lines with
-            | Some(idx) ->
+            | Some idx ->
                 // The `idx` line break occurs before this line. If tis is the
                 // break at index 0, we're on the line at index 1.
-                (idx + 1, offset - lines[idx] - 1)
+                idx + 1, offset - lines[idx] - 1
             | None ->
                 // no linebreak occurs before the offset, so we must be on the
                 // first line.
-                (0, offset)
+                0, offset
 
-        (lineIdx + 1, colIdx + 1)
+        lineIdx + 1, colIdx + 1
 
     let public offsetToPoint document offset =
-        let (line, col) = offsetToLineCol document.LineStarts offset
+        let line, col = offsetToLineCol document.LineStarts offset
         TextPoint.FromParts(document.Path, line, col)
 
     let public rangeToLocation document (range: Firethorn.TextRange) =

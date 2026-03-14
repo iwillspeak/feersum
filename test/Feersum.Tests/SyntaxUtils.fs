@@ -23,7 +23,7 @@ let public basedStreamName basePath =
 /// Transform a location with the given Path Re-Writer
 let public sanitiseLocationWith rewriter =
     function
-    | Point(p) -> Point(rewriter p)
+    | Point p -> Point(rewriter p)
     | Span(s, e) -> Span(rewriter s, rewriter e)
     | Missing -> Missing
 
@@ -39,6 +39,6 @@ let public basedLocation basePath =
 let public sanitiseDiagnosticsWith rewriter (diags: Diagnostic list) =
     let sanitiseDiag d =
         { d with
-            Diagnostic.Location = rewriter (d.Location) }
+            Diagnostic.Location = rewriter d.Location }
 
-    List.map (sanitiseDiag) diags
+    List.map sanitiseDiag diags

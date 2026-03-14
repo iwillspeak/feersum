@@ -1,7 +1,7 @@
 namespace Feersum.CompilerServices
 
 /// An entry in the current scope.
-type ScopeEntry<'t> = { mutable Value: 't; Id: string }
+type ScopeEntry<'t> = { Value: 't; Id: string }
 
 /// The scope type. Used to store locals by the binder.
 type Scope<'t> = { Entries: ScopeEntry<'t> list }

@@ -32,7 +32,7 @@ a PR to fix it.
 
 Some issues are marked [up for grabs][up-for-grabs]. These issues are not
 currently claimed and are free to be worked on. If you'd like to tackle one then
-shout out in the comments on the issue and I'd be happy to assign it to yo.
+shout out in the comments on the issue and I'd be happy to assign it to you.
 
  [open_issue]: https://github.com/iwillspeak/feersum/issues/new
  [readme-roadmap]: README.md#planned-features

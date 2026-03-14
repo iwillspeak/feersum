@@ -1,0 +1,126 @@
+PROGRAM: (0..494)
+  ATMOSPHERE: (0..69) "; Local compaction test: the Lower pass should remove \"shadow locals\""
+  ATMOSPHERE: (69..70) "\n"
+  ATMOSPHERE: (70..144) "; Variables defined inside a lambda that are not captured by inner lambdas"
+  ATMOSPHERE: (144..145) "\n"
+  ATMOSPHERE: (145..192) "; should be compacted out during the Lower pass"
+  ATMOSPHERE: (192..194) "\n\n"
+  ATMOSPHERE: (194..269) "; In this example, 'unused' and 'baz' are not captured by the inner lambda,"
+  ATMOSPHERE: (269..270) "\n"
+  ATMOSPHERE: (270..335) "; so they should be removed from the environment after Lower runs"
+  ATMOSPHERE: (335..337) "\n\n"
+  FORM: (337..359)
+    OPEN_PAREN: (337..338) "("
+    SYMBOL: (338..344)
+      IDENTIFIER: (338..344) "import"
+    ATMOSPHERE: (344..345) " "
+    FORM: (345..358)
+      OPEN_PAREN: (345..346) "("
+      SYMBOL: (346..352)
+        IDENTIFIER: (346..352) "scheme"
+      ATMOSPHERE: (352..353) " "
+      SYMBOL: (353..357)
+        IDENTIFIER: (353..357) "base"
+      CLOSE_PAREN: (357..358) ")"
+    CLOSE_PAREN: (358..359) ")"
+  ATMOSPHERE: (359..361) "\n\n"
+  FORM: (361..456)
+    OPEN_PAREN: (361..362) "("
+    SYMBOL: (362..368)
+      IDENTIFIER: (362..368) "define"
+    ATMOSPHERE: (368..369) " "
+    FORM: (369..384)
+      OPEN_PAREN: (369..370) "("
+      SYMBOL: (370..381)
+        IDENTIFIER: (370..381) "with-unused"
+      ATMOSPHERE: (381..382) " "
+      SYMBOL: (382..383)
+        IDENTIFIER: (382..383) "x"
+      CLOSE_PAREN: (383..384) ")"
+    ATMOSPHERE: (384..387) "\n  "
+    FORM: (387..455)
+      OPEN_PAREN: (387..388) "("
+      SYMBOL: (388..391)
+        IDENTIFIER: (388..391) "let"
+      ATMOSPHERE: (391..392) " "
+      FORM: (392..423)
+        OPEN_PAREN: (392..393) "("
+        FORM: (393..405)
+          OPEN_PAREN: (393..394) "("
+          SYMBOL: (394..400)
+            IDENTIFIER: (394..400) "unused"
+          ATMOSPHERE: (400..401) " "
+          CONSTANT: (401..404)
+            NUMBER: (401..404) "999"
+          CLOSE_PAREN: (404..405) ")"
+        ATMOSPHERE: (405..414) "\n        "
+        FORM: (414..422)
+          OPEN_PAREN: (414..415) "("
+          SYMBOL: (415..418)
+            IDENTIFIER: (415..418) "baz"
+          ATMOSPHERE: (418..419) " "
+          CONSTANT: (419..421)
+            NUMBER: (419..421) "10"
+          CLOSE_PAREN: (421..422) ")"
+        CLOSE_PAREN: (422..423) ")"
+      ATMOSPHERE: (423..428) "\n    "
+      FORM: (428..454)
+        OPEN_PAREN: (428..429) "("
+        SYMBOL: (429..435)
+          IDENTIFIER: (429..435) "lambda"
+        ATMOSPHERE: (435..436) " "
+        FORM: (436..439)
+          OPEN_PAREN: (436..437) "("
+          SYMBOL: (437..438)
+            IDENTIFIER: (437..438) "y"
+          CLOSE_PAREN: (438..439) ")"
+        ATMOSPHERE: (439..446) "\n      "
+        FORM: (446..453)
+          OPEN_PAREN: (446..447) "("
+          SYMBOL: (447..448)
+            IDENTIFIER: (447..448) "+"
+          ATMOSPHERE: (448..449) " "
+          SYMBOL: (449..450)
+            IDENTIFIER: (449..450) "x"
+          ATMOSPHERE: (450..451) " "
+          SYMBOL: (451..452)
+            IDENTIFIER: (451..452) "y"
+          CLOSE_PAREN: (452..453) ")"
+        CLOSE_PAREN: (453..454) ")"
+      CLOSE_PAREN: (454..455) ")"
+    CLOSE_PAREN: (455..456) ")"
+  ATMOSPHERE: (456..458) "\n\n"
+  FORM: (458..493)
+    OPEN_PAREN: (458..459) "("
+    SYMBOL: (459..462)
+      IDENTIFIER: (459..462) "let"
+    ATMOSPHERE: (462..463) " "
+    FORM: (463..484)
+      OPEN_PAREN: (463..464) "("
+      FORM: (464..483)
+        OPEN_PAREN: (464..465) "("
+        SYMBOL: (465..466)
+          IDENTIFIER: (465..466) "f"
+        ATMOSPHERE: (466..467) " "
+        FORM: (467..482)
+          OPEN_PAREN: (467..468) "("
+          SYMBOL: (468..479)
+            IDENTIFIER: (468..479) "with-unused"
+          ATMOSPHERE: (479..480) " "
+          CONSTANT: (480..481)
+            NUMBER: (480..481) "5"
+          CLOSE_PAREN: (481..482) ")"
+        CLOSE_PAREN: (482..483) ")"
+      CLOSE_PAREN: (483..484) ")"
+    ATMOSPHERE: (484..487) "\n  "
+    FORM: (487..492)
+      OPEN_PAREN: (487..488) "("
+      SYMBOL: (488..489)
+        IDENTIFIER: (488..489) "f"
+      ATMOSPHERE: (489..490) " "
+      CONSTANT: (490..491)
+        NUMBER: (490..491) "3"
+      CLOSE_PAREN: (491..492) ")"
+    CLOSE_PAREN: (492..493) ")"
+  ATMOSPHERE: (493..494) "\n"
+  EOF: (494..494) ""

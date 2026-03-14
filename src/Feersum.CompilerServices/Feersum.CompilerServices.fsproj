@@ -28,6 +28,8 @@
     <Compile Include="Compile/MonoHelpers.fs" />
     <Compile Include="Compile/Builtins.fs" />
     <Compile Include="Compile/Runtime.fs" />
+    <Compile Include="Compile/EmitContext.fs" />
+    <Compile Include="Compile/Emit.fs" />
     <Compile Include="Compile/Instrumentation.fs" />
     <Compile Include="Compile/Compiler.fs" />
     <Compile Include="Eval.fs" />
@@ -37,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Firethorn" Version="0.4.1" />
-    <PackageReference Include="Mono.Cecil" Version="0.11.5" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.0" />
   </ItemGroup>
 </Project>

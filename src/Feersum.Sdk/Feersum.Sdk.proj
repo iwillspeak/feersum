@@ -26,7 +26,7 @@
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);GenerateVersionProps</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
   
-  <Target Name="GenerateVersionProps" BeforeTargets="BeforeBuild;GenerateNuspec" DependsOnTargets="PrepareForBuild;GetVersion">
+  <Target Name="GenerateVersionProps" BeforeTargets="BeforeBuild;GenerateNuspec" DependsOnTargets="PrepareForBuild;MinVer">
     <Message Text="Creating package `Versions.props` for $(Version)" />
 
     <PropertyGroup>

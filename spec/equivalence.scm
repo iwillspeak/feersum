@@ -19,7 +19,7 @@
 
     ))(newline)
 
-;; implementaiton specified restults
+;; implementation specified results
 (display (list
 
     (eqv? "" "") ; ~> unspecified

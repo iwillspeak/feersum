@@ -4,7 +4,8 @@
 </p>
 <h1 align="center"><samp>(feersum . scheme)</samp></h1>
 <p align="center">
-<a href=https://dev.azure.com/iwillspeak/GitHub/_build/latest?definitionId=4&branchName=main"><img alt="Build Status" src="https://dev.azure.com/iwillspeak/GitHub/_apis/build/status/iwillspeak.feersum?branchName=main" /></a>
+<a href="https://github.com/iwillspeak/feersum/actions/workflows/ci.yml"><img alt="Build Status" src="https://github.com/iwillspeak/feersum/actions/workflows/ci.yml/badge.svg" /></a>
+<a href="https://github.com/iwillspeak/feersum/actions/workflows/github-actions-pages.yml"><img alt="Build Docs" src="https://github.com/iwillspeak/feersum/actions/workflows/github-actions-pages.yml/badge.svg" /></a>
 <a href="https://www.nuget.org/packages/Feersum"><img alt="Feersum on NuGet.org" src="https://buildstats.info/nuget/Feersum?includePreReleases=true" /></a>
 </p>
 
@@ -16,8 +17,8 @@ A Scheme compiler for .NET written in F#. Progress
 # Contributing
 
 Feersum is in active development. Contributions are welcome. See
-[CONTRIBUTING][contributing] for more imformation. For an introduction to
-buiding and testing the compiler, as well as a discussion of the high-level
+[CONTRIBUTING][contributing] for more information. For an introduction to
+building and testing the compiler, as well as a discussion of the high-level
 structure check out the [DEVGUIDE][devguide].
 
 # Getting Started using Feersum
@@ -52,7 +53,7 @@ Compile and run with `dotnet build` and `dotnet run` as usual! Other templates
 are available:
 
  * `scm-classlib` - Generate a .NET class library project.
- * `scmlib` - Generate s Scheme library definition file.
+ * `scmlib` - Generate a Scheme library definition file.
 
 # Planned Features
 

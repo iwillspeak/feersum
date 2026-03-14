@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
-    <GenerateGitVersionInformation>false</GenerateGitVersionInformation>
   </PropertyGroup>
   
   <Import Project="../../eng/UseStage1Compiler.props" />

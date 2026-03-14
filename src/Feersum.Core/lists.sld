@@ -57,7 +57,7 @@
     
     ;;; Reverse a list
     ;;
-    ;; A simple tail-recursive reverse implementaiton.
+    ;; A simple tail-recursive reverse implementation.
     (define (reverse list)
       (define (reverse-helper list acc)
         (if (null? list)
