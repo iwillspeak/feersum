@@ -209,7 +209,12 @@ module Builtins =
         let getType name =
             externAssmsArray
             |> Seq.tryPick (fun (assm: AssemblyDefinition) ->
-                assm.MainModule.Types |> Seq.tryFind (fun x -> x.FullName = name))
+                // Check both direct types and exported types (which includes forwarded types)
+                assm.MainModule.Types
+                |> Seq.tryFind (fun x -> x.FullName = name)
+                |> Option.orElseWith (fun () ->
+                    assm.MainModule.ExportedTypes
+                    |> Seq.tryFind (fun x -> x.FullName = name)))
             |> Option.defaultWith (fun () ->
                 let loadedAssms = loadedAssemblies.Force()
 
