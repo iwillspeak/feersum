@@ -29,7 +29,7 @@ module Result =
     /// encoutnered then an `Error` is returned containing all the erorrs.
     let collectAll input =
         let rec decompose =
-        
+
             function
             | [] -> ([], [])
             | head :: rest ->

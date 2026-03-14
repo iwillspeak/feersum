@@ -1,9 +1,9 @@
 namespace Feersum.CompilerServices.Text
 
 /// A point in the source text
-/// 
+///
 /// This represents a resolved position within a source. It is used to model
-/// locations for diagnostics and other "human facing" features. For general 
+/// locations for diagnostics and other "human facing" features. For general
 /// locations within the compiler we use `Firethorn.TextRange` which is
 /// a simple byte offset.
 type public TextPoint =
