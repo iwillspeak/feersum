@@ -200,6 +200,12 @@ type private BinderCtx =
 /// Methods for manipulating the bind context
 module private BinderCtx =
 
+    /// Add another element into our environment.
+    let private incEnvSize =
+        function
+        | None -> Some(1)
+        | Some(size) -> Some(size + 1)
+
     /// Transofmr the name to make it safe for .NET.
     let mangleName name =
         let mangleNamePart = id
@@ -317,16 +323,11 @@ module private BinderCtx =
 [<AutoOpen>]
 module private Impl =
 
-    /// The teh `TextLocation` of a given `TextRange` in the current document, or `Missing` if no
-    /// document is available. Used for error reporting and other diagnostics.
-    let private getSpanLocation ctx span =
-        match ctx.CurrentDocument with
-        | Some doc -> TextDocument.rangeToLocation doc span
-        | None -> TextLocation.Missing
-
     /// Get the TextLocation for a given expression using the binder context's document
     let private getNodeLocation ctx (expr: Expression) =
-        getSpanLocation ctx expr.SyntaxRange
+        match ctx.CurrentDocument with
+        | Some doc -> TextDocument.rangeToLocation doc expr.SyntaxRange
+        | None -> TextLocation.Missing
 
     /// Bind a Formals List Pattern
     ///
@@ -406,255 +407,28 @@ module private Impl =
 
         BoundExpr.Error
 
+    let private bindByteVecInner ctx node (bv: ByteVec) =
+        match bv.Body |> Seq.map (fun x -> x.Value) |> Result.collectAll with
+        | Ok bytes -> bytes |> BoundLiteral.ByteVector |> Ok
+
+        | Result.Error messages ->
+            messages
+            |> List.iter (fun msg ->
+                ctx.Diagnostics.Emit BinderDiagnostics.malformedDatum (getNodeLocation ctx node) msg)
+
+            Result.Error()
+
     /// Bind a Syntax Node
     ///
     /// Walks the syntax node building up a bound representation. This bound
     /// node no longer has direct references to identifiers and instead
     /// references storage locations.
     let rec bindInContext ctx (node: Expression) =
-        Expand.illuminateExpr node
-        |> bindStx ctx
-
-    /// Bind an illuminated `StxNode`
-    and bindStx ctx (stx: Stx) =
-        match stx with
-        | Stx.Bypass node -> bindBypass ctx node
-        | Stx.Closure _ -> unimpl "closure"
-        | Stx.Symbol(s, span) ->
-            // FIXME: we should make the binder context resolve these by
-            //        the full identifier not just the name.
-            let id = s.Name
-            match BinderCtx.tryFindBinding ctx id with
-            | Some st -> BoundExpr.Load(st)
-            | None ->
-                sprintf "The symbol %s is not defined in the current context" id
-                |> ctx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol (getSpanLocation ctx span)
-
-                BoundExpr.Error
-
-        | Stx.Form (body, tail, span) ->
-
-            match tail with
-            | Some _ ->
-                ctx.Diagnostics.Emit
-                    BinderDiagnostics.patternBindError
-                    (getSpanLocation ctx span)
-                    "Unexpected dotted form in expression position"
-
-                BoundExpr.Error
-            | None -> bindStxForm ctx body tail span
-
-    and bindStxForm ctx body tail span =
-        let illFormed formName =
-            illFormedInCtx ctx (getSpanLocation ctx span) formName
-
-        match body with
-        | [] ->
-            BoundExpr.Literal BoundLiteral.Null
-        // | Symbol "if" :: body ->
-        //     let b = bindWithSequencePoint ctx
-
-        //     match body with
-        //     | [ cond; ifTrue; ifFalse ] -> BoundExpr.If((b cond), (b ifTrue), Some(b ifFalse))
-        //     | [ cond; ifTrue ] -> BoundExpr.If((b cond), (b ifTrue), None)
-        //     | _ -> illFormed "if"
-        // | Symbol "begin" :: body -> bindSequence ctx body
-        // | Symbol "define" :: body ->
-        //     match body with
-        //     | [ Symbol id ] ->
-        //         let storage = BinderCtx.addBinding ctx id
-        //         BoundExpr.Store(storage, None)
-        //     | [ Symbol id; value ] ->
-        //         let storage = BinderCtx.addBinding ctx id
-        //         let value = bindInContext ctx value
-        //         BoundExpr.Store(storage, Some(value))
-        //     | Form(Symbol id :: formals) :: body ->
-        //         // Add the binding for this lambda to the scope _before_ lowering
-        //         // the body. This makes recursive calls possible.
-        //         BinderCtx.addBinding ctx id |> ignore
-
-        //         let lambda = bindLambdaBody ctx (bindFormalsList ctx formals None) body
-        //         // Look the storage back up. This is key as the lambda, or one of
-        //         // the lambdas nested inside it, could have captured the lambda
-        //         // and moved it to the environment.
-        //         let storage = (BinderCtx.tryFindBinding ctx id).Value
-        //         BoundExpr.Store(storage, Some(lambda))
-        //     | DottedForm(Symbol id :: formals, tail) :: body ->
-        //         BinderCtx.addBinding ctx id |> ignore
-
-        //         let lambda = bindLambdaBody ctx (bindFormalsList ctx formals tail) body
-        //         let storage = (BinderCtx.tryFindBinding ctx id).Value
-        //         BoundExpr.Store(storage, Some(lambda))
-        //     | _ -> illFormed "define"
-        // | Symbol "lambda" :: body ->
-        //     match body with
-        //     | formals :: body ->
-        //         let boundFormals = bindFormals ctx formals
-        //         bindLambdaBody ctx boundFormals body
-        //     | _ -> illFormed "lambda"
-        // | Symbol "let" :: body ->
-        //     bindLet ctx "let" body (getNodeLocation ctx node) (fun bindingSpecs ->
-
-        //         // Bind the body of each binding spec first
-        //         let decls =
-        //             bindingSpecs |> List.map (fun (id, body) -> (id, bindInContext ctx body))
-
-        //         // Once the bodies are bound, we can create assignments and
-        //         // initialise the environment
-        //         let boundDecls =
-        //             decls
-        //             |> List.map (fun (id, body) ->
-        //                 let storage = BinderCtx.addBinding ctx id
-        //                 BoundExpr.Store(storage, Some(body)))
-
-        //         boundDecls)
-        // | Symbol "let*" :: body ->
-        //     bindLet
-        //         ctx
-        //         "let*"
-        //         body
-        //         (getNodeLocation ctx node)
-        //         (
-        //         // let* binds each spec sequentially
-        //         List.map (fun (id, body) ->
-        //             let body = bindInContext ctx body
-        //             let storage = BinderCtx.addBinding ctx id
-        //             BoundExpr.Store(storage, Some(body))))
-        // | Symbol id :: body when id = "letrec" || id = "letrec*" ->
-        //     let isLetrecStar = id = "letrec*"
-
-        //     bindLet ctx "letrec" body (getNodeLocation ctx node) (fun bindingSpecs ->
-
-        //         // Get storage for each of the idents first into scope.
-        //         let boundIdents =
-        //             bindingSpecs
-        //             |> List.map (fun (id, body) -> ((BinderCtx.addBinding ctx id), body))
-
-        //         //        Validate that bindings don't read from
-        //         //        un-initialised variables. The `letrec*` is allowed to
-        //         //        reference previous variables. Plain `letrec` Isn't allowed
-        //         //        to reference any.
-        //         let mutable uniitialisedStorage = boundIdents |> List.map (fun (id, _) -> id)
-
-        //         let rec checkUses location =
-        //             function
-        //             | Application(app, args) ->
-        //                 checkUses location app
-        //                 List.iter (checkUses location) args
-        //             | If(cond, cons, els) ->
-        //                 checkUses location cond
-        //                 checkUses location cons
-        //                 Option.iter (checkUses location) els
-        //             | Seq(exprs) -> List.iter (checkUses location) exprs
-        //             | Lambda _ -> ()
-        //             | Load(s) -> checkStorage location s
-        //             | Store(s, v) ->
-        //                 checkStorage location s
-        //                 Option.iter (checkUses location) v
-        //             | SequencePoint(inner, _) -> checkUses location inner
-        //             | _ -> ()
-
-        //         and checkStorage location s =
-        //             List.tryFindIndex ((=) s) uniitialisedStorage
-        //             |> Option.iter (fun idx ->
-        //                 let (name, _) = bindingSpecs[idx]
-
-        //                 name
-        //                 |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
-        //                 |> ctx.Diagnostics.Emit BinderDiagnostics.uninitialisedVariale location)
-
-        //         // Now all the IDs are in scope, bind the initialisers
-        //         let boundDecls =
-        //             boundIdents
-        //             |> List.map (fun (storage, body) ->
-        //                 let bound = bindInContext ctx body
-        //                 checkUses (getNodeLocation ctx body) bound
-
-        //                 if isLetrecStar then
-        //                     uniitialisedStorage <- List.tail uniitialisedStorage
-
-        //                 BoundExpr.Store(storage, Some(bound)))
-
-        //         boundDecls)
-        // | Symbol "let-syntax" :: body ->
-        //     bindLet ctx "let-syntax" body (getNodeLocation ctx node) (fun bindingSpecs ->
-
-        //         Seq.iter
-        //             (fun (id, syntaxRules) ->
-        //                 match Macros.parseSyntaxRules id syntaxRules with
-        //                 | Ok(macro) -> BinderCtx.addMacro ctx id macro
-        //                 | Result.Error e -> ctx.Diagnostics.Add e)
-        //             bindingSpecs
-
-        //         [])
-        // | (Symbol "set!" as setNode) :: body ->
-        //     match body with
-        //     | [ Symbol id; value ] ->
-        //         let value = bindInContext ctx value
-
-        //         match BinderCtx.tryFindBinding ctx id with
-        //         | Some s -> BoundExpr.Store(s, Some(value))
-        //         | None ->
-        //             sprintf "Attempt to set `%s` that was not yet defined" id
-        //             |> ctx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol (getNodeLocation ctx setNode)
-
-        //             BoundExpr.Error
-        //     | _ -> illFormed "set!"
-        // | Symbol "quote" :: body ->
-        //     match body with
-        //     | [ item ] -> bindQuoted ctx item
-        //     | _ -> illFormed "quote"
-        // | Symbol "define-syntax" :: body ->
-        //     match body with
-        //     | [ Symbol id; syntaxRules ] ->
-        //         match Macros.parseSyntaxRules id syntaxRules with
-        //         | Ok(macro) ->
-        //             BinderCtx.addMacro ctx id macro
-        //             BoundExpr.Quoted(BoundDatum.Ident id)
-        //         | Result.Error e ->
-        //             ctx.Diagnostics.Add e
-        //             BoundExpr.Error
-        //     | _ -> illFormed "define-syntax"
-        // | Symbol "define-library" :: body ->
-        //     match body with
-        //     | name :: body ->
-        //         match Libraries.parseLibraryDefinition ctx.CurrentDocument name body with
-        //         | Ok(library, diags) ->
-        //             ctx.Diagnostics.Append diags
-        //             bindLibrary ctx (getNodeLocation ctx node) library
-        //         | Result.Error diags ->
-        //             ctx.Diagnostics.Append diags
-        //             BoundExpr.Error
-        //     | _ -> illFormed "define-library"
-        // | Symbol "import" :: body ->
-        //     body
-        //     |> List.map (fun item ->
-        //         Libraries.parseImport ctx.Diagnostics ctx.CurrentDocument item
-        //         |> Libraries.resolveImport ctx.Libraries
-        //         |> Result.mapError (ctx.Diagnostics.Emit BinderDiagnostics.invalidImport (getNodeLocation ctx item))
-        //         |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
-        //         |> Result.okOr BoundExpr.Error)
-        //     |> BoundExpr.Seq
-        // | Symbol "case" :: _ -> unimpl "Case expressions not yet implemented"
-        // | head :: rest -> bindApplication ctx head rest node
-        // | [] -> BoundExpr.Literal BoundLiteral.Null
-            | _ -> unimpl "form"
-
-    /// Fall-through binding for syntax nodes that haven't been ported
-    /// to the `Stx` tree yet. This is a temporary measure to allow us to port 
-    /// the binder in stages.
-    /// 
-    /// FIXME: This better be temporary :-/
-    and bindBypass ctx (node: Expression) =
         match node with
         | ByteVecNode b ->
-            b.Body
-            |> Seq.choose (function
-                | Constant(Some(NumVal n)) -> Some((byte) n)
-                | _ -> None)
-            |> List.ofSeq
-            |> BoundLiteral.ByteVector
-            |> BoundExpr.Literal
+            match bindByteVecInner ctx node b with
+            | Ok bv -> bv |> BoundExpr.Literal
+            | Result.Error() -> BoundExpr.Error
         | VecNode v ->
             v.Body
             |> Seq.map (bindDatum ctx)
@@ -718,13 +492,9 @@ module private Impl =
             |> BoundLiteral.Vector
             |> BoundDatum.SelfEval
         | ByteVecNode b ->
-            b.Body
-            |> Seq.choose (function
-                | Constant(Some(NumVal n)) -> Some((byte) n)
-                | _ -> None)
-            |> List.ofSeq
-            |> BoundLiteral.ByteVector
-            |> BoundDatum.SelfEval
+            match bindByteVecInner ctx node b with
+            | Ok bv -> BoundDatum.SelfEval(bv)
+            | Result.Error() -> BoundDatum.Ident "<ERROR>"
         | QuotedNode q ->
             match q.Inner with
             | Some inner -> bindDatum ctx inner |> BoundDatum.Quoted
@@ -734,7 +504,7 @@ module private Impl =
                     (getNodeLocation ctx node)
                     "invalid item in quoted expression"
 
-                BoundDatum.Ident("<ERROR>")
+                BoundDatum.Ident "<ERROR>"
 
     and private bindQuoted ctx (quoted: Expression) =
         bindDatum ctx quoted |> BoundExpr.Quoted

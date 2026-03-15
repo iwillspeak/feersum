@@ -175,6 +175,20 @@ type AstToken internal (red: SyntaxToken) =
 
     member public _.RawToken = red
 
+type ByteValue internal (red: SyntaxToken) =
+
+    inherit AstToken(red)
+
+    static member TryCast(red: SyntaxToken) =
+        match red.Kind |> greenToAst with
+        | AstKind.NUMBER -> Some(new ByteValue(red))
+        | _ -> None
+
+    member public x.Value =
+        match red.Green.Text |> System.Byte.TryParse with
+        | true, value -> Ok value
+        | _ -> Error(sprintf "Invalid byte value: %s" red.Green.Text)
+
 [<AbstractClass>]
 type ConstantValue internal (red: SyntaxToken) =
 
@@ -325,7 +339,11 @@ and ByteVec internal (red: SyntaxNode) =
 
     inherit Expression(red)
 
-    member x.Body = x.RawNode.Children() |> Seq.choose (Expression.TryCast)
+    member x.Body =
+        x.RawNode.ChildrenWithTokens()
+        |> Seq.choose (NodeOrToken.asToken)
+        |> Seq.choose (ByteValue.TryCast)
+        |> Seq.toList
 
 /// Expression value. This is the set of all expression types. Expressions can
 /// be either a simple datum (`Constant`), an identifier `Symbol`, or a comple

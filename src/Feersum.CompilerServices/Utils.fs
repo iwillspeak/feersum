@@ -27,23 +27,19 @@ module Result =
     /// Collect a list of results into a result of lists. If all values are `Ok`
     /// then an `OK` is returned containing the results. If any errors are
     /// encoutnered then an `Error` is returned containing all the erorrs.
-    let collectAll input =
-        let rec decompose =
-
-            function
-            | [] -> ([], [])
-            | head :: rest ->
-                let (results, errs) = decompose rest
-
-                match head with
-                | Result.Ok o -> (o :: results, errs)
-                | Result.Error e -> (results, e :: errs)
-
-        let (results, errors) = decompose input
+    let collectAll (input: Result<'a, 'e> seq) : Result<list<'a>, list<'e>> =
+        let results, errors =
+            Seq.foldBack
+                (fun item (oks, errs) ->
+                    match item with
+                    | Ok o -> (o :: oks, errs)
+                    | Error e -> (oks, e :: errs))
+                input
+                ([], [])
 
         match errors with
-        | [] -> Result.Ok results
-        | errors -> Result.Error errors
+        | [] -> Ok results
+        | errors -> Error errors
 
     /// Collect a list of results into a single result. If all results are `Ok`
     /// then `Ok` is returned with the inner values as a list. If any result is

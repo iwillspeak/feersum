@@ -214,8 +214,7 @@ module Builtins =
                 |> Seq.tryFind (fun x -> x.FullName = name)
                 |> Option.orElseWith (fun () ->
                     assm.MainModule.ExportedTypes
-                    |> Seq.tryPick (fun x ->
-                        if x.FullName = name then Some(x.Resolve()) else None)))
+                    |> Seq.tryPick (fun x -> if x.FullName = name then Some(x.Resolve()) else None)))
             |> Option.defaultWith (fun () ->
                 let loadedAssms = loadedAssemblies.Force()
 

@@ -41,21 +41,17 @@ PROGRAM: (0..539)
       ATMOSPHERE: (96..101) "\n    "
       BYTEVEC: (101..109)
         OPEN_PAREN: (101..105) "#u8("
-        CONSTANT: (105..108)
-          NUMBER: (105..108) "255"
+        NUMBER: (105..108) "255"
         CLOSE_PAREN: (108..109) ")"
       ATMOSPHERE: (109..114) "\n    "
       BYTEVEC: (114..126)
         OPEN_PAREN: (114..118) "#u8("
         ATMOSPHERE: (118..119) " "
-        CONSTANT: (119..120)
-          NUMBER: (119..120) "1"
+        NUMBER: (119..120) "1"
         ATMOSPHERE: (120..121) " "
-        CONSTANT: (121..122)
-          NUMBER: (121..122) "2"
+        NUMBER: (121..122) "2"
         ATMOSPHERE: (122..123) " "
-        CONSTANT: (123..124)
-          NUMBER: (123..124) "3"
+        NUMBER: (123..124) "3"
         ATMOSPHERE: (124..125) " "
         CLOSE_PAREN: (125..126) ")"
       ATMOSPHERE: (126..132) "\n\n    "
@@ -76,14 +72,11 @@ PROGRAM: (0..539)
         ATMOSPHERE: (168..169) " "
         BYTEVEC: (169..185)
           OPEN_PAREN: (169..173) "#u8("
-          CONSTANT: (173..176)
-            NUMBER: (173..176) "128"
+          NUMBER: (173..176) "128"
           ATMOSPHERE: (176..177) " "
-          CONSTANT: (177..180)
-            NUMBER: (177..180) "254"
+          NUMBER: (177..180) "254"
           ATMOSPHERE: (180..181) " "
-          CONSTANT: (181..184)
-            NUMBER: (181..184) "255"
+          NUMBER: (181..184) "255"
           CLOSE_PAREN: (184..185) ")"
         CLOSE_PAREN: (185..186) ")"
       ATMOSPHERE: (186..192) "\n\n    "
@@ -143,20 +136,15 @@ PROGRAM: (0..539)
     ATMOSPHERE: (326..327) " "
     BYTEVEC: (327..341)
       OPEN_PAREN: (327..331) "#u8("
-      CONSTANT: (331..332)
-        NUMBER: (331..332) "1"
+      NUMBER: (331..332) "1"
       ATMOSPHERE: (332..333) " "
-      CONSTANT: (333..334)
-        NUMBER: (333..334) "2"
+      NUMBER: (333..334) "2"
       ATMOSPHERE: (334..335) " "
-      CONSTANT: (335..336)
-        NUMBER: (335..336) "3"
+      NUMBER: (335..336) "3"
       ATMOSPHERE: (336..337) " "
-      CONSTANT: (337..338)
-        NUMBER: (337..338) "4"
+      NUMBER: (337..338) "4"
       ATMOSPHERE: (338..339) " "
-      CONSTANT: (339..340)
-        NUMBER: (339..340) "5"
+      NUMBER: (339..340) "5"
       CLOSE_PAREN: (340..341) ")"
     CLOSE_PAREN: (341..342) ")"
   ATMOSPHERE: (342..343) "\n"
