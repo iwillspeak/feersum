@@ -407,6 +407,17 @@ module private Impl =
 
         BoundExpr.Error
 
+    let private bindByteVecInner ctx node (bv: ByteVec) =
+        match bv.Body |> Seq.map (fun x -> x.Value) |> Result.collectAll with
+        | Ok bytes -> bytes |> BoundLiteral.ByteVector |> Ok
+
+        | Result.Error messages ->
+            messages
+            |> List.iter (fun msg ->
+                ctx.Diagnostics.Emit BinderDiagnostics.malformedDatum (getNodeLocation ctx node) msg)
+
+            Result.Error()
+
     /// Bind a Syntax Node
     ///
     /// Walks the syntax node building up a bound representation. This bound
@@ -415,13 +426,9 @@ module private Impl =
     let rec bindInContext ctx (node: Expression) =
         match node with
         | ByteVecNode b ->
-            b.Body
-            |> Seq.choose (function
-                | Constant(Some(NumVal n)) -> Some((byte) n)
-                | _ -> None)
-            |> List.ofSeq
-            |> BoundLiteral.ByteVector
-            |> BoundExpr.Literal
+            match bindByteVecInner ctx node b with
+            | Ok bv -> bv |> BoundExpr.Literal
+            | Result.Error() -> BoundExpr.Error
         | VecNode v ->
             v.Body
             |> Seq.map (bindDatum ctx)
@@ -485,13 +492,9 @@ module private Impl =
             |> BoundLiteral.Vector
             |> BoundDatum.SelfEval
         | ByteVecNode b ->
-            b.Body
-            |> Seq.choose (function
-                | Constant(Some(NumVal n)) -> Some((byte) n)
-                | _ -> None)
-            |> List.ofSeq
-            |> BoundLiteral.ByteVector
-            |> BoundDatum.SelfEval
+            match bindByteVecInner ctx node b with
+            | Ok bv -> BoundDatum.SelfEval(bv)
+            | Result.Error() -> BoundDatum.Ident "<ERROR>"
         | QuotedNode q ->
             match q.Inner with
             | Some inner -> bindDatum ctx inner |> BoundDatum.Quoted
@@ -501,7 +504,7 @@ module private Impl =
                     (getNodeLocation ctx node)
                     "invalid item in quoted expression"
 
-                BoundDatum.Ident("<ERROR>")
+                BoundDatum.Ident "<ERROR>"
 
     and private bindQuoted ctx (quoted: Expression) =
         bindDatum ctx quoted |> BoundExpr.Quoted

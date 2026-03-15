@@ -271,15 +271,17 @@ and private parseVec (builder: GreenNodeBuilder) state =
 and private parseBytevec (builder: GreenNodeBuilder) state =
     builder.StartNode(AstKind.BYTEVEC |> SyntaxUtils.astToGreen)
 
-    // TODO: Strinctly speaking this should be many numbers, not many
-    //       expressions. We can always deal with that later on in semantic
-    //       analys however. It might be worth changing this though. Datums are
-    //       more restrictive than plain expressions. We might benefit from
-    //       better modelling the grammar non-terminals of the spec in general.
-    //       e.g. (quote <datum>) and '<datum> being the same node kind in the
-    //       tree.
-    expect builder TokenKind.BytevectorPrefix AstKind.OPEN_PAREN state
-    |> parseFormTail builder
+    let mutable state =
+        expect builder TokenKind.BytevectorPrefix AstKind.OPEN_PAREN state
+        |> skipAtmosphere builder
+
+    while lookingAt TokenKind.Number state do
+        state <- eat builder AstKind.NUMBER state |> skipAtmosphere builder
+
+    let state = expect builder TokenKind.CloseBracket AstKind.CLOSE_PAREN state
+    builder.FinishNode()
+
+    state
 
 and private parseExpr builder state =
     match currentKind state with
