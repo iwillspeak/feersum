@@ -160,10 +160,12 @@ module Expand =
         | Stx.Symbol _ -> renameFormal env formals
         | Stx.Form(body, tail, pos) ->
             let renamedBody, env' = List.mapFold renameFormal env body
+
             let renamedTail, env'' =
                 match tail with
                 | Some t -> let t', e = renameFormal env' t in Some t', e
                 | None -> None, env'
+
             Stx.Form(renamedBody, renamedTail, pos), env''
         | _ -> formals, env // ill-formed; pass through for the binder to diagnose
 
@@ -193,7 +195,10 @@ module Expand =
             match StxEnv.resolve id ctx.Env with
             | Var rId -> ctx, Stx.Symbol(rId, pos) |> Some
             | _ ->
-                emitAt ctx invalidSyntaxItemUse pos
+                emitAt
+                    ctx
+                    invalidSyntaxItemUse
+                    pos
                     (sprintf "Identifier '%s' refers to a syntax item and cannot be used as a value" id.Name)
 
                 ctx, None
@@ -233,6 +238,7 @@ module Expand =
                 // bindings do not escape back to the caller.
                 | StxBinding.SpecialForm Lambda ->
                     let keyword = Stx.Symbol(id, idPos)
+
                     match rest with
                     | formals :: body ->
                         let renamedFormals, innerEnv = renameFormalsPattern ctx.Env formals
@@ -249,12 +255,14 @@ module Expand =
                 // function name (enabling recursion).
                 | StxBinding.SpecialForm Define ->
                     let keyword = Stx.Symbol(id, idPos)
+
                     match rest with
                     | [ Stx.Symbol(nameId, namePos); initStx ] ->
                         // Simple (define x val)
                         let newId, outerEnv = StxEnv.rename nameId ctx.Env
                         let expandedInit = expandSimple ctx initStx
                         let outerCtx = { ctx with Env = outerEnv }
+
                         outerCtx,
                         Stx.Form([ keyword; Stx.Symbol(newId, namePos); expandedInit ], tail, pos)
                         |> Some
@@ -264,14 +272,18 @@ module Expand =
                         // a fresh inner env that also includes f (for recursion).
                         let newId, outerEnv = StxEnv.rename nameId ctx.Env
                         let outerCtx = { ctx with Env = outerEnv }
+
                         let renamedArgsForm, innerEnv =
                             renameFormalsPattern outerEnv (Stx.Form(formalRest, formalTail, formalsPos))
+
                         let innerCtx = { ctx with Env = innerEnv }
+
                         let fWithArgs =
                             match renamedArgsForm with
                             | Stx.Form(args, argTail, fPos) ->
                                 Stx.Form(Stx.Symbol(newId, namePos) :: args, argTail, fPos)
                             | other -> other
+
                         let expandedBody = expandSimpleLst innerCtx body
                         outerCtx, Stx.Form(keyword :: fWithArgs :: expandedBody, tail, pos) |> Some
                     | _ ->
@@ -282,6 +294,7 @@ module Expand =
                 // other); bindings scoped only to the body.
                 | StxBinding.SpecialForm Let ->
                     let keyword = Stx.Symbol(id, idPos)
+
                     match rest with
                     | Stx.Form(bindings, None, bindPos) :: body ->
                         let expandBinding (env: StxEnv) (binding: Stx) =
@@ -294,9 +307,11 @@ module Expand =
                             | _ ->
                                 emitAt ctx invalidSyntaxItemUse (Stx.getPos binding) "Ill-formed let binding"
                                 binding, env
+
                         let renamedBindings, innerEnv = List.mapFold expandBinding ctx.Env bindings
                         let innerCtx = { ctx with Env = innerEnv }
                         let expandedBody = expandSimpleLst innerCtx body
+
                         ctx,
                         Stx.Form(keyword :: Stx.Form(renamedBindings, None, bindPos) :: expandedBody, tail, pos)
                         |> Some
@@ -308,6 +323,7 @@ module Expand =
                 // bindings (sequential scoping).
                 | StxBinding.SpecialForm LetStar ->
                     let keyword = Stx.Symbol(id, idPos)
+
                     match rest with
                     | Stx.Form(bindings, None, bindPos) :: body ->
                         let expandBinding (env: StxEnv) (binding: Stx) =
@@ -319,9 +335,11 @@ module Expand =
                             | _ ->
                                 emitAt ctx invalidSyntaxItemUse (Stx.getPos binding) "Ill-formed let* binding"
                                 binding, env
+
                         let renamedBindings, innerEnv = List.mapFold expandBinding ctx.Env bindings
                         let innerCtx = { ctx with Env = innerEnv }
                         let expandedBody = expandSimpleLst innerCtx body
+
                         ctx,
                         Stx.Form(keyword :: Stx.Form(renamedBindings, None, bindPos) :: expandedBody, tail, pos)
                         |> Some
@@ -334,6 +352,7 @@ module Expand =
                 // letrec* is a runtime/binder concern, not the expander's.)
                 | StxBinding.SpecialForm(LetRec | LetRecStar) ->
                     let keyword = Stx.Symbol(id, idPos)
+
                     match rest with
                     | Stx.Form(bindings, None, bindPos) :: body ->
                         let parseSpec (binding: Stx) =
@@ -343,20 +362,22 @@ module Expand =
                             | _ ->
                                 emitAt ctx invalidSyntaxItemUse (Stx.getPos binding) "Ill-formed letrec binding"
                                 None
+
                         let specs = List.choose parseSpec bindings
                         // Rename all binders up-front so each init can see all names
                         let newIds, innerEnv =
-                            List.mapFold
-                                (fun env (nameId, _, _, _) -> StxEnv.rename nameId env)
-                                ctx.Env
-                                specs
+                            List.mapFold (fun env (nameId, _, _, _) -> StxEnv.rename nameId env) ctx.Env specs
+
                         let innerCtx = { ctx with Env = innerEnv }
+
                         let renamedBindings =
                             List.zip newIds specs
                             |> List.map (fun (newId, (_, namePos, initStx, bPos)) ->
                                 let expandedInit = expandSimple innerCtx initStx
                                 Stx.Form([ Stx.Symbol(newId, namePos); expandedInit ], None, bPos))
+
                         let expandedBody = expandSimpleLst innerCtx body
+
                         ctx,
                         Stx.Form(keyword :: Stx.Form(renamedBindings, None, bindPos) :: expandedBody, tail, pos)
                         |> Some
@@ -394,7 +415,6 @@ module Expand =
             // a diagnostic and return the original syntax, which will likely
             // cause further errors during binding, but prevents us from emitting
             // a cascade of diagnostics.
-            emitAt ctx invalidSyntaxItemUse (Stx.getPos stx)
-                "Syntax form expanded to nothing in expression context"
+            emitAt ctx invalidSyntaxItemUse (Stx.getPos stx) "Syntax form expanded to nothing in expression context"
 
             stx
