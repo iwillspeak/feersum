@@ -133,6 +133,9 @@ module StxEnv =
             match id.Name with
             | "lambda" -> SpecialForm Lambda
             | "let" -> SpecialForm Let
+            | "let*" -> SpecialForm LetStar
+            | "letrec" -> SpecialForm LetRec
+            | "letrec*" -> SpecialForm LetRecStar
             | "if" -> SpecialForm If
             | "define" -> SpecialForm Define
             | "define-syntax" -> SpecialForm DefineSyntax
