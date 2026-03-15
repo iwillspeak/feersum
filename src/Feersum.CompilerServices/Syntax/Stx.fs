@@ -1,7 +1,16 @@
 namespace Feersum.CompilerServices.Syntax
 
 open Firethorn
-open Feersum.CompilerServices.Syntax.Tree
+open Feersum.CompilerServices.Text
+
+/// A position in the source text. This is used for error reporting and other
+/// diagnostics. This is a simple wrapper around a `TextRange` with a reference to
+/// the source document for easier error reporting.
+///
+/// TODO: Later we _should_ move this to use a nominal `DocID` rather than
+/// a direct reference to the `TextDocument`. This will make it easier to support multiple documents in the future, and will also make it easier to
+/// serialize and deserialize syntax trees for pickling into assemblies.
+type StxPos = { Doc: TextDocument; Range: TextRange }
 
 /// Syntax Identifer
 ///
@@ -50,23 +59,23 @@ type SpecialFormKind =
 ///  * Each name in the tree is resolved to an `Ident` rather than a raw string.
 ///  * The `StxClosure` variant allows syntax captures from macro expansion.
 type Stx =
-    | Symbol of Ident * TextRange
-    | Literal of StxLiteral * TextRange
-    | Form of Stx list * Stx option * TextRange
+    | Symbol of Ident * StxPos
+    | Literal of StxLiteral * StxPos
+    | Form of Stx list * Stx option * StxPos
     | Closure of Stx * StxEnv
 
 /// A source literal is eitehr a self-evaluating constant, or a quoted datum.
 and StxLiteral =
-    | Quotation of StxDatum
-    | SelfEval of StxConstant
+    | Quotation of StxDatum * StxPos
+    | SelfEval of StxConstant * StxPos
 
 /// A datume is a literal value baked into source text. This could be as simple
 /// as an identifer or a quoted constant, or as complex as nested lists or
 /// vectors.
 and StxDatum =
-    | Simple of StxConstant
-    | Ident of Ident
-    | List of StxDatum list * StxDatum option
+    | Simple of StxConstant * StxPos
+    | Ident of Ident * StxPos
+    | List of StxDatum list * StxDatum option * StxPos
     | Compound of Stx
 
 /// A constant is a literal value that evaluates to itself.
@@ -99,12 +108,12 @@ module Stx =
 
     /// Get the `TextRange` of a `Stx`. This is used for error reporting and
     /// other diagnostics.
-    let rec rangeOf (stx: Stx) : TextRange =
+    let rec getPos (stx: Stx) : StxPos =
         match stx with
-        | Stx.Symbol(_, span) -> span
-        | Stx.Form(_, _, span) -> span
-        | Stx.Closure(stx, _) -> rangeOf stx
-        | Stx.Literal(_, span) -> span
+        | Symbol(_, pos) -> pos
+        | Form(_, _, pos) -> pos
+        | Closure(stx, _) -> getPos stx
+        | Literal(_, pos) -> pos
 
 /// Syntax Environment Helpers
 module StxEnv =

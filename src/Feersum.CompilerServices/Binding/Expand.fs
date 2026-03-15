@@ -4,6 +4,7 @@ open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
+open Firethorn
 open Feersum.CompilerServices.Ice
 
 /// Syntax Illuminiation Contex
@@ -40,6 +41,10 @@ module private ExpanderDiagnostics =
 /// syntax of the source text so that no references to syntactic construcs other
 /// than our well known `SpecialFormKind`s remain.
 module Expand =
+
+    let private makePos (ctx: IlluminationCtx) (range: TextRange) : StxPos =
+        { StxPos.Doc = ctx.Doc
+          StxPos.Range = range }
 
     /// Map a `Constant` from the CST into an `StxConstant` for the `Stx` tree.
     let private mapConstant (ctx: IlluminationCtx) (c: Constant) : StxConstant =
@@ -82,10 +87,12 @@ module Expand =
                         None)
                 |> List.ofSeq
 
-            Stx.Literal(StxLiteral.SelfEval(StxConstant.ByteVec bytes), expr.SyntaxRange)
+            let pos = makePos ctx expr.SyntaxRange
+            Stx.Literal(StxLiteral.SelfEval(StxConstant.ByteVec bytes, pos), pos)
         | VecNode v ->
             let body = Seq.map ((illuminateExpr ctx) >> StxDatum.Compound) v.Body |> Seq.toList
-            Stx.Literal(StxLiteral.SelfEval(StxConstant.Vector body), expr.SyntaxRange)
+            let pos = makePos ctx expr.SyntaxRange
+            Stx.Literal(StxLiteral.SelfEval(StxConstant.Vector body, pos), pos)
         | FormNode f ->
             let tailStx =
                 match f.DottedTail with
@@ -102,9 +109,10 @@ module Expand =
                 | None -> None
 
             let bodyStx = Seq.map (illuminateExpr ctx) f.Body |> Seq.toList
-            Stx.Form(bodyStx, tailStx, expr.SyntaxRange)
-        | ConstantNode c -> Stx.Literal(StxLiteral.SelfEval(mapConstant ctx c), expr.SyntaxRange)
-        | SymbolNode s -> Stx.Symbol(Ident.mint s.CookedValue, expr.SyntaxRange)
+            Stx.Form(bodyStx, tailStx, makePos ctx expr.SyntaxRange)
+        | ConstantNode c ->
+            Stx.Literal(StxLiteral.SelfEval(mapConstant ctx c, makePos ctx c.SyntaxRange), makePos ctx expr.SyntaxRange)
+        | SymbolNode s -> Stx.Symbol(Ident.mint s.CookedValue, makePos ctx s.SyntaxRange)
         | QuotedNode q ->
             let innerStx =
                 match q.Inner with
@@ -115,9 +123,13 @@ module Expand =
                         (TextDocument.rangeToLocation ctx.Doc q.SyntaxRange)
                         "Malformed quoted expression"
 
-                    Stx.Literal(StxLiteral.SelfEval(StxConstant.Null), q.SyntaxRange)
+                    Stx.Literal(
+                        StxLiteral.SelfEval(StxConstant.Null, makePos ctx q.SyntaxRange),
+                        makePos ctx q.SyntaxRange
+                    )
 
-            Stx.Literal(StxLiteral.Quotation(innerStx |> StxDatum.Compound), expr.SyntaxRange)
+            let pos = makePos ctx expr.SyntaxRange
+            Stx.Literal(StxLiteral.Quotation(innerStx |> StxDatum.Compound, pos), pos)
 (*
     let rec expand (ctx: StxCtx) (stx: Stx) : StxCtx * Stx option =
 
