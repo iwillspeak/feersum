@@ -5,7 +5,6 @@ open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Tree
-open Feersum.CompilerServices.Syntax.Factories
 open Feersum.CompilerServices.Utils
 
 /// The macro pattern type. Used in syntax cases to define the form that a

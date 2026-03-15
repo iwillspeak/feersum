@@ -72,6 +72,7 @@
       <FeersumCompilerPath Condition=" '$(FeersumCompilerPath)' == '' ">$(PkgFeersum)/tools/net8.0/any/Feersum.dll</FeersumCompilerPath>
       <DotNetPath>$(DOTNET_HOST_PATH)</DotNetPath>
       <DotNetPath Condition=" '$(DotNetPath)' == '' ">dotnet</DotNetPath>
+      <FeersumHideCommandLine Condition=" '$(FeersumHideCommandLine)' == '' ">true</FeersumHideCommandLine>
     </PropertyGroup>
 
     <Error Condition="!Exists($(FeersumCompilerPath))" Text="Compiler build output is missing" />
@@ -91,7 +92,7 @@
       <BuildCommand>"$(DotNetPath)" "$(FeersumCompilerPath)" $(CoreLibReferences) $(LibReferences) $(ConfigParams) -o "@(IntermediateAssembly)" @(SchemeCompileItems->'"%(Identity)"', ' ')</BuildCommand>
     </PropertyGroup>
 
-    <Exec Command="$(BuildCommand)" EchoOff="true" />
+    <Exec Command="$(BuildCommand)" EchoOff="$(FeersumHideCommandLine)" />
 
   </Target>
 
