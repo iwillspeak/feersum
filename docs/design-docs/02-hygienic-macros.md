@@ -45,8 +45,6 @@ macro-expanded code produce messages with no file/line, debug sequence points
 inside expanded code step to the wrong location, and closure/method names
 generated from macro-introduced `let` bindings are meaningless in the IL.
 
----
-
 ## Syntactic Closures
 
 Runtime closures allow a lambda body to remember the _execution environment_ in
