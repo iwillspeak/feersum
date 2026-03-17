@@ -5,6 +5,7 @@ open Feersum.CompilerServices.Text
 open System.IO
 
 /// Level of diagnostic. Used to tell warnings from errors.
+[<RequireQualifiedAccess>]
 type DiagnosticLevel =
     /// The diagnostic represents an error. Compilation should not continue.
     | Error
@@ -96,8 +97,8 @@ type Diagnostic =
     /// Prefix for the message. Used to summarise the diagnostic kind.
     member private d.MessagePrefix =
         match d.Kind.Level with
-        | Warning -> sprintf "warning SCM%04u" d.Kind.Code
-        | Error -> sprintf "error SCM%04u" d.Kind.Code
+        | DiagnosticLevel.Warning -> sprintf "warning SCM%04u" d.Kind.Code
+        | DiagnosticLevel.Error -> sprintf "error SCM%04u" d.Kind.Code
 
 /// A collection of diagnostics being built by a compiler phase.
 type DiagnosticBag =
@@ -127,7 +128,7 @@ module Diagnostics =
     /// Returns true if the diagnostic should be considered an error
     let public isError =
         function
-        | { Diagnostic.Kind = { Level = Error } } -> true
+        | { Diagnostic.Kind = { Level = DiagnosticLevel.Error } } -> true
         | _ -> false
 
     /// Test if a given diagnostics collection contains any errors.

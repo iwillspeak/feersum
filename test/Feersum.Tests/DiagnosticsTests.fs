@@ -4,9 +4,9 @@ open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 open Xunit
 
-let errKind = DiagnosticKind.Create Error 123 "test diagnostic"
+let errKind = DiagnosticKind.Create DiagnosticLevel.Error 123 "test diagnostic"
 
-let warningKind = DiagnosticKind.Create Warning 456 "test diagnostic"
+let warningKind = DiagnosticKind.Create DiagnosticLevel.Warning 456 "test diagnostic"
 
 [<Fact>]
 let ``create returns error`` () =
