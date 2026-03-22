@@ -5,3 +5,4 @@ development of Feersum. The documents aren't guaranteed to be up to date,
 accurate, or even useful.
 
  * [Syntax Trees](./syntax-trees/)
+ * [Expansion Work Stack](./expansion-workstack/)
