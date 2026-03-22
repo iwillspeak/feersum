@@ -61,14 +61,12 @@ module private Utils =
         { signature with
             Exports = signature.Exports |> mapper }
 
-    /// Resolve a node location using an optional TextDocument
-    let private nodeLocation (doc: TextDocument option) (expr: Expression) =
-        match doc with
-        | Some d -> TextDocument.rangeToLocation d expr.SyntaxRange
-        | None -> TextLocation.Missing
+    /// Resolve a node location using the source registry
+    let private nodeLocation (registry: SourceRegistry) (expr: Expression) =
+        SourceRegistry.resolveLocation registry expr.DocId expr.SyntaxRange
 
     /// Recognise a list of strings as a library name
-    let parseLibraryName (diags: DiagnosticBag) (doc: TextDocument option) (name: Expression) =
+    let parseLibraryName (diags: DiagnosticBag) (registry: SourceRegistry) (name: Expression) =
         let isInvalidChar =
             function
             | '|'
@@ -87,7 +85,7 @@ module private Utils =
             | _ -> false
 
         let parseNameElement (element: Expression) =
-            let loc () = nodeLocation doc element
+            let loc () = nodeLocation registry element
 
             match element with
             | Constant(Some(NumVal n)) -> Ok(n |> sprintf "%g")
@@ -105,42 +103,42 @@ module private Utils =
         match name with
         | Form x -> x |> List.map (parseNameElement) |> Result.collect
         | _ ->
-            diags.Emit LibraryDiagnostics.invalidLibraryName (nodeLocation doc name) "Expected library name"
+            diags.Emit LibraryDiagnostics.invalidLibraryName (nodeLocation registry name) "Expected library name"
             Result.Error(())
 
     /// Try and parse a node as an identifier
-    let parseIdentifier (doc: TextDocument option) (node: Expression) =
+    let parseIdentifier (registry: SourceRegistry) (node: Expression) =
         match node with
         | Symbol id -> Ok id
         | _ ->
             Result.Error(
-                Diagnostic.Create LibraryDiagnostics.invalidLibraryName (nodeLocation doc node) "Expected identifier"
+                Diagnostic.Create LibraryDiagnostics.invalidLibraryName (nodeLocation registry node) "Expected identifier"
             )
 
     /// Parse a list of identifiers into a list of strings
-    let parseIdentifierList doc idents =
-        idents |> List.map (parseIdentifier doc) |> Result.collect
+    let parseIdentifierList registry idents =
+        idents |> List.map (parseIdentifier registry) |> Result.collect
 
     /// Parse a library declaration form
-    let rec parseLibraryDeclaration (diags: DiagnosticBag) (doc: TextDocument option) (declaration: Expression) =
+    let rec parseLibraryDeclaration (diags: DiagnosticBag) (registry: SourceRegistry) (declaration: Expression) =
         match declaration with
         | Form(Symbol special :: body) ->
-            parseLibraryDeclarationForm diags doc (nodeLocation doc declaration) special body
+            parseLibraryDeclarationForm diags registry (nodeLocation registry declaration) special body
         | _ ->
             diags.Emit
                 LibraryDiagnostics.malformedLibraryDecl
-                (nodeLocation doc declaration)
+                (nodeLocation registry declaration)
                 "Expected library declaration"
 
             LibraryDeclaration.Error
 
-    and parseLibraryDeclarationForm diags doc position special body =
+    and parseLibraryDeclarationForm diags registry position special body =
         match special with
         | "export" ->
             body
-            |> List.choose (parseExportDeclaration diags doc)
+            |> List.choose (parseExportDeclaration diags registry)
             |> LibraryDeclaration.Export
-        | "import" -> body |> List.map (parseImportDeclaration diags doc) |> LibraryDeclaration.Import
+        | "import" -> body |> List.map (parseImportDeclaration diags registry) |> LibraryDeclaration.Import
         | "begin" -> LibraryDeclaration.Begin body
         | s ->
             sprintf "Unrecognised library declaration %s" s
@@ -148,18 +146,18 @@ module private Utils =
 
             LibraryDeclaration.Error
 
-    and tryParseRename (doc: TextDocument option) (rename: Expression list) =
+    and tryParseRename (rename: Expression list) =
         match rename with
         | [ Symbol int; Symbol ext ] -> Ok({ From = int; To = ext })
         | _ -> Result.Error("invalid rename")
 
-    and parseExportDeclaration (diags: DiagnosticBag) (doc: TextDocument option) (export: Expression) =
-        let loc () = nodeLocation doc export
+    and parseExportDeclaration (diags: DiagnosticBag) (registry: SourceRegistry) (export: Expression) =
+        let loc () = nodeLocation registry export
 
         match export with
         | Symbol plain -> Some(ExportSet.Plain plain)
         | Form(Symbol "rename" :: rename) ->
-            match tryParseRename doc rename with
+            match tryParseRename rename with
             | Ok renamed -> Some(ExportSet.Renamed renamed)
             | Result.Error e ->
                 diags.Emit LibraryDiagnostics.malformedLibraryDecl (loc ()) e
@@ -168,27 +166,27 @@ module private Utils =
             diags.Emit LibraryDiagnostics.malformedLibraryDecl (loc ()) "Invalid export element"
             None
 
-    and parseImportDeclaration (diags: DiagnosticBag) (doc: TextDocument option) (import: Expression) =
+    and parseImportDeclaration (diags: DiagnosticBag) (registry: SourceRegistry) (import: Expression) =
         let parseImportForm parser fromSet body resultCollector =
             match parser body with
-            | Ok(bound) -> resultCollector (parseImportDeclaration diags doc fromSet, bound)
+            | Ok(bound) -> resultCollector (parseImportDeclaration diags registry fromSet, bound)
             | Result.Error(diag) ->
                 diags.Add(diag)
                 ImportSet.Error
 
         match import with
         | Form(Symbol "only" :: fromSet :: filters) ->
-            parseImportForm (parseIdentifierList doc) fromSet filters ImportSet.Only
+            parseImportForm (parseIdentifierList registry) fromSet filters ImportSet.Only
         | Form(Symbol "except" :: fromSet :: filters) ->
-            parseImportForm (parseIdentifierList doc) fromSet filters ImportSet.Except
+            parseImportForm (parseIdentifierList registry) fromSet filters ImportSet.Except
         | Form(Symbol "rename" :: fromSet :: renames) ->
             let parseRenames (renames: Expression list) =
                 let parseRename (node: Expression) =
-                    let loc () = nodeLocation doc node
+                    let loc () = nodeLocation registry node
 
                     match node with
                     | Form f ->
-                        tryParseRename doc f
+                        tryParseRename f
                         |> Result.mapError (fun e ->
                             Diagnostic.Create LibraryDiagnostics.malformedLibraryDecl (loc ()) e)
                     | _ ->
@@ -200,16 +198,16 @@ module private Utils =
 
             parseImportForm (parseRenames) fromSet renames ImportSet.Renamed
         | Form [ Symbol "prefix"; fromSet; prefix ] ->
-            parseImportForm (parseIdentifier doc) fromSet prefix ImportSet.Prefix
+            parseImportForm (parseIdentifier registry) fromSet prefix ImportSet.Prefix
         | _ ->
-            match parseLibraryName diags doc import with
+            match parseLibraryName diags registry import with
             | Ok(name) -> ImportSet.Plain name
             | Result.Error _ -> ImportSet.Error
 
 
-    let parseLibraryBody (diags: DiagnosticBag) (doc: TextDocument option) name body =
+    let parseLibraryBody (diags: DiagnosticBag) (registry: SourceRegistry) name body =
         { LibraryName = name
-          Declarations = body |> List.map (parseLibraryDeclaration diags doc) }
+          Declarations = body |> List.map (parseLibraryDeclaration diags registry) }
 
 // -------------------- Public Libraries API ---------------------
 
@@ -260,13 +258,10 @@ module Libraries =
     let parseImport = parseImportDeclaration
 
     /// Parse a `(define-library ...)` form
-    let parseLibraryDefinition (doc: TextDocument option) (name: Expression) (body: Expression list) =
+    let parseLibraryDefinition (registry: SourceRegistry) (name: Expression) (body: Expression list) =
         let diags = DiagnosticBag.Empty
 
-        let nameLoc =
-            match doc with
-            | Some d -> TextDocument.rangeToLocation d name.SyntaxRange
-            | None -> TextLocation.Missing
+        let nameLoc = SourceRegistry.resolveLocation registry name.DocId name.SyntaxRange
 
         let checkReservedNames =
             function
@@ -280,8 +275,8 @@ module Libraries =
                 start :: rest
             | [] -> []
 
-        parseLibraryName diags doc name
+        parseLibraryName diags registry name
         |> Result.map checkReservedNames
-        |> Result.map (fun boundName -> parseLibraryBody diags doc boundName body)
+        |> Result.map (fun boundName -> parseLibraryBody diags registry boundName body)
         |> Result.map (fun lib -> (lib, diags.Take))
         |> Result.mapError (fun _ -> diags.Take)

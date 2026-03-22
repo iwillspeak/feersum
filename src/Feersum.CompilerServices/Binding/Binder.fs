@@ -191,7 +191,7 @@ type private BinderCtx =
       mutable LocalCount: int
       mutable Captures: StorageRef list
       mutable HasDynamicEnv: bool
-      mutable CurrentDocument: TextDocument option
+      Registry: SourceRegistry
       MangledName: string
       Diagnostics: DiagnosticBag
       Parent: BinderCtx option }
@@ -213,7 +213,7 @@ module private BinderCtx =
         name |> Seq.map (mangleNamePart) |> String.concat "::"
 
     /// Create a new binder context for the given root scope
-    let createForGlobalScope scope libs name =
+    let createForGlobalScope scope libs name registry =
         { Scope = scope |> Scope.fromMap
           OuterScopes = []
           Libraries = libs
@@ -222,7 +222,7 @@ module private BinderCtx =
           Captures = []
           Diagnostics = DiagnosticBag.Empty
           HasDynamicEnv = false
-          CurrentDocument = None
+          Registry = registry
           Parent = None }
 
     /// Create a new binder context for a child scope
@@ -235,7 +235,7 @@ module private BinderCtx =
           Captures = []
           Diagnostics = parent.Diagnostics
           HasDynamicEnv = false
-          CurrentDocument = parent.CurrentDocument
+          Registry = parent.Registry
           Parent = Some(parent) }
 
     let private getNextLocal ctx =
@@ -323,11 +323,9 @@ module private BinderCtx =
 [<AutoOpen>]
 module private Impl =
 
-    /// Get the TextLocation for a given expression using the binder context's document
+    /// Get the TextLocation for a given expression using the source registry
     let private getNodeLocation ctx (expr: Expression) =
-        match ctx.CurrentDocument with
-        | Some doc -> TextDocument.rangeToLocation doc expr.SyntaxRange
-        | None -> TextLocation.Missing
+        SourceRegistry.resolveLocation ctx.Registry expr.DocId expr.SyntaxRange
 
     /// Bind a Formals List Pattern
     ///
@@ -568,11 +566,7 @@ module private Impl =
     and private bindLibrary ctx location (library: LibraryDefinition) =
         // Process `(import ...)`
         let libCtx =
-            library.LibraryName |> BinderCtx.createForGlobalScope Map.empty ctx.Libraries
-
-        // Propagate the current document so sequence points inside the library
-        // have valid source locations.
-        libCtx.CurrentDocument <- ctx.CurrentDocument
+            BinderCtx.createForGlobalScope Map.empty ctx.Libraries library.LibraryName ctx.Registry
 
         let imports =
             library.Declarations
@@ -802,7 +796,7 @@ module private Impl =
         | Symbol "define-library" :: body ->
             match body with
             | name :: body ->
-                match Libraries.parseLibraryDefinition ctx.CurrentDocument name body with
+                match Libraries.parseLibraryDefinition ctx.Registry name body with
                 | Ok(library, diags) ->
                     ctx.Diagnostics.Append diags
                     bindLibrary ctx (getNodeLocation ctx node) library
@@ -813,7 +807,7 @@ module private Impl =
         | Symbol "import" :: body ->
             body
             |> List.map (fun item ->
-                Libraries.parseImport ctx.Diagnostics ctx.CurrentDocument item
+                Libraries.parseImport ctx.Diagnostics ctx.Registry item
                 |> Libraries.resolveImport ctx.Libraries
                 |> Result.mapError (ctx.Diagnostics.Emit BinderDiagnostics.invalidImport (getNodeLocation ctx item))
                 |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
@@ -841,14 +835,12 @@ module Binder =
     /// Takes a list of (TextDocument * Expression list) pairs, one per
     /// compilation unit, and binds them sequentially in a shared scope.
     /// The result can be passed to the `Compile` or `Emit` API to be lowered to IL.
-    let bind scope libraries (units: (TextDocument * Expression list) list) : BoundSyntaxTree =
-        let ctx = BinderCtx.createForGlobalScope scope libraries [ "LispProgram" ]
+    let bind scope libraries (registry: SourceRegistry) (units: Expression list list) : BoundSyntaxTree =
+        let ctx = BinderCtx.createForGlobalScope scope libraries [ "LispProgram" ] registry
 
         let bound =
             units
-            |> List.collect (fun (doc, exprs) ->
-                ctx.CurrentDocument <- Some doc
-
+            |> List.collect (fun exprs ->
                 match bindSequence ctx exprs with
                 | BoundExpr.Seq stmts -> stmts
                 | x -> [ x ])

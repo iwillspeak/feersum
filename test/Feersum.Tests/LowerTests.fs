@@ -13,18 +13,17 @@ open Feersum.CompilerServices.Text
 
 /// Parse a Scheme expression and return it
 let private parseScheme source =
-    let doc = TextDocument.fromParts "test" source
     let result = Parse.readProgramSimple "program" source
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" source result.Diagnostics
 
-    (doc, result.Root.Body |> List.ofSeq)
+    result.Root.Body |> List.ofSeq
 
 /// Parse, bind, and lower a Scheme expression. Returns the lowered BoundBody.
 let private lowerScheme source =
-    let (doc, exprs) = parseScheme source
-    let bound = Binder.bind Binder.emptyScope [] [ (doc, exprs) ]
+    let exprs = parseScheme source
+    let bound = Binder.bind Binder.emptyScope [] (SourceRegistry.empty ()) [ exprs ]
     (Lower.lower bound).Root
 
 /// Strip SequencePoint wrappers to reach the underlying expression.

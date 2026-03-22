@@ -43,8 +43,20 @@ type public TextLocation =
         | Point p -> p
         | Missing -> TextPoint.FromParts("missing", 0, 0)
 
-/// A document
-type public TextDocument = { Path: string; LineStarts: int list }
+/// Opaque identifier for a source document.
+///
+/// `Doc i` indexes into the `SourceRegistry` that issued the ID.
+/// `Synthetic` marks compiler-generated nodes that have no source origin.
+[<RequireQualifiedAccess>]
+type public DocId =
+    | Doc of int
+    | Synthetic
+
+/// A document — owns path and line-start offsets for offset → line/col resolution.
+type public TextDocument =
+    { Id: DocId
+      Path: string
+      LineStarts: int list }
 
 module public TextDocument =
 
@@ -54,8 +66,17 @@ module public TextDocument =
         |> Seq.choose (fun (idx, ch) -> if ch = '\n' then Some(idx) else None)
         |> List.ofSeq
 
+    /// Create a document with a synthetic (no source) ID.
+    /// Suitable for tests and compiler-generated syntax.
     let public fromParts path body =
-        { Path = path
+        { Id = DocId.Synthetic
+          Path = path
+          LineStarts = lineStarts body }
+
+    /// Internal: create a document with a specific DocId (used by SourceRegistry).
+    let internal fromPartsWithId id path body =
+        { Id = id
+          Path = path
           LineStarts = lineStarts body }
 
     /// Turn a character offset into a document into a human line column value.
@@ -84,58 +105,37 @@ module public TextDocument =
         let e = range.End
         Span(s |> offsetToPoint document, e |> offsetToPoint document)
 
-/// A provenance entry describing the origin of syntax
+/// Registry of source documents — owns source identity.
 ///
-/// Currently entries track the source text document. Later variants will
-/// describe macro template expansions, substitutions, and other transformations.
-type public ProvenanceEntry = SourceText of TextDocument
+/// Documents are registered before parsing, and assigned a stable `DocId`.
+/// The registry is the single source of truth for resolving a `DocId` back to
+/// a `TextDocument` for offset resolution and error reporting.
+type public SourceRegistry =
+    { mutable Files: Generic.List<TextDocument> }
 
-/// A unique identifier referencing a provenance entry
-///
-/// Positive IDs index into the ProvenanceTable. Negative IDs represent synthetic
-/// syntax that was introduced by transformations (macros, etc.) and are not
-/// associated with source text.
-type public ProvenanceId = private ProvenanceId of int32
+module public SourceRegistry =
 
-module public ProvenanceId =
-    let private syntheticCounter = ref -1
+    /// Create an empty source registry.
+    let public empty () : SourceRegistry =
+        { Files = new Generic.List<TextDocument>() }
 
-    /// Get the numeric value of a provenance ID
-    let public value (ProvenanceId id) = id
-
-    /// Create a synthetic provenance ID for compiler-generated syntax
-    let public makeSynthetic () =
-        let id = System.Threading.Interlocked.Decrement syntheticCounter
-        ProvenanceId id
-
-/// A table tracking the provenance (origin) of all syntax nodes
-///
-/// Each entry in the table describes where a particular piece of syntax came from.
-/// Provenance IDs are indices into this table, allowing multiple nodes to share
-/// the same origin while keeping them immutable.
-type ProvenanceTable =
-    { entries: Generic.List<ProvenanceEntry> }
-
-module public ProvenanceTable =
-    /// Create an empty provenance table
-    let public empty () =
-        { entries = new Generic.List<ProvenanceEntry>() }
-
-    /// Register a new provenance entry and return its ID
-    let public register (table: ProvenanceTable) (entry: ProvenanceEntry) : ProvenanceId =
-        let id = ProvenanceId table.entries.Count
-        table.entries.Add entry
+    /// Register source text and return a stable DocId.
+    let public register (registry: SourceRegistry) (path: string) (body: string) : DocId =
+        let id = DocId.Doc registry.Files.Count
+        let doc = TextDocument.fromPartsWithId id path body
+        registry.Files.Add(doc)
         id
 
-    /// Register a source text origin
-    let public registerSourceText (table: ProvenanceTable) (doc: TextDocument) : ProvenanceId =
-        register table (SourceText doc)
+    /// Look up a document by DocId. Returns None for synthetic IDs.
+    let public tryLookup (registry: SourceRegistry) (id: DocId) : TextDocument option =
+        match id with
+        | DocId.Synthetic -> None
+        | DocId.Doc i when i >= 0 && i < registry.Files.Count -> Some registry.Files[i]
+        | _ -> None
 
-    /// Look up a provenance entry by ID
-    let public lookup (table: ProvenanceTable) (id: ProvenanceId) : ProvenanceEntry option =
-        let idx = ProvenanceId.value id |> int
-
-        if idx >= 0 && idx < table.entries.Count then
-            table.entries[idx] |> Some
-        else
-            None
+    /// Resolve a DocId and TextRange to a TextLocation for diagnostics.
+    /// Returns TextLocation.Missing for synthetic nodes or unknown IDs.
+    let public resolveLocation (registry: SourceRegistry) (id: DocId) (range: Firethorn.TextRange) : TextLocation =
+        match tryLookup registry id with
+        | Some doc -> TextDocument.rangeToLocation doc range
+        | None -> TextLocation.Missing

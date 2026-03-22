@@ -45,6 +45,11 @@ type EmitCtx =
       Locals: VariableDefinition list
       Parameters: ParameterDefinition list
       DebugDocuments: Dictionary<string, Document>
+      /// Stub document used as the document argument for PDB hidden sequence
+      /// points (i.e. those arising from synthetic/macro-expanded nodes that
+      /// have no real source location). Mono.Cecil requires a non-null Document
+      /// even for hidden sequence points.
+      MissingDocument: Document
       mutable NextLambda: int
       ScopePrefix: string
       EmitSymbols: bool

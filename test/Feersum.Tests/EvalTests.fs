@@ -13,17 +13,14 @@ open Feersum.CompilerServices.Syntax.Tree
 let private feeri = eval >> Result.unwrap >> cilExternalRepr
 
 let private interpProg (prog: Program) =
-    let doc = TextDocument.fromParts "test" prog.Text
-    CompileInput.Program [ (doc, prog) ] |> feeri
+    CompileInput.Program(SourceRegistry.empty (), [ prog ]) |> feeri
 
 let private interpScr (scr: ScriptProgram) =
-    let doc = TextDocument.fromParts "test" scr.Text
-    CompileInput.Script(doc, scr) |> feeri
+    CompileInput.Script(SourceRegistry.empty (), scr) |> feeri
 
 let private tryReadSingle expr =
     let script = readExpr expr |> ParseResult.toResult |> Result.unwrap
-    let doc = TextDocument.fromParts "test" expr
-    CompileInput.Script(doc, script)
+    CompileInput.Script(SourceRegistry.empty (), script)
 
 [<Fact>]
 let ``evaluate atoms`` () =

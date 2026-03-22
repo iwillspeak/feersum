@@ -14,7 +14,7 @@ open Feersum.CompilerServices.Syntax.Parse
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec private read (table: ProvenanceTable) : CompileInput =
+let rec private read (registry: SourceRegistry) : CompileInput =
     let rec readWithState prompt previous =
         let line = ReadLine.Read(prompt)
 
@@ -23,8 +23,8 @@ let rec private read (table: ProvenanceTable) : CompileInput =
             | Some prefix -> prefix + "\n" + line
             | None -> line
 
-        match Parse.readExpr1 table "repl" source |> ParseResult.toResult with
-        | Result.Ok tree -> CompileInput.Script(TextDocument.fromParts "repl" source, tree) |> Ok
+        match Parse.readExpr1 registry "repl" source |> ParseResult.toResult with
+        | Result.Ok tree -> CompileInput.Script(registry, tree) |> Ok
         | Result.Error diagnostics ->
             if line = "" && source.EndsWith("\n\n") then
                 Result.Error(diagnostics)
@@ -35,7 +35,7 @@ let rec private read (table: ProvenanceTable) : CompileInput =
     | Result.Ok input -> input
     | Result.Error diagnostics ->
         diagnostics |> dumpDiagnostics
-        read table
+        read registry
 
 /// Print an object out to the console. Used to serialise the external
 /// representation form an eval
@@ -45,15 +45,15 @@ let private print value =
 /// Read, Execute, Print Loop
 ///
 /// Repeatedly reads input and prints output
-let rec private repl table evaluator =
+let rec private repl registry evaluator =
     try
-        match read table |> evaluator with
+        match read registry |> evaluator with
         | Result.Ok _ -> ()
         | Result.Error diags -> dumpDiagnostics diags
     with ex ->
         eprintfn "Exception: %A" ex
 
-    repl table evaluator
+    repl registry evaluator
 
 let coreReferences = [ typeof<LispProgram>.Assembly.Location ]
 
@@ -66,4 +66,4 @@ let runRepl () =
         { defaultScriptOptions with
             References = coreReferences }
 
-    evalWith options >> Result.map print |> repl (ProvenanceTable.empty ())
+    evalWith options >> Result.map print |> repl (SourceRegistry.empty ())

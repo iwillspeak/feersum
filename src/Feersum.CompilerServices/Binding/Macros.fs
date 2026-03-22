@@ -198,7 +198,7 @@ module Macros =
                             Result.Ok(
                                 MacroBindings.FromVariable
                                     v
-                                    (Factories.form (ProvenanceId.makeSynthetic ()) other :> Expression)
+                                    (Factories.form DocId.Synthetic other :> Expression)
                             )
                         | _ -> Result.Error()
             | None ->
@@ -252,7 +252,7 @@ module Macros =
                 |> Result.collect
                 |> Result.map (fun expanded ->
                     let concatted: Expression list = expanded |> List.concat
-                    Factories.form (ProvenanceId.makeSynthetic ()) concatted :> Expression)
+                    Factories.form DocId.Synthetic concatted :> Expression)
 
             (elements, substs)
         | DottedForm _ -> unimpl "Dotted forms in macro expansion are not yet supported"

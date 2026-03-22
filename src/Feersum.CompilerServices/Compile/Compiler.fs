@@ -18,8 +18,8 @@ type CompileResult =
 
 [<RequireQualifiedAccess>]
 type CompileInput =
-    | Program of (TextDocument * Program) list
-    | Script of TextDocument * ScriptProgram
+    | Program of SourceRegistry * Program list
+    | Script of SourceRegistry * ScriptProgram
 
 module Compilation =
     open Feersum.CompilerServices.Syntax.Parse
@@ -53,12 +53,12 @@ module Compilation =
             else
                 Binder.emptyScope
 
-        let progs =
+        let registry, units =
             match input with
-            | CompileInput.Program progs -> progs |> List.map (fun (doc, prog) -> (doc, prog.Body |> List.ofSeq))
-            | CompileInput.Script(doc, script) -> [ (doc, script.Body |> Option.toList) ]
+            | CompileInput.Program(reg, progs) -> reg, progs |> List.map (fun prog -> prog.Body |> List.ofSeq)
+            | CompileInput.Script(reg, script) -> reg, [ script.Body |> Option.toList ]
 
-        let bound = Instrumentation.withPhase "bind" (Binder.bind scope allLibs) progs
+        let bound = Instrumentation.withPhase "bind" (Binder.bind scope allLibs registry) units
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then
@@ -112,15 +112,14 @@ module Compilation =
             else
                 output
 
-        let provenances = ProvenanceTable.empty ()
+        let registry = SourceRegistry.empty ()
 
         let result =
             sources
             |> Seq.map (fun path ->
                 let contents = File.ReadAllText(path)
-                let doc = TextDocument.fromParts path contents
-                Parse.readProgram provenances path contents |> ParseResult.map (fun r -> doc, r))
-            |> ParseResult.fold (fun (progs) (p) -> List.append progs [ p ]) []
+                Parse.readProgram registry path contents)
+            |> ParseResult.fold (fun progs p -> List.append progs [ p ]) []
 
         if Diagnostics.hasErrors result.Diagnostics then
             result.Diagnostics
@@ -142,7 +141,7 @@ module Compilation =
                     outputStream
                     (Path.GetFileName(output))
                     (symbols |> Option.ofObj)
-                    (CompileInput.Program result.Root)
+                    (CompileInput.Program(registry, result.Root))
 
             if result.Diagnostics.IsEmpty && options.OutputType = OutputType.Exe then
                 match result.EmittedAssemblyName with

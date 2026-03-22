@@ -333,42 +333,39 @@ let readRaw mode name (line: string) =
     | Script -> parseScript builder parseState
 
 /// Read a sequence of expressions as a program from the given `input`.
-/// Requires a provenance table to track where the syntax came from.
-let readProgram (table: ProvenanceTable) name input =
-    let doc = TextDocument.fromParts name input
-    let provId = ProvenanceTable.registerSourceText table doc
-    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, provId))
+/// Requires a source registry to track where the syntax came from.
+let readProgram (registry: SourceRegistry) name input =
+    let id = SourceRegistry.register registry name input
+    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
 
 /// Read a single expression from the named input `line`.
-/// Requires a provenance table to track where the syntax came from.
-let readExpr1 (table: ProvenanceTable) name line =
-    let doc = TextDocument.fromParts name line
-    let provId = ProvenanceTable.registerSourceText table doc
-
+/// Requires a source registry to track where the syntax came from.
+let readExpr1 (registry: SourceRegistry) name line =
+    let id = SourceRegistry.register registry name line
     readRaw Script name line
-    |> ParseResult.map (fun x -> new ScriptProgram(x, provId))
+    |> ParseResult.map (fun x -> new ScriptProgram(x, id))
 
 /// Read a single expression from the input `line` using an implicit name.
 let readExpr line =
-    let table = ProvenanceTable.empty ()
-    readExpr1 table "repl" line
+    let registry = SourceRegistry.empty ()
+    readExpr1 registry "repl" line
 
 /// Convenience function for reading a single expression with a simple name.
-/// Creates an internal ProvenanceTable. Useful for tests and quick parses.
+/// Creates an internal SourceRegistry. Useful for tests and quick parses.
 let readExpr1Simple name line =
-    let table = ProvenanceTable.empty ()
-    readExpr1 table name line
+    let registry = SourceRegistry.empty ()
+    readExpr1 registry name line
 
 /// Convenience function for reading a program with a simple name.
-/// Creates an internal ProvenanceTable. Useful for tests and quick parses.
+/// Creates an internal SourceRegistry. Useful for tests and quick parses.
 let readProgramSimple name input =
-    let table = ProvenanceTable.empty ()
-    readProgram table name input
+    let registry = SourceRegistry.empty ()
+    readProgram registry name input
 
 /// Read an expression from source code on disk
 let parseFile path =
     async {
         let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
-        let table = ProvenanceTable.empty ()
-        return readProgram table path text
+        let registry = SourceRegistry.empty ()
+        return readProgram registry path text
     }

@@ -281,7 +281,7 @@ module private Utils =
                 let ins = ctx.IL.Body.Instructions[pos]
 
                 if location = TextLocation.Missing then
-                    let point = Cil.SequencePoint(ins, null)
+                    let point = Cil.SequencePoint(ins, ctx.MissingDocument)
 
                     point.StartLine <- HiddenSequencePointLine
                     point.EndLine <- HiddenSequencePointLine
@@ -1040,6 +1040,7 @@ module Emit =
         let rootEmitCtx =
             { IL = null
               DebugDocuments = Dictionary()
+              MissingDocument = Document("*synthetic*")
               ProgramTy = progTy
               Externs = externs
               Libraries = Map.add bound.MangledName progTy Map.empty
