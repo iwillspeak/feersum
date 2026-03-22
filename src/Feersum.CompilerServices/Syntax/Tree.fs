@@ -333,8 +333,7 @@ and Quoted internal (red: SyntaxNode, docId: DocId) =
     inherit Expression(red, docId)
 
     member x.Inner =
-        x.RawNode.Children()
-        |> Seq.tryPick (fun n -> Expression.TryCast(x.DocId, n))
+        x.RawNode.Children() |> Seq.tryPick (fun n -> Expression.TryCast(x.DocId, n))
 
 /// Vector constant node
 and Vec internal (red: SyntaxNode, docId: DocId) =
@@ -342,8 +341,7 @@ and Vec internal (red: SyntaxNode, docId: DocId) =
     inherit Expression(red, docId)
 
     member x.Body =
-        x.RawNode.Children()
-        |> Seq.choose (fun n -> Expression.TryCast(x.DocId, n))
+        x.RawNode.Children() |> Seq.choose (fun n -> Expression.TryCast(x.DocId, n))
 
 /// Byte Vector constant node
 and ByteVec internal (red: SyntaxNode, docId: DocId) =
@@ -388,8 +386,7 @@ type Program internal (red: SyntaxNode, docId: DocId) =
 
     inherit AstNode(red, docId)
 
-    member _.Body =
-        red.Children() |> Seq.choose (fun n -> Expression.TryCast(docId, n))
+    member _.Body = red.Children() |> Seq.choose (fun n -> Expression.TryCast(docId, n))
 
 /// Active patterns to make working with elements in the syntax tree more
 /// ergonomic.

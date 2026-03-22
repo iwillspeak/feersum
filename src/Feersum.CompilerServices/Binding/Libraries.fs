@@ -112,7 +112,10 @@ module private Utils =
         | Symbol id -> Ok id
         | _ ->
             Result.Error(
-                Diagnostic.Create LibraryDiagnostics.invalidLibraryName (nodeLocation registry node) "Expected identifier"
+                Diagnostic.Create
+                    LibraryDiagnostics.invalidLibraryName
+                    (nodeLocation registry node)
+                    "Expected identifier"
             )
 
     /// Parse a list of identifiers into a list of strings
@@ -138,7 +141,10 @@ module private Utils =
             body
             |> List.choose (parseExportDeclaration diags registry)
             |> LibraryDeclaration.Export
-        | "import" -> body |> List.map (parseImportDeclaration diags registry) |> LibraryDeclaration.Import
+        | "import" ->
+            body
+            |> List.map (parseImportDeclaration diags registry)
+            |> LibraryDeclaration.Import
         | "begin" -> LibraryDeclaration.Begin body
         | s ->
             sprintf "Unrecognised library declaration %s" s

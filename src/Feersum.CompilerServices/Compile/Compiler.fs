@@ -58,7 +58,8 @@ module Compilation =
             | CompileInput.Program(reg, progs) -> reg, progs |> List.map (fun prog -> prog.Body |> List.ofSeq)
             | CompileInput.Script(reg, script) -> reg, [ script.Body |> Option.toList ]
 
-        let bound = Instrumentation.withPhase "bind" (Binder.bind scope allLibs registry) units
+        let bound =
+            Instrumentation.withPhase "bind" (Binder.bind scope allLibs registry) units
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then

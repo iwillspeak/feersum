@@ -195,11 +195,7 @@ module Macros =
                         match tailPattern with
                         | Underscore -> Result.Ok MacroBindings.Empty
                         | Variable v ->
-                            Result.Ok(
-                                MacroBindings.FromVariable
-                                    v
-                                    (Factories.form DocId.Synthetic other :> Expression)
-                            )
+                            Result.Ok(MacroBindings.FromVariable v (Factories.form DocId.Synthetic other :> Expression))
                         | _ -> Result.Error()
             | None ->
                 if List.isEmpty body && tailExpr.IsNone then

@@ -342,8 +342,7 @@ let readProgram (registry: SourceRegistry) name input =
 /// Requires a source registry to track where the syntax came from.
 let readExpr1 (registry: SourceRegistry) name line =
     let id = SourceRegistry.register registry name line
-    readRaw Script name line
-    |> ParseResult.map (fun x -> new ScriptProgram(x, id))
+    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
 
 /// Read a single expression from the input `line` using an implicit name.
 let readExpr line =
