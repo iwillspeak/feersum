@@ -14,7 +14,7 @@ open Feersum.CompilerServices.Text
 /// Parse a Scheme expression and return it
 let private parseScheme source =
     let doc = TextDocument.fromParts "test" source
-    let result = Parse.readProgram doc.Path source
+    let result = Parse.readProgramSimple "program" source
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" source result.Diagnostics

@@ -1,5 +1,7 @@
 namespace Feersum.CompilerServices.Text
 
+open System.Collections
+
 /// A point in the source text
 ///
 /// This represents a resolved position within a source. It is used to model
@@ -81,3 +83,59 @@ module public TextDocument =
         let s = range.Start
         let e = range.End
         Span(s |> offsetToPoint document, e |> offsetToPoint document)
+
+/// A provenance entry describing the origin of syntax
+///
+/// Currently entries track the source text document. Later variants will
+/// describe macro template expansions, substitutions, and other transformations.
+type public ProvenanceEntry = SourceText of TextDocument
+
+/// A unique identifier referencing a provenance entry
+///
+/// Positive IDs index into the ProvenanceTable. Negative IDs represent synthetic
+/// syntax that was introduced by transformations (macros, etc.) and are not
+/// associated with source text.
+type public ProvenanceId = private ProvenanceId of int32
+
+module public ProvenanceId =
+    let private syntheticCounter = ref -1
+
+    /// Get the numeric value of a provenance ID
+    let public value (ProvenanceId id) = id
+
+    /// Create a synthetic provenance ID for compiler-generated syntax
+    let public makeSynthetic () =
+        let id = System.Threading.Interlocked.Decrement syntheticCounter
+        ProvenanceId id
+
+/// A table tracking the provenance (origin) of all syntax nodes
+///
+/// Each entry in the table describes where a particular piece of syntax came from.
+/// Provenance IDs are indices into this table, allowing multiple nodes to share
+/// the same origin while keeping them immutable.
+type ProvenanceTable =
+    { entries: Generic.List<ProvenanceEntry> }
+
+module public ProvenanceTable =
+    /// Create an empty provenance table
+    let public empty () =
+        { entries = new Generic.List<ProvenanceEntry>() }
+
+    /// Register a new provenance entry and return its ID
+    let public register (table: ProvenanceTable) (entry: ProvenanceEntry) : ProvenanceId =
+        let id = ProvenanceId table.entries.Count
+        table.entries.Add entry
+        id
+
+    /// Register a source text origin
+    let public registerSourceText (table: ProvenanceTable) (doc: TextDocument) : ProvenanceId =
+        register table (SourceText doc)
+
+    /// Look up a provenance entry by ID
+    let public lookup (table: ProvenanceTable) (id: ProvenanceId) : ProvenanceEntry option =
+        let idx = ProvenanceId.value id |> int
+
+        if idx >= 0 && idx < table.entries.Count then
+            table.entries[idx] |> Some
+        else
+            None

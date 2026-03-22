@@ -333,19 +333,42 @@ let readRaw mode name (line: string) =
     | Script -> parseScript builder parseState
 
 /// Read a sequence of expressions as a program from the given `input`.
-let readProgram name input =
-    readRaw Program name input |> ParseResult.map (fun x -> new Program(x))
+/// Requires a provenance table to track where the syntax came from.
+let readProgram (table: ProvenanceTable) name input =
+    let doc = TextDocument.fromParts name input
+    let provId = ProvenanceTable.registerSourceText table doc
+    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, provId))
 
 /// Read a single expression from the named input `line`.
-let readExpr1 name line =
-    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x))
+/// Requires a provenance table to track where the syntax came from.
+let readExpr1 (table: ProvenanceTable) name line =
+    let doc = TextDocument.fromParts name line
+    let provId = ProvenanceTable.registerSourceText table doc
+
+    readRaw Script name line
+    |> ParseResult.map (fun x -> new ScriptProgram(x, provId))
 
 /// Read a single expression from the input `line` using an implicit name.
-let readExpr = readExpr1 "repl"
+let readExpr line =
+    let table = ProvenanceTable.empty ()
+    readExpr1 table "repl" line
+
+/// Convenience function for reading a single expression with a simple name.
+/// Creates an internal ProvenanceTable. Useful for tests and quick parses.
+let readExpr1Simple name line =
+    let table = ProvenanceTable.empty ()
+    readExpr1 table name line
+
+/// Convenience function for reading a program with a simple name.
+/// Creates an internal ProvenanceTable. Useful for tests and quick parses.
+let readProgramSimple name input =
+    let table = ProvenanceTable.empty ()
+    readProgram table name input
 
 /// Read an expression from source code on disk
 let parseFile path =
     async {
         let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
-        return readProgram path text
+        let table = ProvenanceTable.empty ()
+        return readProgram table path text
     }

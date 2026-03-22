@@ -194,7 +194,12 @@ module Macros =
                     | other ->
                         match tailPattern with
                         | Underscore -> Result.Ok MacroBindings.Empty
-                        | Variable v -> Result.Ok(MacroBindings.FromVariable v (Factories.form other :> Expression))
+                        | Variable v ->
+                            Result.Ok(
+                                MacroBindings.FromVariable
+                                    v
+                                    (Factories.form (ProvenanceId.makeSynthetic ()) other :> Expression)
+                            )
                         | _ -> Result.Error()
             | None ->
                 if List.isEmpty body && tailExpr.IsNone then
@@ -245,7 +250,9 @@ module Macros =
                 elements
                 |> List.map (getNode)
                 |> Result.collect
-                |> Result.map (fun expanded -> Factories.form (expanded |> List.concat) :> Expression)
+                |> Result.map (fun expanded ->
+                    let concatted: Expression list = expanded |> List.concat
+                    Factories.form (ProvenanceId.makeSynthetic ()) concatted :> Expression)
 
             (elements, substs)
         | DottedForm _ -> unimpl "Dotted forms in macro expansion are not yet supported"

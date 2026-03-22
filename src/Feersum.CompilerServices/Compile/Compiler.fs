@@ -112,12 +112,14 @@ module Compilation =
             else
                 output
 
+        let provenances = ProvenanceTable.empty ()
+
         let result =
             sources
             |> Seq.map (fun path ->
                 let contents = File.ReadAllText(path)
                 let doc = TextDocument.fromParts path contents
-                Parse.readProgram path contents |> ParseResult.map (fun r -> doc, r))
+                Parse.readProgram provenances path contents |> ParseResult.map (fun r -> doc, r))
             |> ParseResult.fold (fun (progs) (p) -> List.append progs [ p ]) []
 
         if Diagnostics.hasErrors result.Diagnostics then

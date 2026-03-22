@@ -14,7 +14,7 @@ open Feersum.CompilerServices.Syntax.Parse
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec private read () : CompileInput =
+let rec private read (table: ProvenanceTable) : CompileInput =
     let rec readWithState prompt previous =
         let line = ReadLine.Read(prompt)
 
@@ -23,7 +23,7 @@ let rec private read () : CompileInput =
             | Some prefix -> prefix + "\n" + line
             | None -> line
 
-        match Parse.readExpr1 "repl" source |> ParseResult.toResult with
+        match Parse.readExpr1 table "repl" source |> ParseResult.toResult with
         | Result.Ok tree -> CompileInput.Script(TextDocument.fromParts "repl" source, tree) |> Ok
         | Result.Error diagnostics ->
             if line = "" && source.EndsWith("\n\n") then
@@ -35,7 +35,7 @@ let rec private read () : CompileInput =
     | Result.Ok input -> input
     | Result.Error diagnostics ->
         diagnostics |> dumpDiagnostics
-        read ()
+        read table
 
 /// Print an object out to the console. Used to serialise the external
 /// representation form an eval
@@ -45,15 +45,15 @@ let private print value =
 /// Read, Execute, Print Loop
 ///
 /// Repeatedly reads input and prints output
-let rec private repl evaluator =
+let rec private repl table evaluator =
     try
-        match (read >> evaluator) () with
+        match read table |> evaluator with
         | Result.Ok _ -> ()
-        | Result.Error diags -> dumpDiagnostics (diags)
+        | Result.Error diags -> dumpDiagnostics diags
     with ex ->
         eprintfn "Exception: %A" ex
 
-    repl evaluator
+    repl table evaluator
 
 let coreReferences = [ typeof<LispProgram>.Assembly.Location ]
 
@@ -66,4 +66,4 @@ let runRepl () =
         { defaultScriptOptions with
             References = coreReferences }
 
-    evalWith options >> Result.map print |> repl
+    evalWith options >> Result.map print |> repl (ProvenanceTable.empty ())

@@ -4,9 +4,10 @@ open ReadLineReboot
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
+open Feersum.CompilerServices.Text
 
-let private read () =
-    ReadLine.Read("[]> ") |> readProgram "repl.scm"
+let private read table =
+    ReadLine.Read("[]> ") |> readProgram table "repl.scm"
 
 let private print (result: ParseResult<Program>) =
     if ParseResult.hasErrors result then
@@ -14,9 +15,9 @@ let private print (result: ParseResult<Program>) =
 
     SyntaxUtils.dump result.Root.RawNode
 
-let rec private parserReplImpl () =
-    read () |> print
-    parserReplImpl ()
+let rec private parserReplImpl table =
+    read table |> print
+    parserReplImpl table
 
 /// Run the Parser REPL
 ///
@@ -25,4 +26,4 @@ let rec private parserReplImpl () =
 let rec public runParserRepl () =
     ReadLine.HistoryEnabled <- true
 
-    parserReplImpl ()
+    parserReplImpl (ProvenanceTable.empty ())

@@ -116,8 +116,8 @@ module private BuiltinMacros =
 
     /// Parse a builtin macro from syntax rules
     let private parseBuiltinMacro id rules =
-        let textDoc = TextDocument.fromParts (sprintf "builtin-%s" id) rules
-        let result = Parse.readExpr1 textDoc.Path rules
+        let table = ProvenanceTable.empty ()
+        let result = Parse.readExpr1 table (sprintf "builtin-%s" id) rules
 
         if hasErrors result.Diagnostics then
             icef "Error in builtin macro: %A" result.Diagnostics

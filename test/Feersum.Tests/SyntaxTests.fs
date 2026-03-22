@@ -11,7 +11,7 @@ open Feersum.CompilerServices.Text
 module private Utils =
 
     let readScript line =
-        let result = Parse.readExpr1 "repl" line
+        let result = Parse.readExpr1Simple "repl" line
 
         if result.Diagnostics |> List.isEmpty then
             result.Root
@@ -24,7 +24,7 @@ module private Utils =
         | None -> failwithf "Expected single expression in %s" line
 
     let readProgExprs line =
-        let result = Parse.readProgram "repl" line
+        let result = Parse.readProgramSimple "repl" line
 
         if result.Diagnostics |> List.isEmpty then
             result.Root.Body
@@ -263,7 +263,7 @@ let ``multiple diagnostics on error`` () =
 let ``parse preserves source location`` () =
     let source = "(+ 1 2)"
     let doc = TextDocument.fromParts "test.scm" source
-    let result = Parse.readExpr1 doc.Path source
+    let result = Parse.readExpr1Simple "test.scm" source
     Assert.Empty(result.Diagnostics)
     let expr = result.Root.Body.Value
     let loc = TextDocument.rangeToLocation doc expr.SyntaxRange
@@ -280,13 +280,13 @@ module ErrorHandling =
     [<InlineData("\"unclosed")>]
     [<InlineData("\"multi\nline")>]
     let ``unterminated strings produce diagnostics`` source =
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Theory>]
     [<InlineData("|unclosed identifier")>]
     let ``unterminated identifier literals produce diagnostics`` source =
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Theory>]
@@ -294,39 +294,39 @@ module ErrorHandling =
     [<InlineData("(list (nested")>]
     [<InlineData("(a (b (c")>]
     let ``unterminated forms produce diagnostics`` source =
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Theory>]
     [<InlineData("#(1 2")>]
     [<InlineData("#(unclosed")>]
     let ``unterminated vectors produce diagnostics`` source =
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Theory>]
     [<InlineData("#u8(1 2")>]
     let ``unterminated byte vectors produce diagnostics`` source =
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Theory>]
     [<InlineData("#| unclosed comment")>]
     [<InlineData("#| outer #| inner |#")>]
     let ``unterminated block comments produce diagnostics`` source =
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Fact>]
     let ``nested unterminated block comments produce diagnostics`` () =
         let source = "#| outer #| inner |# still unclosed"
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Fact>]
     let ``mismatched brackets in nested structures produce diagnostics`` () =
         let source = "(list [1 2)"
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Fact>]
@@ -340,11 +340,11 @@ module ErrorHandling =
     [<Fact>]
     let ``unterminated character literal produces diagnostic`` () =
         let source = "#\\"
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)
 
     [<Fact>]
     let ``invalid characters in source produce diagnostics`` () =
         let source = "(+ 1 § 2)"
-        let result = Parse.readExpr1 "test" source
+        let result = Parse.readExpr1Simple "test" source
         Assert.NotEmpty(result.Diagnostics)

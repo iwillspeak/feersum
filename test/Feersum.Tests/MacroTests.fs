@@ -6,15 +6,14 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Macros
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Tree
-open Feersum.CompilerServices.Syntax.Factories
+open Feersum.CompilerServices.Syntax.Factories.Convenience
 open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Text
 
 
 /// Read a single Expression from a string using the new parser
 let private readSingleExpression input =
-    let doc = TextDocument.fromParts "test" input
-    let result = Parse.readProgram doc.Path input
+    let result = Parse.readProgramSimple "program" input
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" input result.Diagnostics
