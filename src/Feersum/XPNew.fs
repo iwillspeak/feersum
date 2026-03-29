@@ -19,4 +19,8 @@ let runXpNewRepl args =
         if ParseResult.hasErrors prog then
             dumpDiagnostics prog.Diagnostics
         else
-            Expand.expandProgram prog.Root |> printfn "%A")
+            let ctx = ExpandCtx.createGlobal registry "xpnew"
+            let result = Expand.expandProgram prog.Root SyntaxEnv.builtin ctx
+            dumpDiagnostics ctx.Diagnostics.Diagnostics
+            if not (hasErrors ctx.Diagnostics.Diagnostics) then
+                printfn "%A" result)
