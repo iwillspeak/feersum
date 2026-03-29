@@ -2,7 +2,7 @@ module Feersum.XPNew
 
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.BindingNew
+open Feersum.CompilerServices.NewBindingTest
 open System.IO
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse

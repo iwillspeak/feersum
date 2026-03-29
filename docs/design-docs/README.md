@@ -6,3 +6,4 @@ accurate, or even useful.
 
  * [Syntax Trees](./syntax-trees/)
  * [Expansion Work Stack](./expansion-workstack/)
+ * [Syntactic Closures Expander](./syntactic-closures-expander/)

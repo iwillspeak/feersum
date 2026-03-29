@@ -273,7 +273,7 @@ let expandAll
                 | [] ->
                     work.Push(Result(BoundExpr.Literal BoundLiteral.Null))
                 | headExpr :: _ ->
-                    match headExpr with
+                    match xpr with
                     | SymbolNode sym ->
                         match SyntaxEnv.lookup sym.CookedValue env with
                         | Some(MacroDef macro) ->
@@ -605,12 +605,19 @@ let bind scope libraries registry units =
    gradual migration, keeping both paths active until all special forms are
    ported.
 
+   **DECISION**: Gradual, but deferring to `unimpl "form not yet supported"` for
+   the forms we don't yet support.
+
 2. **`BinderCtx` lifetime.** The current `BinderCtx` owns mutable state for
    local counts, captures, and the diagnostic bag. The work-stack approach
    still needs this state but never recurses into child `BinderCtx` instances
    during expansion — child contexts are only needed for lambda bodies. Clarify
    whether `BinderCtx` nesting should be modelled on the work stack or remain
    as explicit child-context creation.
+
+   **DECISION**: There is no work stack. WE don't use the current `BinderCtx`
+   at all in this new pass. Instead we introduce a new `ExpanderCtx` for lambda
+   forms and similar like the current Binder does. 
 
 3. **Provenance threading.** The [Document Service](./document-service/) design
    proposes an `ExpansionProvenance` table. The work-stack expansion is the
