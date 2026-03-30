@@ -83,6 +83,13 @@ type Stx =
     | Quoted of inner: Stx * loc: TextLocation
     /// A syntactic closure — expand `inner` in `env` regardless of ambient env.
     | Closure of inner: Stx * env: SyntaxEnv * loc: TextLocation
+    /// A vector literal — `#(e1 e2 … en)`. Elements are already converted to Stx
+    /// and are treated as data (never evaluated as code).
+    | Vec of items: Stx list * loc: TextLocation
+    /// A byte-vector literal — `#u8(b1 b2 … bn)`. Each element is a pre-parsed
+    /// `Result<byte, string>`; errors are deferred until `expand` time so that
+    /// diagnostics can be emitted with a `DiagnosticBag`.
+    | ByteVec of bytes: Result<byte, string> list * loc: TextLocation
 
     /// Extract the location from any node.
     member x.Loc =
@@ -92,7 +99,9 @@ type Stx =
         | List(_, l)
         | Dotted(_, _, l)
         | Quoted(_, l)
-        | Closure(_, _, l) -> l
+        | Closure(_, _, l)
+        | Vec(_, l)
+        | ByteVec(_, l) -> l
 
 /// Convert an `Expression` (Firethorn CST node) into a `Stx` node.
 /// Requires a `SourceRegistry` and `DocId` to resolve source locations.
@@ -124,13 +133,14 @@ module Stx =
 
             Stx.Quoted(inner, loc)
         | VecNode v ->
-            // Vector literals: represent as a special form for now.
+            // Vector literals: elements are data, never code.
             let items = v.Body |> Seq.map (ofExpr reg docId) |> List.ofSeq
-            // We wrap in a Quoted so downstream quotes handle it.
-            Stx.List(Stx.Id("vector", loc) :: items, loc)
-        | ByteVecNode _ ->
-            // Byte vectors passed through as an opaque constant.
-            Stx.Const(BoundLiteral.Null, loc)
+            Stx.Vec(items, loc)
+        | ByteVecNode b ->
+            // Byte-vector literal: pre-parse each element; defer error reporting
+            // to expand time where a DiagnosticBag is available.
+            let bytes = b.Body |> List.map (fun bv -> bv.Value)
+            Stx.ByteVec(bytes, loc)
 
 // ────────────────────────────────────────────────────────────── Pattern types
 
@@ -278,6 +288,13 @@ module private Expander =
         | Stx.Dotted(items, tail, _) -> BoundDatum.Pair(items |> List.map stxToDatum, stxToDatum tail)
         | Stx.Quoted(inner, _) -> BoundDatum.Quoted(stxToDatum inner)
         | Stx.Closure(inner, _, _) -> stxToDatum inner
+        | Stx.Vec(items, _) ->
+            BoundDatum.SelfEval(BoundLiteral.Vector(items |> List.map stxToDatum))
+        | Stx.ByteVec(bytes, _) ->
+            // Silently discard invalid byte values when converting to datum;
+            // errors were/will be reported in expression context.
+            let bs = bytes |> List.choose (function Ok b -> Some b | Result.Error _ -> None)
+            BoundDatum.SelfEval(BoundLiteral.ByteVector bs)
 
     /// Parse formal parameters from a Stx node into a `BoundFormals` value.
     let rec parseFormals (stx: Stx) (ctx: ExpandCtx) : BoundFormals =
@@ -367,6 +384,20 @@ module private Expander =
         | Stx.Const(lit, _) -> BoundExpr.Literal lit
 
         | Stx.Quoted(inner, _) -> BoundExpr.Quoted(stxToDatum inner)
+
+        | Stx.Vec(items, _) ->
+            BoundExpr.Literal(BoundLiteral.Vector(items |> List.map stxToDatum))
+
+        | Stx.ByteVec(bytes, loc) ->
+            let bs =
+                bytes
+                |> List.choose (function
+                    | Ok b -> Some b
+                    | Result.Error msg ->
+                        ExpandCtx.emitError ctx Diag.illFormedForm loc msg
+                        None)
+
+            BoundExpr.Literal(BoundLiteral.ByteVector bs)
 
         | Stx.Dotted(_, _, loc) ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "dotted pair in expression position"
