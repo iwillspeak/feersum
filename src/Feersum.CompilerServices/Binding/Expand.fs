@@ -153,7 +153,7 @@ type ExpandCtx =
       Registry: SourceRegistry
       MangledName: string
       IsGlobal: bool
-      Libraries: LibrarySignature<StorageRef> list
+      mutable Libraries: LibrarySignature<StorageRef> list
       Parent: ExpandCtx option }
 
 module ExpandCtx =
@@ -179,6 +179,19 @@ module ExpandCtx =
           Registry = parent.Registry
           MangledName = parent.MangledName
           IsGlobal = false
+          Libraries = parent.Libraries
+          Parent = Some parent }
+
+    /// Create a child context for a library body.
+    /// The library gets its own global scope with a dedicated mangled name.
+    let childForLibrary (parent: ExpandCtx) (mangledName: string) =
+        { LocalCount = 0
+          Captures = []
+          HasDynEnv = false
+          Diagnostics = parent.Diagnostics
+          Registry = parent.Registry
+          MangledName = mangledName
+          IsGlobal = true
           Libraries = parent.Libraries
           Parent = Some parent }
 
@@ -438,8 +451,8 @@ module private Expander =
             expr
 
         | SpecialFormKind.DefineLibrary ->
-            ExpandCtx.emitError ctx Diag.illFormedForm loc "define-library not yet supported in new expander"
-            BoundExpr.Error
+            // In expression position — process but discard the env extension.
+            fst (expandLibrary args loc env ctx)
 
     // ── Lambda ───────────────────────────────────────────────────────────
 
@@ -912,6 +925,124 @@ module private Expander =
             if List.isEmpty name then ImportSet.Error else ImportSet.Plain name
         | _ -> ImportSet.Error
 
+    // ── Library name parsing ──────────────────────────────────────────────
+
+    /// Parse a `(name-part ...)` list Stx node into a library name.
+    and private stxToLibraryName (stx: Stx) (ctx: ExpandCtx) : string list option =
+        let getName =
+            function
+            | Stx.Id(n, _) -> Some n
+            | Stx.Closure(Stx.Id(n, _), _, _) -> Some n
+            | Stx.Const(BoundLiteral.Number n, _) -> Some(string (int n))
+            | other ->
+                ExpandCtx.emitError ctx Diag.illFormedForm other.Loc "expected identifier in library name"
+                None
+
+        match stx with
+        | Stx.Closure(inner, _, _) -> stxToLibraryName inner ctx
+        | Stx.List(parts, _) ->
+            let names = List.choose getName parts
+            if List.length names = List.length parts then Some names else None
+        | other ->
+            ExpandCtx.emitError ctx Diag.illFormedForm other.Loc "expected list for library name"
+            None
+
+    // ── define-library ────────────────────────────────────────────────────
+
+    /// Expand a top-level `(define-library <name> <decl> ...)` form.
+    ///
+    /// Returns the `BoundExpr.Library` node and the unchanged outer `SyntaxEnv`
+    /// (the library is not imported automatically; callers use `import` later).
+    /// Also mutates `ctx.Libraries` so subsequent forms in the same file can
+    /// import the newly-defined library.
+    and expandLibrary
+        (args: Stx list)
+        (loc: TextLocation)
+        (env: SyntaxEnv)
+        (ctx: ExpandCtx)
+        : BoundExpr * SyntaxEnv =
+        match args with
+        | nameStx :: declarations ->
+            let name = stxToLibraryName nameStx ctx |> Option.defaultValue []
+            let mangledName = name |> String.concat "::"
+
+            // Fresh inner context — own global scope for the library body.
+            let innerCtx = ExpandCtx.childForLibrary ctx mangledName
+
+            // Process each library declaration in order, threading the inner env.
+            let folder (innerEnv, importAcc, bodyAcc, exportsAcc) decl =
+                // Peel any syntactic-closure wrapper.
+                let decl' =
+                    match decl with
+                    | Stx.Closure(inner, _, _) -> inner
+                    | x -> x
+
+                match decl' with
+                | Stx.List(Stx.Id("export", _) :: exports, _) ->
+                    let newExports =
+                        exports
+                        |> List.choose (function
+                            | Stx.Id(n, _) -> Some(n, n)
+                            | Stx.Closure(Stx.Id(n, _), _, _) -> Some(n, n)
+                            | Stx.List([ Stx.Id("rename", _); Stx.Id(intName, _); Stx.Id(extName, _) ], _) ->
+                                Some(extName, intName)
+                            | other ->
+                                ExpandCtx.emitError innerCtx Diag.illFormedForm other.Loc "invalid export element"
+                                None)
+
+                    (innerEnv, importAcc, bodyAcc, exportsAcc @ newExports)
+
+                | Stx.List(Stx.Id("import", _) :: importArgs, declLoc) ->
+                    let expr, newEnv = expandImport importArgs declLoc innerEnv innerCtx
+                    (newEnv, importAcc @ [ expr ], bodyAcc, exportsAcc)
+
+                | Stx.List(Stx.Id("begin", _) :: beginBody, _) ->
+                    let exprs, newEnv = expandSeq beginBody innerEnv innerCtx
+                    (newEnv, importAcc, bodyAcc @ exprs, exportsAcc)
+
+                | Stx.List(Stx.Id(kw, _) :: _, declLoc) ->
+                    ExpandCtx.emitError ctx Diag.illFormedForm declLoc
+                        $"unrecognised library declaration '{kw}'"
+
+                    (innerEnv, importAcc, bodyAcc, exportsAcc)
+
+                | other ->
+                    ExpandCtx.emitError ctx Diag.illFormedForm other.Loc "ill-formed library declaration"
+                    (innerEnv, importAcc, bodyAcc, exportsAcc)
+
+            // Library body starts with just the keyword environment.
+            let initInnerEnv = SyntaxEnv.builtin
+
+            let (finalInnerEnv, importExprs, bodyExprs, exportedPairs) =
+                List.fold folder (initInnerEnv, [], [], []) declarations
+
+            // Resolve exported names to their storage references.
+            let exports =
+                exportedPairs
+                |> List.choose (fun (extName, intName) ->
+                    match Map.tryFind intName finalInnerEnv with
+                    | Some(Variable storage) -> Some(extName, storage)
+                    | Some _ ->
+                        ExpandCtx.emitError ctx Diag.illFormedForm loc
+                            $"'{intName}' is a keyword and cannot be exported"
+
+                        None
+                    | None ->
+                        ExpandCtx.emitError ctx Diag.illFormedForm loc
+                            $"exported name '{intName}' is not defined in library"
+
+                        None)
+
+            // Register the new library so subsequent `(import ...)` can find it.
+            ctx.Libraries <- { LibraryName = name; Exports = exports } :: ctx.Libraries
+
+            let body = ExpandCtx.intoBody innerCtx (importExprs @ bodyExprs)
+            (BoundExpr.Library(name, mangledName, exports, body), env)
+
+        | [] ->
+            ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'define-library'"
+            (BoundExpr.Error, env)
+
     /// Expand an `import` form. Returns the list of `BoundExpr.Import` nodes
     /// and an extended `SyntaxEnv` with all imported names in scope.
     and expandImport (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr * SyntaxEnv =
@@ -945,6 +1076,7 @@ module private Expander =
             | Some(SpecialForm SpecialFormKind.DefineSyntax) -> true
             | Some(SpecialForm SpecialFormKind.Begin) -> true
             | Some(SpecialForm SpecialFormKind.Import) -> true
+            | Some(SpecialForm SpecialFormKind.DefineLibrary) -> true
             | _ -> false
         | Stx.Closure(inner, closedEnv, _) -> isBindingForm inner closedEnv
         | _ -> false
@@ -968,6 +1100,8 @@ module private Expander =
                 Some(BoundExpr.Seq exprs, env')
             | Some(SpecialForm SpecialFormKind.Import) ->
                 Some(expandImport args loc env ctx)
+            | Some(SpecialForm SpecialFormKind.DefineLibrary) ->
+                Some(expandLibrary args loc env ctx)
             | _ -> None
         | _ -> None
 
