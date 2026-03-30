@@ -153,12 +153,13 @@ type ExpandCtx =
       Registry: SourceRegistry
       MangledName: string
       IsGlobal: bool
+      Libraries: LibrarySignature<StorageRef> list
       Parent: ExpandCtx option }
 
 module ExpandCtx =
 
     /// Create a root context for global-scope expansion.
-    let createGlobal (registry: SourceRegistry) (mangledName: string) =
+    let createGlobal (registry: SourceRegistry) (mangledName: string) (libraries: LibrarySignature<StorageRef> list) =
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
@@ -166,6 +167,7 @@ module ExpandCtx =
           Registry = registry
           MangledName = mangledName
           IsGlobal = true
+          Libraries = libraries
           Parent = None }
 
     /// Create a child context for a lambda body.
@@ -177,6 +179,7 @@ module ExpandCtx =
           Registry = parent.Registry
           MangledName = parent.MangledName
           IsGlobal = false
+          Libraries = parent.Libraries
           Parent = Some parent }
 
     /// Resolve a location for diagnostic emission.
@@ -429,9 +432,13 @@ module private Expander =
         | SpecialFormKind.LetrecSyntax ->
             expandLetSyntax args loc env ctx true
 
-        | SpecialFormKind.Import | SpecialFormKind.DefineLibrary ->
-            // Not yet implemented in isolation; emit a stub.
-            ExpandCtx.emitError ctx Diag.illFormedForm loc "import/define-library not yet supported in new expander"
+        | SpecialFormKind.Import ->
+            // In expression position: import but discard the env extension.
+            let expr, _ = expandImport args loc env ctx
+            expr
+
+        | SpecialFormKind.DefineLibrary ->
+            ExpandCtx.emitError ctx Diag.illFormedForm loc "define-library not yet supported in new expander"
             BoundExpr.Error
 
     // ── Lambda ───────────────────────────────────────────────────────────
@@ -685,6 +692,9 @@ module private Expander =
     /// Attempt to match a MacroPattern against a Stx node.
     /// Returns Some PatternBindings on success, None on mismatch.
     and matchPattern (pat: MacroPattern) (stx: Stx) (env: SyntaxEnv) : PatternBindings option =
+
+        // FIXME: Lots of these patterns have to handle Closure. WE should just peel the closure here and dispatch on the
+        // underlying syntax.
         match pat, stx with
         | MacroPattern.Underscore, _ -> Some Map.empty
 
@@ -870,6 +880,59 @@ module private Expander =
 
             transcribe template perRepBindings defEnv loc)
 
+    // ── Import set parsing  ───────────────────────────────────────────────
+
+    /// Parse a Stx node into an `ImportSet` (mirrors Libraries.parseImportDeclaration).
+    and private stxToImportSet (diags: DiagnosticBag) (stx: Stx) : ImportSet =
+        let getName =
+            function
+            | Stx.Id(n, _) -> Some n
+            | Stx.Closure(Stx.Id(n, _), _, _) -> Some n
+            | _ -> None
+
+        let getNames items = items |> List.choose getName
+
+        match stx with
+        | Stx.Closure(inner, _, _) -> stxToImportSet diags inner
+        | Stx.List(Stx.Id("only", _) :: fromSet :: filters, _) ->
+            ImportSet.Only(stxToImportSet diags fromSet, getNames filters)
+        | Stx.List(Stx.Id("except", _) :: fromSet :: filters, _) ->
+            ImportSet.Except(stxToImportSet diags fromSet, getNames filters)
+        | Stx.List([ Stx.Id("prefix", _); fromSet; Stx.Id(prefix, _) ], _) ->
+            ImportSet.Prefix(stxToImportSet diags fromSet, prefix)
+        | Stx.List(Stx.Id("rename", _) :: fromSet :: renames, _) ->
+            let parseRename =
+                function
+                | Stx.List([ Stx.Id(fr, _); Stx.Id(to_, _) ], _) -> Some { SymbolRename.From = fr; To = to_ }
+                | _ -> None
+
+            ImportSet.Renamed(stxToImportSet diags fromSet, renames |> List.choose parseRename)
+        | Stx.List(parts, _) ->
+            let name = getNames parts
+            if List.isEmpty name then ImportSet.Error else ImportSet.Plain name
+        | _ -> ImportSet.Error
+
+    /// Expand an `import` form. Returns the list of `BoundExpr.Import` nodes
+    /// and an extended `SyntaxEnv` with all imported names in scope.
+    and expandImport (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr * SyntaxEnv =
+        let folder (currentEnv: SyntaxEnv, exprs: BoundExpr list) importStx =
+            let importSet = stxToImportSet ctx.Diagnostics importStx
+
+            match Libraries.resolveImport ctx.Libraries importSet with
+            | Ok library ->
+                let newEnv =
+                    library.Exports
+                    |> List.fold (fun e (name, storage) -> Map.add name (Variable storage) e) currentEnv
+
+                let mangledName = library.LibraryName |> String.concat "::"
+                (newEnv, BoundExpr.Import mangledName :: exprs)
+            | Result.Error msg ->
+                ExpandCtx.emitError ctx Diag.illFormedForm loc msg
+                (currentEnv, BoundExpr.Error :: exprs)
+
+        let (finalEnv, revExprs) = List.fold folder (env, []) args
+        (BoundExpr.Seq(List.rev revExprs), finalEnv)
+
     // ── Sequence expansion ────────────────────────────────────────────────
 
     /// Check whether a Stx node is a `define` or `define-syntax` at the head,
@@ -881,12 +944,13 @@ module private Expander =
             | Some(SpecialForm SpecialFormKind.Define) -> true
             | Some(SpecialForm SpecialFormKind.DefineSyntax) -> true
             | Some(SpecialForm SpecialFormKind.Begin) -> true
+            | Some(SpecialForm SpecialFormKind.Import) -> true
             | _ -> false
         | Stx.Closure(inner, closedEnv, _) -> isBindingForm inner closedEnv
         | _ -> false
 
     /// Try to expand a form as a binding-level definition.
-    /// Returns `Some(expr, extendedEnv)` for `define` / `define-syntax`,
+    /// Returns `Some(expr, extendedEnv)` for `define` / `define-syntax` / `import`,
     /// `None` for all other forms.
     and tryExpandBinding (stx: Stx) (env: SyntaxEnv) (ctx: ExpandCtx) : (BoundExpr * SyntaxEnv) option =
         match stx with
@@ -902,6 +966,8 @@ module private Expander =
                 // Splice begin forms in definition context.
                 let exprs, env' = expandSeq args env ctx
                 Some(BoundExpr.Seq exprs, env')
+            | Some(SpecialForm SpecialFormKind.Import) ->
+                Some(expandImport args loc env ctx)
             | _ -> None
         | _ -> None
 
