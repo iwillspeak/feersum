@@ -9,12 +9,23 @@ open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Targets
+open Feersum.CompilerServices
 
-let runXpNewRepl args =
+let runXpNewRepl (options: CompilationOptions) args =
     let registry = SourceRegistry.empty ()
 
-    let target = TargetResolve.fromCurrentRuntime
-    let (_, allLibs) = Builtins.loadCoreSignatures target
+    let target =
+        match options.FrameworkAssmPaths with
+        | [] -> TargetResolve.fromCurrentRuntime
+        | paths -> TargetResolve.fromFrameworkPaths paths
+
+    let (_, allLibs) =
+        options.References
+        |> Seq.map Builtins.loadReferencedSignatures
+        |> Seq.append (Seq.singleton <| Builtins.loadCoreSignatures target)
+        |> Seq.fold
+            (fun (tys, sigs) (aTys, aSigs) -> (List.append tys aTys, List.append sigs aSigs))
+            ([], [])
 
     let progs =
         List.map (fun path -> Parse.readProgram registry path (File.ReadAllText path)) args

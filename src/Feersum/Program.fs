@@ -112,7 +112,7 @@ let main argv =
             runRepl ()
             0
         | "xpnew" :: rest, _ ->
-            runXpNewRepl rest
+            runXpNewRepl options rest
             0
         | [ "parserepl" ], None ->
             runParserRepl ()
