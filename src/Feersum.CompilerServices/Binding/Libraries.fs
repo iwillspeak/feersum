@@ -7,7 +7,8 @@ open Feersum.CompilerServices.Utils
 
 module private LibraryDiagnostics =
 
-    let improperLibraryName = DiagnosticKind.Create DiagnosticLevel.Warning 20 "Improper library name"
+    let improperLibraryName =
+        DiagnosticKind.Create DiagnosticLevel.Warning 20 "Improper library name"
 
     let invalidLibraryName =
         DiagnosticKind.Create DiagnosticLevel.Error 21 "Invalid library name"
