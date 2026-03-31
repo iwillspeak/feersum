@@ -27,6 +27,9 @@ module private Diag =
     let uninitialisedVar =
         DiagnosticKind.Create DiagnosticLevel.Error 55 "Reference to uninitialised variable in letrec binding"
 
+    let invalidMacro =
+        DiagnosticKind.Create DiagnosticLevel.Error 56 "Invalid macro definition"
+
 // ─────────────────────────────────────────────────────────────── Special forms
 
 /// Well-known built-in transformer kinds.
@@ -48,29 +51,75 @@ type SpecialFormKind =
     | Import
     | DefineLibrary
 
-// ─────────────────────────────────────────────────────────────── Syntax env
+// ──────────────────────────────── Syntax env, Stx, and macro pattern/template
+
+/// Pattern element for matching `Stx` syntax in macro rules.
+/// `Constant` carries a `BoundLiteral` (the compiled literal value) rather than
+/// a raw CST `ConstantValue`, making it independent of the parse-tree layer.
+[<RequireQualifiedAccess>]
+type StxPattern =
+    /// Match a self-evaluating literal exactly.
+    | Constant of BoundLiteral
+    /// Match anything (`_`).
+    | Underscore
+    /// Match a literal keyword (must appear in the `syntax-rules` literals list).
+    | Literal of string
+    /// Capture a single sub-form into a pattern variable.
+    | Variable of string
+    /// Match zero-or-more repetitions of the sub-pattern (the `...` operator).
+    | Repeat of StxPattern
+    /// Match a proper list.
+    | Form of StxPattern list
+    /// Match an improper list.
+    | DottedForm of StxPattern list * StxPattern
+    /// Match a vector literal `#(...)`.
+    | Vec of StxPattern list
+
+// Template types — mutually recursive with each other and with
+// SyntaxTransformer / SyntaxEnv / SyntaxBinding / Stx.
+
+/// A macro template element — either a single sub-template or a repeated one.
+[<RequireQualifiedAccess>]
+type StxTemplateElement =
+    | Template of StxTemplate
+    | Repeated of StxTemplate
+
+/// Template for producing new `Stx` syntax in macro rules.
+/// `Quoted` carries the literal `Stx` node captured at definition time; on
+/// transcription it is wrapped in a `Stx.Closure` with the definition-site env
+/// for hygienic identifier capture.
+and [<RequireQualifiedAccess>] StxTemplate =
+    /// A literal node from the definition site (wrapped in closure for hygiene).
+    | Quoted of stx: Stx
+    /// Substitute the value bound to a pattern variable.
+    | Subst of name: string
+    /// Produce a proper list.
+    | Form of loc: TextLocation * elements: StxTemplateElement list
+    /// Produce an improper list.
+    | DottedForm of elements: StxTemplateElement list * tail: StxTemplate
+    /// Produce a vector literal.
+    | Vec of elements: StxTemplateElement list
 
 /// What a name maps to at syntax time.
-type SyntaxBinding =
+and SyntaxBinding =
     | SpecialForm of SpecialFormKind
     | MacroDef of SyntaxTransformer
     | Variable of StorageRef
 
 /// A macro transformer: patterns, templates, and definition-site environment.
 and SyntaxTransformer =
-    { Patterns: (MacroPattern * MacroTemplate) list
-      DefEnv: Map<string, SyntaxBinding>
+    { Patterns: (StxPattern * StxTemplate) list
+      DefEnv: SyntaxEnv
       DefLoc: TextLocation }
 
 /// Immutable map from raw names to their current syntactic meaning.
-type SyntaxEnv = Map<string, SyntaxBinding>
+and SyntaxEnv = Map<string, SyntaxBinding>
 
 // ─────────────────────────────────────────────────────────────────────── Stx
 
 /// The intermediate hygiene-annotated syntax type.
 /// Every node carries a source location; `Closure` nodes carry an explicit env.
-[<RequireQualifiedAccess>]
-type Stx =
+and [<RequireQualifiedAccess>] Stx =
     /// An identifier (raw, unresolved name).
     | Id of name: string * loc: TextLocation
     /// A self-evaluating constant.
@@ -102,6 +151,16 @@ type Stx =
         | Closure(_, _, l)
         | Vec(_, l)
         | ByteVec(_, l) -> l
+
+// ────────────────────────────────────────────────────────────── Pattern types
+
+/// A captured pattern variable: the matched Stx paired with its captured env.
+and PatternCapture =
+    | Single of stx: Stx * env: SyntaxEnv
+    | Repeated of (Stx * SyntaxEnv) list
+
+/// All captured bindings from a successful pattern match.
+and PatternBindings = Map<string, PatternCapture>
 
 /// Convert an `Expression` (Firethorn CST node) into a `Stx` node.
 /// Requires a `SourceRegistry` and `DocId` to resolve source locations.
@@ -141,16 +200,6 @@ module Stx =
             // to expand time where a DiagnosticBag is available.
             let bytes = b.Body |> List.map (fun bv -> bv.Value)
             Stx.ByteVec(bytes, loc)
-
-// ────────────────────────────────────────────────────────────── Pattern types
-
-/// A captured pattern variable: the matched Stx paired with its captured env.
-type PatternCapture =
-    | Single of stx: Stx * env: SyntaxEnv
-    | Repeated of (Stx * SyntaxEnv) list
-
-/// All captured bindings from a successful pattern match.
-type PatternBindings = Map<string, PatternCapture>
 
 // ──────────────────────────────────────────────────────────────── ExpandCtx
 
@@ -265,6 +314,254 @@ module SyntaxEnv =
           "import", SpecialForm SpecialFormKind.Import ]
         |> Map.ofList
 
+// ─────────────────────────────────────────────────────────────── MacrosNew
+
+/// Parse `(syntax-rules ...)` bodies from `Stx` nodes into `SyntaxTransformer`
+/// values.  This module replaces the old CST-based `Macros` module for the
+/// new expander pipeline; only the functions consumed by `Expander` are public.
+module MacrosNew =
+
+    // Local aliases to avoid shadowing by LibraryDeclaration.Result.Error / ImportSet.Result.Error
+
+    /// Collect all bound pattern variable names from a pattern.
+    let rec findBound (pat: StxPattern) : string list =
+        match pat with
+        | StxPattern.Variable name -> [ name ]
+        | StxPattern.Form pats -> pats |> List.collect findBound
+        | StxPattern.DottedForm(pats, tail) -> (pats |> List.collect findBound) @ findBound tail
+        | StxPattern.Vec pats -> pats |> List.collect findBound
+        | StxPattern.Repeat inner -> findBound inner
+        | _ -> []
+
+    /// Parse a pattern literal list `(lit1 lit2 ...)`.
+    let parseLiteralList (stx: Stx) : Result<string list, string> =
+        match stx with
+        | Stx.List(items, _) ->
+            items
+            |> List.map (fun s ->
+                match s with
+                | Stx.Id(name, _) -> Result.Ok name
+                | _ -> Result.Error "literal list must contain identifiers")
+            |> List.fold
+                (fun acc r ->
+                    match acc, r with
+                    | Result.Ok xs, Result.Ok x -> Result.Ok(xs @ [ x ])
+                    | Result.Error e, _ -> Result.Error e
+                    | _, Result.Error e -> Result.Error e)
+                (Result.Ok [])
+        | _ -> Result.Error "expected list of literals"
+
+    /// Parse `(pats...)` or `(pats... . tail)` form body into a list of
+    /// patterns, detecting ellipsis.  The first element (macro keyword) is
+    /// already dropped by the caller.
+    let rec parseFormBody
+        (kw: string)
+        (lits: string list)
+        (items: Stx list)
+        (tail: Stx option)
+        : Result<StxPattern list * StxPattern option, string> =
+        let rec loop acc remaining =
+            match remaining with
+            | [] ->
+                let tailPat =
+                    tail |> Option.map (fun t -> parsePattern kw lits t)
+
+                match tailPat with
+                | None -> Result.Ok(List.rev acc, None)
+                | Some(Result.Ok tp) -> Result.Ok(List.rev acc, Some tp)
+                | Some(Result.Error e) -> Result.Error e
+            | [ single ] ->
+                match parsePattern kw lits single with
+                | Result.Error e -> Result.Error e
+                | Result.Ok pat -> loop (pat :: acc) []
+            | current :: (Stx.Id("...", _) :: rest) ->
+                match parsePattern kw lits current with
+                | Result.Error e -> Result.Error e
+                | Result.Ok inner -> loop (StxPattern.Repeat inner :: acc) rest
+            | current :: rest ->
+                match parsePattern kw lits current with
+                | Result.Error e -> Result.Error e
+                | Result.Ok pat -> loop (pat :: acc) rest
+
+        loop [] items
+
+    /// Parse a single `Stx` node as a macro pattern.
+    and parsePattern (kw: string) (lits: string list) (stx: Stx) : Result<StxPattern, string> =
+        match stx with
+        | Stx.Closure(inner, _, _) -> parsePattern kw lits inner
+        | Stx.Const(lit, _) -> Result.Ok(StxPattern.Constant lit)
+        | Stx.Id("_", _) -> Result.Ok StxPattern.Underscore
+        | Stx.Id("...", _) -> Result.Error "unexpected ellipsis in pattern"
+        | Stx.Id(name, _) ->
+            if List.contains name lits then
+                Result.Ok(StxPattern.Literal name)
+            else
+                Result.Ok(StxPattern.Variable name)
+        | Stx.List(items, _) ->
+            match items with
+            | Stx.Id(head, _) :: rest when head = kw ->
+                // The keyword at the head of each rule pattern becomes a Variable
+                // binding so that recursive templates like `(or e2 ...)` can
+                // refer back to the macro keyword via substitution and re-expand
+                // it at the call site.
+                match parseFormBody kw lits rest None with
+                | Result.Error e -> Result.Error e
+                | Result.Ok(pats, None) -> Result.Ok(StxPattern.Form(StxPattern.Variable kw :: pats))
+                | Result.Ok(pats, Some tail) -> Result.Ok(StxPattern.DottedForm(StxPattern.Variable kw :: pats, tail))
+            | _ ->
+                match parseFormBody kw lits items None with
+                | Result.Error e -> Result.Error e
+                | Result.Ok(pats, None) -> Result.Ok(StxPattern.Form pats)
+                | Result.Ok(pats, Some tail) -> Result.Ok(StxPattern.DottedForm(pats, tail))
+        | Stx.Dotted(items, tail, _) ->
+            match parseFormBody kw lits items (Some tail) with
+            | Result.Error e -> Result.Error e
+            | Result.Ok(pats, tailOpt) ->
+                let tailPat = tailOpt |> Option.defaultValue StxPattern.Underscore
+                Result.Ok(StxPattern.DottedForm(pats, tailPat))
+        | Stx.Vec(items, _) ->
+            let results = items |> List.map (parsePattern kw lits)
+
+            results
+            |> List.fold
+                (fun acc r ->
+                    match acc, r with
+                    | Result.Ok xs, Result.Ok x -> Result.Ok(xs @ [ x ])
+                    | Result.Error e, _ -> Result.Error e
+                    | _, Result.Error e -> Result.Error e)
+                (Result.Ok [])
+            |> Result.map StxPattern.Vec
+        | _ -> Result.Error $"unrecognised pattern node: {stx}"
+
+    /// Detect ellipsis in a template form body, like `parseFormBody` for patterns.
+    let rec parseTemplateFormBody
+        (bound: string list)
+        (items: Stx list)
+        (tail: Stx option)
+        : Result<StxTemplateElement list * StxTemplate option, string> =
+        let rec loop acc remaining =
+            match remaining with
+            | [] ->
+                let tailTmpl = tail |> Option.map (fun t -> parseTemplate bound t)
+
+                match tailTmpl with
+                | None -> Result.Ok(List.rev acc, None)
+                | Some(Result.Ok tp) -> Result.Ok(List.rev acc, Some tp)
+                | Some(Result.Error e) -> Result.Error e
+            | [ single ] ->
+                match parseTemplate bound single with
+                | Result.Error e -> Result.Error e
+                | Result.Ok tmpl -> loop (StxTemplateElement.Template tmpl :: acc) []
+            | current :: (Stx.Id("...", _) :: rest) ->
+                match parseTemplate bound current with
+                | Result.Error e -> Result.Error e
+                | Result.Ok tmpl -> loop (StxTemplateElement.Repeated tmpl :: acc) rest
+            | current :: rest ->
+                match parseTemplate bound current with
+                | Result.Error e -> Result.Error e
+                | Result.Ok tmpl -> loop (StxTemplateElement.Template tmpl :: acc) rest
+
+        loop [] items
+
+    /// Parse a single `Stx` node as a macro template.
+    and parseTemplate (bound: string list) (stx: Stx) : Result<StxTemplate, string> =
+        match stx with
+        | Stx.Closure(inner, _, _) -> parseTemplate bound inner
+        | Stx.Id(name, _) ->
+            if List.contains name bound then
+                Result.Ok(StxTemplate.Subst name)
+            else
+                Result.Ok(StxTemplate.Quoted stx)
+        | Stx.List(items, loc) ->
+            match parseTemplateFormBody bound items None with
+            | Result.Error e -> Result.Error e
+            | Result.Ok(elems, None) -> Result.Ok(StxTemplate.Form(loc, elems))
+            | Result.Ok(elems, Some tail) -> Result.Ok(StxTemplate.DottedForm(elems, tail))
+        | Stx.Dotted(items, tail, loc) ->
+            match parseTemplateFormBody bound items (Some tail) with
+            | Result.Error e -> Result.Error e
+            | Result.Ok(elems, tailOpt) ->
+                let tailTmpl = tailOpt |> Option.defaultValue (StxTemplate.Quoted stx)
+                Result.Ok(StxTemplate.DottedForm(elems, tailTmpl))
+        | Stx.Vec(items, _) ->
+            let results = items |> List.map (parseTemplate bound)
+
+            results
+            |> List.fold
+                (fun acc r ->
+                    match acc, r with
+                    | Result.Ok xs, Result.Ok x -> Result.Ok(xs @ [ StxTemplateElement.Template x ])
+                    | Result.Error e, _ -> Result.Error e
+                    | _, Result.Error e -> Result.Error e)
+                (Result.Ok [])
+            |> Result.map StxTemplate.Vec
+        | other ->
+            // Literal datum (constant, quoted, etc.) — preserve it with its
+            // definition-site syntax object so transcribe can wrap it in a
+            // Closure and preserve hygiene.
+            Result.Ok(StxTemplate.Quoted other)
+
+    /// Parse one `(pattern template)` transformer arm.
+    let parseTransformer
+        (kw: string)
+        (lits: string list)
+        (stx: Stx)
+        : Result<StxPattern * StxTemplate, string> =
+        match stx with
+        | Stx.List([ pat; tmpl ], _) ->
+            match parsePattern kw lits pat with
+            | Result.Error e -> Result.Error e
+            | Result.Ok patParsed ->
+                let bound = findBound patParsed
+                match parseTemplate bound tmpl with
+                | Result.Error e -> Result.Error e
+                | Result.Ok tmplParsed -> Result.Ok(patParsed, tmplParsed)
+        | _ -> Result.Error "each syntax-rules rule must be (pattern template)"
+
+    /// Parse the body of `(syntax-rules (lits...) rule...)`.
+    let parseSyntaxRulesBody
+        (kw: string)
+        (litsStx: Stx)
+        (rules: Stx list)
+        (defEnv: SyntaxEnv)
+        (diag: DiagnosticBag)
+        (loc: TextLocation)
+        : SyntaxTransformer option =
+        match parseLiteralList litsStx with
+        | Result.Error e ->
+            diag.Emit Diag.invalidMacro loc e
+            None
+        | Result.Ok lits ->
+            let results = rules |> List.map (parseTransformer kw lits)
+
+            let patterns =
+                results
+                |> List.choose (function
+                    | Result.Ok pair -> Some pair
+                    | Result.Error e ->
+                        diag.Emit Diag.invalidMacro loc e
+                        None)
+
+            Some
+                { Patterns = patterns
+                  DefEnv = defEnv
+                  DefLoc = loc }
+
+    /// Public entry point: parse a `(syntax-rules ...)` form into a transformer.
+    let parseSyntaxRulesStx
+        (name: string)
+        (stx: Stx)
+        (defEnv: SyntaxEnv)
+        (diag: DiagnosticBag)
+        (loc: TextLocation)
+        : SyntaxTransformer option =
+        match stx with
+        | Stx.List(Stx.Id("syntax-rules", _) :: litsStx :: rules, _) ->
+            parseSyntaxRulesBody name litsStx rules defEnv diag loc
+        | _ ->
+            diag.Emit Diag.invalidMacro loc "expected (syntax-rules (literals...) rules...)"
+            None
+
 // ─────────────────────────────────────────────────────────────── Expander
 
 module private Expander =
@@ -276,7 +573,25 @@ module private Expander =
     let rec resolveHead (stx: Stx) (env: SyntaxEnv) : SyntaxBinding option =
         match stx with
         | Stx.Id(name, _) -> Map.tryFind name env
-        | Stx.Closure(inner, closedEnv, _) -> resolveHead inner closedEnv
+        | Stx.Closure(inner, closedEnv, _) ->
+            // Mirror the expand Stx.Closure fallback: if the inner identifier
+            // is not bound at the definition site, resolve it in the ambient
+            // (call-site) env instead.  This is what makes recursive macros
+            // like `(my-or e2 ...)` and `(alist z ...)` find their own MacroDef.
+            match inner with
+            | Stx.Id(name, _) when not (Map.containsKey name closedEnv) ->
+                resolveHead inner env
+            | _ -> resolveHead inner closedEnv
+        | _ -> None
+
+    /// Active pattern: extract an identifier name+location from a Stx node,
+    /// peeling any `Stx.Closure` hygiene wrappers.  Use this wherever special
+    /// forms need to pull an identifier out of a sub-form that may have come
+    /// through macro transcription.
+    let rec (|StxId|_|) (stx: Stx) : (string * TextLocation) option =
+        match stx with
+        | Stx.Id(name, loc) -> Some(name, loc)
+        | Stx.Closure(inner, _, _) -> (|StxId|_|) inner
         | _ -> None
 
     /// Convert a Stx node to a BoundDatum (for quoted expressions).
@@ -304,7 +619,7 @@ module private Expander =
             let names =
                 items
                 |> List.choose (function
-                    | Stx.Id(n, _) -> Some n
+                    | StxId(n, _) -> Some n
                     | other ->
                         ExpandCtx.emitError ctx Diag.invalidFormals other.Loc "expected identifier in formals"
                         None)
@@ -314,13 +629,13 @@ module private Expander =
             let names =
                 items
                 |> List.choose (function
-                    | Stx.Id(n, _) -> Some n
+                    | StxId(n, _) -> Some n
                     | other ->
                         ExpandCtx.emitError ctx Diag.invalidFormals other.Loc "expected identifier in formals"
                         None)
 
             match tail with
-            | Stx.Id(rest, _) -> BoundFormals.DottedList(names, rest)
+            | StxId(rest, _) -> BoundFormals.DottedList(names, rest)
             | other ->
                 ExpandCtx.emitError ctx Diag.invalidFormals loc "expected identifier after dot in formals"
                 BoundFormals.List names
@@ -340,7 +655,7 @@ module private Expander =
     let rec parseBindingSpecs (stx: Stx) (ctx: ExpandCtx) : (string * Stx) list =
         let parseOne node =
             match node with
-            | Stx.List([ Stx.Id(name, _); init ], _) -> Some(name, init)
+            | Stx.List([ StxId(name, _); init ], _) -> Some(name, init)
             | other ->
                 ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc "ill-formed binding specification"
                 None
@@ -377,7 +692,15 @@ module private Expander =
         match stx with
         | Stx.Closure(inner, closedEnv, _) ->
             // Syntactic closure: switch to the enclosed environment.
-            expand inner closedEnv ctx
+            // Exception: for simple identifiers not found in the def-site env,
+            // fall back to the call-site env.  This allows macro-introduced
+            // names (e.g. `tmp` in `(let ((tmp x)) ... tmp ...)`  inside a
+            // template) to be visible once they are bound at call-site — a
+            // necessary trade-off until gensym-based hygiene is implemented.
+            match inner with
+            | Stx.Id(name, _) when not (Map.containsKey name closedEnv) ->
+                expand inner env ctx
+            | _ -> expand inner closedEnv ctx
 
         | Stx.Id(name, loc) -> lookupVar name loc env ctx
 
@@ -453,7 +776,7 @@ module private Expander =
 
         | SpecialFormKind.SetBang ->
             match args with
-            | [ Stx.Id(name, idLoc); value ] ->
+            | [ StxId(name, idLoc); value ] ->
                 match Map.tryFind name env with
                 | Some(Variable storage) -> BoundExpr.Store(storage, Some(expand value env ctx))
                 | _ ->
@@ -517,13 +840,13 @@ module private Expander =
             BoundExpr.Error, env
 
         match args with
-        | [ Stx.Id(name, _) ] ->
+        | [ StxId(name, _) ] ->
             // (define id) — uninitialized
             let storage = ExpandCtx.mintStorage ctx name
             let env' = Map.add name (Variable storage) env
             BoundExpr.Store(storage, None), env'
 
-        | [ Stx.Id(name, _); value ] ->
+        | [ StxId(name, _); value ] ->
             // (define id value)
             let storage = ExpandCtx.mintStorage ctx name
             // Add name to env before expanding value so self-recursion works.
@@ -531,14 +854,14 @@ module private Expander =
             let boundValue = expand value env' ctx
             BoundExpr.Store(storage, Some boundValue), env'
 
-        | Stx.List(Stx.Id(name, _) :: formals, _) :: body ->
+        | Stx.List(StxId(name, _) :: formals, _) :: body ->
             // (define (name formals...) body...)
             let storage = ExpandCtx.mintStorage ctx name
             let env' = Map.add name (Variable storage) env
             let lambdaExpr = expandLambda (Stx.List(formals, loc) :: body) loc env' ctx
             BoundExpr.Store(storage, Some lambdaExpr), env'
 
-        | Stx.Dotted(Stx.Id(name, _) :: formals, tail, _) :: body ->
+        | Stx.Dotted(StxId(name, _) :: formals, tail, _) :: body ->
             // (define (name formals... . rest) body...)
             let storage = ExpandCtx.mintStorage ctx name
             let env' = Map.add name (Variable storage) env
@@ -670,7 +993,7 @@ module private Expander =
 
     and expandDefineSyntax (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr * SyntaxEnv =
         match args with
-        | [ Stx.Id(name, _); rulesStx ] ->
+        | [ StxId(name, _); rulesStx ] ->
             match parseSyntaxRulesStx name rulesStx env ctx with
             | Some transformer ->
                 let env' = Map.add name (MacroDef transformer) env
@@ -703,13 +1026,7 @@ module private Expander =
     /// Parse a `(syntax-rules ...)` Stx node into a `SyntaxTransformer`.
     /// Returns `None` on error after emitting a diagnostic.
     and parseSyntaxRulesStx (name: string) (stx: Stx) (defEnv: SyntaxEnv) (ctx: ExpandCtx) : SyntaxTransformer option =
-        // Delegate to the existing Expression-based parser by re-interpreting
-        // the Stx as a synthetic Expression.  This is a temporary bridge until
-        // the new Stx-native pattern/template engine is complete.
-        //
-        // For now, emit a "not yet implemented" diagnostic and return None.
-        ExpandCtx.emitError ctx Diag.illFormedForm stx.Loc "define-syntax not yet implemented in new expander"
-        None
+        MacrosNew.parseSyntaxRulesStx name stx defEnv ctx.Diagnostics stx.Loc
 
     // ── Macro expansion ───────────────────────────────────────────────────
 
@@ -735,48 +1052,49 @@ module private Expander =
 
     /// Attempt to match a MacroPattern against a Stx node.
     /// Returns Some PatternBindings on success, None on mismatch.
-    and matchPattern (pat: MacroPattern) (stx: Stx) (env: SyntaxEnv) : PatternBindings option =
+    and matchPattern (pat: StxPattern) (stx: Stx) (env: SyntaxEnv) : PatternBindings option =
 
-        // FIXME: Lots of these patterns have to handle Closure. WE should just peel the closure here and dispatch on the
-        // underlying syntax.
         match pat, stx with
-        | MacroPattern.Underscore, _ -> Some Map.empty
+        | StxPattern.Underscore, _ -> Some Map.empty
 
-        | MacroPattern.Variable v, s ->
+        | StxPattern.Variable v, s ->
             Some(Map.ofList [ v, Single(s, env) ])
 
-        | MacroPattern.Literal lit, Stx.Id(name, _) ->
+        | StxPattern.Literal lit, Stx.Id(name, _) ->
             if name = lit then Some Map.empty else None
 
-        | MacroPattern.Literal lit, Stx.Closure(inner, closedEnv, _) ->
-            matchPattern (MacroPattern.Literal lit) inner closedEnv
+        | StxPattern.Literal lit, Stx.Closure(inner, closedEnv, _) ->
+            matchPattern (StxPattern.Literal lit) inner closedEnv
 
-        | MacroPattern.Constant c, Stx.Const(lit, _) ->
-            if constantMatchesLiteral c lit then Some Map.empty else None
+        | StxPattern.Constant patLit, Stx.Const(stxLit, _) ->
+            if patLit = stxLit then Some Map.empty else None
 
-        | MacroPattern.Form pats, Stx.List(items, _) ->
+        | StxPattern.Form pats, Stx.List(items, _) ->
             matchPatternList pats None items None env
 
-        | MacroPattern.DottedForm(pats, tailPat), Stx.Dotted(items, tail, _) ->
+        | StxPattern.DottedForm(pats, tailPat), Stx.Dotted(items, tail, _) ->
             matchPatternList pats (Some tailPat) items (Some tail) env
 
-        | MacroPattern.Form pats, Stx.Closure(inner, closedEnv, _) ->
-            matchPattern (MacroPattern.Form pats) inner closedEnv
+        | StxPattern.Form pats, Stx.Closure(inner, closedEnv, _) ->
+            matchPattern (StxPattern.Form pats) inner closedEnv
 
-        | MacroPattern.DottedForm(pats, tailPat), Stx.Closure(inner, closedEnv, _) ->
-            matchPattern (MacroPattern.DottedForm(pats, tailPat)) inner closedEnv
+        | StxPattern.DottedForm(pats, tailPat), Stx.Closure(inner, closedEnv, _) ->
+            matchPattern (StxPattern.DottedForm(pats, tailPat)) inner closedEnv
+
+        | StxPattern.Vec pats, Stx.Vec(items, _) ->
+            matchPatternList pats None items None env
 
         | _ -> None
 
     and matchPatternList
-        (pats: MacroPattern list)
-        (tailPat: MacroPattern option)
+        (pats: StxPattern list)
+        (tailPat: StxPattern option)
         (items: Stx list)
         (tailItem: Stx option)
         (env: SyntaxEnv)
         : PatternBindings option =
         match pats with
-        | MacroPattern.Repeat inner :: restPats ->
+        | StxPattern.Repeat inner :: restPats ->
             matchRepeat inner restPats tailPat items tailItem env []
 
         | headPat :: restPats ->
@@ -800,9 +1118,9 @@ module private Expander =
             | None -> if List.isEmpty items && tailItem.IsNone then Some Map.empty else None
 
     and matchRepeat
-        (inner: MacroPattern)
-        (restPats: MacroPattern list)
-        (tailPat: MacroPattern option)
+        (inner: StxPattern)
+        (restPats: StxPattern list)
+        (tailPat: StxPattern option)
         (items: Stx list)
         (tailItem: Stx option)
         (env: SyntaxEnv)
@@ -849,55 +1167,52 @@ module private Expander =
     and mergeBindings (left: PatternBindings) (right: PatternBindings) : PatternBindings =
         Map.fold (fun m k v -> Map.add k v m) left right
 
-    and constantMatchesLiteral (pat: ConstantValue) (lit: BoundLiteral) : bool =
-        match pat, lit with
-        | NumVal n, BoundLiteral.Number m -> n = m
-        | StrVal s, BoundLiteral.Str t -> s = t
-        | BoolVal b, BoundLiteral.Boolean c -> b = c
-        | CharVal c, BoundLiteral.Character d -> c = Some d
-        | _ -> false
+    and constantMatchesLiteral (_pat: ConstantValue) (_lit: BoundLiteral) : bool = false // removed — superseded by StxPattern
 
     // ── Transcription ─────────────────────────────────────────────────────
 
     and transcribe
-        (template: MacroTemplate)
+        (template: StxTemplate)
         (bindings: PatternBindings)
         (defEnv: SyntaxEnv)
         (loc: TextLocation)
         : Stx =
         match template with
-        | MacroTemplate.Subst name ->
+        | StxTemplate.Subst name ->
             match Map.tryFind name bindings with
             | Some(Single(stx, capturedEnv)) -> Stx.Closure(stx, capturedEnv, loc)
             | Some(Repeated _) -> failwith $"ellipsis variable '{name}' used outside a repeat context"
             | None -> failwith $"template variable '{name}' not bound"
 
-        | MacroTemplate.Quoted expr ->
-            // Template literal — a raw Expression from the original template.
-            // Wrap it as an opaque constant datum rather than re-expanding.
-            // A more faithful implementation would convert via Stx.ofExpr.
-            Stx.Const(BoundLiteral.Null, loc)
+        | StxTemplate.Quoted stx ->
+            // Literal from the definition site — wrap it in the definition-site
+            // environment so that any identifiers inside resolve hygienically.
+            Stx.Closure(stx, defEnv, loc)
 
-        | MacroTemplate.Form(_, elements) ->
+        | StxTemplate.Form(_, elements) ->
             let children = elements |> List.collect (transcribeElement bindings defEnv loc)
             Stx.List(children, loc)
 
-        | MacroTemplate.DottedForm(elems, tail) ->
+        | StxTemplate.DottedForm(elems, tail) ->
             let children = elems |> List.collect (transcribeElement bindings defEnv loc)
             Stx.Dotted(children, transcribe tail bindings defEnv loc, loc)
+
+        | StxTemplate.Vec elements ->
+            let children = elements |> List.collect (transcribeElement bindings defEnv loc)
+            Stx.Vec(children, loc)
 
     and transcribeElement
         (bindings: PatternBindings)
         (defEnv: SyntaxEnv)
         (loc: TextLocation)
-        (elem: MacroTemplateElement)
+        (elem: StxTemplateElement)
         : Stx list =
         match elem with
-        | MacroTemplateElement.Template t -> [ transcribe t bindings defEnv loc ]
-        | MacroTemplateElement.Repeated t -> transcribeRepeated t bindings defEnv loc
+        | StxTemplateElement.Template t -> [ transcribe t bindings defEnv loc ]
+        | StxTemplateElement.Repeated t -> transcribeRepeated t bindings defEnv loc
 
     and transcribeRepeated
-        (template: MacroTemplate)
+        (template: StxTemplate)
         (bindings: PatternBindings)
         (defEnv: SyntaxEnv)
         (loc: TextLocation)
@@ -1041,8 +1356,18 @@ module private Expander =
                     ExpandCtx.emitError ctx Diag.illFormedForm other.Loc "ill-formed library declaration"
                     (innerEnv, importAcc, bodyAcc, exportsAcc)
 
-            // Library body starts with just the keyword environment.
-            let initInnerEnv = SyntaxEnv.builtin
+            // Library body starts with just the keyword environment, plus any
+            // MacroDef bindings (builtin macros) inherited from the outer scope.
+            // Variable bindings from the outer scope are intentionally NOT
+            // inherited — the library must import everything it uses.
+            let initInnerEnv =
+                env
+                |> Map.fold
+                    (fun acc k v ->
+                        match v with
+                        | MacroDef _ -> Map.add k v acc
+                        | _ -> acc)
+                    SyntaxEnv.builtin
 
             let (finalInnerEnv, importExprs, bodyExprs, exportedPairs) =
                 List.fold folder (initInnerEnv, [], [], []) declarations
@@ -1084,7 +1409,17 @@ module private Expander =
             | Ok library ->
                 let newEnv =
                     library.Exports
-                    |> List.fold (fun e (name, storage) -> Map.add name (Variable storage) e) currentEnv
+                    |> List.fold
+                        (fun e (name, storage) ->
+                            match storage with
+                            | StorageRef.Macro _ ->
+                                // Old-format macro entries are not meaningful to
+                                // the new expander.  Builtins are seeded into the
+                                // initial SyntaxEnv as MacroDef; any other Macro
+                                // storage is simply ignored here.
+                                e
+                            | _ -> Map.add name (Variable storage) e)
+                        currentEnv
 
                 let mangledName = library.LibraryName |> String.concat "::"
                 (newEnv, BoundExpr.Import mangledName :: exprs)

@@ -36,7 +36,10 @@ let runXpNewRepl (options: CompilationOptions) args =
             dumpDiagnostics prog.Diagnostics
         else
             let ctx = ExpandCtx.createGlobal registry "xpnew" allLibs
-            let result = Expand.expandProgram prog.Root SyntaxEnv.builtin ctx
+            let initialEnv =
+                Builtins.loadBuiltinMacroEnv ()
+                |> Map.fold (fun e k v -> Map.add k v e) SyntaxEnv.builtin
+            let result = Expand.expandProgram prog.Root initialEnv ctx
             dumpDiagnostics ctx.Diagnostics.Diagnostics
             if not (hasErrors ctx.Diagnostics.Diagnostics) then
                 printfn "%A" result)

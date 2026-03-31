@@ -113,8 +113,55 @@ module private ExternUtils =
 
 module private BuiltinMacros =
     open Feersum.CompilerServices.Text
+    open Feersum.CompilerServices.NewBindingTest
 
-    /// Parse a builtin macro from syntax rules
+    // ── Source strings (shared between old and new parsers) ────────────────
+
+    let private macroAndSrc =
+        "(syntax-rules ()
+            ((_ a) a)
+            ((_ a b ...) (if a (and b ...) #f))
+            ((_) #t))"
+
+    // TODO: re-write without the GUID trick once proper hygiene is in place.
+    let private macroOrSrc =
+        "(syntax-rules ()
+            ((or) #f)
+            ((or test) test)
+            ((or test1 test2 ...)
+                (let ((|90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| test1))
+                    (if |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| (or test2 ...)))))"
+
+    let private macroWhenSrc =
+        "(syntax-rules ()
+            ((_ cond expr expr1 ...)
+             (if cond
+                (begin
+                    expr
+                    expr1 ...))))"
+
+    let private macroUnlessSrc =
+        "(syntax-rules ()
+            ((_ cond expr expr1 ...)
+             (if (not cond)
+                (begin
+                    expr
+                    expr1 ...))))"
+
+    // TODO: Does not support the `=>` pipe form yet.
+    let private macroCondSrc =
+        "(syntax-rules (else)
+            ((cond (else e ...))   (begin e ...))
+            ((cond (test e e1 ...))
+                (if test
+                    (begin e e1 ...)))
+            ((cond (test e e1 ...) c ...)
+                (if test
+                    (begin e e1 ...)
+                    (cond c ...))))"
+
+    // ── Old-format parser (Macros.parseSyntaxRules) ────────────────────────
+
     let private parseBuiltinMacro id rules =
         let registry = SourceRegistry.empty ()
         let result = Parse.readExpr1 registry (sprintf "builtin-%s" id) rules
@@ -126,70 +173,63 @@ module private BuiltinMacros =
         | Some expr -> Macros.parseSyntaxRules id expr |> Result.unwrap
         | None -> icef "no body in builtin macro %A" result.Root.Text
 
-    /// Builtin `and` Macro
-    let private macroAnd =
-        "(syntax-rules ::: ()
-            ((_ a) a)
-            ((_ a b :::) (if a (and b :::) #f))
-            ((_) #t))"
-        |> parseBuiltinMacro "and"
+    let private macroAnd    = macroAndSrc    |> parseBuiltinMacro "and"
+    let private macroOr     = macroOrSrc     |> parseBuiltinMacro "or"
+    let private macroWhen   = macroWhenSrc   |> parseBuiltinMacro "when"
+    let private macroUnless = macroUnlessSrc |> parseBuiltinMacro "unless"
+    let private macroCond   = macroCondSrc   |> parseBuiltinMacro "cond"
 
-    /// Builtin `or` Macro
-    let private macroOr =
-        // TODO: re-write this when proper hygene is supported.
-        "(syntax-rules ()
-            ((or) #f)
-            ((or test) test)
-            ((or test1 test2 ...)
-                (let ((|90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| test1))
-                    (if |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| (or test2 ...)))))"
-        |> parseBuiltinMacro "or"
-
-    /// Builtin `when` Macro
-    let private macroWhen =
-        "(syntax-rules ()
-            ((_ cond expr expr1 ...)
-             (if cond
-                (begin
-                    expr
-                    expr1 ...))))"
-        |> parseBuiltinMacro "when"
-
-    /// Builtin `unless` Macro
-    let private macroUnless =
-        "(syntax-rules ()
-            ((_ cond expr expr1 ...)
-             (if (not cond)
-                (begin
-                    expr
-                    expr1 ...))))"
-        |> parseBuiltinMacro "unless"
-
-    let private macroCond =
-        // TODO: This `cond` implementation doesn't support the `=>` 'pipe' form
-        //       of the macro yet. This is because we're waiting for hygene
-        //       support like `or`.
-        "(syntax-rules (else)
-            ((cond (else e ...))   (begin e ...))
-            ((cond (test e e1 ...))
-                (if test
-                    (begin e e1 ...)))
-            ((cond (test e e1 ...) c ...)
-                (if test
-                    (begin e e1 ...)
-                    (cond c ...))))"
-        |> parseBuiltinMacro "cond"
-
-    /// The list of builtin macros
+    /// The list of builtin macros (old StorageRef.Macro format, for Binder/Compiler).
     let coreMacros =
         { LibraryName = [ "feersum"; "builtin"; "macros" ]
           Exports =
             [ macroAnd; macroOr; macroWhen; macroUnless; macroCond ]
             |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
 
+    // ── New-format parser (MacrosNew.parseSyntaxRulesStx) ─────────────────
+
+    let private parseBuiltinMacroNew (name: string) (src: string) : SyntaxTransformer =
+        let registry = SourceRegistry.empty ()
+        let result = Parse.readExpr1 registry (sprintf "builtin-new-%s" name) src
+
+        if hasErrors result.Diagnostics then
+            icef "Error parsing new-format builtin macro '%s': %A" name result.Diagnostics
+
+        match result.Root.Body with
+        | None -> icef "no body in new-format builtin macro '%s'" name
+        | Some expr ->
+            let diags = DiagnosticBag.Empty
+            let stx = Stx.ofExpr registry result.Root.DocId expr
+
+            match MacrosNew.parseSyntaxRulesStx name stx Map.empty diags TextLocation.Missing with
+            | Some transformer -> transformer
+            | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics
+
+    /// The builtin macros in the new SyntaxTransformer format, keyed by name.
+    /// Merge this into the initial SyntaxEnv for use by the new expander.
+    let newFormatEnv : SyntaxEnv =
+        [ "and",    macroAndSrc
+          "or",     macroOrSrc
+          "when",   macroWhenSrc
+          "unless", macroUnlessSrc
+          "cond",   macroCondSrc ]
+        |> List.map (fun (name, src) ->
+            name, SyntaxBinding.MacroDef(parseBuiltinMacroNew name src))
+        |> Map.ofList
+
 // ------------------------ Public Builtins API --------------------------------
 
 module Builtins =
+    open Feersum.CompilerServices.NewBindingTest
+
+    /// Returns a SyntaxEnv fragment containing all builtin macros (`and`, `or`,
+    /// `when`, `unless`, `cond`) as new-format `MacroDef` entries.  Merge this
+    /// into the initial `SyntaxEnv` passed to `Expand.expandProgram` so that the
+    /// new expander can recognise and expand these macros without needing to
+    /// import `(feersum builtin macros)`.
+    let loadBuiltinMacroEnv () : SyntaxEnv =
+        BuiltinMacros.newFormatEnv
+
 
     /// Scan the `externAssms` and retrieve the core types that are required to
     /// compile a scheme progrma. These `CoreTypes` represent the types and methods
