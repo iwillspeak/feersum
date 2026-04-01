@@ -1138,7 +1138,15 @@ module private Expander =
                         | None -> currentEnv)
                     env
 
+            // Save and restore ScopeEnv around the body so that any `define`
+            // forms inside the let-syntax body don't pollute the outer scope's
+            // capture-detection map.  This mirrors the old binder's pushScope /
+            // popScope that wraps every let form.
+            let savedScopeEnv = ctx.ScopeEnv
+            ctx.ScopeDepth <- ctx.ScopeDepth + 1
             let bodyExprs, _ = expandSeq body extendedEnv ctx
+            ctx.ScopeDepth <- ctx.ScopeDepth - 1
+            ctx.ScopeEnv <- savedScopeEnv
             BoundExpr.Seq bodyExprs
         | _ ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'let-syntax'"
