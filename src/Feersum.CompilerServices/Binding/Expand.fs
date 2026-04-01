@@ -927,13 +927,16 @@ module private Expander =
         | bindingStx :: body when not (List.isEmpty body) ->
             let specs = parseBindingSpecs bindingStx ctx
             // Evaluate all inits in the outer environment (parallel let).
+            // Crucially, addToScope is called only after ALL inits are expanded
+            // so that no init can see a sibling binding via tryFindInScope.
             let stores =
                 specs
                 |> List.map (fun (name, initStx) ->
                     let initExpr = expand initStx env ctx
                     let storage = StorageRef.Local(ExpandCtx.nextLocal ctx)
-                    ExpandCtx.addToScope ctx name storage
                     name, storage, initExpr)
+
+            stores |> List.iter (fun (name, storage, _) -> ExpandCtx.addToScope ctx name storage)
 
             // Extend env with all new bindings.
             let innerEnv =
