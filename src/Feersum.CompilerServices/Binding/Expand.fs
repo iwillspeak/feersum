@@ -1274,24 +1274,45 @@ module private Expander =
         (defEnv: SyntaxEnv)
         (loc: TextLocation)
         : Stx list =
-        // Find the first Repeated capture to determine repetition count.
+        // Collect names referenced directly by this template so we only
+        // consider Repeated captures that belong to this ellipsis group.
+        // Variables from sibling ellipsis groups (e.g. `(a ...)` and `(b ...)`
+        // as separate sub-patterns) must not influence the repetition count
+        // here; their lists may have different lengths. This mirrors the
+        // Macros.fs approach where repeated bindings are grouped per row.
+        let rec templateRefs tmpl =
+            match tmpl with
+            | StxTemplate.Subst name -> Set.singleton name
+            | StxTemplate.Form(_, elems) | StxTemplate.Vec elems ->
+                elems |> List.map elemRefs |> Set.unionMany
+            | StxTemplate.DottedForm(elems, tail) ->
+                Set.union (elems |> List.map elemRefs |> Set.unionMany) (templateRefs tail)
+            | StxTemplate.Quoted _ -> Set.empty
+        and elemRefs elem =
+            match elem with
+            | StxTemplateElement.Template t | StxTemplateElement.Repeated t -> templateRefs t
+
+        let referencedNames = templateRefs template
+
+        // Only look at Repeated bindings whose names appear in the template.
         let repCount =
             bindings
-            |> Map.tryPick (fun _ v ->
+            |> Map.tryPick (fun name v ->
                 match v with
-                | Repeated lst -> Some(List.length lst)
-                | Single _ -> None)
+                | Repeated lst when Set.contains name referencedNames -> Some(List.length lst)
+                | _ -> None)
             |> Option.defaultValue 0
 
         [ 0 .. repCount - 1 ]
         |> List.map (fun i ->
-            // Build a per-repetition binding map substituting the i-th element.
+            // Build a per-repetition binding map substituting the i-th element
+            // for variables in this group; leave others as-is.
             let perRepBindings =
                 Map.map
-                    (fun _ v ->
+                    (fun name v ->
                         match v with
-                        | Repeated lst -> Single(lst.[i])
-                        | Single _ as s -> s)
+                        | Repeated lst when Set.contains name referencedNames -> Single(lst.[i])
+                        | other -> other)
                     bindings
 
             transcribe template perRepBindings defEnv loc)
