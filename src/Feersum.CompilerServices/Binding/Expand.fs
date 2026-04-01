@@ -372,27 +372,42 @@ module MacrosNew =
 
     /// Parse a pattern literal list `(lit1 lit2 ...)`.
     let parseLiteralList (stx: Stx) : Result<string list, string> =
+        let rec unwrapId s =
+            match s with
+            | Stx.Id(name, _) -> Result.Ok name
+            | Stx.Closure(inner, _, _) -> unwrapId inner
+            | _ -> Result.Error "literal list must contain identifiers"
+        let rec unwrapList s =
+            match s with
+            | Stx.List(items, _) ->
+                items
+                |> List.map unwrapId
+                |> List.fold
+                    (fun acc r ->
+                        match acc, r with
+                        | Result.Ok xs, Result.Ok x -> Result.Ok(xs @ [ x ])
+                        | Result.Error e, _ -> Result.Error e
+                        | _, Result.Error e -> Result.Error e)
+                    (Result.Ok [])
+            | Stx.Closure(inner, _, _) -> unwrapList inner
+            | _ -> Result.Error "expected list of literals"
+        unwrapList stx
+
+    /// Returns true if `stx` is the ellipsis identifier `ell`, peeling any
+    /// `Stx.Closure` wrappers — needed because macro transcription wraps
+    /// free identifiers (like a custom ellipsis token) in closures.
+    let rec private isEllipsisNode (ell: string) (stx: Stx) : bool =
         match stx with
-        | Stx.List(items, _) ->
-            items
-            |> List.map (fun s ->
-                match s with
-                | Stx.Id(name, _) -> Result.Ok name
-                | _ -> Result.Error "literal list must contain identifiers")
-            |> List.fold
-                (fun acc r ->
-                    match acc, r with
-                    | Result.Ok xs, Result.Ok x -> Result.Ok(xs @ [ x ])
-                    | Result.Error e, _ -> Result.Error e
-                    | _, Result.Error e -> Result.Error e)
-                (Result.Ok [])
-        | _ -> Result.Error "expected list of literals"
+        | Stx.Id(name, _) -> name = ell
+        | Stx.Closure(inner, _, _) -> isEllipsisNode ell inner
+        | _ -> false
 
     /// Parse `(pats...)` or `(pats... . tail)` form body into a list of
     /// patterns, detecting ellipsis.  The first element (macro keyword) is
     /// already dropped by the caller.
     let rec parseFormBody
         (kw: string)
+        (ellipsis: string)
         (lits: string list)
         (items: Stx list)
         (tail: Stx option)
@@ -401,34 +416,35 @@ module MacrosNew =
             match remaining with
             | [] ->
                 let tailPat =
-                    tail |> Option.map (fun t -> parsePattern kw lits t)
+                    tail |> Option.map (fun t -> parsePattern kw ellipsis lits t)
 
                 match tailPat with
                 | None -> Result.Ok(List.rev acc, None)
                 | Some(Result.Ok tp) -> Result.Ok(List.rev acc, Some tp)
                 | Some(Result.Error e) -> Result.Error e
             | [ single ] ->
-                match parsePattern kw lits single with
+                match parsePattern kw ellipsis lits single with
                 | Result.Error e -> Result.Error e
                 | Result.Ok pat -> loop (pat :: acc) []
-            | current :: (Stx.Id("...", _) :: rest) ->
-                match parsePattern kw lits current with
+            | current :: (next :: rest) when isEllipsisNode ellipsis next ->
+                match parsePattern kw ellipsis lits current with
                 | Result.Error e -> Result.Error e
                 | Result.Ok inner -> loop (StxPattern.Repeat inner :: acc) rest
             | current :: rest ->
-                match parsePattern kw lits current with
+                match parsePattern kw ellipsis lits current with
                 | Result.Error e -> Result.Error e
                 | Result.Ok pat -> loop (pat :: acc) rest
 
         loop [] items
 
     /// Parse a single `Stx` node as a macro pattern.
-    and parsePattern (kw: string) (lits: string list) (stx: Stx) : Result<StxPattern, string> =
+    and parsePattern (kw: string) (ellipsis: string) (lits: string list) (stx: Stx) : Result<StxPattern, string> =
         match stx with
-        | Stx.Closure(inner, _, _) -> parsePattern kw lits inner
+        | Stx.Closure(inner, _, _) -> parsePattern kw ellipsis lits inner
         | Stx.Const(lit, _) -> Result.Ok(StxPattern.Constant lit)
         | Stx.Id("_", _) -> Result.Ok StxPattern.Underscore
-        | Stx.Id("...", _) -> Result.Error "unexpected ellipsis in pattern"
+        | Stx.Id(name, _) when name = ellipsis && not (List.contains name lits) ->
+            Result.Error "unexpected ellipsis in pattern"
         | Stx.Id(name, _) ->
             if List.contains name lits then
                 Result.Ok(StxPattern.Literal name)
@@ -441,23 +457,23 @@ module MacrosNew =
                 // binding so that recursive templates like `(or e2 ...)` can
                 // refer back to the macro keyword via substitution and re-expand
                 // it at the call site.
-                match parseFormBody kw lits rest None with
+                match parseFormBody kw ellipsis lits rest None with
                 | Result.Error e -> Result.Error e
                 | Result.Ok(pats, None) -> Result.Ok(StxPattern.Form(StxPattern.Variable kw :: pats))
                 | Result.Ok(pats, Some tail) -> Result.Ok(StxPattern.DottedForm(StxPattern.Variable kw :: pats, tail))
             | _ ->
-                match parseFormBody kw lits items None with
+                match parseFormBody kw ellipsis lits items None with
                 | Result.Error e -> Result.Error e
                 | Result.Ok(pats, None) -> Result.Ok(StxPattern.Form pats)
                 | Result.Ok(pats, Some tail) -> Result.Ok(StxPattern.DottedForm(pats, tail))
         | Stx.Dotted(items, tail, _) ->
-            match parseFormBody kw lits items (Some tail) with
+            match parseFormBody kw ellipsis lits items (Some tail) with
             | Result.Error e -> Result.Error e
             | Result.Ok(pats, tailOpt) ->
                 let tailPat = tailOpt |> Option.defaultValue StxPattern.Underscore
                 Result.Ok(StxPattern.DottedForm(pats, tailPat))
         | Stx.Vec(items, _) ->
-            let results = items |> List.map (parsePattern kw lits)
+            let results = items |> List.map (parsePattern kw ellipsis lits)
 
             results
             |> List.fold
@@ -472,6 +488,7 @@ module MacrosNew =
 
     /// Detect ellipsis in a template form body, like `parseFormBody` for patterns.
     let rec parseTemplateFormBody
+        (ellipsis: string)
         (bound: string list)
         (items: Stx list)
         (tail: Stx option)
@@ -479,49 +496,49 @@ module MacrosNew =
         let rec loop acc remaining =
             match remaining with
             | [] ->
-                let tailTmpl = tail |> Option.map (fun t -> parseTemplate bound t)
+                let tailTmpl = tail |> Option.map (fun t -> parseTemplate ellipsis bound t)
 
                 match tailTmpl with
                 | None -> Result.Ok(List.rev acc, None)
                 | Some(Result.Ok tp) -> Result.Ok(List.rev acc, Some tp)
                 | Some(Result.Error e) -> Result.Error e
             | [ single ] ->
-                match parseTemplate bound single with
+                match parseTemplate ellipsis bound single with
                 | Result.Error e -> Result.Error e
                 | Result.Ok tmpl -> loop (StxTemplateElement.Template tmpl :: acc) []
-            | current :: (Stx.Id("...", _) :: rest) ->
-                match parseTemplate bound current with
+            | current :: (next :: rest) when isEllipsisNode ellipsis next ->
+                match parseTemplate ellipsis bound current with
                 | Result.Error e -> Result.Error e
                 | Result.Ok tmpl -> loop (StxTemplateElement.Repeated tmpl :: acc) rest
             | current :: rest ->
-                match parseTemplate bound current with
+                match parseTemplate ellipsis bound current with
                 | Result.Error e -> Result.Error e
                 | Result.Ok tmpl -> loop (StxTemplateElement.Template tmpl :: acc) rest
 
         loop [] items
 
     /// Parse a single `Stx` node as a macro template.
-    and parseTemplate (bound: string list) (stx: Stx) : Result<StxTemplate, string> =
+    and parseTemplate (ellipsis: string) (bound: string list) (stx: Stx) : Result<StxTemplate, string> =
         match stx with
-        | Stx.Closure(inner, _, _) -> parseTemplate bound inner
+        | Stx.Closure(inner, _, _) -> parseTemplate ellipsis bound inner
         | Stx.Id(name, _) ->
             if List.contains name bound then
                 Result.Ok(StxTemplate.Subst name)
             else
                 Result.Ok(StxTemplate.Quoted stx)
         | Stx.List(items, loc) ->
-            match parseTemplateFormBody bound items None with
+            match parseTemplateFormBody ellipsis bound items None with
             | Result.Error e -> Result.Error e
             | Result.Ok(elems, None) -> Result.Ok(StxTemplate.Form(loc, elems))
             | Result.Ok(elems, Some tail) -> Result.Ok(StxTemplate.DottedForm(elems, tail))
         | Stx.Dotted(items, tail, loc) ->
-            match parseTemplateFormBody bound items (Some tail) with
+            match parseTemplateFormBody ellipsis bound items (Some tail) with
             | Result.Error e -> Result.Error e
             | Result.Ok(elems, tailOpt) ->
                 let tailTmpl = tailOpt |> Option.defaultValue (StxTemplate.Quoted stx)
                 Result.Ok(StxTemplate.DottedForm(elems, tailTmpl))
         | Stx.Vec(items, _) ->
-            let results = items |> List.map (parseTemplate bound)
+            let results = items |> List.map (parseTemplate ellipsis bound)
 
             results
             |> List.fold
@@ -541,16 +558,17 @@ module MacrosNew =
     /// Parse one `(pattern template)` transformer arm.
     let parseTransformer
         (kw: string)
+        (ellipsis: string)
         (lits: string list)
         (stx: Stx)
         : Result<StxPattern * StxTemplate, string> =
         match stx with
         | Stx.List([ pat; tmpl ], _) ->
-            match parsePattern kw lits pat with
+            match parsePattern kw ellipsis lits pat with
             | Result.Error e -> Result.Error e
             | Result.Ok patParsed ->
                 let bound = findBound patParsed
-                match parseTemplate bound tmpl with
+                match parseTemplate ellipsis bound tmpl with
                 | Result.Error e -> Result.Error e
                 | Result.Ok tmplParsed -> Result.Ok(patParsed, tmplParsed)
         | _ -> Result.Error "each syntax-rules rule must be (pattern template)"
@@ -558,6 +576,7 @@ module MacrosNew =
     /// Parse the body of `(syntax-rules (lits...) rule...)`.
     let parseSyntaxRulesBody
         (kw: string)
+        (ellipsis: string)
         (litsStx: Stx)
         (rules: Stx list)
         (defEnv: SyntaxEnv)
@@ -569,7 +588,9 @@ module MacrosNew =
             diag.Emit Diag.invalidMacro loc e
             None
         | Result.Ok lits ->
-            let results = rules |> List.map (parseTransformer kw lits)
+            // Per R7RS 4.3.2: if the ellipsis identifier appears in the literals
+            // list it loses its special meaning and is treated as a literal.
+            let results = rules |> List.map (parseTransformer kw ellipsis lits)
 
             let patterns =
                 results
@@ -584,7 +605,23 @@ module MacrosNew =
                   DefEnv = defEnv
                   DefLoc = loc }
 
+    /// Strip any Stx.Closure wrappers and return the name if the result is an Id.
+    let rec private stxIdName (stx: Stx) : string option =
+        match stx with
+        | Stx.Id(name, _) -> Some name
+        | Stx.Closure(inner, _, _) -> stxIdName inner
+        | _ -> None
+
+    /// Strip any Stx.Closure wrappers and return the stx if the result is a List.
+    let rec private stxUnwrapList (stx: Stx) : Stx option =
+        match stx with
+        | Stx.List _ -> Some stx
+        | Stx.Closure(inner, _, _) -> stxUnwrapList inner
+        | _ -> None
+
     /// Public entry point: parse a `(syntax-rules ...)` form into a transformer.
+    /// Supports the R7RS extended form `(syntax-rules <ellipsis> (lits...) rules...)`
+    /// where an optional identifier before the literal list names the ellipsis.
     let parseSyntaxRulesStx
         (name: string)
         (stx: Stx)
@@ -592,9 +629,23 @@ module MacrosNew =
         (diag: DiagnosticBag)
         (loc: TextLocation)
         : SyntaxTransformer option =
-        match stx with
-        | Stx.List(Stx.Id("syntax-rules", _) :: litsStx :: rules, _) ->
-            parseSyntaxRulesBody name litsStx rules defEnv diag loc
+        // Unwrap any top-level Closure so the match works whether the form
+        // was produced literally or transcribed from a macro template.
+        let rec unwrap s = match s with Stx.Closure(inner, _, _) -> unwrap inner | _ -> s
+        match unwrap stx with
+        | Stx.List(_ :: second :: rest, _) ->
+            // Determine whether `second` is an ellipsis identifier (custom ellipsis)
+            // or the literals list (standard form).
+            match stxIdName second, rest with
+            | Some ellipsis, litsStx :: rules when stxUnwrapList litsStx |> Option.isSome ->
+                // Extended form: (syntax-rules <ellipsis> (literals...) rules...)
+                parseSyntaxRulesBody name ellipsis litsStx rules defEnv diag loc
+            | None, rules when stxUnwrapList second |> Option.isSome ->
+                // Standard form: (syntax-rules (literals...) rules...)
+                parseSyntaxRulesBody name "..." second rules defEnv diag loc
+            | _ ->
+                diag.Emit Diag.invalidMacro loc "expected (syntax-rules (literals...) rules...)"
+                None
         | _ ->
             diag.Emit Diag.invalidMacro loc "expected (syntax-rules (literals...) rules...)"
             None
@@ -1132,6 +1183,12 @@ module private Expander =
         | StxPattern.DottedForm(pats, tailPat), Stx.Dotted(items, tail, _) ->
             matchPatternList pats (Some tailPat) items (Some tail) env
 
+        // A proper list can also match a dotted-form pattern: `(x . rest)` matches
+        // `(a b c)` with `x=a` and `rest=(b c)`.  This mirrors the old binder's
+        // `matchForm` which treats any `FormNode` (proper or dotted) as matchable.
+        | StxPattern.DottedForm(pats, tailPat), Stx.List(items, _) ->
+            matchPatternList pats (Some tailPat) items None env
+
         | StxPattern.Form pats, Stx.Closure(inner, closedEnv, _) ->
             matchPattern (StxPattern.Form pats) inner closedEnv
 
@@ -1171,6 +1228,15 @@ module private Expander =
                 | None ->
                     match items with
                     | [ single ] -> matchPattern tp single env
+                    // Multiple remaining items with no explicit dotted tail: the
+                    // tail pattern matches against the rest of the proper list.
+                    // Underscore discards cleanly; Variable captures as a list.
+                    | _ when not (List.isEmpty items) ->
+                        match tp with
+                        | StxPattern.Underscore -> Some Map.empty
+                        | StxPattern.Variable v ->
+                            Some(Map.ofList [ v, Single(Stx.List(items, TextLocation.Missing), env) ])
+                        | _ -> None
                     | _ -> None
             | None -> if List.isEmpty items && tailItem.IsNone then Some Map.empty else None
 
@@ -1546,6 +1612,27 @@ module private Expander =
                 Some(expandImport args loc env ctx)
             | Some(SpecialForm SpecialFormKind.DefineLibrary) ->
                 Some(expandLibrary args loc env ctx)
+            | Some(MacroDef macro) ->
+                // Macro application in definition context: transcribe and re-process
+                // so that expansions producing `(begin (define-syntax ...) ...)` or
+                // `(define ...)` are spliced into the surrounding definition sequence.
+                // This is necessary for things like `(jabberwocky mad-hatter)` where
+                // the macro expands to a `begin` containing a `define-syntax`.
+                let form = Stx.List(head :: args, loc)
+
+                let transcribed =
+                    macro.Patterns
+                    |> List.tryPick (fun (pat, tmpl) ->
+                        matchPattern pat form env |> Option.map (fun b -> tmpl, b))
+                    |> Option.map (fun (tmpl, bindings) ->
+                        transcribe tmpl bindings macro.DefEnv loc)
+
+                match transcribed with
+                | None -> None // no rule matched; expand() will report the error
+                | Some expanded ->
+                    match tryExpandBinding expanded env ctx with
+                    | Some result -> Some result
+                    | None -> Some(expand expanded env ctx, env)
             | _ -> None
         | _ -> None
 

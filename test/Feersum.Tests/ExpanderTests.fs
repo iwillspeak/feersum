@@ -309,3 +309,164 @@ let ``expand: recursive macro via keyword-head binding`` () =
     ((_ 42) 'ok)))
 (only-numbers "wrong")
 """
+
+// ── Custom ellipsis (R7RS extended syntax-rules form) ────────────────────
+
+[<Fact>]
+let ``parseSyntaxRulesStx: custom ellipsis identifier`` () =
+    // R7RS extended form: (syntax-rules <ellipsis> (literals...) rules...)
+    // The custom ellipsis `dots` should be usable in place of `...`.
+    let t = parseSyntaxRules "my-seq" "(syntax-rules dots () ((my-seq expr dots) (begin expr dots)))"
+    Assert.Single(t.Patterns) |> ignore
+
+    match fst t.Patterns.[0] with
+    | StxPattern.Form [ StxPattern.Variable "my-seq"; StxPattern.Repeat(StxPattern.Variable "expr") ] -> ()
+    | other -> failwithf "Unexpected pattern: %A" other
+
+[<Fact>]
+let ``expand: custom ellipsis macro`` () =
+    // A macro defined with a non-`...` ellipsis identifier must work end-to-end.
+    let exprs =
+        expandOk
+            """
+(define-syntax my-seq
+  (syntax-rules dots ()
+    ((my-seq expr dots)
+     (begin expr dots))))
+(my-seq 1 2 3)
+"""
+
+    let last = List.last exprs
+
+    match last with
+    | BoundExpr.Seq items -> Assert.Equal(3, List.length items)
+    | BoundExpr.Literal _ -> () // single-item begin simplified
+    | other -> failwithf "Expected Seq of 3 from (my-seq 1 2 3), got %A" other
+
+// ── Dotted-tail pattern matching against proper lists ────────────────────
+
+[<Fact>]
+let ``expand: dotted-tail pattern (underscore) matches proper list tail`` () =
+    // The pattern `(_ . _)` should match any call with at least zero args.
+    // This tests that DottedForm is tried against Stx.List nodes.
+    let exprs =
+        expandOk
+            """
+(define-syntax count-to-2
+  (syntax-rules ()
+    ((_) 0)
+    ((_ _) 1)
+    ((_ _ _) 2)
+    ((_ . _) 'many)))
+(count-to-2 a b c d)
+"""
+
+    let last = List.last exprs
+
+    match last with
+    | BoundExpr.Quoted _ -> () // 'many
+    | other -> failwithf "Expected Quoted 'many for (count-to-2 a b c d), got %A" other
+
+[<Fact>]
+let ``expand: dotted-tail pattern selects over fixed-arity rules`` () =
+    // Verify fixed-arity rules still take priority over the dotted catchall.
+    let exprs =
+        expandOk
+            """
+(define-syntax count-to-2
+  (syntax-rules ()
+    ((_) 0)
+    ((_ _) 1)
+    ((_ _ _) 2)
+    ((_ . _) 'many)))
+(count-to-2)
+"""
+
+    let last = List.last exprs
+
+    match last with
+    | BoundExpr.Literal(BoundLiteral.Number 0.0) -> ()
+    | other -> failwithf "Expected Literal 0 for (count-to-2), got %A" other
+
+// ── Macro-generated define-syntax ────────────────────────────────────────
+
+[<Fact>]
+let ``expand: macro generates top-level define-syntax via begin`` () =
+    // A macro that expands to (begin (define march-hare 42) (define-syntax hatter ...))
+    // must splice the generated define-syntax into the top-level environment so
+    // subsequent code sees `hatter` as a macro.
+    let exprs =
+        expandOk
+            """
+(define-syntax jabberwocky
+  (syntax-rules ()
+    ((_ hatter)
+     (begin
+       (define march-hare 42)
+       (define-syntax hatter
+         (syntax-rules ()
+           ((_) march-hare)))))))
+(jabberwocky mad-hatter)
+(mad-hatter)
+"""
+
+    Assert.NotEmpty(exprs)
+
+[<Fact>]
+let ``expand: macro directly expands to define-syntax`` () =
+    // Simpler case: the macro expansion IS a define-syntax (no wrapping begin).
+    let exprs =
+        expandOk
+            """
+(define-syntax def-const
+  (syntax-rules ()
+    ((_ name val)
+     (define-syntax name
+       (syntax-rules ()
+         ((_) val))))))
+(def-const the-answer 42)
+(the-answer)
+"""
+
+    Assert.NotEmpty(exprs)
+
+[<Fact>]
+let ``expand: macro generates define-syntax in let body`` () =
+    // A macro call inside a let body that expands to a define-syntax must make
+    // the newly defined macro visible to subsequent forms in the same body.
+    let exprs =
+        expandOk
+            """
+(let ()
+  (define-syntax make-const
+    (syntax-rules ()
+      ((make-const name val)
+       (define-syntax name
+         (syntax-rules ()
+           ((_) val))))))
+  (make-const answer 42)
+  (answer))
+"""
+
+    Assert.NotEmpty(exprs)
+
+[<Fact>]
+let ``expand: be-like-begin pattern with custom ellipsis`` () =
+    // be-like-begin3 defines a macro with a custom ellipsis `dots` inside its
+    // template. This stresses both macro-generated define-syntax and custom
+    // ellipsis inside transcribed (Closure-wrapped) syntax-rules forms.
+    let exprs =
+        expandOk
+            """
+(define-syntax be-like-begin
+  (syntax-rules ()
+    ((be-like-begin name)
+     (define-syntax name
+       (syntax-rules dots ()
+         ((name expr dots)
+          (begin expr dots)))))))
+(be-like-begin my-sequence)
+(my-sequence 1 2 3)
+"""
+
+    Assert.NotEmpty(exprs)
