@@ -114,6 +114,9 @@ let main argv =
         | "xpnew" :: rest, _ ->
             runXpNewRepl options rest
             0
+        | "xpold" :: rest, _ ->
+            runXpOldRepl options rest
+            0
         | [ "parserepl" ], None ->
             runParserRepl ()
             0
