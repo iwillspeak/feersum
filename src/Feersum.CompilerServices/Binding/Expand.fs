@@ -208,6 +208,9 @@ type ExpandCtx =
     { mutable LocalCount: int
       mutable Captures: StorageRef list
       mutable HasDynEnv: bool
+      /// Bindings introduced directly by this scope (formals, defines, lets).
+      /// Mirrors the old binder's per-ctx `Scope`; used for capture detection.
+      mutable ScopeEnv: SyntaxEnv
       Diagnostics: DiagnosticBag
       Registry: SourceRegistry
       MangledName: string
@@ -222,6 +225,7 @@ module ExpandCtx =
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
+          ScopeEnv = Map.empty
           Diagnostics = DiagnosticBag.Empty
           Registry = registry
           MangledName = mangledName
@@ -234,6 +238,7 @@ module ExpandCtx =
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
+          ScopeEnv = Map.empty
           Diagnostics = parent.Diagnostics
           Registry = parent.Registry
           MangledName = parent.MangledName
@@ -247,6 +252,7 @@ module ExpandCtx =
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
+          ScopeEnv = Map.empty
           Diagnostics = parent.Diagnostics
           Registry = parent.Registry
           MangledName = mangledName
@@ -288,6 +294,37 @@ module ExpandCtx =
         ctx.Captures <- outer :: ctx.Captures
         ctx.HasDynEnv <- true
         StorageRef.Captured outer
+
+    /// Add a variable binding to this scope's local environment.
+    /// Must be called for every binding introduced by the current lambda frame
+    /// (formals, defines, let bindings) so that nested lambdas can detect
+    /// captures via `tryFindInScope`.
+    let addToScope (ctx: ExpandCtx) (name: string) (storage: StorageRef) =
+        ctx.ScopeEnv <- Map.add name (Variable storage) ctx.ScopeEnv
+
+    /// Recursively search the ctx parent chain for a variable binding,
+    /// registering a capture at each lambda boundary crossed.
+    /// Mirrors the old binder's `tryFindBinding` / `parentLookup` pair.
+    let rec tryFindInScope (name: string) (ctx: ExpandCtx) : StorageRef option =
+        match Map.tryFind name ctx.ScopeEnv with
+        | Some(Variable storage) -> Some storage
+        | Some _ -> None // keyword — not a capturable variable
+        | None ->
+            match ctx.Parent with
+            | Some parent ->
+                match tryFindInScope name parent with
+                | Some outer ->
+                    match outer with
+                    | Captured _
+                    | Arg _
+                    | Local _
+                    | Environment _ ->
+                        ctx.Captures <- outer :: ctx.Captures
+                        ctx.HasDynEnv <- true
+                        Some(StorageRef.Captured outer)
+                    | _ -> Some outer
+                | None -> None
+            | None -> None
 
 // ──────────────────────────────────────────────────────────── Built-in env
 
@@ -669,21 +706,29 @@ module private Expander =
 
     // ── Variable lookup with capture tracking ─────────────────────────────
 
+    /// Resolve a variable name to its (potentially capture-wrapped) storage ref,
+    /// walking the ctx parent chain to detect lambda-boundary crossings.
+    /// Falls back to the ambient `env` for globals and imports.
+    /// Returns `None` (and emits a diagnostic) for keywords or unbound names.
+    let resolveVar (name: string) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : StorageRef option =
+        match ExpandCtx.tryFindInScope name ctx with
+        | Some storage -> Some storage
+        | None ->
+            match Map.tryFind name env with
+            | Some(Variable storage) -> Some storage
+            | Some(SpecialForm _) | Some(MacroDef _) ->
+                ExpandCtx.emitError ctx Diag.illFormedForm loc $"keyword '{name}' used in value position"
+                None
+            | None ->
+                ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
+                None
+
     /// Look up a name in the syntax environment, tracking captures for
     /// variables that come from outer lambda scopes.
     let lookupVar (name: string) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
-        match Map.tryFind name env with
-        | Some(Variable storage) ->
-            // Detect capture: if this storage belongs to a parent lambda scope
-            // it must be tracked.  For now we propagate the storage directly;
-            // capture analysis is handled by Lower.fs as before.
-            BoundExpr.Load storage
-        | Some(SpecialForm _) | Some(MacroDef _) ->
-            ExpandCtx.emitError ctx Diag.illFormedForm loc $"keyword '{name}' used in value position"
-            BoundExpr.Error
-        | None ->
-            ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
-            BoundExpr.Error
+        match resolveVar name loc env ctx with
+        | Some storage -> BoundExpr.Load storage
+        | None -> BoundExpr.Error
 
     // ── Main recursive expander ───────────────────────────────────────────
 
@@ -777,11 +822,9 @@ module private Expander =
         | SpecialFormKind.SetBang ->
             match args with
             | [ StxId(name, idLoc); value ] ->
-                match Map.tryFind name env with
-                | Some(Variable storage) -> BoundExpr.Store(storage, Some(expand value env ctx))
-                | _ ->
-                    ExpandCtx.emitError ctx Diag.undefinedSymbol idLoc $"set! to unbound or non-variable identifier '{name}'"
-                    BoundExpr.Error
+                match resolveVar name idLoc env ctx with
+                | Some storage -> BoundExpr.Store(storage, Some(expand value env ctx))
+                | None -> BoundExpr.Error
             | _ -> illFormed "set!"
 
         | SpecialFormKind.Let -> expandLet args loc env ctx
@@ -817,10 +860,13 @@ module private Expander =
             let names = formalsNames bFormals
             let childCtx = ExpandCtx.childForLambda ctx
 
-            // Extend env with argument bindings (Arg i).
+            // Extend env with argument bindings (Arg i) and register each in
+            // childCtx.ScopeEnv so nested lambdas can detect captures.
             let envWithFormals =
                 names
-                |> List.mapi (fun i name -> name, Variable(StorageRef.Arg i))
+                |> List.mapi (fun i name ->
+                    ExpandCtx.addToScope childCtx name (StorageRef.Arg i)
+                    name, Variable(StorageRef.Arg i))
                 |> List.fold (fun e (k, v) -> Map.add k v e) env
 
             let bodyExprs, _ = expandSeq body envWithFormals childCtx
@@ -843,12 +889,14 @@ module private Expander =
         | [ StxId(name, _) ] ->
             // (define id) — uninitialized
             let storage = ExpandCtx.mintStorage ctx name
+            ExpandCtx.addToScope ctx name storage
             let env' = Map.add name (Variable storage) env
             BoundExpr.Store(storage, None), env'
 
         | [ StxId(name, _); value ] ->
             // (define id value)
             let storage = ExpandCtx.mintStorage ctx name
+            ExpandCtx.addToScope ctx name storage
             // Add name to env before expanding value so self-recursion works.
             let env' = Map.add name (Variable storage) env
             let boundValue = expand value env' ctx
@@ -857,6 +905,7 @@ module private Expander =
         | Stx.List(StxId(name, _) :: formals, _) :: body ->
             // (define (name formals...) body...)
             let storage = ExpandCtx.mintStorage ctx name
+            ExpandCtx.addToScope ctx name storage
             let env' = Map.add name (Variable storage) env
             let lambdaExpr = expandLambda (Stx.List(formals, loc) :: body) loc env' ctx
             BoundExpr.Store(storage, Some lambdaExpr), env'
@@ -864,6 +913,7 @@ module private Expander =
         | Stx.Dotted(StxId(name, _) :: formals, tail, _) :: body ->
             // (define (name formals... . rest) body...)
             let storage = ExpandCtx.mintStorage ctx name
+            ExpandCtx.addToScope ctx name storage
             let env' = Map.add name (Variable storage) env
             let lambdaExpr = expandLambda (Stx.Dotted(formals, tail, loc) :: body) loc env' ctx
             BoundExpr.Store(storage, Some lambdaExpr), env'
@@ -882,6 +932,7 @@ module private Expander =
                 |> List.map (fun (name, initStx) ->
                     let initExpr = expand initStx env ctx
                     let storage = StorageRef.Local(ExpandCtx.nextLocal ctx)
+                    ExpandCtx.addToScope ctx name storage
                     name, storage, initExpr)
 
             // Extend env with all new bindings.
@@ -907,6 +958,7 @@ module private Expander =
                     (fun currentEnv (name, initStx) ->
                         let initExpr = expand initStx currentEnv ctx
                         let storage = StorageRef.Local(ExpandCtx.nextLocal ctx)
+                        ExpandCtx.addToScope ctx name storage
                         let nextEnv = Map.add name (Variable storage) currentEnv
                         BoundExpr.Store(storage, Some initExpr), nextEnv)
                     env
@@ -926,7 +978,9 @@ module private Expander =
             let storages =
                 specs
                 |> List.map (fun (name, _) ->
-                    name, StorageRef.Local(ExpandCtx.nextLocal ctx))
+                    let storage = StorageRef.Local(ExpandCtx.nextLocal ctx)
+                    ExpandCtx.addToScope ctx name storage
+                    name, storage)
 
             let innerEnv =
                 storages
