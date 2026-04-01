@@ -794,7 +794,7 @@ module private Impl =
                 match Macros.parseSyntaxRules id syntaxRules with
                 | Ok(macro) ->
                     BinderCtx.addMacro ctx id macro
-                    BoundExpr.Quoted(BoundDatum.Ident id)
+                    BoundExpr.Nop // NOP as the macro definition itself doesn't need to emit any code
                 | Result.Error e ->
                     ctx.Diagnostics.Add e
                     BoundExpr.Error
