@@ -584,12 +584,18 @@ module private Impl =
                 | _ -> None)
 
         // Process the bodies of the library.
+        // Each `begin` block is bound with `bindSequence` which wraps it in a
+        // `BoundExpr.Seq`.  We flatten that inner Seq so the final
+        // `List.append imports boundBodies |> BoundExpr.Seq` produces a single
+        // level of Seq rather than a nested `Seq [Seq [...]]`.
         let boundBodies =
-            List.choose
-                (function
-                | LibraryDeclaration.Begin block -> block |> bindSequence libCtx |> Some
-                | _ -> None)
-                library.Declarations
+            library.Declarations
+            |> List.collect (function
+                | LibraryDeclaration.Begin block ->
+                    match bindSequence libCtx block with
+                    | BoundExpr.Seq stmts -> stmts
+                    | e -> [ e ]
+                | _ -> [])
 
         // Process `(export ...)` declarations.
         let lookupExport id extId =
