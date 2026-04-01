@@ -470,3 +470,79 @@ let ``expand: be-like-begin pattern with custom ellipsis`` () =
 """
 
     Assert.NotEmpty(exprs)
+
+// ── define inside let body is local, not global ───────────────────────────
+
+[<Fact>]
+let ``expand: define in let body produces local not global`` () =
+    // (let () (define x 28) x) — `x` must be a local even at top level
+    // because the old binder's pushScope makes OuterScopes non-empty,
+    // which forces Local.  Our fix uses ScopeDepth for the same effect.
+    let exprs =
+        expandOk
+            """
+(let ()
+  (define x 28)
+  x)
+"""
+
+    let last = List.last exprs
+    // The let body expands to a Seq containing a Store then a Load.
+    // The Store and Load must both reference a Local, not a Global.
+    let rec findStore =
+        function
+        | BoundExpr.Seq items -> items |> List.tryPick findStore
+        | BoundExpr.Store(StorageRef.Local _, _) as s -> Some s
+        | _ -> None
+
+    match findStore last with
+    | Some(BoundExpr.Store(StorageRef.Local n, Some(BoundExpr.Literal(BoundLiteral.Number 28.0)))) ->
+        Assert.True(n >= 0)
+    | other -> failwithf "Expected Store(Local _, 28), got %A" other
+
+[<Fact>]
+let ``expand: define at true top level produces global`` () =
+    // A plain (define x 42) at top level (not inside any let) must still
+    // produce a Global — ScopeDepth=0 path.
+    let exprs =
+        expandOk
+            """
+(define top-level-x 42)
+"""
+
+    let last = List.last exprs
+
+    match last with
+    | BoundExpr.Store(StorageRef.Global _, _) -> ()
+    | other -> failwithf "Expected Store(Global _, _), got %A" other
+
+[<Fact>]
+let ``expand: nested let scopes do not leak defines as globals`` () =
+    // Multiple nested let scopes must each keep their defines local.
+    let exprs =
+        expandOk
+            """
+(let ()
+  (define a 1)
+  (let ()
+    (define b 2)
+    (+ a b)))
+"""
+
+    Assert.NotEmpty(exprs)
+
+    let rec allStores =
+        function
+        | BoundExpr.Store(s, _) -> [ s ]
+        | BoundExpr.Seq items -> items |> List.collect allStores
+        | _ -> []
+
+    let stores = exprs |> List.collect allStores
+
+    let hasGlobal =
+        stores
+        |> List.exists (function
+            | StorageRef.Global _ -> true
+            | _ -> false)
+
+    Assert.False(hasGlobal, "No define inside a let body should become a Global")

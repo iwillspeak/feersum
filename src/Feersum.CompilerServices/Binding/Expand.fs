@@ -211,6 +211,10 @@ type ExpandCtx =
       /// Bindings introduced directly by this scope (formals, defines, lets).
       /// Mirrors the old binder's per-ctx `Scope`; used for capture detection.
       mutable ScopeEnv: SyntaxEnv
+      /// Number of let/let*/letrec body scopes enclosing the current point.
+      /// `define` within a let body should produce a Local even when IsGlobal
+      /// is true (mirrors the old binder's pushScope/popScope logic).
+      mutable ScopeDepth: int
       Diagnostics: DiagnosticBag
       Registry: SourceRegistry
       MangledName: string
@@ -226,6 +230,7 @@ module ExpandCtx =
           Captures = []
           HasDynEnv = false
           ScopeEnv = Map.empty
+          ScopeDepth = 0
           Diagnostics = DiagnosticBag.Empty
           Registry = registry
           MangledName = mangledName
@@ -239,6 +244,7 @@ module ExpandCtx =
           Captures = []
           HasDynEnv = false
           ScopeEnv = Map.empty
+          ScopeDepth = 0
           Diagnostics = parent.Diagnostics
           Registry = parent.Registry
           MangledName = parent.MangledName
@@ -253,6 +259,7 @@ module ExpandCtx =
           Captures = []
           HasDynEnv = false
           ScopeEnv = Map.empty
+          ScopeDepth = 0
           Diagnostics = parent.Diagnostics
           Registry = parent.Registry
           MangledName = mangledName
@@ -275,7 +282,7 @@ module ExpandCtx =
 
     /// Mint a new storage reference for a fresh binding.
     let mintStorage (ctx: ExpandCtx) (name: string) : StorageRef =
-        if ctx.IsGlobal then
+        if ctx.IsGlobal && ctx.ScopeDepth = 0 then
             StorageRef.Global(ctx.MangledName, Field name)
         else
             StorageRef.Local(nextLocal ctx)
@@ -994,7 +1001,9 @@ module private Expander =
                 stores
                 |> List.fold (fun e (name, storage, _) -> Map.add name (Variable storage) e) env
 
+            ctx.ScopeDepth <- ctx.ScopeDepth + 1
             let bodyExprs, _ = expandSeq body innerEnv ctx
+            ctx.ScopeDepth <- ctx.ScopeDepth - 1
             let storeExprs = stores |> List.map (fun (_, s, v) -> BoundExpr.Store(s, Some v))
             BoundExpr.Seq(storeExprs @ bodyExprs)
         | _ ->
@@ -1017,7 +1026,9 @@ module private Expander =
                         BoundExpr.Store(storage, Some initExpr), nextEnv)
                     env
 
+            ctx.ScopeDepth <- ctx.ScopeDepth + 1
             let bodyExprs, _ = expandSeq body innerEnv ctx
+            ctx.ScopeDepth <- ctx.ScopeDepth - 1
             BoundExpr.Seq(storeExprs @ bodyExprs)
         | _ ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'let*'"
@@ -1059,7 +1070,9 @@ module private Expander =
                     storages
                     specs
 
+            ctx.ScopeDepth <- ctx.ScopeDepth + 1
             let bodyExprs, _ = expandSeq body innerEnv ctx
+            ctx.ScopeDepth <- ctx.ScopeDepth - 1
             BoundExpr.Seq(storeExprs @ bodyExprs)
         | _ ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'letrec'"
