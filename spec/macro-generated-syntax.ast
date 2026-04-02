@@ -1,0 +1,137 @@
+PROGRAM: (0..396)
+  FORM: (0..37)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..21)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..20)
+        IDENTIFIER: (16..20) "base"
+      CLOSE_PAREN: (20..21) ")"
+    ATMOSPHERE: (21..22) " "
+    FORM: (22..36)
+      OPEN_PAREN: (22..23) "("
+      SYMBOL: (23..29)
+        IDENTIFIER: (23..29) "scheme"
+      ATMOSPHERE: (29..30) " "
+      SYMBOL: (30..35)
+        IDENTIFIER: (30..35) "write"
+      CLOSE_PAREN: (35..36) ")"
+    CLOSE_PAREN: (36..37) ")"
+  ATMOSPHERE: (37..39) "\n\n"
+  ATMOSPHERE: (39..110) "; A macro can generate define-syntax forms, creating new macro bindings"
+  ATMOSPHERE: (110..111) "\n"
+  ATMOSPHERE: (111..143) "; as a side-effect of expansion."
+  ATMOSPHERE: (143..144) "\n"
+  FORM: (144..336)
+    OPEN_PAREN: (144..145) "("
+    SYMBOL: (145..158)
+      IDENTIFIER: (145..158) "define-syntax"
+    ATMOSPHERE: (158..159) " "
+    SYMBOL: (159..170)
+      IDENTIFIER: (159..170) "jabberwocky"
+    ATMOSPHERE: (170..173) "\n  "
+    FORM: (173..335)
+      OPEN_PAREN: (173..174) "("
+      SYMBOL: (174..186)
+        IDENTIFIER: (174..186) "syntax-rules"
+      ATMOSPHERE: (186..187) " "
+      FORM: (187..189)
+        OPEN_PAREN: (187..188) "("
+        CLOSE_PAREN: (188..189) ")"
+      ATMOSPHERE: (189..194) "\n    "
+      FORM: (194..334)
+        OPEN_PAREN: (194..195) "("
+        FORM: (195..205)
+          OPEN_PAREN: (195..196) "("
+          SYMBOL: (196..197)
+            IDENTIFIER: (196..197) "_"
+          ATMOSPHERE: (197..198) " "
+          SYMBOL: (198..204)
+            IDENTIFIER: (198..204) "hatter"
+          CLOSE_PAREN: (204..205) ")"
+        ATMOSPHERE: (205..211) "\n     "
+        FORM: (211..333)
+          OPEN_PAREN: (211..212) "("
+          SYMBOL: (212..217)
+            IDENTIFIER: (212..217) "begin"
+          ATMOSPHERE: (217..225) "\n       "
+          FORM: (225..247)
+            OPEN_PAREN: (225..226) "("
+            SYMBOL: (226..232)
+              IDENTIFIER: (226..232) "define"
+            ATMOSPHERE: (232..233) " "
+            SYMBOL: (233..243)
+              IDENTIFIER: (233..243) "march-hare"
+            ATMOSPHERE: (243..244) " "
+            CONSTANT: (244..246)
+              NUMBER: (244..246) "42"
+            CLOSE_PAREN: (246..247) ")"
+          ATMOSPHERE: (247..255) "\n       "
+          FORM: (255..332)
+            OPEN_PAREN: (255..256) "("
+            SYMBOL: (256..269)
+              IDENTIFIER: (256..269) "define-syntax"
+            ATMOSPHERE: (269..270) " "
+            SYMBOL: (270..276)
+              IDENTIFIER: (270..276) "hatter"
+            ATMOSPHERE: (276..286) "\n         "
+            FORM: (286..331)
+              OPEN_PAREN: (286..287) "("
+              SYMBOL: (287..299)
+                IDENTIFIER: (287..299) "syntax-rules"
+              ATMOSPHERE: (299..300) " "
+              FORM: (300..302)
+                OPEN_PAREN: (300..301) "("
+                CLOSE_PAREN: (301..302) ")"
+              ATMOSPHERE: (302..314) "\n           "
+              FORM: (314..330)
+                OPEN_PAREN: (314..315) "("
+                FORM: (315..318)
+                  OPEN_PAREN: (315..316) "("
+                  SYMBOL: (316..317)
+                    IDENTIFIER: (316..317) "_"
+                  CLOSE_PAREN: (317..318) ")"
+                ATMOSPHERE: (318..319) " "
+                SYMBOL: (319..329)
+                  IDENTIFIER: (319..329) "march-hare"
+                CLOSE_PAREN: (329..330) ")"
+              CLOSE_PAREN: (330..331) ")"
+            CLOSE_PAREN: (331..332) ")"
+          CLOSE_PAREN: (332..333) ")"
+        CLOSE_PAREN: (333..334) ")"
+      CLOSE_PAREN: (334..335) ")"
+    CLOSE_PAREN: (335..336) ")"
+  ATMOSPHERE: (336..338) "\n\n"
+  FORM: (338..362)
+    OPEN_PAREN: (338..339) "("
+    SYMBOL: (339..350)
+      IDENTIFIER: (339..350) "jabberwocky"
+    ATMOSPHERE: (350..351) " "
+    SYMBOL: (351..361)
+      IDENTIFIER: (351..361) "mad-hatter"
+    CLOSE_PAREN: (361..362) ")"
+  ATMOSPHERE: (362..363) "\n"
+  FORM: (363..385)
+    OPEN_PAREN: (363..364) "("
+    SYMBOL: (364..371)
+      IDENTIFIER: (364..371) "display"
+    ATMOSPHERE: (371..372) " "
+    FORM: (372..384)
+      OPEN_PAREN: (372..373) "("
+      SYMBOL: (373..383)
+        IDENTIFIER: (373..383) "mad-hatter"
+      CLOSE_PAREN: (383..384) ")"
+    CLOSE_PAREN: (384..385) ")"
+  ATMOSPHERE: (385..386) "\n"
+  FORM: (386..395)
+    OPEN_PAREN: (386..387) "("
+    SYMBOL: (387..394)
+      IDENTIFIER: (387..394) "newline"
+    CLOSE_PAREN: (394..395) ")"
+  ATMOSPHERE: (395..396) "\n"
+  EOF: (396..396) ""

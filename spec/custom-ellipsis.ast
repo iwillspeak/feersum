@@ -1,0 +1,131 @@
+PROGRAM: (0..408)
+  FORM: (0..37)
+    OPEN_PAREN: (0..1) "("
+    SYMBOL: (1..7)
+      IDENTIFIER: (1..7) "import"
+    ATMOSPHERE: (7..8) " "
+    FORM: (8..21)
+      OPEN_PAREN: (8..9) "("
+      SYMBOL: (9..15)
+        IDENTIFIER: (9..15) "scheme"
+      ATMOSPHERE: (15..16) " "
+      SYMBOL: (16..20)
+        IDENTIFIER: (16..20) "base"
+      CLOSE_PAREN: (20..21) ")"
+    ATMOSPHERE: (21..22) " "
+    FORM: (22..36)
+      OPEN_PAREN: (22..23) "("
+      SYMBOL: (23..29)
+        IDENTIFIER: (23..29) "scheme"
+      ATMOSPHERE: (29..30) " "
+      SYMBOL: (30..35)
+        IDENTIFIER: (30..35) "write"
+      CLOSE_PAREN: (35..36) ")"
+    CLOSE_PAREN: (36..37) ")"
+  ATMOSPHERE: (37..39) "\n\n"
+  ATMOSPHERE: (39..112) "; syntax-rules allows a custom ellipsis identifier as the second element."
+  ATMOSPHERE: (112..113) "\n"
+  ATMOSPHERE: (113..178) "; Here `dots` replaces the standard `...` for pattern repetition."
+  ATMOSPHERE: (178..179) "\n"
+  FORM: (179..274)
+    OPEN_PAREN: (179..180) "("
+    SYMBOL: (180..193)
+      IDENTIFIER: (180..193) "define-syntax"
+    ATMOSPHERE: (193..194) " "
+    SYMBOL: (194..200)
+      IDENTIFIER: (194..200) "my-seq"
+    ATMOSPHERE: (200..203) "\n  "
+    FORM: (203..273)
+      OPEN_PAREN: (203..204) "("
+      SYMBOL: (204..216)
+        IDENTIFIER: (204..216) "syntax-rules"
+      ATMOSPHERE: (216..217) " "
+      SYMBOL: (217..221)
+        IDENTIFIER: (217..221) "dots"
+      ATMOSPHERE: (221..222) " "
+      FORM: (222..224)
+        OPEN_PAREN: (222..223) "("
+        CLOSE_PAREN: (223..224) ")"
+      ATMOSPHERE: (224..229) "\n    "
+      FORM: (229..272)
+        OPEN_PAREN: (229..230) "("
+        FORM: (230..248)
+          OPEN_PAREN: (230..231) "("
+          SYMBOL: (231..237)
+            IDENTIFIER: (231..237) "my-seq"
+          ATMOSPHERE: (237..238) " "
+          SYMBOL: (238..242)
+            IDENTIFIER: (238..242) "expr"
+          ATMOSPHERE: (242..243) " "
+          SYMBOL: (243..247)
+            IDENTIFIER: (243..247) "dots"
+          CLOSE_PAREN: (247..248) ")"
+        ATMOSPHERE: (248..254) "\n     "
+        FORM: (254..271)
+          OPEN_PAREN: (254..255) "("
+          SYMBOL: (255..260)
+            IDENTIFIER: (255..260) "begin"
+          ATMOSPHERE: (260..261) " "
+          SYMBOL: (261..265)
+            IDENTIFIER: (261..265) "expr"
+          ATMOSPHERE: (265..266) " "
+          SYMBOL: (266..270)
+            IDENTIFIER: (266..270) "dots"
+          CLOSE_PAREN: (270..271) ")"
+        CLOSE_PAREN: (271..272) ")"
+      CLOSE_PAREN: (272..273) ")"
+    CLOSE_PAREN: (273..274) ")"
+  ATMOSPHERE: (274..276) "\n\n"
+  ATMOSPHERE: (276..322) "; (my-seq 1 2 3) expands to (begin 1 2 3) => 3"
+  ATMOSPHERE: (322..323) "\n"
+  FORM: (323..347)
+    OPEN_PAREN: (323..324) "("
+    SYMBOL: (324..331)
+      IDENTIFIER: (324..331) "display"
+    ATMOSPHERE: (331..332) " "
+    FORM: (332..346)
+      OPEN_PAREN: (332..333) "("
+      SYMBOL: (333..339)
+        IDENTIFIER: (333..339) "my-seq"
+      ATMOSPHERE: (339..340) " "
+      CONSTANT: (340..341)
+        NUMBER: (340..341) "1"
+      ATMOSPHERE: (341..342) " "
+      CONSTANT: (342..343)
+        NUMBER: (342..343) "2"
+      ATMOSPHERE: (343..344) " "
+      CONSTANT: (344..345)
+        NUMBER: (344..345) "3"
+      CLOSE_PAREN: (345..346) ")"
+    CLOSE_PAREN: (346..347) ")"
+  ATMOSPHERE: (347..348) "\n"
+  FORM: (348..357)
+    OPEN_PAREN: (348..349) "("
+    SYMBOL: (349..356)
+      IDENTIFIER: (349..356) "newline"
+    CLOSE_PAREN: (356..357) ")"
+  ATMOSPHERE: (357..359) "\n\n"
+  ATMOSPHERE: (359..375) "; Single element"
+  ATMOSPHERE: (375..376) "\n"
+  FORM: (376..397)
+    OPEN_PAREN: (376..377) "("
+    SYMBOL: (377..384)
+      IDENTIFIER: (377..384) "display"
+    ATMOSPHERE: (384..385) " "
+    FORM: (385..396)
+      OPEN_PAREN: (385..386) "("
+      SYMBOL: (386..392)
+        IDENTIFIER: (386..392) "my-seq"
+      ATMOSPHERE: (392..393) " "
+      CONSTANT: (393..395)
+        NUMBER: (393..395) "99"
+      CLOSE_PAREN: (395..396) ")"
+    CLOSE_PAREN: (396..397) ")"
+  ATMOSPHERE: (397..398) "\n"
+  FORM: (398..407)
+    OPEN_PAREN: (398..399) "("
+    SYMBOL: (399..406)
+      IDENTIFIER: (399..406) "newline"
+    CLOSE_PAREN: (406..407) ")"
+  ATMOSPHERE: (407..408) "\n"
+  EOF: (408..408) ""
