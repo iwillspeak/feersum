@@ -378,6 +378,19 @@ module ExpandCtx =
         ctx.BindingMap <- Map.add id (MacroDef transformer) ctx.BindingMap
         Map.add name id scope
 
+    /// Register an existing StorageRef as a visible variable in scope.
+    /// Used to seed preloaded library bindings into the initial scope
+    /// without allocating new storage (e.g. for Script / REPL mode).
+    let registerStorage
+        (ctx: ExpandCtx)
+        (name: string)
+        (storage: StorageRef)
+        (scope: SyntaxScope)
+        : SyntaxScope =
+        let id = BindingId.fresh ()
+        ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
+        Map.add name id scope
+
 // ──────────────────────────────────────────────────────────────── Built-in scope
 
 module SyntaxScope =
@@ -1160,18 +1173,23 @@ module private Expander =
                 storages
                 |> List.fold (fun s (name, id, _) -> Map.add name id s) scope
 
-            let mutable uninitNames = storages |> List.map (fun (n, _, _) -> n)
+            // uninitIds tracks which BindingIds are still uninitialised.
+            // For letrec, all bindings are uninitialised for all init exprs.
+            // For letrec*, each binding becomes available after its own init.
+            let mutable uninitIds = storages |> List.map (fun (_, id, _) -> id)
 
             let storeExprs =
                 List.map2
-                    (fun (name, _id, storage) (_, initStx) ->
+                    (fun (_name, _id, storage) (_, initStx) ->
+                        // Check the init Stx BEFORE expanding it, so we still
+                        // have source locations from the identifier nodes.
+                        if not isStar then
+                            checkStxForUninitRefs uninitIds initStx innerScope ctx
+
                         let initExpr = expand initStx innerScope ctx
 
-                        if not isStar then
-                            checkUninitialised uninitNames initExpr loc ctx
-
                         if isStar then
-                            uninitNames <- List.tail uninitNames
+                            uninitIds <- List.tail uninitIds
 
                         BoundExpr.Store(storage, Some initExpr))
                     storages
@@ -1185,32 +1203,43 @@ module private Expander =
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'letrec'"
             BoundExpr.Error
 
-    /// Check a BoundExpr for loads from any uninitialised storage slots.
-    and checkUninitialised
-        (uninitNames: string list)
-        (expr: BoundExpr)
-        (loc: TextLocation)
+    /// Walk a Stx tree checking for references to uninitialised BindingIds.
+    ///
+    /// `uninitIds` is the set of BindingIds that have not yet been initialised.
+    /// Skips lambda bodies since those capture the binding reference but are
+    /// only invoked after all initialisers have run.
+    and checkStxForUninitRefs
+        (uninitIds: BindingId list)
+        (stx: Stx)
+        (scope: SyntaxScope)
         (ctx: ExpandCtx)
         =
-        let rec check =
-            function
-            | BoundExpr.Load s -> warnIfUninit s
-            | BoundExpr.Store(_, Some v) -> check v
-            | BoundExpr.Application(fn, args) ->
-                check fn
-                List.iter check args
-            | BoundExpr.If(cond, t, f) ->
-                check cond
-                check t
-                Option.iter check f
-            | BoundExpr.Seq exprs -> List.iter check exprs
-            | BoundExpr.SequencePoint(inner, _) -> check inner
-            | BoundExpr.Lambda _ -> ()
-            | _ -> ()
+        let rec walk (scope: SyntaxScope) (stx: Stx) =
+            match stx with
+            | Stx.Id(name, loc) ->
+                // Resolve name → BindingId in the current scope, check if uninit.
+                match Map.tryFind name scope with
+                | Some id when List.contains id uninitIds ->
+                    name
+                    |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
+                    |> ctx.Diagnostics.Emit Diag.uninitialisedVar loc
+                | _ -> ()
+            | Stx.List(head :: _ as items, _) ->
+                match resolveHead head scope ctx with
+                | Some(SpecialForm SpecialFormKind.Lambda) ->
+                    // References inside a lambda body are safe: the lambda is a
+                    // value, and the body runs only after all inits are done.
+                    ()
+                | _ -> List.iter (walk scope) items
+            | Stx.List(items, _) -> List.iter (walk scope) items
+            | Stx.Dotted(items, tail, _) ->
+                List.iter (walk scope) items
+                walk scope tail
+            | Stx.Closure(inner, closedScope, _) -> walk closedScope inner
+            | Stx.Vec(items, _) -> List.iter (walk scope) items
+            | Stx.Quoted _ | Stx.Const _ | Stx.ByteVec _ -> ()
 
-        and warnIfUninit _storage = ()
-
-        check expr
+        walk scope stx
 
     // ── define-syntax / let-syntax ───────────────────────────────────────
 
@@ -1293,7 +1322,7 @@ module private Expander =
             ExpandCtx.emitError ctx Diag.expandError form.Loc "no macro rule matched the form"
             BoundExpr.Error
         | Some(template, bindings) ->
-            let transcribed = transcribe template bindings macro.DefScope form.Loc
+            let transcribed = transcribe template bindings macro.DefScope form.Loc ctx.Diagnostics
             expand transcribed callScope ctx
 
     // ── Pattern matching ──────────────────────────────────────────────────
@@ -1430,14 +1459,18 @@ module private Expander =
         (bindings: PatternBindings)
         (defScope: SyntaxScope)
         (loc: TextLocation)
+        (diag: DiagnosticBag)
         : Stx =
         match template with
         | StxTemplate.Subst name ->
             match Map.tryFind name bindings with
             | Some(Single(stx, capturedScope)) -> Stx.Closure(stx, capturedScope, loc)
             | Some(Repeated _) ->
-                failwith $"ellipsis variable '{name}' used outside a repeat context"
-            | None -> failwith $"template variable '{name}' not bound"
+                diag.Emit Diag.invalidMacro loc $"ellipsis variable '{name}' used outside a repeat context"
+                Stx.Const(BoundLiteral.Null, loc)
+            | None ->
+                diag.Emit Diag.invalidMacro loc $"template variable '{name}' not bound"
+                Stx.Const(BoundLiteral.Null, loc)
 
         | StxTemplate.Quoted stx ->
             // Literal from the definition site — wrap in the definition-site scope
@@ -1445,32 +1478,34 @@ module private Expander =
             Stx.Closure(stx, defScope, loc)
 
         | StxTemplate.Form(_, elements) ->
-            let children = elements |> List.collect (transcribeElement bindings defScope loc)
+            let children = elements |> List.collect (transcribeElement bindings defScope loc diag)
             Stx.List(children, loc)
 
         | StxTemplate.DottedForm(elems, tail) ->
-            let children = elems |> List.collect (transcribeElement bindings defScope loc)
-            Stx.Dotted(children, transcribe tail bindings defScope loc, loc)
+            let children = elems |> List.collect (transcribeElement bindings defScope loc diag)
+            Stx.Dotted(children, transcribe tail bindings defScope loc diag, loc)
 
         | StxTemplate.Vec elements ->
-            let children = elements |> List.collect (transcribeElement bindings defScope loc)
+            let children = elements |> List.collect (transcribeElement bindings defScope loc diag)
             Stx.Vec(children, loc)
 
     and transcribeElement
         (bindings: PatternBindings)
         (defScope: SyntaxScope)
         (loc: TextLocation)
+        (diag: DiagnosticBag)
         (elem: StxTemplateElement)
         : Stx list =
         match elem with
-        | StxTemplateElement.Template t -> [ transcribe t bindings defScope loc ]
-        | StxTemplateElement.Repeated t -> transcribeRepeated t bindings defScope loc
+        | StxTemplateElement.Template t -> [ transcribe t bindings defScope loc diag ]
+        | StxTemplateElement.Repeated t -> transcribeRepeated t bindings defScope loc diag
 
     and transcribeRepeated
         (template: StxTemplate)
         (bindings: PatternBindings)
         (defScope: SyntaxScope)
         (loc: TextLocation)
+        (diag: DiagnosticBag)
         : Stx list =
         let rec templateRefs tmpl =
             match tmpl with
@@ -1505,7 +1540,7 @@ module private Expander =
                         | other -> other)
                     bindings
 
-            transcribe template perRepBindings defScope loc)
+            transcribe template perRepBindings defScope loc diag)
 
     // ── Import set parsing  ───────────────────────────────────────────────
 
@@ -1755,7 +1790,7 @@ module private Expander =
                     |> List.tryPick (fun (pat, tmpl) ->
                         matchPattern pat form scope |> Option.map (fun b -> tmpl, b))
                     |> Option.map (fun (tmpl, bindings) ->
-                        transcribe tmpl bindings macro.DefScope loc)
+                        transcribe tmpl bindings macro.DefScope loc ctx.Diagnostics)
 
                 match transcribed with
                 | None -> None
@@ -1807,6 +1842,46 @@ module Expand =
             prog.Body
             |> Seq.map (Stx.ofExpr ctx.Registry docId)
             |> List.ofSeq
+
+        let exprs, _ = Expander.expandSeq stxs initialScope ctx
+        exprs
+
+    /// Expand a list of programs, threading scope across units so that
+    /// top-level definitions in one unit are visible in subsequent units.
+    let expandPrograms
+        (progs: Tree.Program list)
+        (initialScope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr list =
+        let exprs, _ =
+            progs
+            |> List.mapFold
+                (fun scope prog ->
+                    let docId = prog.DocId
+
+                    let stxs =
+                        prog.Body
+                        |> Seq.map (Stx.ofExpr ctx.Registry docId)
+                        |> List.ofSeq
+
+                    let exprs, scope' = Expander.expandSeq stxs scope ctx
+                    exprs, scope')
+                initialScope
+
+        List.concat exprs
+
+    /// Expand a script program (single optional expression) using the new expander.
+    let expandScript
+        (script: Tree.ScriptProgram)
+        (initialScope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr list =
+        let docId = script.DocId
+
+        let stxs =
+            script.Body
+            |> Option.map (Stx.ofExpr ctx.Registry docId)
+            |> Option.toList
 
         let exprs, _ = Expander.expandSeq stxs initialScope ctx
         exprs

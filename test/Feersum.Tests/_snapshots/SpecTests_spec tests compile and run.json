@@ -91,7 +91,7 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 32,
+          "Code": 52,
           "Title": "Ill-formed special form"
         },
         "Location": {
@@ -109,7 +109,7 @@
             }
           ]
         },
-        "Message": "Ill-formed 'set!' special form"
+        "Message": "ill-formed 'set!'"
       }
     ]
   },
@@ -214,7 +214,7 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 35,
+          "Code": 51,
           "Title": "Reference to undefined symbol"
         },
         "Location": {
@@ -232,15 +232,15 @@
             }
           ]
         },
-        "Message": "The symbol another is not defined in the current context"
+        "Message": "unbound identifier 'another'"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 40,
-          "Title": "Macro expansion error"
+          "Code": 56,
+          "Title": "Invalid macro definition"
         },
         "Location": {
           "Case": "Span",
@@ -257,15 +257,15 @@
             }
           ]
         },
-        "Message": "Reference to unbound substitution a"
+        "Message": "ellipsis variable 'a' used outside a repeat context"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 40,
-          "Title": "Macro expansion error"
+          "Code": 50,
+          "Title": "Expansion error"
         },
         "Location": {
           "Case": "Span",
@@ -282,7 +282,7 @@
             }
           ]
         },
-        "Message": "No pattern matched the syntax"
+        "Message": "no macro rule matched the form"
       }
     ]
   },
@@ -297,9 +297,9 @@
     "Exit": 0
   },
   "chibi-r7rs-tests.scm": {
-    "Output": "### (\"R7RS\")\n\t### (\"4.1 Primitive expression types\")\n\t\t...........................\n\t### (\"4.2 Derived expression types\")\n\t\t................\n\t### (\"4.3 Macros\")\n\t\t.\nFAIL: expr: expected outer but got inner\n.\nFAIL: expr: expected |...| but got (|...| |...|)\n\nFAIL: expr: expected (100 |...|) but got (|...| (x |...|))\n\nFAIL: expr: expected (|...| 100 200) but got (|...| (|...| x y))\n....\nFAIL: expr: expected (2 0 fail fail) but got (2 0 2 fail)\n..\nFAIL: expr: expected x but got y\n.\nFAIL: expr: expected |bound-identifier=?| but got |free-identifier=?|\n\nFAIL: expr: expected (100 |...|) but got (x |...|)\n\n\t### (\"5 Program structure\")\n\t\t..\n\t### (\"6.1 Equivalence Predicates\")\n\t\t.........................\n\t### (\"6.2 Numbers\")\n\t\t...\n\t### (\"6.3 Booleans\")\n\t\t..................\n\t### (\"6.4 Lists\")\n\t\t.........................................................\n\t### (\"6.5 Symbols\")\n\t\t.................\n\t### (\"6.6 Characters\")\n\t\t...............................................................................\n\t### (\"6.7 Strings\")\n\t\t......\n\t### (\"6.8 Vectors\")\n\t\t........\n\t### (\"6.9 Bytevectors\")\n\t\t..........\n\t### (\"6.10 Control Features\")\n\t\t......\n\t### (\"6.11 Exceptions\")\n\t\t\n\t### (\"6.12 Environments and evaluation\")\n\t\t\n\t### (\"6.13 Input and output\")\n\t\t### (\"Read syntax\")\n\t\t\t\n\t\t### (\"Numeric syntax\")\n\t\t\t\n\t\t\n\t### (\"6.14 System interface\")\n\t\t\n\t\n----------------------\nTotal: 291\nFails: 8\n",
+    "Output": "### (\"R7RS\")\n\t### (\"4.1 Primitive expression types\")\n\t\t...........................\n\t### (\"4.2 Derived expression types\")\n\t\t................\n\t### (\"4.3 Macros\")\n\t\t...\nFAIL: expr: expected |...| but got (|...| |...|)\n\nFAIL: expr: expected (100 |...|) but got (|...| (x |...|))\n\nFAIL: expr: expected (|...| 100 200) but got (|...| (|...| x y))\n....\nFAIL: expr: expected (2 0 fail fail) but got (2 0 2 fail)\n..\nFAIL: expr: expected x but got y\n.\nFAIL: expr: expected |bound-identifier=?| but got |free-identifier=?|\n\nFAIL: expr: expected (100 |...|) but got (x |...|)\n\n\t### (\"5 Program structure\")\n\t\t..\n\t### (\"6.1 Equivalence Predicates\")\n\t\t.........................\n\t### (\"6.2 Numbers\")\n\t\t...\n\t### (\"6.3 Booleans\")\n\t\t..................\n\t### (\"6.4 Lists\")\n\t\t.........................................................\n\t### (\"6.5 Symbols\")\n\t\t.................\n\t### (\"6.6 Characters\")\n\t\t...............................................................................\n\t### (\"6.7 Strings\")\n\t\t......\n\t### (\"6.8 Vectors\")\n\t\t........\n\t### (\"6.9 Bytevectors\")\n\t\t..........\n\t### (\"6.10 Control Features\")\n\t\t......\n\t### (\"6.11 Exceptions\")\n\t\t\n\t### (\"6.12 Environments and evaluation\")\n\t\t\n\t### (\"6.13 Input and output\")\n\t\t### (\"Read syntax\")\n\t\t\t\n\t\t### (\"Numeric syntax\")\n\t\t\t\n\t\t\n\t### (\"6.14 System interface\")\n\t\t\n\t\n----------------------\nTotal: 291\nFails: 7\n",
     "Error": "",
-    "Exit": 8
+    "Exit": 7
   },
   "conditions.scm": {
     "Output": "(3 ; Unspecified value yarp ; Unspecified value)255worldtruetrueok; Unspecified value",
@@ -326,10 +326,10 @@
       {
         "Kind": {
           "Level": {
-            "Case": "Warning"
+            "Case": "Error"
           },
-          "Code": 31,
-          "Title": "Missing export"
+          "Code": 52,
+          "Title": "Ill-formed special form"
         },
         "Location": {
           "Case": "Span",
@@ -346,90 +346,65 @@
             }
           ]
         },
-        "Message": "Could not find exported item we"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Warning"
-          },
-          "Code": 31,
-          "Title": "Missing export"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 5,
-              "Col": 1
-            },
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 6,
-              "Col": 31
-            }
-          ]
-        },
-        "Message": "Could not find exported item don't"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Warning"
-          },
-          "Code": 31,
-          "Title": "Missing export"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 5,
-              "Col": 1
-            },
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 6,
-              "Col": 31
-            }
-          ]
-        },
-        "Message": "Could not find exported item exist"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Warning"
-          },
-          "Code": 20,
-          "Title": "Improper library name"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 4,
-              "Col": 17
-            },
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 4,
-              "Col": 32
-            }
-          ]
-        },
-        "Message": "The name prefix srfi is reserved"
+        "Message": "exported name 'exist' is not defined in library"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 21,
-          "Title": "Invalid library name"
+          "Code": 52,
+          "Title": "Ill-formed special form"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 5,
+              "Col": 1
+            },
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 6,
+              "Col": 31
+            }
+          ]
+        },
+        "Message": "exported name 'don't' is not defined in library"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
+          "Code": 52,
+          "Title": "Ill-formed special form"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 5,
+              "Col": 1
+            },
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 6,
+              "Col": 31
+            }
+          ]
+        },
+        "Message": "exported name 'we' is not defined in library"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
+          "Code": 52,
+          "Title": "Ill-formed special form"
         },
         "Location": {
           "Case": "Span",
@@ -446,65 +421,15 @@
             }
           ]
         },
-        "Message": "Invalid library name part"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Warning"
-          },
-          "Code": 20,
-          "Title": "Improper library name"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 2,
-              "Col": 25
-            },
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 2,
-              "Col": 38
-            }
-          ]
-        },
-        "Message": "Library names should not contain complex characters"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Warning"
-          },
-          "Code": 20,
-          "Title": "Improper library name"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 2,
-              "Col": 17
-            },
-            {
-              "Source": "fail/bad-library-names.scm",
-              "Line": 2,
-              "Col": 39
-            }
-          ]
-        },
-        "Message": "The name prefix scheme is reserved"
+        "Message": "expected identifier in library name"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 21,
-          "Title": "Invalid library name"
+          "Code": 52,
+          "Title": "Ill-formed special form"
         },
         "Location": {
           "Case": "Span",
@@ -521,7 +446,7 @@
             }
           ]
         },
-        "Message": "Expected library name"
+        "Message": "expected list for library name"
       }
     ]
   },
@@ -537,21 +462,21 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 36,
-          "Title": "Invalid import declaration"
+          "Code": 52,
+          "Title": "Ill-formed special form"
         },
         "Location": {
           "Case": "Span",
           "Fields": [
             {
               "Source": "fail/bad-imports.scm",
-              "Line": 3,
-              "Col": 1
+              "Line": 4,
+              "Col": 5
             },
             {
               "Source": "fail/bad-imports.scm",
               "Line": 4,
-              "Col": 42
+              "Col": 41
             }
           ]
         },
@@ -562,8 +487,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 36,
-          "Title": "Invalid import declaration"
+          "Code": 52,
+          "Title": "Ill-formed special form"
         },
         "Location": {
           "Case": "Span",
@@ -571,12 +496,12 @@
             {
               "Source": "fail/bad-imports.scm",
               "Line": 2,
-              "Col": 9
+              "Col": 1
             },
             {
               "Source": "fail/bad-imports.scm",
               "Line": 2,
-              "Col": 17
+              "Col": 18
             }
           ]
         },
@@ -587,33 +512,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 21,
-          "Title": "Invalid library name"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/bad-imports.scm",
-              "Line": 2,
-              "Col": 9
-            },
-            {
-              "Source": "fail/bad-imports.scm",
-              "Line": 2,
-              "Col": 17
-            }
-          ]
-        },
-        "Message": "Expected library name"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 36,
-          "Title": "Invalid import declaration"
+          "Code": 52,
+          "Title": "Ill-formed special form"
         },
         "Location": {
           "Case": "Span",
@@ -621,12 +521,12 @@
             {
               "Source": "fail/bad-imports.scm",
               "Line": 1,
-              "Col": 9
+              "Col": 1
             },
             {
               "Source": "fail/bad-imports.scm",
               "Line": 1,
-              "Col": 29
+              "Col": 30
             }
           ]
         },
@@ -676,33 +576,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 37,
-          "Title": "Use of uninitialised variable"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/bad-letrecs.scm",
-              "Line": 7,
-              "Col": 18
-            },
-            {
-              "Source": "fail/bad-letrecs.scm",
-              "Line": 7,
-              "Col": 32
-            }
-          ]
-        },
-        "Message": "Reference to uninitialised variable 'second' in letrec binding"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 37,
-          "Title": "Use of uninitialised variable"
+          "Code": 55,
+          "Title": "Reference to uninitialised variable in letrec binding"
         },
         "Location": {
           "Case": "Span",
@@ -726,8 +601,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 37,
-          "Title": "Use of uninitialised variable"
+          "Code": 55,
+          "Title": "Reference to uninitialised variable in letrec binding"
         },
         "Location": {
           "Case": "Span",
@@ -735,12 +610,12 @@
             {
               "Source": "fail/bad-letrecs.scm",
               "Line": 3,
-              "Col": 17
+              "Col": 20
             },
             {
               "Source": "fail/bad-letrecs.scm",
               "Line": 3,
-              "Col": 29
+              "Col": 26
             }
           ]
         },
@@ -1097,7 +972,7 @@
     "Exit": 21
   },
   "hygiene.scm": {
-    "Output": "#f\n#f\n42\n42\n1\n99\n#f\n#f\n",
+    "Output": "#f\n#f\n42\n42\n1\n99\n#f\n#t\n",
     "Error": "",
     "Exit": 0
   },
@@ -1108,91 +983,175 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 35,
-          "Title": "Reference to undefined symbol"
+          "Code": 50,
+          "Title": "Expansion error"
         },
         "Location": {
-          "Case": "Missing"
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 47,
+              "Col": 5
+            },
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 47,
+              "Col": 43
+            }
+          ]
         },
-        "Message": "The symbol my-repeating-macro is not defined in the current context"
+        "Message": "no macro rule matched the form"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 40,
-          "Title": "Macro expansion error"
+          "Code": 56,
+          "Title": "Invalid macro definition"
         },
         "Location": {
-          "Case": "Missing"
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 44,
+              "Col": 3
+            },
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 45,
+              "Col": 49
+            }
+          ]
         },
-        "Message": "Unsupported pattern element"
+        "Message": "unexpected ellipsis in pattern"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 35,
-          "Title": "Reference to undefined symbol"
+          "Code": 50,
+          "Title": "Expansion error"
         },
         "Location": {
-          "Case": "Missing"
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 32,
+              "Col": 5
+            },
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 32,
+              "Col": 26
+            }
+          ]
         },
-        "Message": "The symbol my-vec-macro is not defined in the current context"
+        "Message": "no macro rule matched the form"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 35,
-          "Title": "Reference to undefined symbol"
+          "Code": 50,
+          "Title": "Expansion error"
         },
         "Location": {
-          "Case": "Missing"
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 31,
+              "Col": 5
+            },
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 31,
+              "Col": 32
+            }
+          ]
         },
-        "Message": "The symbol my-vec-macro is not defined in the current context"
+        "Message": "no macro rule matched the form"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 35,
-          "Title": "Reference to undefined symbol"
+          "Code": 56,
+          "Title": "Invalid macro definition"
         },
         "Location": {
-          "Case": "Missing"
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 26,
+              "Col": 3
+            },
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 28,
+              "Col": 33
+            }
+          ]
         },
-        "Message": "The symbol my-vec-macro is not defined in the current context"
+        "Message": "unexpected ellipsis in pattern"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 40,
-          "Title": "Macro expansion error"
+          "Code": 52,
+          "Title": "Ill-formed special form"
         },
         "Location": {
-          "Case": "Missing"
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 22,
+              "Col": 5
+            },
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 22,
+              "Col": 23
+            }
+          ]
         },
-        "Message": "Unsupported pattern element"
+        "Message": "dotted pair in expression position"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 30,
-          "Title": "Invalid or incomplete pattern syntax"
+          "Code": 50,
+          "Title": "Expansion error"
         },
         "Location": {
-          "Case": "Missing"
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 19,
+              "Col": 5
+            },
+            {
+              "Source": "fail/my-macros.scm",
+              "Line": 19,
+              "Col": 19
+            }
+          ]
         },
-        "Message": "Unexpected dotted form in expression position"
+        "Message": "no macro rule matched the form"
       }
     ]
   }

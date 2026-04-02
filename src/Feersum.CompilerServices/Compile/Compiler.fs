@@ -11,6 +11,9 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Targets
 open Feersum.CompilerServices.Syntax.Tree
+#if USE_NEW_EXPAND
+open Feersum.CompilerServices.NewBindingTest
+#endif
 
 type CompileResult =
     { Diagnostics: Diagnostic list
@@ -53,6 +56,42 @@ module Compilation =
             else
                 Binder.emptyScope
 
+#if USE_NEW_EXPAND
+        let registry =
+            match input with
+            | CompileInput.Program(reg, _) -> reg
+            | CompileInput.Script(reg, _) -> reg
+
+        let ctx = ExpandCtx.createGlobal registry "LispProgram" allLibs
+
+        // Seed scope with builtin macros from the standard library.
+        let macroScope =
+            Builtins.loadBuiltinMacroEnv ()
+            |> List.fold (fun s (name, tr) -> ExpandCtx.addMacro ctx name tr s) SyntaxScope.builtin
+
+        // For Script mode, preload all library exports as variable bindings so
+        // callers don't need explicit `import` forms (mirrors old binder behaviour).
+        let initialScope =
+            if options.OutputType = OutputType.Script then
+                scope
+                |> Map.fold (fun s name storage -> ExpandCtx.registerStorage ctx name storage s) macroScope
+            else
+                macroScope
+
+        let boundExprs =
+            Instrumentation.withPhase
+                "bind"
+                (fun () ->
+                    match input with
+                    | CompileInput.Program(_, progs) -> Expand.expandPrograms progs initialScope ctx
+                    | CompileInput.Script(_, script) -> Expand.expandScript script initialScope ctx)
+                ()
+
+        let bound: BoundSyntaxTree =
+            { Root = ExpandCtx.intoBody ctx boundExprs
+              MangledName = ctx.MangledName
+              Diagnostics = ctx.Diagnostics.Diagnostics }
+#else
         let registry, units =
             match input with
             | CompileInput.Program(reg, progs) -> reg, progs |> List.map (fun prog -> prog.Body |> List.ofSeq)
@@ -60,6 +99,7 @@ module Compilation =
 
         let bound =
             Instrumentation.withPhase "bind" (Binder.bind scope allLibs registry) units
+#endif
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then

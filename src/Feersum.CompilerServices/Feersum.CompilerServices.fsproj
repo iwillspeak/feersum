@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <!-- Default to using the new expander. Override with /p:UseNewExpand=false to disable. -->
+    <UseNewExpand Condition="'$(UseNewExpand)' == ''">true</UseNewExpand>
+    <DefineConstants Condition="'$(UseNewExpand)' == 'true'">$(DefineConstants);USE_NEW_EXPAND</DefineConstants>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>Feersum Scheme Compiler Services Library</Title>
     <Description>
