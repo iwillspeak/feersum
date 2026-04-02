@@ -205,30 +205,26 @@ module private BuiltinMacros =
             | Some transformer -> transformer
             | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics
 
-    /// The builtin macros in the new SyntaxTransformer format, keyed by name.
-    /// Merge this into the initial SyntaxEnv for use by the new expander.
-    let newFormatEnv : SyntaxEnv =
+    /// The builtin macros in the new SyntaxTransformer format.
+    /// Returns a list of (name, transformer) pairs to be registered via ExpandCtx.addMacro.
+    let newFormatTransformers : (string * SyntaxTransformer) list =
         [ "and",    macroAndSrc
           "or",     macroOrSrc
           "when",   macroWhenSrc
           "unless", macroUnlessSrc
           "cond",   macroCondSrc ]
-        |> List.map (fun (name, src) ->
-            name, SyntaxBinding.MacroDef(parseBuiltinMacroNew name src))
-        |> Map.ofList
+        |> List.map (fun (name, src) -> name, parseBuiltinMacroNew name src)
 
 // ------------------------ Public Builtins API --------------------------------
 
 module Builtins =
     open Feersum.CompilerServices.NewBindingTest
 
-    /// Returns a SyntaxEnv fragment containing all builtin macros (`and`, `or`,
-    /// `when`, `unless`, `cond`) as new-format `MacroDef` entries.  Merge this
-    /// into the initial `SyntaxEnv` passed to `Expand.expandProgram` so that the
-    /// new expander can recognise and expand these macros without needing to
-    /// import `(feersum builtin macros)`.
-    let loadBuiltinMacroEnv () : SyntaxEnv =
-        BuiltinMacros.newFormatEnv
+    /// Returns the builtin macros (`and`, `or`, `when`, `unless`, `cond`) as
+    /// a list of (name, transformer) pairs.  Use `ExpandCtx.addMacro` to add
+    /// each one to the initial scope before calling `Expand.expandProgram`.
+    let loadBuiltinMacroEnv () : (string * SyntaxTransformer) list =
+        BuiltinMacros.newFormatTransformers
 
 
     /// Scan the `externAssms` and retrieve the core types that are required to

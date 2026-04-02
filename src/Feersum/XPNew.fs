@@ -37,10 +37,10 @@ let runXpNewRepl (options: CompilationOptions) args =
             dumpDiagnostics prog.Diagnostics
         else
             let ctx = ExpandCtx.createGlobal registry "LispProgram" allLibs
-            let initialEnv =
+            let initialScope =
                 Builtins.loadBuiltinMacroEnv ()
-                |> Map.fold (fun e k v -> Map.add k v e) SyntaxEnv.builtin
-            let result = Expand.expandProgram prog.Root initialEnv ctx
+                |> List.fold (fun s (name, tr) -> ExpandCtx.addMacro ctx name tr s) SyntaxScope.builtin
+            let result = Expand.expandProgram prog.Root initialScope ctx
             dumpDiagnostics ctx.Diagnostics.Diagnostics
             if not (hasErrors ctx.Diagnostics.Diagnostics) then
                 printfn "%A" result)

@@ -51,8 +51,8 @@ if not noBuild then
 let specDir = Path.Combine(repoRoot, "spec")
 
 let specFiles =
-    [| yield! Directory.GetFiles(specDir, "*.scm")
-       yield! Directory.GetFiles(specDir, "*.sld") |]
+    [| yield! Directory.GetFiles(specDir, "*.scm", SearchOption.AllDirectories)
+       yield! Directory.GetFiles(specDir, "*.sld", SearchOption.AllDirectories) |]
     |> Array.sort
     |> Array.filter (fun f ->
         match filter with

@@ -51,7 +51,27 @@ type SpecialFormKind =
     | Import
     | DefineLibrary
 
-// ──────────────────────────────── Syntax env, Stx, and macro pattern/template
+// ──────────────────────────────────── BindingId and SyntaxScope
+
+/// A globally unique identity for a single binding introduction.
+/// Variables with the same name but introduced at different points get
+/// different BindingIds, enabling hygienic expansion without gensyms.
+[<Struct>]
+type BindingId = private BindingId of int
+
+module BindingId =
+    let mutable private counter = 0
+
+    let fresh () =
+        let id = counter
+        counter <- id + 1
+        BindingId id
+
+/// Immutable name → BindingId mapping threaded through all expand functions.
+/// Syntactic closures carry a snapshot of the scope at their definition site.
+type SyntaxScope = Map<string, BindingId>
+
+// ──────────────────────────────────── Syntax pattern types
 
 /// Pattern element for matching `Stx` syntax in macro rules.
 /// `Constant` carries a `BoundLiteral` (the compiled literal value) rather than
@@ -75,8 +95,41 @@ type StxPattern =
     /// Match a vector literal `#(...)`.
     | Vec of StxPattern list
 
-// Template types — mutually recursive with each other and with
-// SyntaxTransformer / SyntaxEnv / SyntaxBinding / Stx.
+// ──────────────────────────────────── Stx (defined before StxTemplate so it can be referenced)
+
+/// The intermediate hygiene-annotated syntax type.
+/// Every node carries a source location; `Closure` nodes carry the definition-site scope.
+[<RequireQualifiedAccess>]
+type Stx =
+    /// An identifier (raw, unresolved name).
+    | Id of name: string * loc: TextLocation
+    /// A self-evaluating constant.
+    | Const of value: BoundLiteral * loc: TextLocation
+    /// A proper list — `(e1 e2 … en)`.
+    | List of items: Stx list * loc: TextLocation
+    /// An improper list — `(e1 e2 … . tail)`.
+    | Dotted of items: Stx list * tail: Stx * loc: TextLocation
+    /// A quoted datum — `'datum`.
+    | Quoted of inner: Stx * loc: TextLocation
+    /// A syntactic closure — expand `inner` in `scope` rather than the ambient scope.
+    | Closure of inner: Stx * scope: SyntaxScope * loc: TextLocation
+    /// A vector literal — `#(e1 e2 … en)`.
+    | Vec of items: Stx list * loc: TextLocation
+    /// A byte-vector literal — `#u8(b1 b2 … bn)`.
+    | ByteVec of bytes: Result<byte, string> list * loc: TextLocation
+
+    member x.Loc =
+        match x with
+        | Id(_, l)
+        | Const(_, l)
+        | List(_, l)
+        | Dotted(_, _, l)
+        | Quoted(_, l)
+        | Closure(_, _, l)
+        | Vec(_, l)
+        | ByteVec(_, l) -> l
+
+// ──────────────────────────────────── Template types (can now reference Stx)
 
 /// A macro template element — either a single sub-template or a repeated one.
 [<RequireQualifiedAccess>]
@@ -86,8 +139,7 @@ type StxTemplateElement =
 
 /// Template for producing new `Stx` syntax in macro rules.
 /// `Quoted` carries the literal `Stx` node captured at definition time; on
-/// transcription it is wrapped in a `Stx.Closure` with the definition-site env
-/// for hygienic identifier capture.
+/// transcription it is wrapped in a `Stx.Closure` with the definition-site scope.
 and [<RequireQualifiedAccess>] StxTemplate =
     /// A literal node from the definition site (wrapped in closure for hygiene).
     | Quoted of stx: Stx
@@ -100,70 +152,18 @@ and [<RequireQualifiedAccess>] StxTemplate =
     /// Produce a vector literal.
     | Vec of elements: StxTemplateElement list
 
-/// What a name maps to at syntax time.
-and SyntaxBinding =
-    | SpecialForm of SpecialFormKind
-    | MacroDef of SyntaxTransformer
-    | Variable of StorageRef
+// ──────────────────────────────────── Pattern capture types
 
-/// A macro transformer: patterns, templates, and definition-site environment.
-and SyntaxTransformer =
-    { Patterns: (StxPattern * StxTemplate) list
-      DefEnv: SyntaxEnv
-      DefLoc: TextLocation }
-
-/// Immutable map from raw names to their current syntactic meaning.
-and SyntaxEnv = Map<string, SyntaxBinding>
-
-// ─────────────────────────────────────────────────────────────────────── Stx
-
-/// The intermediate hygiene-annotated syntax type.
-/// Every node carries a source location; `Closure` nodes carry an explicit env.
-and [<RequireQualifiedAccess>] Stx =
-    /// An identifier (raw, unresolved name).
-    | Id of name: string * loc: TextLocation
-    /// A self-evaluating constant.
-    | Const of value: BoundLiteral * loc: TextLocation
-    /// A proper list — `(e1 e2 … en)`.
-    | List of items: Stx list * loc: TextLocation
-    /// An improper list — `(e1 e2 … . tail)`.
-    | Dotted of items: Stx list * tail: Stx * loc: TextLocation
-    /// A quoted datum — `'datum`.
-    | Quoted of inner: Stx * loc: TextLocation
-    /// A syntactic closure — expand `inner` in `env` regardless of ambient env.
-    | Closure of inner: Stx * env: SyntaxEnv * loc: TextLocation
-    /// A vector literal — `#(e1 e2 … en)`. Elements are already converted to Stx
-    /// and are treated as data (never evaluated as code).
-    | Vec of items: Stx list * loc: TextLocation
-    /// A byte-vector literal — `#u8(b1 b2 … bn)`. Each element is a pre-parsed
-    /// `Result<byte, string>`; errors are deferred until `expand` time so that
-    /// diagnostics can be emitted with a `DiagnosticBag`.
-    | ByteVec of bytes: Result<byte, string> list * loc: TextLocation
-
-    /// Extract the location from any node.
-    member x.Loc =
-        match x with
-        | Id(_, l)
-        | Const(_, l)
-        | List(_, l)
-        | Dotted(_, _, l)
-        | Quoted(_, l)
-        | Closure(_, _, l)
-        | Vec(_, l)
-        | ByteVec(_, l) -> l
-
-// ────────────────────────────────────────────────────────────── Pattern types
-
-/// A captured pattern variable: the matched Stx paired with its captured env.
-and PatternCapture =
-    | Single of stx: Stx * env: SyntaxEnv
-    | Repeated of (Stx * SyntaxEnv) list
+/// A captured pattern variable: the matched Stx paired with the scope at capture time.
+type PatternCapture =
+    | Single of stx: Stx * scope: SyntaxScope
+    | Repeated of (Stx * SyntaxScope) list
 
 /// All captured bindings from a successful pattern match.
-and PatternBindings = Map<string, PatternCapture>
+type PatternBindings = Map<string, PatternCapture>
 
-/// Convert an `Expression` (Firethorn CST node) into a `Stx` node.
-/// Requires a `SourceRegistry` and `DocId` to resolve source locations.
+// ──────────────────────────────────── Convert CST Expression to Stx
+
 module Stx =
 
     let rec ofExpr (reg: SourceRegistry) (docId: DocId) (expr: Expression) : Stx =
@@ -192,25 +192,44 @@ module Stx =
 
             Stx.Quoted(inner, loc)
         | VecNode v ->
-            // Vector literals: elements are data, never code.
             let items = v.Body |> Seq.map (ofExpr reg docId) |> List.ofSeq
             Stx.Vec(items, loc)
         | ByteVecNode b ->
-            // Byte-vector literal: pre-parse each element; defer error reporting
-            // to expand time where a DiagnosticBag is available.
             let bytes = b.Body |> List.map (fun bv -> bv.Value)
             Stx.ByteVec(bytes, loc)
 
+// ──────────────────────────────────── Transformer and BindingMeaning types
+
+/// A macro transformer: patterns, templates, and definition-site scope.
+type SyntaxTransformer =
+    { Patterns: (StxPattern * StxTemplate) list
+      DefScope: SyntaxScope
+      DefLoc: TextLocation }
+
+/// What a BindingId resolves to at compile time.
+type BindingMeaning =
+    | SpecialForm of SpecialFormKind
+    | MacroDef of SyntaxTransformer
+    | Variable of StorageRef * lambdaDepth: int
+
+/// BindingId → its compile-time meaning.
+type BindingMap = Map<BindingId, BindingMeaning>
+
 // ──────────────────────────────────────────────────────────────── ExpandCtx
 
-/// Mutable per-scope state threaded through the expander.
+/// Mutable per-lambda state threaded through the expander.
 type ExpandCtx =
     { mutable LocalCount: int
       mutable Captures: StorageRef list
       mutable HasDynEnv: bool
-      /// Bindings introduced directly by this scope (formals, defines, lets).
-      /// Mirrors the old binder's per-ctx `Scope`; used for capture detection.
-      mutable ScopeEnv: SyntaxEnv
+      /// Nesting depth of lambda frames. 0 = global/library scope.
+      /// Incremented in `childForLambda`. Used to detect cross-lambda captures
+      /// via comparison with `Variable(_, lambdaDepth)` in BindingMap.
+      LambdaDepth: int
+      /// Mutable map from BindingId to its compile-time meaning.
+      /// Initialized from the parent's BindingMap (inheriting all visible bindings);
+      /// extended as new bindings are introduced in this frame.
+      mutable BindingMap: BindingMap
       /// Number of let/let*/letrec body scopes enclosing the current point.
       /// `define` within a let body should produce a Local even when IsGlobal
       /// is true (mirrors the old binder's pushScope/popScope logic).
@@ -224,12 +243,23 @@ type ExpandCtx =
 
 module ExpandCtx =
 
+    // Forward-declared mutable so SyntaxScope module can populate it after definition.
+    let mutable private _builtinBindingMap: BindingMap = Map.empty
+
+    let internal setBuiltinBindingMap (m: BindingMap) =
+        _builtinBindingMap <- m
+
     /// Create a root context for global-scope expansion.
-    let createGlobal (registry: SourceRegistry) (mangledName: string) (libraries: LibrarySignature<StorageRef> list) =
+    let createGlobal
+        (registry: SourceRegistry)
+        (mangledName: string)
+        (libraries: LibrarySignature<StorageRef> list)
+        =
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
-          ScopeEnv = Map.empty
+          LambdaDepth = 0
+          BindingMap = _builtinBindingMap
           ScopeDepth = 0
           Diagnostics = DiagnosticBag.Empty
           Registry = registry
@@ -243,7 +273,8 @@ module ExpandCtx =
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
-          ScopeEnv = Map.empty
+          LambdaDepth = parent.LambdaDepth + 1
+          BindingMap = parent.BindingMap
           ScopeDepth = 0
           Diagnostics = parent.Diagnostics
           Registry = parent.Registry
@@ -252,13 +283,13 @@ module ExpandCtx =
           Libraries = parent.Libraries
           Parent = Some parent }
 
-    /// Create a child context for a library body.
-    /// The library gets its own global scope with a dedicated mangled name.
+    /// Create a child context for a library body (own global scope).
     let childForLibrary (parent: ExpandCtx) (mangledName: string) =
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
-          ScopeEnv = Map.empty
+          LambdaDepth = 0
+          BindingMap = parent.BindingMap
           ScopeDepth = 0
           Diagnostics = parent.Diagnostics
           Registry = parent.Registry
@@ -267,27 +298,22 @@ module ExpandCtx =
           Libraries = parent.Libraries
           Parent = Some parent }
 
-    /// Resolve a location for diagnostic emission.
-    let resolveLocation (ctx: ExpandCtx) (loc: TextLocation) = loc
+    let resolveLocation (_ctx: ExpandCtx) (loc: TextLocation) = loc
 
-    /// Emit an error diagnostic.
     let emitError (ctx: ExpandCtx) (kind: DiagnosticKind) (loc: TextLocation) (msg: string) =
         ctx.Diagnostics.Emit kind loc msg
 
-    /// Allocate the next local slot index.
     let nextLocal (ctx: ExpandCtx) =
         let idx = ctx.LocalCount
         ctx.LocalCount <- idx + 1
         idx
 
-    /// Mint a new storage reference for a fresh binding.
     let mintStorage (ctx: ExpandCtx) (name: string) : StorageRef =
         if ctx.IsGlobal && ctx.ScopeDepth = 0 then
             StorageRef.Global(ctx.MangledName, Field name)
         else
             StorageRef.Local(nextLocal ctx)
 
-    /// Convert a context and list of body expressions into a `BoundBody`.
     let intoBody (ctx: ExpandCtx) (exprs: BoundExpr list) : BoundBody =
         let env = if ctx.HasDynEnv then Some [] else None
 
@@ -296,67 +322,100 @@ module ExpandCtx =
           Captures = ctx.Captures
           EnvMappings = env }
 
-    /// Register a capture of an outer storage reference.
     let capture (ctx: ExpandCtx) (outer: StorageRef) : StorageRef =
         ctx.Captures <- outer :: ctx.Captures
         ctx.HasDynEnv <- true
         StorageRef.Captured outer
 
-    /// Add a variable binding to this scope's local environment.
-    /// Must be called for every binding introduced by the current lambda frame
-    /// (formals, defines, let bindings) so that nested lambdas can detect
-    /// captures via `tryFindInScope`.
-    let addToScope (ctx: ExpandCtx) (name: string) (storage: StorageRef) =
-        ctx.ScopeEnv <- Map.add name (Variable storage) ctx.ScopeEnv
-
-    /// Recursively search the ctx parent chain for a variable binding,
-    /// registering a capture at each lambda boundary crossed.
-    /// Mirrors the old binder's `tryFindBinding` / `parentLookup` pair.
-    let rec tryFindInScope (name: string) (ctx: ExpandCtx) : StorageRef option =
-        match Map.tryFind name ctx.ScopeEnv with
-        | Some(Variable storage) -> Some storage
-        | Some _ -> None // keyword — not a capturable variable
-        | None ->
+    /// Walk the parent context chain, registering captures at each lambda
+    /// boundary crossed, until we reach the frame where `definedAt` was
+    /// introduced.  Replaces the old `tryFindInScope` parent-chain walk.
+    let rec captureAcrossLambdas
+        (storage: StorageRef)
+        (definedAt: int)
+        (ctx: ExpandCtx)
+        : StorageRef =
+        if ctx.LambdaDepth <= definedAt then
+            // We are at or above the defining frame — no capture needed here.
+            storage
+        else
             match ctx.Parent with
             | Some parent ->
-                match tryFindInScope name parent with
-                | Some outer ->
-                    match outer with
-                    | Captured _
-                    | Arg _
-                    | Local _
-                    | Environment _ ->
-                        ctx.Captures <- outer :: ctx.Captures
-                        ctx.HasDynEnv <- true
-                        Some(StorageRef.Captured outer)
-                    | _ -> Some outer
-                | None -> None
-            | None -> None
+                let outerStorage = captureAcrossLambdas storage definedAt parent
 
-// ──────────────────────────────────────────────────────────── Built-in env
+                match outerStorage with
+                | Captured _
+                | Arg _
+                | Local _
+                | Environment _ ->
+                    ctx.Captures <- outerStorage :: ctx.Captures
+                    ctx.HasDynEnv <- true
+                    StorageRef.Captured outerStorage
+                | _ -> outerStorage
+            | None -> storage
 
+    /// Introduce a new variable binding: fresh BindingId, storage allocation,
+    /// register in ctx.BindingMap, return (id, storage, extended scope).
+    let mintVar
+        (ctx: ExpandCtx)
+        (name: string)
+        (scope: SyntaxScope)
+        : BindingId * StorageRef * SyntaxScope =
+        let id = BindingId.fresh ()
+        let storage = mintStorage ctx name
+        ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
+        id, storage, Map.add name id scope
+
+    /// Register a macro (syntax transformer) in ctx.BindingMap and return the
+    /// extended scope with the macro name mapped to its fresh BindingId.
+    let addMacro
+        (ctx: ExpandCtx)
+        (name: string)
+        (transformer: SyntaxTransformer)
+        (scope: SyntaxScope)
+        : SyntaxScope =
+        let id = BindingId.fresh ()
+        ctx.BindingMap <- Map.add id (MacroDef transformer) ctx.BindingMap
+        Map.add name id scope
+
+// ──────────────────────────────────────────────────────────────── Built-in scope
+
+module SyntaxScope =
+
+    let private builtinEntries: (string * SpecialFormKind) list =
+        [ "if", SpecialFormKind.If
+          "lambda", SpecialFormKind.Lambda
+          "define", SpecialFormKind.Define
+          "set!", SpecialFormKind.SetBang
+          "begin", SpecialFormKind.Begin
+          "quote", SpecialFormKind.Quote
+          "let", SpecialFormKind.Let
+          "let*", SpecialFormKind.LetStar
+          "letrec", SpecialFormKind.Letrec
+          "letrec*", SpecialFormKind.LetrecStar
+          "define-syntax", SpecialFormKind.DefineSyntax
+          "let-syntax", SpecialFormKind.LetSyntax
+          "letrec-syntax", SpecialFormKind.LetrecSyntax
+          "define-library", SpecialFormKind.DefineLibrary
+          "import", SpecialFormKind.Import ]
+
+    let private builtinPairs =
+        builtinEntries |> List.map (fun (name, kind) -> name, BindingId.fresh (), kind)
+
+    /// The initial scope mapping keyword names to their BindingIds.
+    /// Callers extend this with macro and variable bindings before expansion.
+    let builtin: SyntaxScope =
+        builtinPairs |> List.map (fun (name, id, _) -> name, id) |> Map.ofList
+
+    let private builtinMap: BindingMap =
+        builtinPairs |> List.map (fun (_, id, kind) -> id, SpecialForm kind) |> Map.ofList
+
+    // Seed ExpandCtx's forward-declared _builtinBindingMap.
+    do ExpandCtx.setBuiltinBindingMap builtinMap
+
+// Backward-compatibility alias so existing call-sites can still write SyntaxEnv.builtin.
 module SyntaxEnv =
-
-    /// The initial syntax environment populated with all built-in special form
-    /// keywords. Callers extend this with global variable bindings before
-    /// calling `Expand.expandProgram`.
-    let builtin: SyntaxEnv =
-        [ "if", SpecialForm SpecialFormKind.If
-          "lambda", SpecialForm SpecialFormKind.Lambda
-          "define", SpecialForm SpecialFormKind.Define
-          "set!", SpecialForm SpecialFormKind.SetBang
-          "begin", SpecialForm SpecialFormKind.Begin
-          "quote", SpecialForm SpecialFormKind.Quote
-          "let", SpecialForm SpecialFormKind.Let
-          "let*", SpecialForm SpecialFormKind.LetStar
-          "letrec", SpecialForm SpecialFormKind.Letrec
-          "letrec*", SpecialForm SpecialFormKind.LetrecStar
-          "define-syntax", SpecialForm SpecialFormKind.DefineSyntax
-          "let-syntax", SpecialForm SpecialFormKind.LetSyntax
-          "letrec-syntax", SpecialForm SpecialFormKind.LetrecSyntax
-          "define-library", SpecialForm SpecialFormKind.DefineLibrary
-          "import", SpecialForm SpecialFormKind.Import ]
-        |> Map.ofList
+    let builtin = SyntaxScope.builtin
 
 // ─────────────────────────────────────────────────────────────── MacrosNew
 
@@ -365,7 +424,7 @@ module SyntaxEnv =
 /// new expander pipeline; only the functions consumed by `Expander` are public.
 module MacrosNew =
 
-    // Local aliases to avoid shadowing by LibraryDeclaration.Result.Error / ImportSet.Result.Error
+    // ── Helpers ──────────────────────────────────────────────────────────
 
     /// Collect all bound pattern variable names from a pattern.
     let rec findBound (pat: StxPattern) : string list =
@@ -384,6 +443,7 @@ module MacrosNew =
             | Stx.Id(name, _) -> Result.Ok name
             | Stx.Closure(inner, _, _) -> unwrapId inner
             | _ -> Result.Error "literal list must contain identifiers"
+
         let rec unwrapList s =
             match s with
             | Stx.List(items, _) ->
@@ -398,11 +458,11 @@ module MacrosNew =
                     (Result.Ok [])
             | Stx.Closure(inner, _, _) -> unwrapList inner
             | _ -> Result.Error "expected list of literals"
+
         unwrapList stx
 
     /// Returns true if `stx` is the ellipsis identifier `ell`, peeling any
-    /// `Stx.Closure` wrappers — needed because macro transcription wraps
-    /// free identifiers (like a custom ellipsis token) in closures.
+    /// `Stx.Closure` wrappers.
     let rec private isEllipsisNode (ell: string) (stx: Stx) : bool =
         match stx with
         | Stx.Id(name, _) -> name = ell
@@ -410,8 +470,7 @@ module MacrosNew =
         | _ -> false
 
     /// Parse `(pats...)` or `(pats... . tail)` form body into a list of
-    /// patterns, detecting ellipsis.  The first element (macro keyword) is
-    /// already dropped by the caller.
+    /// patterns, detecting ellipsis.
     let rec parseFormBody
         (kw: string)
         (ellipsis: string)
@@ -460,14 +519,11 @@ module MacrosNew =
         | Stx.List(items, _) ->
             match items with
             | Stx.Id(head, _) :: rest when head = kw ->
-                // The keyword at the head of each rule pattern becomes a Variable
-                // binding so that recursive templates like `(or e2 ...)` can
-                // refer back to the macro keyword via substitution and re-expand
-                // it at the call site.
                 match parseFormBody kw ellipsis lits rest None with
                 | Result.Error e -> Result.Error e
                 | Result.Ok(pats, None) -> Result.Ok(StxPattern.Form(StxPattern.Variable kw :: pats))
-                | Result.Ok(pats, Some tail) -> Result.Ok(StxPattern.DottedForm(StxPattern.Variable kw :: pats, tail))
+                | Result.Ok(pats, Some tail) ->
+                    Result.Ok(StxPattern.DottedForm(StxPattern.Variable kw :: pats, tail))
             | _ ->
                 match parseFormBody kw ellipsis lits items None with
                 | Result.Error e -> Result.Error e
@@ -493,7 +549,7 @@ module MacrosNew =
             |> Result.map StxPattern.Vec
         | _ -> Result.Error $"unrecognised pattern node: {stx}"
 
-    /// Detect ellipsis in a template form body, like `parseFormBody` for patterns.
+    /// Detect ellipsis in a template form body.
     let rec parseTemplateFormBody
         (ellipsis: string)
         (bound: string list)
@@ -557,9 +613,6 @@ module MacrosNew =
                 (Result.Ok [])
             |> Result.map StxTemplate.Vec
         | other ->
-            // Literal datum (constant, quoted, etc.) — preserve it with its
-            // definition-site syntax object so transcribe can wrap it in a
-            // Closure and preserve hygiene.
             Result.Ok(StxTemplate.Quoted other)
 
     /// Parse one `(pattern template)` transformer arm.
@@ -575,6 +628,7 @@ module MacrosNew =
             | Result.Error e -> Result.Error e
             | Result.Ok patParsed ->
                 let bound = findBound patParsed
+
                 match parseTemplate ellipsis bound tmpl with
                 | Result.Error e -> Result.Error e
                 | Result.Ok tmplParsed -> Result.Ok(patParsed, tmplParsed)
@@ -586,7 +640,7 @@ module MacrosNew =
         (ellipsis: string)
         (litsStx: Stx)
         (rules: Stx list)
-        (defEnv: SyntaxEnv)
+        (defScope: SyntaxScope)
         (diag: DiagnosticBag)
         (loc: TextLocation)
         : SyntaxTransformer option =
@@ -595,8 +649,6 @@ module MacrosNew =
             diag.Emit Diag.invalidMacro loc e
             None
         | Result.Ok lits ->
-            // Per R7RS 4.3.2: if the ellipsis identifier appears in the literals
-            // list it loses its special meaning and is treated as a literal.
             let results = rules |> List.map (parseTransformer kw ellipsis lits)
 
             let patterns =
@@ -609,17 +661,15 @@ module MacrosNew =
 
             Some
                 { Patterns = patterns
-                  DefEnv = defEnv
+                  DefScope = defScope
                   DefLoc = loc }
 
-    /// Strip any Stx.Closure wrappers and return the name if the result is an Id.
     let rec private stxIdName (stx: Stx) : string option =
         match stx with
         | Stx.Id(name, _) -> Some name
         | Stx.Closure(inner, _, _) -> stxIdName inner
         | _ -> None
 
-    /// Strip any Stx.Closure wrappers and return the stx if the result is a List.
     let rec private stxUnwrapList (stx: Stx) : Stx option =
         match stx with
         | Stx.List _ -> Some stx
@@ -632,24 +682,22 @@ module MacrosNew =
     let parseSyntaxRulesStx
         (name: string)
         (stx: Stx)
-        (defEnv: SyntaxEnv)
+        (defScope: SyntaxScope)
         (diag: DiagnosticBag)
         (loc: TextLocation)
         : SyntaxTransformer option =
-        // Unwrap any top-level Closure so the match works whether the form
-        // was produced literally or transcribed from a macro template.
-        let rec unwrap s = match s with Stx.Closure(inner, _, _) -> unwrap inner | _ -> s
+        let rec unwrap s =
+            match s with
+            | Stx.Closure(inner, _, _) -> unwrap inner
+            | _ -> s
+
         match unwrap stx with
         | Stx.List(_ :: second :: rest, _) ->
-            // Determine whether `second` is an ellipsis identifier (custom ellipsis)
-            // or the literals list (standard form).
             match stxIdName second, rest with
             | Some ellipsis, litsStx :: rules when stxUnwrapList litsStx |> Option.isSome ->
-                // Extended form: (syntax-rules <ellipsis> (literals...) rules...)
-                parseSyntaxRulesBody name ellipsis litsStx rules defEnv diag loc
+                parseSyntaxRulesBody name ellipsis litsStx rules defScope diag loc
             | None, rules when stxUnwrapList second |> Option.isSome ->
-                // Standard form: (syntax-rules (literals...) rules...)
-                parseSyntaxRulesBody name "..." second rules defEnv diag loc
+                parseSyntaxRulesBody name "..." second rules defScope diag loc
             | _ ->
                 diag.Emit Diag.invalidMacro loc "expected (syntax-rules (literals...) rules...)"
                 None
@@ -664,25 +712,20 @@ module private Expander =
     // ── Helpers ──────────────────────────────────────────────────────────
 
     /// Peel any `Stx.Closure` wrappers and look up the head binding in the
-    /// appropriate environment.  Returns `None` for non-identifier heads.
-    let rec resolveHead (stx: Stx) (env: SyntaxEnv) : SyntaxBinding option =
+    /// appropriate scope.  Returns `None` for non-identifier heads.
+    let rec resolveHead (stx: Stx) (scope: SyntaxScope) (ctx: ExpandCtx) : BindingMeaning option =
         match stx with
-        | Stx.Id(name, _) -> Map.tryFind name env
-        | Stx.Closure(inner, closedEnv, _) ->
-            // Mirror the expand Stx.Closure fallback: if the inner identifier
-            // is not bound at the definition site, resolve it in the ambient
-            // (call-site) env instead.  This is what makes recursive macros
-            // like `(my-or e2 ...)` and `(alist z ...)` find their own MacroDef.
+        | Stx.Id(name, _) ->
+            Map.tryFind name scope |> Option.bind (fun id -> Map.tryFind id ctx.BindingMap)
+        | Stx.Closure(inner, closedScope, _) ->
             match inner with
-            | Stx.Id(name, _) when not (Map.containsKey name closedEnv) ->
-                resolveHead inner env
-            | _ -> resolveHead inner closedEnv
+            | Stx.Id(name, _) when not (Map.containsKey name closedScope) ->
+                resolveHead inner scope ctx
+            | _ -> resolveHead inner closedScope ctx
         | _ -> None
 
     /// Active pattern: extract an identifier name+location from a Stx node,
-    /// peeling any `Stx.Closure` hygiene wrappers.  Use this wherever special
-    /// forms need to pull an identifier out of a sub-form that may have come
-    /// through macro transcription.
+    /// peeling any `Stx.Closure` hygiene wrappers.
     let rec (|StxId|_|) (stx: Stx) : (string * TextLocation) option =
         match stx with
         | Stx.Id(name, loc) -> Some(name, loc)
@@ -701,9 +744,9 @@ module private Expander =
         | Stx.Vec(items, _) ->
             BoundDatum.SelfEval(BoundLiteral.Vector(items |> List.map stxToDatum))
         | Stx.ByteVec(bytes, _) ->
-            // Silently discard invalid byte values when converting to datum;
-            // errors were/will be reported in expression context.
-            let bs = bytes |> List.choose (function Ok b -> Some b | Result.Error _ -> None)
+            let bs =
+                bytes |> List.choose (function Ok b -> Some b | Result.Error _ -> None)
+
             BoundDatum.SelfEval(BoundLiteral.ByteVector bs)
 
     /// Parse formal parameters from a Stx node into a `BoundFormals` value.
@@ -716,7 +759,9 @@ module private Expander =
                 |> List.choose (function
                     | StxId(n, _) -> Some n
                     | other ->
-                        ExpandCtx.emitError ctx Diag.invalidFormals other.Loc "expected identifier in formals"
+                        ExpandCtx.emitError ctx Diag.invalidFormals other.Loc
+                            "expected identifier in formals"
+
                         None)
 
             BoundFormals.List names
@@ -726,13 +771,17 @@ module private Expander =
                 |> List.choose (function
                     | StxId(n, _) -> Some n
                     | other ->
-                        ExpandCtx.emitError ctx Diag.invalidFormals other.Loc "expected identifier in formals"
+                        ExpandCtx.emitError ctx Diag.invalidFormals other.Loc
+                            "expected identifier in formals"
+
                         None)
 
             match tail with
             | StxId(rest, _) -> BoundFormals.DottedList(names, rest)
-            | other ->
-                ExpandCtx.emitError ctx Diag.invalidFormals loc "expected identifier after dot in formals"
+            | _ ->
+                ExpandCtx.emitError ctx Diag.invalidFormals loc
+                    "expected identifier after dot in formals"
+
                 BoundFormals.List names
         | Stx.Closure(inner, _, _) -> parseFormals inner ctx
         | other ->
@@ -752,7 +801,9 @@ module private Expander =
             match node with
             | Stx.List([ StxId(name, _); init ], _) -> Some(name, init)
             | other ->
-                ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc "ill-formed binding specification"
+                ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc
+                    "ill-formed binding specification"
+
                 None
 
         match stx with
@@ -764,48 +815,68 @@ module private Expander =
 
     // ── Variable lookup with capture tracking ─────────────────────────────
 
-    /// Resolve a variable name to its (potentially capture-wrapped) storage ref,
-    /// walking the ctx parent chain to detect lambda-boundary crossings.
-    /// Falls back to the ambient `env` for globals and imports.
-    /// Returns `None` (and emits a diagnostic) for keywords or unbound names.
-    let resolveVar (name: string) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : StorageRef option =
-        match ExpandCtx.tryFindInScope name ctx with
-        | Some storage -> Some storage
-        | None ->
-            match Map.tryFind name env with
-            | Some(Variable storage) -> Some storage
+    /// Resolve a variable name to its (potentially capture-wrapped) StorageRef.
+    /// Uses BindingIds to distinguish same-named variables from different scopes,
+    /// enabling hygienic macro expansion.
+    let resolveVar
+        (name: string)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : StorageRef option =
+        match Map.tryFind name scope with
+        | Some id ->
+            match Map.tryFind id ctx.BindingMap with
+            | Some(Variable(storage, definedAt)) ->
+                if definedAt < ctx.LambdaDepth then
+                    Some(ExpandCtx.captureAcrossLambdas storage definedAt ctx)
+                else
+                    Some storage
             | Some(SpecialForm _) | Some(MacroDef _) ->
-                ExpandCtx.emitError ctx Diag.illFormedForm loc $"keyword '{name}' used in value position"
+                ExpandCtx.emitError ctx Diag.illFormedForm loc
+                    $"keyword '{name}' used in value position"
+
                 None
             | None ->
                 ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
                 None
+        | None ->
+            ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
+            None
 
-    /// Look up a name in the syntax environment, tracking captures for
-    /// variables that come from outer lambda scopes.
-    let lookupVar (name: string) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
-        match resolveVar name loc env ctx with
+    /// Look up a name in the scope, tracking captures for variables from
+    /// outer lambda scopes.
+    let lookupVar
+        (name: string)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr =
+        match resolveVar name loc scope ctx with
         | Some storage -> BoundExpr.Load storage
         | None -> BoundExpr.Error
 
     // ── Main recursive expander ───────────────────────────────────────────
 
-    /// Expand a single Stx node in the given environment.
-    let rec expand (stx: Stx) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
+    /// Expand a single Stx node in the given scope.
+    let rec expand (stx: Stx) (scope: SyntaxScope) (ctx: ExpandCtx) : BoundExpr =
         match stx with
-        | Stx.Closure(inner, closedEnv, _) ->
-            // Syntactic closure: switch to the enclosed environment.
-            // Exception: for simple identifiers not found in the def-site env,
-            // fall back to the call-site env.  This allows macro-introduced
-            // names (e.g. `tmp` in `(let ((tmp x)) ... tmp ...)`  inside a
-            // template) to be visible once they are bound at call-site — a
-            // necessary trade-off until gensym-based hygiene is implemented.
+        | Stx.Closure(inner, closedScope, _) ->
+            // Syntactic closure: expand `inner` in the definition-site scope.
+            // The closed scope is the authoritative source of BindingIds for
+            // any identifiers present in it, which is the key hygiene mechanism:
+            // macro-introduced `temp` (BindingId N) and user's `temp` (BindingId M)
+            // are distinguished by their different ids even though they share a name.
+            //
+            // Exception: a simple identifier NOT in the closed scope falls back
+            // to the call-site scope, allowing macro-introduced names to be visible
+            // once they are bound at the call site.
             match inner with
-            | Stx.Id(name, _) when not (Map.containsKey name closedEnv) ->
-                expand inner env ctx
-            | _ -> expand inner closedEnv ctx
+            | Stx.Id(name, _) when not (Map.containsKey name closedScope) ->
+                expand inner scope ctx
+            | _ -> expand inner closedScope ctx
 
-        | Stx.Id(name, loc) -> lookupVar name loc env ctx
+        | Stx.Id(name, loc) -> lookupVar name loc scope ctx
 
         | Stx.Const(lit, _) -> BoundExpr.Literal lit
 
@@ -829,22 +900,34 @@ module private Expander =
             ExpandCtx.emitError ctx Diag.illFormedForm loc "dotted pair in expression position"
             BoundExpr.Error
 
-        | Stx.List([], loc) -> BoundExpr.Literal BoundLiteral.Null
+        | Stx.List([], _) -> BoundExpr.Literal BoundLiteral.Null
 
-        | Stx.List(head :: args, loc) -> expandForm head args loc env ctx
+        | Stx.List(head :: args, loc) -> expandForm head args loc scope ctx
 
     /// Dispatch a compound form based on what the head resolves to.
-    and expandForm (head: Stx) (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
-        match resolveHead head env with
-        | Some(SpecialForm kind) -> expandSpecialForm kind args loc env ctx
-        | Some(MacroDef macro) -> expandMacro macro (Stx.List(head :: args, loc)) env ctx
+    and expandForm
+        (head: Stx)
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr =
+        match resolveHead head scope ctx with
+        | Some(SpecialForm kind) -> expandSpecialForm kind args loc scope ctx
+        | Some(MacroDef macro) -> expandMacro macro (Stx.List(head :: args, loc)) scope ctx
         | _ ->
-            let fn = expand head env ctx
-            let actuals = args |> List.map (fun a -> expand a env ctx)
+            let fn = expand head scope ctx
+            let actuals = args |> List.map (fun a -> expand a scope ctx)
             BoundExpr.Application(fn, actuals)
 
     /// Expand a special form.
-    and expandSpecialForm (kind: SpecialFormKind) (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
+    and expandSpecialForm
+        (kind: SpecialFormKind)
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr =
         let illFormed name =
             ExpandCtx.emitError ctx Diag.illFormedForm loc $"ill-formed '{name}'"
             BoundExpr.Error
@@ -858,76 +941,81 @@ module private Expander =
         | SpecialFormKind.If ->
             match args with
             | [ test; thenExpr ] ->
-                let b = expand >> (fun f -> f env ctx)
+                let b = expand >> (fun f -> f scope ctx)
                 BoundExpr.If(b test, b thenExpr, None)
             | [ test; thenExpr; elseExpr ] ->
-                let b = expand >> (fun f -> f env ctx)
+                let b = expand >> (fun f -> f scope ctx)
                 BoundExpr.If(b test, b thenExpr, Some(b elseExpr))
             | _ -> illFormed "if"
 
         | SpecialFormKind.Begin ->
-            let exprs, _ = expandSeq args env ctx
+            let exprs, _ = expandSeq args scope ctx
             BoundExpr.Seq exprs
 
-        | SpecialFormKind.Lambda -> expandLambda args loc env ctx
+        | SpecialFormKind.Lambda -> expandLambda args loc scope ctx
 
         | SpecialFormKind.Define ->
-            // define in expression position is treated as a top-level define;
-            // the resulting env extension is discarded.
-            let expr, _ = expandDefine args loc env ctx
+            // define in expression position: env extension is discarded.
+            let expr, _ = expandDefine args loc scope ctx
             expr
 
         | SpecialFormKind.SetBang ->
             match args with
             | [ StxId(name, idLoc); value ] ->
-                match resolveVar name idLoc env ctx with
-                | Some storage -> BoundExpr.Store(storage, Some(expand value env ctx))
+                match resolveVar name idLoc scope ctx with
+                | Some storage -> BoundExpr.Store(storage, Some(expand value scope ctx))
                 | None -> BoundExpr.Error
             | _ -> illFormed "set!"
 
-        | SpecialFormKind.Let -> expandLet args loc env ctx
-        | SpecialFormKind.LetStar -> expandLetStar args loc env ctx
-        | SpecialFormKind.Letrec -> expandLetrec args loc env ctx false
-        | SpecialFormKind.LetrecStar -> expandLetrec args loc env ctx true
+        | SpecialFormKind.Let -> expandLet args loc scope ctx
+        | SpecialFormKind.LetStar -> expandLetStar args loc scope ctx
+        | SpecialFormKind.Letrec -> expandLetrec args loc scope ctx false
+        | SpecialFormKind.LetrecStar -> expandLetrec args loc scope ctx true
 
         | SpecialFormKind.DefineSyntax ->
-            let _, _ = expandDefineSyntax args loc env ctx
+            let _, _ = expandDefineSyntax args loc scope ctx
             BoundExpr.Nop
 
         | SpecialFormKind.LetSyntax ->
-            expandLetSyntax args loc env ctx false
+            expandLetSyntax args loc scope ctx false
 
         | SpecialFormKind.LetrecSyntax ->
-            expandLetSyntax args loc env ctx true
+            expandLetSyntax args loc scope ctx true
 
         | SpecialFormKind.Import ->
-            // In expression position: import but discard the env extension.
-            let expr, _ = expandImport args loc env ctx
+            let expr, _ = expandImport args loc scope ctx
             expr
 
         | SpecialFormKind.DefineLibrary ->
-            // In expression position — process but discard the env extension.
-            fst (expandLibrary args loc env ctx)
+            fst (expandLibrary args loc scope ctx)
 
     // ── Lambda ───────────────────────────────────────────────────────────
 
-    and expandLambda (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
+    and expandLambda
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr =
         match args with
         | formals :: body when not (List.isEmpty body) ->
             let bFormals = parseFormals formals ctx
             let names = formalsNames bFormals
             let childCtx = ExpandCtx.childForLambda ctx
 
-            // Extend env with argument bindings (Arg i) and register each in
-            // childCtx.ScopeEnv so nested lambdas can detect captures.
-            let envWithFormals =
+            // Add formals to childCtx's BindingMap and extend the scope.
+            let scopeWithFormals =
                 names
                 |> List.mapi (fun i name ->
-                    ExpandCtx.addToScope childCtx name (StorageRef.Arg i)
-                    name, Variable(StorageRef.Arg i))
-                |> List.fold (fun e (k, v) -> Map.add k v e) env
+                    let id = BindingId.fresh ()
 
-            let bodyExprs, _ = expandSeq body envWithFormals childCtx
+                    childCtx.BindingMap <-
+                        Map.add id (Variable(StorageRef.Arg i, childCtx.LambdaDepth)) childCtx.BindingMap
+
+                    name, id)
+                |> List.fold (fun s (name, id) -> Map.add name id s) scope
+
+            let bodyExprs, _ = expandSeq body scopeWithFormals childCtx
             let bd = ExpandCtx.intoBody childCtx bodyExprs
             BoundExpr.Lambda(bFormals, bd)
         | _ ->
@@ -937,130 +1025,149 @@ module private Expander =
     // ── Define ───────────────────────────────────────────────────────────
 
     /// Expand a `define` form, returning the bound expression and the extended
-    /// `SyntaxEnv` for subsequent sibling forms.
-    and expandDefine (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr * SyntaxEnv =
+    /// `SyntaxScope` for subsequent sibling forms.
+    and expandDefine
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr * SyntaxScope =
         let illFormed () =
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'define'"
-            BoundExpr.Error, env
+            BoundExpr.Error, scope
 
         match args with
         | [ StxId(name, _) ] ->
             // (define id) — uninitialized
-            let storage = ExpandCtx.mintStorage ctx name
-            ExpandCtx.addToScope ctx name storage
-            let env' = Map.add name (Variable storage) env
-            BoundExpr.Store(storage, None), env'
+            let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
+            BoundExpr.Store(storage, None), scope'
 
         | [ StxId(name, _); value ] ->
             // (define id value)
-            let storage = ExpandCtx.mintStorage ctx name
-            ExpandCtx.addToScope ctx name storage
-            // Add name to env before expanding value so self-recursion works.
-            let env' = Map.add name (Variable storage) env
-            let boundValue = expand value env' ctx
-            BoundExpr.Store(storage, Some boundValue), env'
+            let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
+            // Name is in scope' so self-recursion works.
+            let boundValue = expand value scope' ctx
+            BoundExpr.Store(storage, Some boundValue), scope'
 
         | Stx.List(StxId(name, _) :: formals, _) :: body ->
             // (define (name formals...) body...)
-            let storage = ExpandCtx.mintStorage ctx name
-            ExpandCtx.addToScope ctx name storage
-            let env' = Map.add name (Variable storage) env
-            let lambdaExpr = expandLambda (Stx.List(formals, loc) :: body) loc env' ctx
-            BoundExpr.Store(storage, Some lambdaExpr), env'
+            let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
+            let lambdaExpr = expandLambda (Stx.List(formals, loc) :: body) loc scope' ctx
+            BoundExpr.Store(storage, Some lambdaExpr), scope'
 
         | Stx.Dotted(StxId(name, _) :: formals, tail, _) :: body ->
             // (define (name formals... . rest) body...)
-            let storage = ExpandCtx.mintStorage ctx name
-            ExpandCtx.addToScope ctx name storage
-            let env' = Map.add name (Variable storage) env
-            let lambdaExpr = expandLambda (Stx.Dotted(formals, tail, loc) :: body) loc env' ctx
-            BoundExpr.Store(storage, Some lambdaExpr), env'
+            let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
+            let lambdaExpr = expandLambda (Stx.Dotted(formals, tail, loc) :: body) loc scope' ctx
+            BoundExpr.Store(storage, Some lambdaExpr), scope'
 
         | _ -> illFormed ()
 
     // ── Let forms ────────────────────────────────────────────────────────
 
-    and expandLet (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
+    and expandLet
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr =
         match args with
         | bindingStx :: body when not (List.isEmpty body) ->
             let specs = parseBindingSpecs bindingStx ctx
-            // Evaluate all inits in the outer environment (parallel let).
-            // Crucially, addToScope is called only after ALL inits are expanded
-            // so that no init can see a sibling binding via tryFindInScope.
+
+            // Evaluate all inits in the outer scope (parallel let):
+            // none of the bindings are visible during init evaluation.
             let stores =
                 specs
                 |> List.map (fun (name, initStx) ->
-                    let initExpr = expand initStx env ctx
+                    let initExpr = expand initStx scope ctx
                     let storage = StorageRef.Local(ExpandCtx.nextLocal ctx)
-                    name, storage, initExpr)
+                    let id = BindingId.fresh ()
+                    name, id, storage, initExpr)
 
-            stores |> List.iter (fun (name, storage, _) -> ExpandCtx.addToScope ctx name storage)
-
-            // Extend env with all new bindings.
-            let innerEnv =
+            // Now register all bindings and extend the scope for the body.
+            let innerScope =
                 stores
-                |> List.fold (fun e (name, storage, _) -> Map.add name (Variable storage) e) env
+                |> List.fold
+                    (fun s (name, id, storage, _) ->
+                        ctx.BindingMap <-
+                            Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
+
+                        Map.add name id s)
+                    scope
 
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
-            let bodyExprs, _ = expandSeq body innerEnv ctx
+            let bodyExprs, _ = expandSeq body innerScope ctx
             ctx.ScopeDepth <- ctx.ScopeDepth - 1
-            let storeExprs = stores |> List.map (fun (_, s, v) -> BoundExpr.Store(s, Some v))
+            let storeExprs = stores |> List.map (fun (_, _, s, v) -> BoundExpr.Store(s, Some v))
             BoundExpr.Seq(storeExprs @ bodyExprs)
         | _ ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'let'"
             BoundExpr.Error
 
-    and expandLetStar (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
+    and expandLetStar
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr =
         match args with
         | bindingStx :: body when not (List.isEmpty body) ->
             let specs = parseBindingSpecs bindingStx ctx
-            // Each binding is evaluated in the env extended by all prior bindings.
-            let storeExprs, innerEnv =
+
+            // Each binding is evaluated in the scope extended by all prior bindings.
+            let storeExprs, innerScope =
                 specs
                 |> List.mapFold
-                    (fun currentEnv (name, initStx) ->
-                        let initExpr = expand initStx currentEnv ctx
+                    (fun currentScope (name, initStx) ->
+                        let initExpr = expand initStx currentScope ctx
                         let storage = StorageRef.Local(ExpandCtx.nextLocal ctx)
-                        ExpandCtx.addToScope ctx name storage
-                        let nextEnv = Map.add name (Variable storage) currentEnv
-                        BoundExpr.Store(storage, Some initExpr), nextEnv)
-                    env
+                        let id = BindingId.fresh ()
+                        ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
+                        let nextScope = Map.add name id currentScope
+                        BoundExpr.Store(storage, Some initExpr), nextScope)
+                    scope
 
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
-            let bodyExprs, _ = expandSeq body innerEnv ctx
+            let bodyExprs, _ = expandSeq body innerScope ctx
             ctx.ScopeDepth <- ctx.ScopeDepth - 1
             BoundExpr.Seq(storeExprs @ bodyExprs)
         | _ ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'let*'"
             BoundExpr.Error
 
-    and expandLetrec (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) (isStar: bool) : BoundExpr =
+    and expandLetrec
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        (isStar: bool)
+        : BoundExpr =
         match args with
         | bindingStx :: body when not (List.isEmpty body) ->
             let specs = parseBindingSpecs bindingStx ctx
 
-            // Pre-allocate all local slots; extend env with all names first.
+            // Pre-allocate all local slots; extend scope with all names first.
             let storages =
                 specs
                 |> List.map (fun (name, _) ->
                     let storage = StorageRef.Local(ExpandCtx.nextLocal ctx)
-                    ExpandCtx.addToScope ctx name storage
-                    name, storage)
+                    let id = BindingId.fresh ()
+                    ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
+                    name, id, storage)
 
-            let innerEnv =
+            let innerScope =
                 storages
-                |> List.fold (fun e (name, storage) -> Map.add name (Variable storage) e) env
+                |> List.fold (fun s (name, id, _) -> Map.add name id s) scope
 
-            // Track uninitialized names for letrec (not letrec*) checking.
-            let mutable uninitNames = storages |> List.map fst
+            let mutable uninitNames = storages |> List.map (fun (n, _, _) -> n)
 
             let storeExprs =
                 List.map2
-                    (fun (name, storage) (_, initStx) ->
-                        let initExpr = expand initStx innerEnv ctx
+                    (fun (name, _id, storage) (_, initStx) ->
+                        let initExpr = expand initStx innerScope ctx
 
                         if not isStar then
-                            // Check for use of still-uninitialized bindings.
                             checkUninitialised uninitNames initExpr loc ctx
 
                         if isStar then
@@ -1071,7 +1178,7 @@ module private Expander =
                     specs
 
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
-            let bodyExprs, _ = expandSeq body innerEnv ctx
+            let bodyExprs, _ = expandSeq body innerScope ctx
             ctx.ScopeDepth <- ctx.ScopeDepth - 1
             BoundExpr.Seq(storeExprs @ bodyExprs)
         | _ ->
@@ -1079,7 +1186,12 @@ module private Expander =
             BoundExpr.Error
 
     /// Check a BoundExpr for loads from any uninitialised storage slots.
-    and checkUninitialised (uninitNames: string list) (expr: BoundExpr) (loc: TextLocation) (ctx: ExpandCtx) =
+    and checkUninitialised
+        (uninitNames: string list)
+        (expr: BoundExpr)
+        (loc: TextLocation)
+        (ctx: ExpandCtx)
+        =
         let rec check =
             function
             | BoundExpr.Load s -> warnIfUninit s
@@ -1096,128 +1208,132 @@ module private Expander =
             | BoundExpr.Lambda _ -> ()
             | _ -> ()
 
-        and warnIfUninit storage =
-            let idx =
-                uninitNames
-                |> List.tryFindIndex (fun name ->
-                    match storage with
-                    | StorageRef.Local _ ->
-                        // We'd need to correlate name->storage here; for now accept.
-                        false
-                    | _ -> false)
-
-            ()
+        and warnIfUninit _storage = ()
 
         check expr
 
     // ── define-syntax / let-syntax ───────────────────────────────────────
 
-    and expandDefineSyntax (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr * SyntaxEnv =
+    and expandDefineSyntax
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr * SyntaxScope =
         match args with
         | [ StxId(name, _); rulesStx ] ->
-            match parseSyntaxRulesStx name rulesStx env ctx with
+            match parseSyntaxRulesStx name rulesStx scope ctx with
             | Some transformer ->
-                let env' = Map.add name (MacroDef transformer) env
-                BoundExpr.Nop, env'
-            | None -> BoundExpr.Error, env
+                let scope' = ExpandCtx.addMacro ctx name transformer scope
+                BoundExpr.Nop, scope'
+            | None -> BoundExpr.Error, scope
         | _ ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'define-syntax'"
-            BoundExpr.Error, env
+            BoundExpr.Error, scope
 
-    and expandLetSyntax (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) (_isLetrec: bool) : BoundExpr =
+    and expandLetSyntax
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        (_isLetrec: bool)
+        : BoundExpr =
         match args with
         | bindingStx :: body when not (List.isEmpty body) ->
             let specs = parseBindingSpecs bindingStx ctx
 
-            let extendedEnv =
+            let bodyScope =
                 specs
                 |> List.fold
-                    (fun currentEnv (name, ruleStx) ->
-                        match parseSyntaxRulesStx name ruleStx currentEnv ctx with
-                        | Some transformer -> Map.add name (MacroDef transformer) currentEnv
-                        | None -> currentEnv)
-                    env
+                    (fun currentScope (name, ruleStx) ->
+                        match parseSyntaxRulesStx name ruleStx currentScope ctx with
+                        | Some transformer ->
+                            ExpandCtx.addMacro ctx name transformer currentScope
+                        | None -> currentScope)
+                    scope
 
-            // Save and restore ScopeEnv around the body so that any `define`
-            // forms inside the let-syntax body don't pollute the outer scope's
-            // capture-detection map.  This mirrors the old binder's pushScope /
-            // popScope that wraps every let form.
-            let savedScopeEnv = ctx.ScopeEnv
+            // The scope is immutable and threaded: `bodyScope` is only visible
+            // within this call.  Macro BindingIds added to ctx.BindingMap here
+            // are inaccessible outside the body (no scope entry points to them
+            // from the outer scope).  No save/restore of any mutable ctx field
+            // is needed for that reason; ScopeDepth is still bumped so that
+            // `define` inside the body produces a Local.
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
-            let bodyExprs, _ = expandSeq body extendedEnv ctx
+            let bodyExprs, _ = expandSeq body bodyScope ctx
             ctx.ScopeDepth <- ctx.ScopeDepth - 1
-            ctx.ScopeEnv <- savedScopeEnv
             BoundExpr.Seq bodyExprs
         | _ ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'let-syntax'"
             BoundExpr.Error
 
     /// Parse a `(syntax-rules ...)` Stx node into a `SyntaxTransformer`.
-    /// Returns `None` on error after emitting a diagnostic.
-    and parseSyntaxRulesStx (name: string) (stx: Stx) (defEnv: SyntaxEnv) (ctx: ExpandCtx) : SyntaxTransformer option =
-        MacrosNew.parseSyntaxRulesStx name stx defEnv ctx.Diagnostics stx.Loc
+    and parseSyntaxRulesStx
+        (name: string)
+        (stx: Stx)
+        (defScope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : SyntaxTransformer option =
+        MacrosNew.parseSyntaxRulesStx name stx defScope ctx.Diagnostics stx.Loc
 
     // ── Macro expansion ───────────────────────────────────────────────────
 
-    and expandMacro (macro: SyntaxTransformer) (form: Stx) (callEnv: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr =
-        // Match the call form against each rule in order.
+    and expandMacro
+        (macro: SyntaxTransformer)
+        (form: Stx)
+        (callScope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr =
         let result =
             macro.Patterns
             |> List.tryPick (fun (pat, tmpl) ->
-                matchPattern pat form callEnv |> Option.map (fun b -> tmpl, b))
+                matchPattern pat form callScope |> Option.map (fun b -> tmpl, b))
 
         match result with
         | None ->
             ExpandCtx.emitError ctx Diag.expandError form.Loc "no macro rule matched the form"
             BoundExpr.Error
         | Some(template, bindings) ->
-            // Transcribe the template into a new Stx tree.
-            let transcribed = transcribe template bindings macro.DefEnv form.Loc
-            // Expand the resulting Stx in the call-site environment;
-            // Stx.Closure nodes inside will override it selectively.
-            expand transcribed callEnv ctx
+            let transcribed = transcribe template bindings macro.DefScope form.Loc
+            expand transcribed callScope ctx
 
     // ── Pattern matching ──────────────────────────────────────────────────
 
-    /// Attempt to match a MacroPattern against a Stx node.
+    /// Attempt to match a StxPattern against a Stx node.
     /// Returns Some PatternBindings on success, None on mismatch.
-    and matchPattern (pat: StxPattern) (stx: Stx) (env: SyntaxEnv) : PatternBindings option =
+    and matchPattern (pat: StxPattern) (stx: Stx) (scope: SyntaxScope) : PatternBindings option =
 
         match pat, stx with
         | StxPattern.Underscore, _ -> Some Map.empty
 
-        | StxPattern.Variable v, s ->
-            Some(Map.ofList [ v, Single(s, env) ])
+        | StxPattern.Variable v, s -> Some(Map.ofList [ v, Single(s, scope) ])
 
         | StxPattern.Literal lit, Stx.Id(name, _) ->
             if name = lit then Some Map.empty else None
 
-        | StxPattern.Literal lit, Stx.Closure(inner, closedEnv, _) ->
-            matchPattern (StxPattern.Literal lit) inner closedEnv
+        | StxPattern.Literal lit, Stx.Closure(inner, closedScope, _) ->
+            matchPattern (StxPattern.Literal lit) inner closedScope
 
         | StxPattern.Constant patLit, Stx.Const(stxLit, _) ->
             if patLit = stxLit then Some Map.empty else None
 
         | StxPattern.Form pats, Stx.List(items, _) ->
-            matchPatternList pats None items None env
+            matchPatternList pats None items None scope
 
         | StxPattern.DottedForm(pats, tailPat), Stx.Dotted(items, tail, _) ->
-            matchPatternList pats (Some tailPat) items (Some tail) env
+            matchPatternList pats (Some tailPat) items (Some tail) scope
 
-        // A proper list can also match a dotted-form pattern: `(x . rest)` matches
-        // `(a b c)` with `x=a` and `rest=(b c)`.  This mirrors the old binder's
-        // `matchForm` which treats any `FormNode` (proper or dotted) as matchable.
+        // A proper list can also match a dotted-form pattern.
         | StxPattern.DottedForm(pats, tailPat), Stx.List(items, _) ->
-            matchPatternList pats (Some tailPat) items None env
+            matchPatternList pats (Some tailPat) items None scope
 
-        | StxPattern.Form pats, Stx.Closure(inner, closedEnv, _) ->
-            matchPattern (StxPattern.Form pats) inner closedEnv
+        | StxPattern.Form pats, Stx.Closure(inner, closedScope, _) ->
+            matchPattern (StxPattern.Form pats) inner closedScope
 
-        | StxPattern.DottedForm(pats, tailPat), Stx.Closure(inner, closedEnv, _) ->
-            matchPattern (StxPattern.DottedForm(pats, tailPat)) inner closedEnv
+        | StxPattern.DottedForm(pats, tailPat), Stx.Closure(inner, closedScope, _) ->
+            matchPattern (StxPattern.DottedForm(pats, tailPat)) inner closedScope
 
         | StxPattern.Vec pats, Stx.Vec(items, _) ->
-            matchPatternList pats None items None env
+            matchPatternList pats None items None scope
 
         | _ -> None
 
@@ -1226,18 +1342,18 @@ module private Expander =
         (tailPat: StxPattern option)
         (items: Stx list)
         (tailItem: Stx option)
-        (env: SyntaxEnv)
+        (scope: SyntaxScope)
         : PatternBindings option =
         match pats with
         | StxPattern.Repeat inner :: restPats ->
-            matchRepeat inner restPats tailPat items tailItem env []
+            matchRepeat inner restPats tailPat items tailItem scope []
 
         | headPat :: restPats ->
             match items with
             | headItem :: restItems ->
-                matchPattern headPat headItem env
+                matchPattern headPat headItem scope
                 |> Option.bind (fun b1 ->
-                    matchPatternList restPats tailPat restItems tailItem env
+                    matchPatternList restPats tailPat restItems tailItem scope
                     |> Option.map (mergeBindings b1))
             | [] -> None
 
@@ -1245,18 +1361,18 @@ module private Expander =
             match tailPat with
             | Some tp ->
                 match tailItem with
-                | Some t -> matchPattern tp t env
+                | Some t -> matchPattern tp t scope
                 | None ->
                     match items with
-                    | [ single ] -> matchPattern tp single env
-                    // Multiple remaining items with no explicit dotted tail: the
-                    // tail pattern matches against the rest of the proper list.
-                    // Underscore discards cleanly; Variable captures as a list.
+                    | [ single ] -> matchPattern tp single scope
                     | _ when not (List.isEmpty items) ->
                         match tp with
                         | StxPattern.Underscore -> Some Map.empty
                         | StxPattern.Variable v ->
-                            Some(Map.ofList [ v, Single(Stx.List(items, TextLocation.Missing), env) ])
+                            Some(
+                                Map.ofList
+                                    [ v, Single(Stx.List(items, TextLocation.Missing), scope) ]
+                            )
                         | _ -> None
                     | _ -> None
             | None -> if List.isEmpty items && tailItem.IsNone then Some Map.empty else None
@@ -1267,25 +1383,21 @@ module private Expander =
         (tailPat: StxPattern option)
         (items: Stx list)
         (tailItem: Stx option)
-        (env: SyntaxEnv)
+        (scope: SyntaxScope)
         (accumulated: PatternBindings list)
         : PatternBindings option =
-        // Try to match the tail patterns first (backtracking).
-        match matchPatternList restPats tailPat items tailItem env with
+        match matchPatternList restPats tailPat items tailItem scope with
         | Some tailBindings ->
-            // Merge accumulated repeated captures.
             let repeatedBindings = gatherRepeated accumulated
             Some(mergeBindings tailBindings repeatedBindings)
         | None ->
             match items with
             | head :: rest ->
-                matchPattern inner head env
+                matchPattern inner head scope
                 |> Option.bind (fun b ->
-                    matchRepeat inner restPats tailPat rest tailItem env (b :: accumulated))
+                    matchRepeat inner restPats tailPat rest tailItem scope (b :: accumulated))
             | [] -> None
 
-    /// Gather a list of per-repetition PatternBindings into a single
-    /// PatternBindings where each entry is a Repeated capture.
     and gatherRepeated (perRep: PatternBindings list) : PatternBindings =
         perRep
         |> List.rev
@@ -1311,62 +1423,55 @@ module private Expander =
     and mergeBindings (left: PatternBindings) (right: PatternBindings) : PatternBindings =
         Map.fold (fun m k v -> Map.add k v m) left right
 
-    and constantMatchesLiteral (_pat: ConstantValue) (_lit: BoundLiteral) : bool = false // removed — superseded by StxPattern
-
     // ── Transcription ─────────────────────────────────────────────────────
 
     and transcribe
         (template: StxTemplate)
         (bindings: PatternBindings)
-        (defEnv: SyntaxEnv)
+        (defScope: SyntaxScope)
         (loc: TextLocation)
         : Stx =
         match template with
         | StxTemplate.Subst name ->
             match Map.tryFind name bindings with
-            | Some(Single(stx, capturedEnv)) -> Stx.Closure(stx, capturedEnv, loc)
-            | Some(Repeated _) -> failwith $"ellipsis variable '{name}' used outside a repeat context"
+            | Some(Single(stx, capturedScope)) -> Stx.Closure(stx, capturedScope, loc)
+            | Some(Repeated _) ->
+                failwith $"ellipsis variable '{name}' used outside a repeat context"
             | None -> failwith $"template variable '{name}' not bound"
 
         | StxTemplate.Quoted stx ->
-            // Literal from the definition site — wrap it in the definition-site
-            // environment so that any identifiers inside resolve hygienically.
-            Stx.Closure(stx, defEnv, loc)
+            // Literal from the definition site — wrap in the definition-site scope
+            // so that any identifiers inside resolve hygienically.
+            Stx.Closure(stx, defScope, loc)
 
         | StxTemplate.Form(_, elements) ->
-            let children = elements |> List.collect (transcribeElement bindings defEnv loc)
+            let children = elements |> List.collect (transcribeElement bindings defScope loc)
             Stx.List(children, loc)
 
         | StxTemplate.DottedForm(elems, tail) ->
-            let children = elems |> List.collect (transcribeElement bindings defEnv loc)
-            Stx.Dotted(children, transcribe tail bindings defEnv loc, loc)
+            let children = elems |> List.collect (transcribeElement bindings defScope loc)
+            Stx.Dotted(children, transcribe tail bindings defScope loc, loc)
 
         | StxTemplate.Vec elements ->
-            let children = elements |> List.collect (transcribeElement bindings defEnv loc)
+            let children = elements |> List.collect (transcribeElement bindings defScope loc)
             Stx.Vec(children, loc)
 
     and transcribeElement
         (bindings: PatternBindings)
-        (defEnv: SyntaxEnv)
+        (defScope: SyntaxScope)
         (loc: TextLocation)
         (elem: StxTemplateElement)
         : Stx list =
         match elem with
-        | StxTemplateElement.Template t -> [ transcribe t bindings defEnv loc ]
-        | StxTemplateElement.Repeated t -> transcribeRepeated t bindings defEnv loc
+        | StxTemplateElement.Template t -> [ transcribe t bindings defScope loc ]
+        | StxTemplateElement.Repeated t -> transcribeRepeated t bindings defScope loc
 
     and transcribeRepeated
         (template: StxTemplate)
         (bindings: PatternBindings)
-        (defEnv: SyntaxEnv)
+        (defScope: SyntaxScope)
         (loc: TextLocation)
         : Stx list =
-        // Collect names referenced directly by this template so we only
-        // consider Repeated captures that belong to this ellipsis group.
-        // Variables from sibling ellipsis groups (e.g. `(a ...)` and `(b ...)`
-        // as separate sub-patterns) must not influence the repetition count
-        // here; their lists may have different lengths. This mirrors the
-        // Macros.fs approach where repeated bindings are grouped per row.
         let rec templateRefs tmpl =
             match tmpl with
             | StxTemplate.Subst name -> Set.singleton name
@@ -1375,13 +1480,13 @@ module private Expander =
             | StxTemplate.DottedForm(elems, tail) ->
                 Set.union (elems |> List.map elemRefs |> Set.unionMany) (templateRefs tail)
             | StxTemplate.Quoted _ -> Set.empty
+
         and elemRefs elem =
             match elem with
             | StxTemplateElement.Template t | StxTemplateElement.Repeated t -> templateRefs t
 
         let referencedNames = templateRefs template
 
-        // Only look at Repeated bindings whose names appear in the template.
         let repCount =
             bindings
             |> Map.tryPick (fun name v ->
@@ -1392,8 +1497,6 @@ module private Expander =
 
         [ 0 .. repCount - 1 ]
         |> List.map (fun i ->
-            // Build a per-repetition binding map substituting the i-th element
-            // for variables in this group; leave others as-is.
             let perRepBindings =
                 Map.map
                     (fun name v ->
@@ -1402,11 +1505,10 @@ module private Expander =
                         | other -> other)
                     bindings
 
-            transcribe template perRepBindings defEnv loc)
+            transcribe template perRepBindings defScope loc)
 
     // ── Import set parsing  ───────────────────────────────────────────────
 
-    /// Parse a Stx node into an `ImportSet` (mirrors Libraries.parseImportDeclaration).
     and private stxToImportSet (diags: DiagnosticBag) (stx: Stx) : ImportSet =
         let getName =
             function
@@ -1427,7 +1529,8 @@ module private Expander =
         | Stx.List(Stx.Id("rename", _) :: fromSet :: renames, _) ->
             let parseRename =
                 function
-                | Stx.List([ Stx.Id(fr, _); Stx.Id(to_, _) ], _) -> Some { SymbolRename.From = fr; To = to_ }
+                | Stx.List([ Stx.Id(fr, _); Stx.Id(to_, _) ], _) ->
+                    Some { SymbolRename.From = fr; To = to_ }
                 | _ -> None
 
             ImportSet.Renamed(stxToImportSet diags fromSet, renames |> List.choose parseRename)
@@ -1438,7 +1541,6 @@ module private Expander =
 
     // ── Library name parsing ──────────────────────────────────────────────
 
-    /// Parse a `(name-part ...)` list Stx node into a library name.
     and private stxToLibraryName (stx: Stx) (ctx: ExpandCtx) : string list option =
         let getName =
             function
@@ -1446,7 +1548,9 @@ module private Expander =
             | Stx.Closure(Stx.Id(n, _), _, _) -> Some n
             | Stx.Const(BoundLiteral.Number n, _) -> Some(string (int n))
             | other ->
-                ExpandCtx.emitError ctx Diag.illFormedForm other.Loc "expected identifier in library name"
+                ExpandCtx.emitError ctx Diag.illFormedForm other.Loc
+                    "expected identifier in library name"
+
                 None
 
         match stx with
@@ -1460,29 +1564,20 @@ module private Expander =
 
     // ── define-library ────────────────────────────────────────────────────
 
-    /// Expand a top-level `(define-library <name> <decl> ...)` form.
-    ///
-    /// Returns the `BoundExpr.Library` node and the unchanged outer `SyntaxEnv`
-    /// (the library is not imported automatically; callers use `import` later).
-    /// Also mutates `ctx.Libraries` so subsequent forms in the same file can
-    /// import the newly-defined library.
     and expandLibrary
         (args: Stx list)
         (loc: TextLocation)
-        (env: SyntaxEnv)
+        (scope: SyntaxScope)
         (ctx: ExpandCtx)
-        : BoundExpr * SyntaxEnv =
+        : BoundExpr * SyntaxScope =
         match args with
         | nameStx :: declarations ->
             let name = stxToLibraryName nameStx ctx |> Option.defaultValue []
             let mangledName = name |> String.concat "::"
 
-            // Fresh inner context — own global scope for the library body.
             let innerCtx = ExpandCtx.childForLibrary ctx mangledName
 
-            // Process each library declaration in order, threading the inner env.
-            let folder (innerEnv, importAcc, bodyAcc, exportsAcc) decl =
-                // Peel any syntactic-closure wrapper.
+            let folder (innerScope, importAcc, bodyAcc, exportsAcc) decl =
                 let decl' =
                     match decl with
                     | Stx.Closure(inner, _, _) -> inner
@@ -1495,182 +1590,199 @@ module private Expander =
                         |> List.choose (function
                             | Stx.Id(n, _) -> Some(n, n)
                             | Stx.Closure(Stx.Id(n, _), _, _) -> Some(n, n)
-                            | Stx.List([ Stx.Id("rename", _); Stx.Id(intName, _); Stx.Id(extName, _) ], _) ->
+                            | Stx.List(
+                                [ Stx.Id("rename", _); Stx.Id(intName, _); Stx.Id(extName, _) ],
+                                _) ->
                                 Some(extName, intName)
                             | other ->
-                                ExpandCtx.emitError innerCtx Diag.illFormedForm other.Loc "invalid export element"
+                                ExpandCtx.emitError innerCtx Diag.illFormedForm other.Loc
+                                    "invalid export element"
+
                                 None)
 
-                    (innerEnv, importAcc, bodyAcc, exportsAcc @ newExports)
+                    (innerScope, importAcc, bodyAcc, exportsAcc @ newExports)
 
                 | Stx.List(Stx.Id("import", _) :: importArgs, declLoc) ->
-                    let expr, newEnv = expandImport importArgs declLoc innerEnv innerCtx
-                    (newEnv, importAcc @ [ expr ], bodyAcc, exportsAcc)
+                    let expr, newScope = expandImport importArgs declLoc innerScope innerCtx
+                    (newScope, importAcc @ [ expr ], bodyAcc, exportsAcc)
 
                 | Stx.List(Stx.Id("begin", _) :: beginBody, _) ->
-                    let exprs, newEnv = expandSeq beginBody innerEnv innerCtx
-                    (newEnv, importAcc, bodyAcc @ exprs, exportsAcc)
+                    let exprs, newScope = expandSeq beginBody innerScope innerCtx
+                    (newScope, importAcc, bodyAcc @ exprs, exportsAcc)
 
                 | Stx.List(Stx.Id(kw, _) :: _, declLoc) ->
                     ExpandCtx.emitError ctx Diag.illFormedForm declLoc
                         $"unrecognised library declaration '{kw}'"
 
-                    (innerEnv, importAcc, bodyAcc, exportsAcc)
+                    (innerScope, importAcc, bodyAcc, exportsAcc)
 
                 | other ->
-                    ExpandCtx.emitError ctx Diag.illFormedForm other.Loc "ill-formed library declaration"
-                    (innerEnv, importAcc, bodyAcc, exportsAcc)
+                    ExpandCtx.emitError ctx Diag.illFormedForm other.Loc
+                        "ill-formed library declaration"
 
-            // Library body starts with just the keyword environment, plus any
-            // MacroDef bindings (builtin macros) inherited from the outer scope.
-            // Variable bindings from the outer scope are intentionally NOT
-            // inherited — the library must import everything it uses.
-            let initInnerEnv =
-                env
+                    (innerScope, importAcc, bodyAcc, exportsAcc)
+
+            // Library inner scope: builtin special forms + inherited macros.
+            // Variable bindings from the outer scope are intentionally excluded;
+            // the library must import everything it uses.
+            let initInnerScope =
+                scope
                 |> Map.fold
-                    (fun acc k v ->
-                        match v with
-                        | MacroDef _ -> Map.add k v acc
+                    (fun acc k id ->
+                        match Map.tryFind id innerCtx.BindingMap with
+                        | Some(MacroDef _) -> Map.add k id acc
                         | _ -> acc)
-                    SyntaxEnv.builtin
+                    SyntaxScope.builtin
 
-            let (finalInnerEnv, importExprs, bodyExprs, exportedPairs) =
-                List.fold folder (initInnerEnv, [], [], []) declarations
+            let (finalInnerScope, importExprs, bodyExprs, exportedPairs) =
+                List.fold folder (initInnerScope, [], [], []) declarations
 
-            // Resolve exported names to their storage references.
             let exports =
                 exportedPairs
                 |> List.choose (fun (extName, intName) ->
-                    match Map.tryFind intName finalInnerEnv with
-                    | Some(Variable storage) -> Some(extName, storage)
-                    | Some _ ->
-                        ExpandCtx.emitError ctx Diag.illFormedForm loc
-                            $"'{intName}' is a keyword and cannot be exported"
+                    match Map.tryFind intName finalInnerScope with
+                    | Some id ->
+                        match Map.tryFind id innerCtx.BindingMap with
+                        | Some(Variable(storage, _)) -> Some(extName, storage)
+                        | Some _ ->
+                            ExpandCtx.emitError ctx Diag.illFormedForm loc
+                                $"'{intName}' is a keyword and cannot be exported"
 
-                        None
+                            None
+                        | None ->
+                            ExpandCtx.emitError ctx Diag.illFormedForm loc
+                                $"exported name '{intName}' is not defined in library"
+
+                            None
                     | None ->
                         ExpandCtx.emitError ctx Diag.illFormedForm loc
                             $"exported name '{intName}' is not defined in library"
 
                         None)
 
-            // Register the new library so subsequent `(import ...)` can find it.
             ctx.Libraries <- { LibraryName = name; Exports = exports } :: ctx.Libraries
 
             let body = ExpandCtx.intoBody innerCtx (importExprs @ bodyExprs)
-            (BoundExpr.Library(name, mangledName, exports, body), env)
+            (BoundExpr.Library(name, mangledName, exports, body), scope)
 
         | [] ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'define-library'"
-            (BoundExpr.Error, env)
+            (BoundExpr.Error, scope)
 
-    /// Expand an `import` form. Returns the list of `BoundExpr.Import` nodes
-    /// and an extended `SyntaxEnv` with all imported names in scope.
-    and expandImport (args: Stx list) (loc: TextLocation) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr * SyntaxEnv =
-        let folder (currentEnv: SyntaxEnv, exprs: BoundExpr list) importStx =
+    /// Expand an `import` form.
+    and expandImport
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr * SyntaxScope =
+        let folder (currentScope: SyntaxScope, exprs: BoundExpr list) importStx =
             let importSet = stxToImportSet ctx.Diagnostics importStx
 
             match Libraries.resolveImport ctx.Libraries importSet with
             | Ok library ->
-                let newEnv =
+                let newScope =
                     library.Exports
                     |> List.fold
-                        (fun e (name, storage) ->
+                        (fun s (name, storage) ->
                             match storage with
                             | StorageRef.Macro _ ->
-                                // Old-format macro entries are not meaningful to
-                                // the new expander.  Builtins are seeded into the
-                                // initial SyntaxEnv as MacroDef; any other Macro
-                                // storage is simply ignored here.
-                                e
-                            | _ -> Map.add name (Variable storage) e)
-                        currentEnv
+                                // Old-format macro entries not usable by the new expander.
+                                s
+                            | _ ->
+                                let id = BindingId.fresh ()
+
+                                ctx.BindingMap <-
+                                    Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
+
+                                Map.add name id s)
+                        currentScope
 
                 let mangledName = library.LibraryName |> String.concat "::"
-                (newEnv, BoundExpr.Import mangledName :: exprs)
+                (newScope, BoundExpr.Import mangledName :: exprs)
             | Result.Error msg ->
                 ExpandCtx.emitError ctx Diag.illFormedForm loc msg
-                (currentEnv, BoundExpr.Error :: exprs)
+                (currentScope, BoundExpr.Error :: exprs)
 
-        let (finalEnv, revExprs) = List.fold folder (env, []) args
-        (BoundExpr.Seq(List.rev revExprs), finalEnv)
+        let (finalScope, revExprs) = List.fold folder (scope, []) args
+        (BoundExpr.Seq(List.rev revExprs), finalScope)
 
     // ── Sequence expansion ────────────────────────────────────────────────
 
-    /// Check whether a Stx node is a `define` or `define-syntax` at the head,
-    /// possibly wrapped in `Stx.Closure` layers.
-    and isBindingForm (stx: Stx) (env: SyntaxEnv) : bool =
+    /// Check whether a Stx node is a definition form.
+    and isBindingForm (stx: Stx) (scope: SyntaxScope) (ctx: ExpandCtx) : bool =
         match stx with
         | Stx.List(head :: _, _) ->
-            match resolveHead head env with
+            match resolveHead head scope ctx with
             | Some(SpecialForm SpecialFormKind.Define) -> true
             | Some(SpecialForm SpecialFormKind.DefineSyntax) -> true
             | Some(SpecialForm SpecialFormKind.Begin) -> true
             | Some(SpecialForm SpecialFormKind.Import) -> true
             | Some(SpecialForm SpecialFormKind.DefineLibrary) -> true
             | _ -> false
-        | Stx.Closure(inner, closedEnv, _) -> isBindingForm inner closedEnv
+        | Stx.Closure(inner, closedScope, _) -> isBindingForm inner closedScope ctx
         | _ -> false
 
     /// Try to expand a form as a binding-level definition.
-    /// Returns `Some(expr, extendedEnv)` for `define` / `define-syntax` / `import`,
-    /// `None` for all other forms.
-    and tryExpandBinding (stx: Stx) (env: SyntaxEnv) (ctx: ExpandCtx) : (BoundExpr * SyntaxEnv) option =
+    and tryExpandBinding
+        (stx: Stx)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : (BoundExpr * SyntaxScope) option =
         match stx with
-        | Stx.Closure(inner, closedEnv, _) ->
-            tryExpandBinding inner closedEnv ctx
+        | Stx.Closure(inner, closedScope, _) ->
+            tryExpandBinding inner closedScope ctx
         | Stx.List(head :: args, loc) ->
-            match resolveHead head env with
+            match resolveHead head scope ctx with
             | Some(SpecialForm SpecialFormKind.Define) ->
-                Some(expandDefine args loc env ctx)
+                Some(expandDefine args loc scope ctx)
             | Some(SpecialForm SpecialFormKind.DefineSyntax) ->
-                Some(expandDefineSyntax args loc env ctx)
+                Some(expandDefineSyntax args loc scope ctx)
             | Some(SpecialForm SpecialFormKind.Begin) ->
-                // Splice begin forms in definition context.
-                let exprs, env' = expandSeq args env ctx
-                Some(BoundExpr.Seq exprs, env')
+                let exprs, scope' = expandSeq args scope ctx
+                Some(BoundExpr.Seq exprs, scope')
             | Some(SpecialForm SpecialFormKind.Import) ->
-                Some(expandImport args loc env ctx)
+                Some(expandImport args loc scope ctx)
             | Some(SpecialForm SpecialFormKind.DefineLibrary) ->
-                Some(expandLibrary args loc env ctx)
+                Some(expandLibrary args loc scope ctx)
             | Some(MacroDef macro) ->
                 // Macro application in definition context: transcribe and re-process
-                // so that expansions producing `(begin (define-syntax ...) ...)` or
-                // `(define ...)` are spliced into the surrounding definition sequence.
-                // This is necessary for things like `(jabberwocky mad-hatter)` where
-                // the macro expands to a `begin` containing a `define-syntax`.
+                // so that expansions producing `(define ...)` etc. are spliced in.
                 let form = Stx.List(head :: args, loc)
 
                 let transcribed =
                     macro.Patterns
                     |> List.tryPick (fun (pat, tmpl) ->
-                        matchPattern pat form env |> Option.map (fun b -> tmpl, b))
+                        matchPattern pat form scope |> Option.map (fun b -> tmpl, b))
                     |> Option.map (fun (tmpl, bindings) ->
-                        transcribe tmpl bindings macro.DefEnv loc)
+                        transcribe tmpl bindings macro.DefScope loc)
 
                 match transcribed with
-                | None -> None // no rule matched; expand() will report the error
+                | None -> None
                 | Some expanded ->
-                    match tryExpandBinding expanded env ctx with
+                    match tryExpandBinding expanded scope ctx with
                     | Some result -> Some result
-                    | None -> Some(expand expanded env ctx, env)
+                    | None -> Some(expand expanded scope ctx, scope)
             | _ -> None
         | _ -> None
 
-    /// Expand a list of forms, threading env through any definitions.
-    /// Returns the list of BoundExprs and the final SyntaxEnv.
-    and expandSeq (stxs: Stx list) (env: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr list * SyntaxEnv =
+    /// Expand a list of forms, threading scope through any definitions.
+    and expandSeq
+        (stxs: Stx list)
+        (scope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr list * SyntaxScope =
         match stxs with
-        | [] -> [], env
+        | [] -> [], scope
         | stx :: rest ->
-            match tryExpandBinding stx env ctx with
-            | Some(boundExpr, env') ->
-                let restExprs, finalEnv = expandSeq rest env' ctx
-                boundExpr :: restExprs, finalEnv
+            match tryExpandBinding stx scope ctx with
+            | Some(boundExpr, scope') ->
+                let restExprs, finalScope = expandSeq rest scope' ctx
+                boundExpr :: restExprs, finalScope
             | None ->
-                let expr = expand stx env ctx
-                let restExprs, finalEnv = expandSeq rest env ctx
-                expr :: restExprs, finalEnv
+                let expr = expand stx scope ctx
+                let restExprs, finalScope = expandSeq rest scope ctx
+                expr :: restExprs, finalScope
 
 // ─────────────────────────────────────────────────── Public API
 
@@ -1679,9 +1791,16 @@ module Expand =
 
     /// Expand a parsed program into a list of `BoundExpr` nodes.
     ///
-    /// `initialEnv` should extend `builtinEnv` with global variable and library
-    /// bindings for the compilation unit.
-    let expandProgram (prog: Tree.Program) (initialEnv: SyntaxEnv) (ctx: ExpandCtx) : BoundExpr list =
+    /// `initialScope` should extend `SyntaxScope.builtin` with any additional
+    /// macro or variable bindings for the compilation unit.
+    /// The ctx's BindingMap must already contain the meanings for all BindingIds
+    /// present in `initialScope` (this is handled automatically for the builtin
+    /// special forms; callers use `ExpandCtx.addMacro` for additional macros).
+    let expandProgram
+        (prog: Tree.Program)
+        (initialScope: SyntaxScope)
+        (ctx: ExpandCtx)
+        : BoundExpr list =
         let docId = prog.DocId
 
         let stxs =
@@ -1689,5 +1808,5 @@ module Expand =
             |> Seq.map (Stx.ofExpr ctx.Registry docId)
             |> List.ofSeq
 
-        let exprs, _ = Expander.expandSeq stxs initialEnv ctx
+        let exprs, _ = Expander.expandSeq stxs initialScope ctx
         exprs
