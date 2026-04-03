@@ -103,31 +103,25 @@ type StxPattern =
 type Stx =
     /// An identifier (raw, unresolved name).
     | Id of name: string * loc: TextLocation
-    /// A self-evaluating constant.
-    | Const of value: BoundLiteral * loc: TextLocation
-    /// A proper list — `(e1 e2 … en)`.
-    | List of items: Stx list * loc: TextLocation
-    /// An improper list — `(e1 e2 … . tail)`.
-    | Dotted of items: Stx list * tail: Stx * loc: TextLocation
+    /// A self-evaluating datum — number, boolean, character, string, or bytevector.
+    | Datum of value: BoundLiteral * loc: TextLocation
+    /// A list — `(e1 e2 … en)` when tail is None; `(e1 … en . t)` when tail is Some t.
+    | List of items: Stx list * tail: Stx option * loc: TextLocation
     /// A quoted datum — `'datum`.
     | Quoted of inner: Stx * loc: TextLocation
     /// A syntactic closure — expand `inner` in `scope` rather than the ambient scope.
     | Closure of inner: Stx * scope: SyntaxScope * loc: TextLocation
     /// A vector literal — `#(e1 e2 … en)`.
     | Vec of items: Stx list * loc: TextLocation
-    /// A byte-vector literal — `#u8(b1 b2 … bn)`.
-    | ByteVec of bytes: Result<byte, string> list * loc: TextLocation
 
     member x.Loc =
         match x with
         | Id(_, l)
-        | Const(_, l)
-        | List(_, l)
-        | Dotted(_, _, l)
+        | Datum(_, l)
+        | List(_, _, l)
         | Quoted(_, l)
         | Closure(_, _, l)
-        | Vec(_, l)
-        | ByteVec(_, l) -> l
+        | Vec(_, l) -> l
 
 // ──────────────────────────────────── Template types (can now reference Stx)
 
@@ -171,32 +165,34 @@ module Stx =
 
         match expr with
         | SymbolNode s -> Stx.Id(s.CookedValue, loc)
-        | ConstantNode c -> Stx.Const(BoundLiteral.FromConstantValue c.Value, loc)
+        | ConstantNode c -> Stx.Datum(BoundLiteral.FromConstantValue c.Value, loc)
         | FormNode f ->
             let body = f.Body |> Seq.map (ofExpr reg docId) |> List.ofSeq
 
             match f.DottedTail with
-            | None -> Stx.List(body, loc)
+            | None -> Stx.List(body, None, loc)
             | Some tail ->
                 let t =
                     tail.Body
                     |> Option.map (ofExpr reg docId)
-                    |> Option.defaultValue (Stx.Const(BoundLiteral.Null, loc))
+                    |> Option.defaultValue (Stx.Datum(BoundLiteral.Null, loc))
 
-                Stx.Dotted(body, t, loc)
+                Stx.List(body, Some t, loc)
         | QuotedNode q ->
             let inner =
                 q.Inner
                 |> Option.map (ofExpr reg docId)
-                |> Option.defaultValue (Stx.Const(BoundLiteral.Null, loc))
+                |> Option.defaultValue (Stx.Datum(BoundLiteral.Null, loc))
 
             Stx.Quoted(inner, loc)
         | VecNode v ->
             let items = v.Body |> Seq.map (ofExpr reg docId) |> List.ofSeq
             Stx.Vec(items, loc)
         | ByteVecNode b ->
-            let bytes = b.Body |> List.map (fun bv -> bv.Value)
-            Stx.ByteVec(bytes, loc)
+            let bytes =
+                b.Body |> List.choose (fun bv -> match bv.Value with Ok b -> Some b | Result.Error _ -> None)
+
+            Stx.Datum(BoundLiteral.ByteVector bytes, loc)
 
 // ──────────────────────────────────── Transformer and BindingMeaning types
 
@@ -459,7 +455,7 @@ module MacrosNew =
 
         let rec unwrapList s =
             match s with
-            | Stx.List(items, _) ->
+            | Stx.List(items, _, _) ->
                 items
                 |> List.map unwrapId
                 |> List.fold
@@ -520,7 +516,7 @@ module MacrosNew =
     and parsePattern (kw: string) (ellipsis: string) (lits: string list) (stx: Stx) : Result<StxPattern, string> =
         match stx with
         | Stx.Closure(inner, _, _) -> parsePattern kw ellipsis lits inner
-        | Stx.Const(lit, _) -> Result.Ok(StxPattern.Constant lit)
+        | Stx.Datum(lit, _) -> Result.Ok(StxPattern.Constant lit)
         | Stx.Id("_", _) -> Result.Ok StxPattern.Underscore
         | Stx.Id(name, _) when name = ellipsis && not (List.contains name lits) ->
             Result.Error "unexpected ellipsis in pattern"
@@ -529,7 +525,7 @@ module MacrosNew =
                 Result.Ok(StxPattern.Literal name)
             else
                 Result.Ok(StxPattern.Variable name)
-        | Stx.List(items, _) ->
+        | Stx.List(items, None, _) ->
             match items with
             | Stx.Id(head, _) :: rest when head = kw ->
                 match parseFormBody kw ellipsis lits rest None with
@@ -542,7 +538,7 @@ module MacrosNew =
                 | Result.Error e -> Result.Error e
                 | Result.Ok(pats, None) -> Result.Ok(StxPattern.Form pats)
                 | Result.Ok(pats, Some tail) -> Result.Ok(StxPattern.DottedForm(pats, tail))
-        | Stx.Dotted(items, tail, _) ->
+        | Stx.List(items, Some tail, _) ->
             match parseFormBody kw ellipsis lits items (Some tail) with
             | Result.Error e -> Result.Error e
             | Result.Ok(pats, tailOpt) ->
@@ -602,12 +598,12 @@ module MacrosNew =
                 Result.Ok(StxTemplate.Subst name)
             else
                 Result.Ok(StxTemplate.Quoted stx)
-        | Stx.List(items, loc) ->
+        | Stx.List(items, None, loc) ->
             match parseTemplateFormBody ellipsis bound items None with
             | Result.Error e -> Result.Error e
             | Result.Ok(elems, None) -> Result.Ok(StxTemplate.Form(loc, elems))
             | Result.Ok(elems, Some tail) -> Result.Ok(StxTemplate.DottedForm(elems, tail))
-        | Stx.Dotted(items, tail, loc) ->
+        | Stx.List(items, Some tail, loc) ->
             match parseTemplateFormBody ellipsis bound items (Some tail) with
             | Result.Error e -> Result.Error e
             | Result.Ok(elems, tailOpt) ->
@@ -636,7 +632,7 @@ module MacrosNew =
         (stx: Stx)
         : Result<StxPattern * StxTemplate, string> =
         match stx with
-        | Stx.List([ pat; tmpl ], _) ->
+        | Stx.List([ pat; tmpl ], _, _) ->
             match parsePattern kw ellipsis lits pat with
             | Result.Error e -> Result.Error e
             | Result.Ok patParsed ->
@@ -705,7 +701,7 @@ module MacrosNew =
             | _ -> s
 
         match unwrap stx with
-        | Stx.List(_ :: second :: rest, _) ->
+        | Stx.List(_ :: second :: rest, _, _) ->
             match stxIdName second, rest with
             | Some ellipsis, litsStx :: rules when stxUnwrapList litsStx |> Option.isSome ->
                 parseSyntaxRulesBody name ellipsis litsStx rules defScope diag loc
@@ -749,24 +745,19 @@ module private Expander =
     let rec stxToDatum (stx: Stx) : BoundDatum =
         match stx with
         | Stx.Id(name, _) -> BoundDatum.Ident name
-        | Stx.Const(lit, _) -> BoundDatum.SelfEval lit
-        | Stx.List(items, _) -> BoundDatum.Compound(items |> List.map stxToDatum)
-        | Stx.Dotted(items, tail, _) -> BoundDatum.Pair(items |> List.map stxToDatum, stxToDatum tail)
+        | Stx.Datum(lit, _) -> BoundDatum.SelfEval lit
+        | Stx.List(items, None, _) -> BoundDatum.Compound(items |> List.map stxToDatum)
+        | Stx.List(items, Some tail, _) -> BoundDatum.Pair(items |> List.map stxToDatum, stxToDatum tail)
         | Stx.Quoted(inner, _) -> BoundDatum.Quoted(stxToDatum inner)
         | Stx.Closure(inner, _, _) -> stxToDatum inner
         | Stx.Vec(items, _) ->
             BoundDatum.SelfEval(BoundLiteral.Vector(items |> List.map stxToDatum))
-        | Stx.ByteVec(bytes, _) ->
-            let bs =
-                bytes |> List.choose (function Ok b -> Some b | Result.Error _ -> None)
-
-            BoundDatum.SelfEval(BoundLiteral.ByteVector bs)
 
     /// Parse formal parameters from a Stx node into a `BoundFormals` value.
     let rec parseFormals (stx: Stx) (ctx: ExpandCtx) : BoundFormals =
         match stx with
         | Stx.Id(name, _) -> BoundFormals.Simple name
-        | Stx.List(items, _) ->
+        | Stx.List(items, None, _) ->
             let names =
                 items
                 |> List.choose (function
@@ -778,7 +769,7 @@ module private Expander =
                         None)
 
             BoundFormals.List names
-        | Stx.Dotted(items, tail, loc) ->
+        | Stx.List(items, Some tail, loc) ->
             let names =
                 items
                 |> List.choose (function
@@ -812,7 +803,7 @@ module private Expander =
     let rec parseBindingSpecs (stx: Stx) (ctx: ExpandCtx) : (string * Stx) list =
         let parseOne node =
             match node with
-            | Stx.List([ StxId(name, _); init ], _) -> Some(name, init)
+            | Stx.List([ StxId(name, _); init ], _, _) -> Some(name, init)
             | other ->
                 ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc
                     "ill-formed binding specification"
@@ -820,7 +811,7 @@ module private Expander =
                 None
 
         match stx with
-        | Stx.List(items, _) -> items |> List.choose parseOne
+        | Stx.List(items, _, _) -> items |> List.choose parseOne
         | Stx.Closure(inner, _, _) -> parseBindingSpecs inner ctx
         | other ->
             ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc "expected binding list"
@@ -891,31 +882,20 @@ module private Expander =
 
         | Stx.Id(name, loc) -> lookupVar name loc scope ctx
 
-        | Stx.Const(lit, _) -> BoundExpr.Literal lit
+        | Stx.Datum(lit, _) -> BoundExpr.Literal lit
 
         | Stx.Quoted(inner, _) -> BoundExpr.Quoted(stxToDatum inner)
 
         | Stx.Vec(items, _) ->
             BoundExpr.Literal(BoundLiteral.Vector(items |> List.map stxToDatum))
 
-        | Stx.ByteVec(bytes, loc) ->
-            let bs =
-                bytes
-                |> List.choose (function
-                    | Ok b -> Some b
-                    | Result.Error msg ->
-                        ExpandCtx.emitError ctx Diag.illFormedForm loc msg
-                        None)
-
-            BoundExpr.Literal(BoundLiteral.ByteVector bs)
-
-        | Stx.Dotted(_, _, loc) ->
+        | Stx.List(_, Some _, loc) ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "dotted pair in expression position"
             BoundExpr.Error
 
-        | Stx.List([], _) -> BoundExpr.Literal BoundLiteral.Null
+        | Stx.List([], None, _) -> BoundExpr.Literal BoundLiteral.Null
 
-        | Stx.List(head :: args, loc) -> expandForm head args loc scope ctx
+        | Stx.List(head :: args, None, loc) -> expandForm head args loc scope ctx
 
     /// Dispatch a compound form based on what the head resolves to.
     and expandForm
@@ -927,7 +907,7 @@ module private Expander =
         : BoundExpr =
         match resolveHead head scope ctx with
         | Some(SpecialForm kind) -> expandSpecialForm kind args loc scope ctx
-        | Some(MacroDef macro) -> expandMacro macro (Stx.List(head :: args, loc)) scope ctx
+        | Some(MacroDef macro) -> expandMacro macro (Stx.List(head :: args, None, loc)) scope ctx
         | _ ->
             let fn = expand head scope ctx
             let actuals = args |> List.map (fun a -> expand a scope ctx)
@@ -1062,16 +1042,16 @@ module private Expander =
             let boundValue = expand value scope' ctx
             BoundExpr.Store(storage, Some boundValue), scope'
 
-        | Stx.List(StxId(name, _) :: formals, _) :: body ->
+        | Stx.List(StxId(name, _) :: formals, None, _) :: body ->
             // (define (name formals...) body...)
             let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
-            let lambdaExpr = expandLambda (Stx.List(formals, loc) :: body) loc scope' ctx
+            let lambdaExpr = expandLambda (Stx.List(formals, None, loc) :: body) loc scope' ctx
             BoundExpr.Store(storage, Some lambdaExpr), scope'
 
-        | Stx.Dotted(StxId(name, _) :: formals, tail, _) :: body ->
+        | Stx.List(StxId(name, _) :: formals, Some tail, _) :: body ->
             // (define (name formals... . rest) body...)
             let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
-            let lambdaExpr = expandLambda (Stx.Dotted(formals, tail, loc) :: body) loc scope' ctx
+            let lambdaExpr = expandLambda (Stx.List(formals, Some tail, loc) :: body) loc scope' ctx
             BoundExpr.Store(storage, Some lambdaExpr), scope'
 
         | _ -> illFormed ()
@@ -1224,20 +1204,21 @@ module private Expander =
                     |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
                     |> ctx.Diagnostics.Emit Diag.uninitialisedVar loc
                 | _ -> ()
-            | Stx.List(head :: _ as items, _) ->
+            | Stx.List(head :: _ as items, tail, _) ->
                 match resolveHead head scope ctx with
                 | Some(SpecialForm SpecialFormKind.Lambda) ->
                     // References inside a lambda body are safe: the lambda is a
                     // value, and the body runs only after all inits are done.
                     ()
-                | _ -> List.iter (walk scope) items
-            | Stx.List(items, _) -> List.iter (walk scope) items
-            | Stx.Dotted(items, tail, _) ->
+                | _ ->
+                    List.iter (walk scope) items
+                    tail |> Option.iter (walk scope)
+            | Stx.List(items, tail, _) ->
                 List.iter (walk scope) items
-                walk scope tail
+                tail |> Option.iter (walk scope)
             | Stx.Closure(inner, closedScope, _) -> walk closedScope inner
             | Stx.Vec(items, _) -> List.iter (walk scope) items
-            | Stx.Quoted _ | Stx.Const _ | Stx.ByteVec _ -> ()
+            | Stx.Datum _ | Stx.Quoted _ -> ()
 
         walk scope stx
 
@@ -1342,17 +1323,17 @@ module private Expander =
         | StxPattern.Literal lit, Stx.Closure(inner, closedScope, _) ->
             matchPattern (StxPattern.Literal lit) inner closedScope
 
-        | StxPattern.Constant patLit, Stx.Const(stxLit, _) ->
+        | StxPattern.Constant patLit, Stx.Datum(stxLit, _) ->
             if patLit = stxLit then Some Map.empty else None
 
-        | StxPattern.Form pats, Stx.List(items, _) ->
+        | StxPattern.Form pats, Stx.List(items, None, _) ->
             matchPatternList pats None items None scope
 
-        | StxPattern.DottedForm(pats, tailPat), Stx.Dotted(items, tail, _) ->
+        | StxPattern.DottedForm(pats, tailPat), Stx.List(items, Some tail, _) ->
             matchPatternList pats (Some tailPat) items (Some tail) scope
 
         // A proper list can also match a dotted-form pattern.
-        | StxPattern.DottedForm(pats, tailPat), Stx.List(items, _) ->
+        | StxPattern.DottedForm(pats, tailPat), Stx.List(items, None, _) ->
             matchPatternList pats (Some tailPat) items None scope
 
         | StxPattern.Form pats, Stx.Closure(inner, closedScope, _) ->
@@ -1400,7 +1381,7 @@ module private Expander =
                         | StxPattern.Variable v ->
                             Some(
                                 Map.ofList
-                                    [ v, Single(Stx.List(items, TextLocation.Missing), scope) ]
+                                    [ v, Single(Stx.List(items, None, TextLocation.Missing), scope) ]
                             )
                         | _ -> None
                     | _ -> None
@@ -1467,10 +1448,10 @@ module private Expander =
             | Some(Single(stx, capturedScope)) -> Stx.Closure(stx, capturedScope, loc)
             | Some(Repeated _) ->
                 diag.Emit Diag.invalidMacro loc $"ellipsis variable '{name}' used outside a repeat context"
-                Stx.Const(BoundLiteral.Null, loc)
+                Stx.Datum(BoundLiteral.Null, loc)
             | None ->
                 diag.Emit Diag.invalidMacro loc $"template variable '{name}' not bound"
-                Stx.Const(BoundLiteral.Null, loc)
+                Stx.Datum(BoundLiteral.Null, loc)
 
         | StxTemplate.Quoted stx ->
             // Literal from the definition site — wrap in the definition-site scope
@@ -1479,11 +1460,11 @@ module private Expander =
 
         | StxTemplate.Form(_, elements) ->
             let children = elements |> List.collect (transcribeElement bindings defScope loc diag)
-            Stx.List(children, loc)
+            Stx.List(children, None, loc)
 
         | StxTemplate.DottedForm(elems, tail) ->
             let children = elems |> List.collect (transcribeElement bindings defScope loc diag)
-            Stx.Dotted(children, transcribe tail bindings defScope loc diag, loc)
+            Stx.List(children, Some(transcribe tail bindings defScope loc diag), loc)
 
         | StxTemplate.Vec elements ->
             let children = elements |> List.collect (transcribeElement bindings defScope loc diag)
@@ -1555,21 +1536,21 @@ module private Expander =
 
         match stx with
         | Stx.Closure(inner, _, _) -> stxToImportSet diags inner
-        | Stx.List(Stx.Id("only", _) :: fromSet :: filters, _) ->
+        | Stx.List(Stx.Id("only", _) :: fromSet :: filters, _, _) ->
             ImportSet.Only(stxToImportSet diags fromSet, getNames filters)
-        | Stx.List(Stx.Id("except", _) :: fromSet :: filters, _) ->
+        | Stx.List(Stx.Id("except", _) :: fromSet :: filters, _, _) ->
             ImportSet.Except(stxToImportSet diags fromSet, getNames filters)
-        | Stx.List([ Stx.Id("prefix", _); fromSet; Stx.Id(prefix, _) ], _) ->
+        | Stx.List([ Stx.Id("prefix", _); fromSet; Stx.Id(prefix, _) ], _, _) ->
             ImportSet.Prefix(stxToImportSet diags fromSet, prefix)
-        | Stx.List(Stx.Id("rename", _) :: fromSet :: renames, _) ->
+        | Stx.List(Stx.Id("rename", _) :: fromSet :: renames, _, _) ->
             let parseRename =
                 function
-                | Stx.List([ Stx.Id(fr, _); Stx.Id(to_, _) ], _) ->
+                | Stx.List([ Stx.Id(fr, _); Stx.Id(to_, _) ], _, _) ->
                     Some { SymbolRename.From = fr; To = to_ }
                 | _ -> None
 
             ImportSet.Renamed(stxToImportSet diags fromSet, renames |> List.choose parseRename)
-        | Stx.List(parts, _) ->
+        | Stx.List(parts, _, _) ->
             let name = getNames parts
             if List.isEmpty name then ImportSet.Error else ImportSet.Plain name
         | _ -> ImportSet.Error
@@ -1581,7 +1562,7 @@ module private Expander =
             function
             | Stx.Id(n, _) -> Some n
             | Stx.Closure(Stx.Id(n, _), _, _) -> Some n
-            | Stx.Const(BoundLiteral.Number n, _) -> Some(string (int n))
+            | Stx.Datum(BoundLiteral.Number n, _) -> Some(string (int n))
             | other ->
                 ExpandCtx.emitError ctx Diag.illFormedForm other.Loc
                     "expected identifier in library name"
@@ -1590,7 +1571,7 @@ module private Expander =
 
         match stx with
         | Stx.Closure(inner, _, _) -> stxToLibraryName inner ctx
-        | Stx.List(parts, _) ->
+        | Stx.List(parts, _, _) ->
             let names = List.choose getName parts
             if List.length names = List.length parts then Some names else None
         | other ->
@@ -1619,7 +1600,7 @@ module private Expander =
                     | x -> x
 
                 match decl' with
-                | Stx.List(Stx.Id("export", _) :: exports, _) ->
+                | Stx.List(Stx.Id("export", _) :: exports, _, _) ->
                     let newExports =
                         exports
                         |> List.choose (function
@@ -1627,6 +1608,7 @@ module private Expander =
                             | Stx.Closure(Stx.Id(n, _), _, _) -> Some(n, n)
                             | Stx.List(
                                 [ Stx.Id("rename", _); Stx.Id(intName, _); Stx.Id(extName, _) ],
+                                _,
                                 _) ->
                                 Some(extName, intName)
                             | other ->
@@ -1637,15 +1619,15 @@ module private Expander =
 
                     (innerScope, importAcc, bodyAcc, exportsAcc @ newExports)
 
-                | Stx.List(Stx.Id("import", _) :: importArgs, declLoc) ->
+                | Stx.List(Stx.Id("import", _) :: importArgs, _, declLoc) ->
                     let expr, newScope = expandImport importArgs declLoc innerScope innerCtx
                     (newScope, importAcc @ [ expr ], bodyAcc, exportsAcc)
 
-                | Stx.List(Stx.Id("begin", _) :: beginBody, _) ->
+                | Stx.List(Stx.Id("begin", _) :: beginBody, _, _) ->
                     let exprs, newScope = expandSeq beginBody innerScope innerCtx
                     (newScope, importAcc, bodyAcc @ exprs, exportsAcc)
 
-                | Stx.List(Stx.Id(kw, _) :: _, declLoc) ->
+                | Stx.List(Stx.Id(kw, _) :: _, _, declLoc) ->
                     ExpandCtx.emitError ctx Diag.illFormedForm declLoc
                         $"unrecognised library declaration '{kw}'"
 
@@ -1747,7 +1729,7 @@ module private Expander =
     /// Check whether a Stx node is a definition form.
     and isBindingForm (stx: Stx) (scope: SyntaxScope) (ctx: ExpandCtx) : bool =
         match stx with
-        | Stx.List(head :: _, _) ->
+        | Stx.List(head :: _, _, _) ->
             match resolveHead head scope ctx with
             | Some(SpecialForm SpecialFormKind.Define) -> true
             | Some(SpecialForm SpecialFormKind.DefineSyntax) -> true
@@ -1767,7 +1749,7 @@ module private Expander =
         match stx with
         | Stx.Closure(inner, closedScope, _) ->
             tryExpandBinding inner closedScope ctx
-        | Stx.List(head :: args, loc) ->
+        | Stx.List(head :: args, _, loc) ->
             match resolveHead head scope ctx with
             | Some(SpecialForm SpecialFormKind.Define) ->
                 Some(expandDefine args loc scope ctx)
@@ -1783,7 +1765,7 @@ module private Expander =
             | Some(MacroDef macro) ->
                 // Macro application in definition context: transcribe and re-process
                 // so that expansions producing `(define ...)` etc. are spliced in.
-                let form = Stx.List(head :: args, loc)
+                let form = Stx.List(head :: args, None, loc)
 
                 let transcribed =
                     macro.Patterns
