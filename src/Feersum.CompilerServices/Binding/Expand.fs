@@ -71,15 +71,37 @@ module BindingId =
 /// Syntactic closures carry a snapshot of the scope at their definition site.
 type SyntaxScope = Map<string, BindingId>
 
+// ──────────────────────────────────── StxDatum — syntactic-layer simple datum
+
+/// A self-evaluating atomic datum at the syntactic level.
+/// These are the R7RS simple datums: booleans, numbers, characters, strings,
+/// and bytevectors.  Vectors are compound (Stx.Vec); the empty list / null is
+/// Stx.List([], None, loc).
+[<RequireQualifiedAccess>]
+type StxDatum =
+    | Boolean  of bool
+    | Number   of double
+    | Character of char
+    | Str      of string
+    | ByteVector of byte list
+
+module StxDatum =
+    /// Convert a syntactic datum to its bound-tree counterpart.
+    let toBoundLiteral =
+        function
+        | StxDatum.Boolean b   -> BoundLiteral.Boolean b
+        | StxDatum.Number n    -> BoundLiteral.Number n
+        | StxDatum.Character c -> BoundLiteral.Character c
+        | StxDatum.Str s       -> BoundLiteral.Str s
+        | StxDatum.ByteVector bs -> BoundLiteral.ByteVector bs
+
 // ──────────────────────────────────── Syntax pattern types
 
 /// Pattern element for matching `Stx` syntax in macro rules.
-/// `Constant` carries a `BoundLiteral` (the compiled literal value) rather than
-/// a raw CST `ConstantValue`, making it independent of the parse-tree layer.
 [<RequireQualifiedAccess>]
 type StxPattern =
     /// Match a self-evaluating literal exactly.
-    | Constant of BoundLiteral
+    | Constant of StxDatum
     /// Match anything (`_`).
     | Underscore
     /// Match a literal keyword (must appear in the `syntax-rules` literals list).
@@ -104,7 +126,7 @@ type Stx =
     /// An identifier (raw, unresolved name).
     | Id of name: string * loc: TextLocation
     /// A self-evaluating datum — number, boolean, character, string, or bytevector.
-    | Datum of value: BoundLiteral * loc: TextLocation
+    | Datum of value: StxDatum * loc: TextLocation
     /// A list — `(e1 e2 … en)` when tail is None; `(e1 … en . t)` when tail is Some t.
     | List of items: Stx list * tail: Stx option * loc: TextLocation
     /// A quoted datum — `'datum`.
@@ -165,7 +187,16 @@ module Stx =
 
         match expr with
         | SymbolNode s -> Stx.Id(s.CookedValue, loc)
-        | ConstantNode c -> Stx.Datum(BoundLiteral.FromConstantValue c.Value, loc)
+        | ConstantNode c ->
+            let datum =
+                match c.Value with
+                | Some(NumVal n)  -> StxDatum.Number n
+                | Some(StrVal s)  -> StxDatum.Str s
+                | Some(BoolVal b) -> StxDatum.Boolean b
+                | Some(CharVal c) -> StxDatum.Character(Option.defaultValue '\u0000' c)
+                | None            -> StxDatum.Boolean false  // error recovery
+
+            Stx.Datum(datum, loc)
         | FormNode f ->
             let body = f.Body |> Seq.map (ofExpr reg docId) |> List.ofSeq
 
@@ -175,14 +206,14 @@ module Stx =
                 let t =
                     tail.Body
                     |> Option.map (ofExpr reg docId)
-                    |> Option.defaultValue (Stx.Datum(BoundLiteral.Null, loc))
+                    |> Option.defaultValue (Stx.List([], None, loc))
 
                 Stx.List(body, Some t, loc)
         | QuotedNode q ->
             let inner =
                 q.Inner
                 |> Option.map (ofExpr reg docId)
-                |> Option.defaultValue (Stx.Datum(BoundLiteral.Null, loc))
+                |> Option.defaultValue (Stx.List([], None, loc))
 
             Stx.Quoted(inner, loc)
         | VecNode v ->
@@ -192,7 +223,7 @@ module Stx =
             let bytes =
                 b.Body |> List.choose (fun bv -> match bv.Value with Ok b -> Some b | Result.Error _ -> None)
 
-            Stx.Datum(BoundLiteral.ByteVector bytes, loc)
+            Stx.Datum(StxDatum.ByteVector bytes, loc)
 
 // ──────────────────────────────────── Transformer and BindingMeaning types
 
@@ -516,7 +547,7 @@ module MacrosNew =
     and parsePattern (kw: string) (ellipsis: string) (lits: string list) (stx: Stx) : Result<StxPattern, string> =
         match stx with
         | Stx.Closure(inner, _, _) -> parsePattern kw ellipsis lits inner
-        | Stx.Datum(lit, _) -> Result.Ok(StxPattern.Constant lit)
+        | Stx.Datum(d, _) -> Result.Ok(StxPattern.Constant d)
         | Stx.Id("_", _) -> Result.Ok StxPattern.Underscore
         | Stx.Id(name, _) when name = ellipsis && not (List.contains name lits) ->
             Result.Error "unexpected ellipsis in pattern"
@@ -745,7 +776,7 @@ module private Expander =
     let rec stxToDatum (stx: Stx) : BoundDatum =
         match stx with
         | Stx.Id(name, _) -> BoundDatum.Ident name
-        | Stx.Datum(lit, _) -> BoundDatum.SelfEval lit
+        | Stx.Datum(d, _) -> BoundDatum.SelfEval(StxDatum.toBoundLiteral d)
         | Stx.List(items, None, _) -> BoundDatum.Compound(items |> List.map stxToDatum)
         | Stx.List(items, Some tail, _) -> BoundDatum.Pair(items |> List.map stxToDatum, stxToDatum tail)
         | Stx.Quoted(inner, _) -> BoundDatum.Quoted(stxToDatum inner)
@@ -882,7 +913,7 @@ module private Expander =
 
         | Stx.Id(name, loc) -> lookupVar name loc scope ctx
 
-        | Stx.Datum(lit, _) -> BoundExpr.Literal lit
+        | Stx.Datum(d, _) -> BoundExpr.Literal(StxDatum.toBoundLiteral d)
 
         | Stx.Quoted(inner, _) -> BoundExpr.Quoted(stxToDatum inner)
 
@@ -1324,7 +1355,7 @@ module private Expander =
             matchPattern (StxPattern.Literal lit) inner closedScope
 
         | StxPattern.Constant patLit, Stx.Datum(stxLit, _) ->
-            if patLit = stxLit then Some Map.empty else None
+            if patLit = stxLit then Some Map.empty else None  // structural equality on StxDatum
 
         | StxPattern.Form pats, Stx.List(items, None, _) ->
             matchPatternList pats None items None scope
@@ -1448,10 +1479,10 @@ module private Expander =
             | Some(Single(stx, capturedScope)) -> Stx.Closure(stx, capturedScope, loc)
             | Some(Repeated _) ->
                 diag.Emit Diag.invalidMacro loc $"ellipsis variable '{name}' used outside a repeat context"
-                Stx.Datum(BoundLiteral.Null, loc)
+                Stx.List([], None, loc)
             | None ->
                 diag.Emit Diag.invalidMacro loc $"template variable '{name}' not bound"
-                Stx.Datum(BoundLiteral.Null, loc)
+                Stx.List([], None, loc)
 
         | StxTemplate.Quoted stx ->
             // Literal from the definition site — wrap in the definition-site scope
@@ -1562,7 +1593,7 @@ module private Expander =
             function
             | Stx.Id(n, _) -> Some n
             | Stx.Closure(Stx.Id(n, _), _, _) -> Some n
-            | Stx.Datum(BoundLiteral.Number n, _) -> Some(string (int n))
+            | Stx.Datum(StxDatum.Number n, _) -> Some(string (int n))
             | other ->
                 ExpandCtx.emitError ctx Diag.illFormedForm other.Loc
                     "expected identifier in library name"
