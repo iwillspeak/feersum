@@ -6,7 +6,7 @@
 <p align="center">
 <a href="https://github.com/iwillspeak/feersum/actions/workflows/ci.yml"><img alt="Build Status" src="https://github.com/iwillspeak/feersum/actions/workflows/ci.yml/badge.svg" /></a>
 <a href="https://github.com/iwillspeak/feersum/actions/workflows/github-actions-pages.yml"><img alt="Build Docs" src="https://github.com/iwillspeak/feersum/actions/workflows/github-actions-pages.yml/badge.svg" /></a>
-<a href="https://www.nuget.org/packages/Feersum"><img alt="Feersum on NuGet.org" src="https://buildstats.info/nuget/Feersum?includePreReleases=true" /></a>
+<a href="https://www.nuget.org/packages/Feersum"><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Feersum"></a>
 </p>
 
 > Wots in that thare box yoor holdin?
