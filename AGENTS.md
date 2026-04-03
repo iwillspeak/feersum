@@ -56,11 +56,16 @@ Spec files live in `spec/`. Each `.scm` file has a paired `.ast` snapshot. Run
 `dotnet test` with `UpdateSnapshots=true` to regenerate snapshots after an
 intentional change.
 
+## Code Style and Conventions
+
+F# code in Feersum should follow the [F# Style Guide](https://learn.microsoft.com/en-gb/dotnet/fsharp/style-guide/). Ensure your code adheres to the conventions outlined there for naming, formatting, and general code organization.
+
 ## Further Reading
 
 - [DEVGUIDE.md](DEVGUIDE.md) — detailed compiler structure walk-through
 - [CONTRIBUTING.md](CONTRIBUTING.md) — contribution guidelines
 - [docs/design-docs/](docs/design-docs/) — architectural design documents
+- [F# Style Guide](https://learn.microsoft.com/en-gb/dotnet/fsharp/style-guide/) — Microsoft's F# style and conventions guide
 
 ---
 
