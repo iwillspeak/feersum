@@ -91,7 +91,7 @@ let ``parseSyntaxRulesStx: constant literal pattern`` () =
     Assert.Single(t.Patterns) |> ignore
 
     match fst t.Patterns.[0] with
-    | StxPattern.Form [ StxPattern.Underscore; StxPattern.Constant(BoundLiteral.Number n) ] ->
+    | StxPattern.Form [ StxPattern.Underscore; StxPattern.Constant(StxDatum.Number n) ] ->
         Assert.Equal(123.0, n)
     | other -> failwithf "Unexpected pattern: %A" other
 

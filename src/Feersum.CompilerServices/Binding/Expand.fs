@@ -129,8 +129,6 @@ type Stx =
     | Datum of value: StxDatum * loc: TextLocation
     /// A list — `(e1 e2 … en)` when tail is None; `(e1 … en . t)` when tail is Some t.
     | List of items: Stx list * tail: Stx option * loc: TextLocation
-    /// A quoted datum — `'datum`.
-    | Quoted of inner: Stx * loc: TextLocation
     /// A syntactic closure — expand `inner` in `scope` rather than the ambient scope.
     | Closure of inner: Stx * scope: SyntaxScope * loc: TextLocation
     /// A vector literal — `#(e1 e2 … en)`.
@@ -141,7 +139,6 @@ type Stx =
         | Id(_, l)
         | Datum(_, l)
         | List(_, _, l)
-        | Quoted(_, l)
         | Closure(_, _, l)
         | Vec(_, l) -> l
 
@@ -210,12 +207,14 @@ module Stx =
 
                 Stx.List(body, Some t, loc)
         | QuotedNode q ->
+            // `'datum` is reader sugar for `(quote datum)` — desugar here at
+            // the CST boundary so Stx never carries a dedicated Quoted node.
             let inner =
                 q.Inner
                 |> Option.map (ofExpr reg docId)
                 |> Option.defaultValue (Stx.List([], None, loc))
 
-            Stx.Quoted(inner, loc)
+            Stx.List([ Stx.Id("quote", loc); inner ], None, loc)
         | VecNode v ->
             let items = v.Body |> Seq.map (ofExpr reg docId) |> List.ofSeq
             Stx.Vec(items, loc)
@@ -587,7 +586,6 @@ module MacrosNew =
                     | _, Result.Error e -> Result.Error e)
                 (Result.Ok [])
             |> Result.map StxPattern.Vec
-        | _ -> Result.Error $"unrecognised pattern node: {stx}"
 
     /// Detect ellipsis in a template form body.
     let rec parseTemplateFormBody
@@ -779,7 +777,6 @@ module private Expander =
         | Stx.Datum(d, _) -> BoundDatum.SelfEval(StxDatum.toBoundLiteral d)
         | Stx.List(items, None, _) -> BoundDatum.Compound(items |> List.map stxToDatum)
         | Stx.List(items, Some tail, _) -> BoundDatum.Pair(items |> List.map stxToDatum, stxToDatum tail)
-        | Stx.Quoted(inner, _) -> BoundDatum.Quoted(stxToDatum inner)
         | Stx.Closure(inner, _, _) -> stxToDatum inner
         | Stx.Vec(items, _) ->
             BoundDatum.SelfEval(BoundLiteral.Vector(items |> List.map stxToDatum))
@@ -914,8 +911,6 @@ module private Expander =
         | Stx.Id(name, loc) -> lookupVar name loc scope ctx
 
         | Stx.Datum(d, _) -> BoundExpr.Literal(StxDatum.toBoundLiteral d)
-
-        | Stx.Quoted(inner, _) -> BoundExpr.Quoted(stxToDatum inner)
 
         | Stx.Vec(items, _) ->
             BoundExpr.Literal(BoundLiteral.Vector(items |> List.map stxToDatum))
@@ -1237,9 +1232,10 @@ module private Expander =
                 | _ -> ()
             | Stx.List(head :: _ as items, tail, _) ->
                 match resolveHead head scope ctx with
-                | Some(SpecialForm SpecialFormKind.Lambda) ->
-                    // References inside a lambda body are safe: the lambda is a
-                    // value, and the body runs only after all inits are done.
+                | Some(SpecialForm SpecialFormKind.Lambda)
+                | Some(SpecialForm SpecialFormKind.Quote) ->
+                    // References inside a lambda body or a quote form are safe:
+                    // lambda bodies run only after all inits; quote is opaque data.
                     ()
                 | _ ->
                     List.iter (walk scope) items
@@ -1249,7 +1245,7 @@ module private Expander =
                 tail |> Option.iter (walk scope)
             | Stx.Closure(inner, closedScope, _) -> walk closedScope inner
             | Stx.Vec(items, _) -> List.iter (walk scope) items
-            | Stx.Datum _ | Stx.Quoted _ -> ()
+            | Stx.Datum _ -> ()
 
         walk scope stx
 
