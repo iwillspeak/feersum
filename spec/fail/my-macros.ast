@@ -1,4 +1,4 @@
-PROGRAM: (0..1239)
+PROGRAM: (0..1451)
   FORM: (0..39)
     OPEN_PAREN: (0..1) "("
     SYMBOL: (1..7)
@@ -272,7 +272,7 @@ PROGRAM: (0..1239)
   ATMOSPHERE: (555..556) "\n"
   ATMOSPHERE: (556..590) ";; => (a-was: 1 b-was: 2 c-was: 3)"
   ATMOSPHERE: (590..592) "\n\n"
-  FORM: (592..704)
+  FORM: (592..707)
     OPEN_PAREN: (592..593) "("
     SYMBOL: (593..606)
       IDENTIFIER: (593..606) "define-syntax"
@@ -280,7 +280,7 @@ PROGRAM: (0..1239)
     SYMBOL: (607..619)
       IDENTIFIER: (607..619) "my-vec-macro"
     ATMOSPHERE: (619..622) "\n  "
-    FORM: (622..703)
+    FORM: (622..706)
       OPEN_PAREN: (622..623) "("
       SYMBOL: (623..635)
         IDENTIFIER: (623..635) "syntax-rules"
@@ -289,7 +289,7 @@ PROGRAM: (0..1239)
         OPEN_PAREN: (636..637) "("
         CLOSE_PAREN: (637..638) ")"
       ATMOSPHERE: (638..643) "\n    "
-      FORM: (643..670)
+      FORM: (643..673)
         OPEN_PAREN: (643..644) "("
         FORM: (644..656)
           OPEN_PAREN: (644..645) "("
@@ -309,417 +309,432 @@ PROGRAM: (0..1239)
             CLOSE_PAREN: (654..655) ")"
           CLOSE_PAREN: (655..656) ")"
         ATMOSPHERE: (656..657) " "
-        FORM: (657..669)
+        FORM: (657..672)
           OPEN_PAREN: (657..658) "("
           SYMBOL: (658..662)
             IDENTIFIER: (658..662) "list"
           ATMOSPHERE: (662..663) " "
-          SYMBOL: (663..664)
-            IDENTIFIER: (663..664) "a"
-          ATMOSPHERE: (664..665) " "
-          SYMBOL: (665..666)
-            IDENTIFIER: (665..666) "b"
-          ATMOSPHERE: (666..667) " "
-          SYMBOL: (667..668)
-            IDENTIFIER: (667..668) "c"
-          CLOSE_PAREN: (668..669) ")"
-        CLOSE_PAREN: (669..670) ")"
-      ATMOSPHERE: (670..675) "\n    "
-      FORM: (675..702)
-        OPEN_PAREN: (675..676) "("
-        FORM: (676..688)
-          OPEN_PAREN: (676..677) "("
-          SYMBOL: (677..678)
-            IDENTIFIER: (677..678) "_"
-          ATMOSPHERE: (678..679) " "
-          VEC: (679..687)
-            OPEN_PAREN: (679..681) "#("
-            SYMBOL: (681..682)
-              IDENTIFIER: (681..682) "a"
-            ATMOSPHERE: (682..683) " "
-            SYMBOL: (683..686)
-              IDENTIFIER: (683..686) "..."
-            CLOSE_PAREN: (686..687) ")"
-          CLOSE_PAREN: (687..688) ")"
-        ATMOSPHERE: (688..689) " "
-        FORM: (689..701)
-          OPEN_PAREN: (689..690) "("
-          SYMBOL: (690..694)
-            IDENTIFIER: (690..694) "list"
-          ATMOSPHERE: (694..695) " "
-          SYMBOL: (695..696)
-            IDENTIFIER: (695..696) "a"
-          ATMOSPHERE: (696..697) " "
-          SYMBOL: (697..700)
-            IDENTIFIER: (697..700) "..."
-          CLOSE_PAREN: (700..701) ")"
-        CLOSE_PAREN: (701..702) ")"
-      CLOSE_PAREN: (702..703) ")"
-    CLOSE_PAREN: (703..704) ")"
-  ATMOSPHERE: (704..706) "\n\n"
-  FORM: (706..734)
-    OPEN_PAREN: (706..707) "("
-    SYMBOL: (707..709)
-      IDENTIFIER: (707..709) "pp"
-    ATMOSPHERE: (709..710) " "
-    FORM: (710..733)
-      OPEN_PAREN: (710..711) "("
-      SYMBOL: (711..723)
-        IDENTIFIER: (711..723) "my-vec-macro"
-      ATMOSPHERE: (723..724) " "
-      VEC: (724..732)
-        OPEN_PAREN: (724..726) "#("
-        CONSTANT: (726..727)
-          NUMBER: (726..727) "1"
-        ATMOSPHERE: (727..728) " "
-        CONSTANT: (728..729)
-          NUMBER: (728..729) "2"
-        ATMOSPHERE: (729..730) " "
-        CONSTANT: (730..731)
-          NUMBER: (730..731) "3"
-        CLOSE_PAREN: (731..732) ")"
-      CLOSE_PAREN: (732..733) ")"
-    CLOSE_PAREN: (733..734) ")"
-  ATMOSPHERE: (734..736) "  "
-  ATMOSPHERE: (736..748) "; => (1 2 3)"
-  ATMOSPHERE: (748..749) "\n"
-  FORM: (749..781)
-    OPEN_PAREN: (749..750) "("
-    SYMBOL: (750..752)
-      IDENTIFIER: (750..752) "pp"
-    ATMOSPHERE: (752..753) " "
-    FORM: (753..780)
-      OPEN_PAREN: (753..754) "("
-      SYMBOL: (754..766)
-        IDENTIFIER: (754..766) "my-vec-macro"
-      ATMOSPHERE: (766..767) " "
-      VEC: (767..779)
-        OPEN_PAREN: (767..769) "#("
-        CONSTANT: (769..770)
-          NUMBER: (769..770) "1"
-        ATMOSPHERE: (770..771) " "
-        CONSTANT: (771..772)
-          NUMBER: (771..772) "2"
-        ATMOSPHERE: (772..773) " "
-        CONSTANT: (773..774)
-          NUMBER: (773..774) "3"
-        ATMOSPHERE: (774..775) " "
-        CONSTANT: (775..776)
-          NUMBER: (775..776) "4"
-        ATMOSPHERE: (776..777) " "
-        CONSTANT: (777..778)
-          NUMBER: (777..778) "5"
-        CLOSE_PAREN: (778..779) ")"
-      CLOSE_PAREN: (779..780) ")"
-    CLOSE_PAREN: (780..781) ")"
-  ATMOSPHERE: (781..783) "  "
-  ATMOSPHERE: (783..799) "; => (1 2 3 4 5)"
-  ATMOSPHERE: (799..800) "\n"
-  FORM: (800..826)
-    OPEN_PAREN: (800..801) "("
-    SYMBOL: (801..803)
-      IDENTIFIER: (801..803) "pp"
-    ATMOSPHERE: (803..804) " "
-    FORM: (804..825)
-      OPEN_PAREN: (804..805) "("
-      SYMBOL: (805..817)
-        IDENTIFIER: (805..817) "my-vec-macro"
-      ATMOSPHERE: (817..818) " "
-      VEC: (818..824)
-        OPEN_PAREN: (818..820) "#("
-        CONSTANT: (820..821)
-          NUMBER: (820..821) "1"
-        ATMOSPHERE: (821..822) " "
-        CONSTANT: (822..823)
-          NUMBER: (822..823) "2"
-        CLOSE_PAREN: (823..824) ")"
-      CLOSE_PAREN: (824..825) ")"
-    CLOSE_PAREN: (825..826) ")"
-  ATMOSPHERE: (826..828) "  "
-  ATMOSPHERE: (828..844) "; => (1 2 3 4 5)"
-  ATMOSPHERE: (844..846) "\n\n"
-  FORM: (846..962)
-    OPEN_PAREN: (846..847) "("
-    SYMBOL: (847..860)
-      IDENTIFIER: (847..860) "define-syntax"
-    ATMOSPHERE: (860..861) " "
-    SYMBOL: (861..876)
-      IDENTIFIER: (861..876) "my-greedy-macro"
-    ATMOSPHERE: (876..879) "\n  "
-    FORM: (879..961)
-      OPEN_PAREN: (879..880) "("
-      SYMBOL: (880..892)
-        IDENTIFIER: (880..892) "syntax-rules"
-      ATMOSPHERE: (892..893) " "
-      FORM: (893..895)
-        OPEN_PAREN: (893..894) "("
-        CLOSE_PAREN: (894..895) ")"
-      ATMOSPHERE: (895..900) "\n    "
-      FORM: (900..960)
-        OPEN_PAREN: (900..901) "("
-        FORM: (901..914)
-          OPEN_PAREN: (901..902) "("
-          SYMBOL: (902..903)
-            IDENTIFIER: (902..903) "_"
-          ATMOSPHERE: (903..904) " "
-          SYMBOL: (904..905)
-            IDENTIFIER: (904..905) "a"
-          ATMOSPHERE: (905..906) " "
-          SYMBOL: (906..907)
-            IDENTIFIER: (906..907) "b"
-          ATMOSPHERE: (907..908) " "
-          SYMBOL: (908..911)
-            IDENTIFIER: (908..911) "..."
-          ATMOSPHERE: (911..912) " "
-          SYMBOL: (912..913)
-            IDENTIFIER: (912..913) "c"
-          CLOSE_PAREN: (913..914) ")"
-        ATMOSPHERE: (914..915) " "
-        FORM: (915..959)
-          OPEN_PAREN: (915..916) "("
-          SYMBOL: (916..920)
-            IDENTIFIER: (916..920) "list"
-          ATMOSPHERE: (920..921) " "
-          QUOTED_DATUM: (921..929)
-            QUOTE: (921..922) "'"
-            SYMBOL: (922..928)
-              IDENTIFIER: (922..928) "a-got:"
-            ATMOSPHERE: (928..929) " "
-          SYMBOL: (929..930)
-            IDENTIFIER: (929..930) "a"
-          ATMOSPHERE: (930..931) " "
-          QUOTED_DATUM: (931..939)
-            QUOTE: (931..932) "'"
-            SYMBOL: (932..938)
-              IDENTIFIER: (932..938) "b-got:"
-            ATMOSPHERE: (938..939) " "
-          QUOTED_DATUM: (939..948)
-            QUOTE: (939..940) "'"
-            FORM: (940..947)
-              OPEN_PAREN: (940..941) "("
-              SYMBOL: (941..942)
-                IDENTIFIER: (941..942) "b"
-              ATMOSPHERE: (942..943) " "
-              SYMBOL: (943..946)
-                IDENTIFIER: (943..946) "..."
-              CLOSE_PAREN: (946..947) ")"
-            ATMOSPHERE: (947..948) " "
-          QUOTED_DATUM: (948..956)
-            QUOTE: (948..949) "'"
-            SYMBOL: (949..955)
-              IDENTIFIER: (949..955) "c-got:"
-            ATMOSPHERE: (955..956) " "
-          QUOTED_DATUM: (956..958)
-            QUOTE: (956..957) "'"
-            SYMBOL: (957..958)
-              IDENTIFIER: (957..958) "c"
-          CLOSE_PAREN: (958..959) ")"
-        CLOSE_PAREN: (959..960) ")"
-      CLOSE_PAREN: (960..961) ")"
-    CLOSE_PAREN: (961..962) ")"
-  ATMOSPHERE: (962..964) "\n\n"
-  FORM: (964..992)
-    OPEN_PAREN: (964..965) "("
-    SYMBOL: (965..967)
-      IDENTIFIER: (965..967) "pp"
-    ATMOSPHERE: (967..968) " "
-    FORM: (968..991)
-      OPEN_PAREN: (968..969) "("
-      SYMBOL: (969..984)
-        IDENTIFIER: (969..984) "my-greedy-macro"
-      ATMOSPHERE: (984..985) " "
-      CONSTANT: (985..986)
-        NUMBER: (985..986) "1"
-      ATMOSPHERE: (986..987) " "
-      CONSTANT: (987..988)
-        NUMBER: (987..988) "2"
-      ATMOSPHERE: (988..989) " "
-      CONSTANT: (989..990)
-        NUMBER: (989..990) "3"
-      CLOSE_PAREN: (990..991) ")"
-    CLOSE_PAREN: (991..992) ")"
-  ATMOSPHERE: (992..993) "\n"
-  FORM: (993..1025)
-    OPEN_PAREN: (993..994) "("
-    SYMBOL: (994..996)
-      IDENTIFIER: (994..996) "pp"
-    ATMOSPHERE: (996..997) " "
-    FORM: (997..1024)
-      OPEN_PAREN: (997..998) "("
-      SYMBOL: (998..1013)
-        IDENTIFIER: (998..1013) "my-greedy-macro"
-      ATMOSPHERE: (1013..1014) " "
-      CONSTANT: (1014..1015)
-        NUMBER: (1014..1015) "1"
-      ATMOSPHERE: (1015..1016) " "
-      CONSTANT: (1016..1017)
-        NUMBER: (1016..1017) "2"
-      ATMOSPHERE: (1017..1018) " "
-      CONSTANT: (1018..1019)
-        NUMBER: (1018..1019) "3"
-      ATMOSPHERE: (1019..1020) " "
-      CONSTANT: (1020..1021)
-        NUMBER: (1020..1021) "4"
-      ATMOSPHERE: (1021..1022) " "
-      CONSTANT: (1022..1023)
-        NUMBER: (1022..1023) "5"
-      CLOSE_PAREN: (1023..1024) ")"
-    CLOSE_PAREN: (1024..1025) ")"
-  ATMOSPHERE: (1025..1026) "\n"
-  FORM: (1026..1062)
-    OPEN_PAREN: (1026..1027) "("
-    SYMBOL: (1027..1029)
-      IDENTIFIER: (1027..1029) "pp"
-    ATMOSPHERE: (1029..1030) " "
-    FORM: (1030..1061)
-      OPEN_PAREN: (1030..1031) "("
-      SYMBOL: (1031..1046)
-        IDENTIFIER: (1031..1046) "my-greedy-macro"
-      ATMOSPHERE: (1046..1047) " "
-      CONSTANT: (1047..1048)
-        NUMBER: (1047..1048) "1"
-      ATMOSPHERE: (1048..1049) " "
-      FORM: (1049..1054)
-        OPEN_PAREN: (1049..1050) "("
-        CONSTANT: (1050..1051)
-          NUMBER: (1050..1051) "2"
-        ATMOSPHERE: (1051..1052) " "
-        CONSTANT: (1052..1053)
-          NUMBER: (1052..1053) "3"
-        CLOSE_PAREN: (1053..1054) ")"
-      ATMOSPHERE: (1054..1055) " "
-      FORM: (1055..1060)
-        OPEN_PAREN: (1055..1056) "("
-        CONSTANT: (1056..1057)
-          NUMBER: (1056..1057) "4"
-        ATMOSPHERE: (1057..1058) " "
-        CONSTANT: (1058..1059)
-          NUMBER: (1058..1059) "5"
-        CLOSE_PAREN: (1059..1060) ")"
-      CLOSE_PAREN: (1060..1061) ")"
-    CLOSE_PAREN: (1061..1062) ")"
-  ATMOSPHERE: (1062..1063) "\n"
-  FORM: (1063..1089)
-    OPEN_PAREN: (1063..1064) "("
-    SYMBOL: (1064..1066)
-      IDENTIFIER: (1064..1066) "pp"
-    ATMOSPHERE: (1066..1067) " "
-    FORM: (1067..1088)
-      OPEN_PAREN: (1067..1068) "("
-      SYMBOL: (1068..1083)
-        IDENTIFIER: (1068..1083) "my-greedy-macro"
-      ATMOSPHERE: (1083..1084) " "
-      CONSTANT: (1084..1085)
-        NUMBER: (1084..1085) "1"
-      ATMOSPHERE: (1085..1086) " "
-      CONSTANT: (1086..1087)
-        NUMBER: (1086..1087) "2"
-      CLOSE_PAREN: (1087..1088) ")"
-    CLOSE_PAREN: (1088..1089) ")"
-  ATMOSPHERE: (1089..1091) "\n\n"
-  FORM: (1091..1193)
-    OPEN_PAREN: (1091..1092) "("
-    SYMBOL: (1092..1105)
-      IDENTIFIER: (1092..1105) "define-syntax"
-    ATMOSPHERE: (1105..1106) " "
-    SYMBOL: (1106..1124)
-      IDENTIFIER: (1106..1124) "my-repeating-macro"
-    ATMOSPHERE: (1124..1127) "\n  "
-    FORM: (1127..1192)
-      OPEN_PAREN: (1127..1128) "("
-      SYMBOL: (1128..1140)
-        IDENTIFIER: (1128..1140) "syntax-rules"
-      ATMOSPHERE: (1140..1141) " "
-      FORM: (1141..1143)
-        OPEN_PAREN: (1141..1142) "("
+          QUOTED_DATUM: (663..670)
+            QUOTE: (663..664) "'"
+            FORM: (664..669)
+              OPEN_PAREN: (664..665) "("
+              SYMBOL: (665..666)
+                IDENTIFIER: (665..666) "a"
+              ATMOSPHERE: (666..667) " "
+              SYMBOL: (667..668)
+                IDENTIFIER: (667..668) "b"
+              CLOSE_PAREN: (668..669) ")"
+            ATMOSPHERE: (669..670) " "
+          SYMBOL: (670..671)
+            IDENTIFIER: (670..671) "c"
+          CLOSE_PAREN: (671..672) ")"
+        CLOSE_PAREN: (672..673) ")"
+      ATMOSPHERE: (673..678) "\n    "
+      FORM: (678..705)
+        OPEN_PAREN: (678..679) "("
+        FORM: (679..691)
+          OPEN_PAREN: (679..680) "("
+          SYMBOL: (680..681)
+            IDENTIFIER: (680..681) "_"
+          ATMOSPHERE: (681..682) " "
+          VEC: (682..690)
+            OPEN_PAREN: (682..684) "#("
+            SYMBOL: (684..685)
+              IDENTIFIER: (684..685) "a"
+            ATMOSPHERE: (685..686) " "
+            SYMBOL: (686..689)
+              IDENTIFIER: (686..689) "..."
+            CLOSE_PAREN: (689..690) ")"
+          CLOSE_PAREN: (690..691) ")"
+        ATMOSPHERE: (691..692) " "
+        FORM: (692..704)
+          OPEN_PAREN: (692..693) "("
+          SYMBOL: (693..697)
+            IDENTIFIER: (693..697) "list"
+          ATMOSPHERE: (697..698) " "
+          SYMBOL: (698..699)
+            IDENTIFIER: (698..699) "a"
+          ATMOSPHERE: (699..700) " "
+          SYMBOL: (700..703)
+            IDENTIFIER: (700..703) "..."
+          CLOSE_PAREN: (703..704) ")"
+        CLOSE_PAREN: (704..705) ")"
+      CLOSE_PAREN: (705..706) ")"
+    CLOSE_PAREN: (706..707) ")"
+  ATMOSPHERE: (707..709) "\n\n"
+  FORM: (709..737)
+    OPEN_PAREN: (709..710) "("
+    SYMBOL: (710..712)
+      IDENTIFIER: (710..712) "pp"
+    ATMOSPHERE: (712..713) " "
+    FORM: (713..736)
+      OPEN_PAREN: (713..714) "("
+      SYMBOL: (714..726)
+        IDENTIFIER: (714..726) "my-vec-macro"
+      ATMOSPHERE: (726..727) " "
+      VEC: (727..735)
+        OPEN_PAREN: (727..729) "#("
+        CONSTANT: (729..730)
+          NUMBER: (729..730) "1"
+        ATMOSPHERE: (730..731) " "
+        CONSTANT: (731..732)
+          NUMBER: (731..732) "2"
+        ATMOSPHERE: (732..733) " "
+        CONSTANT: (733..734)
+          NUMBER: (733..734) "3"
+        CLOSE_PAREN: (734..735) ")"
+      CLOSE_PAREN: (735..736) ")"
+    CLOSE_PAREN: (736..737) ")"
+  ATMOSPHERE: (737..739) "  "
+  ATMOSPHERE: (739..753) "; => ((1 2) 3)"
+  ATMOSPHERE: (753..754) "\n"
+  FORM: (754..786)
+    OPEN_PAREN: (754..755) "("
+    SYMBOL: (755..757)
+      IDENTIFIER: (755..757) "pp"
+    ATMOSPHERE: (757..758) " "
+    FORM: (758..785)
+      OPEN_PAREN: (758..759) "("
+      SYMBOL: (759..771)
+        IDENTIFIER: (759..771) "my-vec-macro"
+      ATMOSPHERE: (771..772) " "
+      VEC: (772..784)
+        OPEN_PAREN: (772..774) "#("
+        CONSTANT: (774..775)
+          NUMBER: (774..775) "1"
+        ATMOSPHERE: (775..776) " "
+        CONSTANT: (776..777)
+          NUMBER: (776..777) "2"
+        ATMOSPHERE: (777..778) " "
+        CONSTANT: (778..779)
+          NUMBER: (778..779) "3"
+        ATMOSPHERE: (779..780) " "
+        CONSTANT: (780..781)
+          NUMBER: (780..781) "4"
+        ATMOSPHERE: (781..782) " "
+        CONSTANT: (782..783)
+          NUMBER: (782..783) "5"
+        CLOSE_PAREN: (783..784) ")"
+      CLOSE_PAREN: (784..785) ")"
+    CLOSE_PAREN: (785..786) ")"
+  ATMOSPHERE: (786..788) "  "
+  ATMOSPHERE: (788..804) "; => (1 2 3 4 5)"
+  ATMOSPHERE: (804..805) "\n"
+  FORM: (805..831)
+    OPEN_PAREN: (805..806) "("
+    SYMBOL: (806..808)
+      IDENTIFIER: (806..808) "pp"
+    ATMOSPHERE: (808..809) " "
+    FORM: (809..830)
+      OPEN_PAREN: (809..810) "("
+      SYMBOL: (810..822)
+        IDENTIFIER: (810..822) "my-vec-macro"
+      ATMOSPHERE: (822..823) " "
+      VEC: (823..829)
+        OPEN_PAREN: (823..825) "#("
+        CONSTANT: (825..826)
+          NUMBER: (825..826) "1"
+        ATMOSPHERE: (826..827) " "
+        CONSTANT: (827..828)
+          NUMBER: (827..828) "2"
+        CLOSE_PAREN: (828..829) ")"
+      CLOSE_PAREN: (829..830) ")"
+    CLOSE_PAREN: (830..831) ")"
+  ATMOSPHERE: (831..833) "  "
+  ATMOSPHERE: (833..843) "; => (1 2)"
+  ATMOSPHERE: (843..845) "\n\n"
+  FORM: (845..961)
+    OPEN_PAREN: (845..846) "("
+    SYMBOL: (846..859)
+      IDENTIFIER: (846..859) "define-syntax"
+    ATMOSPHERE: (859..860) " "
+    SYMBOL: (860..875)
+      IDENTIFIER: (860..875) "my-greedy-macro"
+    ATMOSPHERE: (875..878) "\n  "
+    FORM: (878..960)
+      OPEN_PAREN: (878..879) "("
+      SYMBOL: (879..891)
+        IDENTIFIER: (879..891) "syntax-rules"
+      ATMOSPHERE: (891..892) " "
+      FORM: (892..894)
+        OPEN_PAREN: (892..893) "("
+        CLOSE_PAREN: (893..894) ")"
+      ATMOSPHERE: (894..899) "\n    "
+      FORM: (899..959)
+        OPEN_PAREN: (899..900) "("
+        FORM: (900..913)
+          OPEN_PAREN: (900..901) "("
+          SYMBOL: (901..902)
+            IDENTIFIER: (901..902) "_"
+          ATMOSPHERE: (902..903) " "
+          SYMBOL: (903..904)
+            IDENTIFIER: (903..904) "a"
+          ATMOSPHERE: (904..905) " "
+          SYMBOL: (905..906)
+            IDENTIFIER: (905..906) "b"
+          ATMOSPHERE: (906..907) " "
+          SYMBOL: (907..910)
+            IDENTIFIER: (907..910) "..."
+          ATMOSPHERE: (910..911) " "
+          SYMBOL: (911..912)
+            IDENTIFIER: (911..912) "c"
+          CLOSE_PAREN: (912..913) ")"
+        ATMOSPHERE: (913..914) " "
+        FORM: (914..958)
+          OPEN_PAREN: (914..915) "("
+          SYMBOL: (915..919)
+            IDENTIFIER: (915..919) "list"
+          ATMOSPHERE: (919..920) " "
+          QUOTED_DATUM: (920..928)
+            QUOTE: (920..921) "'"
+            SYMBOL: (921..927)
+              IDENTIFIER: (921..927) "a-got:"
+            ATMOSPHERE: (927..928) " "
+          SYMBOL: (928..929)
+            IDENTIFIER: (928..929) "a"
+          ATMOSPHERE: (929..930) " "
+          QUOTED_DATUM: (930..938)
+            QUOTE: (930..931) "'"
+            SYMBOL: (931..937)
+              IDENTIFIER: (931..937) "b-got:"
+            ATMOSPHERE: (937..938) " "
+          QUOTED_DATUM: (938..947)
+            QUOTE: (938..939) "'"
+            FORM: (939..946)
+              OPEN_PAREN: (939..940) "("
+              SYMBOL: (940..941)
+                IDENTIFIER: (940..941) "b"
+              ATMOSPHERE: (941..942) " "
+              SYMBOL: (942..945)
+                IDENTIFIER: (942..945) "..."
+              CLOSE_PAREN: (945..946) ")"
+            ATMOSPHERE: (946..947) " "
+          QUOTED_DATUM: (947..955)
+            QUOTE: (947..948) "'"
+            SYMBOL: (948..954)
+              IDENTIFIER: (948..954) "c-got:"
+            ATMOSPHERE: (954..955) " "
+          QUOTED_DATUM: (955..957)
+            QUOTE: (955..956) "'"
+            SYMBOL: (956..957)
+              IDENTIFIER: (956..957) "c"
+          CLOSE_PAREN: (957..958) ")"
+        CLOSE_PAREN: (958..959) ")"
+      CLOSE_PAREN: (959..960) ")"
+    CLOSE_PAREN: (960..961) ")"
+  ATMOSPHERE: (961..963) "\n\n"
+  FORM: (963..991)
+    OPEN_PAREN: (963..964) "("
+    SYMBOL: (964..966)
+      IDENTIFIER: (964..966) "pp"
+    ATMOSPHERE: (966..967) " "
+    FORM: (967..990)
+      OPEN_PAREN: (967..968) "("
+      SYMBOL: (968..983)
+        IDENTIFIER: (968..983) "my-greedy-macro"
+      ATMOSPHERE: (983..984) " "
+      CONSTANT: (984..985)
+        NUMBER: (984..985) "1"
+      ATMOSPHERE: (985..986) " "
+      CONSTANT: (986..987)
+        NUMBER: (986..987) "2"
+      ATMOSPHERE: (987..988) " "
+      CONSTANT: (988..989)
+        NUMBER: (988..989) "3"
+      CLOSE_PAREN: (989..990) ")"
+    CLOSE_PAREN: (990..991) ")"
+  ATMOSPHERE: (991..1000) "         "
+  ATMOSPHERE: (1000..1036) ";; => (a-got: 1 b-got: (2) c-got: 3)"
+  ATMOSPHERE: (1036..1037) "\n"
+  FORM: (1037..1069)
+    OPEN_PAREN: (1037..1038) "("
+    SYMBOL: (1038..1040)
+      IDENTIFIER: (1038..1040) "pp"
+    ATMOSPHERE: (1040..1041) " "
+    FORM: (1041..1068)
+      OPEN_PAREN: (1041..1042) "("
+      SYMBOL: (1042..1057)
+        IDENTIFIER: (1042..1057) "my-greedy-macro"
+      ATMOSPHERE: (1057..1058) " "
+      CONSTANT: (1058..1059)
+        NUMBER: (1058..1059) "1"
+      ATMOSPHERE: (1059..1060) " "
+      CONSTANT: (1060..1061)
+        NUMBER: (1060..1061) "2"
+      ATMOSPHERE: (1061..1062) " "
+      CONSTANT: (1062..1063)
+        NUMBER: (1062..1063) "3"
+      ATMOSPHERE: (1063..1064) " "
+      CONSTANT: (1064..1065)
+        NUMBER: (1064..1065) "4"
+      ATMOSPHERE: (1065..1066) " "
+      CONSTANT: (1066..1067)
+        NUMBER: (1066..1067) "5"
+      CLOSE_PAREN: (1067..1068) ")"
+    CLOSE_PAREN: (1068..1069) ")"
+  ATMOSPHERE: (1069..1074) "     "
+  ATMOSPHERE: (1074..1114) ";; => (a-got: 1 b-got: (2 3 4) c-got: 5)"
+  ATMOSPHERE: (1114..1115) "\n"
+  FORM: (1115..1151)
+    OPEN_PAREN: (1115..1116) "("
+    SYMBOL: (1116..1118)
+      IDENTIFIER: (1116..1118) "pp"
+    ATMOSPHERE: (1118..1119) " "
+    FORM: (1119..1150)
+      OPEN_PAREN: (1119..1120) "("
+      SYMBOL: (1120..1135)
+        IDENTIFIER: (1120..1135) "my-greedy-macro"
+      ATMOSPHERE: (1135..1136) " "
+      CONSTANT: (1136..1137)
+        NUMBER: (1136..1137) "1"
+      ATMOSPHERE: (1137..1138) " "
+      FORM: (1138..1143)
+        OPEN_PAREN: (1138..1139) "("
+        CONSTANT: (1139..1140)
+          NUMBER: (1139..1140) "2"
+        ATMOSPHERE: (1140..1141) " "
+        CONSTANT: (1141..1142)
+          NUMBER: (1141..1142) "3"
         CLOSE_PAREN: (1142..1143) ")"
-      ATMOSPHERE: (1143..1148) "\n    "
-      FORM: (1148..1191)
-        OPEN_PAREN: (1148..1149) "("
-        FORM: (1149..1170)
-          OPEN_PAREN: (1149..1150) "("
-          SYMBOL: (1150..1151)
-            IDENTIFIER: (1150..1151) "_"
-          ATMOSPHERE: (1151..1152) " "
-          VEC: (1152..1160)
-            OPEN_PAREN: (1152..1154) "#("
-            SYMBOL: (1154..1155)
-              IDENTIFIER: (1154..1155) "a"
-            ATMOSPHERE: (1155..1156) " "
-            SYMBOL: (1156..1159)
-              IDENTIFIER: (1156..1159) "..."
-            CLOSE_PAREN: (1159..1160) ")"
-          ATMOSPHERE: (1160..1161) " "
-          VEC: (1161..1169)
-            OPEN_PAREN: (1161..1163) "#("
-            SYMBOL: (1163..1164)
-              IDENTIFIER: (1163..1164) "b"
-            ATMOSPHERE: (1164..1165) " "
-            SYMBOL: (1165..1168)
-              IDENTIFIER: (1165..1168) "..."
-            CLOSE_PAREN: (1168..1169) ")"
-          CLOSE_PAREN: (1169..1170) ")"
-        ATMOSPHERE: (1170..1171) " "
-        FORM: (1171..1190)
-          OPEN_PAREN: (1171..1172) "("
-          SYMBOL: (1172..1176)
-            IDENTIFIER: (1172..1176) "list"
-          ATMOSPHERE: (1176..1177) " "
-          QUOTED_DATUM: (1177..1186)
-            QUOTE: (1177..1178) "'"
-            FORM: (1178..1185)
-              OPEN_PAREN: (1178..1179) "("
-              SYMBOL: (1179..1180)
-                IDENTIFIER: (1179..1180) "a"
-              ATMOSPHERE: (1180..1181) " "
-              DOTTED_TAIL: (1181..1184)
-                DOT: (1181..1182) "."
-                ATMOSPHERE: (1182..1183) " "
-                SYMBOL: (1183..1184)
-                  IDENTIFIER: (1183..1184) "b"
-              CLOSE_PAREN: (1184..1185) ")"
-            ATMOSPHERE: (1185..1186) " "
-          SYMBOL: (1186..1189)
-            IDENTIFIER: (1186..1189) "..."
-          CLOSE_PAREN: (1189..1190) ")"
-        CLOSE_PAREN: (1190..1191) ")"
-      CLOSE_PAREN: (1191..1192) ")"
-    CLOSE_PAREN: (1192..1193) ")"
-  ATMOSPHERE: (1193..1195) "\n\n"
-  FORM: (1195..1238)
-    OPEN_PAREN: (1195..1196) "("
-    SYMBOL: (1196..1198)
-      IDENTIFIER: (1196..1198) "pp"
-    ATMOSPHERE: (1198..1199) " "
-    FORM: (1199..1237)
-      OPEN_PAREN: (1199..1200) "("
-      SYMBOL: (1200..1218)
-        IDENTIFIER: (1200..1218) "my-repeating-macro"
-      ATMOSPHERE: (1218..1219) " "
-      VEC: (1219..1227)
-        OPEN_PAREN: (1219..1221) "#("
-        CONSTANT: (1221..1222)
-          NUMBER: (1221..1222) "1"
-        ATMOSPHERE: (1222..1223) " "
-        CONSTANT: (1223..1224)
-          NUMBER: (1223..1224) "2"
-        ATMOSPHERE: (1224..1225) " "
-        CONSTANT: (1225..1226)
-          NUMBER: (1225..1226) "3"
-        CLOSE_PAREN: (1226..1227) ")"
-      ATMOSPHERE: (1227..1228) " "
-      VEC: (1228..1236)
-        OPEN_PAREN: (1228..1230) "#("
-        CONSTANT: (1230..1231)
-          NUMBER: (1230..1231) "4"
-        ATMOSPHERE: (1231..1232) " "
-        CONSTANT: (1232..1233)
-          NUMBER: (1232..1233) "5"
-        ATMOSPHERE: (1233..1234) " "
-        CONSTANT: (1234..1235)
-          NUMBER: (1234..1235) "6"
-        CLOSE_PAREN: (1235..1236) ")"
-      CLOSE_PAREN: (1236..1237) ")"
-    CLOSE_PAREN: (1237..1238) ")"
-  ATMOSPHERE: (1238..1239) "\n"
-  EOF: (1239..1239) ""
+      ATMOSPHERE: (1143..1144) " "
+      FORM: (1144..1149)
+        OPEN_PAREN: (1144..1145) "("
+        CONSTANT: (1145..1146)
+          NUMBER: (1145..1146) "4"
+        ATMOSPHERE: (1146..1147) " "
+        CONSTANT: (1147..1148)
+          NUMBER: (1147..1148) "5"
+        CLOSE_PAREN: (1148..1149) ")"
+      CLOSE_PAREN: (1149..1150) ")"
+    CLOSE_PAREN: (1150..1151) ")"
+  ATMOSPHERE: (1151..1152) " "
+  ATMOSPHERE: (1152..1196) ";; => (a-got: 1 b-got: ((2 3)) c-got: (4 5))"
+  ATMOSPHERE: (1196..1197) "\n"
+  FORM: (1197..1223)
+    OPEN_PAREN: (1197..1198) "("
+    SYMBOL: (1198..1200)
+      IDENTIFIER: (1198..1200) "pp"
+    ATMOSPHERE: (1200..1201) " "
+    FORM: (1201..1222)
+      OPEN_PAREN: (1201..1202) "("
+      SYMBOL: (1202..1217)
+        IDENTIFIER: (1202..1217) "my-greedy-macro"
+      ATMOSPHERE: (1217..1218) " "
+      CONSTANT: (1218..1219)
+        NUMBER: (1218..1219) "1"
+      ATMOSPHERE: (1219..1220) " "
+      CONSTANT: (1220..1221)
+        NUMBER: (1220..1221) "2"
+      CLOSE_PAREN: (1221..1222) ")"
+    CLOSE_PAREN: (1222..1223) ")"
+  ATMOSPHERE: (1223..1234) "           "
+  ATMOSPHERE: (1234..1269) ";; => (a-got: 1 b-got: () c-got: 2)"
+  ATMOSPHERE: (1269..1271) "\n\n"
+  FORM: (1271..1373)
+    OPEN_PAREN: (1271..1272) "("
+    SYMBOL: (1272..1285)
+      IDENTIFIER: (1272..1285) "define-syntax"
+    ATMOSPHERE: (1285..1286) " "
+    SYMBOL: (1286..1304)
+      IDENTIFIER: (1286..1304) "my-repeating-macro"
+    ATMOSPHERE: (1304..1307) "\n  "
+    FORM: (1307..1372)
+      OPEN_PAREN: (1307..1308) "("
+      SYMBOL: (1308..1320)
+        IDENTIFIER: (1308..1320) "syntax-rules"
+      ATMOSPHERE: (1320..1321) " "
+      FORM: (1321..1323)
+        OPEN_PAREN: (1321..1322) "("
+        CLOSE_PAREN: (1322..1323) ")"
+      ATMOSPHERE: (1323..1328) "\n    "
+      FORM: (1328..1371)
+        OPEN_PAREN: (1328..1329) "("
+        FORM: (1329..1350)
+          OPEN_PAREN: (1329..1330) "("
+          SYMBOL: (1330..1331)
+            IDENTIFIER: (1330..1331) "_"
+          ATMOSPHERE: (1331..1332) " "
+          VEC: (1332..1340)
+            OPEN_PAREN: (1332..1334) "#("
+            SYMBOL: (1334..1335)
+              IDENTIFIER: (1334..1335) "a"
+            ATMOSPHERE: (1335..1336) " "
+            SYMBOL: (1336..1339)
+              IDENTIFIER: (1336..1339) "..."
+            CLOSE_PAREN: (1339..1340) ")"
+          ATMOSPHERE: (1340..1341) " "
+          VEC: (1341..1349)
+            OPEN_PAREN: (1341..1343) "#("
+            SYMBOL: (1343..1344)
+              IDENTIFIER: (1343..1344) "b"
+            ATMOSPHERE: (1344..1345) " "
+            SYMBOL: (1345..1348)
+              IDENTIFIER: (1345..1348) "..."
+            CLOSE_PAREN: (1348..1349) ")"
+          CLOSE_PAREN: (1349..1350) ")"
+        ATMOSPHERE: (1350..1351) " "
+        FORM: (1351..1370)
+          OPEN_PAREN: (1351..1352) "("
+          SYMBOL: (1352..1356)
+            IDENTIFIER: (1352..1356) "list"
+          ATMOSPHERE: (1356..1357) " "
+          QUOTED_DATUM: (1357..1366)
+            QUOTE: (1357..1358) "'"
+            FORM: (1358..1365)
+              OPEN_PAREN: (1358..1359) "("
+              SYMBOL: (1359..1360)
+                IDENTIFIER: (1359..1360) "a"
+              ATMOSPHERE: (1360..1361) " "
+              DOTTED_TAIL: (1361..1364)
+                DOT: (1361..1362) "."
+                ATMOSPHERE: (1362..1363) " "
+                SYMBOL: (1363..1364)
+                  IDENTIFIER: (1363..1364) "b"
+              CLOSE_PAREN: (1364..1365) ")"
+            ATMOSPHERE: (1365..1366) " "
+          SYMBOL: (1366..1369)
+            IDENTIFIER: (1366..1369) "..."
+          CLOSE_PAREN: (1369..1370) ")"
+        CLOSE_PAREN: (1370..1371) ")"
+      CLOSE_PAREN: (1371..1372) ")"
+    CLOSE_PAREN: (1372..1373) ")"
+  ATMOSPHERE: (1373..1375) "\n\n"
+  FORM: (1375..1418)
+    OPEN_PAREN: (1375..1376) "("
+    SYMBOL: (1376..1378)
+      IDENTIFIER: (1376..1378) "pp"
+    ATMOSPHERE: (1378..1379) " "
+    FORM: (1379..1417)
+      OPEN_PAREN: (1379..1380) "("
+      SYMBOL: (1380..1398)
+        IDENTIFIER: (1380..1398) "my-repeating-macro"
+      ATMOSPHERE: (1398..1399) " "
+      VEC: (1399..1407)
+        OPEN_PAREN: (1399..1401) "#("
+        CONSTANT: (1401..1402)
+          NUMBER: (1401..1402) "1"
+        ATMOSPHERE: (1402..1403) " "
+        CONSTANT: (1403..1404)
+          NUMBER: (1403..1404) "2"
+        ATMOSPHERE: (1404..1405) " "
+        CONSTANT: (1405..1406)
+          NUMBER: (1405..1406) "3"
+        CLOSE_PAREN: (1406..1407) ")"
+      ATMOSPHERE: (1407..1408) " "
+      VEC: (1408..1416)
+        OPEN_PAREN: (1408..1410) "#("
+        CONSTANT: (1410..1411)
+          NUMBER: (1410..1411) "4"
+        ATMOSPHERE: (1411..1412) " "
+        CONSTANT: (1412..1413)
+          NUMBER: (1412..1413) "5"
+        ATMOSPHERE: (1413..1414) " "
+        CONSTANT: (1414..1415)
+          NUMBER: (1414..1415) "6"
+        CLOSE_PAREN: (1415..1416) ")"
+      CLOSE_PAREN: (1416..1417) ")"
+    CLOSE_PAREN: (1417..1418) ")"
+  ATMOSPHERE: (1418..1419) " "
+  ATMOSPHERE: (1419..1450) ";; => ((1 . 4) (2 . 5) (3 . 6))"
+  ATMOSPHERE: (1450..1451) "\n"
+  EOF: (1451..1451) ""
