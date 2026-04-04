@@ -590,3 +590,61 @@ let ``expand: define in let-syntax body does not shadow outer binding`` () =
         Assert.True(n >= 0)
     | _ -> ()  // multiple loads are also fine (e.g. test harness adds)
 
+/// Expand source that may contain parser-level errors. Unlike `expand` this
+/// does not bail out when `ParseResult.hasErrors` is true, allowing tests to
+/// exercise the expander's own error-recovery on malformed CST nodes.
+let private expandMalformed (source: string) =
+    let prog = Parse.readProgramSimple "test" source
+    let ctx = ExpandCtx.createGlobal registry "test" []
+    let exprs = Expand.expandProgram prog.Root SyntaxEnv.builtin Map.empty ctx
+    exprs, ctx.Diagnostics.Diagnostics
+
+/// Expand (possibly malformed) source and assert that at least one expander
+/// diagnostic with code `code` and message containing `needle` is emitted.
+let private expandMalformedError (code: int) (needle: string) (source: string) =
+    let _, diags = expandMalformed source
+
+    let found =
+        diags
+        |> List.exists (fun d -> d.Kind.Code = code && d.Message.Contains(needle))
+
+    if not found then
+        let msgs = diags |> List.map (fun d -> $"[{d.Kind.Code}] {d.Message}") |> String.concat "; "
+        failwithf "Expected error code %d containing '%s' but got: %s" code needle msgs
+
+// ── Stx.ofExpr reader-level error tests ──────────────────────────────────
+
+/// Diagnostic code emitted by Stx.ofExpr for malformed datum values.
+let [<Literal>] private MalformedDatumCode = 57
+
+[<Fact>]
+let ``ofExpr: unknown character name emits malformed-datum diagnostic`` () =
+    // #\unknown-name is a valid CHARACTER token but CharVal.Value returns None.
+    expandMalformedError MalformedDatumCode "invalid character literal" "#\\unknown-name"
+
+[<Fact>]
+let ``ofExpr: out-of-range bytevec byte emits malformed-datum diagnostic`` () =
+    // 256 is out of the 0-255 byte range; the error message includes the value.
+    expandMalformedError MalformedDatumCode "Invalid byte value: 256" "#u8(256)"
+
+[<Fact>]
+let ``ofExpr: empty dotted-pair tail emits malformed-datum diagnostic`` () =
+    // (a .) has a DottedTail node with no expression after the dot.
+    expandMalformedError MalformedDatumCode "dotted pair must have a tail expression" "(a .)"
+
+[<Fact>]
+let ``ofExpr: empty quotation emits malformed-datum diagnostic`` () =
+    // A bare ' produces a parser-recovery CONSTANT child with no value, which
+    // triggers the ConstantNode None path in ofExpr (code 57).
+    let _, diags = expandMalformed "'"
+    let found = diags |> List.exists (fun d -> d.Kind.Code = MalformedDatumCode)
+    Assert.True(found, $"Expected at least one diagnostic with code {MalformedDatumCode}")
+
+[<Fact>]
+let ``ofExpr: malformed nodes produce BoundExpr.Error not stub datums`` () =
+    // Verify that a bad char literal doesn't silently produce a wrong value —
+    // the expander should return exactly one BoundExpr.Error.
+    let exprs, diags = expandMalformed "#\\unknown-name"
+    Assert.NotEmpty(diags |> List.filter (fun d -> d.Kind.Level = DiagnosticLevel.Error))
+    let hasError = exprs |> List.exists (function BoundExpr.Error -> true | _ -> false)
+    Assert.True(hasError, "Expected at least one BoundExpr.Error in result")
