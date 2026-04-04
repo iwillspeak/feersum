@@ -426,10 +426,35 @@
       {
         "Kind": {
           "Level": {
+            "Case": "Warning"
+          },
+          "Code": 20,
+          "Title": "Improper library name"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 4,
+              "Col": 17
+            },
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 4,
+              "Col": 32
+            }
+          ]
+        },
+        "Message": "The name prefix srfi is reserved"
+      },
+      {
+        "Kind": {
+          "Level": {
             "Case": "Error"
           },
-          "Code": 52,
-          "Title": "Ill-formed special form"
+          "Code": 21,
+          "Title": "Invalid library name"
         },
         "Location": {
           "Case": "Span",
@@ -446,15 +471,65 @@
             }
           ]
         },
-        "Message": "expected identifier in library name"
+        "Message": "Invalid library name part"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Warning"
+          },
+          "Code": 20,
+          "Title": "Improper library name"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 2,
+              "Col": 25
+            },
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 2,
+              "Col": 38
+            }
+          ]
+        },
+        "Message": "Library names should not contain complex characters"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Warning"
+          },
+          "Code": 20,
+          "Title": "Improper library name"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 2,
+              "Col": 17
+            },
+            {
+              "Source": "fail/bad-library-names.scm",
+              "Line": 2,
+              "Col": 39
+            }
+          ]
+        },
+        "Message": "The name prefix scheme is reserved"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 52,
-          "Title": "Ill-formed special form"
+          "Code": 21,
+          "Title": "Invalid library name"
         },
         "Location": {
           "Case": "Span",
@@ -471,7 +546,7 @@
             }
           ]
         },
-        "Message": "expected list for library name"
+        "Message": "Expected library name"
       }
     ]
   },
@@ -495,17 +570,42 @@
           "Fields": [
             {
               "Source": "fail/bad-imports.scm",
-              "Line": 4,
-              "Col": 5
+              "Line": 3,
+              "Col": 1
             },
             {
               "Source": "fail/bad-imports.scm",
               "Line": 4,
-              "Col": 41
+              "Col": 42
             }
           ]
         },
         "Message": "Could not find library (test greeter)"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
+          "Code": 21,
+          "Title": "Invalid library name"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/bad-imports.scm",
+              "Line": 2,
+              "Col": 9
+            },
+            {
+              "Source": "fail/bad-imports.scm",
+              "Line": 2,
+              "Col": 17
+            }
+          ]
+        },
+        "Message": "Expected library name"
       },
       {
         "Kind": {

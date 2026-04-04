@@ -5,6 +5,7 @@ open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
+open Feersum.CompilerServices.Binding.New
 
 // ─────────────────────────────────────────────────────────────── Diagnostics
 
@@ -137,8 +138,11 @@ module ExpandCtx =
     let createGlobal
         (registry: SourceRegistry)
         (mangledName: string)
-        (libraries: LibrarySignature<StorageRef> list)
+        (libraries: Feersum.CompilerServices.Binding.LibrarySignature<StorageRef> list)
         =
+        let convertedLibs : LibrarySignature<StorageRef> list =
+            libraries |> List.map (fun s -> { LibraryName = s.LibraryName; Exports = s.Exports })
+
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
@@ -149,7 +153,7 @@ module ExpandCtx =
           Registry = registry
           MangledName = mangledName
           IsGlobal = true
-          Libraries = libraries
+          Libraries = convertedLibs
           Parent = None }
 
     /// Create a child context for a lambda body.
@@ -1462,180 +1466,16 @@ module private Expander =
             BoundExpr.Error
 
 
-    // ── Import set parsing  ───────────────────────────────────────────────
+    // ── Import resolution ─────────────────────────────────────────────────
 
-    and private stxToImportSet (diags: DiagnosticBag) (stx: Stx) : ImportSet =
-        let getName =
-            function
-            | Stx.Id(n, _) -> Some n
-            | Stx.Closure(Stx.Id(n, _), _, _) -> Some n
-            | _ -> None
-
-        let getNames items = items |> List.choose getName
-
-        match stx with
-        | Stx.Closure(inner, _, _) -> stxToImportSet diags inner
-        | Stx.List(Stx.Id("only", _) :: fromSet :: filters, _, _) ->
-            ImportSet.Only(stxToImportSet diags fromSet, getNames filters)
-        | Stx.List(Stx.Id("except", _) :: fromSet :: filters, _, _) ->
-            ImportSet.Except(stxToImportSet diags fromSet, getNames filters)
-        | Stx.List([ Stx.Id("prefix", _); fromSet; Stx.Id(prefix, _) ], _, _) ->
-            ImportSet.Prefix(stxToImportSet diags fromSet, prefix)
-        | Stx.List(Stx.Id("rename", _) :: fromSet :: renames, _, _) ->
-            let parseRename =
-                function
-                | Stx.List([ Stx.Id(fr, _); Stx.Id(to_, _) ], _, _) ->
-                    Some { SymbolRename.From = fr; To = to_ }
-                | _ -> None
-
-            ImportSet.Renamed(stxToImportSet diags fromSet, renames |> List.choose parseRename)
-        | Stx.List(parts, _, _) ->
-            let name = getNames parts
-            if List.isEmpty name then ImportSet.Error else ImportSet.Plain name
-        | _ -> ImportSet.Error
-
-    // ── Library name parsing ──────────────────────────────────────────────
-
-    and private stxToLibraryName (stx: Stx) (ctx: ExpandCtx) : string list option =
-        let getName =
-            function
-            | Stx.Id(n, _) -> Some n
-            | Stx.Closure(Stx.Id(n, _), _, _) -> Some n
-            | Stx.Datum(StxDatum.Number n, _) -> Some(string (int n))
-            | other ->
-                ExpandCtx.emitError ctx Diag.illFormedForm other.Loc
-                    "expected identifier in library name"
-
-                None
-
-        match stx with
-        | Stx.Closure(inner, _, _) -> stxToLibraryName inner ctx
-        | Stx.List(parts, _, _) ->
-            let names = List.choose getName parts
-            if List.length names = List.length parts then Some names else None
-        | other ->
-            ExpandCtx.emitError ctx Diag.illFormedForm other.Loc "expected list for library name"
-            None
-
-    // ── define-library ────────────────────────────────────────────────────
-
-    and expandLibrary
-        (args: Stx list)
+    and private expandImportSets
+        (importSets: ImportSet list)
         (loc: TextLocation)
         (scope: StxEnvironment)
         (ctx: ExpandCtx)
         : BoundExpr * StxEnvironment =
-        match args with
-        | nameStx :: declarations ->
-            let name = stxToLibraryName nameStx ctx |> Option.defaultValue []
-            let mangledName = name |> String.concat "::"
-
-            let innerCtx = ExpandCtx.childForLibrary ctx mangledName
-
-            let folder (innerScope, importAcc, bodyAcc, exportsAcc) decl =
-                let decl' =
-                    match decl with
-                    | Stx.Closure(inner, _, _) -> inner
-                    | x -> x
-
-                match decl' with
-                | Stx.List(Stx.Id("export", _) :: exports, _, _) ->
-                    let newExports =
-                        exports
-                        |> List.choose (function
-                            | Stx.Id(n, _) -> Some(n, n)
-                            | Stx.Closure(Stx.Id(n, _), _, _) -> Some(n, n)
-                            | Stx.List(
-                                [ Stx.Id("rename", _); Stx.Id(intName, _); Stx.Id(extName, _) ],
-                                _,
-                                _) ->
-                                Some(extName, intName)
-                            | other ->
-                                ExpandCtx.emitError innerCtx Diag.illFormedForm other.Loc
-                                    "invalid export element"
-
-                                None)
-
-                    (innerScope, importAcc, bodyAcc, exportsAcc @ newExports)
-
-                | Stx.List(Stx.Id("import", _) :: importArgs, _, declLoc) ->
-                    let expr, newScope = expandImport importArgs declLoc innerScope innerCtx
-                    (newScope, importAcc @ [ expr ], bodyAcc, exportsAcc)
-
-                | Stx.List(Stx.Id("begin", _) :: beginBody, _, _) ->
-                    let exprs, newScope = expandSeq beginBody innerScope innerCtx
-                    (newScope, importAcc, bodyAcc @ exprs, exportsAcc)
-
-                | Stx.List(Stx.Id(kw, _) :: _, _, declLoc) ->
-                    ExpandCtx.emitError ctx Diag.illFormedForm declLoc
-                        $"unrecognised library declaration '{kw}'"
-
-                    (innerScope, importAcc, bodyAcc, exportsAcc)
-
-                | other ->
-                    ExpandCtx.emitError ctx Diag.illFormedForm other.Loc
-                        "ill-formed library declaration"
-
-                    (innerScope, importAcc, bodyAcc, exportsAcc)
-
-            // Library inner scope: builtin special forms + inherited macros.
-            // Variable bindings from the outer scope are intentionally excluded;
-            // the library must import everything it uses.
-            let initInnerScope =
-                scope
-                |> Map.fold
-                    (fun acc k binding ->
-                        match binding with
-                        | StxBinding.Macro _ -> Map.add k binding acc
-                        | _ -> acc)
-                    StxEnvironment.builtin
-
-            let (finalInnerScope, importExprs, bodyExprs, exportedPairs) =
-                List.fold folder (initInnerScope, [], [], []) declarations
-
-            let exports =
-                exportedPairs
-                |> List.choose (fun (extName, intName) ->
-                    match Map.tryFind intName finalInnerScope with
-                    | Some(StxBinding.Variable id) ->
-                        match Map.tryFind id innerCtx.BindingMap with
-                        | Some(Variable(storage, _)) -> Some(extName, storage)
-                        | None ->
-                            ExpandCtx.emitError ctx Diag.illFormedForm loc
-                                $"exported name '{intName}' is not defined in library"
-
-                            None
-                    | Some _ ->
-                        ExpandCtx.emitError ctx Diag.illFormedForm loc
-                            $"'{intName}' is a keyword and cannot be exported"
-
-                        None
-                    | None ->
-                        ExpandCtx.emitError ctx Diag.illFormedForm loc
-                            $"exported name '{intName}' is not defined in library"
-
-                        None)
-
-            ctx.Libraries <- { LibraryName = name; Exports = exports } :: ctx.Libraries
-
-            let body = ExpandCtx.intoBody innerCtx (importExprs @ bodyExprs)
-            (BoundExpr.Library(name, mangledName, exports, body), scope)
-
-        | [] ->
-            ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'define-library'"
-            (BoundExpr.Error, scope)
-
-    /// Expand an `import` form.
-    and expandImport
-        (args: Stx list)
-        (loc: TextLocation)
-        (scope: StxEnvironment)
-        (ctx: ExpandCtx)
-        : BoundExpr * StxEnvironment =
-        let folder (currentScope: StxEnvironment, exprs: BoundExpr list) importStx =
-            let importSet = stxToImportSet ctx.Diagnostics importStx
-
-            match Libraries.resolveImport ctx.Libraries importSet with
+        let folder (currentScope: StxEnvironment, exprs: BoundExpr list) importSet =
+            match resolveImport ctx.Libraries importSet with
             | Ok library ->
                 let newScope =
                     library.Exports
@@ -1660,8 +1500,107 @@ module private Expander =
                 ExpandCtx.emitError ctx Diag.illFormedForm loc msg
                 (currentScope, BoundExpr.Error :: exprs)
 
-        let (finalScope, revExprs) = List.fold folder (scope, []) args
+        let (finalScope, revExprs) = List.fold folder (scope, []) importSets
         (BoundExpr.Seq(List.rev revExprs), finalScope)
+
+    // ── define-library ────────────────────────────────────────────────────
+
+    and expandLibrary
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: StxEnvironment)
+        (ctx: ExpandCtx)
+        : BoundExpr * StxEnvironment =
+        match args with
+        | nameStx :: declarations ->
+            match parseLibraryDefinition nameStx declarations with
+            | Result.Error diags ->
+                diags |> List.iter ctx.Diagnostics.Add
+                BoundExpr.Error, scope
+            | Ok(libDef, diags) ->
+                diags |> List.iter ctx.Diagnostics.Add
+                let name = libDef.LibraryName
+                let mangledName = name |> String.concat "::"
+
+                let innerCtx = ExpandCtx.childForLibrary ctx mangledName
+
+                let folder (innerScope, importAcc, bodyAcc, exportsAcc) decl =
+                    match decl with
+                    | LibraryDeclaration.Export exports ->
+                        let newExports =
+                            exports
+                            |> List.choose (function
+                                | ExportSet.Plain n -> Some(n, n)
+                                | ExportSet.Renamed r -> Some(r.To, r.From))
+
+                        (innerScope, importAcc, bodyAcc, exportsAcc @ newExports)
+
+                    | LibraryDeclaration.Import importSets ->
+                        let expr, newScope = expandImportSets importSets loc innerScope innerCtx
+                        (newScope, importAcc @ [ expr ], bodyAcc, exportsAcc)
+
+                    | LibraryDeclaration.Begin stxList ->
+                        let exprs, newScope = expandSeq stxList innerScope innerCtx
+                        (newScope, importAcc, bodyAcc @ exprs, exportsAcc)
+
+                    | LibraryDeclaration.Error -> (innerScope, importAcc, bodyAcc, exportsAcc)
+
+                // Library inner scope: builtin special forms + inherited macros.
+                // Variable bindings from the outer scope are intentionally excluded;
+                // the library must import everything it uses.
+                let initInnerScope =
+                    scope
+                    |> Map.fold
+                        (fun acc k binding ->
+                            match binding with
+                            | StxBinding.Macro _ -> Map.add k binding acc
+                            | _ -> acc)
+                        StxEnvironment.builtin
+
+                let (finalInnerScope, importExprs, bodyExprs, exportedPairs) =
+                    List.fold folder (initInnerScope, [], [], []) libDef.Declarations
+
+                let exports =
+                    exportedPairs
+                    |> List.choose (fun (extName, intName) ->
+                        match Map.tryFind intName finalInnerScope with
+                        | Some(StxBinding.Variable id) ->
+                            match Map.tryFind id innerCtx.BindingMap with
+                            | Some(Variable(storage, _)) -> Some(extName, storage)
+                            | None ->
+                                ExpandCtx.emitError ctx Diag.illFormedForm loc
+                                    $"exported name '{intName}' is not defined in library"
+
+                                None
+                        | Some _ ->
+                            ExpandCtx.emitError ctx Diag.illFormedForm loc
+                                $"'{intName}' is a keyword and cannot be exported"
+
+                            None
+                        | None ->
+                            ExpandCtx.emitError ctx Diag.illFormedForm loc
+                                $"exported name '{intName}' is not defined in library"
+
+                            None)
+
+                ctx.Libraries <- { LibraryName = name; Exports = exports } :: ctx.Libraries
+
+                let body = ExpandCtx.intoBody innerCtx (importExprs @ bodyExprs)
+                (BoundExpr.Library(name, mangledName, exports, body), scope)
+
+        | [] ->
+            ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'define-library'"
+            (BoundExpr.Error, scope)
+
+    /// Expand an `import` form.
+    and expandImport
+        (args: Stx list)
+        (loc: TextLocation)
+        (scope: StxEnvironment)
+        (ctx: ExpandCtx)
+        : BoundExpr * StxEnvironment =
+        let importSets = args |> List.map (parseImport ctx.Diagnostics)
+        expandImportSets importSets loc scope ctx
 
     // ── Sequence expansion ────────────────────────────────────────────────
 
