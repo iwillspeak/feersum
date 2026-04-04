@@ -3,6 +3,7 @@ module ExpanderTests
 open Xunit
 open Feersum.CompilerServices.NewBindingTest
 open Feersum.CompilerServices.Binding
+open Feersum.CompilerServices.Binding.New
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
@@ -51,7 +52,7 @@ let private expandError (needle: string) (source: string) =
 
 /// Parse a `(syntax-rules ...)` Stx node from source into the structured
 /// transformer representation (for pattern-inspection tests).
-let private parseSyntaxRules (name: string) (source: string) : SyntaxRulesTransformer =
+let private parseSyntaxRules (name: string) (source: string) : Macro =
     let prog = Parse.readProgramSimple "test" source
 
     if ParseResult.hasErrors prog then
@@ -80,48 +81,48 @@ let private parseSyntaxRules (name: string) (source: string) : SyntaxRulesTransf
 [<Fact>]
 let ``parseSyntaxRulesStx: simple identity rule`` () =
     let t = parseSyntaxRules "id" "(syntax-rules () ((_ x) x))"
-    Assert.Single(t.Patterns) |> ignore
+    Assert.Single(t.Transformers) |> ignore
 
-    match fst t.Patterns.[0] with
-    | StxPattern.Form [ StxPattern.Underscore; StxPattern.Variable "x" ] -> ()
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Variable "x" ] -> ()
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
 let ``parseSyntaxRulesStx: constant literal pattern`` () =
     let t = parseSyntaxRules "foo" "(syntax-rules () ((_ 123) 'ok))"
-    Assert.Single(t.Patterns) |> ignore
+    Assert.Single(t.Transformers) |> ignore
 
-    match fst t.Patterns.[0] with
-    | StxPattern.Form [ StxPattern.Underscore; StxPattern.Constant(StxDatum.Number n) ] ->
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Constant(StxDatum.Number n) ] ->
         Assert.Equal(123.0, n)
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
 let ``parseSyntaxRulesStx: keyword literal in literal list`` () =
     let t = parseSyntaxRules "my-macro" "(syntax-rules (else) ((_ else x) x))"
-    Assert.Single(t.Patterns) |> ignore
+    Assert.Single(t.Transformers) |> ignore
 
-    match fst t.Patterns.[0] with
-    | StxPattern.Form [ StxPattern.Underscore; StxPattern.Literal "else"; StxPattern.Variable "x" ] -> ()
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Literal "else"; MacroPattern.Variable "x" ] -> ()
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
 let ``parseSyntaxRulesStx: ellipsis pattern`` () =
     let t = parseSyntaxRules "my-list" "(syntax-rules () ((_ x ...) (list x ...)))"
-    Assert.Single(t.Patterns) |> ignore
+    Assert.Single(t.Transformers) |> ignore
 
-    match fst t.Patterns.[0] with
-    | StxPattern.Form [ StxPattern.Underscore; StxPattern.Repeat(StxPattern.Variable "x") ] -> ()
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Repeat(MacroPattern.Variable "x") ] -> ()
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
 let ``parseSyntaxRulesStx: dotted rest pattern`` () =
     let t = parseSyntaxRules "f" "(syntax-rules () ((_ a b . c) c))"
-    Assert.Single(t.Patterns) |> ignore
+    Assert.Single(t.Transformers) |> ignore
 
-    match fst t.Patterns.[0] with
-    | StxPattern.DottedForm([ StxPattern.Underscore; StxPattern.Variable "a"; StxPattern.Variable "b" ],
-                             StxPattern.Variable "c") -> ()
+    match fst t.Transformers.[0] with
+    | MacroPattern.DottedForm([ MacroPattern.Underscore; MacroPattern.Variable "a"; MacroPattern.Variable "b" ],
+                               MacroPattern.Variable "c") -> ()
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
@@ -129,7 +130,7 @@ let ``parseSyntaxRulesStx: multiple rules`` () =
     let t =
         parseSyntaxRules "foo" "(syntax-rules () ((_ 123) 'one-two-three) ((_) \"bar\"))"
 
-    Assert.Equal(2, List.length t.Patterns)
+    Assert.Equal(2, List.length t.Transformers)
 
 // ── End-to-end expand tests ───────────────────────────────────────────────
 
@@ -273,13 +274,13 @@ let ``parseSyntaxRulesStx: keyword-name head binds as variable`` () =
     // When the head element matches the keyword name, it becomes Variable kw
     // so the template can refer to it (e.g. recursive `or` expansion).
     let t = parseSyntaxRules "or" "(syntax-rules () ((or a b ...) (if a a (or b ...))))"
-    Assert.Single(t.Patterns) |> ignore
+    Assert.Single(t.Transformers) |> ignore
 
-    match fst t.Patterns.[0] with
-    | StxPattern.Form [ StxPattern.Variable "or"; StxPattern.Variable "a"; StxPattern.Repeat(StxPattern.Variable "b") ] ->
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Variable "or"; MacroPattern.Variable "a"; MacroPattern.Repeat(MacroPattern.Variable "b") ] ->
         // Template should have or as Subst (it's in bound)
-        match snd t.Patterns.[0] with
-        | StxTemplate.Form(_, elems) ->
+        match snd t.Transformers.[0] with
+        | MacroTemplate.Form(_, elems) ->
             // The (if ...) form; just verify it parsed without error
             Assert.NotEmpty(elems)
         | other -> failwithf "Expected Form template, got %A" other
@@ -318,10 +319,10 @@ let ``parseSyntaxRulesStx: custom ellipsis identifier`` () =
     // R7RS extended form: (syntax-rules <ellipsis> (literals...) rules...)
     // The custom ellipsis `dots` should be usable in place of `...`.
     let t = parseSyntaxRules "my-seq" "(syntax-rules dots () ((my-seq expr dots) (begin expr dots)))"
-    Assert.Single(t.Patterns) |> ignore
+    Assert.Single(t.Transformers) |> ignore
 
-    match fst t.Patterns.[0] with
-    | StxPattern.Form [ StxPattern.Variable "my-seq"; StxPattern.Repeat(StxPattern.Variable "expr") ] -> ()
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Variable "my-seq"; MacroPattern.Repeat(MacroPattern.Variable "expr") ] -> ()
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
