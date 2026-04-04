@@ -38,7 +38,7 @@ let runXpNewRepl (options: CompilationOptions) args =
 
             let initialScope =
                 Builtins.loadBuiltinMacroEnv ()
-                |> List.fold (fun s (name, tr) -> ExpandCtx.addMacro ctx name tr s) StxEnvironment.builtin
+                |> List.fold (fun s (name, tr) -> ExpandCtx.addMacro name tr s) StxEnvironment.builtin
 
             let result = Expand.expandProgram prog.Root initialScope Map.empty ctx
             dumpDiagnostics ctx.Diagnostics.Diagnostics

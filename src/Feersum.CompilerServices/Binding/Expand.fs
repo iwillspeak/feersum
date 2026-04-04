@@ -187,17 +187,7 @@ module ExpandCtx =
 
     /// Register a macro (syntax transformer) in ctx.BindingMap and return the
     /// extended scope with the macro name mapped to its fresh Ident.
-    let addMacro
-        (ctx: ExpandCtx)
-        (name: string)
-        (transformer: SyntaxTransformer)
-        (scope: StxEnvironment)
-        : StxEnvironment =
-        // FIXME: Need to get rid fo the dupe `SyntaxTransformer` type, and and
-        //        store a delegate here ratehr than a strucutred representation
-        //        of the transfomer. This will allow us to decouple the syntax
-        //        tree from the macro representation and opens the door to other
-        //        macro systems in the future such as procedural macros.
+    let addMacro (name: string) (transformer: SyntaxTransformer) (scope: StxEnvironment) : StxEnvironment =
         Map.add name (StxBinding.Macro transformer) scope
 
     /// Register an existing StorageRef as a visible variable in scope.
@@ -766,7 +756,7 @@ module private Expander =
         | [ StxId(name, _); rulesStx ] ->
             match parseSyntaxRulesStx name rulesStx scope ctx with
             | Some transformer ->
-                let scope' = ExpandCtx.addMacro ctx name transformer scope
+                let scope' = ExpandCtx.addMacro name transformer scope
                 BoundExpr.Nop, scope'
             | None -> BoundExpr.Error, scope
         | _ ->
@@ -778,20 +768,32 @@ module private Expander =
         (loc: TextLocation)
         (scope: StxEnvironment)
         (ctx: ExpandCtx)
-        (_isLetrec: bool)
+        (isLetrec: bool)
         : BoundExpr =
         match args with
         | bindingStx :: body when not (List.isEmpty body) ->
             let specs = parseBindingSpecs bindingStx ctx
 
+            let parseMacroNamed name ruleStx scope ctx =
+                parseSyntaxRulesStx name ruleStx scope ctx
+                |> Option.map (fun transformer -> name, transformer)
+
+            let addMacroToScope (currentScope: StxEnvironment) (transformer: (string * SyntaxTransformer) option) =
+                match transformer with
+                | Some(name, transformer) -> ExpandCtx.addMacro name transformer currentScope
+                | None -> currentScope
+
             let bodyScope =
-                specs
-                |> List.fold
-                    (fun currentScope (name, ruleStx) ->
-                        match parseSyntaxRulesStx name ruleStx currentScope ctx with
-                        | Some transformer -> ExpandCtx.addMacro ctx name transformer currentScope
-                        | None -> currentScope)
-                    scope
+                if isLetrec then
+                    specs
+                    |> List.fold
+                        (fun currentScope (name, ruleStx) ->
+                            parseMacroNamed name ruleStx currentScope ctx |> addMacroToScope currentScope)
+                        scope
+                else
+                    specs
+                    |> Seq.map (fun (name, ruleStx) -> parseMacroNamed name ruleStx scope ctx)
+                    |> Seq.fold (addMacroToScope) scope
 
             // The scope is immutable and threaded: `bodyScope` is only visible
             // within this call.  Macro Idents added to ctx.BindingMap here
