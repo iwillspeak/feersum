@@ -77,7 +77,10 @@ module Compilation =
         // binder behaviour).  Program mode passes Map.empty — programs must
         // use `(import ...)` to bring library bindings into scope.
         let preloaded =
-            if options.OutputType = OutputType.Script then scope else Map.empty
+            if options.OutputType = OutputType.Script then
+                scope
+            else
+                Map.empty
 
         let boundExprs =
             Instrumentation.withPhase

@@ -1,4 +1,5 @@
 namespace Feersum.CompilerServices.Binding
+
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
 
@@ -43,10 +44,10 @@ module Ident =
 /// Stx.List([], None, loc).
 [<RequireQualifiedAccess>]
 type StxDatum =
-    | Boolean  of bool
-    | Number   of double
+    | Boolean of bool
+    | Number of double
     | Character of char
-    | Str      of string
+    | Str of string
     | ByteVector of byte list
 
 
@@ -80,7 +81,7 @@ type Stx =
         | Error l -> l
 
 /// A Single Binding in the Syntax Environment
-/// 
+///
 /// Syntax names can be bound to one of three things:
 /// 1. A special form, which is a built-in syntax transformer that is handled
 ///    directly by the expander. These are things like `if`, `lambda`, `define`,
@@ -121,9 +122,9 @@ module Stx =
         | SymbolNode s -> Stx.Id(s.CookedValue, loc)
         | ConstantNode c ->
             match c.Value with
-            | Some(NumVal n)    -> Stx.Datum(StxDatum.Number n, loc)
-            | Some(StrVal s)    -> Stx.Datum(StxDatum.Str s, loc)
-            | Some(BoolVal b)   -> Stx.Datum(StxDatum.Boolean b, loc)
+            | Some(NumVal n) -> Stx.Datum(StxDatum.Number n, loc)
+            | Some(StrVal s) -> Stx.Datum(StxDatum.Str s, loc)
+            | Some(BoolVal b) -> Stx.Datum(StxDatum.Boolean b, loc)
             | Some(CharVal(Some ch)) -> Stx.Datum(StxDatum.Character ch, loc)
             | Some(CharVal None) ->
                 diag.Emit malformedDatum loc "invalid character literal"
@@ -149,18 +150,27 @@ module Stx =
             | None ->
                 diag.Emit malformedDatum loc "empty quotation"
                 Stx.Error loc
-            | Some inner ->
-                Stx.List([ Stx.Id("quote", loc); recurse inner ], None, loc)
+            | Some inner -> Stx.List([ Stx.Id("quote", loc); recurse inner ], None, loc)
         | VecNode v ->
             let items = v.Body |> Seq.map recurse |> List.ofSeq
             Stx.Vec(items, loc)
         | ByteVecNode b ->
             let results = b.Body |> List.map (fun bv -> bv.Value)
-            let errors = results |> List.choose (function Result.Error e -> Some e | Ok _ -> None)
+
+            let errors =
+                results
+                |> List.choose (function
+                    | Result.Error e -> Some e
+                    | Ok _ -> None)
 
             if not (List.isEmpty errors) then
                 errors |> List.iter (fun msg -> diag.Emit malformedDatum loc msg)
                 Stx.Error loc
             else
-                let bytes = results |> List.choose (function Ok by -> Some by | _ -> None)
+                let bytes =
+                    results
+                    |> List.choose (function
+                        | Ok by -> Some by
+                        | _ -> None)
+
                 Stx.Datum(StxDatum.ByteVector bytes, loc)

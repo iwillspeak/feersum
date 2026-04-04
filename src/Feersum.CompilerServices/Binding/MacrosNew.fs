@@ -69,7 +69,8 @@ type MacroBindings =
 
     /// Create a set of bindings with a single bound variable.
     static member FromVariable name (capture: MacroCapture) =
-        { Bindings = [ name, capture ]; Repeated = [] }
+        { Bindings = [ name, capture ]
+          Repeated = [] }
 
     /// Merge two sibling binding sets, appending flat bindings and zipping
     /// repeated binding lists element-by-element.
@@ -167,8 +168,7 @@ module MacrosNew =
         let rec loop acc remaining =
             match remaining with
             | [] ->
-                let tailPat =
-                    tail |> Option.map (fun t -> parsePattern kw ellipsis lits t)
+                let tailPat = tail |> Option.map (fun t -> parsePattern kw ellipsis lits t)
 
                 match tailPat with
                 | None -> Result.Ok(List.rev acc, None)
@@ -298,8 +298,7 @@ module MacrosNew =
                     | _, Result.Error e -> Result.Error e)
                 (Result.Ok [])
             |> Result.map MacroTemplate.Vec
-        | other ->
-            Result.Ok(MacroTemplate.Quoted other)
+        | other -> Result.Ok(MacroTemplate.Quoted other)
 
     /// Parse one `(pattern template)` transformer arm.
     let parseTransformer
@@ -401,8 +400,7 @@ module MacrosNew =
 
         | MacroPattern.Variable v, s -> Some(MacroBindings.FromVariable v (s, scope))
 
-        | MacroPattern.Literal lit, Stx.Id(name, _) ->
-            if name = lit then Some MacroBindings.Empty else None
+        | MacroPattern.Literal lit, Stx.Id(name, _) -> if name = lit then Some MacroBindings.Empty else None
 
         | MacroPattern.Literal lit, Stx.Closure(inner, closedScope, _) ->
             matchPattern (MacroPattern.Literal lit) inner closedScope
@@ -410,8 +408,7 @@ module MacrosNew =
         | MacroPattern.Constant patLit, Stx.Datum(stxLit, _) ->
             if patLit = stxLit then Some MacroBindings.Empty else None
 
-        | MacroPattern.Form pats, Stx.List(items, None, _) ->
-            matchPatternList pats None items None scope
+        | MacroPattern.Form pats, Stx.List(items, None, _) -> matchPatternList pats None items None scope
 
         | MacroPattern.DottedForm(pats, tailPat), Stx.List(items, Some tail, _) ->
             matchPatternList pats (Some tailPat) items (Some tail) scope
@@ -425,8 +422,7 @@ module MacrosNew =
         | MacroPattern.DottedForm(pats, tailPat), Stx.Closure(inner, closedScope, _) ->
             matchPattern (MacroPattern.DottedForm(pats, tailPat)) inner closedScope
 
-        | MacroPattern.Vec pats, Stx.Vec(items, _) ->
-            matchPatternList pats None items None scope
+        | MacroPattern.Vec pats, Stx.Vec(items, _) -> matchPatternList pats None items None scope
 
         | _ -> None
 
@@ -438,8 +434,7 @@ module MacrosNew =
         (scope: StxEnvironment)
         : MacroBindings option =
         match pats with
-        | MacroPattern.Repeat inner :: restPats ->
-            matchRepeat inner restPats tailPat items tailItem scope []
+        | MacroPattern.Repeat inner :: restPats -> matchRepeat inner restPats tailPat items tailItem scope []
 
         | headPat :: restPats ->
             match items with
@@ -462,14 +457,14 @@ module MacrosNew =
                         match tp with
                         | MacroPattern.Underscore -> Some MacroBindings.Empty
                         | MacroPattern.Variable v ->
-                            Some(
-                                MacroBindings.FromVariable
-                                    v
-                                    (Stx.List(items, None, TextLocation.Missing), scope)
-                            )
+                            Some(MacroBindings.FromVariable v (Stx.List(items, None, TextLocation.Missing), scope))
                         | _ -> None
                     | _ -> None
-            | None -> if List.isEmpty items && tailItem.IsNone then Some MacroBindings.Empty else None
+            | None ->
+                if List.isEmpty items && tailItem.IsNone then
+                    Some MacroBindings.Empty
+                else
+                    None
 
     and matchRepeat
         (inner: MacroPattern)
@@ -482,14 +477,16 @@ module MacrosNew =
         : MacroBindings option =
         match matchPatternList restPats tailPat items tailItem scope with
         | Some tailBindings ->
-            let repeatedPart = { MacroBindings.Empty with Repeated = List.rev accumulated }
+            let repeatedPart =
+                { MacroBindings.Empty with
+                    Repeated = List.rev accumulated }
+
             Some(MacroBindings.Union tailBindings repeatedPart)
         | None ->
             match items with
             | head :: rest ->
                 matchPattern inner head scope
-                |> Option.bind (fun b ->
-                    matchRepeat inner restPats tailPat rest tailItem scope (b :: accumulated))
+                |> Option.bind (fun b -> matchRepeat inner restPats tailPat rest tailItem scope (b :: accumulated))
             | [] -> None
 
     // ── Transcription ─────────────────────────────────────────────────────
@@ -506,14 +503,19 @@ module MacrosNew =
             match List.tryFind (fun (n, _) -> n = name) bindings.Bindings with
             | Some(_, (stx, capturedScope)) -> Stx.Closure(stx, capturedScope, loc)
             | None ->
-                diag.Emit MacroDiagnostics.invalidMacro loc $"template variable '{name}' is not bound at this repetition level"
+                diag.Emit
+                    MacroDiagnostics.invalidMacro
+                    loc
+                    $"template variable '{name}' is not bound at this repetition level"
+
                 Stx.List([], None, loc)
 
-        | MacroTemplate.Quoted stx ->
-            Stx.Closure(stx, defScope, loc)
+        | MacroTemplate.Quoted stx -> Stx.Closure(stx, defScope, loc)
 
         | MacroTemplate.Form(_, elements) ->
-            let children = elements |> List.collect (transcribeElement bindings defScope loc diag)
+            let children =
+                elements |> List.collect (transcribeElement bindings defScope loc diag)
+
             Stx.List(children, None, loc)
 
         | MacroTemplate.DottedForm(elems, tail) ->
@@ -521,7 +523,9 @@ module MacrosNew =
             Stx.List(children, Some(transcribe tail bindings defScope loc diag), loc)
 
         | MacroTemplate.Vec elements ->
-            let children = elements |> List.collect (transcribeElement bindings defScope loc diag)
+            let children =
+                elements |> List.collect (transcribeElement bindings defScope loc diag)
+
             Stx.Vec(children, loc)
 
     and transcribeElement
@@ -549,15 +553,16 @@ module MacrosNew =
         let rec templateVars tmpl =
             match tmpl with
             | MacroTemplate.Subst name -> Set.singleton name
-            | MacroTemplate.Form(_, elems) | MacroTemplate.Vec elems ->
-                elems |> List.map elemVars |> Set.unionMany
+            | MacroTemplate.Form(_, elems)
+            | MacroTemplate.Vec elems -> elems |> List.map elemVars |> Set.unionMany
             | MacroTemplate.DottedForm(elems, tail) ->
                 Set.union (elems |> List.map elemVars |> Set.unionMany) (templateVars tail)
             | MacroTemplate.Quoted _ -> Set.empty
 
         and elemVars elem =
             match elem with
-            | MacroTemplateElement.Template t | MacroTemplateElement.Repeated t -> templateVars t
+            | MacroTemplateElement.Template t
+            | MacroTemplateElement.Repeated t -> templateVars t
 
         let vars = templateVars template
 
@@ -566,7 +571,9 @@ module MacrosNew =
             // Skip iterations where none of the template's variables are present.
             // This handles nested ellipsis levels: e.g. `e1 ...` should produce []
             // when the current Repeated list belongs to an outer `c ...` expansion.
-            let hasVar = vars |> Set.exists (fun v -> perRepBindings.Bindings |> List.exists (fun (n, _) -> n = v))
+            let hasVar =
+                vars
+                |> Set.exists (fun v -> perRepBindings.Bindings |> List.exists (fun (n, _) -> n = v))
 
             if hasVar || Set.isEmpty vars then
                 Some(transcribe template perRepBindings defScope loc diag)

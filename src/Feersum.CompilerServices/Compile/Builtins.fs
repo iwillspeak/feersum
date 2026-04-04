@@ -173,11 +173,11 @@ module private BuiltinMacros =
         | Some expr -> Macros.parseSyntaxRules id expr |> Result.unwrap
         | None -> icef "no body in builtin macro %A" result.Root.Text
 
-    let private macroAnd    = macroAndSrc    |> parseBuiltinMacro "and"
-    let private macroOr     = macroOrSrc     |> parseBuiltinMacro "or"
-    let private macroWhen   = macroWhenSrc   |> parseBuiltinMacro "when"
+    let private macroAnd = macroAndSrc |> parseBuiltinMacro "and"
+    let private macroOr = macroOrSrc |> parseBuiltinMacro "or"
+    let private macroWhen = macroWhenSrc |> parseBuiltinMacro "when"
     let private macroUnless = macroUnlessSrc |> parseBuiltinMacro "unless"
-    let private macroCond   = macroCondSrc   |> parseBuiltinMacro "cond"
+    let private macroCond = macroCondSrc |> parseBuiltinMacro "cond"
 
     /// The list of builtin macros (old StorageRef.Macro format, for Binder/Compiler).
     let coreMacros =
@@ -201,18 +201,25 @@ module private BuiltinMacros =
             let diags = DiagnosticBag.Empty
             let stx = Stx.ofExpr registry result.Root.DocId diags expr
 
-            match Feersum.CompilerServices.Binding.New.MacrosNew.makeSyntaxTransformer name stx Map.empty diags TextLocation.Missing with
+            match
+                Feersum.CompilerServices.Binding.New.MacrosNew.makeSyntaxTransformer
+                    name
+                    stx
+                    Map.empty
+                    diags
+                    TextLocation.Missing
+            with
             | Some transformer -> transformer
             | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics
 
     /// The builtin macros in the new SyntaxTransformer format.
     /// Returns a list of (name, transformer) pairs to be registered via ExpandCtx.addMacro.
-    let newFormatTransformers : (string * SyntaxTransformer) list =
-        [ "and",    macroAndSrc
-          "or",     macroOrSrc
-          "when",   macroWhenSrc
+    let newFormatTransformers: (string * SyntaxTransformer) list =
+        [ "and", macroAndSrc
+          "or", macroOrSrc
+          "when", macroWhenSrc
           "unless", macroUnlessSrc
-          "cond",   macroCondSrc ]
+          "cond", macroCondSrc ]
         |> List.map (fun (name, src) -> name, parseBuiltinMacroNew name src)
 
 // ------------------------ Public Builtins API --------------------------------
@@ -223,8 +230,7 @@ module Builtins =
     /// Returns the builtin macros (`and`, `or`, `when`, `unless`, `cond`) as
     /// a list of (name, transformer) pairs.  Use `ExpandCtx.addMacro` to add
     /// each one to the initial scope before calling `Expand.expandProgram`.
-    let loadBuiltinMacroEnv () : (string * SyntaxTransformer) list =
-        BuiltinMacros.newFormatTransformers
+    let loadBuiltinMacroEnv () : (string * SyntaxTransformer) list = BuiltinMacros.newFormatTransformers
 
 
     /// Scan the `externAssms` and retrieve the core types that are required to

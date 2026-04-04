@@ -43,11 +43,14 @@ let private expandError (needle: string) (source: string) =
 
     let errors = diags |> List.filter (fun d -> d.Kind.Level = DiagnosticLevel.Error)
 
-    let found =
-        errors |> List.exists (fun d -> d.Message.Contains(needle))
+    let found = errors |> List.exists (fun d -> d.Message.Contains(needle))
 
     if not found then
-        let msgs = errors |> List.map (fun d -> $"[{d.Kind.Code}] {d.Message}") |> String.concat "; "
+        let msgs =
+            errors
+            |> List.map (fun d -> $"[{d.Kind.Code}] {d.Message}")
+            |> String.concat "; "
+
         failwithf "Expected error containing '%s' but got: %s" needle msgs
 
 /// Parse a `(syntax-rules ...)` Stx node from source into the structured
@@ -69,10 +72,7 @@ let private parseSyntaxRules (name: string) (source: string) : Macro =
     match MacrosNew.parseSyntaxRulesStx name tree env diag TextLocation.Missing with
     | Some t -> t
     | None ->
-        let msgs =
-            diag.Diagnostics
-            |> List.map (fun d -> d.Message)
-            |> String.concat "; "
+        let msgs = diag.Diagnostics |> List.map (fun d -> d.Message) |> String.concat "; "
 
         failwithf "parseSyntaxRulesStx returned None: %s" msgs
 
@@ -93,8 +93,7 @@ let ``parseSyntaxRulesStx: constant literal pattern`` () =
     Assert.Single(t.Transformers) |> ignore
 
     match fst t.Transformers.[0] with
-    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Constant(StxDatum.Number n) ] ->
-        Assert.Equal(123.0, n)
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Constant(StxDatum.Number n) ] -> Assert.Equal(123.0, n)
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
@@ -122,7 +121,7 @@ let ``parseSyntaxRulesStx: dotted rest pattern`` () =
 
     match fst t.Transformers.[0] with
     | MacroPattern.DottedForm([ MacroPattern.Underscore; MacroPattern.Variable "a"; MacroPattern.Variable "b" ],
-                               MacroPattern.Variable "c") -> ()
+                              MacroPattern.Variable "c") -> ()
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
@@ -277,7 +276,9 @@ let ``parseSyntaxRulesStx: keyword-name head binds as variable`` () =
     Assert.Single(t.Transformers) |> ignore
 
     match fst t.Transformers.[0] with
-    | MacroPattern.Form [ MacroPattern.Variable "or"; MacroPattern.Variable "a"; MacroPattern.Repeat(MacroPattern.Variable "b") ] ->
+    | MacroPattern.Form [ MacroPattern.Variable "or"
+                          MacroPattern.Variable "a"
+                          MacroPattern.Repeat(MacroPattern.Variable "b") ] ->
         // Template should have or as Subst (it's in bound)
         match snd t.Transformers.[0] with
         | MacroTemplate.Form(_, elems) ->
@@ -305,7 +306,9 @@ let ``expand: recursive macro via keyword-head binding`` () =
     Assert.NotEmpty(exprs)
 
 
-    expandError "no macro rule" """
+    expandError
+        "no macro rule"
+        """
 (define-syntax only-numbers
   (syntax-rules ()
     ((_ 42) 'ok)))
@@ -318,7 +321,9 @@ let ``expand: recursive macro via keyword-head binding`` () =
 let ``parseSyntaxRulesStx: custom ellipsis identifier`` () =
     // R7RS extended form: (syntax-rules <ellipsis> (literals...) rules...)
     // The custom ellipsis `dots` should be usable in place of `...`.
-    let t = parseSyntaxRules "my-seq" "(syntax-rules dots () ((my-seq expr dots) (begin expr dots)))"
+    let t =
+        parseSyntaxRules "my-seq" "(syntax-rules dots () ((my-seq expr dots) (begin expr dots)))"
+
     Assert.Single(t.Transformers) |> ignore
 
     match fst t.Transformers.[0] with
@@ -589,7 +594,7 @@ let ``expand: define in let-syntax body does not shadow outer binding`` () =
         // The inner x (from define inside let-syntax) occupies a higher slot.
         // We just verify it's not the inner slot (which would be n+1 or higher).
         Assert.True(n >= 0)
-    | _ -> ()  // multiple loads are also fine (e.g. test harness adds)
+    | _ -> () // multiple loads are also fine (e.g. test harness adds)
 
 /// Expand source that may contain parser-level errors. Unlike `expand` this
 /// does not bail out when `ParseResult.hasErrors` is true, allowing tests to
@@ -606,17 +611,21 @@ let private expandMalformedError (code: int) (needle: string) (source: string) =
     let _, diags = expandMalformed source
 
     let found =
-        diags
-        |> List.exists (fun d -> d.Kind.Code = code && d.Message.Contains(needle))
+        diags |> List.exists (fun d -> d.Kind.Code = code && d.Message.Contains(needle))
 
     if not found then
-        let msgs = diags |> List.map (fun d -> $"[{d.Kind.Code}] {d.Message}") |> String.concat "; "
+        let msgs =
+            diags
+            |> List.map (fun d -> $"[{d.Kind.Code}] {d.Message}")
+            |> String.concat "; "
+
         failwithf "Expected error code %d containing '%s' but got: %s" code needle msgs
 
 // ── Stx.ofExpr reader-level error tests ──────────────────────────────────
 
 /// Diagnostic code emitted by Stx.ofExpr for malformed datum values.
-let [<Literal>] private MalformedDatumCode = 57
+[<Literal>]
+let private MalformedDatumCode = 57
 
 [<Fact>]
 let ``ofExpr: unknown character name emits malformed-datum diagnostic`` () =
@@ -647,5 +656,11 @@ let ``ofExpr: malformed nodes produce BoundExpr.Error not stub datums`` () =
     // the expander should return exactly one BoundExpr.Error.
     let exprs, diags = expandMalformed "#\\unknown-name"
     Assert.NotEmpty(diags |> List.filter (fun d -> d.Kind.Level = DiagnosticLevel.Error))
-    let hasError = exprs |> List.exists (function BoundExpr.Error -> true | _ -> false)
+
+    let hasError =
+        exprs
+        |> List.exists (function
+            | BoundExpr.Error -> true
+            | _ -> false)
+
     Assert.True(hasError, "Expected at least one BoundExpr.Error in result")

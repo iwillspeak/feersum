@@ -82,7 +82,8 @@ module Utils =
             function
             | Stx.Id(name, loc) ->
                 if Seq.exists isInvalidChar name then
-                    diags.Emit LibraryDiagnostics.improperLibraryName
+                    diags.Emit
+                        LibraryDiagnostics.improperLibraryName
                         loc
                         "Library names should not contain complex characters"
 
@@ -107,8 +108,7 @@ module Utils =
 
     let private tryParseRename =
         function
-        | Stx.List([ Stx.Id(from_, _); Stx.Id(to_, _) ], _, _) ->
-            Some { From = from_; To = to_ }
+        | Stx.List([ Stx.Id(from_, _); Stx.Id(to_, _) ], _, _) -> Some { From = from_; To = to_ }
         | _ -> None
 
     let rec private parseExportDeclaration (diags: DiagnosticBag) (export: Stx) : ExportSet option =
@@ -157,22 +157,18 @@ module Utils =
         match decl with
         | Stx.Closure(inner, _, _) -> parseLibraryDeclaration diags inner
         | Stx.List(Stx.Id("export", _) :: exports, _, _) ->
-            exports |> List.choose (parseExportDeclaration diags) |> LibraryDeclaration.Export
+            exports
+            |> List.choose (parseExportDeclaration diags)
+            |> LibraryDeclaration.Export
         | Stx.List(Stx.Id("import", _) :: imports, _, _) ->
             imports |> List.map (parseImportSet diags) |> LibraryDeclaration.Import
         | Stx.List(Stx.Id("begin", _) :: body, _, _) -> LibraryDeclaration.Begin body
         | Stx.List(Stx.Id(kw, _) :: _, _, loc) ->
-            diags.Emit
-                LibraryDiagnostics.malformedLibraryDecl
-                loc
-                (sprintf "Unrecognised library declaration %s" kw)
+            diags.Emit LibraryDiagnostics.malformedLibraryDecl loc (sprintf "Unrecognised library declaration %s" kw)
 
             LibraryDeclaration.Error
         | other ->
-            diags.Emit
-                LibraryDiagnostics.malformedLibraryDecl
-                other.Loc
-                "Expected library declaration"
+            diags.Emit LibraryDiagnostics.malformedLibraryDecl other.Loc "Expected library declaration"
 
             LibraryDeclaration.Error
 
@@ -190,7 +186,8 @@ module Utils =
         | _ -> false
 
     let private mapExports mapper (signature: LibrarySignature<'a>) =
-        { signature with Exports = signature.Exports |> mapper }
+        { signature with
+            Exports = signature.Exports |> mapper }
 
     /// Resolve a library import
     let rec resolveImport libraries =
@@ -241,4 +238,9 @@ module Utils =
             | _ -> ()
 
             let decls = body |> List.map (parseLibraryDeclaration diags)
-            Ok({ LibraryName = libraryName; Declarations = decls }, diags.Take)
+
+            Ok(
+                { LibraryName = libraryName
+                  Declarations = decls },
+                diags.Take
+            )

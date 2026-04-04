@@ -15,19 +15,22 @@ open System.IO
 
 let repoRoot = __SOURCE_DIRECTORY__
 
-let args = fsi.CommandLineArgs |> Array.toList |> List.tail  // drop script name
+let args = fsi.CommandLineArgs |> Array.toList |> List.tail // drop script name
 let noBuild = args |> List.contains "--no-build"
-let filter  = args |> List.tryFind (fun a -> a <> "--no-build")
+let filter = args |> List.tryFind (fun a -> a <> "--no-build")
 
 // ── Process helpers ───────────────────────────────────────────────────────────
 
 let runProcess (exe: string) (extraArgs: string list) =
     let psi = ProcessStartInfo()
     psi.FileName <- exe
-    for a in extraArgs do psi.ArgumentList.Add(a)
+
+    for a in extraArgs do
+        psi.ArgumentList.Add(a)
+
     psi.WorkingDirectory <- repoRoot
     psi.RedirectStandardOutput <- true
-    psi.RedirectStandardError  <- true
+    psi.RedirectStandardError <- true
     psi.UseShellExecute <- false
     use p = Process.Start(psi)
     // Read both streams concurrently to avoid deadlocks on large output.
@@ -40,10 +43,14 @@ let runProcess (exe: string) (extraArgs: string list) =
 
 if not noBuild then
     printfn "Building..."
-    let out, err, code = runProcess "dotnet" ["build"; "--no-incremental"; "-v"; "q"; "--configuration"; "Release"]
+
+    let out, err, code =
+        runProcess "dotnet" [ "build"; "--no-incremental"; "-v"; "q"; "--configuration"; "Release" ]
+
     if code <> 0 then
         eprintfn "Build failed:\n%s%s" out err
         Environment.Exit 1
+
     printfn "Build succeeded.\n"
 
 // ── Step 2: Discover spec files ───────────────────────────────────────────────
@@ -59,31 +66,35 @@ let specFiles =
         | None -> true
         | Some pat -> f.Contains(pat))
 
-let dll = Path.Combine(repoRoot, "src", "Feersum", "bin", "Release", "net8.0", "Feersum.dll")
+let dll =
+    Path.Combine(repoRoot, "src", "Feersum", "bin", "Release", "net8.0", "Feersum.dll")
 
 if not (File.Exists dll) then
     eprintfn "Compiler DLL not found: %s\nRun without --no-build first." dll
     Environment.Exit 1
 
 let runMode (mode: string) (spec: string) =
-    let stdout, stderr, _code = runProcess "dotnet" [dll; mode; spec]
+    let stdout, stderr, _code = runProcess "dotnet" [ dll; mode; spec ]
     let hasError = stderr.Contains("error SCM") || stdout.Contains("error SCM")
     not hasError, stdout.Trim(), stderr.Trim()
 
 // ── Step 3: Compare ───────────────────────────────────────────────────────────
 
 type Result =
-    | Match                      // both succeeded and output agrees
-    | BothFailed                 // both reported errors
-    | Differ of string * string  // both succeeded but output differs
-    | Regression of string       // xpnew errors, xpold OK
-    | Improvement of string      // xpnew OK, xpold errors
+    | Match // both succeeded and output agrees
+    | BothFailed // both reported errors
+    | Differ of string * string // both succeeded but output differs
+    | Regression of string // xpnew errors, xpold OK
+    | Improvement of string // xpnew OK, xpold errors
 
-let mutable counts = Map.ofList ["match",0; "both-failed",0; "differ",0; "regr",0; "impr",0]
-let inc key = counts <- counts |> Map.add key (counts.[key] + 1)
+let mutable counts =
+    Map.ofList [ "match", 0; "both-failed", 0; "differ", 0; "regr", 0; "impr", 0 ]
+
+let inc key =
+    counts <- counts |> Map.add key (counts.[key] + 1)
 
 let truncate (n: int) (s: string) =
-    if s.Length <= n then s else s.[..n-1] + "…"
+    if s.Length <= n then s else s.[.. n - 1] + "…"
 
 let showDiff (label: string) (newOut: string) (oldOut: string) =
     let tmp = Path.GetTempPath()
@@ -95,8 +106,14 @@ let showDiff (label: string) (newOut: string) (oldOut: string) =
     let psi = ProcessStartInfo()
     psi.FileName <- "sh"
     psi.ArgumentList.Add("-c")
+
     psi.ArgumentList.Add(
-        sprintf "diff -u --label xpold --label xpnew '%s' '%s' | bat --language=diff --style=plain --paging=never" fold fnew)
+        sprintf
+            "diff -u --label xpold --label xpnew '%s' '%s' | bat --language=diff --style=plain --paging=never"
+            fold
+            fnew
+    )
+
     psi.WorkingDirectory <- repoRoot
     psi.UseShellExecute <- false
     use p = Process.Start(psi)
@@ -112,10 +129,9 @@ for spec in specFiles do
     let result =
         match newOk, oldOk with
         | false, false -> BothFailed
-        | false, true  -> Regression _newErr
-        | true,  false -> Improvement _oldErr
-        | true,  true  ->
-            if newOut = oldOut then Match else Differ(newOut, oldOut)
+        | false, true -> Regression _newErr
+        | true, false -> Improvement _oldErr
+        | true, true -> if newOut = oldOut then Match else Differ(newOut, oldOut)
 
     match result with
     | Match ->
