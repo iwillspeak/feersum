@@ -199,7 +199,7 @@ module private BuiltinMacros =
         | None -> icef "no body in new-format builtin macro '%s'" name
         | Some expr ->
             let diags = DiagnosticBag.Empty
-            let stx = Stx.ofExpr registry result.Root.DocId expr
+            let stx = Stx.ofExpr registry result.Root.DocId diags expr
 
             match MacrosNew.makeSyntaxTransformer name stx Map.empty diags TextLocation.Missing with
             | Some transformer -> transformer

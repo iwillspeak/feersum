@@ -60,7 +60,7 @@ let private parseSyntaxRules (name: string) (source: string) : SyntaxRulesTransf
     let tree =
         prog.Root.Body
         |> Seq.exactlyOne
-        |> (fun expr -> Stx.ofExpr registry prog.Root.DocId expr)
+        |> (fun expr -> Stx.ofExpr registry prog.Root.DocId DiagnosticBag.Empty expr)
 
     let diag = DiagnosticBag.Empty
     let env = SyntaxEnv.builtin

@@ -441,6 +441,7 @@ module MacrosNew =
                     | _, Result.Error e -> Result.Error e)
                 (Result.Ok [])
             |> Result.map StxPattern.Vec
+        | Stx.Error _ -> Result.Error "malformed syntax node"
 
     /// Detect ellipsis in a template form body.
     let rec parseTemplateFormBody
@@ -871,15 +872,30 @@ module private Expander =
         | StxDatum.ByteVector bs -> BoundLiteral.ByteVector bs
 
     /// Convert a Stx node to a BoundDatum (for quoted expressions).
-    let rec stxToDatum (stx: Stx) : BoundDatum =
+    /// Returns None if the Stx tree contains a reader-level error node;
+    /// the diagnostic was already emitted by Stx.ofExpr.
+    let rec stxToDatum (stx: Stx) : BoundDatum option =
+        let mapItems items : BoundDatum list option =
+            List.foldBack
+                (fun item acc ->
+                    match acc, stxToDatum item with
+                    | Some ds, Some d -> Some(d :: ds)
+                    | _ -> None)
+                items
+                (Some [])
         match stx with
-        | Stx.Id(name, _) -> BoundDatum.Ident name
-        | Stx.Datum(d, _) -> BoundDatum.SelfEval(datumToLiteral d)
-        | Stx.List(items, None, _) -> BoundDatum.Compound(items |> List.map stxToDatum)
-        | Stx.List(items, Some tail, _) -> BoundDatum.Pair(items |> List.map stxToDatum, stxToDatum tail)
+        | Stx.Id(name, _) -> Some(BoundDatum.Ident name)
+        | Stx.Datum(d, _) -> Some(BoundDatum.SelfEval(datumToLiteral d))
+        | Stx.List(items, None, _) -> mapItems items |> Option.map BoundDatum.Compound
+        | Stx.List(items, Some tail, _) ->
+            match mapItems items, stxToDatum tail with
+            | Some ds, Some t -> Some(BoundDatum.Pair(ds, t))
+            | _ -> None
         | Stx.Closure(inner, _, _) -> stxToDatum inner
         | Stx.Vec(items, _) ->
-            BoundDatum.SelfEval(BoundLiteral.Vector(items |> List.map stxToDatum))
+            mapItems items
+            |> Option.map (fun ds -> BoundDatum.SelfEval(BoundLiteral.Vector ds))
+        | Stx.Error _ -> None
 
     /// Parse formal parameters from a Stx node into a `BoundFormals` value.
     let rec parseFormals (stx: Stx) (ctx: ExpandCtx) : BoundFormals =
@@ -1014,7 +1030,17 @@ module private Expander =
         | Stx.Datum(d, _) -> BoundExpr.Literal(datumToLiteral d)
 
         | Stx.Vec(items, _) ->
-            BoundExpr.Literal(BoundLiteral.Vector(items |> List.map stxToDatum))
+            let datums =
+                List.foldBack
+                    (fun item acc ->
+                        match acc, stxToDatum item with
+                        | Some ds, Some d -> Some(d :: ds)
+                        | _ -> None)
+                    items
+                    (Some [])
+            match datums with
+            | Some ds -> BoundExpr.Literal(BoundLiteral.Vector ds)
+            | None -> BoundExpr.Error
 
         | Stx.List(_, Some _, loc) ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "dotted pair in expression position"
@@ -1023,6 +1049,8 @@ module private Expander =
         | Stx.List([], None, _) -> BoundExpr.Literal BoundLiteral.Null
 
         | Stx.List(head :: args, None, loc) -> expandForm head args loc scope ctx
+
+        | Stx.Error _ -> BoundExpr.Error
 
     /// Dispatch a compound form based on what the head resolves to.
     and expandForm
@@ -1055,7 +1083,10 @@ module private Expander =
         match kind with
         | SpecialFormKind.Quote ->
             match args with
-            | [ datum ] -> BoundExpr.Quoted(stxToDatum datum)
+            | [ datum ] ->
+                match stxToDatum datum with
+                | Some d -> BoundExpr.Quoted d
+                | None -> BoundExpr.Error
             | _ -> illFormed "quote"
 
         | SpecialFormKind.If ->
@@ -1347,6 +1378,7 @@ module private Expander =
             | Stx.Closure(inner, closedScope, _) -> walk closedScope inner
             | Stx.Vec(items, _) -> List.iter (walk scope) items
             | Stx.Datum _ -> ()
+            | Stx.Error _ -> ()
 
         walk scope stx
 
@@ -1744,7 +1776,7 @@ module Expand =
 
         let stxs =
             prog.Body
-            |> Seq.map (Stx.ofExpr ctx.Registry docId)
+            |> Seq.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
             |> List.ofSeq
 
         let exprs, _ = Expander.expandSeq stxs scope ctx
@@ -1769,7 +1801,7 @@ module Expand =
 
                     let stxs =
                         prog.Body
-                        |> Seq.map (Stx.ofExpr ctx.Registry docId)
+                        |> Seq.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
                         |> List.ofSeq
 
                     let exprs, scope' = Expander.expandSeq stxs scope ctx
@@ -1791,7 +1823,7 @@ module Expand =
 
         let stxs =
             script.Body
-            |> Option.map (Stx.ofExpr ctx.Registry docId)
+            |> Option.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
             |> Option.toList
 
         let exprs, _ = Expander.expandSeq stxs scope ctx
