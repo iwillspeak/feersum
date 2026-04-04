@@ -64,27 +64,28 @@ module Compilation =
 
         let ctx = ExpandCtx.createGlobal registry "LispProgram" allLibs
 
-        // Seed scope with builtin macros from the standard library.
+        // Build the macro scope: special forms + builtin macro transformers.
+        // Variable bindings from library exports are passed as `preloaded` so
+        // that the Expand module can seed them (filtering old StorageRef.Macro
+        // entries) without the caller needing to understand BindingMap internals.
         let macroScope =
             Builtins.loadBuiltinMacroEnv ()
-            |> List.fold (fun s (name, tr) -> ExpandCtx.addMacro ctx name tr s) SyntaxScope.builtin
+            |> List.fold (fun s (name, tr) -> ExpandCtx.addMacro ctx name tr s) StxEnvironment.builtin
 
-        // For Script mode, preload all library exports as variable bindings so
-        // callers don't need explicit `import` forms (mirrors old binder behaviour).
-        let initialScope =
-            if options.OutputType = OutputType.Script then
-                scope
-                |> Map.fold (fun s name storage -> ExpandCtx.registerStorage ctx name storage s) macroScope
-            else
-                macroScope
+        // For Script mode, pass all library exports as preloaded variable
+        // bindings so callers don't need explicit `import` forms (mirrors old
+        // binder behaviour).  Program mode passes Map.empty — programs must
+        // use `(import ...)` to bring library bindings into scope.
+        let preloaded =
+            if options.OutputType = OutputType.Script then scope else Map.empty
 
         let boundExprs =
             Instrumentation.withPhase
                 "bind"
                 (fun () ->
                     match input with
-                    | CompileInput.Program(_, progs) -> Expand.expandPrograms progs initialScope ctx
-                    | CompileInput.Script(_, script) -> Expand.expandScript script initialScope ctx)
+                    | CompileInput.Program(_, progs) -> Expand.expandPrograms progs macroScope preloaded ctx
+                    | CompileInput.Script(_, script) -> Expand.expandScript script macroScope preloaded ctx)
                 ()
 
         let bound: BoundSyntaxTree =

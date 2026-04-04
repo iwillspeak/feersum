@@ -21,7 +21,7 @@ let private expand (source: string) =
         failwithf "Parse error in '%s': %A" source prog.Diagnostics
 
     let ctx = ExpandCtx.createGlobal registry "test" []
-    let exprs = Expand.expandProgram prog.Root SyntaxEnv.builtin ctx
+    let exprs = Expand.expandProgram prog.Root SyntaxEnv.builtin Map.empty ctx
     exprs, ctx.Diagnostics.Diagnostics
 
 /// Expand and assert there are no errors; return the bound expressions.
@@ -49,8 +49,9 @@ let private expandError (needle: string) (source: string) =
         let msgs = errors |> List.map (fun d -> $"[{d.Kind.Code}] {d.Message}") |> String.concat "; "
         failwithf "Expected error containing '%s' but got: %s" needle msgs
 
-/// Parse a `(syntax-rules ...)` Stx node from source.
-let private parseSyntaxRules (name: string) (source: string) : SyntaxTransformer =
+/// Parse a `(syntax-rules ...)` Stx node from source into the structured
+/// transformer representation (for pattern-inspection tests).
+let private parseSyntaxRules (name: string) (source: string) : SyntaxRulesTransformer =
     let prog = Parse.readProgramSimple "test" source
 
     if ParseResult.hasErrors prog then

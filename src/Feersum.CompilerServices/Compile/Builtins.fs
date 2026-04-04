@@ -201,7 +201,7 @@ module private BuiltinMacros =
             let diags = DiagnosticBag.Empty
             let stx = Stx.ofExpr registry result.Root.DocId expr
 
-            match MacrosNew.parseSyntaxRulesStx name stx Map.empty diags TextLocation.Missing with
+            match MacrosNew.makeSyntaxTransformer name stx Map.empty diags TextLocation.Missing with
             | Some transformer -> transformer
             | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics
 

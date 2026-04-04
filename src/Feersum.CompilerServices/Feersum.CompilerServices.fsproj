@@ -23,6 +23,7 @@
     <Compile Include="Syntax/Parse.fs" />
     <Compile Include="Syntax/Factories.fs" />
     <Compile Include="Scope.fs" />
+    <Compile Include="Binding/Stx.fs" />
     <Compile Include="Binding/Libraries.fs" />
     <Compile Include="Binding/Macros.fs" />
     <Compile Include="Binding/Binder.fs" />

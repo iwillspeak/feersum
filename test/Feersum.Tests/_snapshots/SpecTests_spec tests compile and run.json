@@ -283,6 +283,31 @@
           ]
         },
         "Message": "no macro rule matched the form"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
+          "Code": 50,
+          "Title": "Expansion error"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/macrofails.scm",
+              "Line": 9,
+              "Col": 1
+            },
+            {
+              "Source": "fail/macrofails.scm",
+              "Line": 9,
+              "Col": 27
+            }
+          ]
+        },
+        "Message": "no macro rule matched the form"
       }
     ]
   },
