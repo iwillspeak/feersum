@@ -510,7 +510,7 @@ module MacrosNew =
 
                 Stx.List([], None, loc)
 
-        | MacroTemplate.Quoted stx -> Stx.Closure(stx, defScope, loc)
+        | MacroTemplate.Quoted stx -> stx
 
         | MacroTemplate.Form(_, elements) ->
             let children =
@@ -600,5 +600,9 @@ module MacrosNew =
                 match result with
                 | None -> Result.Error "no macro rule matched the form"
                 | Some(template, bindings) ->
-                    let transcribed = transcribe template bindings rules.DefScope form.Loc diag
+                    let transcribed =
+                        transcribe template bindings rules.DefScope form.Loc diag
+                        |> (fun stx -> Stx.Closure(stx, rules.DefScope, form.Loc))
+
+
                     Result.Ok transcribed)

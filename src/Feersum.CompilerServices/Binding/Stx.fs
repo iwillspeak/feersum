@@ -87,13 +87,18 @@ type Stx =
 ///    directly by the expander. These are things like `if`, `lambda`, `define`,
 ///    etc. which have special meaning during binding.
 /// 2. A macro, which is a user-defined syntax transformer. These are defined by
-///    `define-syntax`, `let-syntax`, etc.
+///    `define-syntax`, `let-syntax`, etc. The transformer implementation is
+///    stored separately in `MacroRegistry` and looked up by this Ident at
+///    expansion time. This indirection enables `letrec-syntax` scoping: all
+///    macro Idents can be placed into the definition-site scope before any
+///    transformer is parsed, so each transformer sees the full mutually-recursive
+///    scope.
 /// 3. A variable, which is a binding of a name to an identifier. These are
 ///    introduced by `define`, `let`, and friends. and allow us to tell multiple
 ///    identical names from different syntactic contexts apart for hygiene.
 and StxBinding =
     | Special of SpecialFormKind
-    | Macro of SyntaxTransformer
+    | Macro of Ident
     | Variable of Ident
 
 /// The syntax environment maps syntax names to their bindings.

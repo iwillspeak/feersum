@@ -143,7 +143,8 @@ module private BuiltinMacros =
     let private macroUnlessSrc =
         "(syntax-rules ()
             ((_ cond expr expr1 ...)
-             (if (not cond)
+             (if cond
+                (if #f #f) ; FIXME: Hack to deal with not being able to see `not`
                 (begin
                     expr
                     expr1 ...))))"
@@ -186,51 +187,72 @@ module private BuiltinMacros =
             [ macroAnd; macroOr; macroWhen; macroUnless; macroCond ]
             |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
 
-    // ── New-format parser (MacrosNew.parseSyntaxRulesStx) ─────────────────
+    // ── New-format loader ──────────────────────────────────────────────────
 
-    let private parseBuiltinMacroNew (name: string) (src: string) : SyntaxTransformer =
-        let registry = SourceRegistry.empty ()
-        let result = Parse.readExpr1 registry (sprintf "builtin-new-%s" name) src
+    /// Load all builtin macros (`and`, `or`, `when`, `unless`, `cond`) into a
+    /// `StxEnvironment`, starting from `Map.empty`.
+    ///
+    /// Special forms (`if`, `let`, `begin`, etc.) are recognised by name in
+    /// `resolveHead` and do not need scope entries.
+    ///
+    /// For each macro:
+    ///  - a fresh Ident is reserved so the macro can see its own name in defScope
+    ///    (enabling self-recursive macros like `and` and `cond`);
+    ///  - the syntax rules are parsed against that extended scope;
+    ///  - the transformer is registered in `ctx.MacroRegistry`.
+    let loadBuiltinMacroEnv (ctx: ExpandCtx) : StxEnvironment =
+        let macros =
+            [ "and", macroAndSrc
+              "or", macroOrSrc
+              "when", macroWhenSrc
+              "unless", macroUnlessSrc
+              "cond", macroCondSrc ]
 
-        if hasErrors result.Diagnostics then
-            icef "Error parsing new-format builtin macro '%s': %A" name result.Diagnostics
+        macros
+        |> List.fold
+            (fun scope (name, src) ->
+                let registry = SourceRegistry.empty ()
+                let result = Parse.readExpr1 registry (sprintf "builtin-new-%s" name) src
 
-        match result.Root.Body with
-        | None -> icef "no body in new-format builtin macro '%s'" name
-        | Some expr ->
-            let diags = DiagnosticBag.Empty
-            let stx = Stx.ofExpr registry result.Root.DocId diags expr
+                if hasErrors result.Diagnostics then
+                    icef "Error parsing new-format builtin macro '%s': %A" name result.Diagnostics
 
-            match
-                Feersum.CompilerServices.Binding.New.MacrosNew.makeSyntaxTransformer
-                    name
-                    stx
-                    Map.empty
-                    diags
-                    TextLocation.Missing
-            with
-            | Some transformer -> transformer
-            | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics
+                match result.Root.Body with
+                | None -> icef "no body in new-format builtin macro '%s'" name
+                | Some expr ->
+                    let diags = DiagnosticBag.Empty
+                    let stx = Stx.ofExpr registry result.Root.DocId diags expr
 
-    /// The builtin macros in the new SyntaxTransformer format.
-    /// Returns a list of (name, transformer) pairs to be registered via ExpandCtx.addMacro.
-    let newFormatTransformers: (string * SyntaxTransformer) list =
-        [ "and", macroAndSrc
-          "or", macroOrSrc
-          "when", macroWhenSrc
-          "unless", macroUnlessSrc
-          "cond", macroCondSrc ]
-        |> List.map (fun (name, src) -> name, parseBuiltinMacroNew name src)
+                    // Reserve an Ident first so the macro sees its own name in defScope;
+                    // all previously-accumulated macros are also visible.
+                    let id, scope' = ExpandCtx.reserveMacro name scope
+
+                    match
+                        Feersum.CompilerServices.Binding.New.MacrosNew.makeSyntaxTransformer
+                            name
+                            stx
+                            scope'
+                            diags
+                            TextLocation.Missing
+                    with
+                    | Some transformer ->
+                        ExpandCtx.registerMacro ctx id transformer
+                        scope'
+                    | None ->
+                        icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics)
+            Map.empty
 
 // ------------------------ Public Builtins API --------------------------------
 
 module Builtins =
     open Feersum.CompilerServices.NewBindingTest
 
-    /// Returns the builtin macros (`and`, `or`, `when`, `unless`, `cond`) as
-    /// a list of (name, transformer) pairs.  Use `ExpandCtx.addMacro` to add
-    /// each one to the initial scope before calling `Expand.expandProgram`.
-    let loadBuiltinMacroEnv () : (string * SyntaxTransformer) list = BuiltinMacros.newFormatTransformers
+    /// Load all builtin macros (`and`, `or`, `when`, `unless`, `cond`) into the
+    /// initial `StxEnvironment`, starting from `Map.empty`.  Special forms are
+    /// recognised by name in `resolveHead` and do not need scope entries.  Each
+    /// macro Ident is reserved and its transformer registered in `ctx.MacroRegistry`
+    /// so the result can be passed directly to `Expand.expandProgram`.
+    let loadBuiltinMacroEnv (ctx: ExpandCtx) : StxEnvironment = BuiltinMacros.loadBuiltinMacroEnv ctx
 
 
     /// Scan the `externAssms` and retrieve the core types that are required to

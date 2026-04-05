@@ -68,9 +68,7 @@ module Compilation =
         // Variable bindings from library exports are passed as `preloaded` so
         // that the Expand module can seed them (filtering old StorageRef.Macro
         // entries) without the caller needing to understand BindingMap internals.
-        let macroScope =
-            Builtins.loadBuiltinMacroEnv ()
-            |> List.fold (fun s (name, tr) -> ExpandCtx.addMacro name tr s) StxEnvironment.builtin
+        let macroScope = Builtins.loadBuiltinMacroEnv ctx
 
         // For Script mode, pass all library exports as preloaded variable
         // bindings so callers don't need explicit `import` forms (mirrors old

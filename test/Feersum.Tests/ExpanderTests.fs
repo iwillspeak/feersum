@@ -664,3 +664,50 @@ let ``ofExpr: malformed nodes produce BoundExpr.Error not stub datums`` () =
             | _ -> false)
 
     Assert.True(hasError, "Expected at least one BoundExpr.Error in result")
+
+[<Fact>]
+let ``let-syntax: bindings are not mutually visible`` () =
+    // m1 is defined in outer scope; m2 is also parsed against outer scope,
+    // so m1 is NOT visible when m2's transformer is parsed.
+    // When m2 expands to (m1 x), the m1 reference uses the definition-site
+    // scope (outer), where m1 doesn't exist → unbound error.
+    expandError "unbound" """
+(let-syntax
+  ((m1 (syntax-rules () ((_ x) x)))
+   (m2 (syntax-rules () ((_ x) (m1 x)))))
+  (m2 42))
+"""
+
+[<Fact>]
+let ``letrec-syntax: later bindings can reference earlier ones`` () =
+    // m2 is parsed in a scope that already includes m1, so (m1 x) in m2's
+    // template resolves at definition time.
+    let exprs = expandOk """
+(letrec-syntax
+  ((m1 (syntax-rules () ((_ x) x)))
+   (m2 (syntax-rules () ((_ x) (m1 x)))))
+  (m2 42))
+"""
+    let result = List.exactlyOne exprs
+    match result with
+    | BoundExpr.Seq _ -> ()  // body wrapped in Seq from let-syntax
+    | BoundExpr.Literal(BoundLiteral.Number 42.0) -> ()
+    | other -> failwithf "Expected 42, got %A" other
+
+[<Fact>]
+let ``let-syntax: macros not visible outside body`` () =
+    expandError "unbound" """
+(let-syntax
+  ((double (syntax-rules () ((_ n) (begin n n)))))
+  (double 1))
+(double 1)
+"""
+
+[<Fact>]
+let ``letrec-syntax: macros not visible outside body`` () =
+    expandError "unbound" """
+(letrec-syntax
+  ((double (syntax-rules () ((_ n) (begin n n)))))
+  (double 1))
+(double 1)
+"""

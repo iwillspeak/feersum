@@ -36,9 +36,7 @@ let runXpNewRepl (options: CompilationOptions) args =
         else
             let ctx = ExpandCtx.createGlobal registry "LispProgram" allLibs
 
-            let initialScope =
-                Builtins.loadBuiltinMacroEnv ()
-                |> List.fold (fun s (name, tr) -> ExpandCtx.addMacro name tr s) StxEnvironment.builtin
+            let initialScope = Builtins.loadBuiltinMacroEnv ctx
 
             let result = Expand.expandProgram prog.Root initialScope Map.empty ctx
             dumpDiagnostics ctx.Diagnostics.Diagnostics

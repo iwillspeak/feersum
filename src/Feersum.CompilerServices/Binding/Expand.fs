@@ -39,6 +39,26 @@ type BindingMeaning = Variable of StorageRef * lambdaDepth: int
 /// Ident → its compile-time meaning.
 type BindingMap = Map<Ident, BindingMeaning>
 
+/// Shared mutable registry mapping macro Idents to their SyntaxTransformer
+/// implementations. A single instance is created per compilation unit and
+/// shared by reference across all ExpandCtx children.
+///
+/// The two-step protocol (reserve → register) allows `letrec-syntax` to place
+/// all macro Idents into the definition-site scope before parsing any
+/// transformer, so each transformer's `syntax-rules` sees the full mutually-
+/// recursive scope. For `let-syntax` only the register step is used (macros
+/// are parsed against the outer scope and reserved+registered together).
+type MacroRegistry() =
+    let mutable map: Map<Ident, SyntaxTransformer> = Map.empty
+
+    /// Register a transformer implementation under a previously-reserved Ident.
+    member _.Register (id: Ident) (transformer: SyntaxTransformer) =
+        map <- Map.add id transformer map
+
+    /// Look up the transformer for a macro Ident. Returns None if not yet
+    /// registered (e.g. a forward-declared but unresolved macro handle).
+    member _.TryFind(id: Ident) : SyntaxTransformer option = Map.tryFind id map
+
 // ──────────────────────────────────────────────────────────────── ExpandCtx
 
 /// Mutable per-lambda state threaded through the expander.
@@ -64,6 +84,11 @@ type ExpandCtx =
         MangledName: string
         IsGlobal: bool
         mutable Libraries: LibrarySignature<StorageRef> list
+        /// Shared macro registry for this compilation unit. A single
+        /// MacroRegistry is created in createGlobal and passed by reference
+        /// to all child contexts so that macros registered anywhere are
+        /// visible everywhere the scope entry points.
+        MacroRegistry: MacroRegistry
         Parent: ExpandCtx option
     }
 
@@ -93,6 +118,7 @@ module ExpandCtx =
           MangledName = mangledName
           IsGlobal = true
           Libraries = convertedLibs
+          MacroRegistry = MacroRegistry()
           Parent = None }
 
     /// Create a child context for a lambda body.
@@ -108,6 +134,7 @@ module ExpandCtx =
           MangledName = parent.MangledName
           IsGlobal = false
           Libraries = parent.Libraries
+          MacroRegistry = parent.MacroRegistry
           Parent = Some parent }
 
     /// Create a child context for a library body (own global scope).
@@ -123,6 +150,7 @@ module ExpandCtx =
           MangledName = mangledName
           IsGlobal = true
           Libraries = parent.Libraries
+          MacroRegistry = parent.MacroRegistry
           Parent = Some parent }
 
     let resolveLocation (_ctx: ExpandCtx) (loc: TextLocation) = loc
@@ -185,10 +213,19 @@ module ExpandCtx =
         ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
         id, storage, Map.add name (StxBinding.Variable id) scope
 
-    /// Register a macro (syntax transformer) in ctx.BindingMap and return the
-    /// extended scope with the macro name mapped to its fresh Ident.
-    let addMacro (name: string) (transformer: SyntaxTransformer) (scope: StxEnvironment) : StxEnvironment =
-        Map.add name (StxBinding.Macro transformer) scope
+    /// Reserve a macro name in scope: allocates a fresh Ident, adds
+    /// `Macro id` to the scope, and returns `(id, extendedScope)`.
+    /// The transformer implementation must be registered separately via
+    /// `registerMacro` before the macro is actually invoked at expansion time.
+    /// This two-step approach lets `letrec-syntax` pre-populate all macro
+    /// Idents into the definition-site scope before parsing any transformer.
+    let reserveMacro (name: string) (scope: StxEnvironment) : Ident * StxEnvironment =
+        let id = Ident.fresh ()
+        id, Map.add name (StxBinding.Macro id) scope
+
+    /// Store the transformer implementation for a previously-reserved macro Ident.
+    let registerMacro (ctx: ExpandCtx) (id: Ident) (transformer: SyntaxTransformer) =
+        ctx.MacroRegistry.Register id transformer
 
     /// Register an existing StorageRef as a visible variable in scope.
     /// Used to seed preloaded library bindings into the initial scope
@@ -202,32 +239,31 @@ module ExpandCtx =
 
 module StxEnvironment =
 
-    let private builtinEntries: (string * SpecialFormKind) list =
-        [ "if", SpecialFormKind.If
-          "lambda", SpecialFormKind.Lambda
-          "define", SpecialFormKind.Define
-          "set!", SpecialFormKind.SetBang
-          "begin", SpecialFormKind.Begin
-          "quote", SpecialFormKind.Quote
-          "let", SpecialFormKind.Let
-          "let*", SpecialFormKind.LetStar
-          "letrec", SpecialFormKind.Letrec
-          "letrec*", SpecialFormKind.LetrecStar
-          "define-syntax", SpecialFormKind.DefineSyntax
-          "let-syntax", SpecialFormKind.LetSyntax
-          "letrec-syntax", SpecialFormKind.LetrecSyntax
-          "define-library", SpecialFormKind.DefineLibrary
-          "import", SpecialFormKind.Import ]
+    /// Map a well-known keyword name to its `SpecialFormKind`, or return `None`
+    /// if the name is not a built-in special form.
+    let tryResolveSpecial (name: string) : SpecialFormKind option =
+        match name with
+        | "if" -> Some SpecialFormKind.If
+        | "lambda" -> Some SpecialFormKind.Lambda
+        | "define" -> Some SpecialFormKind.Define
+        | "set!" -> Some SpecialFormKind.SetBang
+        | "begin" -> Some SpecialFormKind.Begin
+        | "quote" -> Some SpecialFormKind.Quote
+        | "let" -> Some SpecialFormKind.Let
+        | "let*" -> Some SpecialFormKind.LetStar
+        | "letrec" -> Some SpecialFormKind.Letrec
+        | "letrec*" -> Some SpecialFormKind.LetrecStar
+        | "define-syntax" -> Some SpecialFormKind.DefineSyntax
+        | "let-syntax" -> Some SpecialFormKind.LetSyntax
+        | "letrec-syntax" -> Some SpecialFormKind.LetrecSyntax
+        | "define-library" -> Some SpecialFormKind.DefineLibrary
+        | "import" -> Some SpecialFormKind.Import
+        | _ -> None
 
-    let private builtinPairs =
-        builtinEntries |> List.map (fun (name, kind) -> name, Ident.fresh (), kind)
-
-    /// The initial scope mapping keyword names to their Idents.
+    /// The empty initial scope. Special forms are not stored in the scope;
+    /// they are recognised by name in `resolveHead` via `tryResolveSpecial`.
     /// Callers extend this with macro and variable bindings before expansion.
-    let builtin: StxEnvironment =
-        builtinPairs
-        |> List.map (fun (name, id, kind) -> name, StxBinding.Special kind)
-        |> Map.ofList
+    let builtin: StxEnvironment = Map.empty
 
 // Backward-compatibility alias so existing call-sites can still write SyntaxEnv.builtin.
 module SyntaxEnv =
@@ -241,13 +277,17 @@ module private Expander =
 
     /// Peel any `Stx.Closure` wrappers and look up the head binding in the
     /// appropriate scope.  Returns `None` for non-identifier heads.
+    ///
+    /// Special forms (`if`, `lambda`, `define`, etc.) are recognised by name
+    /// when not overridden in scope, via `StxEnvironment.tryResolveSpecial`.
     let rec resolveHead (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : StxBinding option =
         match stx with
-        | Stx.Id(name, _) -> Map.tryFind name scope
+        | Stx.Id(name, _) ->
+            match Map.tryFind name scope with
+            | Some _ as found -> found
+            | None -> StxEnvironment.tryResolveSpecial name |> Option.map StxBinding.Special
         | Stx.Closure(inner, closedScope, _) ->
-            match inner with
-            | Stx.Id(name, _) when not (Map.containsKey name closedScope) -> resolveHead inner scope ctx
-            | _ -> resolveHead inner closedScope ctx
+            resolveHead inner closedScope ctx
         | _ -> None
 
     /// Active pattern: extract an identifier name+location from a Stx node,
@@ -378,8 +418,14 @@ module private Expander =
                     ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
                     None
         | None ->
-            ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
-            None
+            // Check if the name is a special form used in value position.
+            match StxEnvironment.tryResolveSpecial name with
+            | Some _ ->
+                ExpandCtx.emitError ctx Diag.illFormedForm loc $"keyword '{name}' used in value position"
+                None
+            | None ->
+                ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
+                None
 
     /// Look up a name in the scope, tracking captures for variables from
     /// outer lambda scopes.
@@ -394,18 +440,7 @@ module private Expander =
     let rec expand (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
         match stx with
         | Stx.Closure(inner, closedScope, _) ->
-            // Syntactic closure: expand `inner` in the definition-site scope.
-            // The closed scope is the authoritative source of Idents for
-            // any identifiers present in it, which is the key hygiene mechanism:
-            // macro-introduced `temp` (Ident N) and user's `temp` (Ident M)
-            // are distinguished by their different ids even though they share a name.
-            //
-            // Exception: a simple identifier NOT in the closed scope falls back
-            // to the call-site scope, allowing macro-introduced names to be visible
-            // once they are bound at the call site.
-            match inner with
-            | Stx.Id(name, _) when not (Map.containsKey name closedScope) -> expand inner scope ctx
-            | _ -> expand inner closedScope ctx
+            expand inner closedScope ctx
 
         | Stx.Id(name, loc) -> lookupVar name loc scope ctx
 
@@ -445,7 +480,7 @@ module private Expander =
         : BoundExpr =
         match resolveHead head scope ctx with
         | Some(StxBinding.Special kind) -> expandSpecialForm kind args loc scope ctx
-        | Some(StxBinding.Macro macro) -> expandMacro macro (Stx.List(head :: args, None, loc)) scope ctx
+        | Some(StxBinding.Macro id) -> expandMacro id (Stx.List(head :: args, None, loc)) scope ctx
         | _ ->
             let fn = expand head scope ctx
             let actuals = args |> List.map (fun a -> expand a scope ctx)
@@ -495,8 +530,20 @@ module private Expander =
 
         | SpecialFormKind.SetBang ->
             match args with
-            | [ StxId(name, idLoc); value ] ->
-                match resolveVar name idLoc scope ctx with
+            | [ target; value ] ->
+                // Peel any hygiene closures on the target to find its captured
+                // scope, then resolve the variable name in that scope.
+                //
+                // FIXME: This _feels_ like another area where better active patterns could help us.
+                let rec resolveSetTarget (stx: Stx) (targetScope: StxEnvironment) =
+                    match stx with
+                    | Stx.Id(name, idLoc) -> resolveVar name idLoc targetScope ctx
+                    | Stx.Closure(inner, innerScope, _) -> resolveSetTarget inner innerScope
+                    | _ ->
+                        ExpandCtx.emitError ctx Diag.illFormedForm stx.Loc "ill-formed 'set!'"
+                        None
+
+                match resolveSetTarget target scope with
                 | Some storage -> BoundExpr.Store(storage, Some(expand value scope ctx))
                 | None -> BoundExpr.Error
             | _ -> illFormed "set!"
@@ -754,9 +801,13 @@ module private Expander =
         : BoundExpr * StxEnvironment =
         match args with
         | [ StxId(name, _); rulesStx ] ->
-            match parseSyntaxRulesStx name rulesStx scope ctx with
+            // Reserve the Ident first so self-referential macros can see their
+            // own name in scope during template transcription (e.g. `my-or`).
+            let id, scope' = ExpandCtx.reserveMacro name scope
+
+            match parseSyntaxRulesStx name rulesStx scope' ctx with
             | Some transformer ->
-                let scope' = ExpandCtx.addMacro name transformer scope
+                ExpandCtx.registerMacro ctx id transformer
                 BoundExpr.Nop, scope'
             | None -> BoundExpr.Error, scope
         | _ ->
@@ -774,32 +825,48 @@ module private Expander =
         | bindingStx :: body when not (List.isEmpty body) ->
             let specs = parseBindingSpecs bindingStx ctx
 
-            let parseMacroNamed name ruleStx scope ctx =
-                parseSyntaxRulesStx name ruleStx scope ctx
-                |> Option.map (fun transformer -> name, transformer)
-
-            let addMacroToScope (currentScope: StxEnvironment) (transformer: (string * SyntaxTransformer) option) =
-                match transformer with
-                | Some(name, transformer) -> ExpandCtx.addMacro name transformer currentScope
-                | None -> currentScope
-
             let bodyScope =
                 if isLetrec then
+                    // letrec-syntax: pre-allocate all macro Idents into the scope
+                    // so that each transformer sees the full mutually-recursive set.
+                    // Step 1 — reserve: every name gets an Ident in the shared scope.
+                    let reserved, letrecScope =
+                        specs
+                        |> List.mapFold
+                            (fun currentScope (name, _) ->
+                                let id, nextScope = ExpandCtx.reserveMacro name currentScope
+                                (name, id), nextScope)
+                            scope
+
+                    // Step 2 — parse each transformer against the fully-extended scope.
+                    // Step 3 — register the transformer under the pre-reserved Ident.
+                    List.iter2
+                        (fun (name, id) (_, ruleStx) ->
+                            match parseSyntaxRulesStx name ruleStx letrecScope ctx with
+                            | Some transformer -> ExpandCtx.registerMacro ctx id transformer
+                            | None -> ())
+                        reserved
+                        specs
+
+                    letrecScope
+                else
+                    // let-syntax: parse all transformers against the outer scope
+                    // (no forward references between bindings), then reserve+register
+                    // for the body scope.
                     specs
                     |> List.fold
                         (fun currentScope (name, ruleStx) ->
-                            parseMacroNamed name ruleStx currentScope ctx |> addMacroToScope currentScope)
+                            match parseSyntaxRulesStx name ruleStx scope ctx with
+                            | Some transformer ->
+                                let id, nextScope = ExpandCtx.reserveMacro name currentScope
+                                ExpandCtx.registerMacro ctx id transformer
+                                nextScope
+                            | None -> currentScope)
                         scope
-                else
-                    specs
-                    |> Seq.map (fun (name, ruleStx) -> parseMacroNamed name ruleStx scope ctx)
-                    |> Seq.fold (addMacroToScope) scope
 
-            // The scope is immutable and threaded: `bodyScope` is only visible
-            // within this call.  Macro Idents added to ctx.BindingMap here
-            // are inaccessible outside the body (no scope entry points to them
-            // from the outer scope).  No save/restore of any mutable ctx field
-            // is needed for that reason; ScopeDepth is still bumped so that
+            // The body scope is local to this call — macro Idents registered
+            // here are in ctx.MacroRegistry but reachable only via scope entries
+            // that don't escape this function.  ScopeDepth is bumped so that
             // `define` inside the body produces a Local.
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
             let bodyExprs, _ = expandSeq body bodyScope ctx
@@ -821,12 +888,17 @@ module private Expander =
 
     // ── Macro expansion ───────────────────────────────────────────────────
 
-    and expandMacro (macro: SyntaxTransformer) (form: Stx) (callScope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
-        match macro form callScope with
-        | Result.Ok transcribed -> expand transcribed callScope ctx
-        | Result.Error msg ->
-            ExpandCtx.emitError ctx Diag.expandError form.Loc msg
+    and expandMacro (id: Ident) (form: Stx) (callScope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
+        match ctx.MacroRegistry.TryFind id with
+        | None ->
+            ExpandCtx.emitError ctx Diag.expandError form.Loc "macro is not yet registered (forward-reference bug)"
             BoundExpr.Error
+        | Some transformer ->
+            match transformer form callScope with
+            | Result.Ok transcribed -> expand transcribed callScope ctx
+            | Result.Error msg ->
+                ExpandCtx.emitError ctx Diag.expandError form.Loc msg
+                BoundExpr.Error
 
 
     // ── Import resolution ─────────────────────────────────────────────────
@@ -907,9 +979,10 @@ module private Expander =
 
                     | LibraryDeclaration.Error -> (innerScope, importAcc, bodyAcc, exportsAcc)
 
-                // Library inner scope: builtin special forms + inherited macros.
-                // Variable bindings from the outer scope are intentionally excluded;
-                // the library must import everything it uses.
+                // Library inner scope: inherited macros only.
+                // Special forms are recognised by name in resolveHead and do not
+                // need scope entries.  Variable bindings from the outer scope are
+                // intentionally excluded; the library must import everything it uses.
                 let initInnerScope =
                     scope
                     |> Map.fold
@@ -917,7 +990,7 @@ module private Expander =
                             match binding with
                             | StxBinding.Macro _ -> Map.add k binding acc
                             | _ -> acc)
-                        StxEnvironment.builtin
+                        Map.empty
 
                 let (finalInnerScope, importExprs, bodyExprs, exportedPairs) =
                     List.fold folder (initInnerScope, [], [], []) libDef.Declarations
@@ -995,7 +1068,31 @@ module private Expander =
     /// Try to expand a form as a binding-level definition.
     and tryExpandBinding (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : (BoundExpr * StxEnvironment) option =
         match stx with
-        | Stx.Closure(inner, closedScope, _) -> tryExpandBinding inner closedScope ctx
+        | Stx.Closure(inner, closedScope, _) ->
+            // Recurse into the closure's inner scope, then merge only NEW definitions
+            // (those not present in closedScope) back into the call-site scope.
+            // This prevents the closure's scope from replacing the outer scope while
+            // still allowing macro expansions that produce top-level `define`s to
+            // splice those definitions into the surrounding context.
+            //
+            // FIXME: The real fix here is to have a `collectDefs` which walks a
+            // sequence of Stx nodes and partitions them into (name * Stx) list 
+            // of defines and `Stx list` of the remaining items.
+            //
+            // In this case we'd _expand_ the macros in each level when we saw
+            // them until no macro remained but wouldn't bind the resulting item
+            // until we processed the resulting set of defines.
+            tryExpandBinding inner closedScope ctx
+            |> Option.map (fun (expr, innerScope) ->
+                let mergedScope =
+                    innerScope
+                    |> Map.fold
+                        (fun acc name binding ->
+                            if Map.containsKey name closedScope then acc
+                            else Map.add name binding acc)
+                        scope
+
+                expr, mergedScope)
         | Stx.List(head :: args, _, loc) ->
             match resolveHead head scope ctx with
             | Some(StxBinding.Special SpecialFormKind.Define) -> Some(expandDefine args loc scope ctx)
@@ -1005,19 +1102,24 @@ module private Expander =
                 Some(BoundExpr.Seq exprs, scope')
             | Some(StxBinding.Special SpecialFormKind.Import) -> Some(expandImport args loc scope ctx)
             | Some(StxBinding.Special SpecialFormKind.DefineLibrary) -> Some(expandLibrary args loc scope ctx)
-            | Some(StxBinding.Macro transformer) ->
+            | Some(StxBinding.Macro id) ->
                 // Macro application in definition context: transcribe and re-process
                 // so that expansions producing `(define ...)` etc. are spliced in.
                 let form = Stx.List(head :: args, None, loc)
 
-                match transformer form scope with
-                | Result.Error msg ->
-                    ExpandCtx.emitError ctx Diag.expandError loc msg
+                match ctx.MacroRegistry.TryFind id with
+                | None ->
+                    ExpandCtx.emitError ctx Diag.expandError loc "macro is not yet registered (forward-reference bug)"
                     None
-                | Result.Ok expanded ->
-                    match tryExpandBinding expanded scope ctx with
-                    | Some result -> Some result
-                    | None -> Some(expand expanded scope ctx, scope)
+                | Some transformer ->
+                    match transformer form scope with
+                    | Result.Error msg ->
+                        ExpandCtx.emitError ctx Diag.expandError loc msg
+                        None
+                    | Result.Ok expanded ->
+                        match tryExpandBinding expanded scope ctx with
+                        | Some result -> Some result
+                        | None -> Some(expand expanded scope ctx, scope)
             | _ -> None
         | _ -> None
 
