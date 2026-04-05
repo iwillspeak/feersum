@@ -138,17 +138,17 @@ module Stx =
     /// - `None`     — node arrived bare; expand subforms in the ambient scope.
     /// - `Some env` — node was closure-wrapped; `env` is authoritative.
     ///
-    /// `Datum`, `Vec`, and `Error` omit the environment because they carry no
-    /// subforms that require scope resolution.
-    let (|Id|Datum|List|Vec|Error|) (stx: Stx) =
+    /// `StxDatum`, `StxVec`, and `StxError` omit the environment because they
+    /// carry no subforms that require scope resolution.
+    let (|StxId|StxDatum|StxList|StxVec|StxError|) (stx: Stx) =
         let shape, envOpt = peel stx
 
         match shape with
-        | Stx.Id(name, loc) -> Id(name, loc, envOpt)
-        | Stx.Datum(value, loc) -> Datum(value, loc)
-        | Stx.List(items, tail, loc) -> List(items, tail, loc, envOpt)
-        | Stx.Vec(items, loc) -> Vec(items, loc)
-        | Stx.Error loc -> Error loc
+        | Stx.Id(name, loc) -> StxId(name, loc, envOpt)
+        | Stx.Datum(value, loc) -> StxDatum(value, loc)
+        | Stx.List(items, tail, loc) -> StxList(items, tail, loc, envOpt)
+        | Stx.Vec(items, loc) -> StxVec(items, loc)
+        | Stx.Error loc -> StxError loc
         | Stx.Closure _ -> ice "peel returned a Closure (impossible)"
 
     // ── CST conversion ─────────────────────────────────────────────────────
