@@ -95,19 +95,17 @@ module private Utils =
                 Ok name
             | other ->
                 diags.Emit LibraryDiagnostics.invalidLibraryName other.Loc "Invalid library name part"
-                Result.Error ()
+                Result.Error()
 
         match stx with
-        | StxList(parts, None, _, _) ->
-            parts |> List.map parseElement |> Result.collect
+        | StxList(parts, None, _, _) -> parts |> List.map parseElement |> Result.collect
         | other ->
             diags.Emit LibraryDiagnostics.invalidLibraryName other.Loc "Expected library name"
-            Result.Error ()
+            Result.Error()
 
     let private tryParseRename (stx: Stx list) =
         match stx with
-        | [ Stx.Id(interior, _); Stx.Id(exterior, _) ] ->
-            Some { From = interior; To = exterior }
+        | [ Stx.Id(interior, _); Stx.Id(exterior, _) ] -> Some { From = interior; To = exterior }
         | _ -> None
 
     let private parseExportDeclaration (diags: DiagnosticBag) (export: Stx) : ExportSet option =

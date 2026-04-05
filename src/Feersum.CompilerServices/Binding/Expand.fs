@@ -54,8 +54,7 @@ type MacroRegistry() =
     let mutable map: Map<Ident, SyntaxTransformer> = Map.empty
 
     /// Register a transformer implementation under a previously-reserved Ident.
-    member _.Register (id: Ident) (transformer: SyntaxTransformer) =
-        map <- Map.add id transformer map
+    member _.Register (id: Ident) (transformer: SyntaxTransformer) = map <- Map.add id transformer map
 
     /// Look up the transformer for a macro Ident. Returns None if not yet
     /// registered (e.g. a forward-declared but unresolved macro handle).
@@ -266,10 +265,6 @@ module StxEnvironment =
     /// Callers extend this with macro and variable bindings before expansion.
     let builtin: StxEnvironment = Map.empty
 
-// Backward-compatibility alias so existing call-sites can still write SyntaxEnv.builtin.
-module SyntaxEnv =
-    let builtin = StxEnvironment.builtin
-
 // -- Expander -----------------------------------------------------------------
 
 module private Expander =
@@ -281,7 +276,7 @@ module private Expander =
     ///
     /// Special forms (`if`, `lambda`, `define`, etc.) are recognised by name
     /// when not overridden in scope, via `StxEnvironment.tryResolveSpecial`.
-    let rec resolveHead (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : StxBinding option =
+    let resolveHead (stx: Stx) (scope: StxEnvironment) : StxBinding option =
         match stx with
         | StxId(name, _, maybeScope) ->
             match Map.tryFind name (maybeScope |> Option.defaultValue scope) with
@@ -312,24 +307,23 @@ module private Expander =
                 (Some [])
 
         match stx with
-        | Stx.Id(name, _) -> Some(BoundDatum.Ident name)
-        | Stx.Datum(d, _) -> Some(BoundDatum.SelfEval(datumToLiteral d))
-        | Stx.List(items, None, _) -> mapItems items |> Option.map BoundDatum.Compound
-        | Stx.List(items, Some tail, _) ->
+        | StxId(name, _, _) -> Some(BoundDatum.Ident name)
+        | StxDatum(d, _) -> Some(BoundDatum.SelfEval(datumToLiteral d))
+        | StxList(items, None, _, _) -> mapItems items |> Option.map BoundDatum.Compound
+        | StxList(items, Some tail, _, _) ->
             match mapItems items, stxToDatum tail with
             | Some ds, Some t -> Some(BoundDatum.Pair(ds, t))
             | _ -> None
-        | Stx.Closure(inner, _, _) -> stxToDatum inner
-        | Stx.Vec(items, _) ->
+        | StxVec(items, _) ->
             mapItems items
             |> Option.map (fun ds -> BoundDatum.SelfEval(BoundLiteral.Vector ds))
-        | Stx.Error _ -> None
+        | StxError _ -> None
 
     /// Parse formal parameters from a Stx node into a `BoundFormals` value.
-    let rec parseFormals (stx: Stx) (ctx: ExpandCtx) : BoundFormals =
+    let parseFormals (stx: Stx) (ctx: ExpandCtx) : BoundFormals =
         match stx with
-        | Stx.Id(name, _) -> BoundFormals.Simple name
-        | Stx.List(items, None, _) ->
+        | StxId(name, _, _) -> BoundFormals.Simple name
+        | StxList(items, None, _, _) ->
             let names =
                 items
                 |> List.choose (function
@@ -340,7 +334,7 @@ module private Expander =
                         None)
 
             BoundFormals.List names
-        | Stx.List(items, Some tail, loc) ->
+        | StxList(items, Some tail, loc, _) ->
             let names =
                 items
                 |> List.choose (function
@@ -356,7 +350,6 @@ module private Expander =
                 ExpandCtx.emitError ctx Diag.invalidFormals loc "expected identifier after dot in formals"
 
                 BoundFormals.List names
-        | Stx.Closure(inner, _, _) -> parseFormals inner ctx
         | other ->
             ExpandCtx.emitError ctx Diag.invalidFormals other.Loc "ill-formed formals"
             BoundFormals.List []
@@ -369,18 +362,17 @@ module private Expander =
         | BoundFormals.DottedList(names, rest) -> names @ [ rest ]
 
     /// Parse a list of `((id init) ...)` binding specs from a Stx node.
-    let rec parseBindingSpecs (stx: Stx) (ctx: ExpandCtx) : (string * Stx) list =
+    let parseBindingSpecs (stx: Stx) (ctx: ExpandCtx) : (string * Stx) list =
         let parseOne node =
             match node with
-            | Stx.List([ StxId(name, _, _) ; init ], _, _) -> Some(name, init)
+            | Stx.List([ StxId(name, _, _); init ], _, _) -> Some(name, init)
             | other ->
                 ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc "ill-formed binding specification"
 
                 None
 
         match stx with
-        | Stx.List(items, _, _) -> items |> List.choose parseOne
-        | Stx.Closure(inner, _, _) -> parseBindingSpecs inner ctx
+        | StxList(items, _, _, _) -> items |> List.choose parseOne
         | other ->
             ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc "expected binding list"
             []
@@ -430,14 +422,11 @@ module private Expander =
     /// Expand a single Stx node in the given scope.
     let rec expand (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
         match stx with
-        | Stx.Closure(inner, closedScope, _) ->
-            expand inner closedScope ctx
+        | StxId(name, loc, envOpt) -> lookupVar name loc (envOpt |> Option.defaultValue scope) ctx
 
-        | Stx.Id(name, loc) -> lookupVar name loc scope ctx
+        | StxDatum(d, _) -> BoundExpr.Literal(datumToLiteral d)
 
-        | Stx.Datum(d, _) -> BoundExpr.Literal(datumToLiteral d)
-
-        | Stx.Vec(items, _) ->
+        | StxVec(items, _) ->
             let datums =
                 List.foldBack
                     (fun item acc ->
@@ -451,15 +440,16 @@ module private Expander =
             | Some ds -> BoundExpr.Literal(BoundLiteral.Vector ds)
             | None -> BoundExpr.Error
 
-        | Stx.List(_, Some _, loc) ->
+        | StxList(_, Some _, loc, _) ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "dotted pair in expression position"
             BoundExpr.Error
 
-        | Stx.List([], None, _) -> BoundExpr.Literal BoundLiteral.Null
+        | StxList([], None, _, _) -> BoundExpr.Literal BoundLiteral.Null
 
-        | Stx.List(head :: args, None, loc) -> expandForm head args loc scope ctx
+        | StxList(head :: args, None, loc, envOpt) ->
+            expandForm head args loc (envOpt |> Option.defaultValue scope) ctx
 
-        | Stx.Error _ -> BoundExpr.Error
+        | StxError _ -> BoundExpr.Error
 
     /// Dispatch a compound form based on what the head resolves to.
     and expandForm
@@ -469,7 +459,7 @@ module private Expander =
         (scope: StxEnvironment)
         (ctx: ExpandCtx)
         : BoundExpr =
-        match resolveHead head scope ctx with
+        match resolveHead head scope with
         | Some(StxBinding.Special kind) -> expandSpecialForm kind args loc scope ctx
         | Some(StxBinding.Macro id) -> expandMacro id (Stx.List(head :: args, None, loc)) scope ctx
         | _ ->
@@ -522,20 +512,16 @@ module private Expander =
         | SpecialFormKind.SetBang ->
             match args with
             | [ target; value ] ->
-                // Peel any hygiene closures on the target to find its captured
-                // scope, then resolve the variable name in that scope.
-                //
-                // FIXME: This _feels_ like another area where better active patterns could help us.
-                let rec resolveSetTarget (stx: Stx) (targetScope: StxEnvironment) =
-                    match stx with
-                    | Stx.Id(name, idLoc) -> resolveVar name idLoc targetScope ctx
-                    | Stx.Closure(inner, innerScope, _) -> resolveSetTarget inner innerScope
+                let storage =
+                    match target with
+                    | StxId(name, idLoc, envOpt) ->
+                        resolveVar name idLoc (envOpt |> Option.defaultValue scope) ctx
                     | _ ->
-                        ExpandCtx.emitError ctx Diag.illFormedForm stx.Loc "ill-formed 'set!'"
+                        ExpandCtx.emitError ctx Diag.illFormedForm target.Loc "ill-formed 'set!'"
                         None
 
-                match resolveSetTarget target scope with
-                | Some storage -> BoundExpr.Store(storage, Some(expand value scope ctx))
+                match storage with
+                | Some s -> BoundExpr.Store(s, Some(expand value scope ctx))
                 | None -> BoundExpr.Error
             | _ -> illFormed "set!"
 
@@ -606,7 +592,7 @@ module private Expander =
             let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
             BoundExpr.Store(storage, None), scope'
 
-        | [ StxId(name, _, _) ; value ] ->
+        | [ StxId(name, _, _); value ] ->
             // (define id value)
             let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
             // Name is in scope' so self-recursion works.
@@ -754,31 +740,32 @@ module private Expander =
     and checkStxForUninitRefs (uninitIds: Ident list) (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) =
         let rec walk (scope: StxEnvironment) (stx: Stx) =
             match stx with
-            | Stx.Id(name, loc) ->
+            | StxId(name, loc, envOpt) ->
                 // Resolve name → Ident in the current scope, check if uninit.
-                match Map.tryFind name scope with
+                let s = envOpt |> Option.defaultValue scope
+                match Map.tryFind name s with
                 | Some(StxBinding.Variable id) when List.contains id uninitIds ->
                     name
                     |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
                     |> ctx.Diagnostics.Emit Diag.uninitialisedVar loc
                 | _ -> ()
-            | Stx.List(head :: _ as items, tail, _) ->
-                match resolveHead head scope ctx with
-                | Some(StxBinding.Special SpecialFormKind.Lambda)
-                | Some(StxBinding.Special SpecialFormKind.Quote) ->
-                    // References inside a lambda body or a quote form are safe:
-                    // lambda bodies run only after all inits; quote is opaque data.
-                    ()
-                | _ ->
-                    List.iter (walk scope) items
-                    tail |> Option.iter (walk scope)
-            | Stx.List(items, tail, _) ->
-                List.iter (walk scope) items
-                tail |> Option.iter (walk scope)
-            | Stx.Closure(inner, closedScope, _) -> walk closedScope inner
-            | Stx.Vec(items, _) -> List.iter (walk scope) items
-            | Stx.Datum _ -> ()
-            | Stx.Error _ -> ()
+            | StxList(items, tail, _, envOpt) ->
+                let listScope = envOpt |> Option.defaultValue scope
+                match items with
+                | head :: _ ->
+                    match resolveHead head listScope with
+                    | Some(StxBinding.Special SpecialFormKind.Lambda)
+                    | Some(StxBinding.Special SpecialFormKind.Quote) ->
+                        // References inside a lambda body or a quote form are safe:
+                        // lambda bodies run only after all inits; quote is opaque data.
+                        ()
+                    | _ ->
+                        List.iter (walk listScope) items
+                        tail |> Option.iter (walk listScope)
+                | [] -> ()
+            | StxVec(items, _) -> List.iter (walk scope) items
+            | StxDatum _ -> ()
+            | StxError _ -> ()
 
         walk scope stx
 
@@ -791,7 +778,7 @@ module private Expander =
         (ctx: ExpandCtx)
         : BoundExpr * StxEnvironment =
         match args with
-        | [ StxId(name, _, _) ; rulesStx ] ->
+        | [ StxId(name, _, _); rulesStx ] ->
             // Reserve the Ident first so self-referential macros can see their
             // own name in scope during template transcription (e.g. `my-or`).
             let id, scope' = ExpandCtx.reserveMacro name scope
@@ -1043,17 +1030,17 @@ module private Expander =
     // -- Sequence expansion ---------------------------------------------------
 
     /// Check whether a Stx node is a definition form.
-    and isBindingForm (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : bool =
+    and isBindingForm (stx: Stx) (scope: StxEnvironment) (_ctx: ExpandCtx) : bool =
         match stx with
-        | Stx.List(head :: _, _, _) ->
-            match resolveHead head scope ctx with
+        | StxList(head :: _, _, _, envOpt) ->
+            let listScope = envOpt |> Option.defaultValue scope
+            match resolveHead head listScope with
             | Some(StxBinding.Special SpecialFormKind.Define) -> true
             | Some(StxBinding.Special SpecialFormKind.DefineSyntax) -> true
             | Some(StxBinding.Special SpecialFormKind.Begin) -> true
             | Some(StxBinding.Special SpecialFormKind.Import) -> true
             | Some(StxBinding.Special SpecialFormKind.DefineLibrary) -> true
             | _ -> false
-        | Stx.Closure(inner, closedScope, _) -> isBindingForm inner closedScope ctx
         | _ -> false
 
     /// Try to expand a form as a binding-level definition.
@@ -1067,7 +1054,7 @@ module private Expander =
             // splice those definitions into the surrounding context.
             //
             // FIXME: The real fix here is to have a `collectDefs` which walks a
-            // sequence of Stx nodes and partitions them into (name * Stx) list 
+            // sequence of Stx nodes and partitions them into (name * Stx) list
             // of defines and `Stx list` of the remaining items.
             //
             // In this case we'd _expand_ the macros in each level when we saw
@@ -1079,13 +1066,15 @@ module private Expander =
                     innerScope
                     |> Map.fold
                         (fun acc name binding ->
-                            if Map.containsKey name closedScope then acc
-                            else Map.add name binding acc)
+                            if Map.containsKey name closedScope then
+                                acc
+                            else
+                                Map.add name binding acc)
                         scope
 
                 expr, mergedScope)
         | Stx.List(head :: args, _, loc) ->
-            match resolveHead head scope ctx with
+            match resolveHead head scope with
             | Some(StxBinding.Special SpecialFormKind.Define) -> Some(expandDefine args loc scope ctx)
             | Some(StxBinding.Special SpecialFormKind.DefineSyntax) -> Some(expandDefineSyntax args loc scope ctx)
             | Some(StxBinding.Special SpecialFormKind.Begin) ->

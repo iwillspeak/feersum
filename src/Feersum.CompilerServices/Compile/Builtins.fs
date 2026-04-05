@@ -115,12 +115,12 @@ module private BuiltinMacros =
     open Feersum.CompilerServices.Text
     open Feersum.CompilerServices.NewBindingTest
 
-    // ── Source strings (shared between old and new parsers) ────────────────
+    // -- Source strings (shared between old and new parsers) ------------------
 
     let private macroAndSrc =
-        "(syntax-rules ()
+        "(syntax-rules ::: ()
             ((_ a) a)
-            ((_ a b ...) (if a (and b ...) #f))
+            ((_ a b :::) (if a (and b :::) #f))
             ((_) #t))"
 
     // TODO: re-write without the GUID trick once proper hygiene is in place.
@@ -238,8 +238,7 @@ module private BuiltinMacros =
                     | Some transformer ->
                         ExpandCtx.registerMacro ctx id transformer
                         scope'
-                    | None ->
-                        icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics)
+                    | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics)
             Map.empty
 
 // ------------------------ Public Builtins API --------------------------------

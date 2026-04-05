@@ -22,7 +22,7 @@ let private expand (source: string) =
         failwithf "Parse error in '%s': %A" source prog.Diagnostics
 
     let ctx = ExpandCtx.createGlobal registry "test" []
-    let exprs = Expand.expandProgram prog.Root SyntaxEnv.builtin Map.empty ctx
+    let exprs = Expand.expandProgram prog.Root StxEnvironment.builtin Map.empty ctx
     exprs, ctx.Diagnostics.Diagnostics
 
 /// Expand and assert there are no errors; return the bound expressions.
@@ -67,7 +67,7 @@ let private parseSyntaxRules (name: string) (source: string) : Macro =
         |> (fun expr -> Stx.ofExpr registry prog.Root.DocId DiagnosticBag.Empty expr)
 
     let diag = DiagnosticBag.Empty
-    let env = SyntaxEnv.builtin
+    let env = StxEnvironment.builtin
 
     match MacrosNew.parseSyntaxRulesStx name tree env diag TextLocation.Missing with
     | Some t -> t
@@ -602,7 +602,7 @@ let ``expand: define in let-syntax body does not shadow outer binding`` () =
 let private expandMalformed (source: string) =
     let prog = Parse.readProgramSimple "test" source
     let ctx = ExpandCtx.createGlobal registry "test" []
-    let exprs = Expand.expandProgram prog.Root SyntaxEnv.builtin Map.empty ctx
+    let exprs = Expand.expandProgram prog.Root StxEnvironment.builtin Map.empty ctx
     exprs, ctx.Diagnostics.Diagnostics
 
 /// Expand (possibly malformed) source and assert that at least one expander
@@ -671,7 +671,9 @@ let ``let-syntax: bindings are not mutually visible`` () =
     // so m1 is NOT visible when m2's transformer is parsed.
     // When m2 expands to (m1 x), the m1 reference uses the definition-site
     // scope (outer), where m1 doesn't exist → unbound error.
-    expandError "unbound" """
+    expandError
+        "unbound"
+        """
 (let-syntax
   ((m1 (syntax-rules () ((_ x) x)))
    (m2 (syntax-rules () ((_ x) (m1 x)))))
@@ -682,21 +684,27 @@ let ``let-syntax: bindings are not mutually visible`` () =
 let ``letrec-syntax: later bindings can reference earlier ones`` () =
     // m2 is parsed in a scope that already includes m1, so (m1 x) in m2's
     // template resolves at definition time.
-    let exprs = expandOk """
+    let exprs =
+        expandOk
+            """
 (letrec-syntax
   ((m1 (syntax-rules () ((_ x) x)))
    (m2 (syntax-rules () ((_ x) (m1 x)))))
   (m2 42))
 """
+
     let result = List.exactlyOne exprs
+
     match result with
-    | BoundExpr.Seq _ -> ()  // body wrapped in Seq from let-syntax
+    | BoundExpr.Seq _ -> () // body wrapped in Seq from let-syntax
     | BoundExpr.Literal(BoundLiteral.Number 42.0) -> ()
     | other -> failwithf "Expected 42, got %A" other
 
 [<Fact>]
 let ``let-syntax: macros not visible outside body`` () =
-    expandError "unbound" """
+    expandError
+        "unbound"
+        """
 (let-syntax
   ((double (syntax-rules () ((_ n) (begin n n)))))
   (double 1))
@@ -705,7 +713,9 @@ let ``let-syntax: macros not visible outside body`` () =
 
 [<Fact>]
 let ``letrec-syntax: macros not visible outside body`` () =
-    expandError "unbound" """
+    expandError
+        "unbound"
+        """
 (letrec-syntax
   ((double (syntax-rules () ((_ n) (begin n n)))))
   (double 1))
