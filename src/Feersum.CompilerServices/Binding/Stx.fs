@@ -112,6 +112,46 @@ and SyntaxTransformer = Stx -> StxEnvironment -> Result<Stx, string>
 
 module Stx =
     open Feersum.CompilerServices.Syntax.Tree
+    open Feersum.CompilerServices.Ice
+
+    // ── Closure peeling ───────────────────────────────────────────────────
+
+    /// Strip all `Closure` wrappers from `stx`, returning the innermost shape
+    /// and the innermost explicit environment (if any closure was present).
+    ///
+    /// - `Some env` — at least one `Closure` was present; `env` is authoritative
+    ///   for expanding the returned node's subforms.
+    /// - `None`     — no `Closure` wrapper; the caller should use the ambient scope.
+    let peel (stx: Stx) : Stx * StxEnvironment option =
+        let rec go envOpt s =
+            match s with
+            | Stx.Closure(inner, env, _) -> go (Some env) inner
+            | other -> other, envOpt
+
+        go None stx
+
+    /// Active pattern that peels any `Closure` wrappers and then mirrors every
+    /// non-`Closure` case of the `Stx` DU.
+    ///
+    /// The resolved `StxEnvironment option` is surfaced on cases whose subforms
+    /// need to be expanded in scope:
+    /// - `None`     — node arrived bare; expand subforms in the ambient scope.
+    /// - `Some env` — node was closure-wrapped; `env` is authoritative.
+    ///
+    /// `Datum`, `Vec`, and `Error` omit the environment because they carry no
+    /// subforms that require scope resolution.
+    let (|Id|Datum|List|Vec|Error|) (stx: Stx) =
+        let shape, envOpt = peel stx
+
+        match shape with
+        | Stx.Id(name, loc) -> Id(name, loc, envOpt)
+        | Stx.Datum(value, loc) -> Datum(value, loc)
+        | Stx.List(items, tail, loc) -> List(items, tail, loc, envOpt)
+        | Stx.Vec(items, loc) -> Vec(items, loc)
+        | Stx.Error loc -> Error loc
+        | Stx.Closure _ -> ice "peel returned a Closure (impossible)"
+
+    // ── CST conversion ─────────────────────────────────────────────────────
 
     let private malformedDatum =
         DiagnosticKind.Create DiagnosticLevel.Error 57 "Invalid datum value"
