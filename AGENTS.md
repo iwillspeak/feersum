@@ -82,3 +82,9 @@ path: .agents/skills/ascii-header-formatting/SKILL.md
 name: ascii-header-formatting
 description: "Enforce ASCII-only section headers and comment banners. Use when writing or reviewing code comments, section dividers, or banner headers in any source file. Do not use Unicode box-drawing characters."
 ````
+
+````skill
+path: .agents/skills/fantomas-lint/SKILL.md
+name: fantomas-lint
+description: "Ensure F# source code is formatted cleanly with Fantomas before finishing a task. Use when writing or editing any F# source file, before committing changes, or when CI lint failures need to be fixed. Run Fantomas to reformat, then verify tests still pass."
+````
