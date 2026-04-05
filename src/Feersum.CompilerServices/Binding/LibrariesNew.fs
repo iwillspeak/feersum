@@ -182,7 +182,7 @@ module private Utils =
         { LibraryName = name
           Declarations = body |> List.map (parseLibraryDeclaration diags) }
 
-// -- Public API --------------------
+// -- Public API ---------------------------------------------------------------
 
 module Libraries =
 

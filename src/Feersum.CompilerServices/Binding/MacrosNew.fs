@@ -5,7 +5,7 @@ open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Stx
 
-// ──────────────────────────────────── Pattern types
+// -- Pattern types ------------------------------------------------------------
 
 /// The macro pattern type. Used in syntax cases to define the form that a
 /// macro should match.
@@ -28,7 +28,7 @@ type MacroPattern =
     /// Match a vector literal `#(...)`.
     | Vec of MacroPattern list
 
-// ──────────────────────────────────── Template types
+// -- Template types -----------------------------------------------------------
 
 /// A macro template element — either a single sub-template or a repeated one.
 [<RequireQualifiedAccess>]
@@ -50,7 +50,7 @@ and [<RequireQualifiedAccess>] MacroTemplate =
     /// Produce a vector literal.
     | Vec of elements: MacroTemplateElement list
 
-// ──────────────────────────────────── Capture types
+// -- Capture types ------------------------------------------------------------
 
 /// A captured pattern variable: the matched syntax node paired with the scope at capture time.
 type MacroCapture = Stx * StxEnvironment
@@ -88,7 +88,7 @@ type MacroBindings =
 
         f left right
 
-// ──────────────────────────────────── Macro type
+// -- Macro type ---------------------------------------------------------------
 
 /// A macro transformer: a single `(pattern template)` rule pair.
 type MacroTransformer = MacroPattern * MacroTemplate
@@ -100,19 +100,19 @@ type Macro =
       DefScope: StxEnvironment
       DefLoc: TextLocation }
 
-// ──────────────────────────────────── Diagnostics
+// -- Diagnostics --------------------------------------------------------------
 
 module private MacroDiagnostics =
     let invalidMacro =
         DiagnosticKind.Create DiagnosticLevel.Error 56 "Invalid macro definition"
 
-// ─────────────────────────────────────────────────────────────── MacrosNew
+// -- MacrosNew ----------------------------------------------------------------
 
 /// Parse `(syntax-rules ...)` forms into `SyntaxTransformer` values.
 /// Only the functions consumed by `Expander` are public.
 module MacrosNew =
 
-    // ── Helpers ──────────────────────────────────────────────────────────
+    // -- Helpers --------------------------------------------------------------
 
     /// Collect all bound pattern variable names from a pattern.
     let rec findBound (pat: MacroPattern) : string list =
@@ -370,7 +370,7 @@ module MacrosNew =
             | _ -> invalid ()
         | _ -> invalid ()
 
-    // ── Pattern matching ──────────────────────────────────────────────────
+    // -- Pattern matching -----------------------------------------------------
 
     /// Attempt to match a MacroPattern against a syntax node.
     /// Returns Some MacroBindings on success, None on mismatch.
@@ -463,7 +463,7 @@ module MacrosNew =
                 |> Option.bind (fun b -> matchRepeat inner restPats tailPat rest tailItem scope (b :: accumulated))
             | [] -> None
 
-    // ── Transcription ─────────────────────────────────────────────────────
+    // -- Transcription --------------------------------------------------------
 
     and transcribe
         (template: MacroTemplate)

@@ -6,8 +6,10 @@ open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.New
+open Feersum.CompilerServices.Binding.Stx
+open Feersum.CompilerServices.Binding.New.Libraries
 
-// ─────────────────────────────────────────────────────────────── Diagnostics
+// -- Diagnostics --------------------------------------------------------------
 
 module private Diag =
     let expandError = DiagnosticKind.Create DiagnosticLevel.Error 50 "Expansion error"
@@ -31,7 +33,7 @@ module private Diag =
         DiagnosticKind.Create DiagnosticLevel.Error 56 "Invalid macro definition"
 
 
-// ──────────────────────────────────── Transformer and BindingMeaning types
+// -- Transformer and BindingMeaning types -------------------------------------
 
 /// What a Ident resolves to at compile time.
 type BindingMeaning = Variable of StorageRef * lambdaDepth: int
@@ -59,7 +61,7 @@ type MacroRegistry() =
     /// registered (e.g. a forward-declared but unresolved macro handle).
     member _.TryFind(id: Ident) : SyntaxTransformer option = Map.tryFind id map
 
-// ──────────────────────────────────────────────────────────────── ExpandCtx
+// -- ExpandCtx ----------------------------------------------------------------
 
 /// Mutable per-lambda state threaded through the expander.
 type ExpandCtx =
@@ -93,7 +95,6 @@ type ExpandCtx =
     }
 
 module ExpandCtx =
-
 
     /// Create a root context for global-scope expansion.
     let createGlobal
@@ -235,7 +236,7 @@ module ExpandCtx =
         ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
         Map.add name (StxBinding.Variable id) scope
 
-// ──────────────────────────────────────────────────────────────── Built-in scope
+// -- Built-in scope -----------------------------------------------------------
 
 module StxEnvironment =
 
@@ -269,11 +270,11 @@ module StxEnvironment =
 module SyntaxEnv =
     let builtin = StxEnvironment.builtin
 
-// ─────────────────────────────────────────────────────────────── Expander
+// -- Expander -----------------------------------------------------------------
 
 module private Expander =
 
-    // ── Helpers ──────────────────────────────────────────────────────────
+    // -- Helpers --------------------------------------------------------------
 
     /// Peel any `Stx.Closure` wrappers and look up the head binding in the
     /// appropriate scope.  Returns `None` for non-identifier heads.
@@ -282,20 +283,10 @@ module private Expander =
     /// when not overridden in scope, via `StxEnvironment.tryResolveSpecial`.
     let rec resolveHead (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : StxBinding option =
         match stx with
-        | Stx.Id(name, _) ->
-            match Map.tryFind name scope with
+        | StxId(name, _, maybeScope) ->
+            match Map.tryFind name (maybeScope |> Option.defaultValue scope) with
             | Some _ as found -> found
             | None -> StxEnvironment.tryResolveSpecial name |> Option.map StxBinding.Special
-        | Stx.Closure(inner, closedScope, _) ->
-            resolveHead inner closedScope ctx
-        | _ -> None
-
-    /// Active pattern: extract an identifier name+location from a Stx node,
-    /// peeling any `Stx.Closure` hygiene wrappers.
-    let rec (|StxId|_|) (stx: Stx) : (string * TextLocation) option =
-        match stx with
-        | Stx.Id(name, loc) -> Some(name, loc)
-        | Stx.Closure(inner, _, _) -> (|StxId|_|) inner
         | _ -> None
 
     /// Convert a syntactic datum to its bound-tree counterpart.
@@ -342,7 +333,7 @@ module private Expander =
             let names =
                 items
                 |> List.choose (function
-                    | StxId(n, _) -> Some n
+                    | StxId(n, _, _) -> Some n
                     | other ->
                         ExpandCtx.emitError ctx Diag.invalidFormals other.Loc "expected identifier in formals"
 
@@ -353,14 +344,14 @@ module private Expander =
             let names =
                 items
                 |> List.choose (function
-                    | StxId(n, _) -> Some n
+                    | StxId(n, _, _) -> Some n
                     | other ->
                         ExpandCtx.emitError ctx Diag.invalidFormals other.Loc "expected identifier in formals"
 
                         None)
 
             match tail with
-            | StxId(rest, _) -> BoundFormals.DottedList(names, rest)
+            | StxId(rest, _, _) -> BoundFormals.DottedList(names, rest)
             | _ ->
                 ExpandCtx.emitError ctx Diag.invalidFormals loc "expected identifier after dot in formals"
 
@@ -381,7 +372,7 @@ module private Expander =
     let rec parseBindingSpecs (stx: Stx) (ctx: ExpandCtx) : (string * Stx) list =
         let parseOne node =
             match node with
-            | Stx.List([ StxId(name, _); init ], _, _) -> Some(name, init)
+            | Stx.List([ StxId(name, _, _) ; init ], _, _) -> Some(name, init)
             | other ->
                 ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc "ill-formed binding specification"
 
@@ -394,7 +385,7 @@ module private Expander =
             ExpandCtx.emitError ctx Diag.illFormedBinding other.Loc "expected binding list"
             []
 
-    // ── Variable lookup with capture tracking ─────────────────────────────
+    // -- Variable lookup with capture tracking --------------------------------
 
     /// Resolve a variable name to its (potentially capture-wrapped) StorageRef.
     /// Uses Idents to distinguish same-named variables from different scopes,
@@ -434,7 +425,7 @@ module private Expander =
         | Some storage -> BoundExpr.Load storage
         | None -> BoundExpr.Error
 
-    // ── Main recursive expander ───────────────────────────────────────────
+    // -- Main recursive expander ----------------------------------------------
 
     /// Expand a single Stx node in the given scope.
     let rec expand (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
@@ -567,7 +558,7 @@ module private Expander =
 
         | SpecialFormKind.DefineLibrary -> fst (expandLibrary args loc scope ctx)
 
-    // ── Lambda ───────────────────────────────────────────────────────────
+    // -- Lambda ---------------------------------------------------------------
 
     and expandLambda (args: Stx list) (loc: TextLocation) (scope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
         match args with
@@ -595,7 +586,7 @@ module private Expander =
             ExpandCtx.emitError ctx Diag.illFormedForm loc "ill-formed 'lambda'"
             BoundExpr.Error
 
-    // ── Define ───────────────────────────────────────────────────────────
+    // -- Define ---------------------------------------------------------------
 
     /// Expand a `define` form, returning the bound expression and the extended
     /// `StxEnvironment` for subsequent sibling forms.
@@ -610,25 +601,25 @@ module private Expander =
             BoundExpr.Error, scope
 
         match args with
-        | [ StxId(name, _) ] ->
+        | [ StxId(name, _, _) ] ->
             // (define id) — uninitialized
             let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
             BoundExpr.Store(storage, None), scope'
 
-        | [ StxId(name, _); value ] ->
+        | [ StxId(name, _, _) ; value ] ->
             // (define id value)
             let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
             // Name is in scope' so self-recursion works.
             let boundValue = expand value scope' ctx
             BoundExpr.Store(storage, Some boundValue), scope'
 
-        | Stx.List(StxId(name, _) :: formals, None, _) :: body ->
+        | Stx.List(StxId(name, _, _) :: formals, None, _) :: body ->
             // (define (name formals...) body...)
             let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
             let lambdaExpr = expandLambda (Stx.List(formals, None, loc) :: body) loc scope' ctx
             BoundExpr.Store(storage, Some lambdaExpr), scope'
 
-        | Stx.List(StxId(name, _) :: formals, Some tail, _) :: body ->
+        | Stx.List(StxId(name, _, _) :: formals, Some tail, _) :: body ->
             // (define (name formals... . rest) body...)
             let _id, storage, scope' = ExpandCtx.mintVar ctx name scope
 
@@ -639,7 +630,7 @@ module private Expander =
 
         | _ -> illFormed ()
 
-    // ── Let forms ────────────────────────────────────────────────────────
+    // -- Let forms ------------------------------------------------------------
 
     and expandLet (args: Stx list) (loc: TextLocation) (scope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
         match args with
@@ -791,7 +782,7 @@ module private Expander =
 
         walk scope stx
 
-    // ── define-syntax / let-syntax ───────────────────────────────────────
+    // -- define-syntax / let-syntax -------------------------------------------
 
     and expandDefineSyntax
         (args: Stx list)
@@ -800,7 +791,7 @@ module private Expander =
         (ctx: ExpandCtx)
         : BoundExpr * StxEnvironment =
         match args with
-        | [ StxId(name, _); rulesStx ] ->
+        | [ StxId(name, _, _) ; rulesStx ] ->
             // Reserve the Ident first so self-referential macros can see their
             // own name in scope during template transcription (e.g. `my-or`).
             let id, scope' = ExpandCtx.reserveMacro name scope
@@ -886,7 +877,7 @@ module private Expander =
         MacrosNew.makeSyntaxTransformer name stx defScope ctx.Diagnostics stx.Loc
 
 
-    // ── Macro expansion ───────────────────────────────────────────────────
+    // -- Macro expansion ------------------------------------------------------
 
     and expandMacro (id: Ident) (form: Stx) (callScope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
         match ctx.MacroRegistry.TryFind id with
@@ -901,7 +892,7 @@ module private Expander =
                 BoundExpr.Error
 
 
-    // ── Import resolution ─────────────────────────────────────────────────
+    // -- Import resolution ----------------------------------------------------
 
     and private expandImportSets
         (importSets: ImportSet list)
@@ -937,7 +928,7 @@ module private Expander =
         let (finalScope, revExprs) = List.fold folder (scope, []) importSets
         (BoundExpr.Seq(List.rev revExprs), finalScope)
 
-    // ── define-library ────────────────────────────────────────────────────
+    // -- define-library -------------------------------------------------------
 
     and expandLibrary
         (args: Stx list)
@@ -1049,7 +1040,7 @@ module private Expander =
         let importSets = args |> List.map (parseImport ctx.Diagnostics)
         expandImportSets importSets loc scope ctx
 
-    // ── Sequence expansion ────────────────────────────────────────────────
+    // -- Sequence expansion ---------------------------------------------------
 
     /// Check whether a Stx node is a definition form.
     and isBindingForm (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : bool =
@@ -1137,7 +1128,7 @@ module private Expander =
                 let restExprs, finalScope = expandSeq rest scope ctx
                 expr :: restExprs, finalScope
 
-// ─────────────────────────────────────────────────── Public API
+// -- Public API ---------------------------------------------------------------
 
 /// Public API for the new binding and expansion pass.
 module Expand =

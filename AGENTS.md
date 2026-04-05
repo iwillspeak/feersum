@@ -76,3 +76,9 @@ path: .agents/skills/design-documents/SKILL.md
 name: design-documents
 description: Write a new compiler design document in docs/design-docs/. Use when the user asks to document a design, write a design doc, or record architectural decisions for the Feersum compiler.
 ````
+
+````skill
+path: .agents/skills/ascii-header-formatting/SKILL.md
+name: ascii-header-formatting
+description: "Enforce ASCII-only section headers and comment banners. Use when writing or reviewing code comments, section dividers, or banner headers in any source file. Do not use Unicode box-drawing characters."
+````
