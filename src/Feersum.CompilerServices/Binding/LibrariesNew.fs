@@ -1,9 +1,9 @@
 namespace Feersum.CompilerServices.Binding.New
 
 open Feersum.CompilerServices.Diagnostics
-open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Stx
+open Feersum.CompilerServices.Utils
 
 module private LibraryDiagnostics =
 
@@ -36,8 +36,7 @@ type ImportSet =
 
 /// Library Declarations.
 ///
-/// Unlike the CST-based type, `Begin` carries `Stx` nodes instead of
-/// `Expression` nodes.
+/// A library is made up of a collection of library declarations
 type LibraryDeclaration =
     | Export of ExportSet list
     | Import of ImportSet list
@@ -57,30 +56,35 @@ type LibrarySignature<'a> =
       Exports: (string * 'a) list }
 
 [<AutoOpen>]
-module Utils =
+module private Utils =
 
-    // ── Private helpers ───────────────────────────────────────────────────
+    // Map the exports in a given library signature
+    let mapExports mapper (signature: LibrarySignature<'a>) =
+        { signature with
+            Exports = signature.Exports |> mapper }
 
-    let private isInvalidChar =
-        function
-        | '|'
-        | '\\'
-        | '?'
-        | '*'
-        | '<'
-        | '"'
-        | ':'
-        | '>'
-        | '+'
-        | '['
-        | ']'
-        | '/'
-        | '\'' -> true
-        | _ -> false
+    // Recognise a list of strings or numbers as a library name
+    let parseLibraryName (diags: DiagnosticBag) (stx: Stx) : Result<string list, unit> =
+        let isInvalidChar =
+            function
+            | '|'
+            | '\\'
+            | '?'
+            | '*'
+            | '<'
+            | '"'
+            | ':'
+            | '>'
+            | '+'
+            | '['
+            | ']'
+            | '/'
+            | '\'' -> true
+            | _ -> false
 
-    let private parseLibraryName (diags: DiagnosticBag) (stx: Stx) : string list option =
         let parseElement stx =
             match stx with
+            | StxDatum(StxDatum.Number n, _) -> Ok(sprintf "%g" n)
             | StxId(name, loc, _) ->
                 if Seq.exists isInvalidChar name then
                     diags.Emit
@@ -88,39 +92,38 @@ module Utils =
                         loc
                         "Library names should not contain complex characters"
 
-                Some name
-            | StxDatum(StxDatum.Number n, _) -> Some(string (int n))
+                Ok name
             | other ->
                 diags.Emit LibraryDiagnostics.invalidLibraryName other.Loc "Invalid library name part"
-                None
+                Result.Error ()
 
         match stx with
-        | StxList(parts, _, _, _) ->
-            let parsed = List.map parseElement parts
-
-            if List.forall Option.isSome parsed then
-                List.choose id parsed |> Some
-            else
-                None
+        | StxList(parts, None, _, _) ->
+            parts |> List.map parseElement |> Result.collect
         | other ->
             diags.Emit LibraryDiagnostics.invalidLibraryName other.Loc "Expected library name"
-            None
+            Result.Error ()
 
-    let private tryParseRename stx =
+    let private tryParseRename (stx: Stx list) =
         match stx with
-        | StxList([ Stx.Id(from_, _); Stx.Id(to_, _) ], _, _, _) -> Some { From = from_; To = to_ }
+        | [ Stx.Id(interior, _); Stx.Id(exterior, _) ] ->
+            Some { From = interior; To = exterior }
         | _ -> None
 
     let private parseExportDeclaration (diags: DiagnosticBag) (export: Stx) : ExportSet option =
         match export with
         | StxId(name, _, _) -> Some(ExportSet.Plain name)
-        | StxList([ Stx.Id("rename", _); Stx.Id(from_, _); Stx.Id(to_, _) ], _, _, _) ->
-            Some(ExportSet.Renamed { From = from_; To = to_ })
+        | StxList(Stx.Id("rename", _) :: rename, None, _, _) ->
+            match tryParseRename rename with
+            | Some renamed -> Some(ExportSet.Renamed renamed)
+            | None ->
+                diags.Emit LibraryDiagnostics.malformedLibraryDecl export.Loc "Invalid rename"
+                None
         | other ->
             diags.Emit LibraryDiagnostics.malformedLibraryDecl other.Loc "Invalid export element"
             None
 
-    let rec private parseImportSet (diags: DiagnosticBag) (stx: Stx) : ImportSet =
+    let rec parseImportSet (diags: DiagnosticBag) (stx: Stx) : ImportSet =
         let getName =
             function
             | Stx.Id(n, _) -> Some n
@@ -133,25 +136,31 @@ module Utils =
             ImportSet.Only(parseImportSet diags fromSet, getNames filters)
         | StxList(Stx.Id("except", _) :: fromSet :: filters, _, _, _) ->
             ImportSet.Except(parseImportSet diags fromSet, getNames filters)
+        | StxList(Stx.Id("rename", _) :: fromSet :: renames, _, _, _) ->
+            let parseRenames (renames: Stx list) =
+                let parseRename (node: Stx) =
+                    match node with
+                    | StxList(x, None, _, _) ->
+                        match tryParseRename x with
+                        | Some rename -> Some rename
+                        | None ->
+                            diags.Emit LibraryDiagnostics.malformedLibraryDecl node.Loc "Invalid rename"
+                            None
+                    | _ ->
+                        diags.Emit LibraryDiagnostics.malformedLibraryDecl node.Loc "Invalid rename"
+                        None
+
+                renames |> List.choose parseRename
+
+            ImportSet.Renamed(parseImportSet diags fromSet, parseRenames renames)
         | StxList([ Stx.Id("prefix", _); fromSet; Stx.Id(prefix, _) ], _, _, _) ->
             ImportSet.Prefix(parseImportSet diags fromSet, prefix)
-        | StxList(Stx.Id("rename", _) :: fromSet :: renames, _, _, _) ->
-            let parsed =
-                renames
-                |> List.choose (fun r ->
-                    match tryParseRename r with
-                    | Some rename -> Some rename
-                    | None ->
-                        diags.Emit LibraryDiagnostics.malformedLibraryDecl r.Loc "Invalid rename"
-                        None)
-
-            ImportSet.Renamed(parseImportSet diags fromSet, parsed)
         | _ ->
             match parseLibraryName diags stx with
-            | Some name -> ImportSet.Plain name
-            | None -> ImportSet.Error
+            | Ok name -> ImportSet.Plain name
+            | Result.Error _ -> ImportSet.Error
 
-    and private parseLibraryDeclaration (diags: DiagnosticBag) (decl: Stx) : LibraryDeclaration =
+    and parseLibraryDeclaration (diags: DiagnosticBag) (decl: Stx) : LibraryDeclaration =
         match decl with
         | StxList(Stx.Id("export", _) :: exports, _, _, _) ->
             exports
@@ -169,7 +178,13 @@ module Utils =
 
             LibraryDeclaration.Error
 
-    // ── Public API ────────────────────────────────────────────────────────
+    let parseLibraryBody (diags: DiagnosticBag) name body =
+        { LibraryName = name
+          Declarations = body |> List.map (parseLibraryDeclaration diags) }
+
+// -- Public API --------------------
+
+module Libraries =
 
     /// Prettify a library name for printing
     let prettifyLibraryName name =
@@ -181,10 +196,6 @@ module Utils =
         | l :: lrest, r :: rrest -> if l = r then matchLibraryName lrest rrest else false
         | [], [] -> true
         | _ -> false
-
-    let private mapExports mapper (signature: LibrarySignature<'a>) =
-        { signature with
-            Exports = signature.Exports |> mapper }
 
     /// Resolve a library import
     let rec resolveImport libraries =
@@ -223,21 +234,20 @@ module Utils =
     let parseLibraryDefinition (name: Stx) (body: Stx list) =
         let diags = DiagnosticBag.Empty
 
-        match parseLibraryName diags name with
-        | None -> Result.Error(diags.Take)
-        | Some libraryName ->
-            match libraryName with
-            | start :: _ when start = "scheme" || start = "srfi" ->
-                diags.Emit
-                    LibraryDiagnostics.improperLibraryName
-                    name.Loc
-                    (sprintf "The name prefix %s is reserved" start)
-            | _ -> ()
+        let checkReservedNames =
+            function
+            | start :: rest ->
+                if start = "scheme" || start = "srfi" then
+                    start
+                    |> sprintf "The name prefix %s is reserved"
+                    |> Diagnostic.Create LibraryDiagnostics.improperLibraryName name.Loc
+                    |> diags.Add
 
-            let decls = body |> List.map (parseLibraryDeclaration diags)
+                start :: rest
+            | [] -> []
 
-            Ok(
-                { LibraryName = libraryName
-                  Declarations = decls },
-                diags.Take
-            )
+        parseLibraryName diags name
+        |> Result.map checkReservedNames
+        |> Result.map (fun boundName -> parseLibraryBody diags boundName body)
+        |> Result.map (fun lib -> (lib, diags.Take))
+        |> Result.mapError (fun _ -> diags.Take)
