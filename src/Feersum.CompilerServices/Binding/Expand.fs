@@ -446,8 +446,7 @@ module private Expander =
 
         | StxList([], None, _, _) -> BoundExpr.Literal BoundLiteral.Null
 
-        | StxList(head :: args, None, loc, envOpt) ->
-            expandForm head args loc (envOpt |> Option.defaultValue scope) ctx
+        | StxList(head :: args, None, loc, envOpt) -> expandForm head args loc (envOpt |> Option.defaultValue scope) ctx
 
         | StxError _ -> BoundExpr.Error
 
@@ -514,8 +513,7 @@ module private Expander =
             | [ target; value ] ->
                 let storage =
                     match target with
-                    | StxId(name, idLoc, envOpt) ->
-                        resolveVar name idLoc (envOpt |> Option.defaultValue scope) ctx
+                    | StxId(name, idLoc, envOpt) -> resolveVar name idLoc (envOpt |> Option.defaultValue scope) ctx
                     | _ ->
                         ExpandCtx.emitError ctx Diag.illFormedForm target.Loc "ill-formed 'set!'"
                         None
@@ -743,6 +741,7 @@ module private Expander =
             | StxId(name, loc, envOpt) ->
                 // Resolve name → Ident in the current scope, check if uninit.
                 let s = envOpt |> Option.defaultValue scope
+
                 match Map.tryFind name s with
                 | Some(StxBinding.Variable id) when List.contains id uninitIds ->
                     name
@@ -751,6 +750,7 @@ module private Expander =
                 | _ -> ()
             | StxList(items, tail, _, envOpt) ->
                 let listScope = envOpt |> Option.defaultValue scope
+
                 match items with
                 | head :: _ ->
                     match resolveHead head listScope with
@@ -1034,6 +1034,7 @@ module private Expander =
         match stx with
         | StxList(head :: _, _, _, envOpt) ->
             let listScope = envOpt |> Option.defaultValue scope
+
             match resolveHead head listScope with
             | Some(StxBinding.Special SpecialFormKind.Define) -> true
             | Some(StxBinding.Special SpecialFormKind.DefineSyntax) -> true
