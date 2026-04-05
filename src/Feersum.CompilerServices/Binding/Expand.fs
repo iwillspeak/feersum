@@ -419,6 +419,15 @@ module private Expander =
 
     // -- Main recursive expander ----------------------------------------------
 
+    /// Wrap a bound expression in a SequencePoint unless it is a control-flow
+    /// node that already carries structure — matching the old binder's
+    /// `bindWithSequencePoint` behaviour.
+    let private withSequencePoint (loc: TextLocation) (expr: BoundExpr) : BoundExpr =
+        match expr with
+        | BoundExpr.If _
+        | BoundExpr.Seq _ -> expr
+        | _ -> BoundExpr.SequencePoint(expr, loc)
+
     /// Expand a single Stx node in the given scope.
     let rec expand (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr =
         match stx with
@@ -490,10 +499,14 @@ module private Expander =
         | SpecialFormKind.If ->
             match args with
             | [ test; thenExpr ] ->
-                let b = expand >> (fun f -> f scope ctx)
+                let b stx =
+                    expand stx scope ctx |> withSequencePoint stx.Loc
+
                 BoundExpr.If(b test, b thenExpr, None)
             | [ test; thenExpr; elseExpr ] ->
-                let b = expand >> (fun f -> f scope ctx)
+                let b stx =
+                    expand stx scope ctx |> withSequencePoint stx.Loc
+
                 BoundExpr.If(b test, b thenExpr, Some(b elseExpr))
             | _ -> illFormed "if"
 
@@ -563,7 +576,7 @@ module private Expander =
                     name, id)
                 |> List.fold (fun s (name, id) -> Map.add name (StxBinding.Variable id) s) scope
 
-            let bodyExprs, _ = expandSeq body scopeWithFormals childCtx
+            let bodyExprs, _ = expandSeqWithSPs body scopeWithFormals childCtx
             let bd = ExpandCtx.intoBody childCtx bodyExprs
             BoundExpr.Lambda(bFormals, bd)
         | _ ->
@@ -1118,6 +1131,24 @@ module private Expander =
                 let restExprs, finalScope = expandSeq rest scope ctx
                 expr :: restExprs, finalScope
 
+    /// Expand a list of forms for a top-level sequence (program body, lambda
+    /// body), threading scope through definitions and wrapping each resulting
+    /// expression in a SequencePoint keyed to its source location.
+    and expandSeqWithSPs (stxs: Stx list) (scope: StxEnvironment) (ctx: ExpandCtx) : BoundExpr list * StxEnvironment =
+        match stxs with
+        | [] -> [], scope
+        | stx :: rest ->
+            let loc = stx.Loc
+
+            let expr, scope' =
+                match tryExpandBinding stx scope ctx with
+                | Some(boundExpr, s) -> boundExpr, s
+                | None -> expand stx scope ctx, scope
+
+            let wrapped = withSequencePoint loc expr
+            let restExprs, finalScope = expandSeqWithSPs rest scope' ctx
+            wrapped :: restExprs, finalScope
+
 // -- Public API ---------------------------------------------------------------
 
 /// Public API for the new binding and expansion pass.
@@ -1162,7 +1193,7 @@ module Expand =
             |> Seq.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
             |> List.ofSeq
 
-        let exprs, _ = Expander.expandSeq stxs scope ctx
+        let exprs, _ = Expander.expandSeqWithSPs stxs scope ctx
         exprs
 
     /// Expand a list of programs, threading scope across units so that
@@ -1187,7 +1218,7 @@ module Expand =
                         |> Seq.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
                         |> List.ofSeq
 
-                    let exprs, scope' = Expander.expandSeq stxs scope ctx
+                    let exprs, scope' = Expander.expandSeqWithSPs stxs scope ctx
                     exprs, scope')
                 startScope
 
@@ -1209,5 +1240,5 @@ module Expand =
             |> Option.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
             |> Option.toList
 
-        let exprs, _ = Expander.expandSeq stxs scope ctx
+        let exprs, _ = Expander.expandSeqWithSPs stxs scope ctx
         exprs

@@ -60,19 +60,6 @@ let runXpOldRepl (options: CompilationOptions) args =
 
     let scope = Binder.scopeFromLibraries allLibs
 
-    // Strip SequencePoint wrappers so the output matches xpnew's format.
-    let rec strip expr =
-        match expr with
-        | BoundExpr.SequencePoint(inner, _) -> strip inner
-        | BoundExpr.Seq exprs -> BoundExpr.Seq(List.map strip exprs)
-        | BoundExpr.Application(f, args) -> BoundExpr.Application(strip f, List.map strip args)
-        | BoundExpr.If(c, t, e) -> BoundExpr.If(strip c, strip t, Option.map strip e)
-        | BoundExpr.Store(s, v) -> BoundExpr.Store(s, Option.map strip v)
-        | BoundExpr.Lambda(formals, body) -> BoundExpr.Lambda(formals, { body with Body = strip body.Body })
-        | BoundExpr.Library(name, mn, exports, body) ->
-            BoundExpr.Library(name, mn, exports, { body with Body = strip body.Body })
-        | other -> other
-
     let progs =
         List.map (fun path -> Parse.readProgram registry path (File.ReadAllText path)) args
 
@@ -87,5 +74,5 @@ let runXpOldRepl (options: CompilationOptions) args =
 
             if not (hasErrors result.Diagnostics) then
                 match result.Root.Body with
-                | BoundExpr.Seq stmts -> printfn "%A" (List.map strip stmts)
-                | x -> printfn "%A" [ strip x ])
+                | BoundExpr.Seq stmts -> printfn "%A" stmts
+                | x -> printfn "%A" [ x ])

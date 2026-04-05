@@ -133,6 +133,14 @@ let ``parseSyntaxRulesStx: multiple rules`` () =
 
 // ── End-to-end expand tests ───────────────────────────────────────────────
 
+/// Strip a single SequencePoint wrapper, if present. Used in tests that
+/// assert on the underlying BoundExpr without caring about debug source-
+/// location metadata.
+let private stripSP (expr: BoundExpr) : BoundExpr =
+    match expr with
+    | BoundExpr.SequencePoint(inner, _) -> inner
+    | other -> other
+
 [<Fact>]
 let ``expand: identity macro`` () =
     let exprs =
@@ -145,7 +153,7 @@ let ``expand: identity macro`` () =
 """
 
     // Last expression should be Load or Literal 42
-    let last = List.last exprs
+    let last = List.last exprs |> stripSP
 
     match last with
     | BoundExpr.Literal(BoundLiteral.Number 42.0) -> ()
@@ -163,7 +171,7 @@ let ``expand: constant pattern match`` () =
 (foo 123)
 """
 
-    let last = List.last exprs
+    let last = List.last exprs |> stripSP
 
     match last with
     | BoundExpr.Quoted _ -> ()
@@ -181,7 +189,7 @@ let ``expand: no-arg constant pattern (foo)`` () =
 (foo)
 """
 
-    let last = List.last exprs
+    let last = List.last exprs |> stripSP
 
     match last with
     | BoundExpr.Literal(BoundLiteral.Str "bar") -> ()
@@ -262,7 +270,7 @@ let ``literal pattern: keyword must appear literally`` () =
 (my-cond else 99)
 """
 
-    let last = List.last exprs
+    let last = List.last exprs |> stripSP
 
     match last with
     | BoundExpr.Literal(BoundLiteral.Number 99.0) -> ()
@@ -368,7 +376,7 @@ let ``expand: dotted-tail pattern (underscore) matches proper list tail`` () =
 (count-to-2 a b c d)
 """
 
-    let last = List.last exprs
+    let last = List.last exprs |> stripSP
 
     match last with
     | BoundExpr.Quoted _ -> () // 'many
@@ -389,7 +397,7 @@ let ``expand: dotted-tail pattern selects over fixed-arity rules`` () =
 (count-to-2)
 """
 
-    let last = List.last exprs
+    let last = List.last exprs |> stripSP
 
     match last with
     | BoundExpr.Literal(BoundLiteral.Number 0.0) -> ()
@@ -517,7 +525,7 @@ let ``expand: define at true top level produces global`` () =
 (define top-level-x 42)
 """
 
-    let last = List.last exprs
+    let last = List.last exprs |> stripSP
 
     match last with
     | BoundExpr.Store(StorageRef.Global _, _) -> ()
@@ -661,6 +669,7 @@ let ``ofExpr: malformed nodes produce BoundExpr.Error not stub datums`` () =
         exprs
         |> List.exists (function
             | BoundExpr.Error -> true
+            | BoundExpr.SequencePoint(BoundExpr.Error, _) -> true
             | _ -> false)
 
     Assert.True(hasError, "Expected at least one BoundExpr.Error in result")
