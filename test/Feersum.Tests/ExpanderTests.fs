@@ -507,6 +507,7 @@ let ``expand: define in let body produces local not global`` () =
     let rec findStore =
         function
         | BoundExpr.Seq items -> items |> List.tryPick findStore
+        | BoundExpr.SequencePoint(inner, _) -> findStore inner
         | BoundExpr.Store(StorageRef.Local _, _) as s -> Some s
         | _ -> None
 

@@ -511,7 +511,7 @@ module private Expander =
             | _ -> illFormed "if"
 
         | SpecialFormKind.Begin ->
-            let exprs, _ = expandSeq args scope ctx
+            let exprs, _ = expandSeqWithSPs args scope ctx
             BoundExpr.Seq exprs
 
         | SpecialFormKind.Lambda -> expandLambda args loc scope ctx
@@ -655,7 +655,7 @@ module private Expander =
                     scope
 
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
-            let bodyExprs, _ = expandSeq body innerScope ctx
+            let bodyExprs, _ = expandSeqWithSPs body innerScope ctx
             ctx.ScopeDepth <- ctx.ScopeDepth - 1
             let storeExprs = stores |> List.map (fun (_, _, s, v) -> BoundExpr.Store(s, Some v))
             BoundExpr.Seq(storeExprs @ bodyExprs)
@@ -682,7 +682,7 @@ module private Expander =
                     scope
 
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
-            let bodyExprs, _ = expandSeq body innerScope ctx
+            let bodyExprs, _ = expandSeqWithSPs body innerScope ctx
             ctx.ScopeDepth <- ctx.ScopeDepth - 1
             BoundExpr.Seq(storeExprs @ bodyExprs)
         | _ ->
@@ -736,7 +736,7 @@ module private Expander =
                     specs
 
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
-            let bodyExprs, _ = expandSeq body innerScope ctx
+            let bodyExprs, _ = expandSeqWithSPs body innerScope ctx
             ctx.ScopeDepth <- ctx.ScopeDepth - 1
             BoundExpr.Seq(storeExprs @ bodyExprs)
         | _ ->
@@ -860,7 +860,7 @@ module private Expander =
             // that don't escape this function.  ScopeDepth is bumped so that
             // `define` inside the body produces a Local.
             ctx.ScopeDepth <- ctx.ScopeDepth + 1
-            let bodyExprs, _ = expandSeq body bodyScope ctx
+            let bodyExprs, _ = expandSeqWithSPs body bodyScope ctx
             ctx.ScopeDepth <- ctx.ScopeDepth - 1
             BoundExpr.Seq bodyExprs
         | _ ->
@@ -965,7 +965,7 @@ module private Expander =
                         (newScope, importAcc @ [ expr ], bodyAcc, exportsAcc)
 
                     | LibraryDeclaration.Begin stxList ->
-                        let exprs, newScope = expandSeq stxList innerScope innerCtx
+                        let exprs, newScope = expandSeqWithSPs stxList innerScope innerCtx
                         (newScope, importAcc, bodyAcc @ exprs, exportsAcc)
 
                     | LibraryDeclaration.Error -> (innerScope, importAcc, bodyAcc, exportsAcc)
@@ -1092,7 +1092,7 @@ module private Expander =
             | Some(StxBinding.Special SpecialFormKind.Define) -> Some(expandDefine args loc scope ctx)
             | Some(StxBinding.Special SpecialFormKind.DefineSyntax) -> Some(expandDefineSyntax args loc scope ctx)
             | Some(StxBinding.Special SpecialFormKind.Begin) ->
-                let exprs, scope' = expandSeq args scope ctx
+                let exprs, scope' = expandSeqWithSPs args scope ctx
                 Some(BoundExpr.Seq exprs, scope')
             | Some(StxBinding.Special SpecialFormKind.Import) -> Some(expandImport args loc scope ctx)
             | Some(StxBinding.Special SpecialFormKind.DefineLibrary) -> Some(expandLibrary args loc scope ctx)
