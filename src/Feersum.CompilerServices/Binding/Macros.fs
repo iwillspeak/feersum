@@ -1,404 +1,582 @@
-namespace Feersum.CompilerServices.Binding
+namespace Feersum.CompilerServices.Binding.New
 
-open Feersum.CompilerServices.Ice
-open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
-open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.Tree
-open Feersum.CompilerServices.Syntax.Factories
-open Feersum.CompilerServices.Utils
+open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Binding
+open Feersum.CompilerServices.Binding.Stx
+
+// -- Pattern types ------------------------------------------------------------
 
 /// The macro pattern type. Used in syntax cases to define the form that a
 /// macro should match.
+[<RequireQualifiedAccess>]
 type MacroPattern =
-    | Constant of ConstantValue
+    /// Match a self-evaluating literal exactly.
+    | Constant of StxDatum
+    /// Match anything, without binding (`_`).
     | Underscore
+    /// Match a literal keyword (must appear in the `syntax-rules` literals list).
     | Literal of string
+    /// Capture a single sub-form into a pattern variable.
     | Variable of string
+    /// Match zero-or-more repetitions of the sub-pattern (the `...` operator).
     | Repeat of MacroPattern
+    /// Match a proper list.
     | Form of MacroPattern list
+    /// Match an improper list (dotted pair form).
     | DottedForm of MacroPattern list * MacroPattern
+    /// Match a vector literal `#(...)`.
+    | Vec of MacroPattern list
 
-/// Macro template specify how to convert a match into new syntax. They are
-/// effecively patterns for the syntax, with holes to be filled in by matches.
-type MacroTemplate =
-    | Quoted of Expression
-    | Subst of string
-    | Form of TextLocation * MacroTemplateElement list
-    | DottedForm of MacroTemplateElement list * MacroTemplate
+// -- Template types -----------------------------------------------------------
 
-and MacroTemplateElement =
+/// A macro template element — either a single sub-template or a repeated one.
+[<RequireQualifiedAccess>]
+type MacroTemplateElement =
     | Template of MacroTemplate
     | Repeated of MacroTemplate
 
-/// Macro transformer is a pair of macro pattern, and macro template
-type MacroTransformer = (MacroPattern * MacroTemplate)
+/// Macro templates specify how to convert a match into new syntax. They are
+/// effectively patterns for the output, with holes filled in by pattern variable matches.
+and [<RequireQualifiedAccess>] MacroTemplate =
+    /// A literal node from the macro definition site (quoted, not substituted).
+    | Quoted of stx: Stx
+    /// Substitute the sub-form captured by a pattern variable.
+    | Subst of name: string
+    /// Produce a proper list.
+    | Form of loc: TextLocation * elements: MacroTemplateElement list
+    /// Produce an improper list.
+    | DottedForm of elements: MacroTemplateElement list * tail: MacroTemplate
+    /// Produce a vector literal.
+    | Vec of elements: MacroTemplateElement list
 
-/// Macro is a list of transformers
-type Macro =
-    { Name: string
-      Transformers: MacroTransformer list }
+// -- Capture types ------------------------------------------------------------
 
-/// The binding of a macro variable to syntax.
-type MacroBinding = (string * Expression)
+/// A captured pattern variable: the matched syntax node paired with the scope at capture time.
+type MacroCapture = Stx * StxEnvironment
 
-/// Collection of bindings produced by a macro match
+/// The binding of a macro variable to captured syntax.
+type MacroBinding = string * MacroCapture
+
+/// Collection of bindings produced by a macro match. `Bindings` holds the
+/// flat variable captures at this level; `Repeated` holds one `MacroBindings`
+/// per iteration of an ellipsis sub-pattern.
 type MacroBindings =
     { Bindings: MacroBinding list
       Repeated: MacroBindings list }
 
+    /// Empty set of bindings.
+    static member Empty = { Bindings = []; Repeated = [] }
 
-    /// Empty set of bindings
-    static member public Empty = { Bindings = []; Repeated = [] }
-
-    /// Create a set of bindings with a single bound variable
-    static member public FromVariable name node =
-        { Bindings = [ (name, node) ]
+    /// Create a set of bindings with a single bound variable.
+    static member FromVariable name (capture: MacroCapture) =
+        { Bindings = [ name, capture ]
           Repeated = [] }
 
-    static member public Union left right =
-        let rec f left right =
-            { Bindings = List.append left.Bindings right.Bindings
-              Repeated = g left.Repeated right.Repeated }
+    /// Merge two sibling binding sets, appending flat bindings and zipping
+    /// repeated binding lists element-by-element.
+    static member Union left right =
+        let rec f l r =
+            { Bindings = List.append l.Bindings r.Bindings
+              Repeated = g l.Repeated r.Repeated }
 
-        and g left right =
-            match left, right with
+        and g l r =
+            match l, r with
             | [], a -> a
             | a, [] -> a
-            | lh :: lt, rh :: rt -> (f lh rh) :: (g lt rt)
+            | lh :: lt, rh :: rt -> f lh rh :: g lt rt
 
         f left right
 
-module Macros =
+// -- Macro type ---------------------------------------------------------------
 
-    let private macroExpansionError =
-        DiagnosticKind.Create DiagnosticLevel.Error 40 "Macro expansion error"
+/// A macro transformer: a single `(pattern template)` rule pair.
+type MacroTransformer = MacroPattern * MacroTemplate
 
-    /// Create an error result with a diagnostic at `location`
-    let private errAt location message =
-        Diagnostic.Create macroExpansionError location message |> Result.Error
+/// A macro: the set of transformer rules together with the definition-site
+/// scope and source location.
+type Macro =
+    { Transformers: MacroTransformer list
+      DefScope: StxEnvironment
+      DefLoc: TextLocation }
 
-    /// Parse a (a ... . b) or (a ...) form body. Handles elipsis detection.
-    /// `body` is the list of elements before any dotted tail; `tailOpt` is the
-    /// optional tail element (from a DottedForm).
-    let private parseMacroFormBody
-        (body: Expression list)
-        (tailOpt: Expression option)
-        elipsis
-        recurse
-        onRepeated
-        onSingle
-        onDotted
-        onForm
-        =
-        let rec parseBody nodes =
-            match nodes with
-            | node :: rest ->
-                let element = recurse node
+// -- Diagnostics --------------------------------------------------------------
 
-                let (element, rest) =
-                    match rest with
-                    | (Symbol id) :: rest when id = elipsis -> (element |> Result.map onRepeated, rest)
-                    | _ -> (element |> Result.map onSingle, rest)
+module private MacroDiagnostics =
+    let invalidMacro =
+        DiagnosticKind.Create DiagnosticLevel.Error 56 "Invalid macro definition"
 
-                let (templates, maybeDotElement) = parseBody rest
-                (element :: templates, maybeDotElement)
-            | [] ->
-                match tailOpt with
-                | Some tailNode -> ([], recurse tailNode |> Some)
-                | None -> ([], None)
+// -- MacrosNew ----------------------------------------------------------------
 
-        let (elements, maybeDotElement) = parseBody body
+/// Parse `(syntax-rules ...)` forms into `SyntaxTransformer` values.
+/// Only the functions consumed by `Expander` are public.
+module MacrosNew =
 
-        match maybeDotElement with
-        | Some dot ->
-            elements
-            |> Result.collect
-            |> Result.bind (fun elements ->
-                match dot with
-                | Ok d -> Ok(onDotted (elements, d))
-                | _ -> dot)
-        | None -> elements |> Result.collect |> Result.map onForm
+    // -- Helpers --------------------------------------------------------------
 
-    /// Compare two ConstantValues by their extracted values
-    let private constantsMatch (pat: ConstantValue) (cv: ConstantValue) =
-        match pat, cv with
-        | NumVal p, NumVal n -> p = n
-        | StrVal p, StrVal s -> p = s
-        | BoolVal p, BoolVal b -> p = b
-        | CharVal p, CharVal c -> p = c
-        | _ -> false
-
-    /// Attempt to match a pattern against a syntax tree. Returns `Ok` if the
-    /// pattern matches. Returns `Err` if the pattern does not match the given node.
-    let rec macroMatch (pat: MacroPattern) (ast: Expression) : Result<MacroBindings, unit> =
+    /// Collect all bound pattern variable names from a pattern.
+    let rec findBound (pat: MacroPattern) : string list =
         match pat with
-        | Constant c ->
-            match ast with
-            | ConstantNode cn ->
-                match cn.Value with
-                | Some k when constantsMatch c k -> Result.Ok MacroBindings.Empty
-                | _ -> Result.Error()
-            | _ -> Result.Error()
-        | Variable v -> Result.Ok(MacroBindings.FromVariable v ast)
-        | MacroPattern.Form patterns ->
-            match ast with
-            | FormNode f -> matchForm patterns None (f.Body |> List.ofSeq) None
-            | _ -> Result.Error()
-        | MacroPattern.DottedForm(patterns, tail) ->
-            match ast with
-            | FormNode f ->
-                let body = f.Body |> List.ofSeq
-                let tailExpr = f.DottedTail |> Option.bind (_.Body)
-                matchForm patterns (Some tail) body tailExpr
-            | _ -> Result.Error()
-        | Underscore -> Result.Ok MacroBindings.Empty
-        | Literal literal ->
-            match ast with
-            | Symbol id ->
-                if id = literal then
-                    Result.Ok MacroBindings.Empty
-                else
-                    Result.Error()
-            | _ -> Result.Error()
-        | Repeat _ ->
-            // We _could_ try and 'gracefully' fail here by just matching the inner
-            // pattern. That would make finding any bugs in our pattern parsing more
-            // difficult to track down though.
-            ice "Repeat at top level"
-
-    /// Try to match a list of patterns and, optionally, a tail form against the
-    /// contents of a form body. `body` is the list of body elements,
-    /// `tailExpr` is the optional parsed tail expression from a DottedForm.
-    and private matchForm patterns maybeTailPat body tailExpr =
-        match patterns with
-        | MacroPattern.Repeat(repeat) :: pats -> matchRepeated repeat pats maybeTailPat body tailExpr []
-        | headPat :: patterns ->
-            match body with
-            | head :: rest ->
-                macroMatch headPat head
-                |> Result.bind (fun vars ->
-                    matchForm patterns maybeTailPat rest tailExpr
-                    |> Result.map (MacroBindings.Union vars))
-            | [] -> Result.Error()
-        | [] ->
-            match maybeTailPat with
-            | Some tailPattern ->
-                match tailExpr with
-                | Some single -> macroMatch tailPattern single
-                | None ->
-                    // No tail expression, but pattern expects one.
-                    // Match remaining body elements as a list.
-                    match body with
-                    | [ single ] -> macroMatch tailPattern single
-                    | other ->
-                        match tailPattern with
-                        | Underscore -> Result.Ok MacroBindings.Empty
-                        | Variable v ->
-                            Result.Ok(MacroBindings.FromVariable v (Factories.form DocId.Synthetic other :> Expression))
-                        | _ -> Result.Error()
-            | None ->
-                if List.isEmpty body && tailExpr.IsNone then
-                    Ok MacroBindings.Empty
-                else
-                    Result.Error()
-
-    /// Try and match a repeated pattern. This effectively re-matches the tail
-    /// patterns until no further matches of repeat are required in a manner similar
-    /// to backtracking.
-    and private matchRepeated repeat patterns maybeTailPat body tailExpr repeatedBindings =
-        match matchForm patterns maybeTailPat body tailExpr with
-        | Ok vars ->
-            Ok
-                { vars with
-                    Repeated = repeatedBindings |> List.rev }
-        | _ ->
-            match body with
-            | head :: rest ->
-                macroMatch repeat head
-                |> Result.bind (fun x ->
-                    matchRepeated repeat patterns maybeTailPat rest tailExpr (x :: repeatedBindings))
-            | _ ->
-                // Ran out of repeats and tail never matched
-                Result.Error()
-
-    let private getNode (node, _) = node
-    let private getCount (_, count) = count
-
-    /// Expand a macro template with the given bindings.
-    let rec public macroExpand template (bindings: MacroBindings) =
-        let result, _ = macroExpandTemplate template bindings
-        result
-
-    and macroExpandTemplate template (bindings: MacroBindings) =
-        match template with
-        | Quoted q -> (Result.Ok q, 0)
-        | Subst v ->
-            match List.tryFind (fun (id, _) -> id = v) bindings.Bindings with
-            | Some(_, syntax) -> (Result.Ok syntax, 1)
-            | None -> (Result.Error(sprintf "Reference to unbound substitution %s" v), 0)
-        | MacroTemplate.Form(location, templateElements) ->
-            let elements = List.map (fun t -> macroExpandElement t bindings) templateElements
-
-            let substs = List.sumBy (getCount) elements
-
-            let elements =
-                elements
-                |> List.map (getNode)
-                |> Result.collect
-                |> Result.map (fun expanded ->
-                    let concatted: Expression list = expanded |> List.concat
-                    Factories.form DocId.Synthetic concatted :> Expression)
-
-            (elements, substs)
-        | DottedForm _ -> unimpl "Dotted forms in macro expansion are not yet supported"
-
-    and private macroExpandElement templateElement bindings =
-        match templateElement with
-        | Template t ->
-            let result, substs = macroExpandTemplate t bindings
-            (result |> Result.map (fun n -> [ n ]), substs)
-        | Repeated t ->
-            let rec collectRepeat =
-                function
-                | (Result.Error _, 0) :: rest -> collectRepeat rest
-                | (Result.Error e, n) :: _ -> Result.Error e
-                | (Result.Ok node, _) :: rest -> collectRepeat rest |> Result.map (fun rest -> node :: rest)
-                | [] -> Result.Ok []
-
-            let repeated =
-                bindings.Repeated |> List.map (macroExpandTemplate t) |> collectRepeat
-
-            (repeated, 0)
-
-    /// Apply a macro to a given syntax node
-    let macroApply (macro: Macro) (syntax: Expression) (loc: TextLocation) =
-        let rec macroTryApply transfomers =
-            match transfomers with
-            | (p, t) :: rest ->
-                match macroMatch p syntax with
-                | Ok binds -> macroExpand t binds
-                | Result.Error _ -> macroTryApply rest
-            | [] -> Result.Error "No pattern matched the syntax"
-
-        macroTryApply macro.Transformers
-        |> Result.mapError (Diagnostic.Create macroExpansionError loc)
-
-    /// Try to parse a pattern from the given syntax.
-    let rec public parsePattern elipsis literals (syntax: Expression) =
-        let recurse = parsePattern elipsis literals
-        let e = errAt TextLocation.Missing
-
-        match syntax with
-        | ConstantNode c ->
-            match c.Value with
-            | Some cv -> Ok(MacroPattern.Constant cv)
-            | None -> e "Invalid constant in macro pattern"
-        | SymbolNode s ->
-            match s.CookedValue with
-            | "_" -> MacroPattern.Underscore
-            | l when List.contains l literals -> MacroPattern.Literal l
-            | v -> MacroPattern.Variable v
-            |> Ok
-        | FormNode f ->
-            let body = f.Body |> List.ofSeq
-            let tailOpt = f.DottedTail |> Option.bind (_.Body)
-
-            parseMacroFormBody
-                body
-                tailOpt
-                elipsis
-                (recurse)
-                (MacroPattern.Repeat)
-                (id)
-                (MacroPattern.DottedForm)
-                (MacroPattern.Form)
-        | VecNode _
-        | ByteVecNode _
-        | QuotedNode _ -> e "Unsupported pattern element"
-
-    /// Parse a macro template specification from a syntax tree.
-    let rec public parseTemplate elipsis bound (syntax: Expression) =
-        let recurse = parseTemplate elipsis bound
-
-        match syntax with
-        | FormNode f ->
-            let body = f.Body |> List.ofSeq
-            let tailOpt = f.DottedTail |> Option.bind (_.Body)
-
-            parseMacroFormBody
-                body
-                tailOpt
-                elipsis
-                (recurse)
-                (MacroTemplateElement.Repeated)
-                (MacroTemplateElement.Template)
-                (MacroTemplate.DottedForm)
-                (fun x -> MacroTemplate.Form(TextLocation.Missing, x))
-        | Symbol id ->
-            if List.contains id bound then
-                MacroTemplate.Subst id
-            else
-                MacroTemplate.Quoted syntax
-            |> Ok
-        | _ -> Ok(MacroTemplate.Quoted syntax)
-
-    let rec public findBound =
-        function
-        | MacroPattern.Variable v -> [ v ]
-        | MacroPattern.Repeat r -> findBound r
-        | MacroPattern.Form body -> Seq.map (findBound) body |> List.concat
-        | MacroPattern.DottedForm(body, extra) ->
-            List.append (Seq.map (findBound) body |> List.concat) (findBound extra)
+        | MacroPattern.Variable name -> [ name ]
+        | MacroPattern.Form pats -> pats |> List.collect findBound
+        | MacroPattern.DottedForm(pats, tail) -> (pats |> List.collect findBound) @ findBound tail
+        | MacroPattern.Vec pats -> pats |> List.collect findBound
+        | MacroPattern.Repeat inner -> findBound inner
         | _ -> []
 
-    /// Parse a single macro transformer from a syntax node
-    let private parseTransformer id elip literals (syntax: Expression) =
-        match syntax with
-        | FormNode f when f.DottedTail.IsNone ->
-            let body = f.Body |> List.ofSeq
+    /// Parse a pattern literal list `(lit1 lit2 ...)`.
+    let parseLiteralList (stx: Stx) : Result<string list, string> =
+        let unwrapId s =
+            match s with
+            | StxId(name, _, _) -> Result.Ok name
+            | _ -> Result.Error "literal list must contain identifiers"
 
-            match body with
-            | [ pat; template ] ->
-                parsePattern elip literals pat
-                |> Result.bind (fun pat ->
-                    let bound = findBound pat
+        match stx with
+        | StxList(items, _, _, _) ->
+            items
+            |> List.map unwrapId
+            |> List.fold
+                (fun acc r ->
+                    match acc, r with
+                    | Result.Ok xs, Result.Ok x -> Result.Ok(xs @ [ x ])
+                    | Result.Error e, _ -> Result.Error e
+                    | _, Result.Error e -> Result.Error e)
+                (Result.Ok [])
+        | _ -> Result.Error "expected list of literals"
 
-                    parseTemplate elip bound template |> Result.map (fun tmpl -> (pat, tmpl)))
-            | _ -> errAt TextLocation.Missing "Ill-formed syntax case"
-        | _ -> errAt TextLocation.Missing "Ill-formed syntax case"
+    /// Returns true if `stx` is the ellipsis identifier `ell`, peeling any
+    /// `Stx.Closure` wrappers.
+    let private isEllipsisNode (ell: string) (stx: Stx) : bool =
+        match stx with
+        | StxId(name, _, _) -> name = ell
+        | _ -> false
 
-    // Parse a list of syntax transformers
-    let private parseTransformers id elip (lits: Expression list) (body: Expression list) =
-        List.map
-            (function
-            | SymbolNode s -> Ok(s.CookedValue)
-            | _ -> errAt TextLocation.Missing "Expected an identifier in macro literals")
-            lits
-        |> Result.collect
-        |> Result.bind (fun literals ->
-            List.map (fun case -> parseTransformer id elip literals case) body
-            |> Result.collect)
+    /// Parse `(pats...)` or `(pats... . tail)` form body into a list of
+    /// patterns, detecting ellipsis.
+    let rec parseFormBody
+        (kw: string)
+        (ellipsis: string)
+        (lits: string list)
+        (items: Stx list)
+        (tail: Stx option)
+        : Result<MacroPattern list * MacroPattern option, string> =
+        let rec loop acc remaining =
+            match remaining with
+            | [] ->
+                let tailPat = tail |> Option.map (fun t -> parsePattern kw ellipsis lits t)
 
-    /// Parse the body of a syntax rules form.
-    let private parseSyntaxRulesBody id loc (syntax: Expression list) =
-        match syntax with
-        | SymbolNode elipNode :: FormNode litsNode :: body ->
-            parseTransformers id elipNode.CookedValue (litsNode.Body |> List.ofSeq) body
-        | FormNode litsNode :: body -> parseTransformers id "..." (litsNode.Body |> List.ofSeq) body
-        | _ -> errAt loc "Ill-formed syntax rules."
-        |> Result.map (fun transformers ->
-            { Name = id
-              Transformers = transformers })
+                match tailPat with
+                | None -> Result.Ok(List.rev acc, None)
+                | Some(Result.Ok tp) -> Result.Ok(List.rev acc, Some tp)
+                | Some(Result.Error e) -> Result.Error e
+            | [ single ] ->
+                match parsePattern kw ellipsis lits single with
+                | Result.Error e -> Result.Error e
+                | Result.Ok pat -> loop (pat :: acc) []
+            | current :: (next :: rest) when isEllipsisNode ellipsis next ->
+                match parsePattern kw ellipsis lits current with
+                | Result.Error e -> Result.Error e
+                | Result.Ok inner -> loop (MacroPattern.Repeat inner :: acc) rest
+            | current :: rest ->
+                match parsePattern kw ellipsis lits current with
+                | Result.Error e -> Result.Error e
+                | Result.Ok pat -> loop (pat :: acc) rest
 
-    /// Parse a syntax rules expression into a macro definition.
-    let public parseSyntaxRules id (syntaxRulesSyn: Expression) =
-        match syntaxRulesSyn with
-        | FormNode f when f.DottedTail.IsNone ->
-            let body = f.Body |> List.ofSeq
+        loop [] items
 
-            match body with
-            | SymbolNode s :: body when s.CookedValue = "syntax-rules" ->
-                parseSyntaxRulesBody id TextLocation.Missing body
-            | _ -> errAt TextLocation.Missing "Expected `syntax-rules` special form"
-        | _ -> errAt TextLocation.Missing "Expected `syntax-rules` special form"
+    /// Parse a single syntax node as a macro pattern.
+    and parsePattern (kw: string) (ellipsis: string) (lits: string list) (stx: Stx) : Result<MacroPattern, string> =
+        match stx with
+        | StxDatum(d, _) -> Result.Ok(MacroPattern.Constant d)
+        | StxId("_", _, _) -> Result.Ok MacroPattern.Underscore
+        | StxId(name, _, _) when name = ellipsis && not (List.contains name lits) ->
+            Result.Error "unexpected ellipsis in pattern"
+        | StxId(name, _, _) ->
+            if List.contains name lits then
+                Result.Ok(MacroPattern.Literal name)
+            else
+                Result.Ok(MacroPattern.Variable name)
+        | StxList(items, None, _, _) ->
+            match items with
+            | Stx.Id(head, _) :: rest when head = kw ->
+                match parseFormBody kw ellipsis lits rest None with
+                | Result.Error e -> Result.Error e
+                | Result.Ok(pats, None) -> Result.Ok(MacroPattern.Form(MacroPattern.Variable kw :: pats))
+                | Result.Ok(pats, Some tail) ->
+                    Result.Ok(MacroPattern.DottedForm(MacroPattern.Variable kw :: pats, tail))
+            | _ ->
+                match parseFormBody kw ellipsis lits items None with
+                | Result.Error e -> Result.Error e
+                | Result.Ok(pats, None) -> Result.Ok(MacroPattern.Form pats)
+                | Result.Ok(pats, Some tail) -> Result.Ok(MacroPattern.DottedForm(pats, tail))
+        | StxList(items, Some tail, _, _) ->
+            match parseFormBody kw ellipsis lits items (Some tail) with
+            | Result.Error e -> Result.Error e
+            | Result.Ok(pats, tailOpt) ->
+                let tailPat = tailOpt |> Option.defaultValue MacroPattern.Underscore
+                Result.Ok(MacroPattern.DottedForm(pats, tailPat))
+        | StxVec(items, _) ->
+            let results = items |> List.map (parsePattern kw ellipsis lits)
+
+            results
+            |> List.fold
+                (fun acc r ->
+                    match acc, r with
+                    | Result.Ok xs, Result.Ok x -> Result.Ok(xs @ [ x ])
+                    | Result.Error e, _ -> Result.Error e
+                    | _, Result.Error e -> Result.Error e)
+                (Result.Ok [])
+            |> Result.map MacroPattern.Vec
+        | StxError _ -> Result.Error "malformed syntax node"
+
+    /// Parse `(tmpl...)` or `(tmpl... . tail)` template body, detecting ellipsis.
+    let rec parseTemplateFormBody
+        (ellipsis: string)
+        (bound: string list)
+        (items: Stx list)
+        (tail: Stx option)
+        : Result<MacroTemplateElement list * MacroTemplate option, string> =
+        let rec loop acc remaining =
+            match remaining with
+            | [] ->
+                let tailTmpl = tail |> Option.map (fun t -> parseTemplate ellipsis bound t)
+
+                match tailTmpl with
+                | None -> Result.Ok(List.rev acc, None)
+                | Some(Result.Ok tp) -> Result.Ok(List.rev acc, Some tp)
+                | Some(Result.Error e) -> Result.Error e
+            | [ single ] ->
+                match parseTemplate ellipsis bound single with
+                | Result.Error e -> Result.Error e
+                | Result.Ok tmpl -> loop (MacroTemplateElement.Template tmpl :: acc) []
+            | current :: (next :: rest) when isEllipsisNode ellipsis next ->
+                match parseTemplate ellipsis bound current with
+                | Result.Error e -> Result.Error e
+                | Result.Ok tmpl -> loop (MacroTemplateElement.Repeated tmpl :: acc) rest
+            | current :: rest ->
+                match parseTemplate ellipsis bound current with
+                | Result.Error e -> Result.Error e
+                | Result.Ok tmpl -> loop (MacroTemplateElement.Template tmpl :: acc) rest
+
+        loop [] items
+
+    /// Parse a single syntax node as a macro template.
+    and parseTemplate (ellipsis: string) (bound: string list) (stx: Stx) : Result<MacroTemplate, string> =
+        match stx with
+        | StxId(name, _, _) ->
+            if List.contains name bound then
+                Result.Ok(MacroTemplate.Subst name)
+            else
+                Result.Ok(MacroTemplate.Quoted stx)
+        | StxList(items, None, loc, _) ->
+            match parseTemplateFormBody ellipsis bound items None with
+            | Result.Error e -> Result.Error e
+            | Result.Ok(elems, None) -> Result.Ok(MacroTemplate.Form(loc, elems))
+            | Result.Ok(elems, Some tail) -> Result.Ok(MacroTemplate.DottedForm(elems, tail))
+        | StxList(items, Some tail, loc, _) ->
+            match parseTemplateFormBody ellipsis bound items (Some tail) with
+            | Result.Error e -> Result.Error e
+            | Result.Ok(elems, tailOpt) ->
+                let tailTmpl = tailOpt |> Option.defaultValue (MacroTemplate.Quoted stx)
+                Result.Ok(MacroTemplate.DottedForm(elems, tailTmpl))
+        | StxVec(items, _) ->
+            let results = items |> List.map (parseTemplate ellipsis bound)
+
+            results
+            |> List.fold
+                (fun acc r ->
+                    match acc, r with
+                    | Result.Ok xs, Result.Ok x -> Result.Ok(xs @ [ MacroTemplateElement.Template x ])
+                    | Result.Error e, _ -> Result.Error e
+                    | _, Result.Error e -> Result.Error e)
+                (Result.Ok [])
+            |> Result.map MacroTemplate.Vec
+        | other -> Result.Ok(MacroTemplate.Quoted other)
+
+    /// Parse one `(pattern template)` transformer arm.
+    let parseTransformer
+        (kw: string)
+        (ellipsis: string)
+        (lits: string list)
+        (stx: Stx)
+        : Result<MacroTransformer, string> =
+        match stx with
+        | StxList([ pat; tmpl ], _, _, _) ->
+            match parsePattern kw ellipsis lits pat with
+            | Result.Error e -> Result.Error e
+            | Result.Ok patParsed ->
+                let bound = findBound patParsed
+
+                match parseTemplate ellipsis bound tmpl with
+                | Result.Error e -> Result.Error e
+                | Result.Ok tmplParsed -> Result.Ok(patParsed, tmplParsed)
+        | _ -> Result.Error "each syntax-rules rule must be (pattern template)"
+
+    /// Parse the body of `(syntax-rules (lits...) rule...)`.
+    let parseSyntaxRulesBody
+        (kw: string)
+        (ellipsis: string)
+        (litsStx: Stx)
+        (rules: Stx list)
+        (defScope: StxEnvironment)
+        (diag: DiagnosticBag)
+        (loc: TextLocation)
+        : Macro option =
+        match parseLiteralList litsStx with
+        | Result.Error e ->
+            diag.Emit MacroDiagnostics.invalidMacro loc e
+            None
+        | Result.Ok lits ->
+            let results = rules |> List.map (parseTransformer kw ellipsis lits)
+
+            let transformers =
+                results
+                |> List.choose (function
+                    | Result.Ok pair -> Some pair
+                    | Result.Error e ->
+                        diag.Emit MacroDiagnostics.invalidMacro loc e
+                        None)
+
+            Some
+                { Transformers = transformers
+                  DefScope = defScope
+                  DefLoc = loc }
+
+    /// Public entry point: parse a `(syntax-rules ...)` form into a `Macro`.
+    /// Supports the R7RS extended form `(syntax-rules <ellipsis> (lits...) rules...)`
+    /// where an optional identifier before the literal list names the ellipsis.
+    let parseSyntaxRulesStx
+        (name: string)
+        (stx: Stx)
+        (defScope: StxEnvironment)
+        (diag: DiagnosticBag)
+        (loc: TextLocation)
+        : Macro option =
+        let invalid () =
+            diag.Emit MacroDiagnostics.invalidMacro loc "expected (syntax-rules (literals...) rules...)"
+            None
+
+        match stx with
+        | StxList(_ :: second :: rest, _, _, _) ->
+            match second with
+            | StxId(ellipsis, _, _) ->
+                match rest with
+                | litsStx :: rules ->
+                    match litsStx with
+                    | StxList(_, _, _, _) -> parseSyntaxRulesBody name ellipsis litsStx rules defScope diag loc
+                    | _ -> invalid ()
+                | [] -> invalid ()
+            | StxList(_, _, _, _) -> parseSyntaxRulesBody name "..." second rest defScope diag loc
+            | _ -> invalid ()
+        | _ -> invalid ()
+
+    // -- Pattern matching -----------------------------------------------------
+
+    /// Attempt to match a MacroPattern against a syntax node.
+    /// Returns Some MacroBindings on success, None on mismatch.
+    let rec matchPattern (pat: MacroPattern) (stx: Stx) (scope: StxEnvironment) : MacroBindings option =
+        let stx', envOpt = Stx.peel stx
+        let scope' = envOpt |> Option.defaultValue scope
+
+        match pat, stx' with
+        | MacroPattern.Underscore, _ -> Some MacroBindings.Empty
+
+        | MacroPattern.Variable v, _ -> Some(MacroBindings.FromVariable v (stx, scope))
+
+        | MacroPattern.Literal lit, Stx.Id(name, _) -> if name = lit then Some MacroBindings.Empty else None
+
+        | MacroPattern.Constant patLit, Stx.Datum(stxLit, _) ->
+            if patLit = stxLit then Some MacroBindings.Empty else None
+
+        | MacroPattern.Form pats, Stx.List(items, None, _) -> matchPatternList pats None items None scope'
+
+        | MacroPattern.DottedForm(pats, tailPat), Stx.List(items, Some tail, _) ->
+            matchPatternList pats (Some tailPat) items (Some tail) scope'
+
+        | MacroPattern.DottedForm(pats, tailPat), Stx.List(items, None, _) ->
+            matchPatternList pats (Some tailPat) items None scope'
+
+        | MacroPattern.Vec pats, Stx.Vec(items, _) -> matchPatternList pats None items None scope'
+
+        | _ -> None
+
+    and matchPatternList
+        (pats: MacroPattern list)
+        (tailPat: MacroPattern option)
+        (items: Stx list)
+        (tailItem: Stx option)
+        (scope: StxEnvironment)
+        : MacroBindings option =
+        match pats with
+        | MacroPattern.Repeat inner :: restPats -> matchRepeat inner restPats tailPat items tailItem scope []
+
+        | headPat :: restPats ->
+            match items with
+            | headItem :: restItems ->
+                matchPattern headPat headItem scope
+                |> Option.bind (fun b1 ->
+                    matchPatternList restPats tailPat restItems tailItem scope
+                    |> Option.map (MacroBindings.Union b1))
+            | [] -> None
+
+        | [] ->
+            match tailPat with
+            | Some tp ->
+                match tailItem with
+                | Some t -> matchPattern tp t scope
+                | None ->
+                    match items with
+                    | [ single ] -> matchPattern tp single scope
+                    | _ when not (List.isEmpty items) ->
+                        match tp with
+                        | MacroPattern.Underscore -> Some MacroBindings.Empty
+                        | MacroPattern.Variable v ->
+                            Some(MacroBindings.FromVariable v (Stx.List(items, None, TextLocation.Missing), scope))
+                        | _ -> None
+                    | _ -> None
+            | None ->
+                if List.isEmpty items && tailItem.IsNone then
+                    Some MacroBindings.Empty
+                else
+                    None
+
+    and matchRepeat
+        (inner: MacroPattern)
+        (restPats: MacroPattern list)
+        (tailPat: MacroPattern option)
+        (items: Stx list)
+        (tailItem: Stx option)
+        (scope: StxEnvironment)
+        (accumulated: MacroBindings list)
+        : MacroBindings option =
+        match matchPatternList restPats tailPat items tailItem scope with
+        | Some tailBindings ->
+            let repeatedPart =
+                { MacroBindings.Empty with
+                    Repeated = List.rev accumulated }
+
+            Some(MacroBindings.Union tailBindings repeatedPart)
+        | None ->
+            match items with
+            | head :: rest ->
+                matchPattern inner head scope
+                |> Option.bind (fun b -> matchRepeat inner restPats tailPat rest tailItem scope (b :: accumulated))
+            | [] -> None
+
+    // -- Transcription --------------------------------------------------------
+
+    and transcribe
+        (template: MacroTemplate)
+        (bindings: MacroBindings)
+        (defScope: StxEnvironment)
+        (loc: TextLocation)
+        (diag: DiagnosticBag)
+        : Stx =
+        match template with
+        | MacroTemplate.Subst name ->
+            match List.tryFind (fun (n, _) -> n = name) bindings.Bindings with
+            | Some(_, (stx, capturedScope)) -> Stx.Closure(stx, capturedScope, loc)
+            | None ->
+                diag.Emit
+                    MacroDiagnostics.invalidMacro
+                    loc
+                    $"template variable '{name}' is not bound at this repetition level"
+
+                Stx.List([], None, loc)
+
+        | MacroTemplate.Quoted stx -> stx
+
+        | MacroTemplate.Form(_, elements) ->
+            let children =
+                elements |> List.collect (transcribeElement bindings defScope loc diag)
+
+            Stx.List(children, None, loc)
+
+        | MacroTemplate.DottedForm(elems, tail) ->
+            let children = elems |> List.collect (transcribeElement bindings defScope loc diag)
+            Stx.List(children, Some(transcribe tail bindings defScope loc diag), loc)
+
+        | MacroTemplate.Vec elements ->
+            let children =
+                elements |> List.collect (transcribeElement bindings defScope loc diag)
+
+            Stx.Vec(children, loc)
+
+    and transcribeElement
+        (bindings: MacroBindings)
+        (defScope: StxEnvironment)
+        (loc: TextLocation)
+        (diag: DiagnosticBag)
+        (elem: MacroTemplateElement)
+        : Stx list =
+        match elem with
+        | MacroTemplateElement.Template t -> [ transcribe t bindings defScope loc diag ]
+        | MacroTemplateElement.Repeated t -> transcribeRepeated t bindings defScope loc diag
+
+    and transcribeRepeated
+        (template: MacroTemplate)
+        (bindings: MacroBindings)
+        (defScope: StxEnvironment)
+        (loc: TextLocation)
+        (diag: DiagnosticBag)
+        : Stx list =
+        // Collect all substitution variable names referenced anywhere in the template.
+        // Used to detect whether a given per-repetition binding is the one that
+        // owns this ellipsis expansion, or belongs to a sibling `...` at a different
+        // nesting level — matching the old "skip if count = 0" behaviour.
+        let rec templateVars tmpl =
+            match tmpl with
+            | MacroTemplate.Subst name -> Set.singleton name
+            | MacroTemplate.Form(_, elems)
+            | MacroTemplate.Vec elems -> elems |> List.map elemVars |> Set.unionMany
+            | MacroTemplate.DottedForm(elems, tail) ->
+                Set.union (elems |> List.map elemVars |> Set.unionMany) (templateVars tail)
+            | MacroTemplate.Quoted _ -> Set.empty
+
+        and elemVars elem =
+            match elem with
+            | MacroTemplateElement.Template t
+            | MacroTemplateElement.Repeated t -> templateVars t
+
+        let vars = templateVars template
+
+        bindings.Repeated
+        |> List.choose (fun perRepBindings ->
+            // Skip iterations where none of the template's variables are present.
+            // This handles nested ellipsis levels: e.g. `e1 ...` should produce []
+            // when the current Repeated list belongs to an outer `c ...` expansion.
+            let hasVar =
+                vars
+                |> Set.exists (fun v -> perRepBindings.Bindings |> List.exists (fun (n, _) -> n = v))
+
+            if hasVar || Set.isEmpty vars then
+                Some(transcribe template perRepBindings defScope loc diag)
+            else
+                None)
+
+    /// Public entry point: parse a `(syntax-rules ...)` form into a `SyntaxTransformer`.
+    /// Returns a ready-to-call function, or `None` if the form is malformed.
+    let makeSyntaxTransformer
+        (name: string)
+        (stx: Stx)
+        (defScope: StxEnvironment)
+        (diag: DiagnosticBag)
+        (loc: TextLocation)
+        : SyntaxTransformer option =
+        parseSyntaxRulesStx name stx defScope diag loc
+        |> Option.map (fun rules ->
+            fun (form: Stx) (callScope: StxEnvironment) ->
+                let result =
+                    rules.Transformers
+                    |> List.tryPick (fun (pat, tmpl) ->
+                        matchPattern pat form callScope |> Option.map (fun b -> tmpl, b))
+
+                match result with
+                | None -> Result.Error "no macro rule matched the form"
+                | Some(template, bindings) ->
+                    let transcribed =
+                        transcribe template bindings rules.DefScope form.Loc diag
+                        |> (fun stx -> Stx.Closure(stx, rules.DefScope, form.Loc))
+
+
+                    Result.Ok transcribed)
