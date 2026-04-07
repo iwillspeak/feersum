@@ -637,7 +637,6 @@ module private Utils =
     /// the function we are calling. A future optimisation may be to transform
     /// the bound tree and lower some calls in the case we _can_ be sure of the
     /// parameters.
-
     /// Emit the body of a lambda into the given method declaration.
     ///
     /// Creates locals from `root.Locals`, sets up the emission context with the
@@ -647,7 +646,16 @@ module private Utils =
     /// applied to the final expression. `emitReturn` is called after the body to
     /// emit the method's return instruction(s).
     /// Returns the inner context used to emit the method body.
-    and private emitLambdaBody (ctx: EmitCtx) name (methodDecl: MethodDefinition) parameters env tail emitReturn (root: BoundBody) =
+    and private emitLambdaBody
+        (ctx: EmitCtx)
+        name
+        (methodDecl: MethodDefinition)
+        parameters
+        env
+        tail
+        emitReturn
+        (root: BoundBody)
+        =
         let locals =
             [ for _ = 1 to root.Locals do
                   let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
@@ -761,7 +769,8 @@ module private Utils =
             | Some caps -> buildEnv caps |> Some
             | None -> None
 
-        let ctx = emitLambdaBody ctx name methodDecl (List.rev parameters) env true (fun ctx -> ctx.IL.Emit(OpCodes.Ret)) root
+        let ctx =
+            emitLambdaBody ctx name methodDecl (List.rev parameters) env true (fun ctx -> ctx.IL.Emit(OpCodes.Ret)) root
 
         // Emit a 'thunk' that unpacks the arguments to our method
         // This allows us to provide a uniform calling convention for
