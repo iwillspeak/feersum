@@ -425,15 +425,13 @@ module MacrosNew =
                 match tailItem with
                 | Some t -> matchPattern tp t scope
                 | None ->
-                    match items with
-                    | [ single ] -> matchPattern tp single scope
-                    | _ when not (List.isEmpty items) ->
-                        match tp with
-                        | MacroPattern.Underscore -> Some MacroBindings.Empty
-                        | MacroPattern.Variable v ->
-                            Some(MacroBindings.FromVariable v (Stx.List(items, None, TextLocation.Missing), scope))
-                        | _ -> None
-                    | _ -> None
+                    // No explicit tail in input - construct tail from remaining items
+                    let tailStx =
+                        match items with
+                        | [ single ] -> single
+                        | _ -> Stx.List(items, None, TextLocation.Missing)
+
+                    matchPattern tp tailStx scope
             | None ->
                 if List.isEmpty items && tailItem.IsNone then
                     Some MacroBindings.Empty
@@ -540,14 +538,25 @@ module MacrosNew =
 
         let vars = templateVars template
 
+        // Recursively check if a variable is present anywhere in a bindings tree,
+        // including nested Repeated lists.
+        let rec hasVarRecursive var bindings =
+            // Check in flat bindings
+            if List.exists (fun (n, _) -> n = var) bindings.Bindings then
+                true
+            else
+                // Check in nested repetitions
+                bindings.Repeated |> List.exists (hasVarRecursive var)
+
         bindings.Repeated
         |> List.choose (fun perRepBindings ->
+            // FIXME: Transcription should use the same count-based approach as the old one. Previously we ignored
+            //        recursive expansion failures where _no_ transcriptions occurred.
+
             // Skip iterations where none of the template's variables are present.
             // This handles nested ellipsis levels: e.g. `e1 ...` should produce []
             // when the current Repeated list belongs to an outer `c ...` expansion.
-            let hasVar =
-                vars
-                |> Set.exists (fun v -> perRepBindings.Bindings |> List.exists (fun (n, _) -> n = v))
+            let hasVar = vars |> Set.exists (fun v -> hasVarRecursive v perRepBindings)
 
             if hasVar || Set.isEmpty vars then
                 Some(transcribe template perRepBindings defScope loc diag)

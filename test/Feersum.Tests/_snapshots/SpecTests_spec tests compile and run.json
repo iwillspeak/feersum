@@ -1252,31 +1252,6 @@
           ]
         },
         "Message": "dotted pair in expression position"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 50,
-          "Title": "Expansion error"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/my-macros.scm",
-              "Line": 19,
-              "Col": 5
-            },
-            {
-              "Source": "fail/my-macros.scm",
-              "Line": 19,
-              "Col": 19
-            }
-          ]
-        },
-        "Message": "no macro rule matched the form"
       }
     ]
   },

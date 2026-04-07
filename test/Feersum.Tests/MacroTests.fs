@@ -2,7 +2,12 @@ module MacroTests
 
 open Xunit
 open Feersum.CompilerServices.Binding
+open Feersum.CompilerServices.Binding.Stx
 open Feersum.CompilerServices.Binding.New
+open Feersum.CompilerServices.Syntax.Tree
+open Feersum.CompilerServices.Syntax.Factories.Convenience
+open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Utils
@@ -12,39 +17,141 @@ open Feersum.CompilerServices.Utils
 
 let private dummyLoc = TextLocation.Missing
 
-let private id name =
-    Feersum.CompilerServices.Binding.Stx.Id(name, dummyLoc)
-
-let private num n =
-    Feersum.CompilerServices.Binding.Stx.Datum(Feersum.CompilerServices.Binding.StxDatum.Number n, dummyLoc)
-
-let private str s =
-    Feersum.CompilerServices.Binding.Stx.Datum(Feersum.CompilerServices.Binding.StxDatum.Str s, dummyLoc)
-
-let private list items =
-    Feersum.CompilerServices.Binding.Stx.List(items, None, dummyLoc)
-
-let private dotList items tail =
-    Feersum.CompilerServices.Binding.Stx.List(items, Some tail, dummyLoc)
+let private stxId name = Stx.Id(name, dummyLoc)
 
 let private emptyEnv: StxEnvironment = Map.empty
 
+
+/// Extract the inner ConstantValue from a constant Expression factory result
+let private cv (e: Stx) =
+    match e with
+    | StxDatum(d, _) -> d
+    | _ -> failwith "Expected constant with value"
+
+let private exprToStx (expr: Expression) : Stx =
+    let reg = SourceRegistry.empty ()
+    let docId = SourceRegistry.register reg "foo.scm" expr.Text
+    let diags = DiagnosticBag.Empty
+    let stx = Stx.ofExpr reg docId diags expr
+
+    if hasErrors diags.Take then
+        failwithf "Failed to convert expression to Stx: %A" diags
+
+    stx
+
+let private macroMatch pattern haystack =
+    MacrosNew.matchPattern pattern haystack emptyEnv
+
+let private assertMatches pattern syntax =
+    match macroMatch pattern syntax with
+    | Some bindings -> bindings
+    | None -> failwith "Pattern did not match"
+
+/// Helper to get pretty-printed representation of bound Stx
+let private ppStx (stx: Stx) : string =
+    let rec pp (stx: Stx) =
+        match stx with
+        | Stx.Datum(d, _) ->
+            match d with
+            | StxDatum.Number n -> n.ToString("g")
+            | StxDatum.Str s -> sprintf "%A" s
+            | StxDatum.Character c -> sprintf "#\\%c" c
+            | StxDatum.Boolean b -> if b then "#t" else "#f"
+            | StxDatum.ByteVector _ -> "#u8(...)"
+        | Stx.Id(name, _) -> name
+        | Stx.List(items, tail, _) ->
+            let itemsStr = items |> List.map pp |> String.concat " "
+
+            match tail with
+            | None -> sprintf "(%s)" itemsStr
+            | Some t -> sprintf "(%s . %s)" itemsStr (pp t)
+        | Stx.Vec(items, _) ->
+            let itemsStr = items |> List.map pp |> String.concat " "
+            sprintf "#(%s)" itemsStr
+        | Stx.Closure(inner, _, _) -> pp inner
+        | Stx.Error _ -> "#<error>"
+
+    pp stx
+
+/// Helper to extract the bound Stx from a binding
+let private getBoundStx (bindings: MacroBindings) (name: string) : Stx =
+    bindings.Bindings |> List.find (fun (n, _) -> n = name) |> snd |> fst
+
+/// Helper to read a single expression from string and convert to Stx
+let private readExprAsStx input : Stx =
+    let result = Parse.readProgramSimple "program" input
+
+    if result |> Parse.ParseResult.hasErrors then
+        failwithf "Parse error in '%s': %A" input result.Diagnostics
+
+    let expr = result.Root.Body |> Seq.exactlyOne
+    exprToStx expr
+
+/// Helper to read expression from string (not converted)
+let private readExpr input : Expression =
+    let result = Parse.readProgramSimple "program" input
+
+    if result |> Parse.ParseResult.hasErrors then
+        failwithf "Parse error in '%s': %A" input result.Diagnostics
+
+    result.Root.Body |> Seq.exactlyOne
+
+/// Parse a template string and transcribe with given bindings and pattern
+let private tryExpand macroPat transformer bindings : Result<Stx, string> =
+    let templateStx = readExprAsStx transformer
+    let bound = MacrosNew.findBound macroPat
+
+    match MacrosNew.parseTemplate "..." bound templateStx with
+    | Result.Error e -> Result.Error e
+    | Result.Ok tmpl ->
+        let diag = DiagnosticBag.Empty
+        let transcribed = MacrosNew.transcribe tmpl bindings emptyEnv dummyLoc diag
+
+        if hasErrors diag.Take then
+            Result.Error(sprintf "Macro expansion failed: %A" diag.Take)
+        else
+            Result.Ok transcribed
+
+/// Simulate the old macroExpand for testing: transcribe and pretty-print
+let private macroExpand (template: MacroTemplate) (bindings: MacroBindings) : Result<string, string> =
+    let diag = DiagnosticBag.Empty
+    let transcribed = MacrosNew.transcribe template bindings emptyEnv dummyLoc diag
+
+    if hasErrors diag.Take then
+        Result.Error(sprintf "Macro expansion failed: %A" diag.Take)
+    else
+        Result.Ok(ppStx transcribed)
+
+/// Parse a pattern from a string, with given literal keywords
+let private parse pattern literals =
+    match readExprAsStx pattern |> MacrosNew.parsePattern "_" "..." literals with
+    | Result.Ok p -> p
+    | Result.Error e -> failwithf "Could not parse macro pattern %A" e
+
+/// Try to match a pattern against a Stx tree
+let private tryMatch macroPat haystack =
+    let stxTree = readExprAsStx haystack
+
+    match macroMatch macroPat stxTree with
+    | Some b -> Some b
+    | None -> None
+
 [<Fact>]
 let ``patterns with constant number`` () =
-    let testNum = num 101.0
 
-    let pattern =
-        MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Number 101.0)
+    let testConstantMatch (exprFactory: unit -> Expression) =
+        let expr = exprFactory () |> exprToStx
+        let pattern = MacroPattern.Constant(cv expr)
 
-    match MacrosNew.matchPattern pattern testNum emptyEnv with
-    | Some bindings -> Assert.Equal(MacroBindings.Empty, bindings)
-    | None -> Assert.True(false, "Expected pattern to match")
+        macroMatch pattern expr |> Option.unwrap |> ignore
 
-    let wrongNum = num 102.0
-
-    match MacrosNew.matchPattern pattern wrongNum emptyEnv with
-    | Some _ -> Assert.True(false, "Expected pattern not to match")
-    | None -> ()
+    testConstantMatch (fun () -> numVal 101.0)
+    testConstantMatch (fun () -> numVal 0.0)
+    testConstantMatch (fun () -> charVal 'a')
+    testConstantMatch (fun () -> boolVal true)
+    testConstantMatch (fun () -> boolVal false)
+    testConstantMatch (fun () -> strVal "")
+    testConstantMatch (fun () -> strVal "§2")
 
 [<Theory>]
 [<InlineData("if", "if", true)>]
@@ -52,12 +159,11 @@ let ``patterns with constant number`` () =
 [<InlineData("else", "else", true)>]
 [<InlineData("test-thing", "test-thing", true)>]
 [<InlineData("...", "...", true)>]
-let ``literal identifiers only match their literal values`` literalName testName expected =
-    let pattern = MacroPattern.Literal literalName
-    let testId = id testName
+let ``literal identifiers only match their literal values`` pattern id expected =
+    let pattern = MacroPattern.Literal pattern
 
     let actual =
-        match MacrosNew.matchPattern pattern testId emptyEnv with
+        match macroMatch pattern (stxId id) with
         | Some _ -> true
         | None -> false
 
@@ -65,83 +171,184 @@ let ``literal identifiers only match their literal values`` literalName testName
 
 [<Fact>]
 let ``variable patterns match anything`` () =
-    let testVarMatch (syntax: Feersum.CompilerServices.Binding.Stx) =
+    let testVarMatch (syntax: Expression) =
         let pattern = MacroPattern.Variable "test"
+        let syntax = exprToStx syntax
 
-        match MacrosNew.matchPattern pattern syntax emptyEnv with
+        match macroMatch pattern syntax with
         | Some bindings ->
             Assert.Single(bindings.Bindings) |> ignore
             let n, (stx, _) = Assert.Single bindings.Bindings
             Assert.Equal("test", n)
+            Assert.Same(syntax, stx)
         | None -> Assert.True(false, "Expected pattern to match")
 
-    testVarMatch (num 101.0)
-    testVarMatch (num 0.0)
-    testVarMatch (str "")
-    testVarMatch (list [])
-    testVarMatch (id "test")
-    testVarMatch (list [ id "foodafdf" ])
-    testVarMatch (list [ num 123.0 ])
+    testVarMatch (numVal 101.0)
+    testVarMatch (numVal 0.0)
+    testVarMatch (charVal 'a')
+    testVarMatch (boolVal true)
+    testVarMatch (boolVal false)
+    testVarMatch (strVal "")
+    testVarMatch (strVal "§2")
+    testVarMatch (form [])
+    testVarMatch (symbol "test")
+    testVarMatch (form [ symbol "foodafdf" ])
+    testVarMatch (form [ numVal 123.0 ])
 
 [<Fact>]
 let ``underscore patterns match anything`` () =
-    let testUnderscoreMatch (syntax: Feersum.CompilerServices.Binding.Stx) =
+    let testUnderscoreMatch (syntax: Expression) =
         let pattern = MacroPattern.Underscore
+        let syntax = exprToStx syntax
 
-        match MacrosNew.matchPattern pattern syntax emptyEnv with
+        match macroMatch pattern syntax with
         | Some _ -> ()
         | None -> Assert.True(false, "Expected pattern to match")
 
-    testUnderscoreMatch (num 101.0)
-    testUnderscoreMatch (num 0.0)
-    testUnderscoreMatch (str "")
-    testUnderscoreMatch (list [])
-    testUnderscoreMatch (id "test")
-    testUnderscoreMatch (list [ id "foodafdf" ])
-    testUnderscoreMatch (list [ num 123.0 ])
+    testUnderscoreMatch (numVal 101.0)
+    testUnderscoreMatch (numVal 0.0)
+    testUnderscoreMatch (charVal 'a')
+    testUnderscoreMatch (boolVal true)
+    testUnderscoreMatch (boolVal false)
+    testUnderscoreMatch (strVal "")
+    testUnderscoreMatch (strVal "§2")
+    testUnderscoreMatch (form [])
+    testUnderscoreMatch (symbol "test")
+    testUnderscoreMatch (form [ symbol "foodafdf" ])
+    testUnderscoreMatch (form [ numVal 123.0 ])
 
 [<Fact>]
 let ``simple form patterns`` () =
     let emptyPattern = MacroPattern.Form []
-    let emptyForm = list []
+    let emptyForm = form [] |> exprToStx
 
-    match MacrosNew.matchPattern emptyPattern emptyForm emptyEnv with
-    | Some bindings -> Assert.Equal(MacroBindings.Empty, bindings)
-    | None -> Assert.True(false, "Expected pattern to match")
+    Assert.Equal(MacroBindings.Empty, assertMatches emptyPattern emptyForm)
 
-    let complexPattern =
-        MacroPattern.Form
-            [ MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Number 123.56)
-              MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Str "frob")
-              MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Number 789.01) ]
+    Assert.Equal(
+        MacroBindings.Empty,
+        assertMatches
+            (MacroPattern.Form
+                [ MacroPattern.Constant(cv (boolVal false |> exprToStx))
+                  MacroPattern.Constant(cv (strVal "frob" |> exprToStx))
+                  MacroPattern.Constant(cv (numVal 123.56 |> exprToStx)) ])
+            (form [ boolVal false; strVal "frob"; numVal 123.56 ] |> exprToStx)
+    )
 
-    let complexForm = list [ num 123.56; str "frob"; num 789.01 ]
+    let bindings =
+        assertMatches (MacroPattern.Form [ MacroPattern.Variable "test" ]) (form [ numVal 123.4 ] |> exprToStx)
 
-    match MacrosNew.matchPattern complexPattern complexForm emptyEnv with
-    | Some _ -> ()
-    | None -> Assert.True(false, "Expected complex pattern to match")
-
-    let varPattern = MacroPattern.Form [ MacroPattern.Variable "test" ]
-    let varForm = list [ num 123.4 ]
-
-    match MacrosNew.matchPattern varPattern varForm emptyEnv with
-    | Some bindings ->
-        Assert.Single(bindings.Bindings) |> ignore
-        let n, _ = Assert.Single bindings.Bindings
-        Assert.Equal("test", n)
-    | None -> Assert.True(false, "Expected var pattern to match")
+    let n, (stx, _) = Assert.Single bindings.Bindings
+    Assert.Equal("test", n)
+    Assert.Equal("123.4", ppStx stx)
 
 [<Fact>]
 let ``dotted form patterns`` () =
-    let pattern = MacroPattern.DottedForm([], MacroPattern.Variable "tail")
-    let form = dotList [ num 123.4; num 567.8 ] (num 789.0)
+    // This pattern is nonsense '( . 123.4)' matching (123.4). It's still an
+    // interesting test though, so we'll keep it for now.
+    Assert.Equal(
+        MacroBindings.Empty,
+        assertMatches
+            (MacroPattern.DottedForm([], MacroPattern.Constant(cv (numVal 123.4 |> exprToStx))))
+            (form [ numVal 123.4 ] |> exprToStx)
+    )
 
-    match MacrosNew.matchPattern pattern form emptyEnv with
-    | Some bindings ->
-        Assert.Single(bindings.Bindings) |> ignore
-        let n, _ = Assert.Single bindings.Bindings
-        Assert.Equal("tail", n)
-    | None -> Assert.True(false, "Expected dotted form to match")
+    // (head . tail) - compare bound values by ppStx
+    let bindings =
+        assertMatches
+            (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail"))
+            (form [ numVal 123.4; numVal 567.8 ] |> exprToStx)
+
+    let headBinding = getBoundStx bindings "head"
+    let tailBinding = getBoundStx bindings "tail"
+    Assert.Equal("123.4", ppStx headBinding)
+    Assert.Equal("567.8", ppStx tailBinding)
+
+// MARKER ---- ADD REMAINING TESTS HERE
+
+[<Theory>]
+[<InlineData("a", "1", true)>]
+[<InlineData("1.0", "1", true)>]
+[<InlineData("a", "#f", true)>]
+[<InlineData("#f", "#f", true)>]
+[<InlineData("(a 1)", "(test 1)", true)>]
+[<InlineData("(a . 1)", "(test 1)", true)>]
+[<InlineData("foo", "foo", true)>]
+[<InlineData("foo", "test", false)>]
+[<InlineData("(1 ...)", "(1 2 3)", false)>]
+[<InlineData("(1 ...)", "(1 1 1 1)", true)>]
+[<InlineData("(1 ... . c)", "(1 1 1 . 1)", true)>]
+[<InlineData("(1 ... 2 . c)", "(1 1 2)", true)>]
+[<InlineData("(1 ... 2 . c)", "(1 1 2 3 4)", true)>]
+[<InlineData("((a ...)...)", "(() (1 2 3) ((1)(2)(3)))", true)>]
+let ``macro parse tests`` pattern syntax shouldMatch =
+    let literals = [ "foo"; "bar" ]
+    let macroPat = parse pattern literals
+    Assert.Equal(shouldMatch, tryMatch macroPat syntax |> Option.isSome)
+
+[<Fact>]
+let ``custom elipsis patterns`` () =
+    let pattern =
+        MacrosNew.parsePattern "_" ":::" [] (readExprAsStx "(a :::)") |> Result.unwrap
+
+    Assert.Equal(MacroPattern.Form [ MacroPattern.Repeat(MacroPattern.Variable "a") ], pattern)
+
+[<Fact>]
+let ``simple macro expand`` () =
+    let numStx: Stx = numVal 123.0 |> exprToStx
+    let expanded = macroExpand (MacroTemplate.Quoted numStx) MacroBindings.Empty
+    // MacroTemplate.Quoted returns the stored Stx reference unchanged
+    Assert.Equal(Ok "123", expanded)
+
+    let boolStx: Stx = boolVal true |> exprToStx
+
+    let expanded =
+        macroExpand (MacroTemplate.Subst "test") (MacroBindings.FromVariable "test" (boolStx, emptyEnv))
+
+    Assert.Equal(Ok "#t", expanded)
+
+    let expanded = macroExpand (MacroTemplate.Subst "thing") MacroBindings.Empty
+
+    Assert.True(Result.isError expanded)
+
+[<Theory>]
+[<InlineData("(a)", "a", "(1)", "1")>]
+[<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
+[<InlineData("(_ (a)...)", "(a ...)", "(test (1)(#f)(foo))", "(1 #f foo)")>]
+[<InlineData("(_ (a ...)...)", "((f a ...) ...)", "(test (1 2)(#f))", "((f 1 2) (f #f))")>]
+let ``macro expand tests`` pattern template invocation expected =
+    let macro = parse pattern []
+
+    let bindings = tryMatch macro invocation |> Option.unwrap
+
+    let expanded = tryExpand macro template bindings |> Result.unwrap
+
+    Assert.Equal(expected, ppStx expanded)
+
+[<Fact>]
+let ``repeated values`` () =
+    let macro = parse "(a ...)" []
+
+    let bindings = tryMatch macro "(1 2 3)" |> Option.unwrap
+
+    let expanded =
+        macroExpand (MacroTemplate.Form(dummyLoc, [ MacroTemplateElement.Repeated(MacroTemplate.Subst "a") ])) bindings
+        |> Result.unwrap
+
+    Assert.Equal("(1 2 3)", expanded)
+
+[<Theory>]
+[<InlineData("(bug (a ...) (b ...))", "((cons a b) ...)", "(bug (1 2) (3))")>]
+[<InlineData("(bug (a ...) (b ...))", "((cons a b) ...)", "(bug (1) (2 3))")>]
+[<InlineData("(bug (a ...) (b ...))", "((cons a b) ...)", "(bug (1) ())")>]
+let ``invalid expansions`` pattern template invocation =
+    let macro = parse pattern []
+
+    let bindings = tryMatch macro invocation |> Option.unwrap
+
+    let expanded = tryExpand macro template bindings
+    Assert.True(Result.isError expanded)
+
+// MARKER ---- LEAVE TETS AFTER THIS POINT ALONE
 
 [<Fact>]
 let ``pattern list matching`` () =
@@ -152,9 +359,9 @@ let ``pattern list matching`` () =
               MacroPattern.Variable "consequent"
               MacroPattern.Variable "alternate" ]
 
-    let form = list [ id "if"; id "x"; id "y"; id "z" ]
+    let testForm = form [ symbol "if"; symbol "x"; symbol "y"; symbol "z" ] |> exprToStx
 
-    match MacrosNew.matchPattern pattern form emptyEnv with
+    match macroMatch pattern testForm with
     | Some bindings ->
         let names = bindings.Bindings |> List.map fst
         Assert.Equal(3, List.length names)
@@ -165,7 +372,7 @@ let ``pattern list matching`` () =
 
 [<Fact>]
 let ``parse simple pattern`` () =
-    let patternStx = list [ id "a"; id "b" ]
+    let patternStx = readExprAsStx "(a b)"
     let result = MacrosNew.parsePattern "_" "..." [] patternStx
 
     match result with
@@ -174,7 +381,7 @@ let ``parse simple pattern`` () =
 
 [<Fact>]
 let ``parse pattern with literal`` () =
-    let patternStx = list [ id "if"; id "test"; id "then"; id "else" ]
+    let patternStx = readExprAsStx "(if test then else)"
     let result = MacrosNew.parsePattern "_" "..." [ "if"; "else" ] patternStx
 
     match result with
@@ -189,7 +396,7 @@ let ``parse pattern with literal`` () =
 
 [<Fact>]
 let ``parse literal list`` () =
-    let literalStx = list [ id "if"; id "else"; id "define" ]
+    let literalStx = readExprAsStx "(if else define)"
     let result = MacrosNew.parseLiteralList literalStx
 
     match result with
@@ -200,7 +407,7 @@ let ``parse literal list`` () =
 
 [<Fact>]
 let ``parse template`` () =
-    let templateStx = list [ id "cons"; id "a"; id "b" ]
+    let templateStx = readExprAsStx "(cons a b)"
     let result = MacrosNew.parseTemplate "..." [ "a"; "b" ] templateStx
 
     match result with
@@ -222,11 +429,7 @@ let ``find bound variables in pattern`` () =
 let ``parse syntax-rules form`` () =
     let diags = DiagnosticBag.Empty
 
-    let syntaxRulesStx =
-        list
-            [ id "syntax-rules"
-              list [ id "if"; id "else" ]
-              list [ list [ id "if"; id "a"; id "b"; id "c" ]; list [ id "a" ] ] ]
+    let syntaxRulesStx = readExprAsStx "(syntax-rules (if else) ((if a b c) (a)))"
 
     let result =
         MacrosNew.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
@@ -241,12 +444,7 @@ let ``parse syntax-rules form`` () =
 let ``parse syntax-rules with custom ellipsis`` () =
     let diags = DiagnosticBag.Empty
 
-    let syntaxRulesStx =
-        list
-            [ id "syntax-rules"
-              id ":::"
-              list []
-              list [ list [ id "a"; id ":::" ]; list [ id "a" ] ] ]
+    let syntaxRulesStx = readExprAsStx "(syntax-rules ::: () ((a :::) (a)))"
 
     let result =
         MacrosNew.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
@@ -257,12 +455,10 @@ let ``parse syntax-rules with custom ellipsis`` () =
 
 [<Fact>]
 let ``pattern mismatch`` () =
-    let pattern =
-        MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Number 100.0)
+    let pattern = MacroPattern.Constant(cv (numVal 100.0 |> exprToStx))
+    let wrongValue = numVal 200.0 |> exprToStx
 
-    let wrongValue = num 200.0
-
-    match MacrosNew.matchPattern pattern wrongValue emptyEnv with
+    match macroMatch pattern wrongValue with
     | Some _ -> Assert.True(false, "Expected pattern not to match")
     | None -> ()
 
@@ -271,8 +467,8 @@ let ``form pattern with wrong length`` () =
     let pattern =
         MacroPattern.Form [ MacroPattern.Variable "a"; MacroPattern.Variable "b" ]
 
-    let form = list [ num 1.0 ]
+    let testForm = form [ numVal 1.0 ] |> exprToStx
 
-    match MacrosNew.matchPattern pattern form emptyEnv with
+    match macroMatch pattern testForm with
     | Some _ -> Assert.True(false, "Expected pattern not to match (wrong length)")
     | None -> ()
