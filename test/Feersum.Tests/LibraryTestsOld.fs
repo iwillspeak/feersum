@@ -24,6 +24,8 @@ let ``pretty names`` () =
 
     Assert.Equal("(foo)", prettifyLibraryName [ "foo" ])
 
+
+
 [<Fact>]
 let ``resolve exported bindings`` () =
     let libs =

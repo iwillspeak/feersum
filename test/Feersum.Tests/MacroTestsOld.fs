@@ -1,4 +1,4 @@
-module MacroTests
+module MacroTestsOld
 
 open Xunit
 

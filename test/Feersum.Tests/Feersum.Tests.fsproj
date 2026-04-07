@@ -14,11 +14,13 @@
     <Compile Include="SyntaxUtils.fs" />
     <Compile Include="LexTests.fs" />
     <Compile Include="LibraryTests.fs" />
+    <Compile Include="LibraryTestsOld.fs" />
     <Compile Include="SyntaxFactoriesTests.fs" />
     <Compile Include="EvalTests.fs" />
     <Compile Include="SpecTests.fs" />
     <Compile Include="SyntaxTests.fs" />
     <Compile Include="MacroTests.fs" />
+    <Compile Include="MacroTestsOld.fs" />
     <Compile Include="ExpanderTests.fs" />
     <Compile Include="LowerTests.fs" />
   </ItemGroup>

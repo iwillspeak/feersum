@@ -12,19 +12,14 @@ open Feersum.CompilerServices.Utils
 
 let private dummyLoc = TextLocation.Missing
 
-let private id name = Feersum.CompilerServices.Binding.Stx.Id(name, dummyLoc)
+let private id name =
+    Feersum.CompilerServices.Binding.Stx.Id(name, dummyLoc)
 
 let private num n =
-    Feersum.CompilerServices.Binding.Stx.Datum(
-        Feersum.CompilerServices.Binding.StxDatum.Number n,
-        dummyLoc
-    )
+    Feersum.CompilerServices.Binding.Stx.Datum(Feersum.CompilerServices.Binding.StxDatum.Number n, dummyLoc)
 
 let private str s =
-    Feersum.CompilerServices.Binding.Stx.Datum(
-        Feersum.CompilerServices.Binding.StxDatum.Str s,
-        dummyLoc
-    )
+    Feersum.CompilerServices.Binding.Stx.Datum(Feersum.CompilerServices.Binding.StxDatum.Str s, dummyLoc)
 
 let private list items =
     Feersum.CompilerServices.Binding.Stx.List(items, None, dummyLoc)
@@ -37,7 +32,9 @@ let private emptyEnv: StxEnvironment = Map.empty
 [<Fact>]
 let ``patterns with constant number`` () =
     let testNum = num 101.0
-    let pattern = MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Number 101.0)
+
+    let pattern =
+        MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Number 101.0)
 
     match MacrosNew.matchPattern pattern testNum emptyEnv with
     | Some bindings -> Assert.Equal(MacroBindings.Empty, bindings)
@@ -172,7 +169,7 @@ let ``parse simple pattern`` () =
     let result = MacrosNew.parsePattern "_" "..." [] patternStx
 
     match result with
-    | Result.Ok (MacroPattern.Form [ MacroPattern.Variable "a"; MacroPattern.Variable "b" ]) -> ()
+    | Result.Ok(MacroPattern.Form [ MacroPattern.Variable "a"; MacroPattern.Variable "b" ]) -> ()
     | _ -> Assert.True(false, sprintf "Expected pattern to parse, got %A" result)
 
 [<Fact>]
@@ -181,15 +178,12 @@ let ``parse pattern with literal`` () =
     let result = MacrosNew.parsePattern "_" "..." [ "if"; "else" ] patternStx
 
     match result with
-    | Result.Ok (MacroPattern.Form patterns) ->
+    | Result.Ok(MacroPattern.Form patterns) ->
         Assert.Equal(4, List.length patterns)
 
         match patterns with
-        | MacroPattern.Literal "if"
-          :: MacroPattern.Variable "test"
-          :: MacroPattern.Variable "then"
-          :: MacroPattern.Literal "else"
-          :: [] -> ()
+        | MacroPattern.Literal "if" :: MacroPattern.Variable "test" :: MacroPattern.Variable "then" :: MacroPattern.Literal "else" :: [] ->
+            ()
         | _ -> Assert.True(false, "Pattern items don't match expected literals/variables")
     | _ -> Assert.True(false, "Expected pattern to parse")
 
@@ -210,13 +204,16 @@ let ``parse template`` () =
     let result = MacrosNew.parseTemplate "..." [ "a"; "b" ] templateStx
 
     match result with
-    | Result.Ok (MacroTemplate.Form(_, elements)) when List.length elements = 3 -> ()
+    | Result.Ok(MacroTemplate.Form(_, elements)) when List.length elements = 3 -> ()
     | _ -> Assert.True(false, "Expected template to parse")
 
 [<Fact>]
 let ``find bound variables in pattern`` () =
     let pattern =
-        MacroPattern.Form [ MacroPattern.Variable "x"; MacroPattern.Variable "y"; MacroPattern.Literal "z" ]
+        MacroPattern.Form
+            [ MacroPattern.Variable "x"
+              MacroPattern.Variable "y"
+              MacroPattern.Literal "z" ]
 
     let bound = MacrosNew.findBound pattern
     Assert.Equal<string list>([ "x"; "y" ], bound)
@@ -231,7 +228,8 @@ let ``parse syntax-rules form`` () =
               list [ id "if"; id "else" ]
               list [ list [ id "if"; id "a"; id "b"; id "c" ]; list [ id "a" ] ] ]
 
-    let result = MacrosNew.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
+    let result =
+        MacrosNew.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
 
     match result with
     | Some macro ->
@@ -250,7 +248,8 @@ let ``parse syntax-rules with custom ellipsis`` () =
               list []
               list [ list [ id "a"; id ":::" ]; list [ id "a" ] ] ]
 
-    let result = MacrosNew.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
+    let result =
+        MacrosNew.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
 
     match result with
     | Some macro -> Assert.Equal(1, List.length macro.Transformers)
@@ -258,7 +257,9 @@ let ``parse syntax-rules with custom ellipsis`` () =
 
 [<Fact>]
 let ``pattern mismatch`` () =
-    let pattern = MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Number 100.0)
+    let pattern =
+        MacroPattern.Constant(Feersum.CompilerServices.Binding.StxDatum.Number 100.0)
+
     let wrongValue = num 200.0
 
     match MacrosNew.matchPattern pattern wrongValue emptyEnv with
@@ -267,7 +268,9 @@ let ``pattern mismatch`` () =
 
 [<Fact>]
 let ``form pattern with wrong length`` () =
-    let pattern = MacroPattern.Form [ MacroPattern.Variable "a"; MacroPattern.Variable "b" ]
+    let pattern =
+        MacroPattern.Form [ MacroPattern.Variable "a"; MacroPattern.Variable "b" ]
+
     let form = list [ num 1.0 ]
 
     match MacrosNew.matchPattern pattern form emptyEnv with
