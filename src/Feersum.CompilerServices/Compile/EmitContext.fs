@@ -52,6 +52,5 @@ type EmitCtx =
       Externs: Map<string, TypeDefinition>
       Environment: EnvInfo option
       ProgramTy: TypeDefinition
-      mutable Initialisers: Map<string, MethodReference>
       mutable Libraries: Map<string, TypeDefinition>
       Core: CoreTypes }
