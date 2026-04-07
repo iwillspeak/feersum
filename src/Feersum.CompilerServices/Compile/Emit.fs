@@ -383,7 +383,6 @@ module private Utils =
                 ctx.IL.Append(lblEnd)
         | BoundExpr.Lambda(formals, body) -> emitLambda ctx formals body
         | BoundExpr.Library(name, mangledName, exports, body) -> emitLibrary ctx name mangledName exports body
-        | BoundExpr.Import _ -> emitUnspecified ctx
         | BoundExpr.Quoted quoted -> emitQuoted ctx quoted
 
     and emitQuoted ctx (quoted: BoundDatum) =
@@ -641,11 +640,20 @@ module private Utils =
 
     /// Emit the body of a lambda into the given method declaration.
     ///
-    /// Sets up the emission context with the given locals, parameters, and
-    /// environment, initialises the environment if needed, emits the body
-    /// expression into `methodDecl`, and records debug scope information.
+    /// Creates locals from `root.Locals`, sets up the emission context with the
+    /// given parameters and environment, initialises the environment if needed,
+    /// emits the body expression into `methodDecl`, and records debug scope
+    /// information. The `tail` flag controls whether tail-call optimisation is
+    /// applied to the final expression. `emitReturn` is called after the body to
+    /// emit the method's return instruction(s).
     /// Returns the inner context used to emit the method body.
-    and private emitLambdaBody (ctx: EmitCtx) name (methodDecl: MethodDefinition) locals parameters env (root: BoundBody) =
+    and private emitLambdaBody (ctx: EmitCtx) name (methodDecl: MethodDefinition) parameters env tail emitReturn (root: BoundBody) =
+        let locals =
+            [ for _ = 1 to root.Locals do
+                  let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+                  methodDecl.Body.Variables.Add(local)
+                  yield local ]
+
         let ctx =
             { ctx with
                 NextLambda = 0
@@ -662,8 +670,8 @@ module private Utils =
             | Link _ -> ()
         | None -> ()
 
-        emitExpression ctx true root.Body
-        ctx.IL.Emit(OpCodes.Ret)
+        emitExpression ctx tail root.Body
+        emitReturn ctx
         methodDecl.Body.Optimize()
 
         if ctx.EmitSymbols then
@@ -728,14 +736,6 @@ module private Utils =
             Seq.iter addParam fmls
             addParam dotted
 
-        let mutable locals = []
-
-        for _ = 1 to root.Locals do
-            let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
-
-            methodDecl.Body.Variables.Add(local)
-            locals <- local :: locals
-
         /// Build an environment info for the given storage
         let buildEnv envSize =
             let parentTy = ctx.Environment |> Option.map (EnvUtils.getType)
@@ -761,7 +761,7 @@ module private Utils =
             | Some caps -> buildEnv caps |> Some
             | None -> None
 
-        let ctx = emitLambdaBody ctx name methodDecl locals (List.rev parameters) env root
+        let ctx = emitLambdaBody ctx name methodDecl (List.rev parameters) env true (fun ctx -> ctx.IL.Emit(OpCodes.Ret)) root
 
         // Emit a 'thunk' that unpacks the arguments to our method
         // This allows us to provide a uniform calling convention for
@@ -961,41 +961,14 @@ module private Utils =
         let cctorDecl =
             MethodDefinition(".cctor", cctorAttrs, ctx.Assm.MainModule.TypeSystem.Void)
 
-        let mutable locals = []
+        // The static constructor returns void, so we pop the body result before
+        // returning. tail=false avoids emitting Tail prefixes that would be
+        // invalid for a void-returning method.
+        let emitReturn ctx =
+            ctx.IL.Emit(OpCodes.Pop)
+            ctx.IL.Emit(OpCodes.Ret)
 
-        for _ = 1 to body.Locals do
-            let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
-            cctorDecl.Body.Variables.Add(local)
-            locals <- local :: locals
-
-        let initCtx =
-            { ctx with
-                IL = cctorDecl.Body.GetILProcessor()
-                NextLambda = 0
-                Locals = locals
-                Parameters = []
-                Environment = None
-                ScopePrefix = "$INIT" }
-
-        // Emit the body with tail=false: the static constructor returns void,
-        // so we must not allow branches to emit early `ret` instructions that
-        // would leave a value on the stack.
-        emitExpression initCtx false body.Body
-        initCtx.IL.Emit(OpCodes.Pop)
-        initCtx.IL.Emit(OpCodes.Ret)
-        cctorDecl.Body.Optimize()
-
-        if initCtx.EmitSymbols then
-            let scope =
-                ScopeDebugInformation(
-                    cctorDecl.Body.Instructions[0],
-                    cctorDecl.Body.Instructions[cctorDecl.Body.Instructions.Count - 1]
-                )
-
-            initCtx.Locals
-            |> List.iteri (fun idx var -> VariableDebugInformation(var, sprintf "local%d" idx) |> scope.Variables.Add)
-
-            cctorDecl.DebugInformation.Scope <- scope
+        emitLambdaBody ctx "$INIT" cctorDecl [] None false emitReturn body |> ignore
 
         ctx.ProgramTy.Methods.Add cctorDecl
 

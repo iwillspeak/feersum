@@ -164,7 +164,6 @@ type BoundExpr =
     | Seq of BoundExpr list
     | Lambda of BoundFormals * BoundBody
     | Library of string list * string * (string * StorageRef) list * BoundBody
-    | Import of string
     | Nop
     | Error
 
@@ -581,7 +580,7 @@ module private Impl =
                     i
                     |> List.choose (
                         Libraries.resolveImport ctx.Libraries
-                        >> Result.map (BinderCtx.importLibrary libCtx >> BoundExpr.Import)
+                        >> Result.map (BinderCtx.importLibrary libCtx >> (fun _ -> BoundExpr.Nop))
                         >> Result.mapError (libCtx.Diagnostics.Emit BinderDiagnostics.invalidImport location)
                         >> Option.ofResult
                     )
@@ -816,7 +815,7 @@ module private Impl =
                 Libraries.parseImport ctx.Diagnostics ctx.CurrentDocument item
                 |> Libraries.resolveImport ctx.Libraries
                 |> Result.mapError (ctx.Diagnostics.Emit BinderDiagnostics.invalidImport (getNodeLocation ctx item))
-                |> Result.map (BinderCtx.importLibrary ctx >> BoundExpr.Import)
+                |> Result.map (BinderCtx.importLibrary ctx >> (fun _ -> BoundExpr.Nop))
                 |> Result.okOr BoundExpr.Error)
             |> BoundExpr.Seq
         | Symbol "case" :: _ -> unimpl "Case expressions not yet implemented"
