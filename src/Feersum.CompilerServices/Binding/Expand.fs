@@ -920,7 +920,7 @@ module private Expander =
                         currentScope
 
                 let mangledName = library.LibraryName |> String.concat "::"
-                (newScope, BoundExpr.Import mangledName :: exprs)
+                (newScope, BoundExpr.Nop :: exprs)
             | Result.Error msg ->
                 ExpandCtx.emitError ctx Diag.illFormedForm loc msg
                 (currentScope, BoundExpr.Error :: exprs)
