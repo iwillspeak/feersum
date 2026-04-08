@@ -40,25 +40,17 @@ module private EnvUtils =
 
 /// Type to Hold Context While Emitting IL
 type EmitCtx =
-    {
-        Assm: AssemblyDefinition
-        IL: ILProcessor
-        Locals: VariableDefinition list
-        Parameters: ParameterDefinition list
-        DebugDocuments: Dictionary<string, Document>
-        /// Stub document used as the document argument for PDB hidden sequence
-        /// points (i.e. those arising from synthetic/macro-expanded nodes that
-        /// have no real source location). Mono.Cecil requires a non-null Document
-        /// even for hidden sequence points.
-        MissingDocument: Document
-        mutable NextLambda: int
-        ScopePrefix: string
-        EmitSymbols: bool
-        Exports: Map<string, string>
-        Externs: Map<string, TypeDefinition>
-        Environment: EnvInfo option
-        ProgramTy: TypeDefinition
-        mutable Initialisers: Map<string, MethodReference>
-        mutable Libraries: Map<string, TypeDefinition>
-        Core: CoreTypes
-    }
+    { Assm: AssemblyDefinition
+      IL: ILProcessor
+      Locals: VariableDefinition list
+      Parameters: ParameterDefinition list
+      DebugDocuments: Dictionary<string, Document>
+      mutable NextLambda: int
+      ScopePrefix: string
+      EmitSymbols: bool
+      Exports: Map<string, string>
+      Externs: Map<string, TypeDefinition>
+      Environment: EnvInfo option
+      ProgramTy: TypeDefinition
+      mutable Libraries: Map<string, TypeDefinition>
+      Core: CoreTypes }

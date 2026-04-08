@@ -131,7 +131,6 @@ type BoundExpr =
     | Seq of BoundExpr list
     | Lambda of BoundFormals * BoundBody
     | Library of string list * string * (string * StorageRef) list * BoundBody
-    | Import of string
     | Nop
     | Error
 

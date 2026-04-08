@@ -281,7 +281,7 @@ module private Utils =
                 let ins = ctx.IL.Body.Instructions[pos]
 
                 if location = TextLocation.Missing then
-                    let point = Cil.SequencePoint(ins, ctx.MissingDocument)
+                    let point = Cil.SequencePoint(ins, null)
 
                     point.StartLine <- HiddenSequencePointLine
                     point.EndLine <- HiddenSequencePointLine
@@ -383,10 +383,6 @@ module private Utils =
                 ctx.IL.Append(lblEnd)
         | BoundExpr.Lambda(formals, body) -> emitLambda ctx formals body
         | BoundExpr.Library(name, mangledName, exports, body) -> emitLibrary ctx name mangledName exports body
-        | BoundExpr.Import name ->
-            match Map.tryFind name ctx.Initialisers with
-            | Some(initialiser) -> ctx.IL.Emit(OpCodes.Call, initialiser)
-            | None -> emitUnspecified ctx
         | BoundExpr.Quoted quoted -> emitQuoted ctx quoted
 
     and emitQuoted ctx (quoted: BoundDatum) =
@@ -641,6 +637,70 @@ module private Utils =
     /// the function we are calling. A future optimisation may be to transform
     /// the bound tree and lower some calls in the case we _can_ be sure of the
     /// parameters.
+    /// Emit the body of a lambda into the given method declaration.
+    ///
+    /// Creates locals from `root.Locals`, sets up the emission context with the
+    /// given parameters and environment, initialises the environment if needed,
+    /// emits the body expression into `methodDecl`, and records debug scope
+    /// information. The `tail` flag controls whether tail-call optimisation is
+    /// applied to the final expression. `emitReturn` is called after the body to
+    /// emit the method's return instruction(s).
+    /// Returns the inner context used to emit the method body.
+    and private emitLambdaBody
+        (ctx: EmitCtx)
+        name
+        (methodDecl: MethodDefinition)
+        parameters
+        env
+        tail
+        emitReturn
+        (root: BoundBody)
+        =
+        let locals =
+            [ for _ = 1 to root.Locals do
+                  let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
+                  methodDecl.Body.Variables.Add(local)
+                  yield local ]
+
+        let ctx =
+            { ctx with
+                NextLambda = 0
+                Locals = locals
+                Parameters = parameters
+                Environment = env
+                IL = methodDecl.Body.GetILProcessor()
+                ScopePrefix = name }
+
+        match ctx.Environment with
+        | Some e ->
+            match e with
+            | Standard(local, ty, parent) -> initialiseEnvironment ctx local ty parent root.EnvMappings
+            | Link _ -> ()
+        | None -> ()
+
+        emitExpression ctx tail root.Body
+        emitReturn ctx
+        methodDecl.Body.Optimize()
+
+        if ctx.EmitSymbols then
+            let scope =
+                ScopeDebugInformation(
+                    methodDecl.Body.Instructions[0],
+                    methodDecl.Body.Instructions[methodDecl.Body.Instructions.Count - 1]
+                )
+
+            // If we have an environment tell the debugger about it
+            ctx.Environment
+            |> Option.bind (EnvUtils.getLocal)
+            |> Option.iter (fun env -> VariableDebugInformation(env, "capture-environment") |> scope.Variables.Add)
+
+            ctx.Locals
+            |> List.iteri (fun idx var -> VariableDebugInformation(var, sprintf "local%d" idx) |> scope.Variables.Add)
+
+            methodDecl.DebugInformation.Scope <- scope
+
+        ctx
+
     and public emitNamedLambda (ctx: EmitCtx) name formals root =
 
         // Get the size of environment object required to hold any captured values
@@ -684,14 +744,6 @@ module private Utils =
             Seq.iter addParam fmls
             addParam dotted
 
-        let mutable locals = []
-
-        for _ = 1 to root.Locals do
-            let local = VariableDefinition(ctx.Assm.MainModule.TypeSystem.Object)
-
-            methodDecl.Body.Variables.Add(local)
-            locals <- local :: locals
-
         /// Build an environment info for the given storage
         let buildEnv envSize =
             let parentTy = ctx.Environment |> Option.map (EnvUtils.getType)
@@ -717,44 +769,8 @@ module private Utils =
             | Some caps -> buildEnv caps |> Some
             | None -> None
 
-        // Create a new emit context for the new method, and lower the body in that
-        // new context.
         let ctx =
-            { ctx with
-                NextLambda = 0
-                Locals = locals
-                Parameters = List.rev parameters
-                Environment = env
-                IL = methodDecl.Body.GetILProcessor()
-                ScopePrefix = name }
-
-        match ctx.Environment with
-        | Some e ->
-            match e with
-            | Standard(local, ty, parent) -> initialiseEnvironment ctx local ty parent root.EnvMappings
-            | Link _ -> ()
-        | None -> ()
-
-        emitExpression ctx true root.Body
-        ctx.IL.Emit(OpCodes.Ret)
-        methodDecl.Body.Optimize()
-
-        if ctx.EmitSymbols then
-            let scope =
-                ScopeDebugInformation(
-                    methodDecl.Body.Instructions[0],
-                    methodDecl.Body.Instructions[methodDecl.Body.Instructions.Count - 1]
-                )
-
-            // If we have an environment tell the debugger about it
-            ctx.Environment
-            |> Option.bind (EnvUtils.getLocal)
-            |> Option.iter (fun env -> VariableDebugInformation(env, "capture-environment") |> scope.Variables.Add)
-
-            ctx.Locals
-            |> List.iteri (fun idx var -> VariableDebugInformation(var, sprintf "local%d" idx) |> scope.Variables.Add)
-
-            methodDecl.DebugInformation.Scope <- scope
+            emitLambdaBody ctx name methodDecl (List.rev parameters) env true (fun ctx -> ctx.IL.Emit(OpCodes.Ret)) root
 
         // Emit a 'thunk' that unpacks the arguments to our method
         // This allows us to provide a uniform calling convention for
@@ -924,8 +940,6 @@ module private Utils =
 
             markAsReExport ctx.Core libTy externName externlibTy item)
 
-        // Emit the body of the script to a separate method so that the `Eval`
-        // module can call it directly
         let libEmitCtx =
             { ctx with
                 IL = null
@@ -937,13 +951,35 @@ module private Utils =
                 Environment = None
                 ScopePrefix = "$ROOT" }
 
-        let bodyParams = BoundFormals.List([])
-
-        let bodyMethod, _ = emitNamedLambda libEmitCtx "$LibraryBody" bodyParams body
-
-        ctx.Initialisers <- Map.add mangledName (bodyMethod :> MethodReference) ctx.Initialisers
+        emitLibraryInitialiser libEmitCtx body
 
         emitUnspecified ctx
+
+    /// Emit a static constructor (`.cctor`) for a library type.
+    ///
+    /// This ensures that library definitions are initialised automatically by the
+    /// CLR whenever any static member of the library type is first accessed,
+    /// without requiring an explicit `(import ...)` call.
+    and private emitLibraryInitialiser (ctx: EmitCtx) (body: BoundBody) =
+        let cctorAttrs =
+            MethodAttributes.Static
+            ||| MethodAttributes.SpecialName
+            ||| MethodAttributes.RTSpecialName
+            ||| MethodAttributes.HideBySig
+
+        let cctorDecl =
+            MethodDefinition(".cctor", cctorAttrs, ctx.Assm.MainModule.TypeSystem.Void)
+
+        // The static constructor returns void, so we pop the body result before
+        // returning. tail=false avoids emitting Tail prefixes that would be
+        // invalid for a void-returning method.
+        let emitReturn ctx =
+            ctx.IL.Emit(OpCodes.Pop)
+            ctx.IL.Emit(OpCodes.Ret)
+
+        emitLambdaBody ctx "$INIT" cctorDecl [] None false emitReturn body |> ignore
+
+        ctx.ProgramTy.Methods.Add cctorDecl
 
     /// Emit the `Main` Method Epilogue
     ///
@@ -1012,15 +1048,6 @@ module Emit =
 
         let assm = AssemblyDefinition.CreateAssembly(name, outputName, moduleParams)
 
-        /// Import the initialisers for the extern libraries
-        let inits =
-            externTys
-            |> Seq.choose (fun ty ->
-                Seq.tryFind (fun (m: MethodDefinition) -> m.Name = "$LibraryBody") ty.Methods
-                |> Option.map (fun m -> (ty.Name, m |> assm.MainModule.ImportReference)))
-            |> Map.ofSeq
-
-
         // Genreate a nominal type to contain the methods for this program.
         let progTy =
             TypeDefinition(name.Name, bound.MangledName, libraryTypeAttributes, assm.MainModule.TypeSystem.Object)
@@ -1040,11 +1067,9 @@ module Emit =
         let rootEmitCtx =
             { IL = null
               DebugDocuments = Dictionary()
-              MissingDocument = Document("*synthetic*")
               ProgramTy = progTy
               Externs = externs
               Libraries = Map.add bound.MangledName progTy Map.empty
-              Initialisers = inits
               Core = coreTypes
               NextLambda = 0
               Locals = []
