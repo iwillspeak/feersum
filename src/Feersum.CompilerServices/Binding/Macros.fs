@@ -412,13 +412,10 @@ module Macros =
                 match tailItem with
                 | Some t -> matchPattern tp t scope
                 | None ->
-                    // No explicit tail in input - construct tail from remaining items
-                    let tailStx =
-                        match items with
-                        | [ single ] -> single
-                        | _ -> Stx.List(items, None, TextLocation.Missing)
-
-                    matchPattern tp tailStx scope
+                    // No explicit tail in input — the remaining items form the tail list.
+                    // Always construct a list, even for a single remaining item: the tail
+                    // of `(_ a b . c)` matching `(m 1 2 3)` is `(3)`, not `3`.
+                    matchPattern tp (Stx.List(items, None, TextLocation.Missing)) scope
             | None ->
                 if List.isEmpty items && tailItem.IsNone then
                     Some MacroBindings.Empty

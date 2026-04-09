@@ -294,16 +294,16 @@ let ``simple form patterns`` () =
 
 [<Fact>]
 let ``dotted form patterns`` () =
-    // This pattern is nonsense '( . 123.4)' matching (123.4). It's still an
-    // interesting test though, so we'll keep it for now.
+    // (. 123.4) matching (123.4): the tail after consuming no items is (123.4) — a
+    // list, not the atom 123.4 — so the constant pattern must not match.
     Assert.Equal(
-        MacroBindings.Empty,
-        assertMatches
+        None,
+        macroMatch
             (MacroPattern.DottedForm([], MacroPattern.Constant(cv (numVal 123.4 |> exprToStx))))
             (form [ numVal 123.4 ] |> exprToStx)
     )
 
-    // (head . tail) - compare bound values by ppStx
+    // (head . tail) matching (123.4 567.8): tail captures the remainder as a list.
     let bindings =
         assertMatches
             (MacroPattern.DottedForm([ MacroPattern.Variable "head" ], MacroPattern.Variable "tail"))
@@ -312,7 +312,7 @@ let ``dotted form patterns`` () =
     let headBinding = getBoundStx bindings "head"
     let tailBinding = getBoundStx bindings "tail"
     Assert.Equal("123.4", ppStx headBinding)
-    Assert.Equal("567.8", ppStx tailBinding)
+    Assert.Equal("(567.8)", ppStx tailBinding)
 
 // MARKER ---- ADD REMAINING TESTS HERE
 
@@ -322,7 +322,9 @@ let ``dotted form patterns`` () =
 [<InlineData("a", "#f", true)>]
 [<InlineData("#f", "#f", true)>]
 [<InlineData("(a 1)", "(test 1)", true)>]
-[<InlineData("(a . 1)", "(test 1)", true)>]
+// (a . 1) matches lists whose tail is exactly the atom 1, i.e. improper lists like
+// (x . 1). A proper list (test 1) has tail (1), not 1, so it does not match.
+[<InlineData("(a . 1)", "(test 1)", false)>]
 [<InlineData("foo", "foo", true)>]
 [<InlineData("foo", "test", false)>]
 [<InlineData("(1 ...)", "(1 2 3)", false)>]

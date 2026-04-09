@@ -1166,7 +1166,7 @@
     "Exit": 0
   },
   "my-macros.scm": {
-    "Output": "(my-macro 1 2 3 4) -> (a-was: 1 b-was: 2 c-was: (3 4))\n(my-macro 1 2 3) -> (a-was: 1 b-was: 2 c-was: 3)\n(my-macro 1 2) -> (a-was: 1 b-was: 2 c-was: '())\n(my-macro 1 2 . 3) -> (a-was: 1 b-was: 2 c-was: 3)\n(my-vec-macro #(1 2 3)) -> ((1 2) 3)\n(my-vec-macro #(1 2 3 4 5)) -> (1 2 3 4 5)\n(my-vec-macro #(1 2)) -> (1 2)\n(my-greedy-macro 1 2 3) -> (a-got: 1 b-got: (2) c-got: 3)\n(my-greedy-macro 1 2 3 4 5) -> (a-got: 1 b-got: (2 3 4) c-got: 5)\n(my-greedy-macro 1 (2 3) (4 5)) -> (a-got: 1 b-got: ((2 3)) c-got: (4 5))\n(my-greedy-macro 1 2) -> (a-got: 1 b-got: '() c-got: 2)\n(my-repeating-macro #(1 2 3) #(4 5 6)) -> ((1 . 4) (2 . 5) (3 . 6))\n",
+    "Output": "(my-macro 1 2 3 4) -> (a-was: 1 b-was: 2 c-was: (3 4))\n(my-macro 1 2 3) -> (a-was: 1 b-was: 2 c-was: (3))\n(my-macro 1 2) -> (a-was: 1 b-was: 2 c-was: '())\n(my-macro 1 2 . 3) -> (a-was: 1 b-was: 2 c-was: 3)\n(my-vec-macro #(1 2 3)) -> ((1 2) 3)\n(my-vec-macro #(1 2 3 4 5)) -> (1 2 3 4 5)\n(my-vec-macro #(1 2)) -> (1 2)\n(my-greedy-macro 1 2 3) -> (a-got: 1 b-got: (2) c-got: 3)\n(my-greedy-macro 1 2 3 4 5) -> (a-got: 1 b-got: (2 3 4) c-got: 5)\n(my-greedy-macro 1 (2 3) (4 5)) -> (a-got: 1 b-got: ((2 3)) c-got: (4 5))\n(my-greedy-macro 1 2) -> (a-got: 1 b-got: '() c-got: 2)\n(my-repeating-macro #(1 2 3) #(4 5 6)) -> ((1 . 4) (2 . 5) (3 . 6))\n",
     "Error": "",
     "Exit": 0
   }
