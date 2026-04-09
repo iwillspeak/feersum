@@ -314,7 +314,7 @@ module private Expander =
             match mapItems items, stxToDatum tail with
             | Some ds, Some t -> Some(BoundDatum.Pair(ds, t))
             | _ -> None
-        | StxVec(items, _) ->
+        | StxVec(items, _, _) ->
             mapItems items
             |> Option.map (fun ds -> BoundDatum.SelfEval(BoundLiteral.Vector ds))
         | StxError _ -> None
@@ -435,7 +435,7 @@ module private Expander =
 
         | StxDatum(d, _) -> BoundExpr.Literal(datumToLiteral d)
 
-        | StxVec(items, _) ->
+        | StxVec(items, _, _) ->
             let datums =
                 List.foldBack
                     (fun item acc ->
@@ -788,7 +788,9 @@ module private Expander =
                         List.iter (walk listScope) items
                         tail |> Option.iter (walk listScope)
                 | [] -> ()
-            | StxVec(items, _) -> List.iter (walk scope) items
+            | StxVec(items, _, envOpt) ->
+                let vecScope = envOpt |> Option.defaultValue scope
+                List.iter (walk vecScope) items
             | StxDatum _ -> ()
             | StxError _ -> ()
 

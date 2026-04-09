@@ -147,7 +147,7 @@ module Stx =
         | Stx.Id(name, loc) -> StxId(name, loc, envOpt)
         | Stx.Datum(value, loc) -> StxDatum(value, loc)
         | Stx.List(items, tail, loc) -> StxList(items, tail, loc, envOpt)
-        | Stx.Vec(items, loc) -> StxVec(items, loc)
+        | Stx.Vec(items, loc) -> StxVec(items, loc, envOpt)
         | Stx.Error loc -> StxError loc
         | Stx.Closure _ -> ice "peel returned a Closure (impossible)"
 

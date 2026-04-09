@@ -121,10 +121,9 @@ module private MacroDiagnostics =
 type private PatternCtx =
     { Diags: DiagnosticBag
       Ellipsis: string option
-      Literals: string list
-      DefScope: StxEnvironment }
+      Literals: string list }
 
-    static member Create diags ellipsis literals defScope =
+    static member Create diags ellipsis literals =
         // R7RS 4.3.2: if the ellipsis identifier appears in the literals list it
         // is treated as a literal keyword and loses its special "..." meaning.
         let activeEllipsis =
@@ -135,8 +134,7 @@ type private PatternCtx =
 
         { Diags = diags
           Ellipsis = activeEllipsis
-          Literals = literals
-          DefScope = defScope }
+          Literals = literals }
 
 module MacroParse =
 
@@ -165,6 +163,7 @@ module MacroParse =
         (ctx: PatternCtx)
         (depth: int)
         (scope: Map<string, StxBinding option * int>)
+        (ambientEnv: StxEnvironment)
         (stx: Stx)
         : MacroPattern * Map<string, StxBinding option * int> =
         let recurse = (parsePattern ctx depth scope)
@@ -180,19 +179,21 @@ module MacroParse =
                 // or the injected closure scope for identifiers injected by an outer macro expansion).
                 // Storing the resolved binding alongside the depth lets `parseTemplate` match a template
                 // reference to this exact binding, rather than just comparing name strings.
-                let activeEnv = envOpt |> Option.defaultValue ctx.DefScope
+                let activeEnv = envOpt |> Option.defaultValue ambientEnv
                 let resolvedId = Map.tryFind name activeEnv
                 MacroPattern.Variable name, scope.Add(name, (resolvedId, depth))
-        | StxList(items, tail, _, _) ->
-            let patterns, scope = parsePatternList ctx depth scope items
+        | StxList(items, tail, _, envOpt) ->
+            let ambientEnv = envOpt |> Option.defaultValue ambientEnv
+            let patterns, scope = parsePatternList ctx depth scope ambientEnv items
 
             match tail with
             | Some tailStx ->
-                let tailPat, scope = parsePattern ctx depth scope tailStx
+                let tailPat, scope = parsePattern ctx depth scope ambientEnv tailStx
                 MacroPattern.DottedForm(patterns, tailPat), scope
             | None -> MacroPattern.Form patterns, scope
-        | StxVec(items, _) ->
-            let patterns, scope = parsePatternList ctx depth scope items
+        | StxVec(items, _, envOpt) ->
+            let ambientEnv = envOpt |> Option.defaultValue ambientEnv
+            let patterns, scope = parsePatternList ctx depth scope ambientEnv items
             MacroPattern.Vec patterns, scope
         | StxError _ ->
             ctx.Diags.Emit MacroDiagnostics.invalidMacro stx.Loc "malformed syntax node in pattern"
@@ -204,16 +205,17 @@ module MacroParse =
         (ctx: PatternCtx)
         (depth: int)
         (scope: Map<string, StxBinding option * int>)
+        (ambientEnv: StxEnvironment)
         (items: Stx list)
         : MacroPattern list * Map<string, StxBinding option * int> =
         let rec loop acc scope remaining =
             match remaining with
             | [] -> List.rev acc, scope
             | current :: (StxId(next, _, _) :: rest) when Some next = ctx.Ellipsis ->
-                let innerPat, scope' = parsePattern ctx (depth + 1) scope current
+                let innerPat, scope' = parsePattern ctx (depth + 1) scope ambientEnv current
                 loop (MacroPattern.Repeat innerPat :: acc) scope' rest
             | current :: rest ->
-                let pat, scope' = parsePattern ctx depth scope current
+                let pat, scope' = parsePattern ctx depth scope ambientEnv current
                 loop (pat :: acc) scope' rest
 
         // TODO: If the _first_ iem in this list is an ellipsis it is supposed to 'quote' the ellipsis identifier for
@@ -224,9 +226,10 @@ module MacroParse =
         (ctx: PatternCtx)
         (scope: Map<string, StxBinding option * int>)
         (depth: int)
+        (ambientEnv: StxEnvironment)
         (stx: Stx)
         : MacroTemplate =
-        let recurse = (parseTemplate ctx scope depth)
+        let recurse = (parseTemplate ctx scope depth ambientEnv)
 
         match stx with
         | StxId(name, _, envOpt) ->
@@ -235,7 +238,7 @@ module MacroParse =
             // (bare identifier in both pattern and template, both unbound in defScope → None = None)
             // and the hygienic case (an identifier injected from an outer expansion carries a
             // different StxBinding than a locally-introduced pattern variable with the same name).
-            let activeEnv = envOpt |> Option.defaultValue ctx.DefScope
+            let activeEnv = envOpt |> Option.defaultValue ambientEnv
             let resolvedId = Map.tryFind name activeEnv
 
             match scope.TryGetValue name with
@@ -248,13 +251,14 @@ module MacroParse =
 
                 MacroTemplate.Subst name
             | _ -> MacroTemplate.Quoted stx
-        | StxList(items, tail, loc, _) ->
+        | StxList(items, tail, loc, envOpt) ->
+            let ambientEnv = envOpt |> Option.defaultValue ambientEnv
             // R7RS 4.3.2: (〈ellipsis〉 〈template〉) is an ellipsis-escape form.
             // The single inner template is parsed with no active ellipsis so that
             // occurrences of the ellipsis identifier are treated as plain identifiers.
             match ctx.Ellipsis, items, tail with
             | Some ell, [ StxId(name, _, _); inner ], None when name = ell ->
-                parseTemplate { ctx with Ellipsis = None } scope depth inner
+                parseTemplate { ctx with Ellipsis = None } scope depth ambientEnv inner
             | Some ell, (StxId(name, _, _) :: _), _ when name = ell ->
                 ctx.Diags.Emit
                     MacroDiagnostics.malformedEllipsisEscape
@@ -263,15 +267,16 @@ module MacroParse =
 
                 MacroTemplate.Quoted stx
             | _ ->
-                let elements = parseTemplateElementList ctx scope depth items
+                let elements = parseTemplateElementList ctx scope depth ambientEnv items
 
                 match tail with
                 | Some tailStx ->
-                    let tailTmpl = parseTemplate ctx scope depth tailStx
+                    let tailTmpl = parseTemplate ctx scope depth ambientEnv tailStx
                     MacroTemplate.DottedForm(elements, tailTmpl)
                 | None -> MacroTemplate.Form(loc, elements)
-        | StxVec(items, loc) ->
-            let elements = parseTemplateElementList ctx scope depth items
+        | StxVec(items, loc, envOpt) ->
+            let ambientEnv = envOpt |> Option.defaultValue ambientEnv
+            let elements = parseTemplateElementList ctx scope depth ambientEnv items
             MacroTemplate.Vec elements
         | other -> MacroTemplate.Quoted other
 
@@ -279,16 +284,17 @@ module MacroParse =
         (ctx: PatternCtx)
         (scope: Map<string, StxBinding option * int>)
         (depth: int)
+        (ambientEnv: StxEnvironment)
         (items: Stx list)
         : MacroTemplateElement list =
         let rec loop acc remaining =
             match remaining with
             | [] -> List.rev acc
             | current :: (StxId(next, _, _) :: rest) when Some next = ctx.Ellipsis ->
-                let innerTmpl = parseTemplate ctx scope (depth + 1) current
+                let innerTmpl = parseTemplate ctx scope (depth + 1) ambientEnv current
                 loop (MacroTemplateElement.Repeated innerTmpl :: acc) rest
             | current :: rest ->
-                let tmpl = parseTemplate ctx scope depth current
+                let tmpl = parseTemplate ctx scope depth ambientEnv current
                 loop (MacroTemplateElement.Template tmpl :: acc) rest
 
         loop [] items
@@ -302,10 +308,11 @@ module MacroParse =
         (stx: Stx)
         : MacroRule =
         match stx with
-        | StxList([ pat; tmpl ], _, _, _) ->
-            let patternCtx = PatternCtx.Create diags ellipsis lits defScope
-            let pattern, patternScope = parsePattern patternCtx 0 Map.empty pat
-            let template = parseTemplate patternCtx patternScope 0 tmpl
+        | StxList([ pat; tmpl ], _, _, maybeDefEnv) ->
+            let defScope = maybeDefEnv |> Option.defaultValue defScope
+            let patternCtx = PatternCtx.Create diags ellipsis lits
+            let pattern, patternScope = parsePattern patternCtx 0 Map.empty defScope pat
+            let template = parseTemplate patternCtx patternScope 0 defScope tmpl
             (pattern, template)
         | _ ->
             diags.Emit MacroDiagnostics.invalidMacro stx.Loc "each syntax-rules rule must be (pattern template)"
