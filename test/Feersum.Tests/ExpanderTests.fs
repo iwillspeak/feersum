@@ -69,7 +69,7 @@ let private parseSyntaxRules (name: string) (source: string) : Macro =
     let diag = DiagnosticBag.Empty
     let env = StxEnvironment.builtin
 
-    match MacrosNew.parseSyntaxRulesStx name tree env diag TextLocation.Missing with
+    match Macros.parseSyntaxRulesStx name tree env diag TextLocation.Missing with
     | Some t -> t
     | None ->
         let msgs = diag.Diagnostics |> List.map (fun d -> d.Message) |> String.concat "; "

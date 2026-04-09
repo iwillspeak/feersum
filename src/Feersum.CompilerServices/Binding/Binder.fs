@@ -380,7 +380,7 @@ module private Impl =
 
         match applicant with
         | BoundExpr.Load(StorageRef.Macro m) ->
-            match Macros.macroApply m node (getNodeLocation ctx node) with
+            match MacrosOld.macroApply m node (getNodeLocation ctx node) with
             | Ok ast -> bindInContext ctx ast
             | Result.Error diag ->
                 ctx.Diagnostics.Add diag
@@ -622,7 +622,7 @@ module private Impl =
 
                 Seq.iter
                     (fun (id, syntaxRules) ->
-                        match Macros.parseSyntaxRules id syntaxRules with
+                        match MacrosOld.parseSyntaxRules id syntaxRules with
                         | Ok(macro) -> BinderCtx.addMacro ctx id macro
                         | Result.Error e -> ctx.Diagnostics.Add e)
                     bindingSpecs
@@ -648,7 +648,7 @@ module private Impl =
         | Symbol "define-syntax" :: body ->
             match body with
             | [ Symbol id; syntaxRules ] ->
-                match Macros.parseSyntaxRules id syntaxRules with
+                match MacrosOld.parseSyntaxRules id syntaxRules with
                 | Ok(macro) ->
                     BinderCtx.addMacro ctx id macro
                     BoundExpr.Nop // NOP as the macro definition itself doesn't need to emit any code

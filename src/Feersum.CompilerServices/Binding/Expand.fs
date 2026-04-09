@@ -874,7 +874,7 @@ module private Expander =
         (defScope: StxEnvironment)
         (ctx: ExpandCtx)
         : SyntaxTransformer option =
-        MacrosNew.makeSyntaxTransformer name stx defScope ctx.Diagnostics stx.Loc
+        Macros.makeSyntaxTransformer name stx defScope ctx.Diagnostics
 
 
     // -- Macro expansion ------------------------------------------------------

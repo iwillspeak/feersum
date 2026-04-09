@@ -69,7 +69,7 @@ type MacroBindings =
 
         f left right
 
-module Macros =
+module MacrosOld =
 
     let private macroExpansionError =
         DiagnosticKind.Create DiagnosticLevel.Error 40 "Macro expansion error"

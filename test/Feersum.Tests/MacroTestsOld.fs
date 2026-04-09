@@ -3,7 +3,7 @@ module MacroTestsOld
 open Xunit
 
 open Feersum.CompilerServices.Binding
-open Feersum.CompilerServices.Binding.Macros
+open Feersum.CompilerServices.Binding.MacrosOld
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Factories.Convenience

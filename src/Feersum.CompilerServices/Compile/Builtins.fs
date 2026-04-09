@@ -171,7 +171,7 @@ module private BuiltinMacros =
             icef "Error in builtin macro: %A" result.Diagnostics
 
         match result.Root.Body with
-        | Some expr -> Macros.parseSyntaxRules id expr |> Result.unwrap
+        | Some expr -> MacrosOld.parseSyntaxRules id expr |> Result.unwrap
         | None -> icef "no body in builtin macro %A" result.Root.Text
 
     let private macroAnd = macroAndSrc |> parseBuiltinMacro "and"
@@ -227,14 +227,7 @@ module private BuiltinMacros =
                     // all previously-accumulated macros are also visible.
                     let id, scope' = ExpandCtx.reserveMacro name scope
 
-                    match
-                        Feersum.CompilerServices.Binding.New.MacrosNew.makeSyntaxTransformer
-                            name
-                            stx
-                            scope'
-                            diags
-                            TextLocation.Missing
-                    with
+                    match New.Macros.makeSyntaxTransformer name stx scope' diags with
                     | Some transformer ->
                         ExpandCtx.registerMacro ctx id transformer
                         scope'

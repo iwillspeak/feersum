@@ -40,7 +40,7 @@ let private exprToStx (expr: Expression) : Stx =
     stx
 
 let private macroMatch pattern haystack =
-    MacrosNew.matchPattern pattern haystack emptyEnv
+    Macros.matchPattern pattern haystack emptyEnv
 
 let private assertMatches pattern syntax =
     match macroMatch pattern syntax with
@@ -99,13 +99,13 @@ let private readExpr input : Expression =
 /// Parse a template string and transcribe with given bindings and pattern
 let private tryExpand macroPat transformer bindings : Result<Stx, string> =
     let templateStx = readExprAsStx transformer
-    let bound = MacrosNew.findBound macroPat
+    let bound = Macros.findBound macroPat
 
-    match MacrosNew.parseTemplate "..." bound templateStx with
+    match Macros.parseTemplate "..." bound templateStx with
     | Result.Error e -> Result.Error e
     | Result.Ok tmpl ->
         let diag = DiagnosticBag.Empty
-        let transcribed = MacrosNew.transcribe tmpl bindings emptyEnv dummyLoc diag
+        let transcribed = Macros.transcribe tmpl bindings emptyEnv dummyLoc diag
 
         if hasErrors diag.Take then
             Result.Error(sprintf "Macro expansion failed: %A" diag.Take)
@@ -115,7 +115,7 @@ let private tryExpand macroPat transformer bindings : Result<Stx, string> =
 /// Simulate the old macroExpand for testing: transcribe and pretty-print
 let private macroExpand (template: MacroTemplate) (bindings: MacroBindings) : Result<string, string> =
     let diag = DiagnosticBag.Empty
-    let transcribed = MacrosNew.transcribe template bindings emptyEnv dummyLoc diag
+    let transcribed = Macros.transcribe template bindings emptyEnv dummyLoc diag
 
     if hasErrors diag.Take then
         Result.Error(sprintf "Macro expansion failed: %A" diag.Take)
@@ -124,7 +124,7 @@ let private macroExpand (template: MacroTemplate) (bindings: MacroBindings) : Re
 
 /// Parse a pattern from a string, with given literal keywords
 let private parse pattern literals =
-    match readExprAsStx pattern |> MacrosNew.parsePattern "_" "..." literals with
+    match readExprAsStx pattern |> Macros.parsePattern "_" "..." literals with
     | Result.Ok p -> p
     | Result.Error e -> failwithf "Could not parse macro pattern %A" e
 
@@ -288,7 +288,7 @@ let ``macro parse tests`` pattern syntax shouldMatch =
 [<Fact>]
 let ``custom elipsis patterns`` () =
     let pattern =
-        MacrosNew.parsePattern "_" ":::" [] (readExprAsStx "(a :::)") |> Result.unwrap
+        Macros.parsePattern "_" ":::" [] (readExprAsStx "(a :::)") |> Result.unwrap
 
     Assert.Equal(MacroPattern.Form [ MacroPattern.Repeat(MacroPattern.Variable "a") ], pattern)
 
@@ -373,7 +373,7 @@ let ``pattern list matching`` () =
 [<Fact>]
 let ``parse simple pattern`` () =
     let patternStx = readExprAsStx "(a b)"
-    let result = MacrosNew.parsePattern "_" "..." [] patternStx
+    let result = Macros.parsePattern "_" "..." [] patternStx
 
     match result with
     | Result.Ok(MacroPattern.Form [ MacroPattern.Variable "a"; MacroPattern.Variable "b" ]) -> ()
@@ -382,7 +382,7 @@ let ``parse simple pattern`` () =
 [<Fact>]
 let ``parse pattern with literal`` () =
     let patternStx = readExprAsStx "(if test then else)"
-    let result = MacrosNew.parsePattern "_" "..." [ "if"; "else" ] patternStx
+    let result = Macros.parsePattern "_" "..." [ "if"; "else" ] patternStx
 
     match result with
     | Result.Ok(MacroPattern.Form patterns) ->
@@ -397,7 +397,7 @@ let ``parse pattern with literal`` () =
 [<Fact>]
 let ``parse literal list`` () =
     let literalStx = readExprAsStx "(if else define)"
-    let result = MacrosNew.parseLiteralList literalStx
+    let result = Macros.parseLiteralList literalStx
 
     match result with
     | Result.Ok names ->
@@ -408,7 +408,7 @@ let ``parse literal list`` () =
 [<Fact>]
 let ``parse template`` () =
     let templateStx = readExprAsStx "(cons a b)"
-    let result = MacrosNew.parseTemplate "..." [ "a"; "b" ] templateStx
+    let result = Macros.parseTemplate "..." [ "a"; "b" ] templateStx
 
     match result with
     | Result.Ok(MacroTemplate.Form(_, elements)) when List.length elements = 3 -> ()
@@ -422,7 +422,7 @@ let ``find bound variables in pattern`` () =
               MacroPattern.Variable "y"
               MacroPattern.Literal "z" ]
 
-    let bound = MacrosNew.findBound pattern
+    let bound = Macros.findBound pattern
     Assert.Equal<string list>([ "x"; "y" ], bound)
 
 [<Fact>]
@@ -432,7 +432,7 @@ let ``parse syntax-rules form`` () =
     let syntaxRulesStx = readExprAsStx "(syntax-rules (if else) ((if a b c) (a)))"
 
     let result =
-        MacrosNew.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
+        Macros.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
 
     match result with
     | Some macro ->
@@ -447,7 +447,7 @@ let ``parse syntax-rules with custom ellipsis`` () =
     let syntaxRulesStx = readExprAsStx "(syntax-rules ::: () ((a :::) (a)))"
 
     let result =
-        MacrosNew.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
+        Macros.parseSyntaxRulesStx "test-macro" syntaxRulesStx (Map.empty: StxEnvironment) diags dummyLoc
 
     match result with
     | Some macro -> Assert.Equal(1, List.length macro.Transformers)
