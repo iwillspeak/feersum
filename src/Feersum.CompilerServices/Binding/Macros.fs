@@ -113,6 +113,9 @@ module private MacroDiagnostics =
     let invalidLiteralList =
         DiagnosticKind.Create DiagnosticLevel.Error 42 "Invalid literal list"
 
+    let malformedEllipsisEscape =
+        DiagnosticKind.Create DiagnosticLevel.Warning 43 "Malformed ellipsis escape"
+
 // -- Macros ----------------------------------------------------------------
 
 type private PatternCtx =
@@ -227,13 +230,27 @@ module MacroParse =
                 MacroTemplate.Subst name
             | false, _ -> MacroTemplate.Quoted stx
         | StxList(items, tail, loc, _) ->
-            let elements = parseTemplateElementList ctx scope depth items
+            // R7RS 4.3.2: (〈ellipsis〉 〈template〉) is an ellipsis-escape form.
+            // The single inner template is parsed with no active ellipsis so that
+            // occurrences of the ellipsis identifier are treated as plain identifiers.
+            match ctx.Ellipsis, items, tail with
+            | Some ell, [ StxId(name, _, _); inner ], None when name = ell ->
+                parseTemplate { ctx with Ellipsis = None } scope depth inner
+            | Some ell, (StxId(name, _, _) :: _), _ when name = ell ->
+                ctx.Diags.Emit
+                    MacroDiagnostics.malformedEllipsisEscape
+                    loc
+                    "ellipsis escape requires exactly one sub-template: (... <template>)"
 
-            match tail with
-            | Some tailStx ->
-                let tailTmpl = parseTemplate ctx scope depth tailStx
-                MacroTemplate.DottedForm(elements, tailTmpl)
-            | None -> MacroTemplate.Form(loc, elements)
+                MacroTemplate.Quoted stx
+            | _ ->
+                let elements = parseTemplateElementList ctx scope depth items
+
+                match tail with
+                | Some tailStx ->
+                    let tailTmpl = parseTemplate ctx scope depth tailStx
+                    MacroTemplate.DottedForm(elements, tailTmpl)
+                | None -> MacroTemplate.Form(loc, elements)
         | StxVec(items, loc) ->
             let elements = parseTemplateElementList ctx scope depth items
             MacroTemplate.Vec elements
