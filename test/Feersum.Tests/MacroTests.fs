@@ -325,6 +325,7 @@ let ``dotted form patterns`` () =
 // (a . 1) matches lists whose tail is exactly the atom 1, i.e. improper lists like
 // (x . 1). A proper list (test 1) has tail (1), not 1, so it does not match.
 [<InlineData("(a . 1)", "(test 1)", false)>]
+[<InlineData("(a . 1)", "(test . 1)", true)>]
 [<InlineData("foo", "foo", true)>]
 [<InlineData("foo", "test", false)>]
 [<InlineData("(1 ...)", "(1 2 3)", false)>]
