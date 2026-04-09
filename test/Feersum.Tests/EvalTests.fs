@@ -9,6 +9,7 @@ open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Factories.Convenience
 open Feersum.CompilerServices.Syntax.Tree
+open Serehfa
 
 let private feeri = eval >> Result.unwrap >> cilExternalRepr
 
@@ -136,3 +137,29 @@ let ``let expressions`` expr result =
     Assert.Equal(result, feeri (parsed))
     let parsed = expr |> tryReadSingle
     Assert.Equal(result, feeri (parsed))
+
+// -- Ident display ------------------------------------------------------------
+
+[<Theory>]
+// Ordinary identifiers: letter-initial, may contain subsequent chars
+[<InlineData("hello", "hello")>]
+[<InlineData("my-macro", "my-macro")>]
+[<InlineData("a-was:", "a-was:")>]
+[<InlineData("set!", "set!")>]
+[<InlineData("string->number", "string->number")>]
+[<InlineData("list?", "list?")>]
+[<InlineData("cadr", "cadr")>]
+[<InlineData("V17a", "V17a")>]
+// Peculiar identifiers
+[<InlineData("+", "+")>]
+[<InlineData("-", "-")>]
+[<InlineData("...", "...")>]
+// Identifiers that need vertical-bar quoting
+[<InlineData("1bad", "|1bad|")>] // starts with digit
+[<InlineData("#bad", "|#bad|")>] // starts with #
+[<InlineData("", "||")>] // empty
+[<InlineData("has space", "|has space|")>] // contains whitespace
+[<InlineData("a|b", "|a\\|b|")>] // contains |
+let ``ident ToString uses vertical bars only when needed`` raw expected =
+    let ident = Serehfa.Ident(raw)
+    Assert.Equal(expected, ident.ToString())
