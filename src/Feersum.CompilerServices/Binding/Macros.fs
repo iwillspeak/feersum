@@ -117,12 +117,20 @@ module private MacroDiagnostics =
 
 type private PatternCtx =
     { Diags: DiagnosticBag
-      Ellipsis: string
+      Ellipsis: string option
       Literals: string list }
 
     static member Create diags ellipsis literals =
+        // R7RS 4.3.2: if the ellipsis identifier appears in the literals list it
+        // is treated as a literal keyword and loses its special "..." meaning.
+        let activeEllipsis =
+            if List.contains ellipsis literals then
+                None
+            else
+                Some ellipsis
+
         { Diags = diags
-          Ellipsis = ellipsis
+          Ellipsis = activeEllipsis
           Literals = literals }
 
 module MacroParse =
@@ -189,19 +197,19 @@ module MacroParse =
         (scope: Map<string, int>)
         (items: Stx list)
         : MacroPattern list * Map<string, int> =
-        let rec loop acc remaining =
+        let rec loop acc scope remaining =
             match remaining with
             | [] -> List.rev acc, scope
-            | current :: (StxId(next, _, _) :: rest) when ctx.Ellipsis = next ->
-                let innerPat, scope = parsePattern ctx (depth + 1) scope current
-                loop (MacroPattern.Repeat innerPat :: acc) rest
+            | current :: (StxId(next, _, _) :: rest) when Some next = ctx.Ellipsis ->
+                let innerPat, scope' = parsePattern ctx (depth + 1) scope current
+                loop (MacroPattern.Repeat innerPat :: acc) scope' rest
             | current :: rest ->
-                let pat, scope = parsePattern ctx depth scope current
-                loop (pat :: acc) rest
+                let pat, scope' = parsePattern ctx depth scope current
+                loop (pat :: acc) scope' rest
 
         // TODO: If the _first_ iem in this list is an ellipsis it is supposed to 'quote' the ellipsis identifier for
         //       all patterns beneath it. Properly handling this needs a little thought.
-        loop [] items
+        loop [] scope items
 
     let rec private parseTemplate (ctx: PatternCtx) (scope: Map<string, int>) (depth: int) (stx: Stx) : MacroTemplate =
         let recurse = (parseTemplate ctx scope depth)
@@ -240,7 +248,7 @@ module MacroParse =
         let rec loop acc remaining =
             match remaining with
             | [] -> List.rev acc
-            | current :: (StxId(next, _, _) :: rest) when ctx.Ellipsis = next ->
+            | current :: (StxId(next, _, _) :: rest) when Some next = ctx.Ellipsis ->
                 let innerTmpl = parseTemplate ctx scope (depth + 1) current
                 loop (MacroTemplateElement.Repeated innerTmpl :: acc) rest
             | current :: rest ->
