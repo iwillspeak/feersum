@@ -449,9 +449,21 @@ module private Expander =
             | Some ds -> BoundExpr.Literal(BoundLiteral.Vector ds)
             | None -> BoundExpr.Error
 
-        | StxList(_, Some _, loc, _) ->
+        | StxList([], Some _, loc, _) ->
             ExpandCtx.emitError ctx Diag.illFormedForm loc "dotted pair in expression position"
             BoundExpr.Error
+
+        | StxList(head :: args, Some tail, loc, envOpt) ->
+            // An improper-list form is allowed when the head resolves to a macro whose
+            // pattern uses dotted syntax (e.g. `(_ a b . c)`). Route it to the macro
+            // expander; reject anything else (function call, special form, etc.).
+            let scope' = envOpt |> Option.defaultValue scope
+
+            match resolveHead head scope' with
+            | Some(StxBinding.Macro id) -> expandMacro id (Stx.List(head :: args, Some tail, loc)) scope' ctx
+            | _ ->
+                ExpandCtx.emitError ctx Diag.illFormedForm loc "dotted pair in expression position"
+                BoundExpr.Error
 
         | StxList([], None, _, _) -> BoundExpr.Literal BoundLiteral.Null
 
