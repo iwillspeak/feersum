@@ -619,7 +619,10 @@
         (syntax-rules ()
           ((bar x) 'y))))))
  (foo bar x)
- (test 'x (bar 1)))
+ (test 'x (bar 1))) ;; < We fail this test because Hygiene is not enough to tell the two xs apart. Both _are_ the same
+                    ;;   "meaning" of x (the free x in the root scope). Just the one in the template expansion of `foo`
+                    ;;   is treated differently by syntax rules. We need to keep track of the provenance on a symbol
+                    ;;   as well as the plain syntactic binding in order to tell the two apart.
 
 ;;; FIXME: Mutual recursion of `define` forms?
 ;; (begin

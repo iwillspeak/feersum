@@ -76,15 +76,15 @@ type MacroBindings =
     /// Merge two sibling binding sets, appending flat bindings and zipping
     /// repeated binding lists element-by-element.
     static member Union left right =
-        let rec f l r =
-            { Bindings = List.append l.Bindings r.Bindings
-              Repeated = g l.Repeated r.Repeated }
+        let rec f left right =
+            { Bindings = List.append left.Bindings right.Bindings
+              Repeated = g left.Repeated right.Repeated }
 
-        and g l r =
-            match l, r with
+        and g left right =
+            match left, right with
             | [], a -> a
             | a, [] -> a
-            | lh :: lt, rh :: rt -> f lh rh :: g lt rt
+            | lh :: lt, rh :: rt -> (f lh rh) :: (g lt rt)
 
         f left right
 
@@ -377,33 +377,33 @@ module Macros =
 
         | MacroPattern.Form pats, Stx.List(items, None, _) -> matchPatternList pats None items None scope'
 
-        | MacroPattern.DottedForm(pats, tailPat), Stx.List(items, Some tail, _) ->
-            matchPatternList pats (Some tailPat) items (Some tail) scope'
-
-        | MacroPattern.DottedForm(pats, tailPat), Stx.List(items, None, _) ->
-            matchPatternList pats (Some tailPat) items None scope'
+        | MacroPattern.DottedForm(pats, tailPat), Stx.List(items, tail, _) ->
+            matchPatternList pats (Some tailPat) items tail scope'
 
         | MacroPattern.Vec pats, Stx.Vec(items, _) -> matchPatternList pats None items None scope'
 
         | _ -> None
 
+    /// Try to match a list of patterns and, optionally, a tail pattern against the
+    /// contents of a form body or vec. `body` is the list of body elements,
+    /// `tailItem` is the optional parsed tail expression from a DottedForm.
     and matchPatternList
         (pats: MacroPattern list)
         (tailPat: MacroPattern option)
-        (items: Stx list)
+        (body: Stx list)
         (tailItem: Stx option)
         (scope: StxEnvironment)
         : MacroBindings option =
         match pats with
-        | MacroPattern.Repeat inner :: restPats -> matchRepeat inner restPats tailPat items tailItem scope []
+        | MacroPattern.Repeat inner :: restPats -> matchRepeated inner restPats tailPat body tailItem scope []
 
-        | headPat :: restPats ->
-            match items with
-            | headItem :: restItems ->
-                matchPattern headPat headItem scope
-                |> Option.bind (fun b1 ->
-                    matchPatternList restPats tailPat restItems tailItem scope
-                    |> Option.map (MacroBindings.Union b1))
+        | headPat :: patterns ->
+            match body with
+            | head :: rest ->
+                matchPattern headPat head scope
+                |> Option.bind (fun vars ->
+                    matchPatternList patterns tailPat rest tailItem scope
+                    |> Option.map (MacroBindings.Union vars))
             | [] -> None
 
         | [] ->
@@ -415,23 +415,26 @@ module Macros =
                     // No explicit tail in input — the remaining items form the tail list.
                     // Always construct a list, even for a single remaining item: the tail
                     // of `(_ a b . c)` matching `(m 1 2 3)` is `(3)`, not `3`.
-                    matchPattern tp (Stx.List(items, None, TextLocation.Missing)) scope
+                    matchPattern tp (Stx.List(body, None, TextLocation.Missing)) scope
             | None ->
-                if List.isEmpty items && tailItem.IsNone then
+                if List.isEmpty body && tailItem.IsNone then
                     Some MacroBindings.Empty
                 else
                     None
 
-    and matchRepeat
-        (inner: MacroPattern)
-        (restPats: MacroPattern list)
-        (tailPat: MacroPattern option)
-        (items: Stx list)
-        (tailItem: Stx option)
+    /// Try and match a repeated pattern. This effectively re-matches the tail
+    /// patterns until no further matches of repeat are required in a manner similar
+    /// to backtracking.
+    and private matchRepeated
+        (repeat: MacroPattern)
+        (patterns: MacroPattern list)
+        (maybeTailPat: MacroPattern option)
+        (body: Stx list)
+        (maybeTailItem: Stx option)
         (scope: StxEnvironment)
         (accumulated: MacroBindings list)
         : MacroBindings option =
-        match matchPatternList restPats tailPat items tailItem scope with
+        match matchPatternList patterns maybeTailPat body maybeTailItem scope with
         | Some tailBindings ->
             let repeatedPart =
                 { MacroBindings.Empty with
@@ -439,15 +442,17 @@ module Macros =
 
             Some(MacroBindings.Union tailBindings repeatedPart)
         | None ->
-            match items with
+            match body with
             | head :: rest ->
-                matchPattern inner head scope
-                |> Option.bind (fun b -> matchRepeat inner restPats tailPat rest tailItem scope (b :: accumulated))
-            | [] -> None
+                matchPattern repeat head scope
+                |> Option.bind (fun b -> matchRepeated repeat patterns maybeTailPat rest maybeTailItem scope (b :: accumulated))
+            | [] ->
+                // Ran out of repeats and tail never matched
+                None
 
     // -- Transcription --------------------------------------------------------
 
-    and transcribe
+    let rec transcribe
         (template: MacroTemplate)
         (bindings: MacroBindings)
         (defScope: StxEnvironment)
