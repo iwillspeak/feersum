@@ -149,17 +149,37 @@ module private BuiltinMacros =
                     expr
                     expr1 ...))))"
 
-    // TODO: Does not support the `=>` pipe form yet.
     let private macroCondSrc =
-        "(syntax-rules (else)
-            ((cond (else e ...))   (begin e ...))
-            ((cond (test e e1 ...))
-                (if test
-                    (begin e e1 ...)))
-            ((cond (test e e1 ...) c ...)
-                (if test
-                    (begin e e1 ...)
-                    (cond c ...))))"
+        "(syntax-rules (else =>)
+            ((cond (else result1 result2 ...))
+            (begin result1 result2 ...))
+            ((cond (test => result))
+            (let ((temp test))
+            (if temp (result temp))))
+            ((cond (test => result) clause1 clause2 ...)
+            (let ((temp test))
+            (if temp
+                (result temp)
+                (cond clause1 clause2 ...))))
+            ((cond (test)) test)
+            ((cond (test) clause1 clause2 ...)
+            (let ((temp test))
+            (if temp
+                temp
+                (cond clause1 clause2 ...))))
+            ((cond (test result1 result2 ...))
+            (if test (begin result1 result2 ...)))
+            ((cond (test result1 result2 ...)
+                clause1 clause2 ...)
+            (if test
+                (begin result1 result2 ...)
+                (cond clause1 clause2 ...))))"
+
+    // TODO: Can't support the `case` macro yet. This is the same issue as with
+    //       the `unless` macro where we can't see `memv` to implement the pipe
+    //       form. We need a better default environment to laod these macros in
+    //       now that hygiene stops them from seeing items in the user's scope.
+
 
     // ── Old-format parser (Macros.parseSyntaxRules) ────────────────────────
 

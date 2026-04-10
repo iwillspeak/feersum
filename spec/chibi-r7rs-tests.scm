@@ -158,7 +158,6 @@
 
 (test-begin "4.2 Derived expression types")
 
-;;;;; FIXME: No `cond` or `case` support yet
 (test 'greater
     (cond ((> 3 2) 'greater)
           ((< 3 2) 'less)))
@@ -168,9 +167,11 @@
           ((< 3 3) 'less)
           (else 'equal)))
 
-;; (test 2
-;;     (cond ((assv 'b '((a 1) (b 2))) => cadr)
-;;           (else #f)))
+(test 2
+    (cond ((assv 'b '((a 1) (b 2))) => cadr)
+          (else #f)))
+
+;;;;; FIXME: No  `case` support yet
 
 ;; (test 'composite
 ;;     (case (* 2 3)
@@ -543,6 +544,8 @@
     ((_ . rest) 'error)))
 (test '#((10 43) (31 41 51) (32 42 52) (63 77))
     (part-2 10 (+ 21 22) (31 32) (41 42) (51 52) (+ 61 2) 77))
+;; FIXME: we expand to a call on an item which isn't a function here. Guessing
+;;        that vectors aren't self-quoting prperlty?
 ;; ;; Syntax pattern with ellipsis in middle of improper list.
 ;; (define-syntax part-2x
 ;;   (syntax-rules ()
@@ -597,7 +600,9 @@
 (jabberwocky mad-hatter)
 (test 42 (mad-hatter))
 
+;; FIXME: Hygene of the literals in macro definitions.
 ;; (test 'ok (let ((=> #f)) (cond (#t => 'ok))))
+(test 'ok (let ((arp #f)) (cond (#t arp 'ok ))))
 
 (let ()
   (define x 1)
