@@ -18,7 +18,10 @@ type MacroPattern =
     /// Match anything, without binding (`_`).
     | Underscore
     /// Match a literal keyword (must appear in the `syntax-rules` literals list).
-    | Literal of string
+    /// The `StxBinding option` is the definition-site resolution of this identifier,
+    /// stored at parse time so that hygienic literal matching can compare both
+    /// sides by binding identity rather than by name alone.
+    | Literal of name: string * defBinding: StxBinding option
     /// Capture a single sub-form into a pattern variable.
     | Variable of string
     /// Match zero-or-more repetitions of the sub-pattern (the `...` operator).
@@ -123,13 +126,13 @@ module private MacroDiagnostics =
 type private PatternCtx =
     { Diags: DiagnosticBag
       Ellipsis: string option
-      Literals: string list }
+      Literals: (string * StxBinding option) list }
 
     static member Create diags ellipsis literals =
         // R7RS 4.3.2: if the ellipsis identifier appears in the literals list it
         // is treated as a literal keyword and loses its special "..." meaning.
         let activeEllipsis =
-            if List.contains ellipsis literals then
+            if List.exists (fun (n, _) -> n = ellipsis) literals then
                 None
             else
                 Some ellipsis
@@ -141,11 +144,19 @@ type private PatternCtx =
 module MacroParse =
 
     /// Parse a literal list `(lit1 lit2 ...)` from the syntax of a `syntax-rules` form.
+    /// Each identifier is resolved in its home environment so that hygienic literal matching
+    /// can compare by binding identity rather than name alone.
     /// Emits diagnostics and returns an empty list on failure.
-    let parseLiteralList (diags: DiagnosticBag) (stx: Stx) : string list =
+    let parseLiteralList
+        (diags: DiagnosticBag)
+        (defScope: StxEnvironment)
+        (stx: Stx)
+        : (string * StxBinding option) list =
         let unwrapId s =
             match s with
-            | StxId(name, _, _) -> Some name
+            | StxId(name, _, envOpt) ->
+                let activeEnv = envOpt |> Option.defaultValue defScope
+                Some(name, Map.tryFind name activeEnv)
             | _ ->
                 diags.Emit MacroDiagnostics.invalidLiteralList s.Loc "literal list must contain identifiers"
                 None
@@ -173,16 +184,21 @@ module MacroParse =
         | StxDatum(d, _) -> MacroPattern.Constant d, scope
         | StxId("_", _, _) -> MacroPattern.Underscore, scope
         | StxId(name, _, envOpt) ->
-            if List.contains name ctx.Literals then
-                MacroPattern.Literal name, scope
-            else
-                // Resolve the identifier's binding in its home environment (the definition-site scope,
-                // or the injected closure scope for identifiers injected by an outer macro expansion).
-                // Storing the resolved binding alongside the depth lets `parseTemplate` match a template
-                // reference to this exact binding, rather than just comparing name strings.
-                let activeEnv = envOpt |> Option.defaultValue ambientEnv
-                let resolvedId = Map.tryFind name activeEnv
-                MacroPattern.Variable name, scope.Add(name, (resolvedId, depth))
+            let activeEnv = envOpt |> Option.defaultValue ambientEnv
+            let resolvedBinding = Map.tryFind name activeEnv
+            // A pattern identifier is a literal keyword only when both its name and its
+            // definition-site binding match an entry in the literals list.  Comparing bindings
+            // handles identifiers injected by an outer macro expansion: they carry a closure-env
+            // binding that is different from any same-named local variable, so they correctly
+            // fall through to being treated as pattern variables rather than literals.
+            match
+                List.tryFind (fun (litName, litBinding) -> litName = name && litBinding = resolvedBinding) ctx.Literals
+            with
+            | Some(_, defBinding) -> MacroPattern.Literal(name, defBinding), scope
+            | None ->
+                // Record the resolved binding so that `parseTemplate` can match template
+                // references to this exact binding rather than just comparing name strings.
+                MacroPattern.Variable name, scope.Add(name, (resolvedBinding, depth))
         | StxList(items, tail, _, envOpt) ->
             let ambientEnv = envOpt |> Option.defaultValue ambientEnv
             let patterns, scope = parsePatternList ctx depth scope ambientEnv items
@@ -252,14 +268,14 @@ module MacroParse =
             | _ -> MacroTemplate.Quoted stx
         | StxList(items, tail, loc, envOpt) ->
             let ambientEnv = envOpt |> Option.defaultValue ambientEnv
+
             match ctx.Ellipsis, items, tail with
             | Some ell, StxId(name, _, _) :: inner, None when name = ell ->
                 // R7RS 4.3.2: (〈ellipsis〉 〈template〉) is an ellipsis-escape form.
                 // The single inner template is parsed with no active ellipsis so that
                 // occurrences of the ellipsis identifier are treated as plain identifiers.
                 match inner with
-                | [ innerStx ] ->
-                        parseTemplate { ctx with Ellipsis = None } scope depth ambientEnv innerStx
+                | [ innerStx ] -> parseTemplate { ctx with Ellipsis = None } scope depth ambientEnv innerStx
                 | _ ->
                     ctx.Diags.Emit
                         MacroDiagnostics.malformedEllipsisEscape
@@ -304,7 +320,7 @@ module MacroParse =
     let parseSyntaxRule
         (diags: DiagnosticBag)
         (ellipsis: string)
-        (lits: string list)
+        (lits: (string * StxBinding option) list)
         (defScope: StxEnvironment)
         (stx: Stx)
         : MacroRule =
@@ -324,7 +340,7 @@ module MacroParse =
         (diags: DiagnosticBag)
         (id: string)
         (ellipsis: string)
-        (literals: string list)
+        (literals: (string * StxBinding option) list)
         (rules: Stx list)
         (defScope: StxEnvironment)
         : MacroRule list =
@@ -339,7 +355,7 @@ module MacroParse =
         : Macro option =
         let parseBody ellipsis lits rules maybeDefEnv =
             let defScope = maybeDefEnv |> Option.defaultValue defScope
-            let lits = parseLiteralList diags lits
+            let lits = parseLiteralList diags defScope lits
             let rules = parseSyntaxRulesBody diags id ellipsis lits rules defScope
 
             { Transformers = rules
@@ -349,7 +365,8 @@ module MacroParse =
         match syntaxRulesSyn with
         | StxList(StxId("syntax-rules", _, _) :: StxId(ellipsis, _, _) :: lits :: rules, _, _, maybeDefEnv) ->
             parseBody ellipsis lits rules maybeDefEnv |> Some
-        | StxList(StxId("syntax-rules", _, _) :: lits :: rules, _, _, maybeDefEnv) -> parseBody "..." lits rules maybeDefEnv |> Some
+        | StxList(StxId("syntax-rules", _, _) :: lits :: rules, _, _, maybeDefEnv) ->
+            parseBody "..." lits rules maybeDefEnv |> Some
         | _ ->
             diags.Emit MacroDiagnostics.invalidMacro syntaxRulesSyn.Loc "expected (syntax-rules (literals...) rules...)"
             None
@@ -371,7 +388,15 @@ module Macros =
 
         | MacroPattern.Variable v, _ -> Some(MacroBindings.FromVariable v (stx, scope))
 
-        | MacroPattern.Literal lit, Stx.Id(name, _) -> if name = lit then Some MacroBindings.Empty else None
+        | MacroPattern.Literal(lit, defBinding), Stx.Id(name, _) ->
+            // R7RS §4.3.2: a literal keyword matches only if both name and binding identity agree.
+            // Comparing `StxBinding option` values handles the common case (both unbound → None = None)
+            // and the hygienic case (a captured identifier with a closure-injected binding won't
+            // accidentally match a same-named but differently-bound identifier at the call site).
+            if name = lit && Map.tryFind name scope' = defBinding then
+                Some MacroBindings.Empty
+            else
+                None
 
         | MacroPattern.Constant patLit, Stx.Datum(stxLit, _) ->
             if patLit = stxLit then Some MacroBindings.Empty else None
@@ -507,7 +532,7 @@ module Macros =
                 | (Result.Error _, 0) :: rest -> collectRepeat m acc rest
                 | (Result.Error e, n) :: _ -> Result.Error e, (n + m)
                 | (Result.Ok node, n) :: rest -> collectRepeat (m + n) (node :: acc) rest
-                | [] -> Result.Ok (List.rev acc), m
+                | [] -> Result.Ok(List.rev acc), m
 
             bindings.Repeated |> List.map (macroExpandTemplate t) |> collectRepeat 0 []
 

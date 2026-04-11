@@ -239,50 +239,25 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 50,
-          "Title": "Expansion error"
+          "Code": 51,
+          "Title": "Reference to undefined symbol"
         },
         "Location": {
           "Case": "Span",
           "Fields": [
             {
               "Source": "fail/macrofails.scm",
-              "Line": 14,
-              "Col": 5
+              "Line": 13,
+              "Col": 20
             },
             {
               "Source": "fail/macrofails.scm",
-              "Line": 14,
-              "Col": 20
+              "Line": 13,
+              "Col": 21
             }
           ]
         },
-        "Message": "Reference to 'a' is not bound at this repetition level"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 50,
-          "Title": "Expansion error"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/macrofails.scm",
-              "Line": 14,
-              "Col": 5
-            },
-            {
-              "Source": "fail/macrofails.scm",
-              "Line": 14,
-              "Col": 20
-            }
-          ]
-        },
-        "Message": "Reference to 'a' is not bound at this repetition level"
+        "Message": "unbound identifier 'a'"
       },
       {
         "Kind": {

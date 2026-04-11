@@ -146,7 +146,9 @@ let private tryExpand
     let patStx = readExprAsStx patternStr
     let tmplStx = readExprAsStx templateStr
     let ruleStx = Stx.List([ patStx; tmplStx ], None, dummyLoc)
-    let (_, tmpl) = MacroParse.parseSyntaxRule diags "..." literals emptyEnv ruleStx
+    // Tests supply plain name strings; pair each with None (unbound in empty env)
+    let literalPairs = literals |> List.map (fun n -> n, None)
+    let (_, tmpl) = MacroParse.parseSyntaxRule diags "..." literalPairs emptyEnv ruleStx
 
     let parseErrors =
         diags.Diagnostics |> List.filter (fun d -> d.Kind.Level = DiagnosticLevel.Error)
@@ -207,7 +209,8 @@ let ``patterns with constant number`` () =
 [<InlineData("test-thing", "test-thing", true)>]
 [<InlineData("...", "...", true)>]
 let ``literal identifiers only match their literal values`` pattern id expected =
-    let pattern = MacroPattern.Literal pattern
+    // Both sides are unbound in emptyEnv (None = None), so name equality alone decides the match.
+    let pattern = MacroPattern.Literal(pattern, None)
 
     let actual =
         match macroMatch pattern (stxId id) with
@@ -215,6 +218,24 @@ let ``literal identifiers only match their literal values`` pattern id expected 
         | None -> false
 
     Assert.Equal(expected, actual)
+
+[<Fact>]
+let ``literal patterns reject same-named identifiers with a different binding`` () =
+    // Simulate the hygienic case: the definition-site has `else` unbound (None),
+    // but the call-site has introduced a local variable for `else`, giving it a
+    // fresh Variable binding.  The literal pattern should NOT match.
+    let freshIdent = Ident.fresh ()
+    let callSiteBinding = StxBinding.Variable freshIdent
+    let callSiteEnv: StxEnvironment = Map.ofList [ "else", callSiteBinding ]
+
+    // Pattern was parsed when `else` was unbound — defBinding = None.
+    let pattern = MacroPattern.Literal("else", None)
+    // Input identifier arrives with the call-site env attached via a Closure.
+    let inputStx = Stx.Closure(Stx.Id("else", dummyLoc), callSiteEnv)
+
+    let actual = Macros.matchPattern pattern inputStx emptyEnv
+
+    Assert.True(actual.IsNone, "Expected literal to NOT match a same-named but differently-bound identifier")
 
 [<Fact>]
 let ``variable patterns match anything`` () =
@@ -399,7 +420,7 @@ let ``invalid expansions`` pattern template invocation =
 let ``pattern list matching`` () =
     let pattern =
         MacroPattern.Form
-            [ MacroPattern.Literal "if"
+            [ MacroPattern.Literal("if", None)
               MacroPattern.Variable "test"
               MacroPattern.Variable "consequent"
               MacroPattern.Variable "alternate" ]
@@ -434,7 +455,8 @@ let ``parse pattern with literal`` () =
         Assert.Equal(4, List.length patterns)
 
         match patterns with
-        | MacroPattern.Literal "if" :: MacroPattern.Variable "test" :: MacroPattern.Variable "then" :: MacroPattern.Literal "else" :: [] ->
+        | MacroPattern.Literal("if", None) :: MacroPattern.Variable "test" :: MacroPattern.Variable "then" :: MacroPattern.Literal("else",
+                                                                                                                                   None) :: [] ->
             ()
         | _ -> Assert.True(false, "Pattern items don't match expected literals/variables")
     | _ -> Assert.True(false, "Expected pattern to parse")
@@ -443,11 +465,12 @@ let ``parse pattern with literal`` () =
 let ``parse literal list`` () =
     let literalStx = readExprAsStx "(if else define)"
     let diags = DiagnosticBag.Empty
-    let names = MacroParse.parseLiteralList diags literalStx
+    let lits = MacroParse.parseLiteralList diags emptyEnv literalStx
 
     if hasErrors diags.Take then
         Assert.True(false, "Expected parse to succeed")
     else
+        let names = lits |> List.map fst
         Assert.Equal(3, List.length names)
         Assert.Equal<string list>([ "if"; "else"; "define" ], names)
 
@@ -472,7 +495,7 @@ let ``find bound variables in pattern`` () =
     let pat = parsePattern "_" "..." [ "z" ] (readExprAsStx "(x y z)") |> Result.unwrap
 
     match pat with
-    | MacroPattern.Form [ MacroPattern.Variable "x"; MacroPattern.Variable "y"; MacroPattern.Literal "z" ] -> ()
+    | MacroPattern.Form [ MacroPattern.Variable "x"; MacroPattern.Variable "y"; MacroPattern.Literal("z", None) ] -> ()
     | other -> Assert.True(false, sprintf "Unexpected pattern: %A" other)
 
 [<Fact>]

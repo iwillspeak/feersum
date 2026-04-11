@@ -102,7 +102,7 @@ let ``parseSyntaxRulesStx: keyword literal in literal list`` () =
     Assert.Single(t.Transformers) |> ignore
 
     match fst t.Transformers.[0] with
-    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Literal "else"; MacroPattern.Variable "x" ] -> ()
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Literal("else", None); MacroPattern.Variable "x" ] -> ()
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]
@@ -731,3 +731,33 @@ let ``letrec-syntax: macros not visible outside body`` () =
   (double 1))
 (double 1)
 """
+
+[<Fact>]
+let ``expand: literal keyword not matched when shadowed by local variable`` () =
+    // R7RS §4.3.2: a literal in a syntax-rules pattern matches only when the
+    // call-site identifier resolves to the *same* binding as the definition-site
+    // literal.  When `else` is bound to a local variable at the call site, the
+    // first rule (which expects the free `else` keyword) must NOT match, and
+    // the macro should fall through to the second (variable-capture) rule.
+    let exprs =
+        expandOk
+            """
+(define-syntax my-if-else
+  (syntax-rules (else)
+    ((_ else e) e)
+    ((_ c e) (if c e 0))))
+(let ((else 99))
+  (my-if-else else 42))
+"""
+
+    // The `let` body expands to a Seq [Store(else, 99); If(else, 42, 0)].
+    // The If confirms the second rule matched: (if else 42 0), not the literal
+    // `else` rule which would have returned 42 directly as a plain Load.
+    let last = List.last exprs |> stripSP
+
+    match last with
+    | BoundExpr.Seq items ->
+        match List.last items with
+        | BoundExpr.If _ -> () // second rule matched: (if else 42 0)
+        | other -> failwithf "Expected If expression as last Seq element (second rule), got %A" other
+    | other -> failwithf "Expected Seq wrapping a let body, got %A" other
