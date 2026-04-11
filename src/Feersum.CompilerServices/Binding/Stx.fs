@@ -62,7 +62,7 @@ type Stx =
     /// A list — `(e1 e2 … en)` when tail is None; `(e1 … en . t)` when tail is Some t.
     | List of items: Stx list * tail: Stx option * loc: TextLocation
     /// A syntactic closure — expand `inner` in `env` rather than the ambient scope.
-    | Closure of inner: Stx * env: StxEnvironment * loc: TextLocation
+    | Closure of inner: Stx * env: StxEnvironment
     /// A vector literal — `#(e1 e2 … en)`.
     | Vec of items: Stx list * loc: TextLocation
     /// A reader-level error node — produced by `Stx.ofExpr` when the CST
@@ -76,9 +76,10 @@ type Stx =
         | Id(_, l)
         | Datum(_, l)
         | List(_, _, l)
-        | Closure(_, _, l)
         | Vec(_, l)
         | Error l -> l
+        | Closure(inner, _) -> inner.Loc
+
 
 /// A Single Binding in the Syntax Environment
 ///
@@ -125,7 +126,7 @@ module Stx =
     let peel (stx: Stx) : Stx * StxEnvironment option =
         let rec go envOpt s =
             match s with
-            | Stx.Closure(inner, env, _) -> go (Some env) inner
+            | Stx.Closure(inner, env) -> go (Some env) inner
             | other -> other, envOpt
 
         go None stx

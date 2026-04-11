@@ -68,7 +68,7 @@ let private ppStx (stx: Stx) : string =
         | Stx.Vec(items, _) ->
             let itemsStr = items |> List.map pp |> String.concat " "
             sprintf "#(%s)" itemsStr
-        | Stx.Closure(inner, _, _) -> pp inner
+        | Stx.Closure(inner, _) -> pp inner
         | Stx.Error _ -> "#<error>"
 
     pp stx
@@ -155,23 +155,19 @@ let private tryExpand
         let msgs = parseErrors |> List.map (fun d -> d.Message) |> String.concat "; "
         Result.Error msgs
     else
-        let diag = DiagnosticBag.Empty
-        let transcribed = Macros.transcribe tmpl bindings emptyEnv dummyLoc diag
+        let transcribeResult, _ = Macros.macroExpandTemplate tmpl bindings
 
-        if hasErrors diag.Take then
-            Result.Error(sprintf "Macro expansion failed: %A" diag.Take)
-        else
-            Result.Ok transcribed
+        match transcribeResult with
+        | Result.Error e -> Result.Error(sprintf "Macro expansion failed: %s" e)
+        | Result.Ok transcribed -> Result.Ok transcribed
 
 /// Simulate the old macroExpand for testing: transcribe and pretty-print
 let private macroExpand (template: MacroTemplate) (bindings: MacroBindings) : Result<string, string> =
-    let diag = DiagnosticBag.Empty
-    let transcribed = Macros.transcribe template bindings emptyEnv dummyLoc diag
+    let transcribeResult, _ = Macros.macroExpandTemplate template bindings
 
-    if hasErrors diag.Take then
-        Result.Error(sprintf "Macro expansion failed: %A" diag.Take)
-    else
-        Result.Ok(ppStx transcribed)
+    match transcribeResult with
+    | Result.Error e -> Result.Error(sprintf "Macro expansion failed: %s" e)
+    | Result.Ok transcribed -> Result.Ok(ppStx transcribed)
 
 /// Parse a pattern from a string, with given literal keywords
 let private parse pattern literals =
@@ -314,8 +310,6 @@ let ``dotted form patterns`` () =
     Assert.Equal("123.4", ppStx headBinding)
     Assert.Equal("(567.8)", ppStx tailBinding)
 
-// MARKER ---- ADD REMAINING TESTS HERE
-
 [<Theory>]
 [<InlineData("a", "1", true)>]
 [<InlineData("1.0", "1", true)>]
@@ -400,8 +394,6 @@ let ``invalid expansions`` pattern template invocation =
 
     let expanded = tryExpand pattern [] template bindings
     Assert.True(Result.isError expanded)
-
-// MARKER ---- LEAVE TETS AFTER THIS POINT ALONE
 
 [<Fact>]
 let ``pattern list matching`` () =

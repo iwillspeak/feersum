@@ -1074,7 +1074,7 @@ module private Expander =
     /// Try to expand a form as a binding-level definition.
     and tryExpandBinding (stx: Stx) (scope: StxEnvironment) (ctx: ExpandCtx) : (BoundExpr * StxEnvironment) option =
         match stx with
-        | Stx.Closure(inner, closedScope, _) ->
+        | Stx.Closure(inner, closedScope) ->
             // Recurse into the closure's inner scope, then merge only NEW definitions
             // (those not present in closedScope) back into the call-site scope.
             // This prevents the closure's scope from replacing the outer scope while

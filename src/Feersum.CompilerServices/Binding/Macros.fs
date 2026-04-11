@@ -4,6 +4,8 @@ open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Stx
+open Feersum.CompilerServices.Ice
+open Feersum.CompilerServices.Utils
 
 // -- Pattern types ------------------------------------------------------------
 
@@ -41,9 +43,9 @@ type MacroTemplate =
     /// Produce a proper list.
     | Form of loc: TextLocation * elements: MacroTemplateElement list
     /// Produce an improper list.
-    | DottedForm of elements: MacroTemplateElement list * tail: MacroTemplate
+    | DottedForm of loc: TextLocation * elements: MacroTemplateElement list * tail: MacroTemplate
     /// Produce a vector literal.
-    | Vec of elements: MacroTemplateElement list
+    | Vec of loc: TextLocation * elements: MacroTemplateElement list
 
 /// A macro template element — either a single sub-template or a repeated one.
 and [<RequireQualifiedAccess>] MacroTemplateElement =
@@ -272,12 +274,12 @@ module MacroParse =
                 match tail with
                 | Some tailStx ->
                     let tailTmpl = parseTemplate ctx scope depth ambientEnv tailStx
-                    MacroTemplate.DottedForm(elements, tailTmpl)
+                    MacroTemplate.DottedForm(loc, elements, tailTmpl)
                 | None -> MacroTemplate.Form(loc, elements)
         | StxVec(items, loc, envOpt) ->
             let ambientEnv = envOpt |> Option.defaultValue ambientEnv
             let elements = parseTemplateElementList ctx scope depth ambientEnv items
-            MacroTemplate.Vec elements
+            MacroTemplate.Vec(loc, elements)
         | other -> MacroTemplate.Quoted other
 
     and private parseTemplateElementList
@@ -445,112 +447,88 @@ module Macros =
             match body with
             | head :: rest ->
                 matchPattern repeat head scope
-                |> Option.bind (fun b -> matchRepeated repeat patterns maybeTailPat rest maybeTailItem scope (b :: accumulated))
+                |> Option.bind (fun b ->
+                    matchRepeated repeat patterns maybeTailPat rest maybeTailItem scope (b :: accumulated))
             | [] ->
                 // Ran out of repeats and tail never matched
                 None
 
     // -- Transcription --------------------------------------------------------
 
-    let rec transcribe
-        (template: MacroTemplate)
-        (bindings: MacroBindings)
-        (defScope: StxEnvironment)
-        (loc: TextLocation)
-        (diag: DiagnosticBag)
-        : Stx =
+    /// Expand a template with the given bindings. Returns an error if the template
+    /// references a variable that is not bound at the current ellipsis level.
+    ///
+    /// This is the main entry point for macro expansion: `macroApply` calls
+    /// this after matching a rule.
+    ///
+    /// The second element of the resturn represents the number of substitutions
+    /// that were made. This can be used to gracefully handle template expansions
+    /// in ellipsis contexts when _no_ substitutions were made.
+    let rec macroExpandTemplate (template: MacroTemplate) (bindings: MacroBindings) : Result<Stx, string> * int =
+        let xpandList elements =
+            let elements = List.map (macroExpandElement bindings) elements
+            let totalSubsts = elements |> List.sumBy snd
+
+            elements |> List.map fst |> Result.collect |> Result.map List.concat, totalSubsts
+
         match template with
-        | MacroTemplate.Subst name ->
-            match List.tryFind (fun (n, _) -> n = name) bindings.Bindings with
-            | Some(_, (stx, capturedScope)) -> Stx.Closure(stx, capturedScope, loc)
-            | None ->
-                diag.Emit
-                    MacroDiagnostics.invalidMacro
-                    loc
-                    $"template variable '{name}' is not bound at this repetition level"
+        | MacroTemplate.Quoted q -> (Result.Ok q, 0)
+        | MacroTemplate.Subst v ->
+            match List.tryFind (fun (id, _) -> id = v) bindings.Bindings with
+            | Some(_, (stx, capturedScope)) -> Result.Ok(Stx.Closure(stx, capturedScope)), 1
+            | None -> Result.Error $"Reference to '{v}' is not bound at this repetition level", 0
+        | MacroTemplate.Form(location, templateElements) ->
+            let children, totalSubsts = xpandList templateElements
+            Result.map (fun children -> Stx.List(children, None, location)) children, totalSubsts
+        | MacroTemplate.DottedForm(location, templateElements, tail) ->
+            let children, totalSubsts = xpandList templateElements
+            let tailResult, tailSubsts = macroExpandTemplate tail bindings
 
-                Stx.List([], None, loc)
+            match children, tailResult with
+            | Result.Error e, _
+            | _, Result.Error e -> Result.Error e, totalSubsts + tailSubsts
+            | Result.Ok children, Result.Ok tail ->
+                let totalSubsts = totalSubsts + tailSubsts
+                Result.Ok(Stx.List(children, Some tail, location)), totalSubsts
+        | MacroTemplate.Vec(location, templateElements) ->
+            let children, totalSubsts = xpandList templateElements
+            Result.map (fun children -> Stx.Vec(children, location)) children, totalSubsts
 
-        | MacroTemplate.Quoted stx -> stx
-
-        | MacroTemplate.Form(_, elements) ->
-            let children =
-                elements |> List.collect (transcribeElement bindings defScope loc diag)
-
-            Stx.List(children, None, loc)
-
-        | MacroTemplate.DottedForm(elems, tail) ->
-            let children = elems |> List.collect (transcribeElement bindings defScope loc diag)
-            Stx.List(children, Some(transcribe tail bindings defScope loc diag), loc)
-
-        | MacroTemplate.Vec elements ->
-            let children =
-                elements |> List.collect (transcribeElement bindings defScope loc diag)
-
-            Stx.Vec(children, loc)
-
-    and transcribeElement
+    and macroExpandElement
         (bindings: MacroBindings)
-        (defScope: StxEnvironment)
-        (loc: TextLocation)
-        (diag: DiagnosticBag)
-        (elem: MacroTemplateElement)
-        : Stx list =
-        match elem with
-        | MacroTemplateElement.Template t -> [ transcribe t bindings defScope loc diag ]
-        | MacroTemplateElement.Repeated t -> transcribeRepeated t bindings defScope loc diag
+        (templateElement: MacroTemplateElement)
+        : Result<Stx list, string> * int =
+        match templateElement with
+        | MacroTemplateElement.Template t ->
+            let result, substs = macroExpandTemplate t bindings
+            (result |> Result.map List.singleton, substs)
+        | MacroTemplateElement.Repeated t ->
+            let rec collectRepeat m acc =
+                function
+                | (Result.Error _, 0) :: rest -> collectRepeat m acc rest
+                | (Result.Error e, n) :: _ -> Result.Error e, (n + m)
+                | (Result.Ok node, n) :: rest -> collectRepeat (m + n) (acc @ [ node ]) rest
+                | [] -> Result.Ok acc, m
 
-    and transcribeRepeated
-        (template: MacroTemplate)
-        (bindings: MacroBindings)
-        (defScope: StxEnvironment)
-        (loc: TextLocation)
-        (diag: DiagnosticBag)
-        : Stx list =
-        // Collect all substitution variable names referenced anywhere in the template.
-        // Used to detect whether a given per-repetition binding is the one that
-        // owns this ellipsis expansion, or belongs to a sibling `...` at a different
-        // nesting level — matching the old "skip if count = 0" behaviour.
-        let rec templateVars tmpl =
-            match tmpl with
-            | MacroTemplate.Subst name -> Set.singleton name
-            | MacroTemplate.Form(_, elems)
-            | MacroTemplate.Vec elems -> elems |> List.map elemVars |> Set.unionMany
-            | MacroTemplate.DottedForm(elems, tail) ->
-                Set.union (elems |> List.map elemVars |> Set.unionMany) (templateVars tail)
-            | MacroTemplate.Quoted _ -> Set.empty
+            bindings.Repeated |> List.map (macroExpandTemplate t) |> collectRepeat 0 []
 
-        and elemVars elem =
-            match elem with
-            | MacroTemplateElement.Template t
-            | MacroTemplateElement.Repeated t -> templateVars t
 
-        let vars = templateVars template
+    /// Apply a Macro to a given syntax node
+    let macroApply (macro: Macro) (form: Stx) (callScope: StxEnvironment) : Result<Stx, string> =
+        let rec macroTryApply transformers =
+            match transformers with
+            | (p, t) :: rest ->
+                match matchPattern p form callScope with
+                | Some binds -> macroExpandTemplate t binds |> fst
+                | _ -> macroTryApply rest
+            | [] -> Result.Error "no macro rule matched the form"
 
-        // Recursively check if a variable is present anywhere in a bindings tree,
-        // including nested Repeated lists.
-        let rec hasVarRecursive var bindings =
-            // Check in flat bindings
-            if List.exists (fun (n, _) -> n = var) bindings.Bindings then
-                true
-            else
-                // Check in nested repetitions
-                bindings.Repeated |> List.exists (hasVarRecursive var)
+        macroTryApply macro.Transformers
+        |> Result.map (fun xpanded ->
+            // Re-attach the macro definition scope to the expanded form to ensure that any identifiers
+            // introduced by the macro are resolved in the correct environment.
+            Stx.Closure(xpanded, macro.DefScope))
 
-        bindings.Repeated
-        |> List.choose (fun perRepBindings ->
-            // FIXME: Transcription should use the same count-based approach as the old one. Previously we ignored
-            //        recursive expansion failures where _no_ transcriptions occurred.
-
-            // Skip iterations where none of the template's variables are present.
-            // This handles nested ellipsis levels: e.g. `e1 ...` should produce []
-            // when the current Repeated list belongs to an outer `c ...` expansion.
-            let hasVar = vars |> Set.exists (fun v -> hasVarRecursive v perRepBindings)
-
-            if hasVar || Set.isEmpty vars then
-                Some(transcribe template perRepBindings defScope loc diag)
-            else
-                None)
 
     /// Public entry point: parse a `(syntax-rules ...)` form into a `SyntaxTransformer`.
     /// Returns a ready-to-call function, or `None` if the form is malformed.
@@ -561,19 +539,4 @@ module Macros =
         (diag: DiagnosticBag)
         : SyntaxTransformer option =
         MacroParse.parseSyntaxRulesStx diag name stx defScope
-        |> Option.map (fun rules ->
-            fun (form: Stx) (callScope: StxEnvironment) ->
-                let result =
-                    rules.Transformers
-                    |> List.tryPick (fun (pat, tmpl) ->
-                        matchPattern pat form callScope |> Option.map (fun b -> tmpl, b))
-
-                match result with
-                | None -> Result.Error "no macro rule matched the form"
-                | Some(template, bindings) ->
-                    let transcribed =
-                        transcribe template bindings rules.DefScope form.Loc diag
-                        |> (fun stx -> Stx.Closure(stx, rules.DefScope, form.Loc))
-
-
-                    Result.Ok transcribed)
+        |> Option.map (fun rules -> macroApply rules)
