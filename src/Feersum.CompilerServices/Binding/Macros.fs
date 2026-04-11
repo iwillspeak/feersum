@@ -168,7 +168,6 @@ module MacroParse =
         (ambientEnv: StxEnvironment)
         (stx: Stx)
         : MacroPattern * Map<string, StxBinding option * int> =
-        let recurse = (parsePattern ctx depth scope)
 
         match stx with
         | StxDatum(d, _) -> MacroPattern.Constant d, scope
@@ -220,8 +219,6 @@ module MacroParse =
                 let pat, scope' = parsePattern ctx depth scope ambientEnv current
                 loop (pat :: acc) scope' rest
 
-        // TODO: If the _first_ iem in this list is an ellipsis it is supposed to 'quote' the ellipsis identifier for
-        //       all patterns beneath it. Properly handling this needs a little thought.
         loop [] scope items
 
     let rec private parseTemplate
@@ -231,8 +228,6 @@ module MacroParse =
         (ambientEnv: StxEnvironment)
         (stx: Stx)
         : MacroTemplate =
-        let recurse = (parseTemplate ctx scope depth ambientEnv)
-
         match stx with
         | StxId(name, _, envOpt) ->
             // Resolve the identifier in its home environment, then look for a pattern variable
@@ -250,24 +245,28 @@ module MacroParse =
                         MacroDiagnostics.invalidMacro
                         stx.Loc
                         $"template variable '{name}' is not in scope at this ellipsis level"
-
-                MacroTemplate.Subst name
+                    // We quote the variable here to suppress any expander errors about the same name error
+                    MacroTemplate.Quoted stx
+                else
+                    MacroTemplate.Subst name
             | _ -> MacroTemplate.Quoted stx
         | StxList(items, tail, loc, envOpt) ->
             let ambientEnv = envOpt |> Option.defaultValue ambientEnv
-            // R7RS 4.3.2: (〈ellipsis〉 〈template〉) is an ellipsis-escape form.
-            // The single inner template is parsed with no active ellipsis so that
-            // occurrences of the ellipsis identifier are treated as plain identifiers.
             match ctx.Ellipsis, items, tail with
-            | Some ell, [ StxId(name, _, _); inner ], None when name = ell ->
-                parseTemplate { ctx with Ellipsis = None } scope depth ambientEnv inner
-            | Some ell, (StxId(name, _, _) :: _), _ when name = ell ->
-                ctx.Diags.Emit
-                    MacroDiagnostics.malformedEllipsisEscape
-                    loc
-                    "ellipsis escape requires exactly one sub-template: (... <template>)"
+            | Some ell, StxId(name, _, _) :: inner, None when name = ell ->
+                // R7RS 4.3.2: (〈ellipsis〉 〈template〉) is an ellipsis-escape form.
+                // The single inner template is parsed with no active ellipsis so that
+                // occurrences of the ellipsis identifier are treated as plain identifiers.
+                match inner with
+                | [ innerStx ] ->
+                        parseTemplate { ctx with Ellipsis = None } scope depth ambientEnv innerStx
+                | _ ->
+                    ctx.Diags.Emit
+                        MacroDiagnostics.malformedEllipsisEscape
+                        loc
+                        "ellipsis escape requires exactly one sub-template: (... <template>)"
 
-                MacroTemplate.Quoted stx
+                    MacroTemplate.Quoted stx
             | _ ->
                 let elements = parseTemplateElementList ctx scope depth ambientEnv items
 
@@ -348,9 +347,9 @@ module MacroParse =
               DefLoc = syntaxRulesSyn.Loc }
 
         match syntaxRulesSyn with
-        | StxList(_ :: StxId(ellipsis, _, _) :: lits :: rules, _, _, maybeDefEnv) ->
+        | StxList(StxId("syntax-rules", _, _) :: StxId(ellipsis, _, _) :: lits :: rules, _, _, maybeDefEnv) ->
             parseBody ellipsis lits rules maybeDefEnv |> Some
-        | StxList(_ :: lits :: rules, _, _, maybeDefEnv) -> parseBody "..." lits rules maybeDefEnv |> Some
+        | StxList(StxId("syntax-rules", _, _) :: lits :: rules, _, _, maybeDefEnv) -> parseBody "..." lits rules maybeDefEnv |> Some
         | _ ->
             diags.Emit MacroDiagnostics.invalidMacro syntaxRulesSyn.Loc "expected (syntax-rules (literals...) rules...)"
             None
@@ -507,8 +506,8 @@ module Macros =
                 function
                 | (Result.Error _, 0) :: rest -> collectRepeat m acc rest
                 | (Result.Error e, n) :: _ -> Result.Error e, (n + m)
-                | (Result.Ok node, n) :: rest -> collectRepeat (m + n) (acc @ [ node ]) rest
-                | [] -> Result.Ok acc, m
+                | (Result.Ok node, n) :: rest -> collectRepeat (m + n) (node :: acc) rest
+                | [] -> Result.Ok (List.rev acc), m
 
             bindings.Repeated |> List.map (macroExpandTemplate t) |> collectRepeat 0 []
 
