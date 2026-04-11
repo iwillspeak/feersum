@@ -121,6 +121,9 @@ module private MacroDiagnostics =
     let malformedEllipsisEscape =
         DiagnosticKind.Create DiagnosticLevel.Warning 43 "Malformed ellipsis escape"
 
+    let invalidPatternHead =
+        DiagnosticKind.Create DiagnosticLevel.Warning 44 "Invalid pattern head"
+
 // -- Macros ----------------------------------------------------------------
 
 type private PatternCtx =
@@ -182,20 +185,20 @@ module MacroParse =
 
         match stx with
         | StxDatum(d, _) -> MacroPattern.Constant d, scope
-        | StxId("_", _, _) -> MacroPattern.Underscore, scope
         | StxId(name, _, envOpt) ->
             let activeEnv = envOpt |> Option.defaultValue ambientEnv
             let resolvedBinding = Map.tryFind name activeEnv
-            // A pattern identifier is a literal keyword only when both its name and its
-            // definition-site binding match an entry in the literals list.  Comparing bindings
-            // handles identifiers injected by an outer macro expansion: they carry a closure-env
-            // binding that is different from any same-named local variable, so they correctly
-            // fall through to being treated as pattern variables rather than literals.
-            match
-                List.tryFind (fun (litName, litBinding) -> litName = name && litBinding = resolvedBinding) ctx.Literals
-            with
-            | Some(_, defBinding) -> MacroPattern.Literal(name, defBinding), scope
-            | None ->
+            // Literals take priority over the `_` wildcard and plain variables.
+            // R7RS §4.3.2: if `_` appears in the literals list it is a literal keyword, not a wildcard.
+            // Comparing binding identity (not just name) handles identifiers injected by outer macro
+            // expansions whose closure-env binding differs from any same-named local variable.
+            if
+                List.exists (fun (litName, litBinding) -> litName = name && litBinding = resolvedBinding) ctx.Literals
+            then
+                MacroPattern.Literal(name, resolvedBinding), scope
+            else if name = "_" then
+                MacroPattern.Underscore, scope
+            else
                 // Record the resolved binding so that `parseTemplate` can match template
                 // references to this exact binding rather than just comparing name strings.
                 MacroPattern.Variable name, scope.Add(name, (resolvedBinding, depth))
@@ -236,6 +239,41 @@ module MacroParse =
                 loop (pat :: acc) scope' rest
 
         loop [] scope items
+
+    /// Parse the top-level pattern of a single syntax rule.
+    ///
+    /// The first element of the pattern form is the macro name placeholder. It is
+    /// always replaced with `MacroPattern.Underscore` regardless of what identifier
+    /// it is or whether that identifier appears in the literals list.  This matches
+    /// R7RS §4.3.2, which states the first sub-form of a pattern names the keyword
+    /// being defined and is not used for matching.
+    ///
+    /// This is necessary because `_` can legally appear in the literals list, in
+    /// which case normal `parsePattern` would wrongly classify the head position as
+    /// a literal keyword rather than the always-wildcard macro-name placeholder.
+    let private parsePatternTopLevel
+        (ctx: PatternCtx)
+        (ambientEnv: StxEnvironment)
+        (stx: Stx)
+        : MacroPattern * Map<string, StxBinding option * int> =
+        match stx with
+        | StxList(head :: bodyItems, tail, _, envOpt) ->
+            match head with
+            | StxId(_, _, _) -> ()
+            | _ ->
+                ctx.Diags.Emit MacroDiagnostics.invalidPatternHead head.Loc "syntax-rules pattern should start with an identifier"
+
+            let ambientEnv = envOpt |> Option.defaultValue ambientEnv
+            let patterns, scope = parsePatternList ctx 0 Map.empty ambientEnv bodyItems
+
+            match tail with
+            | Some tailStx ->
+                let tailPat, scope = parsePattern ctx 0 scope ambientEnv tailStx
+                MacroPattern.DottedForm(MacroPattern.Underscore :: patterns, tailPat), scope
+            | None -> MacroPattern.Form(MacroPattern.Underscore :: patterns), scope
+        | _ ->
+            ctx.Diags.Emit MacroDiagnostics.invalidMacro stx.Loc "syntax-rules pattern must be a (_ ....) form"
+            MacroPattern.Underscore, Map.empty
 
     let rec private parseTemplate
         (ctx: PatternCtx)
@@ -328,7 +366,7 @@ module MacroParse =
         | StxList([ pat; tmpl ], _, _, maybeDefEnv) ->
             let defScope = maybeDefEnv |> Option.defaultValue defScope
             let patternCtx = PatternCtx.Create diags ellipsis lits
-            let pattern, patternScope = parsePattern patternCtx 0 Map.empty defScope pat
+            let pattern, patternScope = parsePatternTopLevel patternCtx defScope pat
             let template = parseTemplate patternCtx patternScope 0 defScope tmpl
             (pattern, template)
         | _ ->

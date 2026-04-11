@@ -379,7 +379,7 @@ let ``simple macro expand`` () =
     Assert.True(Result.isError expanded)
 
 [<Theory>]
-[<InlineData("(a)", "a", "(1)", "1")>]
+[<InlineData("(a)", "a", "(1)", "a")>]
 [<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
 [<InlineData("(_ (a)...)", "(a ...)", "(test (1)(#f)(foo))", "(1 #f foo)")>]
 [<InlineData("(_ (a ...)...)", "((f a ...) ...)", "(test (1 2)(#f))", "((f 1 2) (f #f))")>]

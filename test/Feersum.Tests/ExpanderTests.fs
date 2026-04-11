@@ -284,7 +284,7 @@ let ``parseSyntaxRulesStx: keyword-name head binds as variable`` () =
     Assert.Single(t.Transformers) |> ignore
 
     match fst t.Transformers.[0] with
-    | MacroPattern.Form [ MacroPattern.Variable "or"
+    | MacroPattern.Form [ MacroPattern.Underscore
                           MacroPattern.Variable "a"
                           MacroPattern.Repeat(MacroPattern.Variable "b") ] ->
         // Template should have or as Subst (it's in bound)
@@ -335,7 +335,7 @@ let ``parseSyntaxRulesStx: custom ellipsis identifier`` () =
     Assert.Single(t.Transformers) |> ignore
 
     match fst t.Transformers.[0] with
-    | MacroPattern.Form [ MacroPattern.Variable "my-seq"; MacroPattern.Repeat(MacroPattern.Variable "expr") ] -> ()
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Repeat(MacroPattern.Variable "expr") ] -> ()
     | other -> failwithf "Unexpected pattern: %A" other
 
 [<Fact>]

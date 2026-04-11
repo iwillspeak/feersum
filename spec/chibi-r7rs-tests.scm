@@ -600,8 +600,7 @@
 (jabberwocky mad-hatter)
 (test 42 (mad-hatter))
 
-;; FIXME: Hygene of the literals in macro definitions.
-;; (test 'ok (let ((=> #f)) (cond (#t => 'ok))))
+(test 'ok (let ((=> #f)) (cond (#t => 'ok))))
 (test 'ok (let ((arp #f)) (cond (#t arp 'ok ))))
 
 (let ()
