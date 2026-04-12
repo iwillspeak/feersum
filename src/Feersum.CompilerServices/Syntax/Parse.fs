@@ -117,7 +117,7 @@ type public ReadMode =
     | Program
     | Script
 
-// =========================== Parser Utilities ===============================
+// -- Parser Utilities ---------------------------------------------------------
 
 /// Get the kind of the current token. If no more tokens remain then EOF is
 /// returned instead.
@@ -154,7 +154,7 @@ let private expect (builder: GreenNodeBuilder) tokenKind nodeKind state =
         |> ParserState.bufferDiagnostic state ParserDiagnostics.parseError
         |> eat builder AstKind.ERROR
 
-// =============================== Parsers ===================================
+// -- Parsers ------------------------------------------------------------------
 
 let private parseConstant (builder: GreenNodeBuilder) state =
     builder.StartNode(AstKind.CONSTANT |> SyntaxUtils.astToGreen)
@@ -318,7 +318,7 @@ let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxNo
     |> expect builder TokenKind.EndOfFile AstKind.EOF
     |> ParserState.finalise builder AstKind.SCRIPT_PROGRAM
 
-// =============================== Public API ==================================
+// -- Public API ---------------------------------------------------------------
 
 /// Read a raw syntax tree from the given input.
 let readRaw mode name (line: string) =

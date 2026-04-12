@@ -7,9 +7,7 @@ open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Text
 
-// ============================================================================
-// Helpers
-// ============================================================================
+// -- Helpers ------------------------------------------------------------------
 
 /// Parse a Scheme expression and return it
 let private parseScheme source =
@@ -50,9 +48,7 @@ let private envSource =
     | StorageRef.Environment(_, s) -> s
     | s -> s
 
-// ============================================================================
-// Tests: captures and environment mappings
-// ============================================================================
+// -- Tests: captures and environment mappings ---------------------------------
 
 [<Fact>]
 let ``simple lambda without captures has no env mappings`` () =
@@ -141,9 +137,7 @@ let ``uncaptured lambda has no environment entries`` () =
             | s -> s)
     )
 
-// ============================================================================
-// Tests: sequence flattening
-// ============================================================================
+// -- Tests: sequence flattening -----------------------------------------------
 
 [<Fact>]
 let ``empty begin flattens to Nop`` () =
@@ -164,9 +158,7 @@ let ``nested begin flattens to a single sequence`` () =
     | BoundExpr.Nop -> Assert.True(false, "Expected non-empty sequence")
     | _ -> Assert.True(false, "Expected Seq from nested begin")
 
-// ============================================================================
-// Tests: local variable counts
-// ============================================================================
+// -- Tests: local variable counts ---------------------------------------------
 
 [<Fact>]
 let ``let binding produces one local per binding`` () =

@@ -36,7 +36,7 @@ type CoreTypes =
       LispReExport: MethodReference
       AssmConfigCtor: MethodReference }
 
-// --------------------  External Reference Utils -----------------------------
+// -- External Reference Utils -------------------------------------------------
 
 [<AutoOpen>]
 module private ExternUtils =
@@ -109,7 +109,7 @@ module private ExternUtils =
              { LibraryName = name |> Seq.map (fun a -> a.Value.ToString()) |> List.ofSeq
                Exports = getExports ty }))
 
-// --------------------  Builtin Macro Definitions -----------------------------
+// -- Builtin Macro Definitions ------------------------------------------------
 
 module private BuiltinMacros =
     open Feersum.CompilerServices.Text
@@ -252,7 +252,7 @@ module private BuiltinMacros =
                     | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics)
             Map.empty
 
-// ------------------------ Public Builtins API --------------------------------
+// -- Public Builtins API ------------------------------------------------------
 
 module Builtins =
     open Feersum.CompilerServices.NewBindingTest

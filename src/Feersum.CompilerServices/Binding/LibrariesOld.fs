@@ -216,7 +216,7 @@ module private Utils =
         { LibraryName = name
           Declarations = body |> List.map (parseLibraryDeclaration diags registry) }
 
-// -------------------- Public Libraries API ---------------------
+// -- Public Libraries API -----------------------------------------------------
 
 module Libraries =
 
