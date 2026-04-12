@@ -20,7 +20,7 @@ let private expand (source: string) =
         failwithf "Parse error in '%s': %A" source prog.Diagnostics
 
     let ctx = ExpandCtx.createGlobal registry "test" []
-    let result = Expand.expand [ prog.Root ] Environments.builtin Map.empty ctx
+    let result = Expand.expand [ prog.Root ] Environments.emptyStx Map.empty ctx
 
     match result.Root.Body with
     | BoundExpr.Seq stmts -> stmts, result.Diagnostics
@@ -68,7 +68,7 @@ let private parseSyntaxRules (name: string) (source: string) : Macro =
         |> (fun expr -> Stx.ofExpr registry prog.Root.DocId DiagnosticBag.Empty expr)
 
     let diag = DiagnosticBag.Empty
-    let env = Environments.builtin
+    let env = Environments.emptyStx
 
     match MacroParse.parseSyntaxRulesStx diag name tree env with
     | Some t -> t
@@ -612,7 +612,7 @@ let ``expand: define in let-syntax body does not shadow outer binding`` () =
 let private expandMalformed (source: string) =
     let prog = Parse.readProgramSimple "test" source
     let ctx = ExpandCtx.createGlobal registry "test" []
-    let result = Expand.expand [ prog.Root ] Environments.builtin Map.empty ctx
+    let result = Expand.expand [ prog.Root ] Environments.emptyStx Map.empty ctx
 
     match result.Root.Body with
     | BoundExpr.Seq stmts -> stmts, result.Diagnostics

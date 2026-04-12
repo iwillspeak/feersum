@@ -41,10 +41,12 @@ module Compilation =
             | [] -> TargetResolve.fromCurrentRuntime
             | paths -> TargetResolve.fromFrameworkPaths paths
 
+        let coreLibs = Builtins.loadCoreSignatures target
+
         let refTys, allLibs =
             options.References
             |> Seq.map (Builtins.loadReferencedSignatures)
-            |> Seq.append (Seq.singleton <| Builtins.loadCoreSignatures target)
+            |> Seq.append (Seq.singleton <| coreLibs)
             |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> (List.append tys aTys, List.append sigs aSigs)) ([], [])
 
         let preloaded =
@@ -60,13 +62,15 @@ module Compilation =
                     let reg, expandFn =
                         match input with
                         | CompileInput.Program(reg, progs) ->
-                            reg, fun ctx macroScope -> Expand.expand progs macroScope preloaded ctx
+                            reg, fun ctx macroScope preloaded -> Expand.expand progs macroScope preloaded ctx
                         | CompileInput.Script(reg, script) ->
-                            reg, fun ctx macroScope -> Expand.expandScriptUnit script macroScope preloaded ctx
+                            reg,
+                            fun ctx macroScope preloaded -> Expand.expandScriptUnit script macroScope preloaded ctx
 
+                    let stxEnv, refEnv = Environments.intoParts preloaded
                     let ctx = ExpandCtx.createGlobal reg "LispProgram" allLibs
-                    let macroScope = Builtins.loadBuiltinMacroEnv ctx
-                    expandFn ctx macroScope)
+                    let stxEnv = Builtins.loadBuiltinMacroEnv ctx.MacroRegistry stxEnv
+                    expandFn ctx stxEnv refEnv)
                 ()
 
         let assmName =

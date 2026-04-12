@@ -196,7 +196,7 @@ module private BuiltinMacros =
     ///    (enabling self-recursive macros like `and` and `cond`);
     ///  - the syntax rules are parsed against that extended scope;
     ///  - the transformer is registered in `ctx.MacroRegistry`.
-    let loadBuiltinMacroEnv (ctx: ExpandCtx) : StxEnvironment =
+    let loadBuiltinMacroEnv (reg: MacroRegistry) (baseEnv: StxEnvironment) : StxEnvironment =
         let macros =
             [ "and", macroAndSrc
               "or", macroOrSrc
@@ -223,10 +223,10 @@ module private BuiltinMacros =
 
                     match Macros.makeSyntaxTransformer name stx scope' diags with
                     | Some transformer ->
-                        ExpandCtx.registerMacro ctx id transformer
+                        reg.Register id transformer
                         scope'
                     | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics)
-            Map.empty
+            baseEnv
 
 // -- Public Builtins API ------------------------------------------------------
 
@@ -237,7 +237,7 @@ module Builtins =
     /// recognised by name in `resolveHead` and do not need scope entries.  Each
     /// macro Ident is reserved and its transformer registered in `ctx.MacroRegistry`
     /// so the result can be passed directly to `Expand.expand`.
-    let loadBuiltinMacroEnv (ctx: ExpandCtx) : StxEnvironment = BuiltinMacros.loadBuiltinMacroEnv ctx
+    let loadBuiltinMacroEnv = BuiltinMacros.loadBuiltinMacroEnv
 
 
     /// Scan the `externAssms` and retrieve the core types that are required to

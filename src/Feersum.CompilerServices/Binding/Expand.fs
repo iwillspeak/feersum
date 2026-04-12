@@ -186,10 +186,7 @@ module ExpandCtx =
                 | Captured _
                 | Arg _
                 | Local _
-                | Environment _ ->
-                    ctx.Captures <- outerStorage :: ctx.Captures
-                    ctx.HasDynEnv <- true
-                    StorageRef.Captured outerStorage
+                | Environment _ -> capture ctx outerStorage
                 | _ -> outerStorage
             | None -> storage
 
@@ -1127,27 +1124,25 @@ module Expand =
     /// Old-format `StorageRef.Macro` entries are silently skipped — callers
     /// should add macros to the base scope via `ExpandCtx.addMacro` before
     /// calling any of the expand functions.
-    let private seedPreloaded
-        (ctx: ExpandCtx)
-        (scope: StxEnvironment)
-        (preloaded: Map<string, StorageRef>)
-        : StxEnvironment =
-        preloaded
-        |> Map.fold (fun s name storage -> ExpandCtx.registerStorage ctx name storage s) scope
+    let private seedPreloaded (ctx: ExpandCtx) (preloaded: Map<Ident, StorageRef>) =
+
+        ctx.BindingMap <-
+            preloaded
+            |> Map.fold (fun s name storage -> Map.add name (Variable(storage, ctx.LambdaDepth)) s) ctx.BindingMap
 
     /// Thread-expand a list of Stx unit lists, carrying scope forward across
     /// units, and package the result as a `BoundSyntaxTree`.
     let private expandUnitsToTree
         (units: Stx list list)
         (initialScope: StxEnvironment)
-        (preloaded: Map<string, StorageRef>)
+        (preloaded: Map<Ident, StorageRef>)
         (ctx: ExpandCtx)
         : BoundSyntaxTree =
-        let startScope = seedPreloaded ctx initialScope preloaded
+        seedPreloaded ctx preloaded
 
         let exprs, _ =
             units
-            |> List.mapFold (fun scope stxs -> Expander.expandSeqWithSPs stxs scope ctx) startScope
+            |> List.mapFold (fun scope stxs -> Expander.expandSeqWithSPs stxs scope ctx) initialScope
 
         { Root = ExpandCtx.intoBody ctx (List.concat exprs)
           MangledName = ctx.MangledName
@@ -1159,7 +1154,7 @@ module Expand =
     let expand
         (progs: Tree.Program list)
         (initialScope: StxEnvironment)
-        (preloaded: Map<string, StorageRef>)
+        (preloaded: Map<Ident, StorageRef>)
         (ctx: ExpandCtx)
         : BoundSyntaxTree =
         let units =
@@ -1175,7 +1170,7 @@ module Expand =
     let expandScriptUnit
         (script: Tree.ScriptProgram)
         (initialScope: StxEnvironment)
-        (preloaded: Map<string, StorageRef>)
+        (preloaded: Map<Ident, StorageRef>)
         (ctx: ExpandCtx)
         : BoundSyntaxTree =
         let stxs =

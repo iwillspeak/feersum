@@ -26,8 +26,8 @@ let private lowerScheme source =
 
     let registry = SourceRegistry.empty ()
     let ctx = ExpandCtx.createGlobal registry "TestProgram" []
-    let initialScope = Environments.builtin
-    let preloaded = Environments.empty
+    let env = Environments.empty
+    let initialScope, preloaded = Environments.intoParts env
     let bound = Expand.expand [ result.Root ] initialScope preloaded ctx
     (Lower.lower bound).Root
 

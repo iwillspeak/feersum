@@ -3,6 +3,9 @@ namespace Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Libraries
 
+/// Shim type until proper scope is defined
+type Scope = Map<string, StorageRef>
+
 /// Creates initial binding environments for the expander.
 ///
 /// FIXME: This module contains an odd mix of environment utitlities, syntax environment definitions and binding
@@ -11,11 +14,11 @@ module Environments =
 
     /// Create a preloaded scope from a sequence of library signatures.
     /// Returns a Map<string, StorageRef> containing all exported names from the libraries.
-    let fromLibraries (libs: seq<LibrarySignature<StorageRef>>) : Map<string, StorageRef> =
+    let fromLibraries (libs: seq<LibrarySignature<StorageRef>>) : Scope =
         libs |> Seq.collect (fun lib -> lib.Exports) |> Map.ofSeq
 
     /// The empty preloaded scope.
-    let empty: Map<string, StorageRef> = Map.empty
+    let empty: Scope = Map.empty
 
     /// Map a well-known keyword name to its `SpecialFormKind`, or return `None`
     /// if the name is not a built-in special form.
@@ -41,4 +44,12 @@ module Environments =
     /// The empty initial scope. Special forms are not stored in the scope;
     /// they are recognised by name in `resolveHead` via `tryResolveSpecial`.
     /// Callers extend this with macro and variable bindings before expansion.
-    let builtin: StxEnvironment = Map.empty
+    let emptyStx: StxEnvironment = Map.empty
+
+    let intoParts (scope: Scope) : StxEnvironment * Map<Ident, StorageRef> =
+        scope
+        |> Map.fold
+            (fun (stx, env) key value ->
+                let id = Ident.fresh ()
+                (Map.add key (StxBinding.Variable(id)) stx, Map.add id value env))
+            (Map.empty, Map.empty)
