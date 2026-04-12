@@ -19,16 +19,11 @@
     <Compile Include="Syntax/Tree.fs" />
     <Compile Include="Syntax/Parse.fs" />
     <Compile Include="Syntax/Factories.fs" />
-    <Compile Include="Scope.fs" />
     <Compile Include="Binding/Stx.fs" />
-    
     <Compile Include="Binding/Libraries.fs" />
     <Compile Include="Binding/Macros.fs" />
-    
-    
     <Compile Include="Binding/BoundTree.fs" />
     <Compile Include="Binding/Environments.fs" />
-    
     <Compile Include="Binding/Expand.fs" />
     <Compile Include="Binding/Lower.fs" />
     <Compile Include="Targets.fs" />
