@@ -1186,73 +1186,52 @@ module Expand =
                 | _ -> ExpandCtx.registerStorage ctx name storage s)
             scope
 
-    /// Expand a parsed program into a list of `BoundExpr` nodes.
-    ///
-    /// `initialScope` should extend `StxEnvironment.builtin` with any macro
-    /// bindings for the compilation unit (via `ExpandCtx.addMacro`).
-    /// `preloaded` is a `Map<string, StorageRef>` of library-level variable
-    /// bindings to make visible without an explicit `(import ...)` form (e.g.
-    /// for Script / REPL mode); pass `Map.empty` for normal program mode.
-    let expandProgram
-        (prog: Tree.Program)
+    /// Thread-expand a list of Stx unit lists, carrying scope forward across
+    /// units, and package the result as a `BoundSyntaxTree`.
+    let private expandUnitsToTree
+        (units: Stx list list)
         (initialScope: StxEnvironment)
         (preloaded: Map<string, StorageRef>)
         (ctx: ExpandCtx)
-        : BoundExpr list =
-        let scope = seedPreloaded ctx initialScope preloaded
-        let docId = prog.DocId
+        : BoundSyntaxTree =
+        let startScope = seedPreloaded ctx initialScope preloaded
 
-        let stxs =
-            prog.Body
-            |> Seq.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
-            |> List.ofSeq
+        let exprs, _ =
+            units
+            |> List.mapFold (fun scope stxs -> Expander.expandSeqWithSPs stxs scope ctx) startScope
 
-        let exprs, _ = Expander.expandSeqWithSPs stxs scope ctx
-        exprs
+        { Root = ExpandCtx.intoBody ctx (List.concat exprs)
+          MangledName = ctx.MangledName
+          Diagnostics = ctx.Diagnostics.Diagnostics }
 
-    /// Expand a list of programs, threading scope across units so that
-    /// top-level definitions in one unit are visible in subsequent units.
-    /// See `expandProgram` for the meaning of `initialScope` and `preloaded`.
-    let expandPrograms
+    /// Expand a list of programs into a `BoundSyntaxTree`, threading scope
+    /// across units so that top-level definitions in one unit are visible in
+    /// subsequent units.
+    let expand
         (progs: Tree.Program list)
         (initialScope: StxEnvironment)
         (preloaded: Map<string, StorageRef>)
         (ctx: ExpandCtx)
-        : BoundExpr list =
-        let startScope = seedPreloaded ctx initialScope preloaded
-
-        let exprs, _ =
+        : BoundSyntaxTree =
+        let units =
             progs
-            |> List.mapFold
-                (fun scope prog ->
-                    let docId = prog.DocId
+            |> List.map (fun prog ->
+                prog.Body
+                |> Seq.map (Stx.ofExpr ctx.Registry prog.DocId ctx.Diagnostics)
+                |> List.ofSeq)
 
-                    let stxs =
-                        prog.Body
-                        |> Seq.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
-                        |> List.ofSeq
+        expandUnitsToTree units initialScope preloaded ctx
 
-                    let exprs, scope' = Expander.expandSeqWithSPs stxs scope ctx
-                    exprs, scope')
-                startScope
-
-        List.concat exprs
-
-    /// Expand a script program (single optional expression) using the new expander.
-    /// See `expandProgram` for the meaning of `initialScope` and `preloaded`.
-    let expandScript
+    /// Expand a script program into a `BoundSyntaxTree`.
+    let expandScriptUnit
         (script: Tree.ScriptProgram)
         (initialScope: StxEnvironment)
         (preloaded: Map<string, StorageRef>)
         (ctx: ExpandCtx)
-        : BoundExpr list =
-        let scope = seedPreloaded ctx initialScope preloaded
-        let docId = script.DocId
-
+        : BoundSyntaxTree =
         let stxs =
             script.Body
-            |> Option.map (Stx.ofExpr ctx.Registry docId ctx.Diagnostics)
+            |> Option.map (Stx.ofExpr ctx.Registry script.DocId ctx.Diagnostics)
             |> Option.toList
 
-        let exprs, _ = Expander.expandSeqWithSPs stxs scope ctx
-        exprs
+        expandUnitsToTree [ stxs ] initialScope preloaded ctx

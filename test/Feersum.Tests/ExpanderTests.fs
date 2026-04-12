@@ -22,8 +22,11 @@ let private expand (source: string) =
         failwithf "Parse error in '%s': %A" source prog.Diagnostics
 
     let ctx = ExpandCtx.createGlobal registry "test" []
-    let exprs = Expand.expandProgram prog.Root StxEnvironment.builtin Map.empty ctx
-    exprs, ctx.Diagnostics.Diagnostics
+    let result = Expand.expand [ prog.Root ] StxEnvironment.builtin Map.empty ctx
+
+    match result.Root.Body with
+    | BoundExpr.Seq stmts -> stmts, result.Diagnostics
+    | x -> [ x ], result.Diagnostics
 
 /// Expand and assert there are no errors; return the bound expressions.
 let private expandOk (source: string) =
@@ -611,8 +614,11 @@ let ``expand: define in let-syntax body does not shadow outer binding`` () =
 let private expandMalformed (source: string) =
     let prog = Parse.readProgramSimple "test" source
     let ctx = ExpandCtx.createGlobal registry "test" []
-    let exprs = Expand.expandProgram prog.Root StxEnvironment.builtin Map.empty ctx
-    exprs, ctx.Diagnostics.Diagnostics
+    let result = Expand.expand [ prog.Root ] StxEnvironment.builtin Map.empty ctx
+
+    match result.Root.Body with
+    | BoundExpr.Seq stmts -> stmts, result.Diagnostics
+    | x -> [ x ], result.Diagnostics
 
 /// Expand (possibly malformed) source and assert that at least one expander
 /// diagnostic with code `code` and message containing `needle` is emitted.

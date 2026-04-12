@@ -207,7 +207,7 @@ module private BuiltinMacros =
             [ macroAnd; macroOr; macroWhen; macroUnless; macroCond ]
             |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
 
-    // ── New-format loader ──────────────────────────────────────────────────
+    // -- New-format loader ----------------------------------------------------
 
     /// Load all builtin macros (`and`, `or`, `when`, `unless`, `cond`) into a
     /// `StxEnvironment`, starting from `Map.empty`.
@@ -243,8 +243,6 @@ module private BuiltinMacros =
                     let diags = DiagnosticBag.Empty
                     let stx = Stx.ofExpr registry result.Root.DocId diags expr
 
-                    // Reserve an Ident first so the macro sees its own name in defScope;
-                    // all previously-accumulated macros are also visible.
                     let id, scope' = ExpandCtx.reserveMacro name scope
 
                     match New.Macros.makeSyntaxTransformer name stx scope' diags with
@@ -263,7 +261,7 @@ module Builtins =
     /// initial `StxEnvironment`, starting from `Map.empty`.  Special forms are
     /// recognised by name in `resolveHead` and do not need scope entries.  Each
     /// macro Ident is reserved and its transformer registered in `ctx.MacroRegistry`
-    /// so the result can be passed directly to `Expand.expandProgram`.
+    /// so the result can be passed directly to `Expand.expand`.
     let loadBuiltinMacroEnv (ctx: ExpandCtx) : StxEnvironment = BuiltinMacros.loadBuiltinMacroEnv ctx
 
 

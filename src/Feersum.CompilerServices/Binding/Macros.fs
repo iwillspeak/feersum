@@ -261,7 +261,10 @@ module MacroParse =
             match head with
             | StxId(_, _, _) -> ()
             | _ ->
-                ctx.Diags.Emit MacroDiagnostics.invalidPatternHead head.Loc "syntax-rules pattern should start with an identifier"
+                ctx.Diags.Emit
+                    MacroDiagnostics.invalidPatternHead
+                    head.Loc
+                    "syntax-rules pattern should start with an identifier"
 
             let ambientEnv = envOpt |> Option.defaultValue ambientEnv
             let patterns, scope = parsePatternList ctx 0 Map.empty ambientEnv bodyItems

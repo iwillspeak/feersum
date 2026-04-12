@@ -35,14 +35,14 @@ let runXpNewRepl (options: CompilationOptions) args =
             dumpDiagnostics prog.Diagnostics
         else
             let ctx = ExpandCtx.createGlobal registry "LispProgram" allLibs
-
             let initialScope = Builtins.loadBuiltinMacroEnv ctx
+            let result = Expand.expand [ prog.Root ] initialScope Map.empty ctx
+            dumpDiagnostics result.Diagnostics
 
-            let result = Expand.expandProgram prog.Root initialScope Map.empty ctx
-            dumpDiagnostics ctx.Diagnostics.Diagnostics
-
-            if not (hasErrors ctx.Diagnostics.Diagnostics) then
-                printfn "%A" result)
+            if not (hasErrors result.Diagnostics) then
+                match result.Root.Body with
+                | BoundExpr.Seq stmts -> printfn "%A" stmts
+                | x -> printfn "%A" [ x ])
 
 let runXpOldRepl (options: CompilationOptions) args =
     let registry = SourceRegistry.empty ()

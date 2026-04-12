@@ -44,7 +44,7 @@ module Compilation =
             | [] -> TargetResolve.fromCurrentRuntime
             | paths -> TargetResolve.fromFrameworkPaths paths
 
-        let (refTys, allLibs) =
+        let refTys, allLibs =
             options.References
             |> Seq.map (Builtins.loadReferencedSignatures)
             |> Seq.append (Seq.singleton <| Builtins.loadCoreSignatures target)
@@ -57,42 +57,21 @@ module Compilation =
                 Binder.emptyScope
 
 #if USE_NEW_EXPAND
-        let registry =
-            match input with
-            | CompileInput.Program(reg, _) -> reg
-            | CompileInput.Script(reg, _) -> reg
-
-        let ctx = ExpandCtx.createGlobal registry "LispProgram" allLibs
-
-        // Build the macro scope: special forms + builtin macro transformers.
-        // Variable bindings from library exports are passed as `preloaded` so
-        // that the Expand module can seed them (filtering old StorageRef.Macro
-        // entries) without the caller needing to understand BindingMap internals.
-        let macroScope = Builtins.loadBuiltinMacroEnv ctx
-
-        // For Script mode, pass all library exports as preloaded variable
-        // bindings so callers don't need explicit `import` forms (mirrors old
-        // binder behaviour).  Program mode passes Map.empty — programs must
-        // use `(import ...)` to bring library bindings into scope.
-        let preloaded =
-            if options.OutputType = OutputType.Script then
-                scope
-            else
-                Map.empty
-
-        let boundExprs =
+        let bound =
             Instrumentation.withPhase
                 "bind"
                 (fun () ->
-                    match input with
-                    | CompileInput.Program(_, progs) -> Expand.expandPrograms progs macroScope preloaded ctx
-                    | CompileInput.Script(_, script) -> Expand.expandScript script macroScope preloaded ctx)
-                ()
+                    let reg, expandFn =
+                        match input with
+                        | CompileInput.Program(reg, progs) ->
+                            reg, fun ctx macroScope -> Expand.expand progs macroScope scope ctx
+                        | CompileInput.Script(reg, script) ->
+                            reg, fun ctx macroScope -> Expand.expandScriptUnit script macroScope scope ctx
 
-        let bound: BoundSyntaxTree =
-            { Root = ExpandCtx.intoBody ctx boundExprs
-              MangledName = ctx.MangledName
-              Diagnostics = ctx.Diagnostics.Diagnostics }
+                    let ctx = ExpandCtx.createGlobal reg "LispProgram" allLibs
+                    let macroScope = Builtins.loadBuiltinMacroEnv ctx
+                    expandFn ctx macroScope)
+                ()
 #else
         let registry, units =
             match input with
