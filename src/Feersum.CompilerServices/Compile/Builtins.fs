@@ -1,14 +1,15 @@
 namespace Feersum.CompilerServices.Compile
 
+open System
+
 open Mono.Cecil
 open Mono.Cecil.Rocks
 
 open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Compile.MonoHelpers
-open System
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Diagnostics
-open Feersum.CompilerServices.Utils
+open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Targets
 
@@ -112,8 +113,6 @@ module private ExternUtils =
 // -- Builtin Macro Definitions ------------------------------------------------
 
 module private BuiltinMacros =
-    open Feersum.CompilerServices.Text
-    open Feersum.CompilerServices.NewBindingTest
 
     // -- Source strings (shared between old and new parsers) ------------------
 
@@ -123,14 +122,13 @@ module private BuiltinMacros =
             ((_ a b :::) (if a (and b :::) #f))
             ((_) #t))"
 
-    // TODO: re-write without the GUID trick once proper hygiene is in place.
     let private macroOrSrc =
         "(syntax-rules ()
             ((or) #f)
             ((or test) test)
             ((or test1 test2 ...)
-                (let ((|90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| test1))
-                    (if |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| (or test2 ...)))))"
+                (let ((temp test1))
+                    (if temp temp (or test2 ...)))))"
 
     let private macroWhenSrc =
         "(syntax-rules ()
@@ -179,35 +177,13 @@ module private BuiltinMacros =
     //       the `unless` macro where we can't see `memv` to implement the pipe
     //       form. We need a better default environment to laod these macros in
     //       now that hygiene stops them from seeing items in the user's scope.
+    //
+    //       After thinking a bit about this I think the solution is that these
+    //       builtin macros should really be an embedded resource which we bind
+    //       in an initial "core" scope whcih contains at least `(feeersum ..)`
+    //       from `Serhefa`. This can be properly solved wiht the "Symbols" API
+    //       story. For now we can just leave `case` out of the builtins.
 
-
-    // ── Old-format parser (Macros.parseSyntaxRules) ────────────────────────
-
-    let private parseBuiltinMacro id rules =
-        let registry = SourceRegistry.empty ()
-        let result = Parse.readExpr1 registry (sprintf "builtin-%s" id) rules
-
-        if hasErrors result.Diagnostics then
-            icef "Error in builtin macro: %A" result.Diagnostics
-
-        match result.Root.Body with
-        | Some expr -> MacrosOld.parseSyntaxRules id expr |> Result.unwrap
-        | None -> icef "no body in builtin macro %A" result.Root.Text
-
-    let private macroAnd = macroAndSrc |> parseBuiltinMacro "and"
-    let private macroOr = macroOrSrc |> parseBuiltinMacro "or"
-    let private macroWhen = macroWhenSrc |> parseBuiltinMacro "when"
-    let private macroUnless = macroUnlessSrc |> parseBuiltinMacro "unless"
-    let private macroCond = macroCondSrc |> parseBuiltinMacro "cond"
-
-    /// The list of builtin macros (old StorageRef.Macro format, for Binder/Compiler).
-    let coreMacros =
-        { LibraryName = [ "feersum"; "builtin"; "macros" ]
-          Exports =
-            [ macroAnd; macroOr; macroWhen; macroUnless; macroCond ]
-            |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
-
-    // -- New-format loader ----------------------------------------------------
 
     /// Load all builtin macros (`and`, `or`, `when`, `unless`, `cond`) into a
     /// `StxEnvironment`, starting from `Map.empty`.
@@ -245,7 +221,7 @@ module private BuiltinMacros =
 
                     let id, scope' = ExpandCtx.reserveMacro name scope
 
-                    match New.Macros.makeSyntaxTransformer name stx scope' diags with
+                    match Macros.makeSyntaxTransformer name stx scope' diags with
                     | Some transformer ->
                         ExpandCtx.registerMacro ctx id transformer
                         scope'
@@ -255,7 +231,6 @@ module private BuiltinMacros =
 // -- Public Builtins API ------------------------------------------------------
 
 module Builtins =
-    open Feersum.CompilerServices.NewBindingTest
 
     /// Load all builtin macros (`and`, `or`, `when`, `unless`, `cond`) into the
     /// initial `StxEnvironment`, starting from `Map.empty`.  Special forms are
@@ -382,11 +357,17 @@ module Builtins =
 
     /// The core library signature
     let loadCoreSignatures target =
-        let (tys, sigs) = loadReferencedSignatures target.LispCoreLocation
+        let tys, sigs = loadReferencedSignatures target.LispCoreLocation
 
-        let sigs = BuiltinMacros.coreMacros :: sigs
+        // Include a library signature for builtin macros (with no variable exports,
+        // since these are handled directly by the expander).
+        //
+        // FIXME: This is a mild to moderate hack until the new Symbols API lands.
+        let builtinMacrosLib: LibrarySignature<StorageRef> =
+            { LibraryName = [ "feersum"; "builtin"; "macros" ]
+              Exports = [] }
 
-        (tys, sigs)
+        (tys, builtinMacrosLib :: sigs)
 
     /// Load the core types into the given assembly
     let importCore (targetAssm: AssemblyDefinition) target =

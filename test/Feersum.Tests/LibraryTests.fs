@@ -1,7 +1,7 @@
 module LibraryTests
 
-open Feersum.CompilerServices.Binding.New
-open Feersum.CompilerServices.Binding.New.Libraries
+open Feersum.CompilerServices.Binding
+open Feersum.CompilerServices.Binding.Libraries
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Factories.Convenience

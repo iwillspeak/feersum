@@ -12,7 +12,6 @@ open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Compile
 open Feersum.ParseRepl
-open Feersum.XPNew
 
 /// Command line arguments type. Encompasses the options that the compiler
 /// supports.
@@ -110,12 +109,6 @@ let main argv =
         match args.GetResult(Compile, defaultValue = []), args.TryGetResult(Output) with
         | [], None ->
             runRepl ()
-            0
-        | "xpnew" :: rest, _ ->
-            runXpNewRepl options rest
-            0
-        | "xpold" :: rest, _ ->
-            runXpOldRepl options rest
             0
         | [ "parserepl" ], None ->
             runParserRepl ()

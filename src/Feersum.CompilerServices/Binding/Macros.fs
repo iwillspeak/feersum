@@ -1,10 +1,9 @@
-namespace Feersum.CompilerServices.Binding.New
+namespace Feersum.CompilerServices.Binding
 
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Stx
-open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Utils
 
 // -- Pattern types ------------------------------------------------------------

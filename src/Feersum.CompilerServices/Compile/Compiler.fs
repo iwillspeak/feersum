@@ -11,9 +11,6 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Targets
 open Feersum.CompilerServices.Syntax.Tree
-#if USE_NEW_EXPAND
-open Feersum.CompilerServices.NewBindingTest
-#endif
 
 type CompileResult =
     { Diagnostics: Diagnostic list
@@ -50,13 +47,12 @@ module Compilation =
             |> Seq.append (Seq.singleton <| Builtins.loadCoreSignatures target)
             |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> (List.append tys aTys, List.append sigs aSigs)) ([], [])
 
-        let scope =
+        let preloaded =
             if options.OutputType = OutputType.Script then
-                Binder.scopeFromLibraries allLibs
+                Environments.fromLibraries allLibs
             else
-                Binder.emptyScope
+                Environments.empty
 
-#if USE_NEW_EXPAND
         let bound =
             Instrumentation.withPhase
                 "bind"
@@ -64,23 +60,14 @@ module Compilation =
                     let reg, expandFn =
                         match input with
                         | CompileInput.Program(reg, progs) ->
-                            reg, fun ctx macroScope -> Expand.expand progs macroScope scope ctx
+                            reg, fun ctx macroScope -> Expand.expand progs macroScope preloaded ctx
                         | CompileInput.Script(reg, script) ->
-                            reg, fun ctx macroScope -> Expand.expandScriptUnit script macroScope scope ctx
+                            reg, fun ctx macroScope -> Expand.expandScriptUnit script macroScope preloaded ctx
 
                     let ctx = ExpandCtx.createGlobal reg "LispProgram" allLibs
                     let macroScope = Builtins.loadBuiltinMacroEnv ctx
                     expandFn ctx macroScope)
                 ()
-#else
-        let registry, units =
-            match input with
-            | CompileInput.Program(reg, progs) -> reg, progs |> List.map (fun prog -> prog.Body |> List.ofSeq)
-            | CompileInput.Script(reg, script) -> reg, [ script.Body |> Option.toList ]
-
-        let bound =
-            Instrumentation.withPhase "bind" (Binder.bind scope allLibs registry) units
-#endif
 
         let assmName =
             if hasErrors bound.Diagnostics |> not then

@@ -134,7 +134,7 @@ module private Utils =
         ctx.Assm.MainModule.ImportReference(field)
 
     /// Ensure a field exists on the program type to be used as a global variable
-    let private getField ctx typeName id =
+    let private getField (ctx: EmitCtx) (typeName: string) (id: string) =
         match Map.tryFind typeName ctx.Libraries with
         | Some ty ->
             ty.Fields
@@ -495,7 +495,6 @@ module private Utils =
     /// Emit a write to a given storage location
     and writeTo ctx storage =
         match storage with
-        | StorageRef.Macro m -> icef "Can't re-define macro %s" m.Name
         | StorageRef.Global(mangledPrefix, loc) ->
             match loc with
             | Method id -> icef "Can't re-define builtin %s" id
@@ -523,7 +522,6 @@ module private Utils =
     /// Emit a load from the given storage location
     and readFrom ctx storage =
         match storage with
-        | StorageRef.Macro m -> icef "Invalid macro application %s" m.Name
         | StorageRef.Global(ty, loc) ->
             match loc with
             | Method id ->
@@ -1020,7 +1018,15 @@ module Emit =
     /// given bound tree. This method is responsible for creating the root
     /// `LispProgram` type and preparting the emit context. The main work of
     /// lowering is done by `emitNamedLambda`.
-    let emit options target (outputStream: Stream) (outputName: string) (symbolStream: Stream option) externTys bound =
+    let emit
+        options
+        target
+        (outputStream: Stream)
+        (outputName: string)
+        (symbolStream: Stream option)
+        externTys
+        (bound: BoundSyntaxTree)
+        =
 
         /// Collect external types so we can look up their fields later
         let externs =

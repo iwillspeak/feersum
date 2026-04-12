@@ -1,13 +1,11 @@
-namespace Feersum.CompilerServices.NewBindingTest
+namespace Feersum.CompilerServices.Binding
 
 open Feersum.CompilerServices.Syntax
-open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
-open Feersum.CompilerServices.Binding.New
+open Feersum.CompilerServices.Binding.Libraries
 open Feersum.CompilerServices.Binding.Stx
-open Feersum.CompilerServices.Binding.New.Libraries
 
 // -- Diagnostics --------------------------------------------------------------
 
@@ -96,17 +94,7 @@ type ExpandCtx =
 module ExpandCtx =
 
     /// Create a root context for global-scope expansion.
-    let createGlobal
-        (registry: SourceRegistry)
-        (mangledName: string)
-        (libraries: Feersum.CompilerServices.Binding.LibrarySignature<StorageRef> list)
-        =
-        let convertedLibs: LibrarySignature<StorageRef> list =
-            libraries
-            |> List.map (fun s ->
-                { LibraryName = s.LibraryName
-                  Exports = s.Exports })
-
+    let createGlobal (registry: SourceRegistry) (mangledName: string) (libraries: LibrarySignature<StorageRef> list) =
         { LocalCount = 0
           Captures = []
           HasDynEnv = false
@@ -117,7 +105,7 @@ module ExpandCtx =
           Registry = registry
           MangledName = mangledName
           IsGlobal = true
-          Libraries = convertedLibs
+          Libraries = libraries
           MacroRegistry = MacroRegistry()
           Parent = None }
 
@@ -235,35 +223,6 @@ module ExpandCtx =
         ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
         Map.add name (StxBinding.Variable id) scope
 
-// -- Built-in scope -----------------------------------------------------------
-
-module StxEnvironment =
-
-    /// Map a well-known keyword name to its `SpecialFormKind`, or return `None`
-    /// if the name is not a built-in special form.
-    let tryResolveSpecial (name: string) : SpecialFormKind option =
-        match name with
-        | "if" -> Some SpecialFormKind.If
-        | "lambda" -> Some SpecialFormKind.Lambda
-        | "define" -> Some SpecialFormKind.Define
-        | "set!" -> Some SpecialFormKind.SetBang
-        | "begin" -> Some SpecialFormKind.Begin
-        | "quote" -> Some SpecialFormKind.Quote
-        | "let" -> Some SpecialFormKind.Let
-        | "let*" -> Some SpecialFormKind.LetStar
-        | "letrec" -> Some SpecialFormKind.Letrec
-        | "letrec*" -> Some SpecialFormKind.LetrecStar
-        | "define-syntax" -> Some SpecialFormKind.DefineSyntax
-        | "let-syntax" -> Some SpecialFormKind.LetSyntax
-        | "letrec-syntax" -> Some SpecialFormKind.LetrecSyntax
-        | "define-library" -> Some SpecialFormKind.DefineLibrary
-        | "import" -> Some SpecialFormKind.Import
-        | _ -> None
-
-    /// The empty initial scope. Special forms are not stored in the scope;
-    /// they are recognised by name in `resolveHead` via `tryResolveSpecial`.
-    /// Callers extend this with macro and variable bindings before expansion.
-    let builtin: StxEnvironment = Map.empty
 
 // -- Expander -----------------------------------------------------------------
 
@@ -281,7 +240,7 @@ module private Expander =
         | StxId(name, _, maybeScope) ->
             match Map.tryFind name (maybeScope |> Option.defaultValue scope) with
             | Some _ as found -> found
-            | None -> StxEnvironment.tryResolveSpecial name |> Option.map StxBinding.Special
+            | None -> Environments.tryResolveSpecial name |> Option.map StxBinding.Special
         | _ -> None
 
     /// Convert a syntactic datum to its bound-tree counterpart.
@@ -402,7 +361,7 @@ module private Expander =
                     None
         | None ->
             // Check if the name is a special form used in value position.
-            match StxEnvironment.tryResolveSpecial name with
+            match Environments.tryResolveSpecial name with
             | Some _ ->
                 ExpandCtx.emitError ctx Diag.illFormedForm loc $"keyword '{name}' used in value position"
                 None
@@ -921,16 +880,11 @@ module private Expander =
                     library.Exports
                     |> List.fold
                         (fun s (name, storage) ->
-                            match storage with
-                            | StorageRef.Macro _ ->
-                                // Old-format macro entries not usable by the new expander.
-                                s
-                            | _ ->
-                                let id = Ident.fresh ()
+                            let id = Ident.fresh ()
 
-                                ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
+                            ctx.BindingMap <- Map.add id (Variable(storage, ctx.LambdaDepth)) ctx.BindingMap
 
-                                Map.add name (StxBinding.Variable id) s)
+                            Map.add name (StxBinding.Variable id) s)
                         currentScope
 
                 let mangledName = library.LibraryName |> String.concat "::"
@@ -1179,12 +1133,7 @@ module Expand =
         (preloaded: Map<string, StorageRef>)
         : StxEnvironment =
         preloaded
-        |> Map.fold
-            (fun s name storage ->
-                match storage with
-                | StorageRef.Macro _ -> s // old-format macro refs — skip
-                | _ -> ExpandCtx.registerStorage ctx name storage s)
-            scope
+        |> Map.fold (fun s name storage -> ExpandCtx.registerStorage ctx name storage s) scope
 
     /// Thread-expand a list of Stx unit lists, carrying scope forward across
     /// units, and package the result as a `BoundSyntaxTree`.

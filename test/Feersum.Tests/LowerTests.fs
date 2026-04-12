@@ -4,7 +4,6 @@ open Xunit
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
-open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Text
 
 // -- Helpers ------------------------------------------------------------------
@@ -20,8 +19,16 @@ let private parseScheme source =
 
 /// Parse, bind, and lower a Scheme expression. Returns the lowered BoundBody.
 let private lowerScheme source =
-    let exprs = parseScheme source
-    let bound = Binder.bind Binder.emptyScope [] (SourceRegistry.empty ()) [ exprs ]
+    let result = Parse.readProgramSimple "program" source
+
+    if result |> Parse.ParseResult.hasErrors then
+        failwithf "Parse error in '%s': %A" source result.Diagnostics
+
+    let registry = SourceRegistry.empty ()
+    let ctx = ExpandCtx.createGlobal registry "TestProgram" []
+    let initialScope = Environments.builtin
+    let preloaded = Environments.empty
+    let bound = Expand.expand [ result.Root ] initialScope preloaded ctx
     (Lower.lower bound).Root
 
 /// Strip SequencePoint wrappers to reach the underlying expression.
