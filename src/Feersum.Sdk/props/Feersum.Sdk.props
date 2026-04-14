@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Declare our language support to .NET SDK / project system -->
+  <ItemGroup>
+    <ProjectCapability Include="AssemblyReferences" />
+    <ProjectCapability Include="DependenciesTree" />
+    <ProjectCapability Include="DotNetCore" />
+    <ProjectCapability Include="Managed" />
+    <ProjectCapability Include="PackageReferences" />
+    <ProjectCapability Include="ProjectReferences" />
+    <ProjectCapability Include="SdkStyle" />
+    <ProjectCapability Include="TargetFramework" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DefaultLanguageSourceExtension>scm</DefaultLanguageSourceExtension>
+    <Language>Scheme</Language>
+    <TargetRuntime>Managed</TargetRuntime>
+    <DefaultProjectTypeGuid Condition=" '$(DefaultProjectTypeGuid)' == '' ">{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}</DefaultProjectTypeGuid>
+  </PropertyGroup>
+
+  <!-- Disable bits of the .NET MSBuild SDK we don't want to use. -->
+  <PropertyGroup>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <!-- FIXME: PDB generation is controlled by build configuration. Stop
+        MSBuild from expecting PDB files if we are in release mode.
+        
+        Instead of this we should have a separate pair of `DebugType`, and
+        `PdbOut` parameters to control PDB generation in isolation.  -->
+    <DebugType Condition=" '$(Configuration)'!='Debug' ">None</DebugType>
+  </PropertyGroup>
+
+</Project>

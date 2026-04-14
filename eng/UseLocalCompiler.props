@@ -1,5 +1,6 @@
 <Project>
-
+  <Import Project="$(MSBuildThisFileDirectory)../src/Feersum.Sdk/props/Feersum.Sdk.props" />
+  
   <PropertyGroup>
     <LanguageTargets Condition="'$(MSBuildProjectExtension)' == '.scmproj'">$(MSBuildThisFileDirectory)../src/Feersum.Sdk/targets/Feersum.Sdk.targets</LanguageTargets>
   </PropertyGroup>
