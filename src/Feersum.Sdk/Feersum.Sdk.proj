@@ -14,6 +14,7 @@
   <ItemGroup>
     <None Include="sdk\**" PackagePath="sdk/" Pack="true" />
     <None Include="targets\**" PackagePath="targets/" Pack="true" />
+    <None Include="props\**" PackagePath="props/" Pack="true" />
   </ItemGroup>
 
   <!-- When restoring the compiler with `PackageReference` the target file wants
