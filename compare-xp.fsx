@@ -1,17 +1,31 @@
-/// compare-xp.fsx
-///
-/// Rebuilds the Feersum compiler, then runs every spec/**/*.scm and *.sld
-/// through both `xpnew` and `xpold`, comparing their stdout.  Diagnostics
-/// (errors) go to stderr in the compiler, so stdout is the pure bound-form
-/// output and stderr is checked only for failure detection.
-///
-/// Usage:  dotnet fsi compare-xp.fsx [--no-build] [filter]
-///   --no-build   skip the dotnet build step
-///   filter       only run files whose path contains this string
+// compare-xp.fsx
+//
+// Compares Expand.expand with Binder.bind on the spec suite.
+// Parses every spec/**/*.scm and *.sld directly using Feersum.CompilerServices,
+// calls both functions, and compares their outputs and diagnostics.
+//
+// Usage:  dotnet fsi compare-xp.fsx [--no-build] [filter]
+//   --no-build   skip the dotnet build step
+//   filter       only run files whose path contains this string
 
 open System
-open System.Diagnostics
 open System.IO
+open System.Diagnostics
+
+// Add bin directory to probe path for all dependencies
+#I "src/Feersum/bin/Debug/net8.0"
+#r "Feersum.CompilerServices.dll"
+#r "Mono.Cecil.dll"
+
+open Feersum.CompilerServices.Syntax.Parse
+open Feersum.CompilerServices.Binding
+open Feersum.CompilerServices.Text
+open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Syntax.Tree
+open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Binding.New
+open Feersum.CompilerServices.Compile
+open Feersum.CompilerServices.Targets
 
 let repoRoot = __SOURCE_DIRECTORY__
 
@@ -19,36 +33,26 @@ let args = fsi.CommandLineArgs |> Array.toList |> List.tail // drop script name
 let noBuild = args |> List.contains "--no-build"
 let filter = args |> List.tryFind (fun a -> a <> "--no-build")
 
-// ── Process helpers ───────────────────────────────────────────────────────────
 
-let runProcess (exe: string) (extraArgs: string list) =
-    let psi = ProcessStartInfo()
-    psi.FileName <- exe
-
-    for a in extraArgs do
-        psi.ArgumentList.Add(a)
-
-    psi.WorkingDirectory <- repoRoot
-    psi.RedirectStandardOutput <- true
-    psi.RedirectStandardError <- true
-    psi.UseShellExecute <- false
-    use p = Process.Start(psi)
-    // Read both streams concurrently to avoid deadlocks on large output.
-    let stdoutTask = p.StandardOutput.ReadToEndAsync()
-    let stderrTask = p.StandardError.ReadToEndAsync()
-    p.WaitForExit()
-    stdoutTask.Result, stderrTask.Result, p.ExitCode
-
-// ── Step 1: Build ─────────────────────────────────────────────────────────────
+// ── Build step ────────────────────────────────────────────────────────────────
 
 if not noBuild then
-    printfn "Building..."
+    printfn "Building Feersum.CompilerServices..."
 
-    let out, err, code =
-        runProcess "dotnet" [ "build"; "--no-incremental"; "-v"; "q"; "--configuration"; "Release" ]
+    let psi = ProcessStartInfo()
+    psi.FileName <- "dotnet"
+    psi.ArgumentList.Add("build")
+    psi.ArgumentList.Add("src/Feersum.CompilerServices/")
+    psi.ArgumentList.Add("/nologo")
+    psi.ArgumentList.Add("-v")
+    psi.ArgumentList.Add("q")
+    psi.WorkingDirectory <- repoRoot
+    psi.UseShellExecute <- false
+    use p = Process.Start(psi)
+    p.WaitForExit()
 
-    if code <> 0 then
-        eprintfn "Build failed:\n%s%s" out err
+    if p.ExitCode <> 0 then
+        eprintfn "Build failed!"
         Environment.Exit 1
 
     printfn "Build succeeded.\n"
@@ -66,29 +70,45 @@ let specFiles =
         | None -> true
         | Some pat -> f.Contains(pat))
 
-let dll =
-    Path.Combine(repoRoot, "src", "Feersum", "bin", "Release", "net8.0", "Feersum.dll")
+// ── Helper functions ──────────────────────────────────────────────────────────
 
-if not (File.Exists dll) then
-    eprintfn "Compiler DLL not found: %s\nRun without --no-build first." dll
-    Environment.Exit 1
+let formatDiagnostics (diags: Diagnostic list) : string =
+    diags |> List.map (fun d -> sprintf "  %s" (d.ToString())) |> String.concat "\n"
 
-let runMode (mode: string) (spec: string) =
-    let stdout, stderr, _code = runProcess "dotnet" [ dll; mode; spec ]
-    let hasError = stderr.Contains("error SCM") || stdout.Contains("error SCM")
-    not hasError, stdout.Trim(), stderr.Trim()
+let tryParseFile (registry: SourceRegistry) (filePath: string) : Result<Tree.Program list, string> =
+    try
+        let source = File.ReadAllText(filePath)
+        let result = readProgram registry (Path.GetFileName(filePath)) source
+        Ok [ result.Root ]
+    with ex ->
+        Result.Error(sprintf "Parse error: %s" ex.Message)
+
+let tryExpand (registry: SourceRegistry) (programs: Tree.Program list) libs : Result<BoundSyntaxTree, string> =
+    try
+        let ctx = ExpandCtx.createGlobal registry "LispProgram" libs
+        let result = Expand.expand programs Map.empty Map.empty ctx
+        Ok result
+    with ex ->
+        Result.Error(sprintf "Expand error: %s" ex.Message)
+
+let tryBind (registry: SourceRegistry) (programs: Tree.Program list) libs : Result<BoundSyntaxTree, string> =
+    try
+        let result = Binder.bindProgram registry Map.empty Map.empty libs programs
+        Ok result
+    with ex ->
+        Result.Error(sprintf "Bind error: %s" ex.Message)
+
+let boundTreeToString (bst: BoundSyntaxTree) : string =
+    sprintf
+        "BoundSyntaxTree { MangledName = %s }\n%s\n%A"
+        bst.MangledName
+        (formatDiagnostics bst.Diagnostics)
+        bst.Root
 
 // ── Step 3: Compare ───────────────────────────────────────────────────────────
 
-type Result =
-    | Match // both succeeded and output agrees
-    | BothFailed // both reported errors
-    | Differ of string * string // both succeeded but output differs
-    | Regression of string // xpnew errors, xpold OK
-    | Improvement of string // xpnew OK, xpold errors
-
 let mutable counts =
-    Map.ofList [ "match", 0; "both-failed", 0; "differ", 0; "regr", 0; "impr", 0 ]
+    Map.ofList [ "match", 0; "both-failed", 0; "differ", 0; "expand-fail", 0; "bind-fail", 0 ]
 
 let inc key =
     counts <- counts |> Map.add key (counts.[key] + 1)
@@ -96,22 +116,21 @@ let inc key =
 let truncate (n: int) (s: string) =
     if s.Length <= n then s else s.[.. n - 1] + "…"
 
-let showDiff (label: string) (newOut: string) (oldOut: string) =
+let showDiff (label: string) (expandOut: string) (bindOut: string) =
     let tmp = Path.GetTempPath()
-    let fnew = Path.Combine(tmp, "xpnew.txt")
-    let fold = Path.Combine(tmp, "xpold.txt")
-    File.WriteAllText(fnew, newOut)
-    File.WriteAllText(fold, oldOut)
-    // Pass the whole pipeline to sh -c as a single argument via ArgumentList.
+    let fexp = Path.Combine(tmp, "expand.txt")
+    let fbind = Path.Combine(tmp, "bind.txt")
+    File.WriteAllText(fexp, expandOut)
+    File.WriteAllText(fbind, bindOut)
     let psi = ProcessStartInfo()
     psi.FileName <- "sh"
     psi.ArgumentList.Add("-c")
 
     psi.ArgumentList.Add(
         sprintf
-            "diff -u --label xpold --label xpnew '%s' '%s' | bat --language=diff --style=plain --paging=never"
-            fold
-            fnew
+            "diff -u --label expand --label bind '%s' '%s' | bat --language=diff --style=plain --paging=never"
+            fexp
+            fbind
     )
 
     psi.WorkingDirectory <- repoRoot
@@ -121,46 +140,53 @@ let showDiff (label: string) (newOut: string) (oldOut: string) =
 
 printfn "Comparing %d spec file(s)...\n" specFiles.Length
 
+let libs = Builtins.loadCoreSignatures TargetResolve.fromCurrentRuntime |> snd
+
 for spec in specFiles do
     let rel = Path.GetRelativePath(repoRoot, spec)
-    let newOk, newOut, _newErr = runMode "xpnew" spec
-    let oldOk, oldOut, _oldErr = runMode "xpold" spec
+    let registry = SourceRegistry.empty ()
 
-    let result =
-        match newOk, oldOk with
-        | false, false -> BothFailed
-        | false, true -> Regression _newErr
-        | true, false -> Improvement _oldErr
-        | true, true -> if newOut = oldOut then Match else Differ(newOut, oldOut)
-
-    match result with
-    | Match ->
-        inc "match"
-        printfn "  ✓  %s" rel
-    | BothFailed ->
+    match tryParseFile registry spec with
+    | Result.Error err ->
+        printfn "  ✗  %s  [parse error]" rel
+        printfn "     %s" (truncate 120 err)
         inc "both-failed"
-        printfn "  -  %s  (both report errors)" rel
-    | Regression msg ->
-        inc "regr"
-        printfn "  ✗  %s  [REGRESSION: xpnew errors, xpold OK]" rel
-        printfn "     %s" (truncate 120 (msg.Split('\n').[0]))
-    | Improvement msg ->
-        inc "impr"
-        printfn "  ↑  %s  [xpnew OK, xpold errors]" rel
-        printfn "     %s" (truncate 120 (msg.Split('\n').[0]))
-    | Differ(n, o) ->
-        inc "differ"
-        printfn "  ≠  %s  [output differs]" rel
-        showDiff rel n o
+    | Result.Ok programs ->
+        let expandRes = tryExpand registry programs libs
+        let bindRes = tryBind registry programs libs
+
+        match expandRes, bindRes with
+        | Result.Error expandErr, Result.Error bindErr ->
+            inc "both-failed"
+            printfn "  -  %s  (both report errors)" rel
+        | Result.Error expandErr, Result.Ok _ ->
+            inc "expand-fail"
+            printfn "  ✗  %s  [REGRESSION: Expand errors, Bind OK]" rel
+            printfn "     %s" (truncate 120 (expandErr.Split('\n').[0]))
+        | Result.Ok _, Result.Error bindErr ->
+            inc "bind-fail"
+            printfn "  ↑  %s  [Bind errors, Expand OK]" rel
+            printfn "     %s" (truncate 120 (bindErr.Split('\n').[0]))
+        | Result.Ok expandBst, Result.Ok bindBst ->
+            let expandStr = boundTreeToString expandBst
+            let bindStr = boundTreeToString bindBst
+
+            if expandStr = bindStr then
+                inc "match"
+                printfn "  ✓  %s" rel
+            else
+                inc "differ"
+                printfn "  ≠  %s  [output differs]" rel
+                showDiff rel expandStr bindStr
 
 // ── Summary ───────────────────────────────────────────────────────────────────
 
 printfn ""
 printfn "─────────────────────────────────────────────"
-printfn "  ✓  matched:      %d" counts.["match"]
-printfn "  ≠  differ:       %d" counts.["differ"]
-printfn "  ✗  regressions:  %d" counts.["regr"]
-printfn "  ↑  improvements: %d" counts.["impr"]
-printfn "  -  both-failed:  %d" counts.["both-failed"]
+printfn "  ✓  matched:       %d" counts.["match"]
+printfn "  ≠  differ:        %d" counts.["differ"]
+printfn "  ✗  expand fails:  %d" counts.["expand-fail"]
+printfn "  ↑  bind fails:    %d" counts.["bind-fail"]
+printfn "  -  both-failed:   %d" counts.["both-failed"]
 printfn "─────────────────────────────────────────────"
-printfn "  total:           %d" specFiles.Length
+printfn "  total:            %d" specFiles.Length

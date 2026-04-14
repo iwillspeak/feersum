@@ -235,9 +235,7 @@ module private Expander =
     let resolveHead (stx: Stx) (scope: StxEnvironment) : StxBinding option =
         match stx with
         | StxId(name, _, maybeScope) ->
-            match Map.tryFind name (maybeScope |> Option.defaultValue scope) with
-            | Some _ as found -> found
-            | None -> Environments.tryResolveSpecial name |> Option.map StxBinding.Special
+            Stx.resolve name (maybeScope |> Option.defaultValue scope)
         | _ -> None
 
     /// Convert a syntactic datum to its bound-tree counterpart.
@@ -339,32 +337,24 @@ module private Expander =
     /// Uses Idents to distinguish same-named variables from different scopes,
     /// enabling hygienic macro expansion.
     let resolveVar (name: string) (loc: TextLocation) (scope: StxEnvironment) (ctx: ExpandCtx) : StorageRef option =
-        match Map.tryFind name scope with
-        | Some id ->
-            match id with
-            | StxBinding.Macro _
-            | StxBinding.Special _ ->
-                ExpandCtx.emitError ctx Diag.illFormedForm loc $"keyword '{name}' used in value position"
-                None
-            | StxBinding.Variable id ->
-                match Map.tryFind id ctx.BindingMap with
-                | Some(Variable(storage, definedAt)) ->
-                    if definedAt < ctx.LambdaDepth then
-                        Some(ExpandCtx.captureAcrossLambdas storage definedAt ctx)
-                    else
-                        Some storage
-                | None ->
-                    ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
-                    None
-        | None ->
-            // Check if the name is a special form used in value position.
-            match Environments.tryResolveSpecial name with
-            | Some _ ->
-                ExpandCtx.emitError ctx Diag.illFormedForm loc $"keyword '{name}' used in value position"
-                None
+        match Stx.resolve name scope with
+        | Some(StxBinding.Macro _)
+        | Some(StxBinding.Special _) ->
+            ExpandCtx.emitError ctx Diag.illFormedForm loc $"keyword '{name}' used in value position"
+            None
+        | Some(StxBinding.Variable id) ->
+            match Map.tryFind id ctx.BindingMap with
+            | Some(Variable(storage, definedAt)) ->
+                if definedAt < ctx.LambdaDepth then
+                    Some(ExpandCtx.captureAcrossLambdas storage definedAt ctx)
+                else
+                    Some storage
             | None ->
                 ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
                 None
+        | None ->
+            ExpandCtx.emitError ctx Diag.undefinedSymbol loc $"unbound identifier '{name}'"
+            None
 
     /// Look up a name in the scope, tracking captures for variables from
     /// outer lambda scopes.

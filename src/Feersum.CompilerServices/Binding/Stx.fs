@@ -220,3 +220,33 @@ module Stx =
                         | _ -> None)
 
                 Stx.Datum(StxDatum.ByteVector bytes, loc)
+
+    /// Map a well-known keyword name to its `SpecialFormKind`, or return `None`
+    /// if the name is not a built-in special form.
+    let private tryResolveSpecial (name: string) : SpecialFormKind option =
+        match name with
+        | "if" -> Some SpecialFormKind.If
+        | "lambda" -> Some SpecialFormKind.Lambda
+        | "define" -> Some SpecialFormKind.Define
+        | "set!" -> Some SpecialFormKind.SetBang
+        | "begin" -> Some SpecialFormKind.Begin
+        | "quote" -> Some SpecialFormKind.Quote
+        | "let" -> Some SpecialFormKind.Let
+        | "let*" -> Some SpecialFormKind.LetStar
+        | "letrec" -> Some SpecialFormKind.Letrec
+        | "letrec*" -> Some SpecialFormKind.LetrecStar
+        | "define-syntax" -> Some SpecialFormKind.DefineSyntax
+        | "let-syntax" -> Some SpecialFormKind.LetSyntax
+        | "letrec-syntax" -> Some SpecialFormKind.LetrecSyntax
+        | "define-library" -> Some SpecialFormKind.DefineLibrary
+        | "import" -> Some SpecialFormKind.Import
+        | _ -> None
+
+    /// Resolve the binding of `name` in `env`, returning either the binding
+    /// or `None` if no binding was found.
+    let resolve (name: string) (env: StxEnvironment) : StxBinding option =
+        env
+        |> Map.tryFind name
+        |> Option.orElseWith (fun () ->
+            tryResolveSpecial name
+            |> Option.map StxBinding.Special)

@@ -1,5 +1,6 @@
 namespace Feersum.CompilerServices.Binding.New
 
+open Feersum.CompilerServices.Binding.Stx
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
@@ -92,6 +93,12 @@ module private ResolutionEnv =
     let tryResolve (S scopes) (ident: Ident) : StorageRef option =
         scopes |> List.tryPick (Map.tryFind ident)
 
+    /// Extend the given scope with a new binding `ident` -> `var`
+    let extend (S scopes) (ident: Ident) (var: StorageRef) =
+        match scopes with
+        | active :: tail -> S(Map.add ident var active :: tail)
+        | _ -> ice "ResolutionEnvironment has no active scope"
+
 /// Binder Frame Context
 ///
 /// A frame context represents the state of the binder as it processes a
@@ -144,8 +151,9 @@ module private FrameCtx =
           LocalCount = 0 }
 
     /// Create a new `FrameCtx` for a global frame with the given `mangledName`.
-    let createGlobal binderCtx mangledName =
+    let createGlobal binderCtx mangledName scope =
         createWithKind binderCtx (Global mangledName)
+        |> fun ctx -> { ctx with Env = S [ scope ] }
 
     /// Create a new `FrameCtx` for a library frame with the given `mangledName`
     /// and `parent` frame.
@@ -233,8 +241,67 @@ module private Impl =
         //        means the locations are actually just denormalised on each stx
         stx.Loc
 
-    let bindTopLevel (ctx: BinderCtx) (syntaxEnv: StxEnvironment) (item: Stx) : BoundExpr =
+    /// Bind a Top Level Item
+    ///
+    /// Top level items can be commands or definitions
+    let bindTopLevel (ctx: FrameCtx) (syntaxEnv: StxEnvironment) (item: Stx) : BoundExpr * StxEnvironment =
         unimpl "Binder.bindTopLevel: not implemented yet"
+
+    /// Bind the Import Declarations in a Program
+    ///
+    /// Updates the `StxEnvironment` with the imported bindings and returns the
+    /// remaining body of the program to be bound.
+    let bindImports (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : Stx list * StxEnvironment =
+        let rec addImportsToEnv (stxEnv: StxEnvironment) (stx: Stx) : StxEnvironment =
+            let imp = Libraries.parseImport ctx.BinderCtx.Diagnostics stx
+
+            match Libraries.resolveImport ctx.BinderCtx.Libraries imp with
+            | Ok library ->
+                let newScope =
+                    library.Exports
+                    |> List.fold
+                        (fun s (name, storage) ->
+                            let id = Ident.fresh ()
+                            ctx.Env <- ResolutionEnv.extend ctx.Env id storage
+                            Map.add name (StxBinding.Variable id) s)
+                        stxEnv
+
+                newScope
+            | Result.Error msg ->
+                ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.invalidImport stx.Loc msg
+                stxEnv
+
+        let rec loop stxEnv remainingStx =
+            match remainingStx with
+            | StxList(StxId(id, _, envInner) :: args, None, _, envOuter) :: rest ->
+                let envOuter = Option.defaultValue stxEnv envOuter
+                let envInner = Option.defaultValue envOuter envInner
+                let resolved = Stx.resolve id envInner
+
+                match resolved with
+                | Some(StxBinding.Special SpecialFormKind.Import) ->
+                    let stxEnv = args |> List.fold addImportsToEnv stxEnv
+                    loop stxEnv rest
+                | _ ->
+                    // Not an import, stop processing and return the remaining stx
+                    remainingStx, stxEnv
+            | _ -> remainingStx, stxEnv
+
+        loop stxEnv stxs
+
+
+    /// Bind a Program Root
+    ///
+    /// Walks the list of items and binds each one as a top level item
+    let bindProgramRoot (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : BoundBody =
+        let stxs, stxEnv = bindImports ctx stxEnv stxs
+
+        let boundItems = stxs |> List.mapFold (bindTopLevel ctx) stxEnv |> fst
+
+        { Body = Seq(List.ofSeq boundItems)
+          Locals = ctx.LocalCount
+          Captures = []
+          EnvMappings = None }
 
 
 /// Public Binder API
@@ -245,31 +312,43 @@ module private Impl =
 /// `Lower` and `Emit`.
 module Binder =
 
-    /// Bind a List of Compilation Units in a Given Scope
+    /// Bind a List of Syntax Nodes in a Given Scope
     ///
-    /// Takes a list of dcocument and expression pairs and binds them in the
-    /// given scope.
-    let bind
-        (sourceRegistry: SourceRegistry)
+    /// This is the main entry point for the binder. It takes a list of syntax
+    /// nodes representing the program to be bound, along with a source registry
+    /// and a scope for name resolution, and produces a `BoundSyntaxTree` which
+    /// contains the bound syntax tree along with diagnostics and a mangled name.
+    let private bindStx
+        (ctx: BinderCtx)
         (stxEnv: StxEnvironment)
         (scope: Map<Ident, StorageRef>)
-        (libs: seq<LibrarySignature<StorageRef>>)
-        (units: (DocId * Expression) list)
+        (stx: Stx list)
         : BoundSyntaxTree =
-
-        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs)
         let name = "LispProgram"
-        let rootFrame = FrameCtx.createGlobal ctx name
+        let rootFrame = FrameCtx.createGlobal ctx name scope
 
-        let bound =
-            units
-            |> List.map (fun (docId, expr) ->
-                expr
-                |> Stx.ofExpr sourceRegistry docId ctx.Diagnostics
-                |> bindTopLevel ctx stxEnv)
-            |> BoundExpr.Seq
-            |> FrameCtx.finish rootFrame
+        let bound = bindProgramRoot rootFrame stxEnv stx
 
         { Root = bound
           MangledName = name
           Diagnostics = ctx.Diagnostics.Take }
+
+
+    /// Bind a List of Compilation Units in a Given Scope
+    ///
+    /// Takes a list of dcocument and expression pairs and binds them in the
+    /// given scope.
+    let bindProgram
+        (sourceRegistry: SourceRegistry)
+        (stxEnv: StxEnvironment)
+        (scope: Map<Ident, StorageRef>)
+        (libs: seq<LibrarySignature<StorageRef>>)
+        (units: Tree.Program list)
+        : BoundSyntaxTree =
+        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs)
+
+        let toBind =
+            units
+            |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry unit.DocId ctx.Diagnostics))
+
+        bindStx ctx stxEnv scope (List.ofSeq toBind)
