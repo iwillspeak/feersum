@@ -54,7 +54,7 @@
       <DotNetPath Condition=" '$(DotNetPath)' == '' ">dotnet</DotNetPath>
     </PropertyGroup>
 
-    <Error Condition="'$(DesignTimeBuild)' != 'true' and !Exists($(FeersumCompilerPath))" Text="Compiler build output is missing" />
+    <Error Condition="'$(DesignTimeBuild)' != 'true' and !Exists('$(FeersumCompilerPath)')" Text="Compiler build output is missing" />
 
     <PropertyGroup>
       <!-- References to the runtime's core library -->
@@ -71,10 +71,12 @@
       <BuildCommand>"$(DotNetPath)" "$(FeersumCompilerPath)" $(CoreLibReferences) $(LibReferences) $(ConfigParams) -o "@(IntermediateAssembly)" @(SchemeCompileItems->'"%(Identity)"', ' ')</BuildCommand>
     </PropertyGroup>
 
-    <!-- Skip actual compilation during design-time builds. Touch the output
-         so downstream targets that check for file existence don't fail. -->
+    <!-- Skip actual compilation during design-time builds. Touch a design-time
+         stub (not the real output) so the real assembly's timestamp is not
+         polluted; a subsequent normal build will therefore always re-run
+         CoreCompile and produce a genuine assembly. -->
     <Exec Condition="'$(DesignTimeBuild)' != 'true'" Command="$(BuildCommand)" EchoOff="true" />
-    <Touch Condition="'$(DesignTimeBuild)' == 'true'" Files="@(IntermediateAssembly)" AlwaysCreate="true" />
+    <Touch Condition="'$(DesignTimeBuild)' == 'true'" Files="$(IntermediateOutputPath)$(AssemblyName).designtime.dll" AlwaysCreate="true" />
 
   </Target>
 
