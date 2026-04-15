@@ -247,6 +247,4 @@ module Stx =
     let resolve (name: string) (env: StxEnvironment) : StxBinding option =
         env
         |> Map.tryFind name
-        |> Option.orElseWith (fun () ->
-            tryResolveSpecial name
-            |> Option.map StxBinding.Special)
+        |> Option.orElseWith (fun () -> tryResolveSpecial name |> Option.map StxBinding.Special)

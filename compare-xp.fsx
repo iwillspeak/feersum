@@ -99,11 +99,7 @@ let tryBind (registry: SourceRegistry) (programs: Tree.Program list) libs : Resu
         Result.Error(sprintf "Bind error: %s" ex.Message)
 
 let boundTreeToString (bst: BoundSyntaxTree) : string =
-    sprintf
-        "BoundSyntaxTree { MangledName = %s }\n%s\n%A"
-        bst.MangledName
-        (formatDiagnostics bst.Diagnostics)
-        bst.Root
+    sprintf "BoundSyntaxTree { MangledName = %s }\n%s\n%A" bst.MangledName (formatDiagnostics bst.Diagnostics) bst.Root
 
 // ── Step 3: Compare ───────────────────────────────────────────────────────────
 

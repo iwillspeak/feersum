@@ -234,8 +234,7 @@ module private Expander =
     /// when not overridden in scope, via `StxEnvironment.tryResolveSpecial`.
     let resolveHead (stx: Stx) (scope: StxEnvironment) : StxBinding option =
         match stx with
-        | StxId(name, _, maybeScope) ->
-            Stx.resolve name (maybeScope |> Option.defaultValue scope)
+        | StxId(name, _, maybeScope) -> Stx.resolve name (maybeScope |> Option.defaultValue scope)
         | _ -> None
 
     /// Convert a syntactic datum to its bound-tree counterpart.
