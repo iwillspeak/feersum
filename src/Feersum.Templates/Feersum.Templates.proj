@@ -31,7 +31,7 @@
       <TfmSpecificPackageFile Include="$(BaseIntermediateOutputPath)%(TemplateInputs.FileName)%(TemplateInputs.Extension)" Pack="true" PackagePath="content/$([msbuild]::MakeRelative('$(MSBuildThisFileDirectory)templates', '$(MSBuildThisFileDirectory)%(TemplateInputs.RelativeDir)'))  " />
     </ItemGroup>
 
-    <WriteLinesToFile File="$(BaseIntermediateOutputPath)%(TemplateInputs.FileName)%(TemplateInputs.Extension)" Lines="$([System.IO.File]::ReadAllText('%(TemplateInputs.Identity)').Replace('Feersum.Sdk/0.2.1', 'Feersum.Sdk/$(Version)'))" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <WriteLinesToFile File="$(BaseIntermediateOutputPath)%(TemplateInputs.FileName)%(TemplateInputs.Extension)" Lines="$([System.IO.File]::ReadAllText('%(TemplateInputs.Identity)').Replace('Feersum.Sdk/TEMPLATE_VERSION', 'Feersum.Sdk/$(Version)'))" Overwrite="true" WriteOnlyWhenDifferent="true" />
   </Target>
 
 </Project>
