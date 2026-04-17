@@ -37,6 +37,9 @@ module private BinderDiagnostics =
     let malformedDatum =
         DiagnosticKind.Create DiagnosticLevel.Error 38 "Invalid datum value"
 
+    let malformedCall =
+        DiagnosticKind.Create DiagnosticLevel.Error 39 "Malformed procedure call"
+
 // -- Global Binder Context ----------------------------------------------------
 
 /// Binder Context Type
@@ -221,7 +224,8 @@ module private FrameCtx =
 /// Resolution State for a Variable
 type private NameResolution =
     | Resolved of StorageRef
-    | SyntaxItem
+    | SpecialForm of SpecialFormKind
+    | Macro of Ident
     | Unbound
 
 // -- Binder Implementation ----------------------------------------------------
@@ -284,7 +288,7 @@ module private Impl =
         | StxError _ -> None
 
     /// Resolve a Name to A Syntax or Variable
-    /// 
+    ///
     /// This is the two-phase nested lookup required to translate a raw name
     /// from the syntax contex into the resolution of its binding.
     let private resolveName (ctx: FrameCtx) (stxEnv: StxEnvironment) (name: string) : NameResolution =
@@ -293,7 +297,8 @@ module private Impl =
             match FrameCtx.resolve ctx id with
             | Some storage -> Resolved storage
             | _ -> Unbound
-        | Some(_) -> SyntaxItem
+        | Some(StxBinding.Macro id) -> NameResolution.Macro id
+        | Some(StxBinding.Special sp) -> NameResolution.SpecialForm sp
         | None -> Unbound
 
     /// Bind a Single Expression
@@ -301,13 +306,15 @@ module private Impl =
         let emitBinderError (stx: Stx) (diagKind: DiagnosticKind) (message: string) =
             message
             |> ctx.BinderCtx.Diagnostics.Emit diagKind (getSyntaxLocation ctx.BinderCtx stx)
+
             BoundExpr.Error, stxEnv
 
         match stx with
         | StxId(name, _, idEnv) ->
             match resolveName ctx stxEnv name with
             | Resolved storage -> BoundExpr.Load storage, stxEnv
-            | SyntaxItem ->
+            | SpecialForm _
+            | Macro _ ->
                 $"Invalid use of syntax item '{id}'"
                 |> emitBinderError stx BinderDiagnostics.undefinedSymbol
             | Unbound ->
@@ -315,18 +322,49 @@ module private Impl =
                 |> emitBinderError stx BinderDiagnostics.undefinedSymbol
         | StxDatum(value, loc) -> datumToLiteral value |> BoundExpr.Literal, stxEnv
 
-        | StxList(head, tail, loc, env) ->
-            bindForm ctx (env |> Option.defaultValue stxEnv) head tail loc
+        | StxList(head, tail, loc, env) -> bindForm ctx (env |> Option.defaultValue stxEnv) head tail loc
 
-        | StxVec(items, _, _) ->
-            items
-            |> List.choose stxToDatum
-            |> BoundLiteral.Vector
-            |> BoundExpr.Literal,stxEnv
-        | StxError _ -> BoundExpr.Error,stxEnv
+        | StxVec(items, _, _) -> items |> List.choose stxToDatum |> BoundLiteral.Vector |> BoundExpr.Literal, stxEnv
+        | StxError _ -> BoundExpr.Error, stxEnv
 
-    and bindForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (head: Stx list) (tail: Stx option) loc =
-        unimpl "form binding not yet implemented"
+    and bindForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (formBody: Stx list) (tail: Stx option) loc =
+        match formBody with
+        | StxId(name, loc, env) :: args ->
+            let nameEnv = env |> Option.defaultValue stxEnv
+
+            match resolveName ctx nameEnv name with
+            | NameResolution.SpecialForm kind -> unimpl "Speical forms not yet implemented"
+            | NameResolution.Macro id -> unimpl "Macros not yet implemented"
+            | NameResolution.Resolved storage ->
+                BoundExpr.Load(storage) |> fun x -> bindApplication ctx stxEnv x args tail
+            | NameResolution.Unbound ->
+                $"Procedure call to '{name}' which is not bound in the current context"
+                |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+
+                BoundExpr.Error, stxEnv
+        | head :: args ->
+            let operator = bindInContext ctx stxEnv head |> fst
+            bindApplication ctx stxEnv operator args tail
+        | [] ->
+            "Procedure call hsa no operator. Did you mean `'()`?"
+            |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedCall loc
+
+            BoundExpr.Error, stxEnv
+
+    and bindApplication
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        (boundOp: BoundExpr)
+        (args: Stx list)
+        (tail: Stx option)
+        =
+        tail
+        |> Option.iter (fun x ->
+            "Procedure calls may not use a dotted tail"
+            |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedCall (getSyntaxLocation ctx.BinderCtx x))
+
+        let args, stxEnv = args |> List.mapFold (bindInContext ctx) stxEnv
+        BoundExpr.Application(boundOp, args), stxEnv
 
     /// Bind a Top Level Item
     ///
@@ -337,21 +375,19 @@ module private Impl =
         let WithSp =
             match inner with
             | BoundExpr.If _
-            | BoundExpr.Seq _ ->
-                inner
+            | BoundExpr.Seq _ -> inner
             | _ -> BoundExpr.SequencePoint(inner, getSyntaxLocation ctx.BinderCtx stx)
 
-        WithSp,stxEnv
+        WithSp, stxEnv
 
     /// Bind a Sequence of Expressions
-    /// 
+    ///
     /// Returns the sequence as a `BoundExpr.Seq`, along with the updated syntax
     /// environment.
     and bindSeq (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : BoundExpr * StxEnvironment =
-        let exprs, env =
-            stxs |> List.mapFold (bindTopLevel ctx) stxEnv
-        
-        BoundExpr.Seq(exprs),env
+        let exprs, env = stxs |> List.mapFold (bindTopLevel ctx) stxEnv
+
+        BoundExpr.Seq(exprs), env
 
 
     /// Bind the Import Declarations in a Program
