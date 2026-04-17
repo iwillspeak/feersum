@@ -217,6 +217,13 @@ module private FrameCtx =
           Captures = captures
           EnvMappings = env }
 
+
+/// Resolution State for a Variable
+type private NameResolution =
+    | Resolved of StorageRef
+    | SyntaxItem
+    | Unbound
+
 // -- Binder Implementation ----------------------------------------------------
 
 [<AutoOpen>]
@@ -241,11 +248,111 @@ module private Impl =
         //        means the locations are actually just denormalised on each stx
         stx.Loc
 
+    /// Convert a syntactic datum to its bound-tree counterpart.
+    let private datumToLiteral =
+        function
+        | StxDatum.Boolean b -> BoundLiteral.Boolean b
+        | StxDatum.Number n -> BoundLiteral.Number n
+        | StxDatum.Character c -> BoundLiteral.Character c
+        | StxDatum.Str s -> BoundLiteral.Str s
+        | StxDatum.ByteVector bs -> BoundLiteral.ByteVector bs
+
+    /// Convert a Stx node to a BoundDatum (for quoted expressions).
+    /// Returns None if the Stx tree contains a reader-level error node;
+    /// the diagnostic was already emitted by Stx.ofExpr.
+    let rec private stxToDatum (stx: Stx) : BoundDatum option =
+        let mapItems items : BoundDatum list option =
+            List.foldBack
+                (fun item acc ->
+                    match acc, stxToDatum item with
+                    | Some ds, Some d -> Some(d :: ds)
+                    | _ -> None)
+                items
+                (Some [])
+
+        match stx with
+        | StxId(name, _, _) -> Some(BoundDatum.Ident name)
+        | StxDatum(d, _) -> Some(BoundDatum.SelfEval(datumToLiteral d))
+        | StxList(items, None, _, _) -> mapItems items |> Option.map BoundDatum.Compound
+        | StxList(items, Some tail, _, _) ->
+            match mapItems items, stxToDatum tail with
+            | Some ds, Some t -> Some(BoundDatum.Pair(ds, t))
+            | _ -> None
+        | StxVec(items, _, _) ->
+            mapItems items
+            |> Option.map (fun ds -> BoundDatum.SelfEval(BoundLiteral.Vector ds))
+        | StxError _ -> None
+
+    /// Resolve a Name to A Syntax or Variable
+    /// 
+    /// This is the two-phase nested lookup required to translate a raw name
+    /// from the syntax contex into the resolution of its binding.
+    let private resolveName (ctx: FrameCtx) (stxEnv: StxEnvironment) (name: string) : NameResolution =
+        match Stx.resolve name stxEnv with
+        | Some(StxBinding.Variable id) ->
+            match FrameCtx.resolve ctx id with
+            | Some storage -> Resolved storage
+            | _ -> Unbound
+        | Some(_) -> SyntaxItem
+        | None -> Unbound
+
+    /// Bind a Single Expression
+    let rec bindInContext (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : BoundExpr * StxEnvironment =
+        let emitBinderError (stx: Stx) (diagKind: DiagnosticKind) (message: string) =
+            message
+            |> ctx.BinderCtx.Diagnostics.Emit diagKind (getSyntaxLocation ctx.BinderCtx stx)
+            BoundExpr.Error, stxEnv
+
+        match stx with
+        | StxId(name, _, idEnv) ->
+            match resolveName ctx stxEnv name with
+            | Resolved storage -> BoundExpr.Load storage, stxEnv
+            | SyntaxItem ->
+                $"Invalid use of syntax item '{id}'"
+                |> emitBinderError stx BinderDiagnostics.undefinedSymbol
+            | Unbound ->
+                $"The symbol '{id}' is not defined in the current context"
+                |> emitBinderError stx BinderDiagnostics.undefinedSymbol
+        | StxDatum(value, loc) -> datumToLiteral value |> BoundExpr.Literal, stxEnv
+
+        | StxList(head, tail, loc, env) ->
+            bindForm ctx (env |> Option.defaultValue stxEnv) head tail loc
+
+        | StxVec(items, _, _) ->
+            items
+            |> List.choose stxToDatum
+            |> BoundLiteral.Vector
+            |> BoundExpr.Literal,stxEnv
+        | StxError _ -> BoundExpr.Error,stxEnv
+
+    and bindForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (head: Stx list) (tail: Stx option) loc =
+        unimpl "form binding not yet implemented"
+
     /// Bind a Top Level Item
     ///
     /// Top level items can be commands or definitions
-    let bindTopLevel (ctx: FrameCtx) (syntaxEnv: StxEnvironment) (item: Stx) : BoundExpr * StxEnvironment =
-        unimpl "Binder.bindTopLevel: not implemented yet"
+    and bindTopLevel (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : BoundExpr * StxEnvironment =
+        let inner, stxEnv = bindInContext ctx stxEnv stx
+
+        let WithSp =
+            match inner with
+            | BoundExpr.If _
+            | BoundExpr.Seq _ ->
+                inner
+            | _ -> BoundExpr.SequencePoint(inner, getSyntaxLocation ctx.BinderCtx stx)
+
+        WithSp,stxEnv
+
+    /// Bind a Sequence of Expressions
+    /// 
+    /// Returns the sequence as a `BoundExpr.Seq`, along with the updated syntax
+    /// environment.
+    and bindSeq (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : BoundExpr * StxEnvironment =
+        let exprs, env =
+            stxs |> List.mapFold (bindTopLevel ctx) stxEnv
+        
+        BoundExpr.Seq(exprs),env
+
 
     /// Bind the Import Declarations in a Program
     ///
@@ -289,16 +396,15 @@ module private Impl =
 
         loop stxEnv stxs
 
-
     /// Bind a Program Root
     ///
     /// Walks the list of items and binds each one as a top level item
     let bindProgramRoot (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : BoundBody =
         let stxs, stxEnv = bindImports ctx stxEnv stxs
 
-        let boundItems = stxs |> List.mapFold (bindTopLevel ctx) stxEnv |> fst
+        let body = bindSeq ctx stxEnv stxs |> fst
 
-        { Body = Seq(List.ofSeq boundItems)
+        { Body = body
           Locals = ctx.LocalCount
           Captures = []
           EnvMappings = None }
