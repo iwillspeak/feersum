@@ -43,6 +43,9 @@ module private BinderDiagnostics =
     let unquotedNull =
         DiagnosticKind.Create DiagnosticLevel.Warning 40 "Unquoted null literal"
 
+    let invalidExport =
+        DiagnosticKind.Create DiagnosticLevel.Error 41 "Invalid export declaration"
+
 // -- Global Binder Context ----------------------------------------------------
 
 /// Binder Context Type
@@ -163,12 +166,12 @@ module private FrameCtx =
 
     /// Create a new `FrameCtx` for a library frame with the given `mangledName`
     /// and `parent` frame.
-    let createLibrary binderCtx mangledName parent =
-        createWithKind binderCtx (FrameKind.Library(mangledName, parent))
+    let createLibrary parent mangledName =
+        createWithKind parent.BinderCtx (FrameKind.Library(mangledName, parent))
 
     /// Create a new `FrameCtx` for a lambda frame with the given parent frame.
-    let createLambda binderCtx parent =
-        createWithKind binderCtx (FrameKind.Lambda { Parent = parent; Captures = None })
+    let createLambda parent =
+        createWithKind parent.BinderCtx (FrameKind.Lambda { Parent = parent; Captures = None })
 
     /// Resolve an identifier in the given `FrameCtx`.
     ///
@@ -421,6 +424,30 @@ module private Impl =
 
         id, storage, stxEnv
 
+    let importLibraryExports
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        (library: LibrarySignature<StorageRef>)
+        : StxEnvironment =
+        library.Exports
+        |> List.fold
+            (fun stxEnv (exportedName, storage) ->
+                let id, stxEnv = mintFrameItem ctx stxEnv exportedName storage
+                ctx.Env <- ResolutionEnv.extend ctx.Env id storage
+                stxEnv)
+            stxEnv
+
+    /// Parse the given `Stx` as an import statement and Update the Environment
+    let rec bindImportStatement (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : StxEnvironment =
+        let imp = Libraries.parseImport ctx.BinderCtx.Diagnostics stx
+
+        match Libraries.resolveImport ctx.BinderCtx.Libraries imp with
+        | Ok library -> importLibraryExports ctx stxEnv library
+
+        | Result.Error msg ->
+            ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.invalidImport stx.Loc msg
+            stxEnv
+
 
     /// Bind a Single Expression
     let rec bindInContext (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : BoundExpr * StxEnvironment =
@@ -487,6 +514,89 @@ module private Impl =
                 |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.unquotedNull loc
 
                 BoundExpr.Literal BoundLiteral.Null, stxEnv
+
+    and bindLibrary
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        loc
+        (library: LibraryDefinition)
+        : BoundExpr * StxEnvironment =
+
+        let mangledName = mangleName library.LibraryName
+        let libCtx = FrameCtx.createLibrary ctx mangledName
+        let emit = libCtx.BinderCtx.Diagnostics.Emit
+
+        // Process `(import ...)`
+        let bodyEnv =
+            library.Declarations
+            |> List.fold
+                (fun stxEnv decl ->
+                    match decl with
+                    | LibraryDeclaration.Import i ->
+                        i
+                        |> List.fold
+                            (fun stxEnv lib ->
+                                match Libraries.resolveImport ctx.BinderCtx.Libraries lib with
+                                | Ok resolved -> importLibraryExports libCtx stxEnv resolved
+                                | Result.Error err ->
+                                    emit BinderDiagnostics.invalidImport loc err
+                                    stxEnv)
+                            stxEnv
+                    | _ -> stxEnv)
+                stxEnv
+
+        // Process the bodies of the library.
+        let boundBodies, bodyEnv =
+            library.Declarations
+            |> List.mapFold
+                (fun stxEnv decl ->
+                    match decl with
+                    | LibraryDeclaration.Begin block ->
+                        block
+                        |> List.mapFold (fun stxEnv expr -> bindTopLevel libCtx stxEnv expr) stxEnv
+                    | _ -> [], stxEnv)
+                bodyEnv
+
+        // Process `(export ...)` declarations.
+        let lookupExport id extId =
+            match resolveName libCtx bodyEnv id with
+            | NameResolution.Resolved x -> Some((extId, x))
+            | NameResolution.SpecialForm _
+            | NameResolution.Macro _ ->
+                $"Invalid export of syntax item '{id}'"
+                |> emit BinderDiagnostics.invalidExport loc
+
+                None
+            | _ ->
+                $"Could not find exported item '{id}'"
+                |> emit BinderDiagnostics.missingExport loc
+
+                None
+
+        let exports =
+            library.Declarations
+            |> List.choose (function
+                | LibraryDeclaration.Export exp ->
+                    exp
+                    |> List.choose (function
+                        | ExportSet.Plain p -> lookupExport p p
+                        | ExportSet.Renamed rename -> lookupExport rename.From rename.To)
+                    |> Some
+                | _ -> None)
+            |> List.concat
+
+        ctx.BinderCtx.Libraries <-
+            { LibrarySignature.LibraryName = library.LibraryName
+              Exports = exports }
+            :: ctx.BinderCtx.Libraries
+
+        BoundExpr.Library(
+            library.LibraryName,
+            mangledName,
+            exports,
+            boundBodies |> List.concat |> BoundExpr.Seq |> FrameCtx.finish libCtx
+        ),
+        stxEnv
 
     and bindSpecialForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (kind: SpecialFormKind) (args: Stx list) loc =
         let illFormed formName = illFormedInCtx ctx loc formName
@@ -571,11 +681,6 @@ module private Impl =
 
                     BoundExpr.Error, stxEnv
             | _ -> illFormed "set!"
-        | SpecialFormKind.Import ->
-            $"Special form '{kind}' is not valid in this context"
-            |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.illFormedSpecialForm loc
-
-            BoundExpr.Error, stxEnv
 
         | SpecialFormKind.Let ->
             bindLet ctx "let" args loc (fun bindingSpecs ->
@@ -632,8 +737,26 @@ module private Impl =
                 //        un-initialised variables. The `letrec*` is allowed to
                 //        reference previous variables. Plain `letrec` Isn't allowed
                 //        to reference any.
-                let mutable uniitialisedStorage = boundIdents |> List.map (fun (id, _) -> id)
+                let mutable uniitialisedStorage = boundIdents |> List.map fst
 
+                // FIXME: There's two limitations to this check:
+                //  1. It bails as soon as it sees a `lambda`. Really we need
+                //     to be more conservative here. Lambdas _could_ be applied
+                //     immeidately in which case the inner references are
+                //     still live and need to trigger the diagnostic.
+                //  2. It doesn't handle nested `letrec` forms well. We need
+                //     to carry out this second pass each time we expand a
+                //     `letrec` like form.
+                //
+                //  The fix for both of these is to carry a set of uninit vars
+                //  and their application depth as we bind. Letrecs add bindings
+                //  at depth 0. Applications increase the depth on all uninit
+                //  vars. Lambdas decrement the depth rather than clearing it.
+                //  Any binding is uninit if it is non-negative depth in the
+                //  current set when referenced.
+                //
+                //  This doesn't allow all valid Scheme programs, but it should
+                //  deny all invalid ones and in practice should be sufficient.
                 let rec checkUses location =
                     function
                     | Application(app, args) ->
@@ -680,11 +803,30 @@ module private Impl =
         | SpecialFormKind.DefineSyntax -> unimpl $"Special form '{kind}' not yet implemented"
         | SpecialFormKind.LetSyntax -> unimpl $"Special form '{kind}' not yet implemented"
         | SpecialFormKind.LetrecSyntax -> unimpl $"Special form '{kind}' not yet implemented"
-        | SpecialFormKind.DefineLibrary -> unimpl $"Special form '{kind}' not yet implemented"
 
+        | SpecialFormKind.DefineLibrary ->
+            match args with
+            | name :: body ->
+                match Libraries.parseLibraryDefinition name body with
+                | Ok(library, diags) ->
+                    ctx.BinderCtx.Diagnostics.Append diags
+                    // FIXME: Location here is kinda rough. We basically emit
+                    // all dianostics with the location of the whole library form which isn't ideal.
+                    bindLibrary ctx stxEnv loc library
+
+                | Result.Error diags ->
+                    ctx.BinderCtx.Diagnostics.Append diags
+                    BoundExpr.Error, stxEnv
+            | _ -> illFormed "define-library"
+
+        | SpecialFormKind.Import ->
+            // FIXME: technically we shouldn't allow free imports in the body
+            //        but we have specs which depend on it.
+
+            BoundExpr.Nop, args |> List.fold (fun stxEnv imp -> bindImportStatement ctx stxEnv imp) stxEnv
 
     and bindLambdaBody (ctx: FrameCtx) (stxEnv: StxEnvironment) (formals: BoundFormals) (body: Stx list) : BoundExpr =
-        let lambdaCtx = FrameCtx.createLambda ctx.BinderCtx ctx
+        let lambdaCtx = FrameCtx.createLambda ctx
 
         let addFormal stxEnv idx name =
             let _, _, stxEnv = mintArg lambdaCtx stxEnv name idx
@@ -770,31 +912,11 @@ module private Impl =
 
         BoundExpr.Seq(exprs), env
 
-
     /// Bind the Import Declarations in a Program
     ///
     /// Updates the `StxEnvironment` with the imported bindings and returns the
     /// remaining body of the program to be bound.
     let bindImports (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : Stx list * StxEnvironment =
-        let rec addImportsToEnv (stxEnv: StxEnvironment) (stx: Stx) : StxEnvironment =
-            let imp = Libraries.parseImport ctx.BinderCtx.Diagnostics stx
-
-            match Libraries.resolveImport ctx.BinderCtx.Libraries imp with
-            | Ok library ->
-                let newScope =
-                    library.Exports
-                    |> List.fold
-                        (fun s (name, storage) ->
-                            let id = Ident.fresh ()
-                            ctx.Env <- ResolutionEnv.extend ctx.Env id storage
-                            Map.add name (StxBinding.Variable id) s)
-                        stxEnv
-
-                newScope
-            | Result.Error msg ->
-                ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.invalidImport stx.Loc msg
-                stxEnv
-
         let rec loop stxEnv remainingStx =
             match remainingStx with
             | StxList(StxId(id, _, envInner) :: args, None, _, envOuter) :: rest ->
@@ -804,7 +926,7 @@ module private Impl =
 
                 match resolved with
                 | Some(StxBinding.Special SpecialFormKind.Import) ->
-                    let stxEnv = args |> List.fold addImportsToEnv stxEnv
+                    let stxEnv = args |> List.fold (bindImportStatement ctx) stxEnv
                     loop stxEnv rest
                 | _ ->
                     // Not an import, stop processing and return the remaining stx

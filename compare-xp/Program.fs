@@ -56,14 +56,16 @@ let tryParseFile (registry: SourceRegistry) (filePath: string) : Result<Tree.Pro
 let tryExpand (registry: SourceRegistry) (programs: Tree.Program list) libs : Result<BoundSyntaxTree, string> =
     try
         let ctx = ExpandCtx.createGlobal registry "LispProgram" libs
-        let result = Expand.expand programs Map.empty Map.empty ctx
+        let stx = Builtins.loadBuiltinMacroEnv ctx.MacroRegistry Environments.emptyStx
+        let result = Expand.expand programs stx Map.empty ctx
         Ok result
     with ex ->
         Result.Error(sprintf "Expand error: %s" ex.Message)
 
 let tryBind (registry: SourceRegistry) (programs: Tree.Program list) libs : Result<BoundSyntaxTree, string> =
     try
-        let result = Binder.bindProgram registry Map.empty Map.empty libs programs
+        let stx = Builtins.loadBuiltinMacroEnv (new MacroRegistry()) Environments.emptyStx
+        let result = Binder.bindProgram registry stx Map.empty libs programs
         Ok result
     with ex ->
         Result.Error(sprintf "Bind error: %s" ex.Message)
