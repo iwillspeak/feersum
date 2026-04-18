@@ -68,8 +68,42 @@ let tryBind (registry: SourceRegistry) (programs: Tree.Program list) libs : Resu
     with ex ->
         Result.Error(sprintf "Bind error: %s" ex.Message)
 
+let rec sanitiseTree =
+    function
+    // Old expander binds the args, new one short circuits.
+    | BoundExpr.Application(BoundExpr.Error, _) -> BoundExpr.Error
+    | BoundExpr.Application(op, args) -> BoundExpr.Application(sanitiseTree op, List.map (sanitiseTree) args)
+    | BoundExpr.SequencePoint(inner, sp) -> BoundExpr.SequencePoint(sanitiseTree inner, sp)
+    | BoundExpr.Store(dest, expr) -> BoundExpr.Store(dest, expr |> Option.map sanitiseTree)
+    | BoundExpr.If(cond, t, f) -> BoundExpr.If(sanitiseTree cond, sanitiseTree t, f |> Option.map sanitiseTree)
+    | BoundExpr.Seq(exprs) ->
+        exprs
+        |> List.choose (fun x ->
+            match sanitiseTree x with
+            | BoundExpr.Nop
+            | BoundExpr.Seq [] -> None
+            | other -> Some(other))
+        |> BoundExpr.Seq
+
+    | BoundExpr.Lambda(_, _)
+    | BoundExpr.Library(_, _, _, _)
+
+    | BoundExpr.Load(_)
+    | BoundExpr.Nop
+    | BoundExpr.Error
+    | BoundExpr.Literal(_)
+    | BoundExpr.Quoted(_) as x -> x
+
+let sanitise (body: BoundBody) =
+    { body with
+        Body = sanitiseTree body.Body }
+
 let boundTreeToString (bst: BoundSyntaxTree) : string =
-    sprintf "BoundSyntaxTree { MangledName = %s }\n%s\n%A" bst.MangledName (formatDiagnostics bst.Diagnostics) bst.Root
+    sprintf
+        "BoundSyntaxTree { MangledName = %s }\n%s\n%A"
+        bst.MangledName
+        (formatDiagnostics bst.Diagnostics)
+        (bst.Root |> sanitise)
 
 // ── Step 3: Compare ───────────────────────────────────────────────────────────
 
@@ -108,7 +142,11 @@ printfn "Comparing %d spec file(s)...\n" specFiles.Length
 
 let target = TargetResolve.fromCurrentRuntime
 let coreLibs = Builtins.loadCoreSignatures target |> snd
-let frameworkLibs = typeof<Feersum.Core.LispProgram>.Assembly.Location |> Builtins.loadReferencedSignatures |> snd
+
+let frameworkLibs =
+    typeof<Feersum.Core.LispProgram>.Assembly.Location
+    |> Builtins.loadReferencedSignatures
+    |> snd
 
 let libs = coreLibs @ frameworkLibs
 

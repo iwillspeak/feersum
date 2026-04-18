@@ -252,6 +252,60 @@ module private Impl =
         //        means the locations are actually just denormalised on each stx
         stx.Loc
 
+
+    /// Parse a Formals List Pattern
+    ///
+    /// This parses the formals list pattern as supported by `(define .. )` forms,
+    /// or `(lambda)` forms. Takes the body elements and optional tail element
+    /// (from a DottedForm). Returns either a plain or dotted list formals pattern:
+    ///   * `(<id>, .. )` - to bind each parameter to a unique identifier
+    ///   * `(<id>, .. '.', <id>)` - to bind a fixed set of parameters with an
+    ///     optional list of extra parameters.
+    let private parseFormalsList ctx (body: Stx list) (tail: Stx option) =
+        let parseFormal acc (formal: Stx) =
+            match formal with
+            | StxId(id, _, _) -> id :: acc
+            | _ ->
+                ctx.Diagnostics.Emit
+                    BinderDiagnostics.patternBindError
+                    (getSyntaxLocation ctx formal)
+                    "Expected identifier in formals"
+
+                acc
+
+        let fmls = List.fold parseFormal [] body |> List.rev
+
+        match tail with
+        | None -> BoundFormals.List(fmls)
+        | Some tailExpr ->
+            match tailExpr with
+            | StxId(id, _, _) -> BoundFormals.DottedList(fmls, id)
+            | _ ->
+                ctx.Diagnostics.Emit
+                    BinderDiagnostics.patternBindError
+                    (getSyntaxLocation ctx tailExpr)
+                    "Expected identifier after dot"
+
+                BoundFormals.List(fmls)
+
+    /// Parse a Lambda's Formal Arguments
+    ///
+    /// Parses the argument list for a lambda form and returns a `BoundFormals`
+    /// instance describing the formal parameter pattern. The following
+    /// types of formals patterns are suppoted:
+    ///   * `<id>` - to bind the whole list to the given identifier
+    ///   * Any of the list patterns supported by `parseFormalsList`
+    let private parseFormals ctx (formals: Stx) =
+        match formals with
+        | StxId(id, _, _) -> BoundFormals.Simple(id)
+        | StxList(body, tail, _, _) -> parseFormalsList ctx body tail
+        | _ ->
+            "Unrecognised formal parameter list. Must be an ID or list pattern"
+            |> ctx.Diagnostics.Emit BinderDiagnostics.invalidParameterPattern (getSyntaxLocation ctx formals)
+
+            BoundFormals.List([])
+
+
     /// Convert a syntactic datum to its bound-tree counterpart.
     let private datumToLiteral =
         function
@@ -301,6 +355,47 @@ module private Impl =
         | Some(StxBinding.Special sp) -> NameResolution.SpecialForm sp
         | None -> Unbound
 
+    /// Create a new Variable Binding in the Syntax Environent and the Frame Context
+    let private mintFrameItem
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        (name: string)
+        (storage: StorageRef)
+        : Ident * StxEnvironment =
+        let id = Ident.fresh ()
+        let stxEnv = Map.add name (StxBinding.Variable id) stxEnv
+
+        ctx.Env <- ResolutionEnv.extend ctx.Env id storage
+
+        id, stxEnv
+
+    /// Create a new Variable Binding in the Syntax Environent and the Frame Context
+    let private mintVar (ctx: FrameCtx) (stxEnv: StxEnvironment) (name: string) : Ident * StorageRef * StxEnvironment =
+        let storage =
+            match ctx.Env, ctx.Kind with
+            | S([ _ ]), FrameKind.Global libName
+            | S([ _ ]), FrameKind.Library(libName, _) -> StorageRef.Global(libName, Field name)
+            | _ ->
+                let idx = ctx.LocalCount
+                ctx.LocalCount <- ctx.LocalCount + 1
+                StorageRef.Local idx
+
+        let id, stxEnv = mintFrameItem ctx stxEnv name storage
+        id, storage, stxEnv
+
+    /// Create a new Variable Binding in the Syntax Environent and the Frame Context
+    let private mintArg
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        (name: string)
+        (idx: int)
+        : Ident * StorageRef * StxEnvironment =
+        let storage = StorageRef.Arg idx
+        let id, stxEnv = mintFrameItem ctx stxEnv name storage
+
+        id, storage, stxEnv
+
+
     /// Bind a Single Expression
     let rec bindInContext (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : BoundExpr * StxEnvironment =
         let emitBinderError (stx: Stx) (diagKind: DiagnosticKind) (message: string) =
@@ -315,10 +410,10 @@ module private Impl =
             | Resolved storage -> BoundExpr.Load storage, stxEnv
             | SpecialForm _
             | Macro _ ->
-                $"Invalid use of syntax item '{id}'"
+                $"Invalid use of syntax item '{name}'"
                 |> emitBinderError stx BinderDiagnostics.undefinedSymbol
             | Unbound ->
-                $"The symbol '{id}' is not defined in the current context"
+                $"The symbol '{name}' is not defined in the current context"
                 |> emitBinderError stx BinderDiagnostics.undefinedSymbol
         | StxDatum(value, loc) -> datumToLiteral value |> BoundExpr.Literal, stxEnv
 
@@ -329,11 +424,19 @@ module private Impl =
 
     and bindForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (formBody: Stx list) (tail: Stx option) loc =
         match formBody with
-        | StxId(name, loc, env) :: args ->
+        | StxId(name, _, env) :: args ->
             let nameEnv = env |> Option.defaultValue stxEnv
 
             match resolveName ctx nameEnv name with
-            | NameResolution.SpecialForm kind -> unimpl $"Speical form '{kind}'  not yet implemented"
+            | NameResolution.SpecialForm kind ->
+                tail
+                |> Option.iter (fun x ->
+                    $"Unexpected dotted tail in '{name}' form"
+                    |> ctx.BinderCtx.Diagnostics.Emit
+                        BinderDiagnostics.illFormedSpecialForm
+                        (getSyntaxLocation ctx.BinderCtx x))
+
+                bindSpecialForm ctx stxEnv kind args loc
             | NameResolution.Macro id -> unimpl "Macros not yet implemented"
             | NameResolution.Resolved storage ->
                 BoundExpr.Load(storage) |> fun x -> bindApplication ctx stxEnv x args tail
@@ -346,10 +449,128 @@ module private Impl =
             let operator = bindInContext ctx stxEnv head |> fst
             bindApplication ctx stxEnv operator args tail
         | [] ->
-            "Procedure call hsa no operator. Did you mean `'()`?"
+            "Procedure call has no operator. Did you mean `'()`?"
             |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedCall loc
 
             BoundExpr.Error, stxEnv
+
+    and bindSpecialForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (kind: SpecialFormKind) (args: Stx list) loc =
+        let illFormed formName =
+            $"Ill-formed '{formName}' special form"
+            |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.illFormedSpecialForm loc
+
+            BoundExpr.Error, stxEnv
+
+        match kind with
+        | SpecialFormKind.If ->
+            let b = bindTopLevel ctx stxEnv >> fst
+
+            match args with
+            | [ cond; ifTrue; ifFalse ] -> BoundExpr.If(b cond, b ifTrue, Some(b ifFalse)), stxEnv
+            | [ cond; ifTrue ] -> BoundExpr.If(b cond, b ifTrue, None), stxEnv
+            | _ -> illFormed "if"
+
+        | SpecialFormKind.Begin -> bindSeq ctx stxEnv args
+
+        | SpecialFormKind.Define ->
+            // FIXME: All of these bind in the outer syntax context rather than
+            // resepecting the environemnt on the name. The fix here is proper
+            // syntax sets rather than closures.
+            match args with
+            | [ StxId(name, _, _) ] ->
+                let _id, storage, stxEnv = mintVar ctx stxEnv name
+                BoundExpr.Store(storage, None), stxEnv
+            | [ StxId(name, _, _); value ] ->
+                let _id, storage, stxEnv = mintVar ctx stxEnv name
+                let value, stxEnv = bindInContext ctx stxEnv value
+                BoundExpr.Store(storage, Some value), stxEnv
+            | StxList(StxId(name, _, _) :: formals, formalTail, formalsLoc, fromalsEnv) :: body ->
+
+                let _id, storage, stxEnv = mintVar ctx stxEnv name
+
+                let formals = parseFormalsList ctx.BinderCtx formals formalTail
+                let lambda = bindLambdaBody ctx stxEnv formals body
+
+                // TODO: We _used_ to re-laod the binding here to move items
+                // that had been captured into their enviroment storage. I'm
+                // not convinced we need it any longer as `Lower` looks to
+                // lift stores as requried.
+                BoundExpr.Store(storage, Some lambda), stxEnv
+
+            | _ -> illFormed "define"
+
+        | SpecialFormKind.Lambda ->
+            match args with
+            | formals :: body ->
+                let formals = parseFormals ctx.BinderCtx formals
+                let lambda = bindLambdaBody ctx stxEnv formals body
+                lambda, stxEnv
+
+            | _ -> illFormed "lambda"
+
+        | SpecialFormKind.Quote ->
+            match args with
+            | [ datum ] ->
+                stxToDatum datum
+                |> Option.map (fun d -> BoundExpr.Quoted d, stxEnv)
+                |> Option.defaultWith (fun () ->
+                    $"Malformed datum in quote form"
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedDatum loc
+
+                    BoundExpr.Error, stxEnv)
+            | _ -> illFormed "quote"
+
+        | SpecialFormKind.SetBang ->
+            match args with
+            | [ StxId(name, loc, nameEnv); value ] ->
+                let nameEnv = nameEnv |> Option.defaultValue stxEnv
+
+                match resolveName ctx nameEnv name with
+                | NameResolution.Resolved storage ->
+                    let value, stxEnv = bindInContext ctx stxEnv value
+                    BoundExpr.Store(storage, Some value), stxEnv
+                | NameResolution.SpecialForm _
+                | NameResolution.Macro _ ->
+                    $"Invalid use of syntax item '{name}' in set! form"
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+
+                    BoundExpr.Error, stxEnv
+                | NameResolution.Unbound ->
+                    $"The symbol '{name}' is not defined in the current context and cannot be assigned to"
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+
+                    BoundExpr.Error, stxEnv
+            | _ -> illFormed "set!"
+
+        | _ -> unimpl $"Form '{kind}' not yet implemented"
+
+    and bindLambdaBody (ctx: FrameCtx) (stxEnv: StxEnvironment) (formals: BoundFormals) (body: Stx list) : BoundExpr =
+        let lambdaCtx = FrameCtx.createLambda ctx.BinderCtx ctx
+
+        let addFormal stxEnv idx name =
+            let _, _, stxEnv = mintArg lambdaCtx stxEnv name idx
+            stxEnv, idx + 1
+
+        let stxEnv =
+            match formals with
+            | BoundFormals.Simple name -> addFormal stxEnv 0 name |> fst
+            | BoundFormals.List names ->
+                List.fold (fun (env, idx) (name: string) -> addFormal env idx name) (stxEnv, 0) names
+                |> fst
+            | BoundFormals.DottedList(names, tail) ->
+                let stxEnv, nextFormal =
+                    List.fold (fun (env, idx) (name: string) -> addFormal env idx name) (stxEnv, 0) names
+
+                addFormal stxEnv nextFormal tail |> fst
+
+        // Bind the body of the lambda in the new context.
+        let body, _ = bindSeq lambdaCtx stxEnv body
+
+        // Finish the lambda frame to get the capture information and produce
+        // a `BoundBody` for the lambda.
+        let boundBody = FrameCtx.finish lambdaCtx body
+
+        BoundExpr.Lambda(formals, boundBody)
 
     and bindApplication
         (ctx: FrameCtx)
