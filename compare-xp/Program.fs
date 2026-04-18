@@ -78,11 +78,12 @@ let rec sanitiseTree =
     | BoundExpr.If(cond, t, f) -> BoundExpr.If(sanitiseTree cond, sanitiseTree t, f |> Option.map sanitiseTree)
     | BoundExpr.Seq(exprs) ->
         exprs
-        |> List.choose (fun x ->
+        |> List.collect (fun x ->
             match sanitiseTree x with
             | BoundExpr.Nop
-            | BoundExpr.Seq [] -> None
-            | other -> Some(other))
+            | BoundExpr.Seq [] -> []
+            | BoundExpr.Seq inner -> inner
+            | other -> [ other ])
         |> BoundExpr.Seq
 
     | BoundExpr.Lambda(_, _)

@@ -1,5 +1,6 @@
-PROGRAM: (0..2)
+PROGRAM: (0..3)
   FORM: (0..2)
     OPEN_PAREN: (0..1) "("
     CLOSE_PAREN: (1..2) ")"
-  EOF: (2..2) ""
+  ATMOSPHERE: (2..3) "\n"
+  EOF: (3..3) ""

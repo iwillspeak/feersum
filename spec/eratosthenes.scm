@@ -21,7 +21,7 @@
             (if (vector-ref marked p)
                 (siv (+ 1 p) marked primes)
                 (siv (+ 1 p) (mark-multiples p marked) (cons p primes)))))
-    (siv 2 (make-vector n #f) '()))
+    (siv 2 (make-vector n #f) ()))
 
 ;; ;; Display the first 10,000 primes
 ;; (display (eratosthenes 104730))
