@@ -196,7 +196,7 @@ module private BuiltinMacros =
     ///    (enabling self-recursive macros like `and` and `cond`);
     ///  - the syntax rules are parsed against that extended scope;
     ///  - the transformer is registered in `ctx.MacroRegistry`.
-    let loadBuiltinMacroEnv (reg: MacroRegistry) (baseEnv: StxEnvironment) : StxEnvironment =
+    let loadBuiltinMacroEnv (baseEnv: StxEnvironment) : Map<Ident, SyntaxTransformer> * StxEnvironment =
         let macros =
             [ "and", macroAndSrc
               "or", macroOrSrc
@@ -206,7 +206,7 @@ module private BuiltinMacros =
 
         macros
         |> List.fold
-            (fun scope (name, src) ->
+            (fun (macros, stxEnv) (name, src) ->
                 let registry = SourceRegistry.empty ()
                 let result = Parse.readExpr1 registry (sprintf "builtin-new-%s" name) src
 
@@ -219,14 +219,12 @@ module private BuiltinMacros =
                     let diags = DiagnosticBag.Empty
                     let stx = Stx.ofExpr registry result.Root.DocId diags expr
 
-                    let id, scope' = ExpandCtx.reserveMacro name scope
+                    let id, stxEnv' = ExpandCtx.reserveMacro name stxEnv
 
-                    match Macros.makeSyntaxTransformer name stx scope' diags with
-                    | Some transformer ->
-                        reg.Register id transformer
-                        scope'
+                    match Macros.makeSyntaxTransformer name stx stxEnv' diags with
+                    | Some transformer -> Map.add id transformer macros, stxEnv'
                     | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics)
-            baseEnv
+            (Map.empty, baseEnv)
 
 // -- Public Builtins API ------------------------------------------------------
 

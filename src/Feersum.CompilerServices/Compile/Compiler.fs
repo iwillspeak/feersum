@@ -69,7 +69,8 @@ module Compilation =
 
                     let stxEnv, refEnv = Environments.intoParts preloaded
                     let ctx = ExpandCtx.createGlobal reg "LispProgram" allLibs
-                    let stxEnv = Builtins.loadBuiltinMacroEnv ctx.MacroRegistry stxEnv
+                    let macros, stxEnv = Builtins.loadBuiltinMacroEnv stxEnv
+                    Map.iter (fun id transformer -> ctx.MacroRegistry.Register id transformer) macros
                     expandFn ctx stxEnv refEnv)
                 ()
 

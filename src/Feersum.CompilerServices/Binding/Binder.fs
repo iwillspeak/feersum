@@ -56,17 +56,19 @@ module private BinderDiagnostics =
 type private BinderCtx =
     { Diagnostics: DiagnosticBag
       mutable Libraries: LibrarySignature<StorageRef> list
-      SourceRegistry: SourceRegistry }
+      SourceRegistry: SourceRegistry
+      mutable Macros: Map<Ident, SyntaxTransformer> }
 
 module private Binderctx =
 
     /// Create a new BinderCtx with the given scope and name
     ///
     /// Seeds the scope from the given `scope`.
-    let create sourceRegistry libs =
+    let create sourceRegistry libs macros =
         { SourceRegistry = sourceRegistry
           Libraries = libs
-          Diagnostics = DiagnosticBag.Empty }
+          Diagnostics = DiagnosticBag.Empty
+          Macros = macros }
 
 /// A single frame in the scope stack of a given binding frame. This is used to
 /// record the resolved storage locations of values which are currently
@@ -448,6 +450,12 @@ module private Impl =
             ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.invalidImport stx.Loc msg
             stxEnv
 
+    let reserveMacro (stxEnv: StxEnvironment) (name: string) : Ident * StxEnvironment =
+        let id = Ident.fresh ()
+        id, Map.add name (StxBinding.Macro id) stxEnv
+
+    let registerMacro (ctx: FrameCtx) (id: Ident) (mac: SyntaxTransformer) =
+        ctx.BinderCtx.Macros <- Map.add id mac ctx.BinderCtx.Macros
 
     /// Bind a Single Expression
     let rec bindInContext (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : BoundExpr * StxEnvironment =
@@ -458,7 +466,7 @@ module private Impl =
             BoundExpr.Error, stxEnv
 
         match stx with
-        | StxId(name, _, idEnv) ->
+        | Stx.Id(name, _) ->
             match resolveName ctx stxEnv name with
             | Resolved storage -> BoundExpr.Load storage, stxEnv
             | SpecialForm _
@@ -468,12 +476,18 @@ module private Impl =
             | Unbound ->
                 $"The symbol '{name}' is not defined in the current context"
                 |> emitBinderError stx BinderDiagnostics.undefinedSymbol
-        | StxDatum(value, loc) -> datumToLiteral value |> BoundExpr.Literal, stxEnv
+        | Stx.Datum(value, loc) -> datumToLiteral value |> BoundExpr.Literal, stxEnv
 
-        | StxList(head, tail, loc, env) -> bindForm ctx (env |> Option.defaultValue stxEnv) head tail loc
+        | Stx.List(head, tail, loc) -> bindForm ctx stxEnv head tail loc
 
-        | StxVec(items, _, _) -> items |> List.choose stxToDatum |> BoundLiteral.Vector |> BoundExpr.Literal, stxEnv
-        | StxError _ -> BoundExpr.Error, stxEnv
+        | Stx.Vec(items, _) -> items |> List.choose stxToDatum |> BoundLiteral.Vector |> BoundExpr.Literal, stxEnv
+
+        | Stx.Closure(inner, innerEnv) ->
+
+            let bound = bindInContext ctx innerEnv inner |> fst
+            bound, stxEnv
+
+        | Stx.Error _ -> BoundExpr.Error, stxEnv
 
     and bindForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (formBody: Stx list) (tail: Stx option) loc =
         match formBody with
@@ -490,7 +504,22 @@ module private Impl =
                         (getSyntaxLocation ctx.BinderCtx x))
 
                 bindSpecialForm ctx stxEnv kind args loc
-            | NameResolution.Macro id -> unimpl "Macros not yet implemented"
+            | NameResolution.Macro id ->
+                match Map.tryFind id ctx.BinderCtx.Macros with
+                | Some transformer ->
+                    let expanded = transformer (Stx.List(formBody, tail, loc)) stxEnv
+
+                    match expanded with
+                    | Ok newForm -> bindInContext ctx stxEnv newForm
+                    | Result.Error err ->
+                        err |> ctx.BinderCtx.Diagnostics.Emit MacroDiagnostics.macroExpansionError loc
+                        BoundExpr.Error, stxEnv
+                | None ->
+                    $"Macro '{name}' is not defined in the current context"
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+
+                    BoundExpr.Error, stxEnv
+
             | NameResolution.Resolved storage ->
                 BoundExpr.Load(storage) |> fun x -> bindApplication ctx stxEnv x args tail
             | NameResolution.Unbound ->
@@ -800,7 +829,20 @@ module private Impl =
 
                 boundDecls, stxEnv)
 
-        | SpecialFormKind.DefineSyntax -> unimpl $"Special form '{kind}' not yet implemented"
+        | SpecialFormKind.DefineSyntax ->
+            match args with
+            | [ StxId(name, _, _); rulesStx ] ->
+                // Reserve the Ident first so self-referential macros can see their
+                // own name in scope during template transcription (e.g. `my-or`).
+                let id, scope' = reserveMacro stxEnv name
+
+                match Macros.makeSyntaxTransformer name rulesStx scope' ctx.BinderCtx.Diagnostics with
+                | Some transformer ->
+                    registerMacro ctx id transformer
+                    BoundExpr.Nop, scope'
+                | None -> BoundExpr.Error, scope'
+            | _ -> illFormed "define-syntax"
+
         | SpecialFormKind.LetSyntax -> unimpl $"Special form '{kind}' not yet implemented"
         | SpecialFormKind.LetrecSyntax -> unimpl $"Special form '{kind}' not yet implemented"
 
@@ -988,9 +1030,10 @@ module Binder =
         (stxEnv: StxEnvironment)
         (scope: Map<Ident, StorageRef>)
         (libs: seq<LibrarySignature<StorageRef>>)
+        (macros: Map<Ident, SyntaxTransformer>)
         (units: Tree.Program list)
         : BoundSyntaxTree =
-        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs)
+        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs) macros
 
         let toBind =
             units

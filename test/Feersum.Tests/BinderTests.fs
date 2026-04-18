@@ -25,7 +25,7 @@ let private expand (source: string) =
     let coreLibs = Builtins.loadCoreSignatures TargetResolve.fromCurrentRuntime |> snd
 
     let result =
-        Binder.bindProgram registry Environments.emptyStx Map.empty coreLibs [ prog.Root ]
+        Binder.bindProgram registry Environments.emptyStx Map.empty coreLibs Map.empty [ prog.Root ]
 
     match result.Root.Body with
     | BoundExpr.Seq stmts -> stmts, result.Diagnostics
