@@ -12,11 +12,6 @@ open System
 open System.IO
 open System.Diagnostics
 
-// Add bin directory to probe path for all dependencies
-#I "src/Feersum/bin/Debug/net8.0"
-#r "Feersum.CompilerServices.dll"
-#r "Mono.Cecil.dll"
-
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Text
@@ -29,37 +24,12 @@ open Feersum.CompilerServices.Targets
 
 let repoRoot = __SOURCE_DIRECTORY__
 
-let args = fsi.CommandLineArgs |> Array.toList |> List.tail // drop script name
-let noBuild = args |> List.contains "--no-build"
+let args = Environment.GetCommandLineArgs() |> List.ofArray |> List.tail
 let filter = args |> List.tryFind (fun a -> a <> "--no-build")
-
-
-// ── Build step ────────────────────────────────────────────────────────────────
-
-if not noBuild then
-    printfn "Building Feersum.CompilerServices..."
-
-    let psi = ProcessStartInfo()
-    psi.FileName <- "dotnet"
-    psi.ArgumentList.Add("build")
-    psi.ArgumentList.Add("src/Feersum.CompilerServices/")
-    psi.ArgumentList.Add("/nologo")
-    psi.ArgumentList.Add("-v")
-    psi.ArgumentList.Add("q")
-    psi.WorkingDirectory <- repoRoot
-    psi.UseShellExecute <- false
-    use p = Process.Start(psi)
-    p.WaitForExit()
-
-    if p.ExitCode <> 0 then
-        eprintfn "Build failed!"
-        Environment.Exit 1
-
-    printfn "Build succeeded.\n"
 
 // ── Step 2: Discover spec files ───────────────────────────────────────────────
 
-let specDir = Path.Combine(repoRoot, "spec")
+let specDir = Path.Combine(repoRoot, "../spec")
 
 let specFiles =
     [| yield! Directory.GetFiles(specDir, "*.scm", SearchOption.AllDirectories)
@@ -136,7 +106,11 @@ let showDiff (label: string) (expandOut: string) (bindOut: string) =
 
 printfn "Comparing %d spec file(s)...\n" specFiles.Length
 
-let libs = Builtins.loadCoreSignatures TargetResolve.fromCurrentRuntime |> snd
+let target = TargetResolve.fromCurrentRuntime
+let coreLibs = Builtins.loadCoreSignatures target |> snd
+let frameworkLibs = typeof<Feersum.Core.LispProgram>.Assembly.Location |> Builtins.loadReferencedSignatures |> snd
+
+let libs = coreLibs @ frameworkLibs
 
 for spec in specFiles do
     let rel = Path.GetRelativePath(repoRoot, spec)

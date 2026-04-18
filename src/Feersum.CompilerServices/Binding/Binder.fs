@@ -333,7 +333,7 @@ module private Impl =
             let nameEnv = env |> Option.defaultValue stxEnv
 
             match resolveName ctx nameEnv name with
-            | NameResolution.SpecialForm kind -> unimpl "Speical forms not yet implemented"
+            | NameResolution.SpecialForm kind -> unimpl $"Speical form '{kind}'  not yet implemented"
             | NameResolution.Macro id -> unimpl "Macros not yet implemented"
             | NameResolution.Resolved storage ->
                 BoundExpr.Load(storage) |> fun x -> bindApplication ctx stxEnv x args tail

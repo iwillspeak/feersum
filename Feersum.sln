@@ -31,6 +31,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Feersum.CompilerServices", 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Feersum.Stage1", "src\Feersum.Stage1\Feersum.Stage1.fsproj", "{789F28C0-2C4A-4DCE-8A31-E69DB1CF56DE}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "compare-xp", "compare-xp\compare-xp.fsproj", "{39B7080C-0841-4318-9165-10F398A608CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +41,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2285F372-B4BF-4AB6-9E3F-B9CD045D09AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -176,6 +175,21 @@ Global
 		{789F28C0-2C4A-4DCE-8A31-E69DB1CF56DE}.Release|x64.Build.0 = Release|Any CPU
 		{789F28C0-2C4A-4DCE-8A31-E69DB1CF56DE}.Release|x86.ActiveCfg = Release|Any CPU
 		{789F28C0-2C4A-4DCE-8A31-E69DB1CF56DE}.Release|x86.Build.0 = Release|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Debug|x64.Build.0 = Debug|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Debug|x86.Build.0 = Debug|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Release|x64.ActiveCfg = Release|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Release|x64.Build.0 = Release|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Release|x86.ActiveCfg = Release|Any CPU
+		{39B7080C-0841-4318-9165-10F398A608CC}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2285F372-B4BF-4AB6-9E3F-B9CD045D09AD} = {312A2802-9517-47DE-9F5D-74B36DA2EA56}
