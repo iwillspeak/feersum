@@ -1,5 +1,5 @@
-;; FIXME: Almost none of these generate parser errors any more. We should be
-;;        more strict about what we accept as strings or idents.
+;; Bad strings and identifiers. All of these should generate reader-level
+;; diagnostics rather than silently producing wrong output.
 
 "\x;"
 "\x20"

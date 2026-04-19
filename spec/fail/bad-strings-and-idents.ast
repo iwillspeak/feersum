@@ -1,27 +1,27 @@
-PROGRAM: (0..193)
-  ATMOSPHERE: (0..76) ";; FIXME: Almost none of these generate parser errors any more. We should be"
-  ATMOSPHERE: (76..77) "\n"
-  ATMOSPHERE: (77..141) ";;        more strict about what we accept as strings or idents."
-  ATMOSPHERE: (141..143) "\n\n"
-  CONSTANT: (143..148)
-    STRING: (143..148) "\"\\x;\""
-  ATMOSPHERE: (148..149) "\n"
-  CONSTANT: (149..155)
-    STRING: (149..155) "\"\\x20\""
-  ATMOSPHERE: (155..156) "\n"
-  CONSTANT: (156..171)
-    STRING: (156..171) "\"\\x10000;\\\"\n'|\""
-  ATMOSPHERE: (171..172) "\n"
-  CONSTANT: (172..180)
-    CHARACTER: (172..180) "#\\x12345"
-  ATMOSPHERE: (180..181) "\n"
-  QUOTED_DATUM: (181..188)
-    QUOTE: (181..182) "'"
-    SYMBOL: (182..187)
-      IDENTIFIER: (182..187) "|\\x;|"
-    ATMOSPHERE: (187..188) "\n"
-  QUOTED_DATUM: (188..193)
-    QUOTE: (188..189) "'"
-    CONSTANT: (189..193)
-      ERROR: (189..193) "|\\x\n"
-  EOF: (193..193) ""
+PROGRAM: (0..185)
+  ATMOSPHERE: (0..73) ";; Bad strings and identifiers. All of these should generate reader-level"
+  ATMOSPHERE: (73..74) "\n"
+  ATMOSPHERE: (74..133) ";; diagnostics rather than silently producing wrong output."
+  ATMOSPHERE: (133..135) "\n\n"
+  CONSTANT: (135..140)
+    STRING: (135..140) "\"\\x;\""
+  ATMOSPHERE: (140..141) "\n"
+  CONSTANT: (141..147)
+    STRING: (141..147) "\"\\x20\""
+  ATMOSPHERE: (147..148) "\n"
+  CONSTANT: (148..163)
+    STRING: (148..163) "\"\\x10000;\\\"\n'|\""
+  ATMOSPHERE: (163..164) "\n"
+  CONSTANT: (164..172)
+    CHARACTER: (164..172) "#\\x12345"
+  ATMOSPHERE: (172..173) "\n"
+  QUOTED_DATUM: (173..180)
+    QUOTE: (173..174) "'"
+    SYMBOL: (174..179)
+      IDENTIFIER: (174..179) "|\\x;|"
+    ATMOSPHERE: (179..180) "\n"
+  QUOTED_DATUM: (180..185)
+    QUOTE: (180..181) "'"
+    CONSTANT: (181..185)
+      ERROR: (181..185) "|\\x\n"
+  EOF: (185..185) ""

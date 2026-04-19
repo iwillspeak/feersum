@@ -63,18 +63,26 @@ module private Utils =
         | InEscape
         | InHex of string
 
-    /// Cook a stirng value, replacing escapes with values
-    let cookString (s: string) =
+    /// Cook a string value, replacing escapes with values. Returns an error
+    /// message if the string contains a malformed or out-of-range hex escape.
+    let cookString (s: string) : Result<string, string> =
 
-        let cookChar ((state: CookingState), sb: StringBuilder) (ch: char) =
+        let cookChar ((state: CookingState), (sb: StringBuilder), (err: string option)) (ch: char) =
             match state with
             | Plain ->
                 match ch with
-                | '\\' -> (InEscape, sb)
-                | _ -> (Plain, sb.Append(ch))
+                | '\\' -> (InEscape, sb, err)
+                | _ -> (Plain, sb.Append(ch), err)
             | InHex buff ->
                 match ch with
-                | ';' -> (Plain, sb.Append((char) (int buff)))
+                | ';' ->
+                    if buff = "0x" then
+                        (Plain, sb, err |> Option.orElse (Some "malformed hex escape"))
+                    else
+                        match System.Int64.TryParse(buff[2..], System.Globalization.NumberStyles.HexNumber, null) with
+                        | true, v when v >= 0L && v <= int64 System.Char.MaxValue ->
+                            (Plain, sb.Append(char (int v)), err)
+                        | _ -> (Plain, sb, err |> Option.orElse (Some "hex escape value out of range"))
                 | '0'
                 | '1'
                 | '2'
@@ -96,42 +104,43 @@ module private Utils =
                 | 'C'
                 | 'D'
                 | 'E'
-                | 'F' -> (InHex(buff + (string ch)), sb)
-                | _ -> (Plain, sb.AppendFormat("\\x{0}{1}", buff[2..], ch))
+                | 'F' -> (InHex(buff + (string ch)), sb, err)
+                | _ -> (Plain, sb, err |> Option.orElse (Some "malformed hex escape"))
             | InEscape ->
                 match ch with
-                | 'a' -> (Plain, sb.Append('\a'))
-                | 'b' -> (Plain, sb.Append('\b'))
-                | 't' -> (Plain, sb.Append('\t'))
-                | 'n' -> (Plain, sb.Append('\n'))
-                | 'v' -> (Plain, sb.Append('\v'))
-                | 'f' -> (Plain, sb.Append('\f'))
-                | 'r' -> (Plain, sb.Append('\r'))
-                // FIXME: The InHex is seeded with 0x0 here rather than just 0x
-                //        because otherwise \x; will mean we try and parse an
-                //        empty string as a hex character. Do we need to parse
-                //        these parts of the string properlty in the lexer
-                //        rather than waiting until cooking? Should cooking
-                //        return a `Result` rather than a plain string?
-                | 'x' -> (InHex "0x0", sb)
-                | _ -> (Plain, sb.Append(ch))
+                | 'a' -> (Plain, sb.Append('\a'), err)
+                | 'b' -> (Plain, sb.Append('\b'), err)
+                | 't' -> (Plain, sb.Append('\t'), err)
+                | 'n' -> (Plain, sb.Append('\n'), err)
+                | 'v' -> (Plain, sb.Append('\v'), err)
+                | 'f' -> (Plain, sb.Append('\f'), err)
+                | 'r' -> (Plain, sb.Append('\r'), err)
+                | 'x' -> (InHex "0x", sb, err)
+                | _ -> (Plain, sb.Append(ch), err)
 
-        s
-        |> Seq.fold (cookChar) (CookingState.Plain, StringBuilder())
-        |> snd
-        |> (fun x -> x.ToString())
+        let finalState, sb, firstErr =
+            s |> Seq.fold cookChar (CookingState.Plain, StringBuilder(), None)
+
+        let err =
+            match finalState, firstErr with
+            | InHex _, None -> Some "unterminated hex escape"
+            | _ -> firstErr
+
+        match err with
+        | Some msg -> Error msg
+        | None -> Ok(sb.ToString())
 
 
     /// Cook the value of an identifier. This takes the raw identifier and
     /// converts it into a 'cooked' form, expanding out escaped values and
     /// replacing them with the true characters.
-    let cookIdentifier (token: SyntaxToken) =
+    let cookIdentifier (token: SyntaxToken) : Result<string, string> =
         let tokenText = token.Green.Text
 
         if tokenText.StartsWith('|') && tokenText.EndsWith('|') then
             tokenText[1 .. (tokenText.Length - 2)] |> cookString
         else
-            tokenText
+            Ok tokenText
 
 
 /// ------------------------ Syntax Tree Types --------------------------------
@@ -314,7 +323,7 @@ and Symbol internal (red: SyntaxNode, docId: DocId) =
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryExactlyOne
         |> Option.map (cookIdentifier)
-        |> Option.defaultValue ""
+        |> Option.defaultValue (Ok "")
 
 /// This is a self-evaluating expression that contains a sngle constant datum.
 and Constant internal (red: SyntaxNode, docId: DocId) =
