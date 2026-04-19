@@ -544,3 +544,114 @@ let ``form pattern with wrong length`` () =
     match macroMatch pattern testForm with
     | Some _ -> Assert.True(false, "Expected pattern not to match (wrong length)")
     | None -> ()
+
+// -- Old `Epxander` Test Cases ------------------------------------------------
+
+/// Parse a `(syntax-rules ...)` Stx node from source into the structured
+/// transformer representation (for pattern-inspection tests).
+let private parseSyntaxRules (name: string) (source: string) : Macro =
+    let registry = SourceRegistry.empty ()
+    let prog = Parse.readProgram registry "test" source
+
+    if ParseResult.hasErrors prog then
+        failwithf "Parse error: %A" prog.Diagnostics
+
+    let tree =
+        prog.Root.Body
+        |> Seq.exactlyOne
+        |> fun expr -> Stx.ofExpr registry prog.Root.DocId DiagnosticBag.Empty expr
+
+    let diag = DiagnosticBag.Empty
+    let env = Environments.emptyStx
+
+    match MacroParse.parseSyntaxRulesStx diag name tree env with
+    | Some t -> t
+    | None ->
+        let msgs = diag.Diagnostics |> List.map (fun d -> d.Message) |> String.concat "; "
+
+        failwithf "parseSyntaxRulesStx returned None: %s" msgs
+        
+[<Fact>]
+let ``parseSyntaxRulesStx: simple identity rule`` () =
+    let t = parseSyntaxRules "id" "(syntax-rules () ((_ x) x))"
+    Assert.Single(t.Transformers) |> ignore
+
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Variable "x" ] -> ()
+    | other -> failwithf "Unexpected pattern: %A" other
+
+[<Fact>]
+let ``parseSyntaxRulesStx: constant literal pattern`` () =
+    let t = parseSyntaxRules "foo" "(syntax-rules () ((_ 123) 'ok))"
+    Assert.Single(t.Transformers) |> ignore
+
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Constant(StxDatum.Number n) ] -> Assert.Equal(123.0, n)
+    | other -> failwithf "Unexpected pattern: %A" other
+
+[<Fact>]
+let ``parseSyntaxRulesStx: keyword literal in literal list`` () =
+    let t = parseSyntaxRules "my-macro" "(syntax-rules (else) ((_ else x) x))"
+    Assert.Single(t.Transformers) |> ignore
+
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Literal("else", None); MacroPattern.Variable "x" ] -> ()
+    | other -> failwithf "Unexpected pattern: %A" other
+
+[<Fact>]
+let ``parseSyntaxRulesStx: ellipsis pattern`` () =
+    let t = parseSyntaxRules "my-list" "(syntax-rules () ((_ x ...) (list x ...)))"
+    Assert.Single(t.Transformers) |> ignore
+
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Repeat(MacroPattern.Variable "x") ] -> ()
+    | other -> failwithf "Unexpected pattern: %A" other
+
+[<Fact>]
+let ``parseSyntaxRulesStx: dotted rest pattern`` () =
+    let t = parseSyntaxRules "f" "(syntax-rules () ((_ a b . c) c))"
+    Assert.Single(t.Transformers) |> ignore
+
+    match fst t.Transformers.[0] with
+    | MacroPattern.DottedForm([ MacroPattern.Underscore; MacroPattern.Variable "a"; MacroPattern.Variable "b" ],
+                              MacroPattern.Variable "c") -> ()
+    | other -> failwithf "Unexpected pattern: %A" other
+
+[<Fact>]
+let ``parseSyntaxRulesStx: multiple rules`` () =
+    let t =
+        parseSyntaxRules "foo" "(syntax-rules () ((_ 123) 'one-two-three) ((_) \"bar\"))"
+
+    Assert.Equal(2, List.length t.Transformers)
+
+[<Fact>]
+let ``parseSyntaxRulesStx: keyword-name head binds as variable`` () =
+    // When the head element matches the keyword name, it becomes Variable kw
+    // so the template can refer to it (e.g. recursive `or` expansion).
+    let t = parseSyntaxRules "or" "(syntax-rules () ((or a b ...) (if a a (or b ...))))"
+    Assert.Single(t.Transformers) |> ignore
+
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore
+                          MacroPattern.Variable "a"
+                          MacroPattern.Repeat(MacroPattern.Variable "b") ] ->
+        // Template should have or as Subst (it's in bound)
+        match snd t.Transformers.[0] with
+        | MacroTemplate.Form(_, elems) ->
+            // The (if ...) form; just verify it parsed without error
+            Assert.NotEmpty(elems)
+        | other -> failwithf "Expected Form template, got %A" other
+    | other -> failwithf "Unexpected pattern: %A" other
+
+[<Fact>]
+let ``parseSyntaxRulesStx: custom ellipsis identifier`` () =
+    // R7RS extended form: (syntax-rules <ellipsis> (literals...) rules...)
+    // The custom ellipsis `dots` should be usable in place of `...`.
+    let t =
+        parseSyntaxRules "my-seq" "(syntax-rules dots () ((my-seq expr dots) (begin expr dots)))"
+
+    Assert.Single(t.Transformers) |> ignore
+
+    match fst t.Transformers.[0] with
+    | MacroPattern.Form [ MacroPattern.Underscore; MacroPattern.Repeat(MacroPattern.Variable "expr") ] -> ()
+    | other -> failwithf "Unexpected pattern: %A" other

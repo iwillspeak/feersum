@@ -846,26 +846,11 @@ module private Impl =
                 | None -> BoundExpr.Error, scope'
             | _ -> illFormed "define-syntax"
 
-        | SpecialFormKind.LetSyntax ->
-            bindLet ctx "let-syntax" args loc (fun bindingSpecs ->
-
-                let bodyEnv =
-                    bindingSpecs
-                    |> List.fold
-                        (fun stxEnv (name, body) ->
-                            let id, stxEnv = reserveMacro stxEnv name
-
-                            Macros.makeSyntaxTransformer name body stxEnv ctx.BinderCtx.Diagnostics
-                            |> Option.iter (registerMacro ctx id)
-
-                            stxEnv)
-                        stxEnv
-
-                [], bodyEnv),
-            stxEnv
-
-        | SpecialFormKind.LetrecSyntax ->
-            bindLet ctx "letrec-syntax" args loc (fun bindingSpecs ->
+        | SpecialFormKind.LetSyntax 
+        | SpecialFormKind.LetrecSyntax as keyword ->
+            let isLetRec = keyword = SpecialFormKind.LetrecSyntax
+            let name = if isLetRec then "letrec-syntax" else "let-syntax"
+            bindLet ctx name args loc (fun bindingSpecs ->
 
                 // Pre-populate all the macro bindings into the syntax env so
                 // that they are available to each other when we parse them.
@@ -877,9 +862,14 @@ module private Impl =
                             (id, name, body), stxEnv)
                         stxEnv
 
+                // A let-syntax has its region as the body, a letrec has it as
+                // the whole set of transformer-specs as well as the body.
+                let bindingEnv =
+                    if isLetRec then bodyEnv else stxEnv
+
                 ids
                 |> List.iter (fun (id, name, body) ->
-                    Macros.makeSyntaxTransformer name body bodyEnv ctx.BinderCtx.Diagnostics
+                    Macros.makeSyntaxTransformer name body bindingEnv ctx.BinderCtx.Diagnostics
                     |> Option.iter (registerMacro ctx id))
 
                 [], bodyEnv),
