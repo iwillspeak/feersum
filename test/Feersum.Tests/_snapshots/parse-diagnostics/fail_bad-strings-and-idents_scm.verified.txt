@@ -1,0 +1,24 @@
+﻿[
+  {
+    Kind: {
+      Level: {},
+      Code: 10,
+      Title: Parse error
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-strings-and-idents.scm,
+        Line: 11,
+        Col: 1
+      },
+      End: {
+        Source: fail/bad-strings-and-idents.scm,
+        Line: 11,
+        Col: 1
+      }
+    },
+    Message:
+Unexpected token Error '|\x
+'
+  }
+]

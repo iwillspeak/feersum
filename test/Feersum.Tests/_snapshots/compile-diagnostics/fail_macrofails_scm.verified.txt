@@ -1,0 +1,82 @@
+﻿[
+  {
+    Kind: {
+      Level: {},
+      Code: 35,
+      Title: Reference to undefined symbol
+    },
+    Location: {
+      Start: {
+        Source: fail/macrofails.scm,
+        Line: 17,
+        Col: 1
+      },
+      End: {
+        Source: fail/macrofails.scm,
+        Line: 17,
+        Col: 16
+      }
+    },
+    Message: Macro or procedure 'another' is not bound in the current context
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 35,
+      Title: Reference to undefined symbol
+    },
+    Location: {
+      Start: {
+        Source: fail/macrofails.scm,
+        Line: 13,
+        Col: 20
+      },
+      End: {
+        Source: fail/macrofails.scm,
+        Line: 13,
+        Col: 21
+      }
+    },
+    Message: The symbol 'a' is not defined in the current context
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 41,
+      Title: Invalid macro definition
+    },
+    Location: {
+      Start: {
+        Source: fail/macrofails.scm,
+        Line: 13,
+        Col: 20
+      },
+      End: {
+        Source: fail/macrofails.scm,
+        Line: 13,
+        Col: 21
+      }
+    },
+    Message: template variable 'a' is not in scope at this ellipsis level
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 40,
+      Title: Macro expansion error
+    },
+    Location: {
+      Start: {
+        Source: fail/macrofails.scm,
+        Line: 9,
+        Col: 1
+      },
+      End: {
+        Source: fail/macrofails.scm,
+        Line: 9,
+        Col: 27
+      }
+    },
+    Message: no macro rule matched the form
+  }
+]
