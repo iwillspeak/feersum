@@ -150,7 +150,7 @@ module Compilation =
                     (symbols |> Option.ofObj)
                     (CompileInput.Program(registry, result.Root))
 
-            if result.Diagnostics.IsEmpty && options.OutputType = OutputType.Exe then
+            if (hasErrors result.Diagnostics |> not) && options.OutputType = OutputType.Exe then
                 match result.EmittedAssemblyName with
                 | Some(assemblyName) -> Runtime.writeRuntimeConfig options output assemblyName outDir
                 | None -> ()
