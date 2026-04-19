@@ -729,7 +729,8 @@ module private Impl =
                             BoundExpr.Store(storage, Some(body)), stxEnv)
                         stxEnv
 
-                boundDecls, stxEnv)
+                boundDecls, stxEnv),
+            stxEnv
         | SpecialFormKind.LetStar ->
             bindLet ctx "let*" args loc (fun bindingSpecs ->
 
@@ -745,7 +746,8 @@ module private Impl =
                             BoundExpr.Store(storage, Some(init)), stxEnv)
                         stxEnv
 
-                decls, stxEnv)
+                decls, stxEnv),
+            stxEnv
         | SpecialFormKind.Letrec
         | SpecialFormKind.LetrecStar ->
 
@@ -827,7 +829,8 @@ module private Impl =
                             BoundExpr.Store(storage, Some(bound)), stxEnv)
                         stxEnv
 
-                boundDecls, stxEnv)
+                boundDecls, stxEnv),
+            stxEnv
 
         | SpecialFormKind.DefineSyntax ->
             match args with
@@ -843,8 +846,44 @@ module private Impl =
                 | None -> BoundExpr.Error, scope'
             | _ -> illFormed "define-syntax"
 
-        | SpecialFormKind.LetSyntax -> unimpl $"Special form '{kind}' not yet implemented"
-        | SpecialFormKind.LetrecSyntax -> unimpl $"Special form '{kind}' not yet implemented"
+        | SpecialFormKind.LetSyntax ->
+            bindLet ctx "let-syntax" args loc (fun bindingSpecs ->
+
+                let bodyEnv =
+                    bindingSpecs
+                    |> List.fold
+                        (fun stxEnv (name, body) ->
+                            let id, stxEnv = reserveMacro stxEnv name
+
+                            Macros.makeSyntaxTransformer name body stxEnv ctx.BinderCtx.Diagnostics
+                            |> Option.iter (registerMacro ctx id)
+
+                            stxEnv)
+                        stxEnv
+
+                [], bodyEnv),
+            stxEnv
+
+        | SpecialFormKind.LetrecSyntax ->
+            bindLet ctx "letrec-syntax" args loc (fun bindingSpecs ->
+
+                // Pre-populate all the macro bindings into the syntax env so
+                // that they are available to each other when we parse them.
+                let ids, bodyEnv =
+                    bindingSpecs
+                    |> List.mapFold
+                        (fun stxEnv (name, body) ->
+                            let id, stxEnv = reserveMacro stxEnv name
+                            (id, name, body), stxEnv)
+                        stxEnv
+
+                ids
+                |> List.iter (fun (id, name, body) ->
+                    Macros.makeSyntaxTransformer name body bodyEnv ctx.BinderCtx.Diagnostics
+                    |> Option.iter (registerMacro ctx id))
+
+                [], bodyEnv),
+            stxEnv
 
         | SpecialFormKind.DefineLibrary ->
             match args with
@@ -908,13 +947,13 @@ module private Impl =
             // Save the current scope so we can restore it later
             ctx.Env <- ResolutionEnv.pushScope ctx.Env
             // Bind the declarations
-            let decls, stxEnv = declBinder bindingSpecs
+            let decls, bodyEnv = declBinder bindingSpecs
             // Bind the body of the lambda in the new scope
-            let boundBody, stxEnv = List.mapFold (bindTopLevel ctx) stxEnv body
+            let boundBody, _ = List.mapFold (bindTopLevel ctx) bodyEnv body
             // Decrement the scope depth
             ctx.Env <- ResolutionEnv.popScope ctx.Env
-            BoundExpr.Seq(decls @ boundBody), stxEnv
-        | _ -> illFormedInCtx ctx loc name
+            BoundExpr.Seq(decls @ boundBody)
+        | _ -> illFormedInCtx ctx loc name |> fst
 
     and bindApplication
         (ctx: FrameCtx)

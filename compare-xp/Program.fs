@@ -76,6 +76,11 @@ let rec sanitiseTree =
     // Old expander binds the args, new one short circuits.
     | BoundExpr.Application(BoundExpr.Error, _) -> BoundExpr.Error
     | BoundExpr.Application(op, args) -> BoundExpr.Application(sanitiseTree op, List.map (sanitiseTree) args)
+
+    // Strip sequence points from Nops and Errors. This allows Seq to condense them
+    | BoundExpr.SequencePoint(BoundExpr.Nop as inner, sp)
+    | BoundExpr.SequencePoint(BoundExpr.Error as inner, sp) -> inner
+
     | BoundExpr.SequencePoint(inner, sp) -> BoundExpr.SequencePoint(sanitiseTree inner, sp)
     | BoundExpr.Store(dest, expr) -> BoundExpr.Store(dest, expr |> Option.map sanitiseTree)
     | BoundExpr.If(cond, t, f) -> BoundExpr.If(sanitiseTree cond, sanitiseTree t, f |> Option.map sanitiseTree)
@@ -89,8 +94,21 @@ let rec sanitiseTree =
             | other -> [ other ])
         |> BoundExpr.Seq
 
-    | BoundExpr.Lambda(_, _)
-    | BoundExpr.Library(_, _, _, _)
+    | BoundExpr.Lambda(f, body) ->
+        BoundExpr.Lambda(
+            f,
+            { body with
+                Body = sanitiseTree body.Body }
+        )
+
+    | BoundExpr.Library(name, mangled, exports, body) ->
+        BoundExpr.Library(
+            name,
+            mangled,
+            exports,
+            { body with
+                Body = sanitiseTree body.Body }
+        )
 
     | BoundExpr.Load(_)
     | BoundExpr.Nop
@@ -130,12 +148,8 @@ let showDiff (label: string) (expandOut: string) (bindOut: string) =
     psi.FileName <- "sh"
     psi.ArgumentList.Add("-c")
 
-    psi.ArgumentList.Add(
-        sprintf
-            "diff -u --label expand --label bind '%s' '%s' | bat --language=diff --style=plain --paging=never"
-            fexp
-            fbind
-    )
+    psi.ArgumentList.Add
+        $"diff -u -a --label '{label} (expand)' --label '{label} (bind)' '{fexp}' '{fbind}' | bat --language=diff --style=plain --paging=never"
 
     psi.WorkingDirectory <- repoRoot
     psi.UseShellExecute <- false
