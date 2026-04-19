@@ -12,11 +12,10 @@ open Feersum.CompilerServices.Binding
 
 // -- Helpers ------------------------------------------------------------------
 
-let private registry = SourceRegistry.empty ()
-
 /// Parse a Scheme program string and run the new expander.
 /// Returns (BoundExpr list, Diagnostics).
 let private expand (source: string) =
+    let registry = SourceRegistry.empty ()
     let prog = Parse.readProgram registry "test" source
 
     if ParseResult.hasErrors prog then
