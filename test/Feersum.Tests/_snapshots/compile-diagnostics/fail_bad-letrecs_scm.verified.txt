@@ -1,0 +1,62 @@
+﻿[
+  {
+    Kind: {
+      Level: {},
+      Code: 37,
+      Title: Use of uninitialised variable
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-letrecs.scm,
+        Line: 7,
+        Col: 18
+      },
+      End: {
+        Source: fail/bad-letrecs.scm,
+        Line: 7,
+        Col: 32
+      }
+    },
+    Message: Reference to uninitialised variable 'second' in letrec binding
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 37,
+      Title: Use of uninitialised variable
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-letrecs.scm,
+        Line: 4,
+        Col: 13
+      },
+      End: {
+        Source: fail/bad-letrecs.scm,
+        Line: 4,
+        Col: 18
+      }
+    },
+    Message: Reference to uninitialised variable 'first' in letrec binding
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 37,
+      Title: Use of uninitialised variable
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-letrecs.scm,
+        Line: 3,
+        Col: 17
+      },
+      End: {
+        Source: fail/bad-letrecs.scm,
+        Line: 3,
+        Col: 29
+      }
+    },
+    Message: Reference to uninitialised variable 'second' in letrec binding
+  }
+]

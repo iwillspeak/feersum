@@ -1,0 +1,82 @@
+﻿[
+  {
+    Kind: {
+      Level: {},
+      Code: 36,
+      Title: Invalid import declaration
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-imports.scm,
+        Line: 3,
+        Col: 1
+      },
+      End: {
+        Source: fail/bad-imports.scm,
+        Line: 4,
+        Col: 42
+      }
+    },
+    Message: Could not find library (test greeter)
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 36,
+      Title: Invalid import declaration
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-imports.scm,
+        Line: 2,
+        Col: 9
+      },
+      End: {
+        Source: fail/bad-imports.scm,
+        Line: 2,
+        Col: 17
+      }
+    },
+    Message: invalid import set
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 21,
+      Title: Invalid library name
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-imports.scm,
+        Line: 2,
+        Col: 9
+      },
+      End: {
+        Source: fail/bad-imports.scm,
+        Line: 2,
+        Col: 17
+      }
+    },
+    Message: Expected library name
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 36,
+      Title: Invalid import declaration
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-imports.scm,
+        Line: 1,
+        Col: 9
+      },
+      End: {
+        Source: fail/bad-imports.scm,
+        Line: 1,
+        Col: 29
+      }
+    },
+    Message: Could not find library (not a real library)
+  }
+]

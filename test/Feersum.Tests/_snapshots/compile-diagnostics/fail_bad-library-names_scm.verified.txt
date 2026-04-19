@@ -1,0 +1,162 @@
+﻿[
+  {
+    Kind: {
+      Level: {},
+      Code: 31,
+      Title: Missing export
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-library-names.scm,
+        Line: 5,
+        Col: 1
+      },
+      End: {
+        Source: fail/bad-library-names.scm,
+        Line: 6,
+        Col: 31
+      }
+    },
+    Message: Could not find exported item 'exist'
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 31,
+      Title: Missing export
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-library-names.scm,
+        Line: 5,
+        Col: 1
+      },
+      End: {
+        Source: fail/bad-library-names.scm,
+        Line: 6,
+        Col: 31
+      }
+    },
+    Message: Could not find exported item 'don't'
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 31,
+      Title: Missing export
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-library-names.scm,
+        Line: 5,
+        Col: 1
+      },
+      End: {
+        Source: fail/bad-library-names.scm,
+        Line: 6,
+        Col: 31
+      }
+    },
+    Message: Could not find exported item 'we'
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 20,
+      Title: Improper library name
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-library-names.scm,
+        Line: 4,
+        Col: 17
+      },
+      End: {
+        Source: fail/bad-library-names.scm,
+        Line: 4,
+        Col: 32
+      }
+    },
+    Message: The name prefix srfi is reserved
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 21,
+      Title: Invalid library name
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-library-names.scm,
+        Line: 3,
+        Col: 23
+      },
+      End: {
+        Source: fail/bad-library-names.scm,
+        Line: 3,
+        Col: 25
+      }
+    },
+    Message: Invalid library name part
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 20,
+      Title: Improper library name
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-library-names.scm,
+        Line: 2,
+        Col: 25
+      },
+      End: {
+        Source: fail/bad-library-names.scm,
+        Line: 2,
+        Col: 38
+      }
+    },
+    Message: Library names should not contain complex characters
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 20,
+      Title: Improper library name
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-library-names.scm,
+        Line: 2,
+        Col: 17
+      },
+      End: {
+        Source: fail/bad-library-names.scm,
+        Line: 2,
+        Col: 39
+      }
+    },
+    Message: The name prefix scheme is reserved
+  },
+  {
+    Kind: {
+      Level: {},
+      Code: 21,
+      Title: Invalid library name
+    },
+    Location: {
+      Start: {
+        Source: fail/bad-library-names.scm,
+        Line: 1,
+        Col: 17
+      },
+      End: {
+        Source: fail/bad-library-names.scm,
+        Line: 1,
+        Col: 24
+      }
+    },
+    Message: Expected library name
+  }
+]

@@ -10,5 +10,5 @@
 # converted to CRLF on Windows, otherwise snapshot comparison tests fail.
 *.ast text eol=lf linguist-generated=true
 
-# Snapper files are generated
-_snapshots/*.json linguist-generated=true
+# Verify snapshot files must use LF line endings for consistent comparison
+*.verified.txt text eol=lf linguist-generated=true

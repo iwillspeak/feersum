@@ -8,7 +8,8 @@ open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Lex
 open System.IO
-open Snapper
+open VerifyXunit
+open VerifyTests
 open System.Diagnostics
 open SyntaxUtils
 open System.Text
@@ -19,7 +20,6 @@ open Feersum.CompilerServices.Syntax.Tree
 let private shouldUpdateSnapshots =
     System.Environment.GetEnvironmentVariable("UpdateSnapshots") = "true"
 
-// This type has to be public so `Snapper` can see it.
 type TestExecutionResult =
     { Output: string
       Error: string
@@ -30,6 +30,8 @@ let specDir = Path.Join(__SOURCE_DIRECTORY__, "..", "..", "spec")
 let specBin = Path.Join(specDir, "bin")
 
 let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
+
+let private sourceFilePath = Path.Join(__SOURCE_DIRECTORY__, __SOURCE_FILE__)
 
 let normalisePath (path: string) = path.Replace("\\", "/")
 
@@ -42,6 +44,22 @@ let diagSanitiser =
     >> List.sortByDescending (fun x -> x.Location.Start)
 
 let normaliseEndings (s: string) = s.Replace("\r\n", "\n")
+
+let private snapshotFileName (specPath: string) =
+    specPath.Replace("/", "_").Replace("\\", "_").Replace(".", "_")
+
+let private verifySnapshot (target: obj) (directory: string) (fileName: string) =
+    let task =
+        Verifier
+            .Verify(target, VerifySettings(), sourceFilePath)
+            .UseDirectory(directory)
+            .UseFileName(fileName)
+            .DisableRequireUniquePrefix()
+
+    if shouldUpdateSnapshots then
+        task.AutoVerify(includeBuildServer = true, throwException = false)
+    else
+        task
 
 let specsOfType extension =
     Directory.GetFiles(specDir, "*." + extension, SearchOption.AllDirectories)
@@ -105,7 +123,7 @@ let public getRunTestData () =
 
 [<Theory>]
 [<MemberDataAttribute("getRunTestData")>]
-let rec ``spec tests compile and run`` specPath configuration =
+let ``spec tests compile and run`` specPath configuration =
     let sourcePath = Path.Join(specDir, specPath)
 
     let options =
@@ -154,21 +172,19 @@ let rec ``spec tests compile and run`` specPath configuration =
         let exePath = artifactpath options specPath
         let specName = specPath |> normalisePath
 
-        let snapSettings =
-            SnapshotSettings
-                .New()
-                .SnapshotDirectory(snapDir)
-                .SnapshotClassName("SpecTests")
-                .SnapshotTestName(nameof (``spec tests compile and run``))
-                .StoreSnapshotsPerClass(false)
-
         let diags = Compilation.compileFile options exePath sourcePath
 
         if Diagnostics.Diagnostics.hasErrors diags then
             if not shouldFail then
                 failwithf "Compilation error: %A" diags
 
-            (diags |> diagSanitiser).ShouldMatchChildSnapshot(specName, snapSettings)
+            let! _ =
+                verifySnapshot
+                    (diags |> diagSanitiser)
+                    (Path.Join(snapDir, "compile-diagnostics"))
+                    (snapshotFileName specName)
+
+            ()
         else
             if shouldFail then
                 failwith "Expected compilation failure!"
@@ -176,7 +192,9 @@ let rec ``spec tests compile and run`` specPath configuration =
             if shouldRun then
                 let! r = runExampleAsync "dotnet" exePath
 
-                r.ShouldMatchChildSnapshot(specName, snapSettings)
+                let! _ = verifySnapshot (r :> obj) (Path.Join(snapDir, "spec-run")) (snapshotFileName specName)
+
+                ()
     }
 
 let public getParseTestData () =
@@ -184,7 +202,7 @@ let public getParseTestData () =
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]
-let rec ``spec tests parse result`` s =
+let ``spec tests parse result`` s =
     let sourcePath = Path.Join(specDir, s)
 
     let root =
@@ -201,16 +219,11 @@ let rec ``spec tests parse result`` s =
     else
         Assert.Equal(File.ReadAllText(astPath), root.Root)
 
-    let snapSettings =
-        SnapshotSettings
-            .New()
-            .SnapshotDirectory(snapDir)
-            .SnapshotClassName("ParseDiagnostics")
-            .SnapshotTestName(nameof (``spec tests parse result``))
-            .StoreSnapshotsPerClass(false)
+    task {
+        let! _ = verifySnapshot (root.Diagnostics :> obj) (Path.Join(snapDir, "parse-diagnostics")) (snapshotFileName s)
 
-    let childSnapshotName = Path.GetFileName s
-    root.Diagnostics.ShouldMatchChildSnapshot(childSnapshotName, snapSettings)
+        return ()
+    }
 
 [<Theory>]
 [<MemberDataAttribute("getParseTestData")>]

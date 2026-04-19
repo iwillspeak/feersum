@@ -1,0 +1,40 @@
+﻿{
+  Output:
+((12 34 56) (#f 4) 2)
+(5 4 3 2 1)
+#t#t#f
+#t#t#t
+(x y)
+(a b c d)
+(a (b) (c))
+(a b c . d)
+(a b c . d)
+a
+(c b a)
+((e (f)) d (b c) a)
+(b c d e f g)
+(a b c d e f g)
+(g)
+c
+(one two three)
+#f
+2
+(a b c)
+(b c)
+#f
+#f
+((a) c)
+(#\b #\c)
+#f
+(101 102)
+(a 1)
+(b 2)
+#f
+#f
+((a))
+(2 4)
+#f
+(5 7)
+,
+  Error: 
+}

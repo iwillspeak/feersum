@@ -1,0 +1,22 @@
+﻿[
+  {
+    Kind: {
+      Level: {},
+      Code: 35,
+      Title: Reference to undefined symbol
+    },
+    Location: {
+      Start: {
+        Source: fail/macro-generated-syntax.scm,
+        Line: 15,
+        Col: 10
+      },
+      End: {
+        Source: fail/macro-generated-syntax.scm,
+        Line: 15,
+        Col: 22
+      }
+    },
+    Message: Macro or procedure 'mad-hatter' is not bound in the current context
+  }
+]
