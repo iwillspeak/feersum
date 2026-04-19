@@ -180,10 +180,10 @@ let ``binder expand: hygienic rename`` () =
             """
 (define-syntax swapit
   (syntax-rules ()
-    ((_ a b)
-     (let ((tmp a))
-       (set! a b)
-       (set! b tmp)))))
+    ((_ x y)
+     (let ((tmp x))
+       (set! x y)
+       (set! y tmp)))))
 (define x 1)
 (define y 2)
 (swapit x y)

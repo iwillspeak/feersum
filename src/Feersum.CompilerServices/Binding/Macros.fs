@@ -35,7 +35,8 @@ type MacroPattern =
 // -- Template types -----------------------------------------------------------
 
 /// Macro templates specify how to convert a match into new syntax. They are
-/// effectively patterns for the output, with holes filled in by pattern variable matches.
+/// effectively scaffolds for the output, with holes filled in by pattern
+/// variable substitutions.
 [<RequireQualifiedAccess>]
 type MacroTemplate =
     /// A literal node from the macro definition site (quoted, not substituted).
@@ -100,7 +101,7 @@ type MacroRule = MacroPattern * MacroTemplate
 /// A macro: the set of transformer rules together with the definition-site
 /// scope and source location.
 type Macro =
-    { Transformers: MacroRule list
+    { Rules: MacroRule list
       DefScope: StxEnvironment
       DefLoc: TextLocation }
 
@@ -398,7 +399,7 @@ module MacroParse =
             let lits = parseLiteralList diags defScope lits
             let rules = parseSyntaxRulesBody diags id ellipsis lits rules defScope
 
-            { Transformers = rules
+            { Rules = rules
               DefScope = defScope
               DefLoc = syntaxRulesSyn.Loc }
 
@@ -587,7 +588,7 @@ module Macros =
                 | _ -> macroTryApply rest
             | [] -> Result.Error "no macro rule matched the form"
 
-        macroTryApply macro.Transformers
+        macroTryApply macro.Rules
         |> Result.map (fun xpanded ->
             // Re-attach the macro definition scope to the expanded form to ensure that any identifiers
             // introduced by the macro are resolved in the correct environment.
