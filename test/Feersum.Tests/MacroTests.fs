@@ -380,8 +380,9 @@ let ``simple macro expand`` () =
     Assert.True(Result.isError expanded)
 
 [<Theory>]
+// The head 'a' is the macro name position - not a pattern variable, so template 'a' is a literal identifier
 [<InlineData("(a)", "a", "(1)", "a")>]
-[<InlineData("(a ...)", "123", "(1 #f foo)", "123")>]
+[<InlineData("(_ a ...)", "123", "(test 1 #f foo)", "123")>]
 [<InlineData("(_ (a)...)", "(a ...)", "(test (1)(#f)(foo))", "(1 #f foo)")>]
 [<InlineData("(_ (a ...)...)", "((f a ...) ...)", "(test (1 2)(#f))", "((f 1 2) (f #f))")>]
 let ``macro expand tests`` pattern template invocation expected =
