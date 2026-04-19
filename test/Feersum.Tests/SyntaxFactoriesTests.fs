@@ -76,7 +76,7 @@ let ``string constants`` str =
     let node = strVal str
 
     match node with
-    | Constant(Some(StrVal s)) -> Assert.Equal(str, s)
+    | Constant(Some(StrVal(Ok s))) -> Assert.Equal(str, s)
     | _ -> failwith "Node structure invalid"
 
     checkReparse node
@@ -116,7 +116,7 @@ let ``identifier symbol exprs`` ident expected =
     Assert.Equal(expected, node.Text)
 
     match node with
-    | Symbol id -> Assert.Equal(ident, id)
+    | Symbol(Ok id) -> Assert.Equal(ident, id)
     | _ -> failwith "Node strucutre invalid"
 
     checkReparse node

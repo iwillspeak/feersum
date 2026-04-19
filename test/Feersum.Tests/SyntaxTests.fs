@@ -65,7 +65,7 @@ let ``parse happy path`` () =
     Assert.Empty(readProgExprs "")
 
     match readProgExprs "(+ 12 34) #f" |> List.ofSeq with
-    | [ Form [ Symbol "+"; Constant(Some(NumVal 12.0)); Constant(Some(NumVal 34.0)) ]; Constant(Some(BoolVal false)) ] ->
+    | [ Form [ Symbol(Ok "+"); Constant(Some(NumVal 12.0)); Constant(Some(NumVal 34.0)) ]; Constant(Some(BoolVal false)) ] ->
         ()
     | x -> failwithf "Parse test failure, got %A" x
 
@@ -172,7 +172,10 @@ let ``identifier literals`` raw (cooked: string) =
     Assert.Equal(AstKind.IDENTIFIER, identTok |> getTokenKind)
 
     match script.Body with
-    | Some(SymbolNode s) -> Assert.Equal(cooked, s.CookedValue)
+    | Some(SymbolNode s) ->
+        match s.CookedValue with
+        | Ok value -> Assert.Equal(cooked, value)
+        | Error msg -> failwithf "Expected valid identifier but got error: %s" msg
     | _ -> failwithf "Expected identifier but got %A" script.Body
 
 [<Theory>]
@@ -190,9 +193,10 @@ let ``identifier literals`` raw (cooked: string) =
 [<InlineData("\\x1234;", '\u1234')>]
 let ``parse escaped characters`` escaped char =
     match readScriptExpr (sprintf "\"%s\"" escaped) with
-    | Constant(Some(StrVal s)) ->
+    | Constant(Some(StrVal(Ok s))) ->
         Assert.Equal(1, s.Length)
         Assert.Equal(char, s[0])
+    | Constant(Some(StrVal(Error msg))) -> failwithf "Unexpected string cook error: %s" msg
     | _ -> failwith "Expected string"
 
 [<Fact>]

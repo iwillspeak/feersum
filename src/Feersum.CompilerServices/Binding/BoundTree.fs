@@ -44,7 +44,8 @@ type BoundLiteral =
     static member FromConstantValue(cv: ConstantValue option) =
         match cv with
         | Some(NumVal n) -> BoundLiteral.Number n
-        | Some(StrVal s) -> BoundLiteral.Str s
+        | Some(StrVal(Result.Ok s)) -> BoundLiteral.Str s
+        | Some(StrVal(Result.Error _)) -> BoundLiteral.Null
         | Some(BoolVal b) -> BoundLiteral.Boolean b
         | Some(CharVal c) -> BoundLiteral.Character(Option.defaultValue '\u0000' c)
         | None -> BoundLiteral.Null

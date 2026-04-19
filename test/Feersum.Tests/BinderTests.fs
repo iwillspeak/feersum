@@ -588,6 +588,26 @@ let ``ofExpr: malformed nodes produce BoundExpr.Error not stub datums`` () =
     Assert.True(hasError, "Expected at least one BoundExpr.Error in result")
 
 [<Fact>]
+let ``ofExpr: empty hex escape in string emits malformed-datum diagnostic`` () =
+    // "\x;" has an empty hex digit sequence and should not silently produce \0.
+    expandMalformedError MalformedDatumCode "malformed hex escape" "\"\\x;\""
+
+[<Fact>]
+let ``ofExpr: unterminated hex escape in string emits malformed-datum diagnostic`` () =
+    // "\x20" has no terminating semicolon so the hex escape is unterminated.
+    expandMalformedError MalformedDatumCode "unterminated hex escape" "\"\\x20\""
+
+[<Fact>]
+let ``ofExpr: out-of-range hex escape in string emits malformed-datum diagnostic`` () =
+    // "\x10000;" encodes U+10000 which is outside the BMP and cannot fit in a char.
+    expandMalformedError MalformedDatumCode "hex escape value out of range" "\"\\x10000;\""
+
+[<Fact>]
+let ``ofExpr: empty hex escape in pipe-delimited symbol emits malformed-datum diagnostic`` () =
+    // '|\x;| has an empty hex escape in the identifier and should produce an error.
+    expandMalformedError MalformedDatumCode "malformed hex escape" "'|\\x;|"
+
+[<Fact>]
 let ``let-syntax: bindings are not mutually visible`` () =
     // m1 is defined in outer scope; m2 is also parsed against outer scope,
     // so m1 is NOT visible when m2's transformer is parsed.

@@ -165,11 +165,19 @@ module Stx =
         let recurse = ofExpr reg docId diag
 
         match expr with
-        | SymbolNode s -> Stx.Id(s.CookedValue, loc)
+        | SymbolNode s ->
+            match s.CookedValue with
+            | Ok cooked -> Stx.Id(cooked, loc)
+            | Error msg ->
+                diag.Emit malformedDatum loc msg
+                Stx.Error loc
         | ConstantNode c ->
             match c.Value with
             | Some(NumVal n) -> Stx.Datum(StxDatum.Number n, loc)
-            | Some(StrVal s) -> Stx.Datum(StxDatum.Str s, loc)
+            | Some(StrVal(Ok s)) -> Stx.Datum(StxDatum.Str s, loc)
+            | Some(StrVal(Error msg)) ->
+                diag.Emit malformedDatum loc msg
+                Stx.Error loc
             | Some(BoolVal b) -> Stx.Datum(StxDatum.Boolean b, loc)
             | Some(CharVal(Some ch)) -> Stx.Datum(StxDatum.Character ch, loc)
             | Some(CharVal None) ->
