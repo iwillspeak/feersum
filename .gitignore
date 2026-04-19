@@ -35,3 +35,5 @@ counter.csv
 
 *.log
 *.lscache
+# Verify received (unverified) snapshots - never commit these
+*.received.*
