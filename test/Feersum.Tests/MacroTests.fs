@@ -570,7 +570,7 @@ let private parseSyntaxRules (name: string) (source: string) : Macro =
         let msgs = diag.Diagnostics |> List.map (fun d -> d.Message) |> String.concat "; "
 
         failwithf "parseSyntaxRulesStx returned None: %s" msgs
-        
+
 [<Fact>]
 let ``parseSyntaxRulesStx: simple identity rule`` () =
     let t = parseSyntaxRules "id" "(syntax-rules () ((_ x) x))"

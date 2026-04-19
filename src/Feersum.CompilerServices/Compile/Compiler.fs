@@ -61,30 +61,12 @@ module Compilation =
             Instrumentation.withPhase
                 "bind"
                 (fun () ->
-#if USE_NEW_BINDER
                     let stxEnv, refEnv = Environments.intoParts preloaded
                     let macros, stxEnv = Builtins.loadBuiltinMacroEnv stxEnv
 
                     match input with
-                    | CompileInput.Program(reg, progs) ->
-                        Binder.bindProgram reg stxEnv refEnv allLibs macros progs
-                    | CompileInput.Script(reg, script) ->
-                        Binder.bindScript reg stxEnv refEnv allLibs macros script)
-#else
-                    let reg, expandFn =
-                        match input with
-                        | CompileInput.Program(reg, progs) ->
-                            reg, fun ctx macroScope preloaded -> Expand.expand progs macroScope preloaded ctx
-                        | CompileInput.Script(reg, script) ->
-                            reg,
-                            fun ctx macroScope preloaded -> Expand.expandScriptUnit script macroScope preloaded ctx
-
-                    let stxEnv, refEnv = Environments.intoParts preloaded
-                    let macros, stxEnv = Builtins.loadBuiltinMacroEnv stxEnv
-                    let ctx = ExpandCtx.createGlobal reg "LispProgram" allLibs
-                    Map.iter (fun id transformer -> ctx.MacroRegistry.Register id transformer) macros
-                    expandFn ctx stxEnv refEnv)
-#endif
+                    | CompileInput.Program(reg, progs) -> Binder.bindProgram reg stxEnv refEnv allLibs macros progs
+                    | CompileInput.Script(reg, script) -> Binder.bindScript reg stxEnv refEnv allLibs macros script)
                 ()
 
         let assmName =

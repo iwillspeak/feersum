@@ -248,3 +248,10 @@ module Stx =
         env
         |> Map.tryFind name
         |> Option.orElseWith (fun () -> tryResolveSpecial name |> Option.map StxBinding.Special)
+
+    /// Add a new macro binding for `name` to `stxEnv`
+    ///
+    /// Defines a fresh `Ident` for the macro and returns it along with the updated environment.
+    let reserveMacro (stxEnv: StxEnvironment) (name: string) : Ident * StxEnvironment =
+        let id = Ident.fresh ()
+        id, Map.add name (StxBinding.Macro id) stxEnv

@@ -219,7 +219,7 @@ module private BuiltinMacros =
                     let diags = DiagnosticBag.Empty
                     let stx = Stx.ofExpr registry result.Root.DocId diags expr
 
-                    let id, stxEnv' = ExpandCtx.reserveMacro name stxEnv
+                    let id, stxEnv' = Stx.reserveMacro stxEnv name
 
                     match Macros.makeSyntaxTransformer name stx stxEnv' diags with
                     | Some transformer -> Map.add id transformer macros, stxEnv'

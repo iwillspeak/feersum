@@ -169,7 +169,7 @@ let rec ``spec tests compile and run`` specPath configuration =
                 failwithf "Compilation error: %A" diags
 
             (diags |> diagSanitiser).ShouldMatchChildSnapshot(specName, snapSettings)
-        else 
+        else
             if shouldFail then
                 failwith "Expected compilation failure!"
 

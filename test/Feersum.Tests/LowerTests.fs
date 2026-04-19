@@ -5,30 +5,27 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Text
+open Feersum.CompilerServices.Binding.New
+open Feersum.CompilerServices.Diagnostics
 
 // -- Helpers ------------------------------------------------------------------
 
-/// Parse a Scheme expression and return it
-let private parseScheme source =
-    let result = Parse.readProgramSimple "program" source
-
-    if result |> Parse.ParseResult.hasErrors then
-        failwithf "Parse error in '%s': %A" source result.Diagnostics
-
-    result.Root.Body |> List.ofSeq
-
 /// Parse, bind, and lower a Scheme expression. Returns the lowered BoundBody.
 let private lowerScheme source =
-    let result = Parse.readProgramSimple "program" source
+    let registry = SourceRegistry.empty ()
+    let result = Parse.readProgram registry "program" source
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" source result.Diagnostics
 
-    let registry = SourceRegistry.empty ()
-    let ctx = ExpandCtx.createGlobal registry "TestProgram" []
     let env = Environments.empty
     let initialScope, preloaded = Environments.intoParts env
-    let bound = Expand.expand [ result.Root ] initialScope preloaded ctx
+
+    let bound =
+        Binder.bindProgram registry initialScope preloaded [] Map.empty [ result.Root ]
+    // if hasErrors bound.Diagnostics then
+    //     failwithf "Bind error in '%s': %A" source bound.Diagnostics
+
     (Lower.lower bound).Root
 
 /// Strip SequencePoint wrappers to reach the underlying expression.
@@ -80,7 +77,7 @@ let ``captured variable rewrites arg into environment slot`` () =
 
 [<Fact>]
 let ``two captures produce two environment slots`` () =
-    let lowered = lowerScheme "(lambda (a b) (lambda () (+ a b)))"
+    let lowered = lowerScheme "(lambda (a b) (lambda () (a b)))"
     let outerBody = lambdaBody "outer" lowered.Body
     // Both a (Arg 0) and b (Arg 1) must be hoisted
     assertEqualEnv
@@ -107,7 +104,7 @@ let ``lambda that captures only one of two args`` () =
 [<Fact>]
 let ``three levels of nesting chain captures through environment`` () =
     // a and b are captured all the way through to the innermost lambda
-    let lowered = lowerScheme "(lambda (a b) (lambda (c) (lambda () (+ a b c))))"
+    let lowered = lowerScheme "(lambda (a b) (lambda (c) (lambda () (a b c))))"
     let outerBody = lambdaBody "outer" lowered.Body
     // a and b hoisted by outer lambda — into some pair of env slots
     assertEqualEnv

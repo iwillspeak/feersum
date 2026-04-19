@@ -49,7 +49,9 @@ let private expandError (code: int) (needle: string) (source: string) =
 
     let errors = diags |> List.filter (fun d -> d.Kind.Level = DiagnosticLevel.Error)
 
-    let found = errors |> List.exists (fun d -> d.Kind.Code = code && d.Message.Contains(needle))
+    let found =
+        errors
+        |> List.exists (fun d -> d.Kind.Code = code && d.Message.Contains(needle))
 
     if not found then
         let msgs =
@@ -310,7 +312,7 @@ let ``binder expand: dotted-tail pattern selects over fixed-arity rules`` () =
 
 // -- Macro-generated define-syntax --------------------------------------------
 
-[<Fact(Skip="Waiting for #108 fix for macro-generating macros")>]
+[<Fact(Skip = "Waiting for #108 fix for macro-generating macros")>]
 let ``binder expand: macro generates top-level define-syntax via begin`` () =
     // A macro that expands to (begin (define march-hare 42) (define-syntax hatter ...))
     // must splice the generated define-syntax into the top-level environment so
@@ -332,7 +334,7 @@ let ``binder expand: macro generates top-level define-syntax via begin`` () =
 
     Assert.NotEmpty(exprs)
 
-[<Fact(Skip="Waiting for #108 fix for macro-generating macros")>]
+[<Fact(Skip = "Waiting for #108 fix for macro-generating macros")>]
 let ``binder expand: macro directly expands to define-syntax`` () =
     // Simpler case: the macro expansion IS a define-syntax (no wrapping begin).
     let exprs =
@@ -350,7 +352,7 @@ let ``binder expand: macro directly expands to define-syntax`` () =
 
     Assert.NotEmpty(exprs)
 
-[<Fact(Skip="Waiting for #108 fix for macro-generating macros")>]
+[<Fact(Skip = "Waiting for #108 fix for macro-generating macros")>]
 let ``binder expand: macro generates define-syntax in let body`` () =
     // A macro call inside a let body that expands to a define-syntax must make
     // the newly defined macro visible to subsequent forms in the same body.
@@ -371,7 +373,7 @@ let ``binder expand: macro generates define-syntax in let body`` () =
     Assert.NotEmpty(exprs)
 
 
-[<Fact(Skip="Waiting for #108 fix for macro-generating macros")>]
+[<Fact(Skip = "Waiting for #108 fix for macro-generating macros")>]
 let ``binder expand: be-like-begin pattern with custom ellipsis`` () =
     // be-like-begin3 defines a macro with a custom ellipsis `dots` inside its
     // template. This stresses both macro-generated define-syntax and custom
@@ -515,9 +517,11 @@ let ``binder expand: define in let-syntax body does not shadow outer binding`` (
 /// does not bail out when `ParseResult.hasErrors` is true, allowing tests to
 /// exercise the expander's own error-recovery on malformed CST nodes.
 let private expandMalformed (source: string) =
-    let prog = Parse.readProgramSimple "test" source
-    let ctx = ExpandCtx.createGlobal registry "test" []
-    let result = Expand.expand [ prog.Root ] Environments.emptyStx Map.empty ctx
+    let registry = SourceRegistry.empty ()
+    let prog = Parse.readProgram registry "test" source
+
+    let result =
+        Binder.bindProgram registry Environments.emptyStx Map.empty [] Map.empty [ prog.Root ]
 
     match result.Root.Body with
     | BoundExpr.Seq stmts -> stmts, result.Diagnostics

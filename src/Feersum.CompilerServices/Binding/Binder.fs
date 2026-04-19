@@ -450,10 +450,6 @@ module private Impl =
             ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.invalidImport stx.Loc msg
             stxEnv
 
-    let reserveMacro (stxEnv: StxEnvironment) (name: string) : Ident * StxEnvironment =
-        let id = Ident.fresh ()
-        id, Map.add name (StxBinding.Macro id) stxEnv
-
     let registerMacro (ctx: FrameCtx) (id: Ident) (mac: SyntaxTransformer) =
         ctx.BinderCtx.Macros <- Map.add id mac ctx.BinderCtx.Macros
 
@@ -846,10 +842,11 @@ module private Impl =
                 | None -> BoundExpr.Error, scope'
             | _ -> illFormed "define-syntax"
 
-        | SpecialFormKind.LetSyntax 
+        | SpecialFormKind.LetSyntax
         | SpecialFormKind.LetrecSyntax as keyword ->
             let isLetRec = keyword = SpecialFormKind.LetrecSyntax
             let name = if isLetRec then "letrec-syntax" else "let-syntax"
+
             bindLet ctx name args loc (fun bindingSpecs ->
 
                 // Pre-populate all the macro bindings into the syntax env so
@@ -864,8 +861,7 @@ module private Impl =
 
                 // A let-syntax has its region as the body, a letrec has it as
                 // the whole set of transformer-specs as well as the body.
-                let bindingEnv =
-                    if isLetRec then bodyEnv else stxEnv
+                let bindingEnv = if isLetRec then bodyEnv else stxEnv
 
                 ids
                 |> List.iter (fun (id, name, body) ->
