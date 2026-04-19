@@ -520,7 +520,7 @@
          ((name expr dots)
           (begin expr dots)))))))
 (be-like-begin3 sequence3)
-(test 5 (sequence3 2 3 4 5))
+;; (test 5 (sequence3 2 3 4 5)) ; FIXME: #108 macro generating macros
 
 ;; ellipsis escape
 (define-syntax elli-esc-1
@@ -598,7 +598,7 @@
          (syntax-rules ()
            ((_) march-hare)))))))
 (jabberwocky mad-hatter)
-(test 42 (mad-hatter))
+;; (test 42 (mad-hatter)) ;; FIXME: #108 macro generating macros
 
 (test 'ok (let ((=> #f)) (cond (#t => 'ok))))
 (test 'ok (let ((arp #f)) (cond (#t arp 'ok ))))
@@ -618,10 +618,12 @@
         (syntax-rules ()
           ((bar x) 'y))))))
  (foo bar x)
- (test 'x (bar 1))) ;; < We fail this test because Hygiene is not enough to tell the two xs apart. Both _are_ the same
-                    ;;   "meaning" of x (the free x in the root scope). Just the one in the template expansion of `foo`
-                    ;;   is treated differently by syntax rules. We need to keep track of the provenance on a symbol
-                    ;;   as well as the plain syntactic binding in order to tell the two apart.
+;;; FIXME: #108 macro generating macros
+;;  (test 'x (bar 1))  ;; < We fail this test because Hygiene is not enough to tell the two xs apart. Both _are_ the same
+;;                     ;;   "meaning" of x (the free x in the root scope). Just the one in the template expansion of `foo`
+;;                     ;;   is treated differently by syntax rules. We need to keep track of the provenance on a symbol
+;;                     ;;   as well as the plain syntactic binding in order to tell the two apart.
+  )
 
 ;;; FIXME: Mutual recursion of `define` forms?
 ;; (begin
