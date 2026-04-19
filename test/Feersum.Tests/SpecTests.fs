@@ -162,8 +162,14 @@ let rec ``spec tests compile and run`` specPath configuration =
                 .SnapshotTestName(nameof (``spec tests compile and run``))
                 .StoreSnapshotsPerClass(false)
 
-        match Compilation.compileFile options exePath sourcePath with
-        | [] ->
+        let diags = Compilation.compileFile options exePath sourcePath
+
+        if Diagnostics.Diagnostics.hasErrors diags then
+            if not shouldFail then
+                failwithf "Compilation error: %A" diags
+
+            (diags |> diagSanitiser).ShouldMatchChildSnapshot(specName, snapSettings)
+        else 
             if shouldFail then
                 failwith "Expected compilation failure!"
 
@@ -171,11 +177,6 @@ let rec ``spec tests compile and run`` specPath configuration =
                 let! r = runExampleAsync "dotnet" exePath
 
                 r.ShouldMatchChildSnapshot(specName, snapSettings)
-        | diags ->
-            if not shouldFail then
-                failwithf "Compilation error: %A" diags
-
-            (diags |> diagSanitiser).ShouldMatchChildSnapshot(specName, snapSettings)
     }
 
 let public getParseTestData () =

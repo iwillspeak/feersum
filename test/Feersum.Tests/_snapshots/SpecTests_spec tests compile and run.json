@@ -91,7 +91,7 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 52,
+          "Code": 32,
           "Title": "Ill-formed special form"
         },
         "Location": {
@@ -109,7 +109,7 @@
             }
           ]
         },
-        "Message": "ill-formed 'set!'"
+        "Message": "Ill-formed 'set!' special form"
       }
     ]
   },
@@ -214,7 +214,7 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 51,
+          "Code": 35,
           "Title": "Reference to undefined symbol"
         },
         "Location": {
@@ -223,23 +223,23 @@
             {
               "Source": "fail/macrofails.scm",
               "Line": 17,
-              "Col": 2
+              "Col": 1
             },
             {
               "Source": "fail/macrofails.scm",
               "Line": 17,
-              "Col": 9
+              "Col": 16
             }
           ]
         },
-        "Message": "unbound identifier 'another'"
+        "Message": "Macro or procedure 'another' is not bound in the current context"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 51,
+          "Code": 35,
           "Title": "Reference to undefined symbol"
         },
         "Location": {
@@ -257,7 +257,7 @@
             }
           ]
         },
-        "Message": "unbound identifier 'a'"
+        "Message": "The symbol 'a' is not defined in the current context"
       },
       {
         "Kind": {
@@ -289,33 +289,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 50,
-          "Title": "Expansion error"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/macrofails.scm",
-              "Line": 9,
-              "Col": 1
-            },
-            {
-              "Source": "fail/macrofails.scm",
-              "Line": 9,
-              "Col": 27
-            }
-          ]
-        },
-        "Message": "no macro rule matched the form"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 50,
-          "Title": "Expansion error"
+          "Code": 40,
+          "Title": "Macro expansion error"
         },
         "Location": {
           "Case": "Span",
@@ -376,10 +351,10 @@
       {
         "Kind": {
           "Level": {
-            "Case": "Error"
+            "Case": "Warning"
           },
-          "Code": 52,
-          "Title": "Ill-formed special form"
+          "Code": 31,
+          "Title": "Missing export"
         },
         "Location": {
           "Case": "Span",
@@ -396,15 +371,15 @@
             }
           ]
         },
-        "Message": "exported name 'exist' is not defined in library"
+        "Message": "Could not find exported item 'exist'"
       },
       {
         "Kind": {
           "Level": {
-            "Case": "Error"
+            "Case": "Warning"
           },
-          "Code": 52,
-          "Title": "Ill-formed special form"
+          "Code": 31,
+          "Title": "Missing export"
         },
         "Location": {
           "Case": "Span",
@@ -421,15 +396,15 @@
             }
           ]
         },
-        "Message": "exported name 'don't' is not defined in library"
+        "Message": "Could not find exported item 'don't'"
       },
       {
         "Kind": {
           "Level": {
-            "Case": "Error"
+            "Case": "Warning"
           },
-          "Code": 52,
-          "Title": "Ill-formed special form"
+          "Code": 31,
+          "Title": "Missing export"
         },
         "Location": {
           "Case": "Span",
@@ -446,7 +421,7 @@
             }
           ]
         },
-        "Message": "exported name 'we' is not defined in library"
+        "Message": "Could not find exported item 'we'"
       },
       {
         "Kind": {
@@ -587,8 +562,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 52,
-          "Title": "Ill-formed special form"
+          "Code": 36,
+          "Title": "Invalid import declaration"
         },
         "Location": {
           "Case": "Span",
@@ -606,6 +581,31 @@
           ]
         },
         "Message": "Could not find library (test greeter)"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
+          "Code": 36,
+          "Title": "Invalid import declaration"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/bad-imports.scm",
+              "Line": 2,
+              "Col": 9
+            },
+            {
+              "Source": "fail/bad-imports.scm",
+              "Line": 2,
+              "Col": 17
+            }
+          ]
+        },
+        "Message": "invalid import set"
       },
       {
         "Kind": {
@@ -637,33 +637,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 52,
-          "Title": "Ill-formed special form"
-        },
-        "Location": {
-          "Case": "Span",
-          "Fields": [
-            {
-              "Source": "fail/bad-imports.scm",
-              "Line": 2,
-              "Col": 1
-            },
-            {
-              "Source": "fail/bad-imports.scm",
-              "Line": 2,
-              "Col": 18
-            }
-          ]
-        },
-        "Message": "invalid import set"
-      },
-      {
-        "Kind": {
-          "Level": {
-            "Case": "Error"
-          },
-          "Code": 52,
-          "Title": "Ill-formed special form"
+          "Code": 36,
+          "Title": "Invalid import declaration"
         },
         "Location": {
           "Case": "Span",
@@ -671,12 +646,12 @@
             {
               "Source": "fail/bad-imports.scm",
               "Line": 1,
-              "Col": 1
+              "Col": 9
             },
             {
               "Source": "fail/bad-imports.scm",
               "Line": 1,
-              "Col": 30
+              "Col": 29
             }
           ]
         },
@@ -726,8 +701,33 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 55,
-          "Title": "Reference to uninitialised variable in letrec binding"
+          "Code": 37,
+          "Title": "Use of uninitialised variable"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/bad-letrecs.scm",
+              "Line": 7,
+              "Col": 18
+            },
+            {
+              "Source": "fail/bad-letrecs.scm",
+              "Line": 7,
+              "Col": 32
+            }
+          ]
+        },
+        "Message": "Reference to uninitialised variable 'second' in letrec binding"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
+          "Code": 37,
+          "Title": "Use of uninitialised variable"
         },
         "Location": {
           "Case": "Span",
@@ -751,8 +751,8 @@
           "Level": {
             "Case": "Error"
           },
-          "Code": 55,
-          "Title": "Reference to uninitialised variable in letrec binding"
+          "Code": 37,
+          "Title": "Use of uninitialised variable"
         },
         "Location": {
           "Case": "Span",
@@ -760,12 +760,12 @@
             {
               "Source": "fail/bad-letrecs.scm",
               "Line": 3,
-              "Col": 20
+              "Col": 17
             },
             {
               "Source": "fail/bad-letrecs.scm",
               "Line": 3,
-              "Col": 26
+              "Col": 29
             }
           ]
         },

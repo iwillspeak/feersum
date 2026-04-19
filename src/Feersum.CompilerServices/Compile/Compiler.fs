@@ -23,6 +23,8 @@ type CompileInput =
 
 module Compilation =
     open Feersum.CompilerServices.Syntax.Parse
+    open Feersum.CompilerServices.Binding.New
+    open Feersum.CompilerServices.Ice
 
     /// Compile a single AST node into an assembly
     ///
@@ -59,6 +61,16 @@ module Compilation =
             Instrumentation.withPhase
                 "bind"
                 (fun () ->
+#if USE_NEW_BINDER
+                    let stxEnv, refEnv = Environments.intoParts preloaded
+                    let macros, stxEnv = Builtins.loadBuiltinMacroEnv stxEnv
+
+                    match input with
+                    | CompileInput.Program(reg, progs) ->
+                        Binder.bindProgram reg stxEnv refEnv allLibs macros progs
+                    | CompileInput.Script(reg, script) ->
+                        Binder.bindScript reg stxEnv refEnv allLibs macros script)
+#else
                     let reg, expandFn =
                         match input with
                         | CompileInput.Program(reg, progs) ->
@@ -68,10 +80,11 @@ module Compilation =
                             fun ctx macroScope preloaded -> Expand.expandScriptUnit script macroScope preloaded ctx
 
                     let stxEnv, refEnv = Environments.intoParts preloaded
-                    let ctx = ExpandCtx.createGlobal reg "LispProgram" allLibs
                     let macros, stxEnv = Builtins.loadBuiltinMacroEnv stxEnv
+                    let ctx = ExpandCtx.createGlobal reg "LispProgram" allLibs
                     Map.iter (fun id transformer -> ctx.MacroRegistry.Register id transformer) macros
                     expandFn ctx stxEnv refEnv)
+#endif
                 ()
 
         let assmName =

@@ -1079,3 +1079,25 @@ module Binder =
             |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry unit.DocId ctx.Diagnostics))
 
         bindStx ctx stxEnv scope (List.ofSeq toBind)
+
+    /// Bind a Single Script in a Given Scope
+    ///
+    /// Takes a single script program and binds it in the given scope. This is
+    /// used for the REPL and for single-file scripts, where we don't have a
+    /// sequence of compilation units but just a single script body to bind.
+    let bindScript
+        (sourceRegistry: SourceRegistry)
+        (stxEnv: StxEnvironment)
+        (scope: Map<Ident, StorageRef>)
+        (libs: seq<LibrarySignature<StorageRef>>)
+        (macros: Map<Ident, SyntaxTransformer>)
+        (script: Tree.ScriptProgram)
+        : BoundSyntaxTree =
+        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs) macros
+
+        let toBind =
+            script.Body
+            |> Option.map (Stx.ofExpr sourceRegistry script.DocId ctx.Diagnostics)
+            |> Option.toList
+
+        bindStx ctx stxEnv scope toBind

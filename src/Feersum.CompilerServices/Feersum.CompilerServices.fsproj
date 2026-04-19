@@ -8,6 +8,7 @@
 
       $(Description)
     </Description>
+    <DefineConstants>$(DefineConstants);USE_NEW_BINDER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Ice.fs" />
