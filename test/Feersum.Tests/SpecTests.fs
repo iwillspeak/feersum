@@ -31,7 +31,7 @@ let specBin = Path.Join(specDir, "bin")
 
 let snapDir = Path.Join(__SOURCE_DIRECTORY__, "_snapshots")
 
-let private sourceFilePath = Path.Join(__SOURCE_DIRECTORY__, "SpecTests.fs")
+let private sourceFilePath = Path.Join(__SOURCE_DIRECTORY__, __SOURCE_FILE__)
 
 let normalisePath (path: string) = path.Replace("\\", "/")
 
