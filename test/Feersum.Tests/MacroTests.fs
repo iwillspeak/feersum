@@ -78,7 +78,8 @@ let private getBoundStx (bindings: MacroBindings) (name: string) : Stx =
 
 /// Helper to read a single expression from string and convert to Stx
 let private readExprAsStx input : Stx =
-    let result = Parse.readProgramSimple "program" input
+    let registry = SourceRegistry.empty ()
+    let result = Parse.readProgram registry "program" input
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" input result.Diagnostics
@@ -88,7 +89,8 @@ let private readExprAsStx input : Stx =
 
 /// Helper to read expression from string (not converted)
 let private readExpr input : Expression =
-    let result = Parse.readProgramSimple "program" input
+    let registry = SourceRegistry.empty ()
+    let result = Parse.readProgram registry "program" input
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" input result.Diagnostics

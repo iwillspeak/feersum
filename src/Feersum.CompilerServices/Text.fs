@@ -126,6 +126,15 @@ module public SourceRegistry =
         registry.Files.Add(doc)
         id
 
+    /// Replace the source text for an existing document ID.
+    let public update (registry: SourceRegistry) (id: DocId) (path: string) (body: string) : unit =
+        match id with
+        | DocId.Synthetic -> ()
+        | DocId.Doc i when i >= 0 && i < registry.Files.Count ->
+            let doc = TextDocument.fromPartsWithId id path body
+            registry.Files[i] <- doc
+        | _ -> ()
+
     /// Look up a document by DocId. Returns None for synthetic IDs.
     let public tryLookup (registry: SourceRegistry) (id: DocId) : TextDocument option =
         match id with

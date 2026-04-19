@@ -14,7 +14,7 @@ open Feersum.CompilerServices.Syntax.Parse
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec private read (registry: SourceRegistry) : CompileInput =
+let rec private read (registry: SourceRegistry) (docId: DocId) : CompileInput =
     let rec readWithState prompt previous =
         let line = ReadLine.Read(prompt)
 
@@ -23,7 +23,7 @@ let rec private read (registry: SourceRegistry) : CompileInput =
             | Some prefix -> prefix + "\n" + line
             | None -> line
 
-        match Parse.readExpr1 registry "repl" source |> ParseResult.toResult with
+        match Parse.readExpr1At registry docId "repl" source |> ParseResult.toResult with
         | Result.Ok tree -> CompileInput.Script(registry, tree) |> Ok
         | Result.Error diagnostics ->
             if line = "" && source.EndsWith("\n\n") then
@@ -35,7 +35,7 @@ let rec private read (registry: SourceRegistry) : CompileInput =
     | Result.Ok input -> input
     | Result.Error diagnostics ->
         diagnostics |> dumpDiagnostics
-        read registry
+        read registry docId
 
 /// Print an object out to the console. Used to serialise the external
 /// representation form an eval
@@ -46,14 +46,19 @@ let private print value =
 ///
 /// Repeatedly reads input and prints output
 let rec private repl registry evaluator =
-    try
-        match read registry |> evaluator with
-        | Result.Ok _ -> ()
-        | Result.Error diags -> dumpDiagnostics diags
-    with ex ->
-        eprintfn "Exception: %A" ex
+    let docId = SourceRegistry.register registry "repl" ""
 
-    repl registry evaluator
+    let rec loop () =
+        try
+            match read registry docId |> evaluator with
+            | Result.Ok _ -> ()
+            | Result.Error diags -> dumpDiagnostics diags
+        with ex ->
+            eprintfn "Exception: %A" ex
+
+        loop ()
+
+    loop ()
 
 let coreReferences = [ typeof<LispProgram>.Assembly.Location ]
 

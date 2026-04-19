@@ -20,8 +20,9 @@ let private interpScr (scr: ScriptProgram) =
     CompileInput.Script(SourceRegistry.empty (), scr) |> feeri
 
 let private tryReadSingle expr =
-    let script = readExpr expr |> ParseResult.toResult |> Result.unwrap
-    CompileInput.Script(SourceRegistry.empty (), script)
+    let registry = SourceRegistry.empty ()
+    let script = readExpr1 registry "repl" expr |> ParseResult.toResult |> Result.unwrap
+    CompileInput.Script(registry, script)
 
 [<Fact>]
 let ``evaluate atoms`` () =

@@ -6,8 +6,8 @@ open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Text
 
-let private read registry =
-    ReadLine.Read("[]> ") |> readProgram registry "repl.scm"
+let private read registry docId =
+    ReadLine.Read("[]> ") |> readProgramAt registry docId "repl.scm"
 
 let private print (result: ParseResult<Program>) =
     if ParseResult.hasErrors result then
@@ -15,9 +15,14 @@ let private print (result: ParseResult<Program>) =
 
     SyntaxUtils.dump result.Root.RawNode
 
-let rec private parserReplImpl registry =
-    read registry |> print
-    parserReplImpl registry
+let private parserReplImpl registry =
+    let docId = SourceRegistry.register registry "repl.scm" ""
+
+    let rec loop () =
+        read registry docId |> print
+        loop ()
+
+    loop ()
 
 /// Run the Parser REPL
 ///

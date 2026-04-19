@@ -338,33 +338,25 @@ let readProgram (registry: SourceRegistry) name input =
     let id = SourceRegistry.register registry name input
     readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
 
+/// Read a sequence of expressions as a program, updating an existing document.
+let readProgramAt (registry: SourceRegistry) (id: DocId) name input =
+    SourceRegistry.update registry id name input
+    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
+
 /// Read a single expression from the named input `line`.
 /// Requires a source registry to track where the syntax came from.
 let readExpr1 (registry: SourceRegistry) name line =
     let id = SourceRegistry.register registry name line
     readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
 
-/// Read a single expression from the input `line` using an implicit name.
-let readExpr line =
-    let registry = SourceRegistry.empty ()
-    readExpr1 registry "repl" line
+/// Read a single expression, updating an existing document.
+let readExpr1At (registry: SourceRegistry) (id: DocId) name line =
+    SourceRegistry.update registry id name line
+    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
 
-/// Convenience function for reading a single expression with a simple name.
-/// Creates an internal SourceRegistry. Useful for tests and quick parses.
-let readExpr1Simple name line =
-    let registry = SourceRegistry.empty ()
-    readExpr1 registry name line
-
-/// Convenience function for reading a program with a simple name.
-/// Creates an internal SourceRegistry. Useful for tests and quick parses.
-let readProgramSimple name input =
-    let registry = SourceRegistry.empty ()
-    readProgram registry name input
-
-/// Read an expression from source code on disk
-let parseFile path =
+/// Read an expression from source code on disk into the provided registry.
+let parseFile (registry: SourceRegistry) path =
     async {
         let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
-        let registry = SourceRegistry.empty ()
         return readProgram registry path text
     }
