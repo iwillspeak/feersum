@@ -15,8 +15,8 @@ open Feersum.CompilerServices.Binding
 /// Parse a Scheme program string and run the new expander.
 /// Returns (BoundExpr list, Diagnostics).
 let private expand (source: string) =
-    let registry = SourceRegistry.empty ()
-    let prog = Parse.readProgram registry "test" source
+    let sourceRegistry = SourceRegistry.empty ()
+    let prog = Parse.readProgram sourceRegistry "test" source
 
     if ParseResult.hasErrors prog then
         failwithf "Parse error in '%s': %A" source prog.Diagnostics
@@ -24,7 +24,7 @@ let private expand (source: string) =
     let coreLibs = Builtins.loadCoreSignatures TargetResolve.fromCurrentRuntime |> snd
 
     let result =
-        Binder.bindProgram registry Environments.emptyStx Map.empty coreLibs Map.empty [ prog.Root ]
+        Binder.bindProgram sourceRegistry Environments.emptyStx Map.empty coreLibs Map.empty [ prog.Root ]
 
     match result.Root.Body with
     | BoundExpr.Seq stmts -> stmts, result.Diagnostics
