@@ -117,7 +117,7 @@ type public ReadMode =
     | Program
     | Script
 
-// =========================== Parser Utilities ===============================
+// -- Parser Utilities ---------------------------------------------------------
 
 /// Get the kind of the current token. If no more tokens remain then EOF is
 /// returned instead.
@@ -154,7 +154,7 @@ let private expect (builder: GreenNodeBuilder) tokenKind nodeKind state =
         |> ParserState.bufferDiagnostic state ParserDiagnostics.parseError
         |> eat builder AstKind.ERROR
 
-// =============================== Parsers ===================================
+// -- Parsers ------------------------------------------------------------------
 
 let private parseConstant (builder: GreenNodeBuilder) state =
     builder.StartNode(AstKind.CONSTANT |> SyntaxUtils.astToGreen)
@@ -318,7 +318,7 @@ let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxNo
     |> expect builder TokenKind.EndOfFile AstKind.EOF
     |> ParserState.finalise builder AstKind.SCRIPT_PROGRAM
 
-// =============================== Public API ==================================
+// -- Public API ---------------------------------------------------------------
 
 /// Read a raw syntax tree from the given input.
 let readRaw mode name (line: string) =
@@ -333,19 +333,30 @@ let readRaw mode name (line: string) =
     | Script -> parseScript builder parseState
 
 /// Read a sequence of expressions as a program from the given `input`.
-let readProgram name input =
-    readRaw Program name input |> ParseResult.map (fun x -> new Program(x))
+/// Requires a source registry to track where the syntax came from.
+let readProgram (registry: SourceRegistry) name input =
+    let id = SourceRegistry.register registry name input
+    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
+
+/// Read a sequence of expressions as a program, updating an existing document.
+let readProgramAt (registry: SourceRegistry) (id: DocId) name input =
+    SourceRegistry.update registry id name input
+    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
 
 /// Read a single expression from the named input `line`.
-let readExpr1 name line =
-    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x))
+/// Requires a source registry to track where the syntax came from.
+let readExpr1 (registry: SourceRegistry) name line =
+    let id = SourceRegistry.register registry name line
+    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
 
-/// Read a single expression from the input `line` using an implicit name.
-let readExpr = readExpr1 "repl"
+/// Read a single expression, updating an existing document.
+let readExpr1At (registry: SourceRegistry) (id: DocId) name line =
+    SourceRegistry.update registry id name line
+    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
 
-/// Read an expression from source code on disk
-let parseFile path =
+/// Read an expression from source code on disk into the provided registry.
+let parseFile (registry: SourceRegistry) path =
     async {
         let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
-        return readProgram path text
+        return readProgram registry path text
     }

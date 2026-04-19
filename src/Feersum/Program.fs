@@ -12,7 +12,6 @@ open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Compile
 open Feersum.ParseRepl
-open Feersum.Telemetry
 
 /// Command line arguments type. Encompasses the options that the compiler
 /// supports.

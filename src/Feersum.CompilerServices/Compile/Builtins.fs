@@ -1,14 +1,15 @@
 namespace Feersum.CompilerServices.Compile
 
+open System
+
 open Mono.Cecil
 open Mono.Cecil.Rocks
 
 open Feersum.CompilerServices.Ice
 open Feersum.CompilerServices.Compile.MonoHelpers
-open System
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Diagnostics
-open Feersum.CompilerServices.Utils
+open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Targets
 
@@ -36,7 +37,7 @@ type CoreTypes =
       LispReExport: MethodReference
       AssmConfigCtor: MethodReference }
 
-// --------------------  External Reference Utils -----------------------------
+// -- External Reference Utils -------------------------------------------------
 
 [<AutoOpen>]
 module private ExternUtils =
@@ -109,87 +110,133 @@ module private ExternUtils =
              { LibraryName = name |> Seq.map (fun a -> a.Value.ToString()) |> List.ofSeq
                Exports = getExports ty }))
 
-// --------------------  Builtin Macro Definitions -----------------------------
+// -- Builtin Macro Definitions ------------------------------------------------
 
 module private BuiltinMacros =
-    open Feersum.CompilerServices.Text
 
-    /// Parse a builtin macro from syntax rules
-    let private parseBuiltinMacro id rules =
-        let textDoc = TextDocument.fromParts (sprintf "builtin-%s" id) rules
-        let result = Parse.readExpr1 textDoc.Path rules
+    // -- Source strings (shared between old and new parsers) ------------------
 
-        if hasErrors result.Diagnostics then
-            icef "Error in builtin macro: %A" result.Diagnostics
-
-        match result.Root.Body with
-        | Some expr -> Macros.parseSyntaxRules id expr |> Result.unwrap
-        | None -> icef "no body in builtin macro %A" result.Root.Text
-
-    /// Builtin `and` Macro
-    let private macroAnd =
+    let private macroAndSrc =
         "(syntax-rules ::: ()
             ((_ a) a)
             ((_ a b :::) (if a (and b :::) #f))
             ((_) #t))"
-        |> parseBuiltinMacro "and"
 
-    /// Builtin `or` Macro
-    let private macroOr =
-        // TODO: re-write this when proper hygene is supported.
+    let private macroOrSrc =
         "(syntax-rules ()
             ((or) #f)
             ((or test) test)
             ((or test1 test2 ...)
-                (let ((|90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| test1))
-                    (if |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| |90a3b246-0d7b-4f47-8e1e-0a9f0e7e3288| (or test2 ...)))))"
-        |> parseBuiltinMacro "or"
+                (let ((temp test1))
+                    (if temp temp (or test2 ...)))))"
 
-    /// Builtin `when` Macro
-    let private macroWhen =
+    let private macroWhenSrc =
         "(syntax-rules ()
             ((_ cond expr expr1 ...)
              (if cond
                 (begin
                     expr
                     expr1 ...))))"
-        |> parseBuiltinMacro "when"
 
-    /// Builtin `unless` Macro
-    let private macroUnless =
+    let private macroUnlessSrc =
         "(syntax-rules ()
             ((_ cond expr expr1 ...)
-             (if (not cond)
+             (if cond
+                (if #f #f) ; FIXME: Hack to deal with not being able to see `not`
                 (begin
                     expr
                     expr1 ...))))"
-        |> parseBuiltinMacro "unless"
 
-    let private macroCond =
-        // TODO: This `cond` implementation doesn't support the `=>` 'pipe' form
-        //       of the macro yet. This is because we're waiting for hygene
-        //       support like `or`.
-        "(syntax-rules (else)
-            ((cond (else e ...))   (begin e ...))
-            ((cond (test e e1 ...))
-                (if test
-                    (begin e e1 ...)))
-            ((cond (test e e1 ...) c ...)
-                (if test
-                    (begin e e1 ...)
-                    (cond c ...))))"
-        |> parseBuiltinMacro "cond"
+    let private macroCondSrc =
+        "(syntax-rules (else =>)
+            ((cond (else result1 result2 ...))
+            (begin result1 result2 ...))
+            ((cond (test => result))
+            (let ((temp test))
+            (if temp (result temp))))
+            ((cond (test => result) clause1 clause2 ...)
+            (let ((temp test))
+            (if temp
+                (result temp)
+                (cond clause1 clause2 ...))))
+            ((cond (test)) test)
+            ((cond (test) clause1 clause2 ...)
+            (let ((temp test))
+            (if temp
+                temp
+                (cond clause1 clause2 ...))))
+            ((cond (test result1 result2 ...))
+            (if test (begin result1 result2 ...)))
+            ((cond (test result1 result2 ...)
+                clause1 clause2 ...)
+            (if test
+                (begin result1 result2 ...)
+                (cond clause1 clause2 ...))))"
 
-    /// The list of builtin macros
-    let coreMacros =
-        { LibraryName = [ "feersum"; "builtin"; "macros" ]
-          Exports =
-            [ macroAnd; macroOr; macroWhen; macroUnless; macroCond ]
-            |> List.map (fun m -> (m.Name, StorageRef.Macro(m))) }
+    // TODO: Can't support the `case` macro yet. This is the same issue as with
+    //       the `unless` macro where we can't see `memv` to implement the pipe
+    //       form. We need a better default environment to laod these macros in
+    //       now that hygiene stops them from seeing items in the user's scope.
+    //
+    //       After thinking a bit about this I think the solution is that these
+    //       builtin macros should really be an embedded resource which we bind
+    //       in an initial "core" scope whcih contains at least `(feeersum ..)`
+    //       from `Serhefa`. This can be properly solved wiht the "Symbols" API
+    //       story. For now we can just leave `case` out of the builtins.
 
-// ------------------------ Public Builtins API --------------------------------
+
+    /// Load all builtin macros (`and`, `or`, `when`, `unless`, `cond`) into a
+    /// `StxEnvironment`, starting from `Map.empty`.
+    ///
+    /// Special forms (`if`, `let`, `begin`, etc.) are recognised by name in
+    /// `resolveHead` and do not need scope entries.
+    ///
+    /// For each macro:
+    ///  - a fresh Ident is reserved so the macro can see its own name in defScope
+    ///    (enabling self-recursive macros like `and` and `cond`);
+    ///  - the syntax rules are parsed against that extended scope;
+    ///  - the transformer is registered in `ctx.MacroRegistry`.
+    let loadBuiltinMacroEnv (baseEnv: StxEnvironment) : Map<Ident, SyntaxTransformer> * StxEnvironment =
+        let macros =
+            [ "and", macroAndSrc
+              "or", macroOrSrc
+              "when", macroWhenSrc
+              "unless", macroUnlessSrc
+              "cond", macroCondSrc ]
+
+        macros
+        |> List.fold
+            (fun (macros, stxEnv) (name, src) ->
+                let registry = SourceRegistry.empty ()
+                let result = Parse.readExpr1 registry (sprintf "builtin-new-%s" name) src
+
+                if hasErrors result.Diagnostics then
+                    icef "Error parsing new-format builtin macro '%s': %A" name result.Diagnostics
+
+                match result.Root.Body with
+                | None -> icef "no body in new-format builtin macro '%s'" name
+                | Some expr ->
+                    let diags = DiagnosticBag.Empty
+                    let stx = Stx.ofExpr registry result.Root.DocId diags expr
+
+                    let id, stxEnv' = Stx.reserveMacro stxEnv name
+
+                    match Macros.makeSyntaxTransformer name stx stxEnv' diags with
+                    | Some transformer -> Map.add id transformer macros, stxEnv'
+                    | None -> icef "Failed to parse new-format builtin macro '%s': %A" name diags.Diagnostics)
+            (Map.empty, baseEnv)
+
+// -- Public Builtins API ------------------------------------------------------
 
 module Builtins =
+
+    /// Load all builtin macros (`and`, `or`, `when`, `unless`, `cond`) into the
+    /// initial `StxEnvironment`, starting from `Map.empty`.  Special forms are
+    /// recognised by name in `resolveHead` and do not need scope entries.  Each
+    /// macro Ident is reserved and its transformer registered in `ctx.MacroRegistry`
+    /// so the result can be passed directly to `Expand.expand`.
+    let loadBuiltinMacroEnv = BuiltinMacros.loadBuiltinMacroEnv
+
 
     /// Scan the `externAssms` and retrieve the core types that are required to
     /// compile a scheme progrma. These `CoreTypes` represent the types and methods
@@ -308,11 +355,17 @@ module Builtins =
 
     /// The core library signature
     let loadCoreSignatures target =
-        let (tys, sigs) = loadReferencedSignatures target.LispCoreLocation
+        let tys, sigs = loadReferencedSignatures target.LispCoreLocation
 
-        let sigs = BuiltinMacros.coreMacros :: sigs
+        // Include a library signature for builtin macros (with no variable exports,
+        // since these are handled directly by the expander).
+        //
+        // FIXME: This is a mild to moderate hack until the new Symbols API lands.
+        let builtinMacrosLib: LibrarySignature<StorageRef> =
+            { LibraryName = [ "feersum"; "builtin"; "macros" ]
+              Exports = [] }
 
-        (tys, sigs)
+        (tys, builtinMacrosLib :: sigs)
 
     /// Load the core types into the given assembly
     let importCore (targetAssm: AssemblyDefinition) target =

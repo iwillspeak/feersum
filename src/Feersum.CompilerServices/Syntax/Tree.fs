@@ -3,6 +3,7 @@ namespace Feersum.CompilerServices.Syntax.Tree
 open Firethorn
 open Firethorn.Green
 open Firethorn.Red
+open Feersum.CompilerServices.Text
 
 /// Node kind for each element in the raw tree.
 type AstKind =
@@ -144,7 +145,10 @@ module private Utils =
 /// either directly or indeirectly .
 
 [<AbstractClass>]
-type AstItem internal (red: NodeOrToken<SyntaxNode, SyntaxToken>) =
+type AstItem internal (red: NodeOrToken<SyntaxNode, SyntaxToken>, docId: DocId) =
+
+    /// Get the source document ID of this node
+    member public _.DocId = docId
 
     /// Get the Syntax range of the item
     member public _.SyntaxRange = red |> NodeOrToken.consolidate (_.Range) (_.Range)
@@ -169,19 +173,19 @@ type AstItem internal (red: NodeOrToken<SyntaxNode, SyntaxToken>) =
 // *********** TOKENS
 
 [<AbstractClass>]
-type AstToken internal (red: SyntaxToken) =
+type AstToken internal (red: SyntaxToken, docId: DocId) =
 
-    inherit AstItem(red |> Token)
+    inherit AstItem(red |> Token, docId)
 
     member public _.RawToken = red
 
-type ByteValue internal (red: SyntaxToken) =
+type ByteValue internal (red: SyntaxToken, docId: DocId) =
 
-    inherit AstToken(red)
+    inherit AstToken(red, docId)
 
-    static member TryCast(red: SyntaxToken) =
+    static member TryCast(docId: DocId, red: SyntaxToken) =
         match red.Kind |> greenToAst with
-        | AstKind.NUMBER -> Some(new ByteValue(red))
+        | AstKind.NUMBER -> Some(new ByteValue(red, docId))
         | _ -> None
 
     member public x.Value =
@@ -190,22 +194,22 @@ type ByteValue internal (red: SyntaxToken) =
         | _ -> Error(sprintf "Invalid byte value: %s" red.Green.Text)
 
 [<AbstractClass>]
-type ConstantValue internal (red: SyntaxToken) =
+type ConstantValue internal (red: SyntaxToken, docId: DocId) =
 
-    inherit AstToken(red)
+    inherit AstToken(red, docId)
 
-    static member TryCast(red: SyntaxToken) =
+    static member TryCast(docId: DocId, red: SyntaxToken) =
         match (red.Kind |> greenToAst) with
-        | AstKind.STRING -> Some(new StrVal(red) :> ConstantValue)
-        | AstKind.NUMBER -> Some(new NumVal(red))
-        | AstKind.BOOLEAN -> Some(new BoolVal(red))
-        | AstKind.CHARACTER -> Some(new CharVal(red))
+        | AstKind.STRING -> Some(new StrVal(red, docId) :> ConstantValue)
+        | AstKind.NUMBER -> Some(new NumVal(red, docId))
+        | AstKind.BOOLEAN -> Some(new BoolVal(red, docId))
+        | AstKind.CHARACTER -> Some(new CharVal(red, docId))
         | _ -> None
 
 /// Number node in the syntax tree.
-and NumVal internal (red: SyntaxToken) =
+and NumVal internal (red: SyntaxToken, docId: DocId) =
 
-    inherit ConstantValue(red)
+    inherit ConstantValue(red, docId)
 
     member public x.Value =
         match red.Green.Text |> System.Double.TryParse with
@@ -213,26 +217,26 @@ and NumVal internal (red: SyntaxToken) =
         | _ -> 0.0
 
 /// String node in the syntax tree.
-and StrVal internal (red: SyntaxToken) =
+and StrVal internal (red: SyntaxToken, docId: DocId) =
 
-    inherit ConstantValue(red)
+    inherit ConstantValue(red, docId)
 
     member public x.Value =
         let text = red.Green.Text
         text[1 .. text.Length - 2] |> cookString
 
 /// Boolean node in the syntax tree.
-and BoolVal internal (red: SyntaxToken) =
+and BoolVal internal (red: SyntaxToken, docId: DocId) =
 
-    inherit ConstantValue(red)
+    inherit ConstantValue(red, docId)
 
     member public x.Value = x.Text.StartsWith("#t")
 
 
 /// Character node in the syntax tree.
-and CharVal internal (red: SyntaxToken) =
+and CharVal internal (red: SyntaxToken, docId: DocId) =
 
-    inherit ConstantValue(red)
+    inherit ConstantValue(red, docId)
 
     member public _.Value =
         let charText = red.Green.Text
@@ -260,47 +264,50 @@ and CharVal internal (red: SyntaxToken) =
 // *********** NODES
 
 [<AbstractClass>]
-type AstNode internal (red: SyntaxNode) =
+type AstNode internal (red: SyntaxNode, docId: DocId) =
 
-    inherit AstItem(red |> Node)
+    inherit AstItem(red |> Node, docId)
 
     member public _.RawNode = red
 
 /// Form syntax wrapper
-type Form internal (red: SyntaxNode) =
+type Form internal (red: SyntaxNode, docId: DocId) =
 
-    inherit Expression(red)
+    inherit Expression(red, docId)
 
     member public _.OpeningParen =
         red.ChildrenWithTokens()
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryFind (tokenOfKind AstKind.OPEN_PAREN)
 
-    member public _.Body = red.Children() |> Seq.choose Expression.TryCast
+    member public _.Body =
+        red.Children() |> Seq.choose (fun n -> Expression.TryCast(docId, n))
 
-    member public _.DottedTail = red.Children() |> Seq.tryPick DottedTail.TryCast
+    member public _.DottedTail =
+        red.Children() |> Seq.tryPick (fun n -> DottedTail.TryCast(docId, n))
 
     member public _.ClosingParen =
         red.ChildrenWithTokens()
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryFind (tokenOfKind AstKind.CLOSE_PAREN)
 
-and DottedTail internal (red: SyntaxNode) =
+and DottedTail internal (red: SyntaxNode, docId: DocId) =
 
-    inherit AstNode(red)
+    inherit AstNode(red, docId)
 
-    member public _.Body = red.Children() |> Seq.tryPick (Expression.TryCast)
+    member public _.Body =
+        red.Children() |> Seq.tryPick (fun n -> Expression.TryCast(docId, n))
 
-    static member TryCast(node: SyntaxNode) =
+    static member TryCast(docId: DocId, node: SyntaxNode) =
         match node.Kind |> greenToAst with
-        | AstKind.DOTTED_TAIL -> DottedTail(node) |> Some
+        | AstKind.DOTTED_TAIL -> DottedTail(node, docId) |> Some
         | _ -> None
 
 /// Symbolic identifier node. This wraps an indentifier token when it is used
 /// as a symbol in the source text.
-and Symbol internal (red: SyntaxNode) =
+and Symbol internal (red: SyntaxNode, docId: DocId) =
 
-    inherit Expression(red)
+    inherit Expression(red, docId)
 
     member public _.CookedValue =
         red.ChildrenWithTokens()
@@ -310,84 +317,76 @@ and Symbol internal (red: SyntaxNode) =
         |> Option.defaultValue ""
 
 /// This is a self-evaluating expression that contains a sngle constant datum.
-and Constant internal (red: SyntaxNode) =
+and Constant internal (red: SyntaxNode, docId: DocId) =
 
-    inherit Expression(red)
+    inherit Expression(red, docId)
 
     member public _.Value =
         red.ChildrenWithTokens()
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryExactlyOne
-        |> Option.bind (ConstantValue.TryCast)
+        |> Option.bind (fun t -> ConstantValue.TryCast(docId, t))
 
 /// Quoted datum node
-and Quoted internal (red: SyntaxNode) =
+and Quoted internal (red: SyntaxNode, docId: DocId) =
 
-    inherit Expression(red)
+    inherit Expression(red, docId)
 
-    member x.Inner = x.RawNode.Children() |> Seq.tryPick (Expression.TryCast)
+    member x.Inner =
+        x.RawNode.Children() |> Seq.tryPick (fun n -> Expression.TryCast(x.DocId, n))
 
 /// Vector constant node
-and Vec internal (red: SyntaxNode) =
+and Vec internal (red: SyntaxNode, docId: DocId) =
 
-    inherit Expression(red)
+    inherit Expression(red, docId)
 
-    member x.Body = x.RawNode.Children() |> Seq.choose (Expression.TryCast)
+    member x.Body =
+        x.RawNode.Children() |> Seq.choose (fun n -> Expression.TryCast(x.DocId, n))
 
 /// Byte Vector constant node
-and ByteVec internal (red: SyntaxNode) =
+and ByteVec internal (red: SyntaxNode, docId: DocId) =
 
-    inherit Expression(red)
+    inherit Expression(red, docId)
 
     member x.Body =
         x.RawNode.ChildrenWithTokens()
         |> Seq.choose (NodeOrToken.asToken)
-        |> Seq.choose (ByteValue.TryCast)
+        |> Seq.choose (fun t -> ByteValue.TryCast(x.DocId, t))
         |> Seq.toList
 
 /// Expression value. This is the set of all expression types. Expressions can
 /// be either a simple datum (`Constant`), an identifier `Symbol`, or a comple
 /// `Form` datum.
-and Expression internal (red: SyntaxNode) =
-    inherit AstNode(red)
+and Expression internal (red: SyntaxNode, docId: DocId) =
+    inherit AstNode(red, docId)
 
-    static member TryCast(node: SyntaxNode) =
+    static member TryCast(docId: DocId, node: SyntaxNode) =
         match node.Kind |> greenToAst with
-        | AstKind.FORM -> Some(new Form(node) :> Expression)
-        | AstKind.VEC -> Some(new Vec(node))
-        | AstKind.BYTEVEC -> Some(new ByteVec(node))
-        | AstKind.SYMBOL -> Some(new Symbol(node))
-        | AstKind.CONSTANT -> Some(new Constant(node))
-        | AstKind.QUOTED_DATUM -> Some(new Quoted(node))
+        | AstKind.FORM -> Some(new Form(node, docId) :> Expression)
+        | AstKind.VEC -> Some(new Vec(node, docId))
+        | AstKind.BYTEVEC -> Some(new ByteVec(node, docId))
+        | AstKind.SYMBOL -> Some(new Symbol(node, docId))
+        | AstKind.CONSTANT -> Some(new Constant(node, docId))
+        | AstKind.QUOTED_DATUM -> Some(new Quoted(node, docId))
         | _ -> None
 
 /// Root AST type for script expressions.
-type ScriptProgram internal (red: SyntaxNode) =
+type ScriptProgram internal (red: SyntaxNode, docId: DocId) =
 
-    inherit AstNode(red)
+    inherit AstNode(red, docId)
 
-    member _.Body = red.Children() |> Seq.choose (Expression.TryCast) |> Seq.tryExactlyOne
-
-    static member TryCast(red: SyntaxNode) =
-        if red.Kind = (AstKind.PROGRAM |> astToGreen) then
-            Some(new ScriptProgram(red))
-        else
-            None
+    member _.Body =
+        red.Children()
+        |> Seq.choose (fun n -> Expression.TryCast(docId, n))
+        |> Seq.tryExactlyOne
 
 /// Wrapper type to represent an entire parsed program. This represents the
 /// contents of a single compilation unit.
-type Program internal (red: SyntaxNode) =
+type Program internal (red: SyntaxNode, docId: DocId) =
 
-    inherit AstNode(red)
+    inherit AstNode(red, docId)
 
-    member _.Body = red.Children() |> Seq.choose (Expression.TryCast)
-
-    static member TryCast(red: SyntaxNode) =
-        if red.Kind = (AstKind.PROGRAM |> astToGreen) then
-            Some(new Program(red))
-        else
-            None
-
+    member _.Body = red.Children() |> Seq.choose (fun n -> Expression.TryCast(docId, n))
 
 /// Active patterns to make working with elements in the syntax tree more
 /// ergonomic.

@@ -1,12 +1,12 @@
 namespace Feersum.CompilerServices.Binding
 
-open Feersum.CompilerServices
-open Feersum.CompilerServices.Ice
+open Feersum.CompilerServices.Binding.Stx
+open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Tree
-open Feersum.CompilerServices.Utils
+open Feersum.CompilerServices.Ice
 
 module private BinderDiagnostics =
 
@@ -37,313 +37,246 @@ module private BinderDiagnostics =
     let malformedDatum =
         DiagnosticKind.Create DiagnosticLevel.Error 38 "Invalid datum value"
 
-/// Global binding Type
-///
-/// For code we generate globals are stored in static fields. For some imported
-/// references globals may be stored in static fields instead.
-type GlobalType =
-    | Method of string
-    | Field of string
+    let malformedCall =
+        DiagnosticKind.Create DiagnosticLevel.Error 39 "Malformed procedure call"
 
-/// Storage Reference
-///
-/// Reference to a given storage location. Used to express reads and writes
-/// of values to storage locations.
-[<CustomComparison; CustomEquality>]
-type StorageRef =
-    | Macro of Macro
-    | Local of int
-    | Global of string * GlobalType
-    | Arg of int
-    | Environment of int * StorageRef
-    | Captured of StorageRef
+    let unquotedNull =
+        DiagnosticKind.Create DiagnosticLevel.Warning 40 "Unquoted null literal"
 
-    /// Ordinal for a given StorageRef variant (used in comparison)
-    static member private Ordinal =
-        function
-        | Macro _ -> 0
-        | Local _ -> 1
-        | Global _ -> 2
-        | Arg _ -> 3
-        | Environment _ -> 4
-        | Captured _ -> 5
+    let invalidExport =
+        DiagnosticKind.Create DiagnosticLevel.Error 41 "Invalid export declaration"
 
-    interface System.IComparable with
-        member this.CompareTo(obj) =
-            match obj with
-            | :? StorageRef as other ->
-                match this, other with
-                | Macro m1, Macro m2 ->
-                    compare
-                        (System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(m1))
-                        (System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(m2))
-                | Local a, Local b -> compare a b
-                | Global(n1, t1), Global(n2, t2) ->
-                    let c = compare n1 n2
-                    if c <> 0 then c else compare t1 t2
-                | Arg a, Arg b -> compare a b
-                | Environment(n, s), Environment(m, t) ->
-                    let c = compare n m
-                    if c <> 0 then c else (s :> System.IComparable).CompareTo(t)
-                | Captured s, Captured t -> (s :> System.IComparable).CompareTo(t)
-                | _ -> compare (StorageRef.Ordinal this) (StorageRef.Ordinal other)
-            | _ -> 0
-
-    override this.Equals(obj) =
-        match obj with
-        | :? StorageRef as other ->
-            match this, other with
-            | Macro m1, Macro m2 -> System.Object.ReferenceEquals(m1, m2)
-            | Local a, Local b -> a = b
-            | Global(n1, t1), Global(n2, t2) -> n1 = n2 && t1 = t2
-            | Arg a, Arg b -> a = b
-            | Environment(n, s), Environment(m, t) -> n = m && s = t
-            | Captured s, Captured t -> s = t
-            | _ -> false
-        | _ -> false
-
-    override this.GetHashCode() =
-        match this with
-        | Macro m -> System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(m)
-        | Local i -> hash ("Local", i)
-        | Global(n, t) -> hash ("Global", n, t)
-        | Arg i -> hash ("Arg", i)
-        | Environment(n, s) -> hash ("Env", n, s)
-        | Captured s -> hash ("Captured", s)
-
-/// Collection of Bound Formal Parameters
-///
-/// Different types of formal parameters accepted by lambda definitions.
-type BoundFormals =
-    | Simple of string
-    | List of string list
-    | DottedList of string list * string
-
-/// Literal or Constant Value
-type BoundLiteral =
-    | Boolean of bool
-    | Character of char
-    | Number of double
-    | Str of string
-    | Vector of BoundDatum list
-    | ByteVector of byte list
-    | Null
-
-    static member FromConstantValue(cv: ConstantValue option) =
-        match cv with
-        | Some(NumVal n) -> BoundLiteral.Number n
-        | Some(StrVal s) -> BoundLiteral.Str s
-        | Some(BoolVal b) -> BoundLiteral.Boolean b
-        | Some(CharVal c) -> BoundLiteral.Character(Option.defaultValue '\u0000' c)
-        | None -> BoundLiteral.Null
-
-/// Bound Datum Element
-///
-/// Represents a form or atom when used as a data element rather than as a
-/// program element. Used to hold the contents of quoted expressions, as well
-/// as the elements within a vector literal.
-and BoundDatum =
-    | Compound of BoundDatum list
-    | Pair of BoundDatum list * BoundDatum
-    | SelfEval of BoundLiteral
-    | Ident of string
-    | Quoted of BoundDatum
-
-/// Bound Expression Type
-///
-/// Bound expressions represent the syntax of a program with all identifier
-/// references resolved to the correct storage.
-type BoundExpr =
-    | Literal of BoundLiteral
-    | Quoted of BoundDatum
-    | SequencePoint of BoundExpr * TextLocation
-    | Load of StorageRef
-    | Store of StorageRef * BoundExpr option
-    | Application of BoundExpr * BoundExpr list
-    | If of BoundExpr * BoundExpr * BoundExpr option
-    | Seq of BoundExpr list
-    | Lambda of BoundFormals * BoundBody
-    | Library of string list * string * (string * StorageRef) list * BoundBody
-    | Nop
-    | Error
-
-and BoundBody =
-    { Body: BoundExpr
-      Locals: int
-      Captures: StorageRef list
-      EnvMappings: StorageRef list option }
-
-/// Root type returned by the binder.
-type BoundSyntaxTree =
-    { Root: BoundBody
-      MangledName: string
-      Diagnostics: Diagnostic list }
+// -- Global Binder Context ----------------------------------------------------
 
 /// Binder Context Type
 ///
-/// Used to pass the state around during the bind. Holds on to scope information
-/// and other transient information about the current `bind` call.
+/// A binder context holds the shared state for binding a set of units in a
+/// given bind pass. This is effectively the "environment" for the binder and
+/// contains a the accumulated global state for the current binding pass.
 type private BinderCtx =
-    { mutable Scope: Scope<StorageRef>
-      mutable OuterScopes: Scope<StorageRef> list
+    { Diagnostics: DiagnosticBag
       mutable Libraries: LibrarySignature<StorageRef> list
-      mutable LocalCount: int
-      mutable Captures: StorageRef list
-      mutable HasDynamicEnv: bool
-      mutable CurrentDocument: TextDocument option
-      MangledName: string
-      Diagnostics: DiagnosticBag
-      Parent: BinderCtx option }
+      SourceRegistry: SourceRegistry
+      mutable Macros: Map<Ident, SyntaxTransformer> }
 
+module private Binderctx =
 
-/// Methods for manipulating the bind context
-module private BinderCtx =
-
-    /// Add another element into our environment.
-    let private incEnvSize =
-        function
-        | None -> Some(1)
-        | Some(size) -> Some(size + 1)
-
-    /// Transofmr the name to make it safe for .NET.
-    let mangleName name =
-        let mangleNamePart = id
-
-        name |> Seq.map (mangleNamePart) |> String.concat "::"
-
-    /// Create a new binder context for the given root scope
-    let createForGlobalScope scope libs name =
-        { Scope = scope |> Scope.fromMap
-          OuterScopes = []
+    /// Create a new BinderCtx with the given scope and name
+    ///
+    /// Seeds the scope from the given `scope`.
+    let create sourceRegistry libs macros =
+        { SourceRegistry = sourceRegistry
           Libraries = libs
-          MangledName = name |> mangleName
-          LocalCount = 0
-          Captures = []
           Diagnostics = DiagnosticBag.Empty
-          HasDynamicEnv = false
-          CurrentDocument = None
-          Parent = None }
+          Macros = macros }
 
-    /// Create a new binder context for a child scope
-    let createWithParent parent =
-        { Scope = Scope.empty
-          OuterScopes = []
-          Libraries = []
-          MangledName = parent.MangledName
-          LocalCount = 0
-          Captures = []
-          Diagnostics = parent.Diagnostics
-          HasDynamicEnv = false
-          CurrentDocument = parent.CurrentDocument
-          Parent = Some(parent) }
+/// A single frame in the scope stack of a given binding frame. This is used to
+/// record the resolved storage locations of values which are currently
+/// accessable in the given context.
+type ResolutionScope = Map<Ident, StorageRef>
 
-    let private getNextLocal ctx =
-        let next = ctx.LocalCount
-        ctx.LocalCount <- next + 1
-        next
+/// The full resolution enviroment for a given frame. A stakc of scopes where
+/// the head is the innermost scope and the tail is the outermost. Resolution
+/// walks the scopes until an identifier is found or, if no binding resolution
+/// is found, the outer frame should be searched.
+type private ResolutionEnv = S of ResolutionScope list
 
-    /// Lookup a given ID in the binder scope
-    let rec tryFindBinding ctx id =
-        Scope.find ctx.Scope id |> Option.orElseWith (fun () -> parentLookup ctx id)
+module private ResolutionEnv =
 
-    and private parentLookup ctx id =
-        match ctx.Parent with
-        | Some(parent) ->
-            match tryFindBinding parent id with
-            | Some(outer) ->
-                match outer with
-                | Captured(_)
-                | Arg(_)
-                | Local(_)
-                | Environment(_) ->
-                    ctx.Captures <- outer :: ctx.Captures
-                    ctx.HasDynamicEnv <- true
-                    Some(StorageRef.Captured(outer))
-                | _ -> Some(outer)
-            | None -> None
-        | None -> None
+    /// An empty resolution environment. This contains a single scope without
+    /// any bindings.
+    let empty = S [ Map.empty ]
 
-    /// Insert an element directly into the current scope.
-    let scopeInsert ctx id storage =
-        ctx.Scope <- Scope.insert ctx.Scope id storage
+    /// Push a new scope onto the resolution environment. This is used when
+    /// entering a new `let` body or similar.
+    let pushScope (S scopes) = S(Map.empty :: scopes)
 
-    /// Introduce a binding for the given formal argument.
-    let addArgumentBinding ctx id idx = scopeInsert ctx id (StorageRef.Arg idx)
+    /// Pop a scope from the resolution environment. Used when leaving a scope
+    /// body to remove bindings from the resolution environment.
+    let popScope (S scopes) =
+        match scopes with
+        | [] -> ice "ResolutionEnv.popScope: no scopes to pop"
+        | _ :: rest -> S rest
 
-    /// Adds a macro definition to the current scope.
-    let addMacro ctx id macro =
-        scopeInsert ctx id (StorageRef.Macro macro)
+    /// Try to resolve an identifier in the resolution environment. This walks
+    /// the scopes from innermost to outermost and returns the first binding
+    /// found for the given identifier, if any.
+    let tryResolve (S scopes) (ident: Ident) : StorageRef option =
+        scopes |> List.tryPick (Map.tryFind ident)
 
-    /// Add a new entry to the current scope
-    let addBinding ctx id =
-        let storage =
-            if ctx.Parent.IsNone && ctx.OuterScopes.IsEmpty then
-                StorageRef.Global(ctx.MangledName, Field id)
-            else
-                StorageRef.Local(getNextLocal ctx)
+    /// Extend the given scope with a new binding `ident` -> `var`
+    let extend (S scopes) (ident: Ident) (var: StorageRef) =
+        match scopes with
+        | active :: tail -> S(Map.add ident var active :: tail)
+        | _ -> ice "ResolutionEnvironment has no active scope"
 
-        scopeInsert ctx id storage
-        storage
+/// Binder Frame Context
+///
+/// A frame context represents the state of the binder as it processes a
+/// particular item. This includes the kind of item being processed and the
+/// "resolution contet", a map from source identifiers to storage.
+type private FrameCtx =
+    { Kind: FrameKind
+      BinderCtx: BinderCtx
+      mutable Env: ResolutionEnv
+      mutable LocalCount: int }
 
-    /// Add a library declaration to the current context
-    let addLibrary ctx name exports =
-        let signature =
-            { LibrarySignature.LibraryName = name
-              LibrarySignature.Exports = exports }
+/// State specific to the kind of frame being bound. This reprsesents the
+/// different types of items we can process.
+and [<RequireQualifiedAccess>] private FrameKind =
+    /// Root frame. This represents a top level script o program frame being
+    /// bound into the type with the given `mangledName`.
+    | Global of mangledName: string
 
-        ctx.Libraries <- signature :: ctx.Libraries
+    /// Libraries behave similarly to a Global frame, but also have a parent
+    /// frame which they can refer to for name resolution.
+    | Library of mangledName: string * parent: FrameCtx
 
-    /// Import the bindings from a given libraryto the binder context
-    let importLibrary ctx (library: LibrarySignature<StorageRef>) =
-        List.iter (fun (id, storage) -> scopeInsert ctx id storage) library.Exports
-        library.LibraryName |> mangleName
+    /// Lamdba frames have mutable capture state which is used to track the
+    /// variables captured from outer frames.
+    | Lambda of LambdaState
 
-    /// Add a new level to the scopes
-    let pushScope ctx =
-        ctx.OuterScopes <- ctx.Scope :: ctx.OuterScopes
+/// Lamdba specific frame state. Needed because we must mutate the captures
+/// as we process the body of the lambda so this can't live directly on the
+/// `FrameKind.Lambda` case.
+and private LambdaState =
+    {
+        Parent: FrameCtx
+        /// Captures state of the lambda. If `None` then no environment captures
+        /// exist. If `Some` then the list shows the captured variables.
+        ///
+        /// A `Some []` indicates a link environment.
+        mutable Captures: StorageRef list option
+    }
 
-    // Set the scope back to a stored value
-    let popScope ctx =
-        match ctx.OuterScopes with
-        | scope :: scopes ->
-            ctx.Scope <- scope
-            ctx.OuterScopes <- scopes
-        | [] -> ice "Unbalanced scope pop"
 
-    /// Convert the binder context into a bound root around the given expression
-    let intoRoot ctx expr =
-        let env = if ctx.HasDynamicEnv then Some([]) else None
+/// A helper module for working with `FrameCtx`. This contains functions for
+/// creating and manipulating `FrameCtx` values, such as pushing and popping
+/// frames and managing the resolution environment.
+module private FrameCtx =
 
-        { Body = expr
+    let private createWithKind binderCtx kind =
+        { Kind = kind
+          BinderCtx = binderCtx
+          Env = ResolutionEnv.empty
+          LocalCount = 0 }
+
+    /// Create a new `FrameCtx` for a global frame with the given `mangledName`.
+    let createGlobal binderCtx mangledName scope =
+        createWithKind binderCtx (FrameKind.Global mangledName)
+        |> fun ctx -> { ctx with Env = S [ scope ] }
+
+    /// Create a new `FrameCtx` for a library frame with the given `mangledName`
+    /// and `parent` frame.
+    let createLibrary parent mangledName =
+        createWithKind parent.BinderCtx (FrameKind.Library(mangledName, parent))
+
+    /// Create a new `FrameCtx` for a lambda frame with the given parent frame.
+    let createLambda parent =
+        createWithKind parent.BinderCtx (FrameKind.Lambda { Parent = parent; Captures = None })
+
+    /// Resolve an identifier in the given `FrameCtx`.
+    ///
+    /// This first tries to resolve the identifier in the current frame's
+    /// resolution environment. If that fails, it then tries to resolve the
+    /// identifier in the parent frame, if one exists. If the identifier is
+    /// found in the parent frame, it is registered as a capture on the current
+    /// frame if the parent storage is a local, argument, captured variable, or
+    /// environment variable. If the identifier is not found in the parent
+    /// frame, then `None` is returned to indicate an unresolved identifier.
+    let rec resolve (ctx: FrameCtx) (ident: Ident) : StorageRef option =
+        match ResolutionEnv.tryResolve ctx.Env ident with
+        | Some storage -> Some storage
+        | None ->
+            // Not in this frame's scopes. Try the parent (captures).
+            match ctx.Kind with
+            | FrameKind.Lambda state ->
+                match resolve state.Parent ident with
+                | Some outerStorage ->
+                    // Register capture on this lambda frame.
+                    match outerStorage with
+                    | Captured _
+                    | Arg _
+                    | Local _
+                    | Environment _ ->
+                        state.Captures <-
+                            match state.Captures with
+                            | Some captures -> Some(outerStorage :: captures)
+                            | None -> Some [ outerStorage ]
+
+                        Some(StorageRef.Captured outerStorage)
+                    | _ -> Some outerStorage
+                | None -> None
+            | FrameKind.Library(_, parent) -> resolve parent ident
+            | FrameKind.Global _ ->
+                // Global frames have no parent to search.
+                None
+
+    /// Finish a `FrameCtx` by producing a `BoundBody` with the given `body`
+    /// expression and capture information resolved from the `ctx`'s state.
+    let finish (ctx: FrameCtx) (body: BoundExpr) : BoundBody =
+        let captures, env =
+            match ctx.Kind with
+            | FrameKind.Lambda state ->
+                match state.Captures with
+                | Some captures -> captures, Some([])
+                | None -> [], None
+            | _ -> [], None
+
+        { Body = body
           Locals = ctx.LocalCount
-          Captures = ctx.Captures
+          Captures = captures
           EnvMappings = env }
+
+
+/// Resolution State for a Variable
+type private NameResolution =
+    | Resolved of StorageRef
+    | SpecialForm of SpecialFormKind
+    | Macro of Ident
+    | Unbound
+
+// -- Binder Implementation ----------------------------------------------------
 
 [<AutoOpen>]
 module private Impl =
 
-    /// Get the TextLocation for a given expression using the binder context's document
-    let private getNodeLocation ctx (expr: Expression) =
-        match ctx.CurrentDocument with
-        | Some doc -> TextDocument.rangeToLocation doc expr.SyntaxRange
-        | None -> TextLocation.Missing
+    open System.Text.RegularExpressions
 
-    /// Bind a Formals List Pattern
+    /// Create a "Mangled" Name for a Given Source name
     ///
-    /// This binds the formals list pattern as supported by `(define .. )` forms,
+    /// This converts a sequecne of name parts, such as those found in a library
+    /// or module in Scheme into a single CIL identifier safe string.
+    let mangleName (name: string seq) : string =
+        let mangleNamePart (part: string) =
+            Regex.Replace(part, @"[^a-zA-Z0-9]+", "_")
+
+        name |> Seq.map mangleNamePart |> String.concat "::"
+
+    // Get the Syntax Location for a Given Syntax Node
+    let private getSyntaxLocation (_ctx: BinderCtx) (stx: Stx) : TextLocation =
+        // FIXME: We _should_ have to look the stx up in the source registry
+        //        so we can `rangeToLocation` the span. But the current slop
+        //        means the locations are actually just denormalised on each stx
+        stx.Loc
+
+
+    /// Parse a Formals List Pattern
+    ///
+    /// This parses the formals list pattern as supported by `(define .. )` forms,
     /// or `(lambda)` forms. Takes the body elements and optional tail element
     /// (from a DottedForm). Returns either a plain or dotted list formals pattern:
     ///   * `(<id>, .. )` - to bind each parameter to a unique identifier
     ///   * `(<id>, .. '.', <id>)` - to bind a fixed set of parameters with an
     ///     optional list of extra parameters.
-    let private bindFormalsList ctx (body: Expression list) (tail: Expression option) =
-        let parseFormal acc (formal: Expression) =
+    let private parseFormalsList ctx (body: Stx list) (tail: Stx option) =
+        let parseFormal acc (formal: Stx) =
             match formal with
-            | Symbol id -> id :: acc
+            | StxId(id, _, _) -> id :: acc
             | _ ->
                 ctx.Diagnostics.Emit
                     BinderDiagnostics.patternBindError
-                    (getNodeLocation ctx formal)
+                    (getSyntaxLocation ctx formal)
                     "Expected identifier in formals"
 
                 acc
@@ -354,256 +287,314 @@ module private Impl =
         | None -> BoundFormals.List(fmls)
         | Some tailExpr ->
             match tailExpr with
-            | Symbol id -> BoundFormals.DottedList(fmls, id)
+            | StxId(id, _, _) -> BoundFormals.DottedList(fmls, id)
             | _ ->
                 ctx.Diagnostics.Emit
                     BinderDiagnostics.patternBindError
-                    (getNodeLocation ctx tailExpr)
+                    (getSyntaxLocation ctx tailExpr)
                     "Expected identifier after dot"
 
                 BoundFormals.List(fmls)
 
-    /// Bind a Lambda's Formal Arguments
+    /// Parse a Lambda's Formal Arguments
     ///
     /// Parses the argument list for a lambda form and returns a `BoundFormals`
     /// instance describing the formal parameter pattern. The following
     /// types of formals patterns are suppoted:
     ///   * `<id>` - to bind the whole list to the given identifier
-    ///   * Any of the list patterns supported by `bindFormalsList`
-    let private bindFormals ctx (formals: Expression) =
+    ///   * Any of the list patterns supported by `parseFormalsList`
+    let private parseFormals ctx (formals: Stx) =
         match formals with
-        | Symbol id -> BoundFormals.Simple(id)
-        | Form body -> bindFormalsList ctx body None
-        | DottedForm(body, tail) -> bindFormalsList ctx body tail
+        | StxId(id, _, _) -> BoundFormals.Simple(id)
+        | StxList(body, tail, _, _) -> parseFormalsList ctx body tail
         | _ ->
             "Unrecognised formal parameter list. Must be an ID or list pattern"
-            |> ctx.Diagnostics.Emit BinderDiagnostics.invalidParameterPattern (getNodeLocation ctx formals)
+            |> ctx.Diagnostics.Emit BinderDiagnostics.invalidParameterPattern (getSyntaxLocation ctx formals)
 
             BoundFormals.List([])
 
     /// Recognise a given form as a list of let binding specifications. This expects
     /// the `node` to be a form `()`, or `((id init) ...)`.
-    let private parseBindingSpecs ctx (node: Expression) =
+    let private parseBindingSpecs ctx (node: Stx) =
         // Bind each of the definitions
-        let parseBindingSpec (decl: Expression) bindings =
+        let parseBindingSpec (decl: Stx) bindings =
             match decl with
-            | Form [ Symbol id; body ] -> (id, body) :: bindings
+            | StxList([ StxId(id, _, _); body ], None, _, _) -> (id, body) :: bindings
             | _ ->
-                ctx.Diagnostics.Emit BinderDiagnostics.letBindError (getNodeLocation ctx decl) "Invalid binding form"
+                ctx.Diagnostics.Emit BinderDiagnostics.letBindError (getSyntaxLocation ctx decl) "Invalid binding form"
                 bindings
 
         match node with
-        | Form decls -> List.foldBack (parseBindingSpec) decls []
+        | StxList(decls, None, _, _) -> List.foldBack parseBindingSpec decls []
         | _ ->
-            ctx.Diagnostics.Emit BinderDiagnostics.letBindError (getNodeLocation ctx node) "Expected binding list"
+            ctx.Diagnostics.Emit BinderDiagnostics.letBindError (getSyntaxLocation ctx node) "Expected binding list"
             []
 
     /// Emit a diagnostic for an ill-formed special form
-    let private illFormedInCtx ctx location formName =
-        formName
-        |> sprintf "Ill-formed '%s' special form"
-        |> ctx.Diagnostics.Emit BinderDiagnostics.illFormedSpecialForm location
+    let private illFormedInCtx (ctx: FrameCtx) (loc: TextLocation) (formName: string) =
+        $"Ill-formed '{formName}' special form"
+        |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.illFormedSpecialForm loc
 
-        BoundExpr.Error
+        BoundExpr.Error, Map.empty
 
-    let private bindByteVecInner ctx node (bv: ByteVec) =
-        match bv.Body |> Seq.map (fun x -> x.Value) |> Result.collectAll with
-        | Ok bytes -> bytes |> BoundLiteral.ByteVector |> Ok
+    /// Convert a syntactic datum to its bound-tree counterpart.
+    let private datumToLiteral =
+        function
+        | StxDatum.Boolean b -> BoundLiteral.Boolean b
+        | StxDatum.Number n -> BoundLiteral.Number n
+        | StxDatum.Character c -> BoundLiteral.Character c
+        | StxDatum.Str s -> BoundLiteral.Str s
+        | StxDatum.ByteVector bs -> BoundLiteral.ByteVector bs
 
-        | Result.Error messages ->
-            messages
-            |> List.iter (fun msg ->
-                ctx.Diagnostics.Emit BinderDiagnostics.malformedDatum (getNodeLocation ctx node) msg)
+    /// Convert a Stx node to a BoundDatum (for quoted expressions).
+    /// Returns None if the Stx tree contains a reader-level error node;
+    /// the diagnostic was already emitted by Stx.ofExpr.
+    let rec private stxToDatum (stx: Stx) : BoundDatum option =
+        let mapItems items : BoundDatum list option =
+            List.foldBack
+                (fun item acc ->
+                    match acc, stxToDatum item with
+                    | Some ds, Some d -> Some(d :: ds)
+                    | _ -> None)
+                items
+                (Some [])
 
-            Result.Error()
+        match stx with
+        | StxId(name, _, _) -> Some(BoundDatum.Ident name)
+        | StxDatum(d, _) -> Some(BoundDatum.SelfEval(datumToLiteral d))
+        | StxList(items, None, _, _) -> mapItems items |> Option.map BoundDatum.Compound
+        | StxList(items, Some tail, _, _) ->
+            match mapItems items, stxToDatum tail with
+            | Some ds, Some t -> Some(BoundDatum.Pair(ds, t))
+            | _ -> None
+        | StxVec(items, _, _) ->
+            mapItems items
+            |> Option.map (fun ds -> BoundDatum.SelfEval(BoundLiteral.Vector ds))
+        | StxError _ -> None
 
-    /// Bind a Syntax Node
+    /// Resolve a Name to A Syntax or Variable
     ///
-    /// Walks the syntax node building up a bound representation. This bound
-    /// node no longer has direct references to identifiers and instead
-    /// references storage locations.
-    let rec bindInContext ctx (node: Expression) =
-        match node with
-        | ByteVecNode b ->
-            match bindByteVecInner ctx node b with
-            | Ok bv -> bv |> BoundExpr.Literal
-            | Result.Error() -> BoundExpr.Error
-        | VecNode v ->
-            v.Body
-            |> Seq.map (bindDatum ctx)
-            |> List.ofSeq
-            |> BoundLiteral.Vector
-            |> BoundExpr.Literal
-        | FormNode f ->
-            let body = f.Body |> List.ofSeq
+    /// This is the two-phase nested lookup required to translate a raw name
+    /// from the syntax contex into the resolution of its binding.
+    let private resolveName (ctx: FrameCtx) (stxEnv: StxEnvironment) (name: string) : NameResolution =
+        match Stx.resolve name stxEnv with
+        | Some(StxBinding.Variable id) ->
+            match FrameCtx.resolve ctx id with
+            | Some storage -> Resolved storage
+            | _ -> Unbound
+        | Some(StxBinding.Macro id) -> NameResolution.Macro id
+        | Some(StxBinding.Special sp) -> NameResolution.SpecialForm sp
+        | None -> Unbound
 
-            match f.DottedTail with
-            | Some _ ->
-                ctx.Diagnostics.Emit
-                    BinderDiagnostics.patternBindError
-                    (getNodeLocation ctx node)
-                    "Unexpected dotted form in expression position"
+    /// Create a new Variable Binding in the Syntax Environent and the Frame Context
+    let private mintFrameItem
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        (name: string)
+        (storage: StorageRef)
+        : Ident * StxEnvironment =
+        let id = Ident.fresh ()
+        let stxEnv = Map.add name (StxBinding.Variable id) stxEnv
 
-                BoundExpr.Error
-            | None -> bindForm ctx body node
-        | ConstantNode c -> BoundLiteral.FromConstantValue c.Value |> BoundExpr.Literal
-        | SymbolNode s ->
-            let id = s.CookedValue
+        ctx.Env <- ResolutionEnv.extend ctx.Env id storage
 
-            match BinderCtx.tryFindBinding ctx id with
-            | Some st -> BoundExpr.Load(st)
-            | None ->
-                sprintf "The symbol %s is not defined in the current context" id
-                |> ctx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol (getNodeLocation ctx node)
+        id, stxEnv
 
-                BoundExpr.Error
-        | QuotedNode q ->
-            match q.Inner with
-            | Some inner -> bindQuoted ctx inner
-            | None ->
-                ctx.Diagnostics.Emit BinderDiagnostics.patternBindError (getNodeLocation ctx node) "Empty quotation"
+    /// Create a new Variable Binding in the Syntax Environent and the Frame Context
+    let private mintVar (ctx: FrameCtx) (stxEnv: StxEnvironment) (name: string) : Ident * StorageRef * StxEnvironment =
+        let storage =
+            match ctx.Env, ctx.Kind with
+            | S([ _ ]), FrameKind.Global libName
+            | S([ _ ]), FrameKind.Library(libName, _) -> StorageRef.Global(libName, Field name)
+            | _ ->
+                let idx = ctx.LocalCount
+                ctx.LocalCount <- ctx.LocalCount + 1
+                StorageRef.Local idx
 
-                BoundExpr.Error
+        let id, stxEnv = mintFrameItem ctx stxEnv name storage
+        id, storage, stxEnv
 
-    and private bindDatum ctx (node: Expression) =
-        match node with
-        | SymbolNode s -> BoundDatum.Ident s.CookedValue
-        | ConstantNode c -> BoundDatum.SelfEval(BoundLiteral.FromConstantValue c.Value)
-        | FormNode f ->
-            let body = f.Body |> Seq.map (bindDatum ctx) |> List.ofSeq
+    /// Create a new Variable Binding in the Syntax Environent and the Frame Context
+    let private mintArg
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        (name: string)
+        (idx: int)
+        : Ident * StorageRef * StxEnvironment =
+        let storage = StorageRef.Arg idx
+        let id, stxEnv = mintFrameItem ctx stxEnv name storage
 
-            match f.DottedTail with
-            | None -> BoundDatum.Compound body
-            | Some tail ->
-                match tail.Body with
-                | Some tailExpr -> BoundDatum.Pair(body, bindDatum ctx tailExpr)
+        id, storage, stxEnv
+
+    let importLibraryExports
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        (library: LibrarySignature<StorageRef>)
+        : StxEnvironment =
+        library.Exports
+        |> List.fold
+            (fun stxEnv (exportedName, storage) ->
+                let id, stxEnv = mintFrameItem ctx stxEnv exportedName storage
+                ctx.Env <- ResolutionEnv.extend ctx.Env id storage
+                stxEnv)
+            stxEnv
+
+    /// Parse the given `Stx` as an import statement and Update the Environment
+    let rec bindImportStatement (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : StxEnvironment =
+        let imp = Libraries.parseImport ctx.BinderCtx.Diagnostics stx
+
+        match Libraries.resolveImport ctx.BinderCtx.Libraries imp with
+        | Ok library -> importLibraryExports ctx stxEnv library
+
+        | Result.Error msg ->
+            ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.invalidImport stx.Loc msg
+            stxEnv
+
+    let registerMacro (ctx: FrameCtx) (id: Ident) (mac: SyntaxTransformer) =
+        ctx.BinderCtx.Macros <- Map.add id mac ctx.BinderCtx.Macros
+
+    /// Bind a Single Expression
+    let rec bindInContext (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : BoundExpr * StxEnvironment =
+        let emitBinderError (stx: Stx) (diagKind: DiagnosticKind) (message: string) =
+            message
+            |> ctx.BinderCtx.Diagnostics.Emit diagKind (getSyntaxLocation ctx.BinderCtx stx)
+
+            BoundExpr.Error, stxEnv
+
+        match stx with
+        | Stx.Id(name, _) ->
+            match resolveName ctx stxEnv name with
+            | Resolved storage -> BoundExpr.Load storage, stxEnv
+            | SpecialForm _
+            | Macro _ ->
+                $"Invalid use of syntax item '{name}'"
+                |> emitBinderError stx BinderDiagnostics.undefinedSymbol
+            | Unbound ->
+                $"The symbol '{name}' is not defined in the current context"
+                |> emitBinderError stx BinderDiagnostics.undefinedSymbol
+        | Stx.Datum(value, loc) -> datumToLiteral value |> BoundExpr.Literal, stxEnv
+
+        | Stx.List(head, tail, loc) -> bindForm ctx stxEnv head tail loc
+
+        | Stx.Vec(items, _) -> items |> List.choose stxToDatum |> BoundLiteral.Vector |> BoundExpr.Literal, stxEnv
+
+        | Stx.Closure(inner, innerEnv) ->
+
+            let bound = bindInContext ctx innerEnv inner |> fst
+            bound, stxEnv
+
+        | Stx.Error _ -> BoundExpr.Error, stxEnv
+
+    and bindForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (formBody: Stx list) (tail: Stx option) loc =
+        match formBody with
+        | StxId(name, _, env) :: args ->
+            let nameEnv = env |> Option.defaultValue stxEnv
+
+            match resolveName ctx nameEnv name with
+            | NameResolution.SpecialForm kind ->
+                tail
+                |> Option.iter (fun x ->
+                    $"Unexpected dotted tail in '{name}' form"
+                    |> ctx.BinderCtx.Diagnostics.Emit
+                        BinderDiagnostics.illFormedSpecialForm
+                        (getSyntaxLocation ctx.BinderCtx x))
+
+                bindSpecialForm ctx stxEnv kind args loc
+            | NameResolution.Macro id ->
+                match Map.tryFind id ctx.BinderCtx.Macros with
+                | Some transformer ->
+                    let expanded = transformer (Stx.List(formBody, tail, loc)) stxEnv
+
+                    match expanded with
+                    | Ok newForm -> bindInContext ctx stxEnv newForm
+                    | Result.Error err ->
+                        err |> ctx.BinderCtx.Diagnostics.Emit MacroDiagnostics.macroExpansionError loc
+                        BoundExpr.Error, stxEnv
                 | None ->
-                    ctx.Diagnostics.Emit
-                        BinderDiagnostics.malformedDatum
-                        (getNodeLocation ctx node)
-                        "invalid dotted pair in quoted expression"
+                    $"Macro '{name}' is not defined in the current context"
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
 
-                    BoundDatum.Compound body
-        | VecNode v ->
-            v.Body
-            |> Seq.map (bindDatum ctx)
-            |> List.ofSeq
-            |> BoundLiteral.Vector
-            |> BoundDatum.SelfEval
-        | ByteVecNode b ->
-            match bindByteVecInner ctx node b with
-            | Ok bv -> BoundDatum.SelfEval(bv)
-            | Result.Error() -> BoundDatum.Ident "<ERROR>"
-        | QuotedNode q ->
-            match q.Inner with
-            | Some inner -> bindDatum ctx inner |> BoundDatum.Quoted
+                    BoundExpr.Error, stxEnv
+
+            | NameResolution.Resolved storage ->
+                BoundExpr.Load(storage) |> fun x -> bindApplication ctx stxEnv x args tail
+            | NameResolution.Unbound ->
+                $"Macro or procedure '{name}' is not bound in the current context"
+                |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+
+                BoundExpr.Error, stxEnv
+        | head :: args ->
+            let operator = bindInContext ctx stxEnv head |> fst
+            bindApplication ctx stxEnv operator args tail
+        | [] ->
+            match tail with
+            | Some x ->
+                $"Unexpected dotted tail in procedure call with no operator"
+                |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedCall (getSyntaxLocation ctx.BinderCtx x)
+
+                BoundExpr.Error, stxEnv
+
             | None ->
-                ctx.Diagnostics.Emit
-                    BinderDiagnostics.malformedDatum
-                    (getNodeLocation ctx node)
-                    "invalid item in quoted expression"
+                $"Did you mean `'()`?"
+                |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.unquotedNull loc
 
-                BoundDatum.Ident "<ERROR>"
+                BoundExpr.Literal BoundLiteral.Null, stxEnv
 
-    and private bindQuoted ctx (quoted: Expression) =
-        bindDatum ctx quoted |> BoundExpr.Quoted
+    and bindLibrary
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        loc
+        (library: LibraryDefinition)
+        : BoundExpr * StxEnvironment =
 
-    and private bindWithSequencePoint ctx (expr: Expression) =
-        let inner = bindInContext ctx expr
+        let mangledName = mangleName library.LibraryName
+        let libCtx = FrameCtx.createLibrary ctx mangledName
+        let emit = libCtx.BinderCtx.Diagnostics.Emit
 
-        match inner with
-        | BoundExpr.If _
-        | BoundExpr.Seq _ -> inner
-        | _ -> BoundExpr.SequencePoint(inner, getNodeLocation ctx expr)
-
-    and bindSequence ctx (exprs: Expression list) =
-        List.map (bindWithSequencePoint ctx) exprs |> BoundExpr.Seq
-
-    and private bindApplication ctx (head: Expression) (rest: Expression list) (node: Expression) =
-        let applicant = bindInContext ctx head
-
-        match applicant with
-        | BoundExpr.Load(StorageRef.Macro m) ->
-            match Macros.macroApply m node (getNodeLocation ctx node) with
-            | Ok ast -> bindInContext ctx ast
-            | Result.Error diag ->
-                ctx.Diagnostics.Add diag
-                BoundExpr.Error
-        | _ -> BoundExpr.Application(applicant, List.map (bindInContext ctx) rest)
-
-    and private bindLambdaBody ctx formals (body: Expression list) =
-        let lambdaCtx = BinderCtx.createWithParent ctx
-
-        let addFormal idx id =
-            BinderCtx.addArgumentBinding lambdaCtx id idx
-            idx + 1
-
-        match formals with
-        | BoundFormals.Simple(id) -> addFormal 0 id |> ignore
-        | BoundFormals.List(fmls) -> (List.fold addFormal 0 fmls) |> ignore
-        | BoundFormals.DottedList(fmls, dotted) ->
-            let nextFormal = (List.fold addFormal 0 fmls)
-            addFormal nextFormal dotted |> ignore
-
-        let boundBody = bindSequence lambdaCtx body |> BinderCtx.intoRoot lambdaCtx
-
-        BoundExpr.Lambda(formals, boundBody)
-
-    and private bindLet ctx name (body: Expression list) location declBinder =
-        match body with
-        | bindings :: body ->
-            let bindingSpecs = parseBindingSpecs ctx bindings
-            // Save the current scope so we can restore it later
-            let savedScope = BinderCtx.pushScope ctx
-            // Bind the declarations
-            let decls = declBinder bindingSpecs
-            // Bind the body of the lambda in the new scope
-            let boundBody = List.map (bindInContext ctx) body
-            // Decrement the scope depth
-            BinderCtx.popScope ctx
-            BoundExpr.Seq(List.append decls boundBody)
-        | _ -> illFormedInCtx ctx location name
-
-    and private bindLibrary ctx location (library: LibraryDefinition) =
         // Process `(import ...)`
-        let libCtx =
-            library.LibraryName |> BinderCtx.createForGlobalScope Map.empty ctx.Libraries
-
-        // Propagate the current document so sequence points inside the library
-        // have valid source locations.
-        libCtx.CurrentDocument <- ctx.CurrentDocument
-
-        let imports =
+        let bodyEnv =
             library.Declarations
-            |> List.choose (function
-                | LibraryDeclaration.Import i ->
-                    i
-                    |> List.choose (
-                        Libraries.resolveImport ctx.Libraries
-                        >> Result.map (BinderCtx.importLibrary libCtx >> (fun _ -> BoundExpr.Nop))
-                        >> Result.mapError (libCtx.Diagnostics.Emit BinderDiagnostics.invalidImport location)
-                        >> Option.ofResult
-                    )
-                    |> BoundExpr.Seq
-                    |> Some
-                | _ -> None)
+            |> List.fold
+                (fun stxEnv decl ->
+                    match decl with
+                    | LibraryDeclaration.Import i ->
+                        i
+                        |> List.fold
+                            (fun stxEnv lib ->
+                                match Libraries.resolveImport ctx.BinderCtx.Libraries lib with
+                                | Ok resolved -> importLibraryExports libCtx stxEnv resolved
+                                | Result.Error err ->
+                                    emit BinderDiagnostics.invalidImport loc err
+                                    stxEnv)
+                            stxEnv
+                    | _ -> stxEnv)
+                stxEnv
 
         // Process the bodies of the library.
-        let boundBodies =
-            List.choose
-                (function
-                | LibraryDeclaration.Begin block -> block |> bindSequence libCtx |> Some
-                | _ -> None)
-                library.Declarations
+        let boundBodies, bodyEnv =
+            library.Declarations
+            |> List.mapFold
+                (fun stxEnv decl ->
+                    match decl with
+                    | LibraryDeclaration.Begin block ->
+                        block
+                        |> List.mapFold (fun stxEnv expr -> bindTopLevel libCtx stxEnv expr) stxEnv
+                    | _ -> [], stxEnv)
+                bodyEnv
 
         // Process `(export ...)` declarations.
         let lookupExport id extId =
-            match BinderCtx.tryFindBinding libCtx id with
-            | Some(x) -> Some((extId, x))
+            match resolveName libCtx bodyEnv id with
+            | NameResolution.Resolved x -> Some((extId, x))
+            | NameResolution.SpecialForm _
+            | NameResolution.Macro _ ->
+                $"Invalid export of syntax item '{id}'"
+                |> emit BinderDiagnostics.invalidExport loc
+
+                None
             | _ ->
-                sprintf "Could not find exported item %s" id
-                |> Diagnostic.Create BinderDiagnostics.missingExport location
-                |> libCtx.Diagnostics.Add
+                $"Could not find exported item '{id}'"
+                |> emit BinderDiagnostics.missingExport loc
 
                 None
 
@@ -619,106 +610,180 @@ module private Impl =
                 | _ -> None)
             |> List.concat
 
-        BinderCtx.addLibrary ctx library.LibraryName exports
-        ctx.Diagnostics.Append libCtx.Diagnostics.Take
+        ctx.BinderCtx.Libraries <-
+            { LibrarySignature.LibraryName = library.LibraryName
+              Exports = exports }
+            :: ctx.BinderCtx.Libraries
 
         BoundExpr.Library(
             library.LibraryName,
-            library.LibraryName |> BinderCtx.mangleName,
+            mangledName,
             exports,
-            List.append imports boundBodies |> BoundExpr.Seq |> BinderCtx.intoRoot libCtx
-        )
+            boundBodies |> List.concat |> BoundExpr.Seq |> FrameCtx.finish libCtx
+        ),
+        stxEnv
 
-    and private bindForm ctx (form: Expression list) (node: Expression) =
-        let illFormed formName =
-            illFormedInCtx ctx (getNodeLocation ctx node) formName
+    and bindSpecialForm (ctx: FrameCtx) (stxEnv: StxEnvironment) (kind: SpecialFormKind) (args: Stx list) loc =
+        let illFormed formName = illFormedInCtx ctx loc formName
 
-        match form with
-        | Symbol "if" :: body ->
-            let b = bindWithSequencePoint ctx
+        match kind with
+        | SpecialFormKind.If ->
+            let b = bindTopLevel ctx stxEnv >> fst
 
-            match body with
-            | [ cond; ifTrue; ifFalse ] -> BoundExpr.If((b cond), (b ifTrue), Some(b ifFalse))
-            | [ cond; ifTrue ] -> BoundExpr.If((b cond), (b ifTrue), None)
+            match args with
+            | [ cond; ifTrue; ifFalse ] -> BoundExpr.If(b cond, b ifTrue, Some(b ifFalse)), stxEnv
+            | [ cond; ifTrue ] -> BoundExpr.If(b cond, b ifTrue, None), stxEnv
             | _ -> illFormed "if"
-        | Symbol "begin" :: body -> bindSequence ctx body
-        | Symbol "define" :: body ->
-            match body with
-            | [ Symbol id ] ->
-                let storage = BinderCtx.addBinding ctx id
-                BoundExpr.Store(storage, None)
-            | [ Symbol id; value ] ->
-                let storage = BinderCtx.addBinding ctx id
-                let value = bindInContext ctx value
-                BoundExpr.Store(storage, Some(value))
-            | Form(Symbol id :: formals) :: body ->
-                // Add the binding for this lambda to the scope _before_ lowering
-                // the body. This makes recursive calls possible.
-                BinderCtx.addBinding ctx id |> ignore
 
-                let lambda = bindLambdaBody ctx (bindFormalsList ctx formals None) body
-                // Look the storage back up. This is key as the lambda, or one of
-                // the lambdas nested inside it, could have captured the lambda
-                // and moved it to the environment.
-                let storage = (BinderCtx.tryFindBinding ctx id).Value
-                BoundExpr.Store(storage, Some(lambda))
-            | DottedForm(Symbol id :: formals, tail) :: body ->
-                BinderCtx.addBinding ctx id |> ignore
+        | SpecialFormKind.Begin -> bindSeq ctx stxEnv args
 
-                let lambda = bindLambdaBody ctx (bindFormalsList ctx formals tail) body
-                let storage = (BinderCtx.tryFindBinding ctx id).Value
-                BoundExpr.Store(storage, Some(lambda))
+        | SpecialFormKind.Define ->
+            // FIXME: All of these bind in the outer syntax context rather than
+            // resepecting the environemnt on the name. The fix here is proper
+            // syntax sets rather than closures.
+            match args with
+            | [ StxId(name, _, _) ] ->
+                let _id, storage, stxEnv = mintVar ctx stxEnv name
+                BoundExpr.Store(storage, None), stxEnv
+            | [ StxId(name, _, _); value ] ->
+                let _id, storage, stxEnv = mintVar ctx stxEnv name
+                let value, stxEnv = bindInContext ctx stxEnv value
+                BoundExpr.Store(storage, Some value), stxEnv
+            | StxList(StxId(name, _, _) :: formals, formalTail, formalsLoc, fromalsEnv) :: body ->
+
+                let _id, storage, stxEnv = mintVar ctx stxEnv name
+
+                let formals = parseFormalsList ctx.BinderCtx formals formalTail
+                let lambda = bindLambdaBody ctx stxEnv formals body
+
+                // TODO: We _used_ to re-laod the binding here to move items
+                // that had been captured into their enviroment storage. I'm
+                // not convinced we need it any longer as `Lower` looks to
+                // lift stores as requried.
+                BoundExpr.Store(storage, Some lambda), stxEnv
+
             | _ -> illFormed "define"
-        | Symbol "lambda" :: body ->
-            match body with
+
+        | SpecialFormKind.Lambda ->
+            match args with
             | formals :: body ->
-                let boundFormals = bindFormals ctx formals
-                bindLambdaBody ctx boundFormals body
+                let formals = parseFormals ctx.BinderCtx formals
+                let lambda = bindLambdaBody ctx stxEnv formals body
+                lambda, stxEnv
+
             | _ -> illFormed "lambda"
-        | Symbol "let" :: body ->
-            bindLet ctx "let" body (getNodeLocation ctx node) (fun bindingSpecs ->
+
+        | SpecialFormKind.Quote ->
+            match args with
+            | [ datum ] ->
+                stxToDatum datum
+                |> Option.map (fun d -> BoundExpr.Quoted d, stxEnv)
+                |> Option.defaultWith (fun () ->
+                    $"Malformed datum in quote form"
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedDatum loc
+
+                    BoundExpr.Error, stxEnv)
+            | _ -> illFormed "quote"
+
+        | SpecialFormKind.SetBang ->
+            match args with
+            | [ StxId(name, loc, nameEnv); value ] ->
+                let nameEnv = nameEnv |> Option.defaultValue stxEnv
+
+                match resolveName ctx nameEnv name with
+                | NameResolution.Resolved storage ->
+                    let value, stxEnv = bindInContext ctx stxEnv value
+                    BoundExpr.Store(storage, Some value), stxEnv
+                | NameResolution.SpecialForm _
+                | NameResolution.Macro _ ->
+                    $"Invalid use of syntax item '{name}' in set! form"
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+
+                    BoundExpr.Error, stxEnv
+                | NameResolution.Unbound ->
+                    $"The symbol '{name}' is not defined in the current context and cannot be assigned to"
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+
+                    BoundExpr.Error, stxEnv
+            | _ -> illFormed "set!"
+
+        | SpecialFormKind.Let ->
+            bindLet ctx "let" args loc (fun bindingSpecs ->
 
                 // Bind the body of each binding spec first
                 let decls =
-                    bindingSpecs |> List.map (fun (id, body) -> (id, bindInContext ctx body))
+                    bindingSpecs
+                    |> List.map (fun (id, init) -> id, bindInContext ctx stxEnv init |> fst)
 
                 // Once the bodies are bound, we can create assignments and
                 // initialise the environment
-                let boundDecls =
+                let boundDecls, stxEnv =
                     decls
-                    |> List.map (fun (id, body) ->
-                        let storage = BinderCtx.addBinding ctx id
-                        BoundExpr.Store(storage, Some(body)))
+                    |> List.mapFold
+                        (fun stxEnv (id, body) ->
+                            let _, storage, stxEnv = mintVar ctx stxEnv id
+                            BoundExpr.Store(storage, Some(body)), stxEnv)
+                        stxEnv
 
-                boundDecls)
-        | Symbol "let*" :: body ->
-            bindLet
-                ctx
-                "let*"
-                body
-                (getNodeLocation ctx node)
-                (
-                // let* binds each spec sequentially
-                List.map (fun (id, body) ->
-                    let body = bindInContext ctx body
-                    let storage = BinderCtx.addBinding ctx id
-                    BoundExpr.Store(storage, Some(body))))
-        | Symbol id :: body when id = "letrec" || id = "letrec*" ->
-            let isLetrecStar = id = "letrec*"
+                boundDecls, stxEnv),
+            stxEnv
+        | SpecialFormKind.LetStar ->
+            bindLet ctx "let*" args loc (fun bindingSpecs ->
 
-            bindLet ctx "letrec" body (getNodeLocation ctx node) (fun bindingSpecs ->
+                // Bind each binding spec in sequence, updating the syntax
+                // environment as we go to allow later specs to refer to earlier
+                // ones.
+                let decls, stxEnv =
+                    bindingSpecs
+                    |> List.mapFold
+                        (fun stxEnv (id, init) ->
+                            let init, stxEnv = bindInContext ctx stxEnv init
+                            let _, storage, stxEnv = mintVar ctx stxEnv id
+                            BoundExpr.Store(storage, Some(init)), stxEnv)
+                        stxEnv
+
+                decls, stxEnv),
+            stxEnv
+        | SpecialFormKind.Letrec
+        | SpecialFormKind.LetrecStar ->
+
+            let isLetrecStar = kind = SpecialFormKind.LetrecStar
+
+            bindLet ctx "letrec" args loc (fun bindingSpecs ->
 
                 // Get storage for each of the idents first into scope.
-                let boundIdents =
+                let boundIdents, stxEnv =
                     bindingSpecs
-                    |> List.map (fun (id, body) -> ((BinderCtx.addBinding ctx id), body))
+                    |> List.mapFold
+                        (fun stxEnv (name, body) ->
+                            let _, storage, stxEnv = mintVar ctx stxEnv name
+                            (storage, body), stxEnv)
+                        stxEnv
 
                 //        Validate that bindings don't read from
                 //        un-initialised variables. The `letrec*` is allowed to
                 //        reference previous variables. Plain `letrec` Isn't allowed
                 //        to reference any.
-                let mutable uniitialisedStorage = boundIdents |> List.map (fun (id, _) -> id)
+                let mutable uniitialisedStorage = boundIdents |> List.map fst
 
+                // FIXME: There's two limitations to this check:
+                //  1. It bails as soon as it sees a `lambda`. Really we need
+                //     to be more conservative here. Lambdas _could_ be applied
+                //     immeidately in which case the inner references are
+                //     still live and need to trigger the diagnostic.
+                //  2. It doesn't handle nested `letrec` forms well. We need
+                //     to carry out this second pass each time we expand a
+                //     `letrec` like form.
+                //
+                //  The fix for both of these is to carry a set of uninit vars
+                //  and their application depth as we bind. Letrecs add bindings
+                //  at depth 0. Applications increase the depth on all uninit
+                //  vars. Lambdas decrement the depth rather than clearing it.
+                //  Any binding is uninit if it is non-negative depth in the
+                //  current set when referenced.
+                //
+                //  This doesn't allow all valid Scheme programs, but it should
+                //  deny all invalid ones and in practice should be sufficient.
                 let rec checkUses location =
                     function
                     | Application(app, args) ->
@@ -744,116 +809,281 @@ module private Impl =
 
                         name
                         |> sprintf "Reference to uninitialised variable '%s' in letrec binding"
-                        |> ctx.Diagnostics.Emit BinderDiagnostics.uninitialisedVariale location)
+                        |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.uninitialisedVariale location)
 
                 // Now all the IDs are in scope, bind the initialisers
-                let boundDecls =
+                let boundDecls, stxEnv =
                     boundIdents
-                    |> List.map (fun (storage, body) ->
-                        let bound = bindInContext ctx body
-                        checkUses (getNodeLocation ctx body) bound
+                    |> List.mapFold
+                        (fun stxEnv (storage, body) ->
+                            let bound, stxEnv = bindInContext ctx stxEnv body
+                            checkUses (getSyntaxLocation ctx.BinderCtx body) bound
 
-                        if isLetrecStar then
-                            uniitialisedStorage <- List.tail uniitialisedStorage
+                            if isLetrecStar then
+                                uniitialisedStorage <- List.tail uniitialisedStorage
 
-                        BoundExpr.Store(storage, Some(bound)))
+                            BoundExpr.Store(storage, Some(bound)), stxEnv)
+                        stxEnv
 
-                boundDecls)
-        | Symbol "let-syntax" :: body ->
-            bindLet ctx "let-syntax" body (getNodeLocation ctx node) (fun bindingSpecs ->
+                boundDecls, stxEnv),
+            stxEnv
 
-                Seq.iter
-                    (fun (id, syntaxRules) ->
-                        match Macros.parseSyntaxRules id syntaxRules with
-                        | Ok(macro) -> BinderCtx.addMacro ctx id macro
-                        | Result.Error e -> ctx.Diagnostics.Add e)
-                    bindingSpecs
+        | SpecialFormKind.DefineSyntax ->
+            match args with
+            | [ StxId(name, _, _); rulesStx ] ->
+                // Reserve the Ident first so self-referential macros can see their
+                // own name in scope during template transcription (e.g. `my-or`).
+                let id, scope' = reserveMacro stxEnv name
 
-                [])
-        | (Symbol "set!" as setNode) :: body ->
-            match body with
-            | [ Symbol id; value ] ->
-                let value = bindInContext ctx value
-
-                match BinderCtx.tryFindBinding ctx id with
-                | Some s -> BoundExpr.Store(s, Some(value))
-                | None ->
-                    sprintf "Attempt to set `%s` that was not yet defined" id
-                    |> ctx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol (getNodeLocation ctx setNode)
-
-                    BoundExpr.Error
-            | _ -> illFormed "set!"
-        | Symbol "quote" :: body ->
-            match body with
-            | [ item ] -> bindQuoted ctx item
-            | _ -> illFormed "quote"
-        | Symbol "define-syntax" :: body ->
-            match body with
-            | [ Symbol id; syntaxRules ] ->
-                match Macros.parseSyntaxRules id syntaxRules with
-                | Ok(macro) ->
-                    BinderCtx.addMacro ctx id macro
-                    BoundExpr.Quoted(BoundDatum.Ident id)
-                | Result.Error e ->
-                    ctx.Diagnostics.Add e
-                    BoundExpr.Error
+                match Macros.makeSyntaxTransformer name rulesStx scope' ctx.BinderCtx.Diagnostics with
+                | Some transformer ->
+                    registerMacro ctx id transformer
+                    BoundExpr.Nop, scope'
+                | None -> BoundExpr.Error, scope'
             | _ -> illFormed "define-syntax"
-        | Symbol "define-library" :: body ->
-            match body with
+
+        | SpecialFormKind.LetSyntax
+        | SpecialFormKind.LetrecSyntax as keyword ->
+            let isLetRec = keyword = SpecialFormKind.LetrecSyntax
+            let name = if isLetRec then "letrec-syntax" else "let-syntax"
+
+            bindLet ctx name args loc (fun bindingSpecs ->
+
+                // Pre-populate all the macro bindings into the syntax env so
+                // that they are available to each other when we parse them.
+                let ids, bodyEnv =
+                    bindingSpecs
+                    |> List.mapFold
+                        (fun stxEnv (name, body) ->
+                            let id, stxEnv = reserveMacro stxEnv name
+                            (id, name, body), stxEnv)
+                        stxEnv
+
+                // A let-syntax has its region as the body, a letrec has it as
+                // the whole set of transformer-specs as well as the body.
+                let bindingEnv = if isLetRec then bodyEnv else stxEnv
+
+                ids
+                |> List.iter (fun (id, name, body) ->
+                    Macros.makeSyntaxTransformer name body bindingEnv ctx.BinderCtx.Diagnostics
+                    |> Option.iter (registerMacro ctx id))
+
+                [], bodyEnv),
+            stxEnv
+
+        | SpecialFormKind.DefineLibrary ->
+            match args with
             | name :: body ->
-                match Libraries.parseLibraryDefinition ctx.CurrentDocument name body with
+                match Libraries.parseLibraryDefinition name body with
                 | Ok(library, diags) ->
-                    ctx.Diagnostics.Append diags
-                    bindLibrary ctx (getNodeLocation ctx node) library
+                    ctx.BinderCtx.Diagnostics.Append diags
+                    // FIXME: Location here is kinda rough. We basically emit
+                    // all dianostics with the location of the whole library form which isn't ideal.
+                    bindLibrary ctx stxEnv loc library
+
                 | Result.Error diags ->
-                    ctx.Diagnostics.Append diags
-                    BoundExpr.Error
+                    ctx.BinderCtx.Diagnostics.Append diags
+                    BoundExpr.Error, stxEnv
             | _ -> illFormed "define-library"
-        | Symbol "import" :: body ->
-            body
-            |> List.map (fun item ->
-                Libraries.parseImport ctx.Diagnostics ctx.CurrentDocument item
-                |> Libraries.resolveImport ctx.Libraries
-                |> Result.mapError (ctx.Diagnostics.Emit BinderDiagnostics.invalidImport (getNodeLocation ctx item))
-                |> Result.map (BinderCtx.importLibrary ctx >> (fun _ -> BoundExpr.Nop))
-                |> Result.okOr BoundExpr.Error)
-            |> BoundExpr.Seq
-        | Symbol "case" :: _ -> unimpl "Case expressions not yet implemented"
-        | head :: rest -> bindApplication ctx head rest node
-        | [] -> BoundExpr.Literal BoundLiteral.Null
 
-// ------------------------------ Public Binder API --------------------------
+        | SpecialFormKind.Import ->
+            // FIXME: technically we shouldn't allow free imports in the body
+            //        but we have specs which depend on it.
 
+            BoundExpr.Nop, args |> List.fold (fun stxEnv imp -> bindImportStatement ctx stxEnv imp) stxEnv
+
+    and bindLambdaBody (ctx: FrameCtx) (stxEnv: StxEnvironment) (formals: BoundFormals) (body: Stx list) : BoundExpr =
+        let lambdaCtx = FrameCtx.createLambda ctx
+
+        let addFormal stxEnv idx name =
+            let _, _, stxEnv = mintArg lambdaCtx stxEnv name idx
+            stxEnv, idx + 1
+
+        let stxEnv =
+            match formals with
+            | BoundFormals.Simple name -> addFormal stxEnv 0 name |> fst
+            | BoundFormals.List names ->
+                List.fold (fun (env, idx) (name: string) -> addFormal env idx name) (stxEnv, 0) names
+                |> fst
+            | BoundFormals.DottedList(names, tail) ->
+                let stxEnv, nextFormal =
+                    List.fold (fun (env, idx) (name: string) -> addFormal env idx name) (stxEnv, 0) names
+
+                addFormal stxEnv nextFormal tail |> fst
+
+        // Bind the body of the lambda in the new context.
+        let body, _ = bindSeq lambdaCtx stxEnv body
+
+        // Finish the lambda frame to get the capture information and produce
+        // a `BoundBody` for the lambda.
+        let boundBody = FrameCtx.finish lambdaCtx body
+
+        BoundExpr.Lambda(formals, boundBody)
+
+    and private bindLet
+        (ctx: FrameCtx)
+        (name: string)
+        (body: Stx list)
+        loc
+        (declBinder: (string * Stx) list -> BoundExpr list * StxEnvironment)
+        =
+        match body with
+        | bindings :: body ->
+            let bindingSpecs = parseBindingSpecs ctx.BinderCtx bindings
+            // Save the current scope so we can restore it later
+            ctx.Env <- ResolutionEnv.pushScope ctx.Env
+            // Bind the declarations
+            let decls, bodyEnv = declBinder bindingSpecs
+            // Bind the body of the lambda in the new scope
+            let boundBody, _ = List.mapFold (bindTopLevel ctx) bodyEnv body
+            // Decrement the scope depth
+            ctx.Env <- ResolutionEnv.popScope ctx.Env
+            BoundExpr.Seq(decls @ boundBody)
+        | _ -> illFormedInCtx ctx loc name |> fst
+
+    and bindApplication
+        (ctx: FrameCtx)
+        (stxEnv: StxEnvironment)
+        (boundOp: BoundExpr)
+        (args: Stx list)
+        (tail: Stx option)
+        =
+        tail
+        |> Option.iter (fun x ->
+            "Procedure calls may not use a dotted tail"
+            |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedCall (getSyntaxLocation ctx.BinderCtx x))
+
+        let args, stxEnv = args |> List.mapFold (bindInContext ctx) stxEnv
+        BoundExpr.Application(boundOp, args), stxEnv
+
+    /// Bind a Top Level Item
+    ///
+    /// Top level items can be commands or definitions
+    and bindTopLevel (ctx: FrameCtx) (stxEnv: StxEnvironment) (stx: Stx) : BoundExpr * StxEnvironment =
+        let inner, stxEnv = bindInContext ctx stxEnv stx
+
+        let WithSp =
+            match inner with
+            | BoundExpr.If _
+            | BoundExpr.Seq _ -> inner
+            | _ -> BoundExpr.SequencePoint(inner, getSyntaxLocation ctx.BinderCtx stx)
+
+        WithSp, stxEnv
+
+    /// Bind a Sequence of Expressions
+    ///
+    /// Returns the sequence as a `BoundExpr.Seq`, along with the updated syntax
+    /// environment.
+    and bindSeq (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : BoundExpr * StxEnvironment =
+        let exprs, env = stxs |> List.mapFold (bindTopLevel ctx) stxEnv
+
+        BoundExpr.Seq(exprs), env
+
+    /// Bind the Import Declarations in a Program
+    ///
+    /// Updates the `StxEnvironment` with the imported bindings and returns the
+    /// remaining body of the program to be bound.
+    let bindImports (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : Stx list * StxEnvironment =
+        let rec loop stxEnv remainingStx =
+            match remainingStx with
+            | StxList(StxId(id, _, envInner) :: args, None, _, envOuter) :: rest ->
+                let envOuter = Option.defaultValue stxEnv envOuter
+                let envInner = Option.defaultValue envOuter envInner
+                let resolved = Stx.resolve id envInner
+
+                match resolved with
+                | Some(StxBinding.Special SpecialFormKind.Import) ->
+                    let stxEnv = args |> List.fold (bindImportStatement ctx) stxEnv
+                    loop stxEnv rest
+                | _ ->
+                    // Not an import, stop processing and return the remaining stx
+                    remainingStx, stxEnv
+            | _ -> remainingStx, stxEnv
+
+        loop stxEnv stxs
+
+    /// Bind a Program Root
+    ///
+    /// Walks the list of items and binds each one as a top level item
+    let bindProgramRoot (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : BoundBody =
+        let stxs, stxEnv = bindImports ctx stxEnv stxs
+
+        let body = bindSeq ctx stxEnv stxs |> fst
+
+        { Body = body
+          Locals = ctx.LocalCount
+          Captures = []
+          EnvMappings = None }
+
+
+/// Public Binder API
+///
+/// This module contains the user-facing API for the Binder. Users call
+/// `Binder.bind` to convera a sequence of `Expression` representgin the files
+/// within a program or script into a `BoundExpr` which can then be passed to
+/// `Lower` and `Emit`.
 module Binder =
 
-    /// Create a New Root Scope
+    /// Bind a List of Syntax Nodes in a Given Scope
     ///
-    /// The root scope contains the global functions available to the program.
-    let scopeFromLibraries (libs: seq<LibrarySignature<StorageRef>>) =
-        libs |> Seq.collect (fun lib -> lib.Exports) |> Map.ofSeq
+    /// This is the main entry point for the binder. It takes a list of syntax
+    /// nodes representing the program to be bound, along with a source registry
+    /// and a scope for name resolution, and produces a `BoundSyntaxTree` which
+    /// contains the bound syntax tree along with diagnostics and a mangled name.
+    let private bindStx
+        (ctx: BinderCtx)
+        (stxEnv: StxEnvironment)
+        (scope: Map<Ident, StorageRef>)
+        (stx: Stx list)
+        : BoundSyntaxTree =
+        let name = "LispProgram"
+        let rootFrame = FrameCtx.createGlobal ctx name scope
 
-    /// The empty scope
-    let emptyScope = Map.empty
-
-    /// Bind a list of compilation units in a given scope
-    ///
-    /// Takes a list of (TextDocument * Expression list) pairs, one per
-    /// compilation unit, and binds them sequentially in a shared scope.
-    /// The result can be passed to the `Compile` or `Emit` API to be lowered to IL.
-    let bind scope libraries (units: (TextDocument * Expression list) list) : BoundSyntaxTree =
-        let ctx = BinderCtx.createForGlobalScope scope libraries [ "LispProgram" ]
-
-        let bound =
-            units
-            |> List.collect (fun (doc, exprs) ->
-                ctx.CurrentDocument <- Some doc
-
-                match bindSequence ctx exprs with
-                | BoundExpr.Seq stmts -> stmts
-                | x -> [ x ])
-            |> BoundExpr.Seq
-            |> BinderCtx.intoRoot ctx
+        let bound = bindProgramRoot rootFrame stxEnv stx
 
         { Root = bound
-          MangledName = ctx.MangledName
+          MangledName = name
           Diagnostics = ctx.Diagnostics.Take }
+
+
+    /// Bind a List of Compilation Units in a Given Scope
+    ///
+    /// Takes a list of dcocument and expression pairs and binds them in the
+    /// given scope.
+    let bindProgram
+        (sourceRegistry: SourceRegistry)
+        (stxEnv: StxEnvironment)
+        (scope: Map<Ident, StorageRef>)
+        (libs: seq<LibrarySignature<StorageRef>>)
+        (macros: Map<Ident, SyntaxTransformer>)
+        (units: Tree.Program list)
+        : BoundSyntaxTree =
+        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs) macros
+
+        let toBind =
+            units
+            |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry unit.DocId ctx.Diagnostics))
+
+        bindStx ctx stxEnv scope (List.ofSeq toBind)
+
+    /// Bind a Single Script in a Given Scope
+    ///
+    /// Takes a single script program and binds it in the given scope. This is
+    /// used for the REPL and for single-file scripts, where we don't have a
+    /// sequence of compilation units but just a single script body to bind.
+    let bindScript
+        (sourceRegistry: SourceRegistry)
+        (stxEnv: StxEnvironment)
+        (scope: Map<Ident, StorageRef>)
+        (libs: seq<LibrarySignature<StorageRef>>)
+        (macros: Map<Ident, SyntaxTransformer>)
+        (script: Tree.ScriptProgram)
+        : BoundSyntaxTree =
+        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs) macros
+
+        let toBind =
+            script.Body
+            |> Option.map (Stx.ofExpr sourceRegistry script.DocId ctx.Diagnostics)
+            |> Option.toList
+
+        bindStx ctx stxEnv scope toBind

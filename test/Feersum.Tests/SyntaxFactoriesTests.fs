@@ -1,15 +1,17 @@
 module SyntaxFactoriesTests
 
-open Feersum.CompilerServices.Syntax.Factories
+open Feersum.CompilerServices.Syntax.Factories.Convenience
 open Xunit
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Tree
 open Firethorn.Red
+open Feersum.CompilerServices.Text
 
 /// Validate that a node when re-parsed from the `.Text` will result in an
 /// identical expression tree.
 let private checkReparse (node: Expression) =
-    let reparsed = Parse.readExpr1 "testparse" node.Text
+    let registry = SourceRegistry.empty ()
+    let reparsed = Parse.readExpr1 registry "testparse" node.Text
     let node2 = reparsed.Root.Body.Value
     Assert.Empty(reparsed.Diagnostics)
     Assert.Equal(node2.RawNode.Kind, node.RawNode.Kind)

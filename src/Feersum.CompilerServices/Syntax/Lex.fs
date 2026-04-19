@@ -57,7 +57,7 @@ type private LexState =
     | Whitespace
     | Error
 
-// =============================== Utilities ==================================
+// -- Utilities ----------------------------------------------------------------
 
 /// Charcters, other than alphabetics, that can start an identifier.
 let private specialInitial =
@@ -98,7 +98,7 @@ let private hexDigits =
       'F' ]
     |> Set.ofList
 
-// =============================== Public API ==================================
+// -- Public API ---------------------------------------------------------------
 
 /// Tokenise the input text. Returns an enumerable sequence of the tokens within
 /// the text.

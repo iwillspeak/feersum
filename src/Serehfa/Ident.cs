@@ -13,7 +13,43 @@ public class Ident
         _id = string.Intern(id);
     }
 
-    public bool IsSimple => _id.All(c => char.IsLetterOrDigit(c)) && _id.Length > 0;
+    // R7RS 7.1.1 identifier grammar — a symbol can be printed without vertical-bar
+    // quoting when it is either a peculiar identifier (+, -, ...) or a regular
+    // identifier whose first character is an <initial> and all subsequent characters
+    // are <subsequent>.
+    //
+    //   <initial>    -> letter | ! $ % & * / : < = > ? ^ _ ~
+    //   <subsequent> -> <initial> | digit | + - . @
+    //
+    // Starting with a digit would make the printed form look like a number.
+    // Starting with # would look like a boolean / vector literal.
+    // The peculiar identifiers that start with +/- followed by sign-subsequent
+    // characters are intentionally excluded here; they are rare and the conservative
+    // fallback (vertical-bar quoting) is always safe.
+    public bool IsSimple
+    {
+        get
+        {
+            if (_id.Length == 0) return false;
+
+            // Peculiar identifiers
+            if (_id == "+" || _id == "-" || _id == "...") return true;
+
+            // Regular: <initial> <subsequent>*
+            if (!IsInitial(_id[0])) return false;
+            for (int i = 1; i < _id.Length; i++)
+                if (!IsSubsequent(_id[i])) return false;
+            return true;
+        }
+    }
+
+    // <initial> = letter | ! $ % & * / : < = > ? ^ _ ~
+    private static bool IsInitial(char c) =>
+        char.IsLetter(c) || "!$%&*/:<=>?^_~".IndexOf(c) >= 0;
+
+    // <subsequent> = <initial> | digit | + - . @
+    private static bool IsSubsequent(char c) =>
+        IsInitial(c) || char.IsDigit(c) || c == '+' || c == '-' || c == '.' || c == '@';
 
     public string Raw => _id;
 

@@ -83,7 +83,7 @@ public static class Write
         string s => EscapeString(s),
         char c => char.IsLetterOrDigit(c) || char.IsPunctuation(c) ?
             @"#\" + c : $@"#\x{Convert.ToUInt32(c):x4}",
-        null => "'()",
+        null => "()",
         Func<object[], object> f => $"#<compiledProcedure {f.Method}>",
         object[] v => Vectors.GetExternalRepresentation(v),
         byte[] v => ByteVectors.GetExternalRepresentation(v),

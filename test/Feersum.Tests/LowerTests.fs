@@ -4,27 +4,26 @@ open Xunit
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
-open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Text
 
-// ============================================================================
-// Helpers
-// ============================================================================
+// -- Helpers ------------------------------------------------------------------
 
-/// Parse a Scheme expression and return it
-let private parseScheme source =
-    let doc = TextDocument.fromParts "test" source
-    let result = Parse.readProgram doc.Path source
+/// Parse, bind, and lower a Scheme expression. Returns the lowered BoundBody.
+let private lowerScheme source =
+    let registry = SourceRegistry.empty ()
+    let result = Parse.readProgram registry "program" source
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" source result.Diagnostics
 
-    (doc, result.Root.Body |> List.ofSeq)
+    let env = Environments.empty
+    let initialScope, preloaded = Environments.intoParts env
 
-/// Parse, bind, and lower a Scheme expression. Returns the lowered BoundBody.
-let private lowerScheme source =
-    let (doc, exprs) = parseScheme source
-    let bound = Binder.bind Binder.emptyScope [] [ (doc, exprs) ]
+    let bound =
+        Binder.bindProgram registry initialScope preloaded [] Map.empty [ result.Root ]
+    // if hasErrors bound.Diagnostics then
+    //     failwithf "Bind error in '%s': %A" source bound.Diagnostics
+
     (Lower.lower bound).Root
 
 /// Strip SequencePoint wrappers to reach the underlying expression.
@@ -51,9 +50,7 @@ let private envSource =
     | StorageRef.Environment(_, s) -> s
     | s -> s
 
-// ============================================================================
-// Tests: captures and environment mappings
-// ============================================================================
+// -- Tests: captures and environment mappings ---------------------------------
 
 [<Fact>]
 let ``simple lambda without captures has no env mappings`` () =
@@ -78,7 +75,7 @@ let ``captured variable rewrites arg into environment slot`` () =
 
 [<Fact>]
 let ``two captures produce two environment slots`` () =
-    let lowered = lowerScheme "(lambda (a b) (lambda () (+ a b)))"
+    let lowered = lowerScheme "(lambda (a b) (lambda () (a b)))"
     let outerBody = lambdaBody "outer" lowered.Body
     // Both a (Arg 0) and b (Arg 1) must be hoisted
     assertEqualEnv
@@ -105,7 +102,7 @@ let ``lambda that captures only one of two args`` () =
 [<Fact>]
 let ``three levels of nesting chain captures through environment`` () =
     // a and b are captured all the way through to the innermost lambda
-    let lowered = lowerScheme "(lambda (a b) (lambda (c) (lambda () (+ a b c))))"
+    let lowered = lowerScheme "(lambda (a b) (lambda (c) (lambda () (a b c))))"
     let outerBody = lambdaBody "outer" lowered.Body
     // a and b hoisted by outer lambda — into some pair of env slots
     assertEqualEnv
@@ -142,9 +139,7 @@ let ``uncaptured lambda has no environment entries`` () =
             | s -> s)
     )
 
-// ============================================================================
-// Tests: sequence flattening
-// ============================================================================
+// -- Tests: sequence flattening -----------------------------------------------
 
 [<Fact>]
 let ``empty begin flattens to Nop`` () =
@@ -165,9 +160,7 @@ let ``nested begin flattens to a single sequence`` () =
     | BoundExpr.Nop -> Assert.True(false, "Expected non-empty sequence")
     | _ -> Assert.True(false, "Expected Seq from nested begin")
 
-// ============================================================================
-// Tests: local variable counts
-// ============================================================================
+// -- Tests: local variable counts ---------------------------------------------
 
 [<Fact>]
 let ``let binding produces one local per binding`` () =

@@ -1,0 +1,384 @@
+PROGRAM: (0..1629)
+  ATMOSPHERE: (0..40) "; Hygiene tests for user-defined macros."
+  ATMOSPHERE: (40..41) "\n"
+  ATMOSPHERE: (41..42) ";"
+  ATMOSPHERE: (42..43) "\n"
+  ATMOSPHERE: (43..113) "; The classic `my-or` uses a `temp` binding in its expansion template."
+  ATMOSPHERE: (113..114) "\n"
+  ATMOSPHERE: (114..188) "; Hygienic expansion must ensure that `temp` introduced by the macro never"
+  ATMOSPHERE: (188..189) "\n"
+  ATMOSPHERE: (189..234) "; captures a `temp` visible at the call site."
+  ATMOSPHERE: (234..235) "\n"
+  FORM: (235..272)
+    OPEN_PAREN: (235..236) "("
+    SYMBOL: (236..242)
+      IDENTIFIER: (236..242) "import"
+    ATMOSPHERE: (242..243) " "
+    FORM: (243..256)
+      OPEN_PAREN: (243..244) "("
+      SYMBOL: (244..250)
+        IDENTIFIER: (244..250) "scheme"
+      ATMOSPHERE: (250..251) " "
+      SYMBOL: (251..255)
+        IDENTIFIER: (251..255) "base"
+      CLOSE_PAREN: (255..256) ")"
+    ATMOSPHERE: (256..257) " "
+    FORM: (257..271)
+      OPEN_PAREN: (257..258) "("
+      SYMBOL: (258..264)
+        IDENTIFIER: (258..264) "scheme"
+      ATMOSPHERE: (264..265) " "
+      SYMBOL: (265..270)
+        IDENTIFIER: (265..270) "write"
+      CLOSE_PAREN: (270..271) ")"
+    CLOSE_PAREN: (271..272) ")"
+  ATMOSPHERE: (272..274) "\n\n"
+  FORM: (274..452)
+    OPEN_PAREN: (274..275) "("
+    SYMBOL: (275..288)
+      IDENTIFIER: (275..288) "define-syntax"
+    ATMOSPHERE: (288..289) " "
+    SYMBOL: (289..294)
+      IDENTIFIER: (289..294) "my-or"
+    ATMOSPHERE: (294..299) "\n    "
+    FORM: (299..451)
+      OPEN_PAREN: (299..300) "("
+      SYMBOL: (300..312)
+        IDENTIFIER: (300..312) "syntax-rules"
+      ATMOSPHERE: (312..313) " "
+      FORM: (313..315)
+        OPEN_PAREN: (313..314) "("
+        CLOSE_PAREN: (314..315) ")"
+      ATMOSPHERE: (315..324) "\n        "
+      FORM: (324..332)
+        OPEN_PAREN: (324..325) "("
+        FORM: (325..328)
+          OPEN_PAREN: (325..326) "("
+          SYMBOL: (326..327)
+            IDENTIFIER: (326..327) "_"
+          CLOSE_PAREN: (327..328) ")"
+        ATMOSPHERE: (328..329) " "
+        CONSTANT: (329..331)
+          BOOLEAN: (329..331) "#f"
+        CLOSE_PAREN: (331..332) ")"
+      ATMOSPHERE: (332..341) "\n        "
+      FORM: (341..350)
+        OPEN_PAREN: (341..342) "("
+        FORM: (342..347)
+          OPEN_PAREN: (342..343) "("
+          SYMBOL: (343..344)
+            IDENTIFIER: (343..344) "_"
+          ATMOSPHERE: (344..345) " "
+          SYMBOL: (345..346)
+            IDENTIFIER: (345..346) "e"
+          CLOSE_PAREN: (346..347) ")"
+        ATMOSPHERE: (347..348) " "
+        SYMBOL: (348..349)
+          IDENTIFIER: (348..349) "e"
+        CLOSE_PAREN: (349..350) ")"
+      ATMOSPHERE: (350..359) "\n        "
+      FORM: (359..450)
+        OPEN_PAREN: (359..360) "("
+        FORM: (360..373)
+          OPEN_PAREN: (360..361) "("
+          SYMBOL: (361..362)
+            IDENTIFIER: (361..362) "_"
+          ATMOSPHERE: (362..363) " "
+          SYMBOL: (363..365)
+            IDENTIFIER: (363..365) "e1"
+          ATMOSPHERE: (365..366) " "
+          SYMBOL: (366..368)
+            IDENTIFIER: (366..368) "e2"
+          ATMOSPHERE: (368..369) " "
+          SYMBOL: (369..372)
+            IDENTIFIER: (369..372) "..."
+          CLOSE_PAREN: (372..373) ")"
+        ATMOSPHERE: (373..386) "\n            "
+        FORM: (386..449)
+          OPEN_PAREN: (386..387) "("
+          SYMBOL: (387..390)
+            IDENTIFIER: (387..390) "let"
+          ATMOSPHERE: (390..391) " "
+          FORM: (391..402)
+            OPEN_PAREN: (391..392) "("
+            FORM: (392..401)
+              OPEN_PAREN: (392..393) "("
+              SYMBOL: (393..397)
+                IDENTIFIER: (393..397) "temp"
+              ATMOSPHERE: (397..398) " "
+              SYMBOL: (398..400)
+                IDENTIFIER: (398..400) "e1"
+              CLOSE_PAREN: (400..401) ")"
+            CLOSE_PAREN: (401..402) ")"
+          ATMOSPHERE: (402..419) "\n                "
+          FORM: (419..448)
+            OPEN_PAREN: (419..420) "("
+            SYMBOL: (420..422)
+              IDENTIFIER: (420..422) "if"
+            ATMOSPHERE: (422..423) " "
+            SYMBOL: (423..427)
+              IDENTIFIER: (423..427) "temp"
+            ATMOSPHERE: (427..428) " "
+            SYMBOL: (428..432)
+              IDENTIFIER: (428..432) "temp"
+            ATMOSPHERE: (432..433) " "
+            FORM: (433..447)
+              OPEN_PAREN: (433..434) "("
+              SYMBOL: (434..439)
+                IDENTIFIER: (434..439) "my-or"
+              ATMOSPHERE: (439..440) " "
+              SYMBOL: (440..442)
+                IDENTIFIER: (440..442) "e2"
+              ATMOSPHERE: (442..443) " "
+              SYMBOL: (443..446)
+                IDENTIFIER: (443..446) "..."
+              CLOSE_PAREN: (446..447) ")"
+            CLOSE_PAREN: (447..448) ")"
+          CLOSE_PAREN: (448..449) ")"
+        CLOSE_PAREN: (449..450) ")"
+      CLOSE_PAREN: (450..451) ")"
+    CLOSE_PAREN: (451..452) ")"
+  ATMOSPHERE: (452..454) "\n\n"
+  ATMOSPHERE: (454..535) "; ── Basic functionality ────────────────────────────────────────────────────────"
+  ATMOSPHERE: (535..537) "\n\n"
+  FORM: (537..554)
+    OPEN_PAREN: (537..538) "("
+    SYMBOL: (538..545)
+      IDENTIFIER: (538..545) "display"
+    ATMOSPHERE: (545..546) " "
+    FORM: (546..553)
+      OPEN_PAREN: (546..547) "("
+      SYMBOL: (547..552)
+        IDENTIFIER: (547..552) "my-or"
+      CLOSE_PAREN: (552..553) ")"
+    CLOSE_PAREN: (553..554) ")"
+  ATMOSPHERE: (554..567) "             "
+  FORM: (567..576)
+    OPEN_PAREN: (567..568) "("
+    SYMBOL: (568..575)
+      IDENTIFIER: (568..575) "newline"
+    CLOSE_PAREN: (575..576) ")"
+  ATMOSPHERE: (576..577) " "
+  ATMOSPHERE: (577..607) "; => #f            (zero args)"
+  ATMOSPHERE: (607..608) "\n"
+  FORM: (608..628)
+    OPEN_PAREN: (608..609) "("
+    SYMBOL: (609..616)
+      IDENTIFIER: (609..616) "display"
+    ATMOSPHERE: (616..617) " "
+    FORM: (617..627)
+      OPEN_PAREN: (617..618) "("
+      SYMBOL: (618..623)
+        IDENTIFIER: (618..623) "my-or"
+      ATMOSPHERE: (623..624) " "
+      CONSTANT: (624..626)
+        BOOLEAN: (624..626) "#f"
+      CLOSE_PAREN: (626..627) ")"
+    CLOSE_PAREN: (627..628) ")"
+  ATMOSPHERE: (628..638) "          "
+  FORM: (638..647)
+    OPEN_PAREN: (638..639) "("
+    SYMBOL: (639..646)
+      IDENTIFIER: (639..646) "newline"
+    CLOSE_PAREN: (646..647) ")"
+  ATMOSPHERE: (647..648) " "
+  ATMOSPHERE: (648..681) "; => #f            (single false)"
+  ATMOSPHERE: (681..682) "\n"
+  FORM: (682..702)
+    OPEN_PAREN: (682..683) "("
+    SYMBOL: (683..690)
+      IDENTIFIER: (683..690) "display"
+    ATMOSPHERE: (690..691) " "
+    FORM: (691..701)
+      OPEN_PAREN: (691..692) "("
+      SYMBOL: (692..697)
+        IDENTIFIER: (692..697) "my-or"
+      ATMOSPHERE: (697..698) " "
+      CONSTANT: (698..700)
+        NUMBER: (698..700) "42"
+      CLOSE_PAREN: (700..701) ")"
+    CLOSE_PAREN: (701..702) ")"
+  ATMOSPHERE: (702..712) "          "
+  FORM: (712..721)
+    OPEN_PAREN: (712..713) "("
+    SYMBOL: (713..720)
+      IDENTIFIER: (713..720) "newline"
+    CLOSE_PAREN: (720..721) ")"
+  ATMOSPHERE: (721..722) " "
+  ATMOSPHERE: (722..756) "; => 42            (single truthy)"
+  ATMOSPHERE: (756..757) "\n"
+  FORM: (757..780)
+    OPEN_PAREN: (757..758) "("
+    SYMBOL: (758..765)
+      IDENTIFIER: (758..765) "display"
+    ATMOSPHERE: (765..766) " "
+    FORM: (766..779)
+      OPEN_PAREN: (766..767) "("
+      SYMBOL: (767..772)
+        IDENTIFIER: (767..772) "my-or"
+      ATMOSPHERE: (772..773) " "
+      CONSTANT: (773..775)
+        BOOLEAN: (773..775) "#f"
+      ATMOSPHERE: (775..776) " "
+      CONSTANT: (776..778)
+        NUMBER: (776..778) "42"
+      CLOSE_PAREN: (778..779) ")"
+    CLOSE_PAREN: (779..780) ")"
+  ATMOSPHERE: (780..787) "       "
+  FORM: (787..796)
+    OPEN_PAREN: (787..788) "("
+    SYMBOL: (788..795)
+      IDENTIFIER: (788..795) "newline"
+    CLOSE_PAREN: (795..796) ")"
+  ATMOSPHERE: (796..797) " "
+  ATMOSPHERE: (797..844) "; => 42            (first false, second truthy)"
+  ATMOSPHERE: (844..845) "\n"
+  FORM: (845..868)
+    OPEN_PAREN: (845..846) "("
+    SYMBOL: (846..853)
+      IDENTIFIER: (846..853) "display"
+    ATMOSPHERE: (853..854) " "
+    FORM: (854..867)
+      OPEN_PAREN: (854..855) "("
+      SYMBOL: (855..860)
+        IDENTIFIER: (855..860) "my-or"
+      ATMOSPHERE: (860..861) " "
+      CONSTANT: (861..862)
+        NUMBER: (861..862) "1"
+      ATMOSPHERE: (862..863) " "
+      CONSTANT: (863..864)
+        NUMBER: (863..864) "2"
+      ATMOSPHERE: (864..865) " "
+      CONSTANT: (865..866)
+        NUMBER: (865..866) "3"
+      CLOSE_PAREN: (866..867) ")"
+    CLOSE_PAREN: (867..868) ")"
+  ATMOSPHERE: (868..875) "       "
+  FORM: (875..884)
+    OPEN_PAREN: (875..876) "("
+    SYMBOL: (876..883)
+      IDENTIFIER: (876..883) "newline"
+    CLOSE_PAREN: (883..884) ")"
+  ATMOSPHERE: (884..885) " "
+  ATMOSPHERE: (885..936) "; => 1             (short-circuits on first truthy)"
+  ATMOSPHERE: (936..937) "\n"
+  FORM: (937..963)
+    OPEN_PAREN: (937..938) "("
+    SYMBOL: (938..945)
+      IDENTIFIER: (938..945) "display"
+    ATMOSPHERE: (945..946) " "
+    FORM: (946..962)
+      OPEN_PAREN: (946..947) "("
+      SYMBOL: (947..952)
+        IDENTIFIER: (947..952) "my-or"
+      ATMOSPHERE: (952..953) " "
+      CONSTANT: (953..955)
+        BOOLEAN: (953..955) "#f"
+      ATMOSPHERE: (955..956) " "
+      CONSTANT: (956..958)
+        BOOLEAN: (956..958) "#f"
+      ATMOSPHERE: (958..959) " "
+      CONSTANT: (959..961)
+        NUMBER: (959..961) "99"
+      CLOSE_PAREN: (961..962) ")"
+    CLOSE_PAREN: (962..963) ")"
+  ATMOSPHERE: (963..967) "    "
+  FORM: (967..976)
+    OPEN_PAREN: (967..968) "("
+    SYMBOL: (968..975)
+      IDENTIFIER: (968..975) "newline"
+    CLOSE_PAREN: (975..976) ")"
+  ATMOSPHERE: (976..977) " "
+  ATMOSPHERE: (977..1018) "; => 99            (all false until last)"
+  ATMOSPHERE: (1018..1019) "\n"
+  FORM: (1019..1048)
+    OPEN_PAREN: (1019..1020) "("
+    SYMBOL: (1020..1027)
+      IDENTIFIER: (1020..1027) "display"
+    ATMOSPHERE: (1027..1028) " "
+    FORM: (1028..1047)
+      OPEN_PAREN: (1028..1029) "("
+      SYMBOL: (1029..1034)
+        IDENTIFIER: (1029..1034) "my-or"
+      ATMOSPHERE: (1034..1035) " "
+      CONSTANT: (1035..1037)
+        BOOLEAN: (1035..1037) "#f"
+      ATMOSPHERE: (1037..1038) " "
+      CONSTANT: (1038..1040)
+        BOOLEAN: (1038..1040) "#f"
+      ATMOSPHERE: (1040..1041) " "
+      CONSTANT: (1041..1043)
+        BOOLEAN: (1041..1043) "#f"
+      ATMOSPHERE: (1043..1044) " "
+      CONSTANT: (1044..1046)
+        BOOLEAN: (1044..1046) "#f"
+      CLOSE_PAREN: (1046..1047) ")"
+    CLOSE_PAREN: (1047..1048) ")"
+  ATMOSPHERE: (1048..1049) " "
+  FORM: (1049..1058)
+    OPEN_PAREN: (1049..1050) "("
+    SYMBOL: (1050..1057)
+      IDENTIFIER: (1050..1057) "newline"
+    CLOSE_PAREN: (1057..1058) ")"
+  ATMOSPHERE: (1058..1059) " "
+  ATMOSPHERE: (1059..1089) "; => #f            (all false)"
+  ATMOSPHERE: (1089..1091) "\n\n"
+  ATMOSPHERE: (1091..1171) "; ── Hygiene proof ─────────────────────────────────────────────────────────────"
+  ATMOSPHERE: (1171..1172) "\n"
+  ATMOSPHERE: (1172..1173) ";"
+  ATMOSPHERE: (1173..1174) "\n"
+  ATMOSPHERE: (1174..1250) "; If expansion were naive (non-hygienic), `(my-or #f temp)` would expand to:"
+  ATMOSPHERE: (1250..1251) "\n"
+  ATMOSPHERE: (1251..1252) ";"
+  ATMOSPHERE: (1252..1253) "\n"
+  ATMOSPHERE: (1253..1273) ";   (let ((temp #f))"
+  ATMOSPHERE: (1273..1274) "\n"
+  ATMOSPHERE: (1274..1308) ";     (if temp temp (my-or temp)))"
+  ATMOSPHERE: (1308..1309) "\n"
+  ATMOSPHERE: (1309..1310) ";"
+  ATMOSPHERE: (1310..1311) "\n"
+  ATMOSPHERE: (1311..1393) "; ...where the final `temp` would refer to the let-bound #f rather than the user's"
+  ATMOSPHERE: (1393..1394) "\n"
+  ATMOSPHERE: (1394..1474) "; `temp`, yielding #f.  A hygienic system renames the macro-introduced `temp` so"
+  ATMOSPHERE: (1474..1475) "\n"
+  ATMOSPHERE: (1475..1522) "; the user's `temp` is unaffected, yielding #t."
+  ATMOSPHERE: (1522..1524) "\n\n"
+  FORM: (1524..1540)
+    OPEN_PAREN: (1524..1525) "("
+    SYMBOL: (1525..1531)
+      IDENTIFIER: (1525..1531) "define"
+    ATMOSPHERE: (1531..1532) " "
+    SYMBOL: (1532..1536)
+      IDENTIFIER: (1532..1536) "temp"
+    ATMOSPHERE: (1536..1537) " "
+    CONSTANT: (1537..1539)
+      BOOLEAN: (1537..1539) "#t"
+    CLOSE_PAREN: (1539..1540) ")"
+  ATMOSPHERE: (1540..1541) "\n"
+  FORM: (1541..1566)
+    OPEN_PAREN: (1541..1542) "("
+    SYMBOL: (1542..1549)
+      IDENTIFIER: (1542..1549) "display"
+    ATMOSPHERE: (1549..1550) " "
+    FORM: (1550..1565)
+      OPEN_PAREN: (1550..1551) "("
+      SYMBOL: (1551..1556)
+        IDENTIFIER: (1551..1556) "my-or"
+      ATMOSPHERE: (1556..1557) " "
+      CONSTANT: (1557..1559)
+        BOOLEAN: (1557..1559) "#f"
+      ATMOSPHERE: (1559..1560) " "
+      SYMBOL: (1560..1564)
+        IDENTIFIER: (1560..1564) "temp"
+      CLOSE_PAREN: (1564..1565) ")"
+    CLOSE_PAREN: (1565..1566) ")"
+  ATMOSPHERE: (1566..1571) "     "
+  FORM: (1571..1580)
+    OPEN_PAREN: (1571..1572) "("
+    SYMBOL: (1572..1579)
+      IDENTIFIER: (1572..1579) "newline"
+    CLOSE_PAREN: (1579..1580) ")"
+  ATMOSPHERE: (1580..1581) " "
+  ATMOSPHERE: (1581..1628) "; => #t  (HYGIENE: user's temp is not captured)"
+  ATMOSPHERE: (1628..1629) "\n"
+  EOF: (1629..1629) ""

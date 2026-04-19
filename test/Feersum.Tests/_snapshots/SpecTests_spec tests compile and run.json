@@ -65,7 +65,7 @@
     "Exit": 0
   },
   "display.scm": {
-    "Output": "\n'()\n123\nHello World!\n(\"I \\\" need \\x000b; some \\x0000; escaping\")\n",
+    "Output": "\n()\n123\nHello World!\n(\"I \\\" need \\x000b; some \\x0000; escaping\")\n",
     "Error": "",
     "Exit": 0
   },
@@ -154,7 +154,7 @@
     "Exit": 0
   },
   "quotes.scm": {
-    "Output": "1\nhello world\n'()\n(1 2 3)\n1\nhello world\n'()\n(1 2 3)\n(quote (quote 123))\nd\n| |\n|test\\x9;ident|\n|hello world|\n#t\nfunky-quote-char\n",
+    "Output": "1\nhello world\n()\n(1 2 3)\n1\nhello world\n()\n(1 2 3)\n(quote (quote 123))\nd\n| |\n|test\\x9;ident|\n|hello world|\n#t\nfunky-quote-char\n",
     "Error": "",
     "Exit": 0
   },
@@ -223,41 +223,66 @@
             {
               "Source": "fail/macrofails.scm",
               "Line": 17,
-              "Col": 2
+              "Col": 1
             },
             {
               "Source": "fail/macrofails.scm",
               "Line": 17,
-              "Col": 9
+              "Col": 16
             }
           ]
         },
-        "Message": "The symbol another is not defined in the current context"
+        "Message": "Macro or procedure 'another' is not bound in the current context"
       },
       {
         "Kind": {
           "Level": {
             "Case": "Error"
           },
-          "Code": 40,
-          "Title": "Macro expansion error"
+          "Code": 35,
+          "Title": "Reference to undefined symbol"
         },
         "Location": {
           "Case": "Span",
           "Fields": [
             {
               "Source": "fail/macrofails.scm",
-              "Line": 14,
-              "Col": 5
+              "Line": 13,
+              "Col": 20
             },
             {
               "Source": "fail/macrofails.scm",
-              "Line": 14,
-              "Col": 20
+              "Line": 13,
+              "Col": 21
             }
           ]
         },
-        "Message": "Reference to unbound substitution a"
+        "Message": "The symbol 'a' is not defined in the current context"
+      },
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
+          "Code": 41,
+          "Title": "Invalid macro definition"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/macrofails.scm",
+              "Line": 13,
+              "Col": 20
+            },
+            {
+              "Source": "fail/macrofails.scm",
+              "Line": 13,
+              "Col": 21
+            }
+          ]
+        },
+        "Message": "template variable 'a' is not in scope at this ellipsis level"
       },
       {
         "Kind": {
@@ -282,7 +307,7 @@
             }
           ]
         },
-        "Message": "No pattern matched the syntax"
+        "Message": "no macro rule matched the form"
       }
     ]
   },
@@ -297,9 +322,9 @@
     "Exit": 0
   },
   "chibi-r7rs-tests.scm": {
-    "Output": "### (\"R7RS\")\n\t### (\"4.1 Primitive expression types\")\n\t\t...........................\n\t### (\"4.2 Derived expression types\")\n\t\t................\n\t### (\"4.3 Macros\")\n\t\t.\nFAIL: expr: expected outer but got inner\n.\nFAIL: expr: expected |...| but got (|...| |...|)\n\nFAIL: expr: expected (100 |...|) but got (|...| (x |...|))\n\nFAIL: expr: expected (|...| 100 200) but got (|...| (|...| x y))\n....\nFAIL: expr: expected (2 0 fail fail) but got (2 0 2 fail)\n..\nFAIL: expr: expected x but got y\n.\nFAIL: expr: expected |bound-identifier=?| but got |free-identifier=?|\n\nFAIL: expr: expected (100 |...|) but got (x |...|)\n\n\t### (\"5 Program structure\")\n\t\t..\n\t### (\"6.1 Equivalence Predicates\")\n\t\t.........................\n\t### (\"6.2 Numbers\")\n\t\t...\n\t### (\"6.3 Booleans\")\n\t\t..................\n\t### (\"6.4 Lists\")\n\t\t.........................................................\n\t### (\"6.5 Symbols\")\n\t\t.................\n\t### (\"6.6 Characters\")\n\t\t...............................................................................\n\t### (\"6.7 Strings\")\n\t\t......\n\t### (\"6.8 Vectors\")\n\t\t........\n\t### (\"6.9 Bytevectors\")\n\t\t..........\n\t### (\"6.10 Control Features\")\n\t\t......\n\t### (\"6.11 Exceptions\")\n\t\t\n\t### (\"6.12 Environments and evaluation\")\n\t\t\n\t### (\"6.13 Input and output\")\n\t\t### (\"Read syntax\")\n\t\t\t\n\t\t### (\"Numeric syntax\")\n\t\t\t\n\t\t\n\t### (\"6.14 System interface\")\n\t\t\n\t\n----------------------\nTotal: 291\nFails: 8\n",
+    "Output": "### (\"R7RS\")\n\t### (\"4.1 Primitive expression types\")\n\t\t...........................\n\t### (\"4.2 Derived expression types\")\n\t\t.................\n\t### (\"4.3 Macros\")\n\t\t..............\nFAIL: (m k): expected bound-identifier=? but got free-identifier=?\n.\n\t### (\"5 Program structure\")\n\t\t..\n\t### (\"6.1 Equivalence Predicates\")\n\t\t.........................\n\t### (\"6.2 Numbers\")\n\t\t...\n\t### (\"6.3 Booleans\")\n\t\t..................\n\t### (\"6.4 Lists\")\n\t\t.........................................................\n\t### (\"6.5 Symbols\")\n\t\t.................\n\t### (\"6.6 Characters\")\n\t\t...............................................................................\n\t### (\"6.7 Strings\")\n\t\t......\n\t### (\"6.8 Vectors\")\n\t\t........\n\t### (\"6.9 Bytevectors\")\n\t\t..........\n\t### (\"6.10 Control Features\")\n\t\t......\n\t### (\"6.11 Exceptions\")\n\t\t\n\t### (\"6.12 Environments and evaluation\")\n\t\t\n\t### (\"6.13 Input and output\")\n\t\t### (\"Read syntax\")\n\t\t\t\n\t\t### (\"Numeric syntax\")\n\t\t\t\n\t\t\n\t### (\"6.14 System interface\")\n\t\t\n\t\n----------------------\nTotal: 291\nFails: 1\n",
     "Error": "",
-    "Exit": 8
+    "Exit": 1
   },
   "conditions.scm": {
     "Output": "(3 ; Unspecified value yarp ; Unspecified value)255worldtruetrueok; Unspecified value",
@@ -346,7 +371,7 @@
             }
           ]
         },
-        "Message": "Could not find exported item we"
+        "Message": "Could not find exported item 'exist'"
       },
       {
         "Kind": {
@@ -371,7 +396,7 @@
             }
           ]
         },
-        "Message": "Could not find exported item don't"
+        "Message": "Could not find exported item 'don't'"
       },
       {
         "Kind": {
@@ -396,7 +421,7 @@
             }
           ]
         },
-        "Message": "Could not find exported item exist"
+        "Message": "Could not find exported item 'we'"
       },
       {
         "Kind": {
@@ -1095,5 +1120,59 @@
     "Output": "",
     "Error": "",
     "Exit": 21
+  },
+  "hygiene.scm": {
+    "Output": "#f\n#f\n42\n42\n1\n99\n#f\n#t\n",
+    "Error": "",
+    "Exit": 0
+  },
+  "custom-ellipsis.scm": {
+    "Output": "3\n99\n",
+    "Error": "",
+    "Exit": 0
+  },
+  "macro-generated-syntax.scm": {
+    "Output": "42\n",
+    "Error": "",
+    "Exit": 0
+  },
+  "my-macros.scm": {
+    "Output": "(my-macro 1 2 3 4) -> (a-was: 1 b-was: 2 c-was: (3 4))\n(my-macro 1 2 3) -> (a-was: 1 b-was: 2 c-was: (3))\n(my-macro 1 2) -> (a-was: 1 b-was: 2 c-was: ())\n(my-macro 1 2 . 3) -> (a-was: 1 b-was: 2 c-was: 3)\n(my-vec-macro #(1 2 3)) -> ((1 2) 3)\n(my-vec-macro #(1 2 3 4 5)) -> (1 2 3 4 5)\n(my-vec-macro #(1 2)) -> (1 2)\n(my-greedy-macro 1 2 3) -> (a-got: 1 b-got: (2) c-got: 3)\n(my-greedy-macro 1 2 3 4 5) -> (a-got: 1 b-got: (2 3 4) c-got: 5)\n(my-greedy-macro 1 (2 3) (4 5)) -> (a-got: 1 b-got: ((2 3)) c-got: (4 5))\n(my-greedy-macro 1 2) -> (a-got: 1 b-got: () c-got: 2)\n(my-repeating-macro #(1 2 3) #(4 5 6)) -> ((1 . 4) (2 . 5) (3 . 6))\n",
+    "Error": "",
+    "Exit": 0
+  },
+  "condcase.scm": {
+    "Output": "",
+    "Error": "",
+    "Exit": 0
+  },
+  "fail/macro-generated-syntax.scm": {
+    "AutoGenerated": [
+      {
+        "Kind": {
+          "Level": {
+            "Case": "Error"
+          },
+          "Code": 35,
+          "Title": "Reference to undefined symbol"
+        },
+        "Location": {
+          "Case": "Span",
+          "Fields": [
+            {
+              "Source": "fail/macro-generated-syntax.scm",
+              "Line": 15,
+              "Col": 10
+            },
+            {
+              "Source": "fail/macro-generated-syntax.scm",
+              "Line": 15,
+              "Col": 22
+            }
+          ]
+        },
+        "Message": "Macro or procedure 'mad-hatter' is not bound in the current context"
+      }
+    ]
   }
 }

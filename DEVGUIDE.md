@@ -63,6 +63,13 @@ The compiler itself is split into 4 main passes: parse, bind, lower, and emit.
    Scheme function is emitted a companion *thunk* is also generated that unpacks
    the arguments array from the `object[]` and calls the real implementation.
 
+## Code Style and Conventions
+
+F# code in Feersum should follow the [F# Style Guide][]. Ensure your code adheres
+to the conventions outlined there for naming, formatting, and general code organization.
+
+General linting is performed in CI using Fantomas.
+
  [F#]: https://docs.microsoft.com/en-gb/dotnet/fsharp/
  [C#]: https://docs.microsoft.com/en-gb/dotnet/csharp/
  [Scheme]: https://schemers.org/
@@ -72,3 +79,4 @@ The compiler itself is split into 4 main passes: parse, bind, lower, and emit.
  [**Lower**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Binding/Lower.fs
  [**Emit**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Compile/Compiler.fs
  [captivating]: https://willspeak.me/2020/09/06/a-captivating-resolution.html
+ [F# Style Guide]: https://learn.microsoft.com/en-gb/dotnet/fsharp/style-guide/

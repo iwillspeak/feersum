@@ -5,3 +5,4 @@ development of Feersum. The documents aren't guaranteed to be up to date,
 accurate, or even useful.
 
  * [Syntax Trees](./syntax-trees/)
+ * [Syntactic Closures Expansion and Binding](./syntactic-closures-expander/)
