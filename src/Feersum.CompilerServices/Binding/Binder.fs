@@ -1,4 +1,4 @@
-namespace Feersum.CompilerServices.Binding.New
+namespace Feersum.CompilerServices.Binding
 
 open Feersum.CompilerServices.Binding.Stx
 open Feersum.CompilerServices.Binding

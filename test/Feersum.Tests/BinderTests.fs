@@ -1,7 +1,7 @@
 module BinderTests
 
 open Xunit
-open Feersum.CompilerServices.Binding.New
+open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse

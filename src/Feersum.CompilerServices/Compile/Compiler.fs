@@ -23,8 +23,6 @@ type CompileInput =
 
 module Compilation =
     open Feersum.CompilerServices.Syntax.Parse
-    open Feersum.CompilerServices.Binding.New
-    open Feersum.CompilerServices.Ice
 
     /// Compile a single AST node into an assembly
     ///

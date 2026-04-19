@@ -5,8 +5,6 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Text
-open Feersum.CompilerServices.Binding.New
-open Feersum.CompilerServices.Diagnostics
 
 // -- Helpers ------------------------------------------------------------------
 
