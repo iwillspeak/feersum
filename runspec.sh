@@ -88,6 +88,6 @@ if [[ "$no_build" == false ]]; then
 fi
 
 # Compile and run
-dotnet src/Feersum/bin/"$config"/net8.0/Feersum.dll "$specfile" \
+dotnet src/Feersum/bin/"$config"/net10.0/Feersum.dll "$specfile" \
     --outputtype exe -o "$specbin" && \
     dotnet "$specbin"

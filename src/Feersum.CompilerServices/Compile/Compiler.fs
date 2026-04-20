@@ -138,21 +138,21 @@ module Compilation =
 
             use symbols =
                 match options.Configuration with
-                | BuildConfiguration.Debug -> File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream
                 // make a symbol file
+                | BuildConfiguration.Debug -> File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream
                 | BuildConfiguration.Release -> null
 
             let result =
                 compile
                     options
                     outputStream
-                    (Path.GetFileName(output))
+                    (Path.GetFileName output)
                     (symbols |> Option.ofObj)
                     (CompileInput.Program(registry, result.Root))
 
             if (hasErrors result.Diagnostics |> not) && options.OutputType = OutputType.Exe then
                 match result.EmittedAssemblyName with
-                | Some(assemblyName) -> Runtime.writeRuntimeConfig options output assemblyName outDir
+                | Some assemblyName -> Runtime.writeRuntimeConfig options output assemblyName outDir
                 | None -> ()
 
             result.Diagnostics
