@@ -43,7 +43,7 @@ let private getTfInfoForCurrentRuntime () =
     // as the current runtime. We generate a runtime config and deps file
     // stub to provide load hints for running locally.
     //
-    // This is all _somewhat_ of a hack. It shoulldn't be relied on for more
+    // This is all _somewhat_ of a hack. It shouldn't be relied on for more
     // than quick local testing. For anything complex MSBuild will generate
     // a real `.deps.json` file for us.
     let tfVersion = Environment.Version
@@ -97,7 +97,7 @@ let private emitRuntimeConfigFiles
         referencePaths
         |> List.map Path.GetDirectoryName
         |> List.distinct
-        |> String.concat ","
+        |> String.concat (Path.PathSeparator.ToString())
 
     let devConfig =
         {| RuntimeOptions = {| ConfigProperties = dict [ "APP_PATHS", box appPaths ] |} |}
