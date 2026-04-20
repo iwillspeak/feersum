@@ -12,7 +12,6 @@
     <_BranchName Condition="'$(_BranchName)' == '' AND '$(BRANCH_NAME)' != ''">$(BRANCH_NAME)</_BranchName>
     <BranchSlug Condition="'$(BranchSlug)' == ''">$(_BranchName)</BranchSlug>
     <BranchSlug>$([System.Text.RegularExpressions.Regex]::Replace('$(BranchSlug)', '[^a-zA-Z0-9]+', '-'))</BranchSlug>
-    <BranchSlug>$(BranchSlug.Trim('-'))</BranchSlug>
     <BranchSlug Condition="$([System.String]::Copy('$(BranchSlug)').Length) &gt; 20">$([System.String]::Copy('$(BranchSlug)').Substring(0, 20))</BranchSlug>
     <BranchSlug>$(BranchSlug.Trim('-'))</BranchSlug>
     <MinVerDefaultPreReleaseIdentifiers Condition="'$(MinVerDefaultPreReleaseIdentifiers)' == '' AND '$(BranchSlug)' == 'main'">beta.0</MinVerDefaultPreReleaseIdentifiers>
