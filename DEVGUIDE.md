@@ -10,7 +10,7 @@ executable. The project structure is roughly as follows:
     in two ways: First we parse them and assert that the parser produces the
     expected syntax tree; secondly we compile them and check that executing them
     produces the expected output. This is mainly driven by **snapshot testing**
-    using the [Snapper][] framework. These tests are run as part of `dotnet test`
+    using the [Verify][] framework. These tests are run as part of `dotnet test`
     or can be run individually with the `runspec.sh` script.
     
     To update the snapshots after a change run `dotnet test` with the environment
@@ -73,7 +73,7 @@ General linting is performed in CI using Fantomas.
  [F#]: https://docs.microsoft.com/en-gb/dotnet/fsharp/
  [C#]: https://docs.microsoft.com/en-gb/dotnet/csharp/
  [Scheme]: https://schemers.org/
- [Snapper]: https://theramis.github.io/Snapper/#/
+ [Verify]: https://github.com/VerifyTests/Verify
  [**Parse**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Syntax.fs
  [**Bind**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Binding/Binder.fs
  [**Lower**]: https://github.com/iwillspeak/feersum/blob/main/src/Feersum.CompilerServices/Binding/Lower.fs
