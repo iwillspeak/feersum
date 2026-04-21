@@ -14,7 +14,7 @@ open Feersum.CompilerServices.Utils
 // Test the new Stx-based Macro API
 // Helper functions for creating Stx values for testing
 
-let private dummyLoc = TextLocation.Missing
+let private dummyLoc = SourceLocation.Synthetic
 
 let private stxId name = Stx.Id(name, dummyLoc)
 
@@ -30,8 +30,8 @@ let private cv (e: Stx) =
 let private exprToStx (expr: Expression) : Stx =
     let reg = SourceRegistry.empty ()
     let docId = SourceRegistry.register reg "foo.scm" expr.Text
-    let diags = DiagnosticBag.Empty
-    let stx = Stx.ofExpr reg docId diags expr
+    let diags = DiagnosticBag.WithRegistry reg
+    let stx = Stx.ofExpr reg diags expr
 
     if hasErrors diags.Take then
         failwithf "Failed to convert expression to Stx: %A" diags
@@ -562,7 +562,7 @@ let private parseSyntaxRules (name: string) (source: string) : Macro =
     let tree =
         prog.Root.Body
         |> Seq.exactlyOne
-        |> fun expr -> Stx.ofExpr registry prog.Root.DocId DiagnosticBag.Empty expr
+        |> fun expr -> Stx.ofExpr registry DiagnosticBag.Empty expr
 
     let diag = DiagnosticBag.Empty
     let env = Environments.emptyStx

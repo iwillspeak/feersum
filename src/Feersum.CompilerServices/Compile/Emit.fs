@@ -273,12 +273,13 @@ module private Utils =
         match expr with
         | BoundExpr.Nop -> emitUnspecified ctx
         | BoundExpr.Error -> ice "Attempt to lower an error expression"
-        | BoundExpr.SequencePoint(inner, location) ->
+        | BoundExpr.SequencePoint(inner, srcLoc) ->
             let pos = ctx.IL.Body.Instructions.Count
             recurse inner
 
             if ctx.EmitSymbols then
                 let ins = ctx.IL.Body.Instructions[pos]
+                let location = SourceRegistry.resolveSourceLocation ctx.Registry srcLoc
 
                 if location = TextLocation.Missing then
                     let point = Cil.SequencePoint(ins, ctx.MissingDocument)
@@ -1085,7 +1086,8 @@ module Emit =
               EmitSymbols = symbolStream.IsSome
               Environment = None
               ScopePrefix = "$ROOT"
-              Assm = assm }
+              Assm = assm
+              Registry = bound.Registry }
 
         let bodyParams = BoundFormals.List([])
 

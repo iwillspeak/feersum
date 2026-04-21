@@ -10,7 +10,7 @@ open Feersum.CompilerServices.Utils
 
 // Test the new Stx-based Library API
 // Helper functions for creating Stx values for testing
-let private dummyLoc = TextLocation.Missing
+let private dummyLoc = SourceLocation.Synthetic
 
 let private id name =
     Feersum.CompilerServices.Binding.Stx.Id(name, dummyLoc)
@@ -84,7 +84,9 @@ let ``resolve exported bindings`` () =
 
 [<Fact>]
 let ``parse library name from identifier list`` () =
-    let result = Libraries.parseLibraryDefinition (list [ id "test"; id "lib" ]) []
+    let result =
+        Libraries.parseLibraryDefinition (SourceRegistry.empty ()) (list [ id "test"; id "lib" ]) []
+
     Assert.True(Result.isOk result)
     let ok = Result.unwrap result
     let (lib, _) = ok
@@ -94,7 +96,7 @@ let ``parse library name from identifier list`` () =
 [<Fact>]
 let ``parse library name with mixed identifiers and numbers`` () =
     let result =
-        Libraries.parseLibraryDefinition (list [ id "scheme"; id "base"; number 7 ]) []
+        Libraries.parseLibraryDefinition (SourceRegistry.empty ()) (list [ id "scheme"; id "base"; number 7 ]) []
 
     Assert.True(Result.isOk result)
     let ok = Result.unwrap result
@@ -103,7 +105,9 @@ let ``parse library name with mixed identifiers and numbers`` () =
 
 [<Fact>]
 let ``parse reserved library name prefix`` () =
-    let result = Libraries.parseLibraryDefinition (list [ id "scheme"; id "custom" ]) []
+    let result =
+        Libraries.parseLibraryDefinition (SourceRegistry.empty ()) (list [ id "scheme"; id "custom" ]) []
+
     Assert.True(Result.isOk result)
     let ok = Result.unwrap result
     let (lib, diags) = ok
@@ -113,7 +117,10 @@ let ``parse reserved library name prefix`` () =
 [<Fact>]
 let ``parse library with export declaration`` () =
     let exportDecl = list [ id "export"; id "func1"; id "func2" ]
-    let result = Libraries.parseLibraryDefinition (list [ id "mylib" ]) [ exportDecl ]
+
+    let result =
+        Libraries.parseLibraryDefinition (SourceRegistry.empty ()) (list [ id "mylib" ]) [ exportDecl ]
+
     Assert.True(Result.isOk result)
     let ok = Result.unwrap result
     let (lib, _) = ok
@@ -134,7 +141,10 @@ let ``parse library with export declaration`` () =
 [<Fact>]
 let ``parse library with import declaration`` () =
     let importDecl = list [ id "import"; list [ id "test"; id "lib" ] ]
-    let result = Libraries.parseLibraryDefinition (list [ id "mylib" ]) [ importDecl ]
+
+    let result =
+        Libraries.parseLibraryDefinition (SourceRegistry.empty ()) (list [ id "mylib" ]) [ importDecl ]
+
     Assert.True(Result.isOk result)
     let ok = Result.unwrap result
     let (lib, _) = ok

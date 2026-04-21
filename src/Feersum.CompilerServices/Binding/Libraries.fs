@@ -1,6 +1,7 @@
 namespace Feersum.CompilerServices.Binding
 
 open Feersum.CompilerServices.Diagnostics
+open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Stx
 open Feersum.CompilerServices.Utils
@@ -229,8 +230,8 @@ module Libraries =
     let parseImport = parseImportSet
 
     /// Parse a `(define-library ...)` form
-    let parseLibraryDefinition (name: Stx) (body: Stx list) =
-        let diags = DiagnosticBag.Empty
+    let parseLibraryDefinition (registry: SourceRegistry) (name: Stx) (body: Stx list) =
+        let diags = DiagnosticBag.WithRegistry registry
 
         let checkReservedNames =
             function
@@ -238,8 +239,7 @@ module Libraries =
                 if start = "scheme" || start = "srfi" then
                     start
                     |> sprintf "The name prefix %s is reserved"
-                    |> Diagnostic.Create LibraryDiagnostics.improperLibraryName name.Loc
-                    |> diags.Add
+                    |> diags.Emit LibraryDiagnostics.improperLibraryName name.Loc
 
                 start :: rest
             | [] -> []

@@ -52,10 +52,25 @@ type public DocId =
     | Doc of int
     | Synthetic
 
-/// A document — owns path and line-start offsets for offset → line/col resolution.
+/// A stable source location combining a document identity with a range within
+/// that document.  This is the canonical form for source locations in the
+/// compiler's internal trees; resolution to a human-readable `TextLocation`
+/// is deferred until diagnostic rendering time.
+type public SourceLocation =
+    { Doc: DocId
+      Range: Firethorn.TextRange }
+
+    /// A synthetic (compiler-generated) location with no real source origin.
+    static member Synthetic =
+        { Doc = DocId.Synthetic
+          Range = Unchecked.defaultof<Firethorn.TextRange> }
+
+/// A document — owns path, raw text, and line-start offsets for offset →
+/// line/col resolution.
 type public TextDocument =
     { Id: DocId
       Path: string
+      Text: string
       LineStarts: int list }
 
 module public TextDocument =
@@ -71,12 +86,14 @@ module public TextDocument =
     let public fromParts path body =
         { Id = DocId.Synthetic
           Path = path
+          Text = body
           LineStarts = lineStarts body }
 
     /// Internal: create a document with a specific DocId (used by SourceRegistry).
     let internal fromPartsWithId id path body =
         { Id = id
           Path = path
+          Text = body
           LineStarts = lineStarts body }
 
     /// Turn a character offset into a document into a human line column value.
@@ -148,3 +165,8 @@ module public SourceRegistry =
         match tryLookup registry id with
         | Some doc -> TextDocument.rangeToLocation doc range
         | None -> TextLocation.Missing
+
+    /// Resolve a SourceLocation to a TextLocation for diagnostics.
+    /// Returns TextLocation.Missing for synthetic nodes or unknown IDs.
+    let public resolveSourceLocation (registry: SourceRegistry) (loc: SourceLocation) : TextLocation =
+        resolveLocation registry loc.Doc loc.Range

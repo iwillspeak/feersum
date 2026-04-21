@@ -69,7 +69,7 @@ and BoundDatum =
 type BoundExpr =
     | Literal of BoundLiteral
     | Quoted of BoundDatum
-    | SequencePoint of BoundExpr * TextLocation
+    | SequencePoint of BoundExpr * SourceLocation
     | Load of StorageRef
     | Store of StorageRef * BoundExpr option
     | Application of BoundExpr * BoundExpr list
@@ -90,4 +90,5 @@ and BoundBody =
 type BoundSyntaxTree =
     { Root: BoundBody
       MangledName: string
-      Diagnostics: Diagnostic list }
+      Diagnostics: Diagnostic list
+      Registry: SourceRegistry }
