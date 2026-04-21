@@ -34,10 +34,21 @@ module Workspace =
     ///
     /// Replaces the text for the given `id` in the source registry and
     /// invalidates the parse cache entry for that document so that the next
-    /// call to `Workspace.parse` re-parses from the new text.
+    /// call to `Workspace.parse` re-parses from the new text.  The `path`
+    /// parameter allows renaming the document at the same time; pass the
+    /// original path (from `Workspace.tryGetDocument`) to keep it unchanged.
     let update (workspace: Workspace) (id: DocId) (path: string) (text: string) : unit =
         SourceRegistry.update workspace.Registry id path text
         workspace.ParseCache <- Map.remove id workspace.ParseCache
+
+    /// Update the source text for a document, preserving the original path.
+    ///
+    /// Convenience wrapper around `Workspace.update` for the common case where
+    /// only the text changes and the path stays the same.
+    let updateText (workspace: Workspace) (id: DocId) (text: string) : unit =
+        match SourceRegistry.tryLookup workspace.Registry id with
+        | Some doc -> update workspace id doc.Path text
+        | None -> ()
 
     /// Parse a loaded document.
     ///

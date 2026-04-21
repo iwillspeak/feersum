@@ -111,6 +111,10 @@ type DiagnosticBag =
         Diagnostic.Create kind pos message |> b.Add
 
     /// Buffer a diagnostic into the bag with an already-resolved location.
+    /// Use this only when the location has already been resolved to a
+    /// <c>TextLocation</c> (e.g. by the parser, which works directly with
+    /// character offsets before a <c>SourceRegistry</c> is available).
+    /// Prefer <c>Emit</c> with a <c>SourceLocation</c> for all other callers.
     member b.EmitResolved kind (pos: TextLocation) message =
         Diagnostic.Create kind pos message |> b.Add
 

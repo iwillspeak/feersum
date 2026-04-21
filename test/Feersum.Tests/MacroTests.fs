@@ -562,9 +562,9 @@ let private parseSyntaxRules (name: string) (source: string) : Macro =
     let tree =
         prog.Root.Body
         |> Seq.exactlyOne
-        |> fun expr -> Stx.ofExpr registry DiagnosticBag.Empty expr
+        |> fun expr -> Stx.ofExpr registry (DiagnosticBag.WithRegistry registry) expr
 
-    let diag = DiagnosticBag.Empty
+    let diag = DiagnosticBag.WithRegistry registry
     let env = Environments.emptyStx
 
     match MacroParse.parseSyntaxRulesStx diag name tree env with
