@@ -22,7 +22,7 @@ module private SemanticTokenizer =
     /// Map an AstKind to a semantic token type string, returning None to skip.
     let kindToTokenType (text: string) (kind: AstKind) =
         match kind with
-        | AstKind.ATMOSPHERE when text.Length > 0 && (text.[0] = ';' || text.StartsWith("#|")) -> Some "comment"
+        | AstKind.ATMOSPHERE when text.Length > 0 && (text.StartsWith(";") || text.StartsWith("#|")) -> Some "comment"
         | AstKind.BOOLEAN -> Some "keyword"
         | AstKind.CHARACTER
         | AstKind.STRING -> Some "string"
@@ -41,6 +41,9 @@ module private SemanticTokenizer =
                 let kind = token.Kind |> SyntaxUtils.greenToAst
 
                 match kindToTokenType text kind with
+                // Multi-line tokens (e.g., multi-line strings or block comments) are
+                // skipped: the LSP semantic tokens delta encoding requires each pushed
+                // token to be on a single line.
                 | Some tokenType when not (text.Contains('\n')) ->
                     let start =
                         Feersum.CompilerServices.Text.TextDocument.offsetToPoint doc token.Range.Start
