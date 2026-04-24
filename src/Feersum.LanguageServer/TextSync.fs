@@ -17,7 +17,7 @@ type FeersumTextDocumentSyncHandler(store: DocumentStore) =
 
     override _.CreateRegistrationOptions(_: TextSynchronizationCapability, _: ClientCapabilities) =
         let opts = TextDocumentSyncRegistrationOptions(TextDocumentSyncKind.Full)
-        opts.DocumentSelector <- TextDocumentSelector.ForLanguage([| "scheme" |])
+        opts.DocumentSelector <- TextDocumentSelector.ForLanguage([| "scheme"; "feersum"; "feersum-scheme" |])
         opts
 
     override _.Handle(request: DidOpenTextDocumentParams, _: CancellationToken) =

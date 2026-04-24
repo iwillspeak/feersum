@@ -82,7 +82,7 @@ type FeersumSemanticTokensHandler(store: DocumentStore) =
 
     override _.CreateRegistrationOptions(_: SemanticTokensCapability, _: ClientCapabilities) =
         SemanticTokensRegistrationOptions(
-            DocumentSelector = TextDocumentSelector.ForLanguage([| "scheme" |]),
+            DocumentSelector = TextDocumentSelector.ForLanguage([| "scheme"; "feersum"; "feersum-scheme" |]),
             Legend = legend,
             Full = BooleanOr<SemanticTokensCapabilityRequestFull>(true)
         )
