@@ -22,15 +22,15 @@ module SemanticTokenizer =
     open Feersum.CompilerServices.Binding
 
     // -- LSP token legend -----------------------------------------------------
-    let private tokenComment = 0<TokenType>, "comment"
-    let private tokenKeyword = 1<TokenType>, "keyword"
-    let private tokenNumber = 2<TokenType>, "number"
-    let private tokenOperator = 3<TokenType>, "operator"
-    let private tokenString = 4<TokenType>, "string"
-    let private tokenVariable = 5<TokenType>, "variable"
-    let private tokenEnum = 6<TokenType>, "enum"
+    let internal tokenComment = 0<TokenType>, "comment"
+    let internal tokenKeyword = 1<TokenType>, "keyword"
+    let internal tokenNumber = 2<TokenType>, "number"
+    let internal tokenOperator = 3<TokenType>, "operator"
+    let internal tokenString = 4<TokenType>, "string"
+    let internal tokenVariable = 5<TokenType>, "variable"
+    let internal tokenEnum = 6<TokenType>, "enum"
 
-    let private tokens =
+    let internal tokens =
         [| tokenComment
            tokenKeyword
            tokenNumber
@@ -40,7 +40,7 @@ module SemanticTokenizer =
            tokenEnum |]
 
     /// The ordered list of token type names, used to build the LSP legend.
-    let tokenTypeNames = tokens |> Array.map snd
+    let internal tokenTypeNames = tokens |> Array.map snd
 
     /// Map an AstKind to a 0-based token type index, returning None to skip.
     let private kindToTokenType (text: string) (kind: AstKind) : int<TokenType> option =

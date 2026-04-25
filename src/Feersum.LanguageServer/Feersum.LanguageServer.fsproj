@@ -13,6 +13,9 @@
     <ProjectReference Include="..\Feersum.CompilerServices\Feersum.CompilerServices.fsproj" />
   </ItemGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Feersum.LanguageServer.Tests" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Ionide.LanguageServerProtocol" />
     <PackageReference Include="MessagePack" />
   </ItemGroup>

@@ -31,34 +31,24 @@ let private decode (data: uint32[]) =
 let private tokenize src =
     SemanticTokenizer.tokenize "test.scm" src |> decode
 
-// -- Token type index constants (must match legend order) ---------------------
-
-[<Literal>]
-let private CommentType = 0u
-
-[<Literal>]
-let private KeywordType = 1u
-
-[<Literal>]
-let private NumberType = 2u
-
-[<Literal>]
-let private OperatorType = 3u
-
-[<Literal>]
-let private StringType = 4u
-
-[<Literal>]
-let private VariableType = 5u
+let private CommentType = uint32 (fst SemanticTokenizer.tokenComment)
+let private KeywordType = uint32 (fst SemanticTokenizer.tokenKeyword)
+let private NumberType = uint32 (fst SemanticTokenizer.tokenNumber)
+let private OperatorType = uint32 (fst SemanticTokenizer.tokenOperator)
+let private StringType = uint32 (fst SemanticTokenizer.tokenString)
+let private VariableType = uint32 (fst SemanticTokenizer.tokenVariable)
+let private EnumType = uint32 (fst SemanticTokenizer.tokenEnum)
 
 // -- Legend -------------------------------------------------------------------
 
 [<Fact>]
 let ``token type names match expected legend order`` () =
-    Assert.Equal<string[]>(
-        [| "comment"; "keyword"; "number"; "operator"; "string"; "variable" |],
-        SemanticTokenizer.tokenTypeNames
-    )
+    Assert.Equal(SemanticTokenizer.tokens.Length, SemanticTokenizer.tokenTypeNames.Length)
+
+    for token in SemanticTokenizer.tokens do
+        let name = SemanticTokenizer.tokenTypeNames[int (fst token)]
+        let expectedName = snd token
+        Assert.Equal(expectedName, name)
 
 // -- Classification -----------------------------------------------------------
 
@@ -94,12 +84,12 @@ let ``string literal is classified as string`` () =
 [<Fact>]
 let ``boolean #t is classified as keyword`` () =
     let t = Assert.Single(tokenize "#t")
-    Assert.Equal(KeywordType, t.TokenType)
+    Assert.Equal(EnumType, t.TokenType)
 
 [<Fact>]
 let ``boolean #f is classified as keyword`` () =
     let t = Assert.Single(tokenize "#f")
-    Assert.Equal(KeywordType, t.TokenType)
+    Assert.Equal(EnumType, t.TokenType)
 
 [<Fact>]
 let ``identifier is classified as variable`` () =
