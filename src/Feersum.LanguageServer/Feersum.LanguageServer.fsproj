@@ -17,6 +17,7 @@
     <PackageReference Include="MessagePack" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Workspace.fs" />
     <Compile Include="Client.fs" />
     <Compile Include="SemanticTokens.fs" />
     <Compile Include="Server.fs" />
