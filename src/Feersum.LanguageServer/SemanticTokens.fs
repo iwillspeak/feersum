@@ -1,5 +1,6 @@
 namespace Feersum.LanguageServer
 
+open System
 open Firethorn.Red
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Syntax.Tree
@@ -35,8 +36,7 @@ module SemanticTokenizer =
     /// Map an AstKind to a 0-based token type index, returning None to skip.
     let private kindToTokenType (text: string) (kind: AstKind) : int<TokenType> option =
         match kind with
-        | AstKind.ATMOSPHERE when text.Length > 0 && (text.StartsWith(";") || text.StartsWith("#|")) ->
-            Some(fst comment)
+        | AstKind.ATMOSPHERE when text.Length > 0 && not (Char.IsWhiteSpace(text[0])) -> Some(fst comment)
         | AstKind.BOOLEAN -> Some(fst keyword)
         | AstKind.CHARACTER
         | AstKind.STRING -> Some(fst string)
@@ -59,12 +59,21 @@ module SemanticTokenizer =
             let acc = ResizeArray<uint32>()
             let mutable prevLine = 0
             let mutable prevCol = 0
+            let mutable datumCommentDepth = 0
 
             for event in Walk.walk result.Root.RawNode do
                 match event with
+                | EnterNode n -> 
+                    if n.Kind |> SyntaxUtils.greenToAst = AstKind.ATMOSPHERE then
+                        datumCommentDepth <- datumCommentDepth + 1
+                | LeaveNode n -> 
+                    if n.Kind |> SyntaxUtils.greenToAst = AstKind.ATMOSPHERE then
+                        datumCommentDepth <- datumCommentDepth - 1
                 | OnToken token ->
                     let text = token.Green.Text
-                    let kind = token.Kind |> SyntaxUtils.greenToAst
+                    let kind =
+                        if datumCommentDepth > 0 then AstKind.ATMOSPHERE
+                        else token.Kind |> SyntaxUtils.greenToAst
 
                     match kindToTokenType text kind with
                     // Multi-line tokens are skipped: LSP delta encoding requires
@@ -88,6 +97,5 @@ module SemanticTokenizer =
                         prevLine <- line
                         prevCol <- col
                     | _ -> ()
-                | _ -> ()
 
             acc.ToArray()
