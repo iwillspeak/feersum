@@ -1,8 +1,8 @@
 namespace Feersum.LanguageServer
 
 open Ionide.LanguageServerProtocol
-open Ionide.LanguageServerProtocol.Server
 open Ionide.LanguageServerProtocol.Types
+open System
 
 /// LSP Server Implementation
 ///
@@ -10,12 +10,13 @@ open Ionide.LanguageServerProtocol.Types
 /// document store and workspace information and handles the various LSP methods
 /// that we support by delegating to the appropriate modules.
 [<Sealed>]
-type private FeersumServer(_client: FeersumClient) =
+type private FeersumServer(client: FeersumClient) =
     inherit LspServer()
 
-    // -- Document store -------------------------------------------------------
+    // -- Global state ---------------------------------------------------------
 
     let workspace = Workspace.create ()
+    let compilationManager = CompilationManager.create client workspace
 
     // -- Lifecycle ------------------------------------------------------------
 
@@ -24,30 +25,61 @@ type private FeersumServer(_client: FeersumClient) =
             Capabilities =
                 { ServerCapabilities.Default with
                     TextDocumentSync =
-                        { TextDocumentSyncOptions.Default with
-                            OpenClose = Some true
-                            Change = Some TextDocumentSyncKind.Full }
-                        |> U2.C1
-                        |> Some
+                        Some(
+                            U2.C1
+                                { TextDocumentSyncOptions.Default with
+                                    OpenClose = Some true
+                                    Change = Some TextDocumentSyncKind.Full }
+                        )
+                    DiagnosticProvider =
+                        Some(
+                            U2.C1
+                                { InterFileDependencies = false
+                                  Identifier = Some "Feersum Scheme"
+                                  WorkspaceDiagnostics = false
+                                  WorkDoneProgress = None }
+                        )
                     SemanticTokensProvider =
-                        { WorkDoneProgress = None
-                          Legend =
-                            { TokenTypes = SemanticTokenizer.tokenTypeNames
-                              TokenModifiers = [||] }
-                          Range = None
-                          Full = Some(U2.C1 true) }
-                        |> U2.C1
-                        |> Some } }
+                        Some(
+                            U2.C1
+                                { WorkDoneProgress = None
+                                  Legend =
+                                    { TokenTypes = SemanticTokenizer.tokenTypeNames
+                                      TokenModifiers = [||] }
+                                  Range = None
+                                  Full = Some(U2.C1 true) }
+                        ) } }
         |> Ok
         |> async.Return
 
     override _.Dispose() = ()
 
+    // -- Diagnostics ----------------------------------------------------------
+
+    override _.TextDocumentDiagnostic(arg: DocumentDiagnosticParams) =
+        async {
+            return
+                Ok(
+                    // We don't spuport pull diagnostics yet. When a request is
+                    // received just retrurn an empty result. We'll push any
+                    // diagnostics when we next recompile.
+                    U2.C2
+                        { Kind = "unchanged"
+                          ResultId = Guid.NewGuid().ToString()
+                          RelatedDocuments = None }
+                )
+        }
+
     // -- Text document sync ---------------------------------------------------
 
     override _.TextDocumentDidOpen(p: DidOpenTextDocumentParams) =
-        workspace.PostAndAsyncReply(fun reply ->
-            OpenDocument(p.TextDocument.Uri, p.TextDocument.Text, p.TextDocument.Version, reply))
+        async {
+            let! _ =
+                workspace.PostAndAsyncReply(fun reply ->
+                    OpenDocument(p.TextDocument.Uri, p.TextDocument.Text, p.TextDocument.Version, reply))
+
+            compilationManager.Post(DocumentChanged p.TextDocument.Uri)
+        }
 
     override _.TextDocumentDidChange(p: DidChangeTextDocumentParams) =
         async {
@@ -63,11 +95,15 @@ type private FeersumServer(_client: FeersumClient) =
                     workspace.PostAndAsyncReply(fun reply ->
                         ChangeDocument(p.TextDocument.Uri, text, p.TextDocument.Version, reply))
 
+                compilationManager.Post(DocumentChanged p.TextDocument.Uri)
                 return ()
         }
 
     override _.TextDocumentDidClose(p: DidCloseTextDocumentParams) =
         workspace.PostAndAsyncReply(fun reply -> CloseDocument(p.TextDocument.Uri, reply))
+
+    // No need to force a re-compilation on close, since the document is now gone
+    // On our next recompilation we'll revert back to the source file on disk.
 
     // -- Semantic tokens ------------------------------------------------------
 
