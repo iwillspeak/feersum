@@ -1,109 +1,93 @@
 namespace Feersum.LanguageServer
 
-open System.Threading
-open System.Threading.Tasks
 open Firethorn.Red
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Text
-open OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities
-open OmniSharp.Extensions.LanguageServer.Protocol.Document
-open OmniSharp.Extensions.LanguageServer.Protocol.Models
 
-// Alias to disambiguate from OmniSharp's TextDocument model.
-type private FsTextDocument = Feersum.CompilerServices.Text.TextDocument
+// -- Measure types ------------------------------------------------------------
 
-// -------------------------------------------------------------------------
-// Internal token classification
-// -------------------------------------------------------------------------
+/// A token type is a 0-based index into the token legend.
+[<Measure>]
+type TokenType
 
-module private SemanticTokenizer =
+/// A token modifier is a bitmask flag into the token modifiers legend.
+[<Measure>]
+type TokenModifier
 
-    /// Map an AstKind to a semantic token type string, returning None to skip.
-    let kindToTokenType (text: string) (kind: AstKind) =
+// -- Semantic tokeniser -------------------------------------------------------
+
+module SemanticTokenizer =
+
+    // -- LSP token legend -----------------------------------------------------
+    let private comment = 0<TokenType>, "comment"
+    let private keyword = 1<TokenType>, "keyword"
+    let private number = 2<TokenType>, "number"
+    let private operator = 3<TokenType>, "operator"
+    let private string = 4<TokenType>, "string"
+    let private variable = 5<TokenType>, "variable"
+
+    let private tokens = [| comment; keyword; number; operator; string; variable |]
+
+    /// The ordered list of token type names, used to build the LSP legend.
+    let tokenTypeNames = tokens |> Array.map snd
+
+    /// Map an AstKind to a 0-based token type index, returning None to skip.
+    let private kindToTokenType (text: string) (kind: AstKind) : int<TokenType> option =
         match kind with
-        | AstKind.ATMOSPHERE when text.Length > 0 && (text.StartsWith(";") || text.StartsWith("#|")) -> Some "comment"
-        | AstKind.BOOLEAN -> Some "keyword"
+        | AstKind.ATMOSPHERE when text.Length > 0 && (text.StartsWith(";") || text.StartsWith("#|")) ->
+            Some(fst comment)
+        | AstKind.BOOLEAN -> Some(fst keyword)
         | AstKind.CHARACTER
-        | AstKind.STRING -> Some "string"
-        | AstKind.NUMBER -> Some "number"
-        | AstKind.IDENTIFIER -> Some "variable"
+        | AstKind.STRING -> Some(fst string)
+        | AstKind.NUMBER -> Some(fst number)
+        | AstKind.IDENTIFIER -> Some(fst variable)
         | AstKind.QUOTE
-        | AstKind.DOT -> Some "operator"
+        | AstKind.DOT -> Some(fst operator)
         | _ -> None
 
-    /// Walk a syntax tree root and push single-line semantic tokens into the builder.
-    let tokenize (builder: SemanticTokensBuilder) (doc: FsTextDocument) (root: SyntaxNode) =
-        for event in Walk.walk root do
-            match event with
-            | OnToken token ->
-                let text = token.Green.Text
-                let kind = token.Kind |> SyntaxUtils.greenToAst
+    /// Parse `content` at `path` and return all single-line semantic tokens
+    /// encoded as a flat uint32 array in the LSP 5-integer-per-token delta
+    /// format: deltaLine, deltaStartChar, length, tokenTypeIndex, modifiers.
+    let tokenize (path: string) (content: string) : uint32[] =
+        let registry = SourceRegistry.empty ()
+        let result = readProgram registry path content
 
-                match kindToTokenType text kind with
-                // Multi-line tokens (e.g., multi-line strings or block comments) are
-                // skipped: the LSP semantic tokens delta encoding requires each pushed
-                // token to be on a single line.
-                | Some tokenType when not (text.Contains('\n')) ->
-                    let start =
-                        Feersum.CompilerServices.Text.TextDocument.offsetToPoint doc token.Range.Start
+        match SourceRegistry.tryLookup registry result.Root.DocId with
+        | None -> [||]
+        | Some(doc: TextDocument) ->
+            let acc = ResizeArray<uint32>()
+            let mutable prevLine = 0
+            let mutable prevCol = 0
 
-                    let length = token.Range.End - token.Range.Start
-                    builder.Push(start.Line - 1, start.Col - 1, length, tokenType, [||])
+            for event in Walk.walk result.Root.RawNode do
+                match event with
+                | OnToken token ->
+                    let text = token.Green.Text
+                    let kind = token.Kind |> SyntaxUtils.greenToAst
+
+                    match kindToTokenType text kind with
+                    // Multi-line tokens are skipped: LSP delta encoding requires
+                    // each token to reside on a single line.
+                    | Some tokenType when not (text.Contains('\n')) ->
+                        let pt = TextDocument.offsetToPoint doc token.Range.Start
+                        // offsetToPoint returns 1-based line/col; convert to 0-based.
+                        let line = pt.Line - 1
+                        let col = pt.Col - 1
+                        let length = token.Range.End - token.Range.Start
+
+                        let deltaLine = line - prevLine
+                        let deltaCol = if deltaLine = 0 then col - prevCol else col
+
+                        acc.Add(uint32 deltaLine)
+                        acc.Add(uint32 deltaCol)
+                        acc.Add(uint32 length)
+                        acc.Add(uint32 (int tokenType))
+                        acc.Add(0u) // no modifiers
+
+                        prevLine <- line
+                        prevCol <- col
+                    | _ -> ()
                 | _ -> ()
-            | _ -> ()
 
-// -------------------------------------------------------------------------
-// Shared legend
-// -------------------------------------------------------------------------
-
-/// Semantic token legend shared between registration options and document creation.
-/// Token types must be listed here in the same order they are referenced by index.
-[<AutoOpen>]
-module private SharedLegend =
-
-    let private tokenTypeNames =
-        [| "comment"; "keyword"; "number"; "operator"; "string"; "variable" |]
-
-    let legend =
-        SemanticTokensLegend(
-            TokenTypes = Container.From<SemanticTokenType>(tokenTypeNames |> Array.map SemanticTokenType),
-            TokenModifiers = Container.From<SemanticTokenModifier>([||])
-        )
-
-// -------------------------------------------------------------------------
-// LSP handler
-// -------------------------------------------------------------------------
-
-/// Semantic tokens handler that backs the LSP semantic tokens API with the
-/// Feersum syntax tree. Supports full-document token delivery.
-type FeersumSemanticTokensHandler(store: DocumentStore) =
-    inherit SemanticTokensHandlerBase()
-
-    override _.CreateRegistrationOptions(_: SemanticTokensCapability, _: ClientCapabilities) =
-        SemanticTokensRegistrationOptions(
-            DocumentSelector = TextDocumentSelector.ForLanguage([| "scheme"; "feersum"; "feersum-scheme" |]),
-            Legend = legend,
-            Full = BooleanOr<SemanticTokensCapabilityRequestFull>(true)
-        )
-
-    override _.GetSemanticTokensDocument(_: ITextDocumentIdentifierParams, _: CancellationToken) =
-        Task.FromResult(SemanticTokensDocument(legend))
-
-    override _.Tokenize
-        (builder: SemanticTokensBuilder, ``params``: ITextDocumentIdentifierParams, _: CancellationToken)
-        : Task =
-        let uri = ``params``.TextDocument.Uri
-
-        match store.TryGet(uri) with
-        | None -> ()
-        | Some content ->
-            let path = uri.ToString()
-            let registry = SourceRegistry.empty ()
-            let result = readProgram registry path content
-
-            match SourceRegistry.tryLookup registry result.Root.DocId with
-            | None -> ()
-            | Some(doc: FsTextDocument) -> SemanticTokenizer.tokenize builder doc result.Root.RawNode
-
-        Task.CompletedTask
+            acc.ToArray()

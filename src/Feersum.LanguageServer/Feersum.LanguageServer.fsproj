@@ -13,12 +13,13 @@
     <ProjectReference Include="..\Feersum.CompilerServices\Feersum.CompilerServices.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OmniSharp.Extensions.LanguageServer" />
+    <PackageReference Include="Ionide.LanguageServerProtocol" />
+    <PackageReference Include="MessagePack" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DocumentStore.fs" />
+    <Compile Include="Client.fs" />
     <Compile Include="SemanticTokens.fs" />
-    <Compile Include="TextSync.fs" />
+    <Compile Include="Server.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 </Project>

@@ -1,24 +1,21 @@
 module Feersum.LanguageServer.Program
 
 open System
-open Microsoft.Extensions.DependencyInjection
-open OmniSharp.Extensions.JsonRpc
-open OmniSharp.Extensions.LanguageServer.Server
+open Ionide.LanguageServerProtocol
 
 [<EntryPoint>]
 let main _ =
-    let server =
-        LanguageServer
-            .From(fun (options: LanguageServerOptions) ->
-                options
-                    .WithInput(Console.OpenStandardInput())
-                    .WithOutput(Console.OpenStandardOutput())
-                    .WithServices(fun services -> services.AddSingleton<DocumentStore>() |> ignore)
-                    .AddHandler<FeersumTextDocumentSyncHandler>(JsonRpcHandlerOptions())
-                    .AddHandler<FeersumSemanticTokensHandler>(JsonRpcHandlerOptions())
-                |> ignore)
-            .GetAwaiter()
-            .GetResult()
 
-    server.WaitForExit.GetAwaiter().GetResult()
-    0
+    let input = Console.OpenStandardInput()
+    let output = Console.OpenStandardOutput()
+
+    let requestHandlings = Server.defaultRequestHandlings ()
+
+    Server.start
+        requestHandlings
+        input
+        output
+        (fun (nots, reqs) -> new FeersumClient(nots, reqs))
+        (fun client -> new FeersumServer(client))
+        Server.defaultRpc
+    |> (int)
