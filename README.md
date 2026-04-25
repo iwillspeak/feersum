@@ -11,8 +11,8 @@
 
 > Wots in that thare box yoor holdin?
 
-A Scheme compiler for .NET written in F#. Progress
-[livestreamed on Twitch][twitch], [catchup on YouTube][yt]
+A Scheme compiler for .NET written in F#. Initial progress was 
+[livestreamed on Twitch][twitch], [catchup on YouTube][yt]. Dig in to the latest state by [reading the docs][docs].  
 
 # Contributing
 
@@ -63,8 +63,6 @@ and is by no means a guarantee or a strict roadmap.
  * [ ] Implement [all special forms](docs/special-forms.md)
  * [ ] Support [all value types](docs/values.md)
  * [ ] Support [all standard procedures](docs/standard-procedures.md)
- * [x] Macros support.
-   * [ ] Macro Hygene (#13).
  * [ ] Support for Scheme exceptions and `guard`.
  * [ ] Full numeric tower support.
  * [ ] Interop with other .NET assemblies.
@@ -73,6 +71,9 @@ and is by no means a guarantee or a strict roadmap.
    * [x] Bound tree contains sequence points for debuging
    * [x] Stop at entry, and step in.
    * [ ] Debuggable REPL. Embedded source in PDBs?
+ * [x] Macros support.
+   * [x] Macro Hygene (#13).
+   * [ ] relaxed scope hygiene for macro genrating macros 
  * [x] MSBUILD SDK support so `.scmproj` can be defined.
    * [x] Proper support for different target frameworks
  * [x] Scheme library and import support.
@@ -91,5 +92,6 @@ Future themes of development are also tracked with
   [yt]: https://www.youtube.com/playlist?list=PLCum1jXOlhoRCBewbQD8ELE7B_7EWnWaO
   [contributing]: CONTRIBUTING.md
   [devguide]: DEVGUIDE.md
+  [docs]: https://docs.feersum-scheme.net
   [exmaple_gist]: https://gist.github.com/iwillspeak/efc9342c63c07a2a763dd814f555f7ee
   [roadmap_issues]: https://github.com/iwillspeak/feersum/issues?q=is%3Aopen+is%3Aissue+label%3ARoadmap
