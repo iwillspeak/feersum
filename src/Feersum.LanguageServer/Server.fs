@@ -10,7 +10,7 @@ open Ionide.LanguageServerProtocol.Types
 /// document store and workspace information and handles the various LSP methods
 /// that we support by delegating to the appropriate modules.
 [<Sealed>]
-type private FeersumServer(client: FeersumClient) =
+type private FeersumServer(_: FeersumClient) =
     inherit LspServer()
 
     // -- Document store -------------------------------------------------------
