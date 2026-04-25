@@ -292,11 +292,11 @@ let public tokenise input =
 
     seq {
         for char in input do
-            offset <- offset + 1
 
             match nextTransition state char with
             | None ->
                 yield tokenForState (lexeme.ToString()) state offset
+                offset <- offset + (lexeme.Length)
                 lexeme <- lexeme.Clear().Append(char)
 
                 state <- nextTransition Start char |> Option.defaultValue Error

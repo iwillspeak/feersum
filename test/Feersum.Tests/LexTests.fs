@@ -87,7 +87,7 @@ let ``Lexer lex single token`` (token, kind) =
     Assert.Equal(
         [ { Kind = kind
             Lexeme = token
-            Offset = token.Length } ],
+            Offset = 0 } ],
         tokens
     )
 
