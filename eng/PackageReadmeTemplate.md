@@ -60,9 +60,9 @@ Or include in your `.csproj` or `.fsproj`:
 
 ## Documentation
 
-- [Getting Started Guide](https://docs.feersum-scheme.net/01-getting-started.html)
-- [Language Reference](https://docs.feersum-scheme.net/10-language-reference/)
-- [Compiler Reference](https://docs.feersum-scheme.net/20-compiler-reference/)
+- [Getting Started Guide](https://docs.feersum-scheme.net/getting-started.html)
+- [Language Reference](https://docs.feersum-scheme.net/language-reference/)
+- [Compiler Reference](https://docs.feersum-scheme.net/compiler-reference/)
 
 ## Links
 
