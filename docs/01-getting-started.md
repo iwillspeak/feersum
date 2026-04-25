@@ -55,7 +55,7 @@ The `scm-console` and `scm-classlib` templates create `.scmproj` MSBuild project
 which reference the shared `Feersum.SDK` package:
 
 ```xml
-<Project Sdk="Feersum.Sdk/0.2.6">
+<Project Sdk="Feersum.Sdk/_LATEST_SDK_VERSION_">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>

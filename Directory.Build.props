@@ -22,17 +22,46 @@
     <!-- Package metadata that is shared amongst all packages. -->
     <PackageTags>Feersum;LISP;Scheme;Compiler;functional;programming</PackageTags>
     <Authors>Will Speak</Authors>
-    <Description>
-    Feersum Scheme is a Scheme implementation that compiles to .NET. Feersum provides a command line tool for batch compliation, a Scheme REPL, and a .NET SDK for MSBuild support.
-    </Description>
+    <Description>Feersum Scheme is a Scheme implementation that compiles to .NET. Feersum provides a command line tool for batch compliation, a Scheme REPL, and a .NET SDK for MSBuild support.</Description>
     <PackageProjectUrl>https://docs.feersum-scheme.net/</PackageProjectUrl>
     <PackageIcon>PackageIcon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(IsPackable)' == 'true' ">
+  
+  <!-- Generate per-project README from template for NuGet packages -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);GeneratePackageReadme</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+  
+  <Target Condition=" '$(IsPackable)' == 'true' " Name="GeneratePackageReadme" BeforeTargets="BeforeBuild;GenerateNuspec" DependsOnTargets="PrepareForBuild;MinVer">
+    <PropertyGroup>
+      <_PackageTitle Condition="'$(Title)' != ''">$(Title)</_PackageTitle>
+      <_PackageTitle Condition="'$(Title)' == ''">$(PackageId)</_PackageTitle>
+      <_TemplateFile>$(MSBuildThisFileDirectory)eng/PackageReadmeTemplate.md</_TemplateFile>
+      <_GeneratedPackageReadmePath>$(BaseIntermediateOutputPath)PKG_README.md</_GeneratedPackageReadmePath>
+    </PropertyGroup>
+
+    <Error Condition="!Exists('$(_TemplateFile)')" Text="Package README template not found at $(_TemplateFile)" />
+
+    <!-- Read template and perform string substitutions using MSBuild built-in functions -->
+    <WriteLinesToFile 
+      File="$(_GeneratedPackageReadmePath)" 
+      Lines="$([System.IO.File]::ReadAllText('$(_TemplateFile)').Replace('__TITLE__', '$(_PackageTitle)').Replace('__DESCRIPTION__', '$(Description)').Replace('__PACKAGEID__', '$(PackageId)').Replace('__VERSION__', '$(Version)'))" 
+      Overwrite="true" 
+      WriteOnlyWhenDifferent="true" />
+
+    <ItemGroup>
+      <FileWrites Include="$(_GeneratedPackageReadmePath)" />
+      <TfmSpecificPackageFile Include="$(_GeneratedPackageReadmePath)" Pack="true" PackagePath="\$(PackageReadmeFile)" />
+    </ItemGroup>
+
+    <Message Text="Generated package README: $(_GeneratedPackageReadmePath)" Importance="normal" />
+  </Target>
+
+  <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)eng/PackageIcon.png" Pack="true" PackagePath="\" />
-    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="MinVer">
       <PrivateAssets>all</PrivateAssets>
