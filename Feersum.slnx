@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Feersum/Feersum.fsproj" />
+    <Project Path="src/Feersum.LanguageServer/Feersum.LanguageServer.fsproj" />
     <Project Path="src/Feersum.CompilerServices/Feersum.CompilerServices.fsproj" />
     <Project Path="src/Feersum.Stage1/Feersum.Stage1.fsproj" />
     <Project Path="src/Serehfa/Serehfa.csproj" />
@@ -10,6 +11,7 @@
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/Feersum.Tests/Feersum.Tests.fsproj" />
+    <Project Path="test/Feersum.LanguageServer.Tests/Feersum.LanguageServer.Tests.fsproj" />
   </Folder>
   <Folder Name="/examples/">
     <Project Path="examples/HelloWorld/HelloWorld.scmproj" Type="{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}" />

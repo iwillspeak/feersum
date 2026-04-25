@@ -169,13 +169,20 @@ let private parseConstant (builder: GreenNodeBuilder) state =
         | TokenKind.Character -> AstKind.CHARACTER
         | k ->
             state <-
-                sprintf
-                    "Unexpected token %A '%s'"
-                    k
-                    (List.tryHead state.Tokens
-                     |> Option.map (fun t -> t.Lexeme)
-                     |> Option.defaultValue "")
-                |> ParserState.bufferDiagnostic state ParserDiagnostics.parseError
+                match List.tryHead state.Tokens with
+                | Some token ->
+                    let loc =
+                        TextLocation.Span(
+                            TextDocument.offsetToPoint state.Document token.Offset,
+                            TextDocument.offsetToPoint state.Document (token.Offset + token.Lexeme.Length)
+                        )
+
+                    sprintf "Unexpected token %A '%s'" k token.Lexeme
+                    |> Diagnostic.Create ParserDiagnostics.parseError loc
+                    |> ParserState.bufferDiagnosticRaw state
+                | None ->
+                    sprintf "Unexpected end of file"
+                    |> ParserState.bufferDiagnostic state ParserDiagnostics.parseError
 
             AstKind.ERROR
 

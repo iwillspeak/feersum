@@ -360,3 +360,25 @@ module ErrorHandling =
         let source = "(+ 1 § 2)"
         let result = readScriptResult "test" source
         Assert.NotEmpty(result.Diagnostics)
+
+    [<Fact>]
+    let ``invalid char at beginning`` () =
+        let source = ")"
+        let result = readScriptResult "test" source
+        let diag = Assert.Single result.Diagnostics
+        Assert.Equal(1, diag.Location.Start.Line)
+        Assert.Equal(1, diag.Location.Start.Col)
+        Assert.Equal(1, diag.Location.End.Line)
+        Assert.Equal(2, diag.Location.End.Col)
+
+    [<Fact>]
+    let ``unterminated form`` () =
+        let source = "(+ 1 2"
+        let result = readScriptResult "test" source
+        let diag = Assert.Single result.Diagnostics
+        // The parser reports errors on the EOF token on byte offset 0, which
+        // we then see as line 1, col 1 in the source document.
+        Assert.Equal(1, diag.Location.Start.Line)
+        Assert.Equal(1, diag.Location.Start.Col)
+        Assert.Equal(1, diag.Location.End.Line)
+        Assert.Equal(1, diag.Location.End.Col)
