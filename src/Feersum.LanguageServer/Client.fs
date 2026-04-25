@@ -13,12 +13,6 @@ type private FeersumClient(notifs: ClientNotificationSender, _reqs: ClientReques
 
     override _.TextDocumentPublishDiagnostics(arg: Types.PublishDiagnosticsParams) : Async<unit> =
         async {
-            eprintfn
-                "Publishing diagnostics for %s (version %A) with %d diagnostics"
-                arg.Uri
-                arg.Version
-                (arg.Diagnostics |> Array.length)
-
             let! _ = notifs "textDocument/publishDiagnostics" arg
             return ()
         }

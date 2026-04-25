@@ -19,16 +19,25 @@ type TokenModifier
 // -- Semantic tokeniser -------------------------------------------------------
 
 module SemanticTokenizer =
+    open Feersum.CompilerServices.Binding
 
     // -- LSP token legend -----------------------------------------------------
-    let private comment = 0<TokenType>, "comment"
-    let private keyword = 1<TokenType>, "keyword"
-    let private number = 2<TokenType>, "number"
-    let private operator = 3<TokenType>, "operator"
-    let private string = 4<TokenType>, "string"
-    let private variable = 5<TokenType>, "variable"
+    let private tokenComment = 0<TokenType>, "comment"
+    let private tokenKeyword = 1<TokenType>, "keyword"
+    let private tokenNumber = 2<TokenType>, "number"
+    let private tokenOperator = 3<TokenType>, "operator"
+    let private tokenString = 4<TokenType>, "string"
+    let private tokenVariable = 5<TokenType>, "variable"
+    let private tokenEnum = 6<TokenType>, "enum"
 
-    let private tokens = [| comment; keyword; number; operator; string; variable |]
+    let private tokens =
+        [| tokenComment
+           tokenKeyword
+           tokenNumber
+           tokenOperator
+           tokenString
+           tokenVariable
+           tokenEnum |]
 
     /// The ordered list of token type names, used to build the LSP legend.
     let tokenTypeNames = tokens |> Array.map snd
@@ -36,14 +45,17 @@ module SemanticTokenizer =
     /// Map an AstKind to a 0-based token type index, returning None to skip.
     let private kindToTokenType (text: string) (kind: AstKind) : int<TokenType> option =
         match kind with
-        | AstKind.ATMOSPHERE when text.Length > 0 && not (Char.IsWhiteSpace(text[0])) -> Some(fst comment)
-        | AstKind.BOOLEAN -> Some(fst keyword)
+        | AstKind.ATMOSPHERE when text.Length > 0 && not (Char.IsWhiteSpace(text[0])) -> Some(fst tokenComment)
+        | AstKind.BOOLEAN -> Some(fst tokenEnum)
         | AstKind.CHARACTER
-        | AstKind.STRING -> Some(fst string)
-        | AstKind.NUMBER -> Some(fst number)
-        | AstKind.IDENTIFIER -> Some(fst variable)
+        | AstKind.STRING -> Some(fst tokenString)
+        | AstKind.NUMBER -> Some(fst tokenNumber)
+        | AstKind.IDENTIFIER ->
+            match Stx.resolve text Map.empty with
+            | Some(StxBinding.Special _) -> Some(fst tokenKeyword)
+            | _ -> Some(fst tokenVariable)
         | AstKind.QUOTE
-        | AstKind.DOT -> Some(fst operator)
+        | AstKind.DOT -> Some(fst tokenOperator)
         | _ -> None
 
     /// Parse `content` at `path` and return all single-line semantic tokens
@@ -63,17 +75,20 @@ module SemanticTokenizer =
 
             for event in Walk.walk result.Root.RawNode do
                 match event with
-                | EnterNode n -> 
+                | EnterNode n ->
                     if n.Kind |> SyntaxUtils.greenToAst = AstKind.ATMOSPHERE then
                         datumCommentDepth <- datumCommentDepth + 1
-                | LeaveNode n -> 
+                | LeaveNode n ->
                     if n.Kind |> SyntaxUtils.greenToAst = AstKind.ATMOSPHERE then
                         datumCommentDepth <- datumCommentDepth - 1
                 | OnToken token ->
                     let text = token.Green.Text
+
                     let kind =
-                        if datumCommentDepth > 0 then AstKind.ATMOSPHERE
-                        else token.Kind |> SyntaxUtils.greenToAst
+                        if datumCommentDepth > 0 then
+                            AstKind.ATMOSPHERE
+                        else
+                            token.Kind |> SyntaxUtils.greenToAst
 
                     match kindToTokenType text kind with
                     // Multi-line tokens are skipped: LSP delta encoding requires

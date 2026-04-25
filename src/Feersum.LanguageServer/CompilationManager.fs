@@ -78,9 +78,8 @@ module private CompilationManager =
 
                         eprintfn "Recompiling %d documents..." (documents |> Map.count)
 
-                        for (path, docState) in documents |> Map.toSeq do
+                        for path, docState in documents |> Map.toSeq do
                             let result = Parse.readProgram sourceRegistry path docState.Text
-                            eprintfn "  Parsed %s with %d diagnostics" path (result.Diagnostics |> List.length)
                             let p = toPublishParams path docState.Version result.Diagnostics
                             do! client.TextDocumentPublishDiagnostics(p)
 
