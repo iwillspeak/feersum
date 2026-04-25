@@ -32,7 +32,6 @@ let private tokenize src =
     SemanticTokenizer.tokenize "test.scm" src |> decode
 
 let private CommentType = uint32 (fst SemanticTokenizer.tokenComment)
-let private KeywordType = uint32 (fst SemanticTokenizer.tokenKeyword)
 let private NumberType = uint32 (fst SemanticTokenizer.tokenNumber)
 let private OperatorType = uint32 (fst SemanticTokenizer.tokenOperator)
 let private StringType = uint32 (fst SemanticTokenizer.tokenString)
@@ -82,12 +81,12 @@ let ``string literal is classified as string`` () =
     Assert.Equal(7u, t.Length)
 
 [<Fact>]
-let ``boolean #t is classified as keyword`` () =
+let ``boolean #t is classified as enum`` () =
     let t = Assert.Single(tokenize "#t")
     Assert.Equal(EnumType, t.TokenType)
 
 [<Fact>]
-let ``boolean #f is classified as keyword`` () =
+let ``boolean #f is classified as enum`` () =
     let t = Assert.Single(tokenize "#f")
     Assert.Equal(EnumType, t.TokenType)
 

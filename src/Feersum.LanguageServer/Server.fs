@@ -60,8 +60,8 @@ type private FeersumServer(client: FeersumClient) =
         async {
             return
                 Ok(
-                    // We don't spuport pull diagnostics yet. When a request is
-                    // received just retrurn an empty result. We'll push any
+                    // We don't support pull diagnostics yet. When a request is
+                    // received just return an empty result. We'll push any
                     // diagnostics when we next recompile.
                     U2.C2
                         { Kind = "unchanged"

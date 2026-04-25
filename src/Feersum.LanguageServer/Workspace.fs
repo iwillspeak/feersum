@@ -9,8 +9,8 @@ type DocumentState = { Version: int; Text: string }
 
 /// The Workspace State
 ///
-/// This is the main state of the lagnuage server. It stores the current
-/// open documents. State is manged by the
+/// This is the main state of the language server. It stores the current
+/// open documents. State is managed by the workspace agent.
 type private WorkspaceState =
     { Documents: Map<string, DocumentState> }
 

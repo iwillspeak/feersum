@@ -33,7 +33,7 @@ module private CompilationManager =
         | DiagnosticLevel.Error -> DiagnosticSeverity.Error
         | DiagnosticLevel.Warning -> DiagnosticSeverity.Warning
 
-    let private toCodeDescription (title: string) : CodeDescription option =
+    let private toCodeDescription (_title: string) : CodeDescription option =
         // We can optionally provide a URL here that gives more information about the
         // diagnostic. For now we just link to the Feersum documentation homepage.
         Some { Href = "https://docs.feersum-scheme.net/compiler-reference/error-index/" }
