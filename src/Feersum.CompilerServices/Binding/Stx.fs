@@ -56,20 +56,20 @@ type StxDatum =
 [<RequireQualifiedAccess>]
 type Stx =
     /// An identifier (raw, unresolved name).
-    | Id of name: string * loc: TextLocation
+    | Id of name: string * loc: SourceLocation
     /// A self-evaluating datum — number, boolean, character, string, or bytevector.
-    | Datum of value: StxDatum * loc: TextLocation
+    | Datum of value: StxDatum * loc: SourceLocation
     /// A list — `(e1 e2 … en)` when tail is None; `(e1 … en . t)` when tail is Some t.
-    | List of items: Stx list * tail: Stx option * loc: TextLocation
+    | List of items: Stx list * tail: Stx option * loc: SourceLocation
     /// A syntactic closure — expand `inner` in `env` rather than the ambient scope.
     | Closure of inner: Stx * env: StxEnvironment
     /// A vector literal — `#(e1 e2 … en)`.
-    | Vec of items: Stx list * loc: TextLocation
+    | Vec of items: Stx list * loc: SourceLocation
     /// A reader-level error node — produced by `Stx.ofExpr` when the CST
     /// contains malformed syntax (invalid byte, missing char value, etc.).
     /// The expander treats this as a silent no-op error so downstream passes
     /// don't emit duplicate diagnostics.
-    | Error of loc: TextLocation
+    | Error of loc: SourceLocation
 
     member x.Loc =
         match x with
@@ -160,9 +160,14 @@ module Stx =
     /// Convert a raw CST `Expression` into an `Stx` object ready for expansion.
     /// Emits diagnostics into `diag` for reader-level errors such as malformed
     /// byte values, missing character values, and empty dotted-pair tails.
-    let rec ofExpr (reg: SourceRegistry) (docId: DocId) (diag: DiagnosticBag) (expr: Expression) : Stx =
-        let loc = SourceRegistry.resolveLocation reg docId expr.SyntaxRange
-        let recurse = ofExpr reg docId diag
+    /// The `DocId` is taken directly from the expression's `DocId` property,
+    /// so no separate document-identity parameter is required.
+    let rec ofExpr (reg: SourceRegistry) (diag: DiagnosticBag) (expr: Expression) : Stx =
+        let loc =
+            { Doc = expr.DocId
+              Range = expr.SyntaxRange }
+
+        let recurse = ofExpr reg diag
 
         match expr with
         | SymbolNode s ->

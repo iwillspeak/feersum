@@ -216,8 +216,8 @@ module private BuiltinMacros =
                 match result.Root.Body with
                 | None -> icef "no body in new-format builtin macro '%s'" name
                 | Some expr ->
-                    let diags = DiagnosticBag.Empty
-                    let stx = Stx.ofExpr registry result.Root.DocId diags expr
+                    let diags = DiagnosticBag.WithRegistry registry
+                    let stx = Stx.ofExpr registry diags expr
 
                     let id, stxEnv' = Stx.reserveMacro stxEnv name
 

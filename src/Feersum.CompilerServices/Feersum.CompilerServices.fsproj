@@ -35,6 +35,7 @@ $(Description)
     <Compile Include="Compile/Instrumentation.fs" />
     <Compile Include="Compile/Compiler.fs" />
     <Compile Include="Eval.fs" />
+    <Compile Include="Workspace.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Serehfa\Serehfa.csproj" />

@@ -67,7 +67,7 @@ module private Binderctx =
     let create sourceRegistry libs macros =
         { SourceRegistry = sourceRegistry
           Libraries = libs
-          Diagnostics = DiagnosticBag.Empty
+          Diagnostics = DiagnosticBag.WithRegistry sourceRegistry
           Macros = macros }
 
 /// A single frame in the scope stack of a given binding frame. This is used to
@@ -254,11 +254,7 @@ module private Impl =
         name |> Seq.map mangleNamePart |> String.concat "::"
 
     // Get the Syntax Location for a Given Syntax Node
-    let private getSyntaxLocation (_ctx: BinderCtx) (stx: Stx) : TextLocation =
-        // FIXME: We _should_ have to look the stx up in the source registry
-        //        so we can `rangeToLocation` the span. But the current slop
-        //        means the locations are actually just denormalised on each stx
-        stx.Loc
+    let private getSyntaxLocation (_ctx: BinderCtx) (stx: Stx) : SourceLocation = stx.Loc
 
 
     /// Parse a Formals List Pattern
@@ -331,7 +327,7 @@ module private Impl =
             []
 
     /// Emit a diagnostic for an ill-formed special form
-    let private illFormedInCtx (ctx: FrameCtx) (loc: TextLocation) (formName: string) =
+    let private illFormedInCtx (ctx: FrameCtx) (loc: SourceLocation) (formName: string) =
         $"Ill-formed '{formName}' special form"
         |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.illFormedSpecialForm loc
 
@@ -874,7 +870,7 @@ module private Impl =
         | SpecialFormKind.DefineLibrary ->
             match args with
             | name :: body ->
-                match Libraries.parseLibraryDefinition name body with
+                match Libraries.parseLibraryDefinition ctx.BinderCtx.SourceRegistry name body with
                 | Ok(library, diags) ->
                     ctx.BinderCtx.Diagnostics.Append diags
                     // FIXME: Location here is kinda rough. We basically emit
@@ -1043,7 +1039,8 @@ module Binder =
 
         { Root = bound
           MangledName = name
-          Diagnostics = ctx.Diagnostics.Take }
+          Diagnostics = ctx.Diagnostics.Take
+          Registry = ctx.SourceRegistry }
 
 
     /// Bind a List of Compilation Units in a Given Scope
@@ -1062,7 +1059,7 @@ module Binder =
 
         let toBind =
             units
-            |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry unit.DocId ctx.Diagnostics))
+            |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry ctx.Diagnostics))
 
         bindStx ctx stxEnv scope (List.ofSeq toBind)
 
@@ -1083,7 +1080,7 @@ module Binder =
 
         let toBind =
             script.Body
-            |> Option.map (Stx.ofExpr sourceRegistry script.DocId ctx.Diagnostics)
+            |> Option.map (Stx.ofExpr sourceRegistry ctx.Diagnostics)
             |> Option.toList
 
         bindStx ctx stxEnv scope toBind

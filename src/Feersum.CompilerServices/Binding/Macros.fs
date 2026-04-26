@@ -44,11 +44,11 @@ type MacroTemplate =
     /// Substitute the sub-form captured by a pattern variable.
     | Subst of name: string
     /// Produce a proper list.
-    | Form of loc: TextLocation * elements: MacroTemplateElement list
+    | Form of loc: SourceLocation * elements: MacroTemplateElement list
     /// Produce an improper list.
-    | DottedForm of loc: TextLocation * elements: MacroTemplateElement list * tail: MacroTemplate
+    | DottedForm of loc: SourceLocation * elements: MacroTemplateElement list * tail: MacroTemplate
     /// Produce a vector literal.
-    | Vec of loc: TextLocation * elements: MacroTemplateElement list
+    | Vec of loc: SourceLocation * elements: MacroTemplateElement list
 
 /// A macro template element — either a single sub-template or a repeated one.
 and [<RequireQualifiedAccess>] MacroTemplateElement =
@@ -103,7 +103,7 @@ type MacroRule = MacroPattern * MacroTemplate
 type Macro =
     { Rules: MacroRule list
       DefScope: StxEnvironment
-      DefLoc: TextLocation }
+      DefLoc: SourceLocation }
 
 // -- Diagnostics --------------------------------------------------------------
 
@@ -482,7 +482,7 @@ module Macros =
                     // No explicit tail in input — the remaining items form the tail list.
                     // Always construct a list, even for a single remaining item: the tail
                     // of `(_ a b . c)` matching `(m 1 2 3)` is `(3)`, not `3`.
-                    matchPattern tp (Stx.List(body, None, TextLocation.Missing)) scope
+                    matchPattern tp (Stx.List(body, None, SourceLocation.Synthetic)) scope
             | None ->
                 if List.isEmpty body && tailItem.IsNone then
                     Some MacroBindings.Empty

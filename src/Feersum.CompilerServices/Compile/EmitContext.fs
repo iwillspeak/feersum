@@ -4,6 +4,8 @@ open Mono.Cecil
 open Mono.Cecil.Cil
 open System.Collections.Generic
 
+open Feersum.CompilerServices.Text
+
 /// Capture Environment Kind
 ///
 /// Capture environments are either standard environments containing fields used
@@ -60,4 +62,5 @@ type EmitCtx =
         ProgramTy: TypeDefinition
         mutable Libraries: Map<string, TypeDefinition>
         Core: CoreTypes
+        Registry: SourceRegistry
     }

@@ -102,10 +102,20 @@ type Diagnostic =
 
 /// A collection of diagnostics being built by a compiler phase.
 type DiagnosticBag =
-    { mutable Diagnostics: Diagnostic list }
+    { mutable Diagnostics: Diagnostic list
+      Registry: SourceRegistry }
 
-    /// Buffer a diagnostic into the bag.
-    member b.Emit kind pos message =
+    /// Buffer a diagnostic into the bag, resolving the source location.
+    member b.Emit kind (loc: SourceLocation) message =
+        let pos = SourceRegistry.resolveSourceLocation b.Registry loc
+        Diagnostic.Create kind pos message |> b.Add
+
+    /// Buffer a diagnostic into the bag with an already-resolved location.
+    /// Use this only when the location has already been resolved to a
+    /// <c>TextLocation</c> (e.g. by the parser, which works directly with
+    /// character offsets before a <c>SourceRegistry</c> is available).
+    /// Prefer <c>Emit</c> with a <c>SourceLocation</c> for all other callers.
+    member b.EmitResolved kind (pos: TextLocation) message =
         Diagnostic.Create kind pos message |> b.Add
 
     /// Add a diagnostic to the bag.
@@ -119,8 +129,16 @@ type DiagnosticBag =
     /// Finalise the bag by taking the diagnostics from it.
     member b.Take = b.Diagnostics
 
-    /// Create a new, empty, diagnostics bag.
-    static member Empty = { Diagnostics = [] }
+    /// Create a new, empty, diagnostics bag with no source registry.
+    /// Diagnostics emitted through this bag will have `Missing` locations.
+    static member Empty =
+        { Diagnostics = []
+          Registry = SourceRegistry.empty () }
+
+    /// Create a new, empty, diagnostics bag backed by the given source registry.
+    static member WithRegistry(registry: SourceRegistry) =
+        { Diagnostics = []
+          Registry = registry }
 
 [<AutoOpen>]
 module Diagnostics =
