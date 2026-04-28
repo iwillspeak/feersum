@@ -288,7 +288,7 @@ let public tokenise input =
     let mutable lexeme = StringBuilder()
     // TODO: we should probably stop tracking offset in the tokens and instead
     ///      keep track as we eat their lexemes in the parser.
-    let mutable offset = 0
+    let mutable offset: Firethorn.TextLength = 0u
 
     seq {
         for char in input do
@@ -296,7 +296,7 @@ let public tokenise input =
             match nextTransition state char with
             | None ->
                 yield tokenForState (lexeme.ToString()) state offset
-                offset <- offset + (lexeme.Length)
+                offset <- TextDocument.advance offset lexeme.Length
                 lexeme <- lexeme.Clear().Append(char)
 
                 state <- nextTransition Start char |> Option.defaultValue Error

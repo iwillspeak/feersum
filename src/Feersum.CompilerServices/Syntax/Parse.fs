@@ -97,7 +97,7 @@ module private ParserState =
                 // FIXME: If we have no tokens let the diagnostic should
                 // probably point to the beginning of the file rather than the
                 // end of it.
-                0
+                0u
             |> TextDocument.offsetToPoint state.Document
             |> TextLocation.Point
 
@@ -174,7 +174,9 @@ let private parseConstant (builder: GreenNodeBuilder) state =
                     let loc =
                         TextLocation.Span(
                             TextDocument.offsetToPoint state.Document token.Offset,
-                            TextDocument.offsetToPoint state.Document (token.Offset + token.Lexeme.Length)
+                            TextDocument.offsetToPoint
+                                state.Document
+                                (TextDocument.advance token.Offset token.Lexeme.Length)
                         )
 
                     sprintf "Unexpected token %A '%s'" k token.Lexeme
