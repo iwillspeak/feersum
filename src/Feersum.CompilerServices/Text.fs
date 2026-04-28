@@ -82,7 +82,7 @@ module public TextDocument =
     /// Turn a character offset into a document into a human line column value.
     /// That is a 0-based character offset into the file becomes a 1-based pair
     /// of line and column.
-    let private offsetToLineCol lines offset =
+    let private offsetToLineCol lines (offset: int) =
         let lineIdx, colIdx =
             match List.tryFindIndexBack (fun x -> x < offset) lines with
             | Some idx ->
@@ -96,8 +96,14 @@ module public TextDocument =
 
         lineIdx + 1, colIdx + 1
 
-    let public offsetToPoint document offset =
-        let line, col = offsetToLineCol document.LineStarts offset
+    /// Advance a text offset by a character count.
+    ///
+    /// Centralises the int → Firethorn.TextLength (uint32) widening conversion
+    /// so that callers (the lexer, parser, …) can stay free of raw casts.
+    let public advance (offset: Firethorn.TextLength) (count: int) : Firethorn.TextLength = offset + uint32 count
+
+    let public offsetToPoint document (offset: Firethorn.TextLength) =
+        let line, col = offsetToLineCol document.LineStarts (int offset)
         TextPoint.FromParts(document.Path, line, col)
 
     let public rangeToLocation document (range: Firethorn.TextRange) =
