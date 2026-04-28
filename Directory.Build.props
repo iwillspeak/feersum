@@ -62,6 +62,10 @@
     <None Include="$(MSBuildThisFileDirectory)eng/PackageIcon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PublishRepositoryUri>true</PublishRepositoryUri>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MinVer">
       <PrivateAssets>all</PrivateAssets>

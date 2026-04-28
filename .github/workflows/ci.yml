@@ -59,7 +59,7 @@ jobs:
           #        that doing so when an F# project depends on a C# one causes
           #        a spurious re-build for some reason and ends up in NETSDK1085
           #   https://github.com/dotnet/fsharp/issues/12320
-          dotnet pack --configuration Release --output ./artifacts
+          dotnet pack --configuration Release -p:ContinuousIntegrationBuild=true --output ./artifacts
           # Check code format. Fantomas for F#, dotnet format for C#
           dotnet tool run fantomas --check .
           dotnet format --verify-no-changes
