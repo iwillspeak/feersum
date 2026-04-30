@@ -37,3 +37,6 @@ counter.csv
 *.lscache
 # Verify received (unverified) snapshots - never commit these
 *.received.*
+
+BenchmarkDotNet.Artifacts
+*.local.json
