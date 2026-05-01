@@ -160,9 +160,9 @@ module Stx =
     /// Convert a raw CST `Expression` into an `Stx` object ready for expansion.
     /// Emits diagnostics into `diag` for reader-level errors such as malformed
     /// byte values, missing character values, and empty dotted-pair tails.
-    let rec ofExpr (reg: SourceRegistry) (docId: DocId) (diag: DiagnosticBag) (expr: Expression) : Stx =
-        let loc = SourceRegistry.resolveLocation reg docId expr.SyntaxRange
-        let recurse = ofExpr reg docId diag
+    let rec ofExpr (doc: TextDocument) (diag: DiagnosticBag) (expr: Expression) : Stx =
+        let loc = TextDocument.rangeToLocation doc expr.SyntaxRange
+        let recurse = ofExpr doc diag
 
         match expr with
         | SymbolNode s ->

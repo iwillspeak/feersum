@@ -14,28 +14,30 @@ open Feersum.CompilerServices.Syntax.Parse
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec private read (registry: SourceRegistry) (docId: DocId) : CompileInput =
+let rec private read () : CompileInput =
     let rec readWithState prompt previous =
-        let line = ReadLine.Read(prompt)
+        let line = ReadLine.Read prompt
 
         let source =
             match previous with
             | Some prefix -> prefix + "\n" + line
             | None -> line
 
-        match Parse.readExpr1At registry docId "repl" source |> ParseResult.toResult with
-        | Result.Ok tree -> CompileInput.Script(registry, tree) |> Ok
-        | Result.Error diagnostics ->
+        let parsed = Parse.readExpr1 "repl" source
+
+        if ParseResult.hasErrors parsed then
             if line = "" && source.EndsWith("\n\n") then
-                Result.Error(diagnostics)
+                Error parsed.Diagnostics
             else
-                readWithState "+> " (Some(source))
+                readWithState "+> " (Some source)
+        else
+            CompileInput.Script parsed.Root |> Ok
 
     match readWithState "§> " None with
-    | Result.Ok input -> input
-    | Result.Error diagnostics ->
+    | Ok input -> input
+    | Error diagnostics ->
         diagnostics |> dumpDiagnostics
-        read registry docId
+        read ()
 
 /// Print an object out to the console. Used to serialise the external
 /// representation form an eval
@@ -45,12 +47,11 @@ let private print value =
 /// Read, Execute, Print Loop
 ///
 /// Repeatedly reads input and prints output
-let rec private repl registry evaluator =
-    let docId = SourceRegistry.register registry "repl" ""
+let rec private repl evaluator =
 
     let rec loop () =
         try
-            match read registry docId |> evaluator with
+            match read () |> evaluator with
             | Result.Ok _ -> ()
             | Result.Error diags -> dumpDiagnostics diags
         with ex ->
@@ -71,4 +72,4 @@ let runRepl () =
         { defaultScriptOptions with
             References = coreReferences }
 
-    evalWith options >> Result.map print |> repl (SourceRegistry.empty ())
+    evalWith options >> Result.map print |> repl

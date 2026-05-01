@@ -10,8 +10,7 @@ open Feersum.CompilerServices.Text
 
 /// Parse, bind, and lower a Scheme expression. Returns the lowered BoundBody.
 let private lowerScheme source =
-    let registry = SourceRegistry.empty ()
-    let result = Parse.readProgram registry "program" source
+    let result = Parse.readProgram "program" source
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" source result.Diagnostics
@@ -19,8 +18,7 @@ let private lowerScheme source =
     let env = Environments.empty
     let initialScope, preloaded = Environments.intoParts env
 
-    let bound =
-        Binder.bindProgram registry initialScope preloaded [] Map.empty [ result.Root ]
+    let bound = Binder.bindProgram initialScope preloaded [] Map.empty [ result.Root ]
     // if hasErrors bound.Diagnostics then
     //     failwithf "Bind error in '%s': %A" source bound.Diagnostics
 

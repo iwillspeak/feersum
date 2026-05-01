@@ -5,6 +5,7 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Ice
 
@@ -56,7 +57,6 @@ module private BinderDiagnostics =
 type private BinderCtx =
     { Diagnostics: DiagnosticBag
       mutable Libraries: LibrarySignature<StorageRef> list
-      SourceRegistry: SourceRegistry
       mutable Macros: Map<Ident, SyntaxTransformer> }
 
 module private Binderctx =
@@ -64,9 +64,8 @@ module private Binderctx =
     /// Create a new BinderCtx with the given scope and name
     ///
     /// Seeds the scope from the given `scope`.
-    let create sourceRegistry libs macros =
-        { SourceRegistry = sourceRegistry
-          Libraries = libs
+    let create libs macros =
+        { Libraries = libs
           Diagnostics = DiagnosticBag.Empty
           Macros = macros }
 
@@ -1051,19 +1050,17 @@ module Binder =
     /// Takes a list of dcocument and expression pairs and binds them in the
     /// given scope.
     let bindProgram
-        (sourceRegistry: SourceRegistry)
         (stxEnv: StxEnvironment)
         (scope: Map<Ident, StorageRef>)
         (libs: seq<LibrarySignature<StorageRef>>)
         (macros: Map<Ident, SyntaxTransformer>)
-        (units: Tree.Program list)
+        (units: SyntaxRoot<Program> list)
         : BoundSyntaxTree =
-        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs) macros
+        let ctx = Binderctx.create (List.ofSeq libs) macros
 
         let toBind =
             units
-            |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry DocId.Synthetic // FIXME : Remove once we reove docId
-                                                                ctx.Diagnostics))
+            |> Seq.collect (fun unit -> unit.Item.Body |> Seq.map (Stx.ofExpr unit.Document ctx.Diagnostics))
 
         bindStx ctx stxEnv scope (List.ofSeq toBind)
 
@@ -1073,19 +1070,17 @@ module Binder =
     /// used for the REPL and for single-file scripts, where we don't have a
     /// sequence of compilation units but just a single script body to bind.
     let bindScript
-        (sourceRegistry: SourceRegistry)
         (stxEnv: StxEnvironment)
         (scope: Map<Ident, StorageRef>)
         (libs: seq<LibrarySignature<StorageRef>>)
         (macros: Map<Ident, SyntaxTransformer>)
-        (script: Tree.ScriptProgram)
+        (script: SyntaxRoot<ScriptProgram>)
         : BoundSyntaxTree =
-        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs) macros
+        let ctx = Binderctx.create (List.ofSeq libs) macros
 
         let toBind =
-            script.Body
-            |> Option.map (Stx.ofExpr sourceRegistry DocId.Synthetic // FIXME remove once we remove docId
-                             ctx.Diagnostics)
+            script.Item.Body
+            |> Option.map (Stx.ofExpr script.Document ctx.Diagnostics) // FIXME remove once we remove docId
             |> Option.toList
 
         bindStx ctx stxEnv scope toBind

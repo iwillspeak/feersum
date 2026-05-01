@@ -286,8 +286,7 @@ type Form internal (red: SyntaxNode) =
         |> Seq.choose (NodeOrToken.asToken)
         |> Seq.tryFind (tokenOfKind AstKind.OPEN_PAREN)
 
-    member public _.Body =
-        red.Children() |> Seq.choose (fun n -> Expression.TryCast(n))
+    member public _.Body = red.Children() |> Seq.choose (fun n -> Expression.TryCast(n))
 
     member public _.DottedTail =
         red.Children() |> Seq.tryPick (fun n -> DottedTail.TryCast(n))
@@ -301,8 +300,7 @@ and DottedTail internal (red: SyntaxNode) =
 
     inherit AstNode(red)
 
-    member public _.Body =
-        red.Children() |> Seq.tryPick (fun n -> Expression.TryCast(n))
+    member public _.Body = red.Children() |> Seq.tryPick (fun n -> Expression.TryCast(n))
 
     static member TryCast(node: SyntaxNode) =
         match node.Kind |> greenToAst with
@@ -338,16 +336,14 @@ and Quoted internal (red: SyntaxNode) =
 
     inherit Expression(red)
 
-    member x.Inner =
-        x.RawNode.Children() |> Seq.tryPick (fun n -> Expression.TryCast(n))
+    member x.Inner = x.RawNode.Children() |> Seq.tryPick (fun n -> Expression.TryCast(n))
 
 /// Vector constant node
 and Vec internal (red: SyntaxNode) =
 
     inherit Expression(red)
 
-    member x.Body =
-        x.RawNode.Children() |> Seq.choose (fun n -> Expression.TryCast(n))
+    member x.Body = x.RawNode.Children() |> Seq.choose (fun n -> Expression.TryCast(n))
 
 /// Byte Vector constant node
 and ByteVec internal (red: SyntaxNode) =
