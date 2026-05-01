@@ -7,7 +7,7 @@ open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Text
-open Feersum.CompilerServices.Syntax.Factories.Convenience
+open Feersum.CompilerServices.Syntax.Factories
 open Feersum.CompilerServices.Syntax.Tree
 open Serehfa
 

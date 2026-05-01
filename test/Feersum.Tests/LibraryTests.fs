@@ -4,7 +4,7 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Libraries
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Text
-open Feersum.CompilerServices.Syntax.Factories.Convenience
+open Feersum.CompilerServices.Syntax.Factories
 open Xunit
 open Feersum.CompilerServices.Utils
 

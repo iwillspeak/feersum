@@ -217,7 +217,8 @@ module private BuiltinMacros =
                 | None -> icef "no body in new-format builtin macro '%s'" name
                 | Some expr ->
                     let diags = DiagnosticBag.Empty
-                    let stx = Stx.ofExpr registry result.Root.DocId diags expr
+                    let stx = Stx.ofExpr registry DocId.Synthetic // FIXME: Remove once we remove docId
+                                     diags expr
 
                     let id, stxEnv' = Stx.reserveMacro stxEnv name
 

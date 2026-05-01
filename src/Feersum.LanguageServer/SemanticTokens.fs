@@ -65,7 +65,8 @@ module SemanticTokenizer =
         let registry = SourceRegistry.empty ()
         let result = readProgram registry path content
 
-        match SourceRegistry.tryLookup registry result.Root.DocId with
+        // FIXME: replace with result.Doc / once we remove DocId from the API
+        match SourceRegistry.tryLookup registry DocId.Synthetic with
         | None -> [||]
         | Some(doc: TextDocument) ->
             let acc = ResizeArray<uint32>()

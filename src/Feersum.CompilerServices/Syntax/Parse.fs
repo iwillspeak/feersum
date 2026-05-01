@@ -344,24 +344,20 @@ let readRaw mode name (line: string) =
 /// Read a sequence of expressions as a program from the given `input`.
 /// Requires a source registry to track where the syntax came from.
 let readProgram (registry: SourceRegistry) name input =
-    let id = SourceRegistry.register registry name input
-    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
+    readRaw Program name input |> ParseResult.map (fun x -> new Program(x))
 
 /// Read a sequence of expressions as a program, updating an existing document.
 let readProgramAt (registry: SourceRegistry) (id: DocId) name input =
-    SourceRegistry.update registry id name input
-    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
+    readRaw Program name input |> ParseResult.map (fun x -> new Program(x))
 
 /// Read a single expression from the named input `line`.
 /// Requires a source registry to track where the syntax came from.
 let readExpr1 (registry: SourceRegistry) name line =
-    let id = SourceRegistry.register registry name line
-    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
+    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x))
 
 /// Read a single expression, updating an existing document.
 let readExpr1At (registry: SourceRegistry) (id: DocId) name line =
-    SourceRegistry.update registry id name line
-    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
+    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x))
 
 /// Read an expression from source code on disk into the provided registry.
 let parseFile (registry: SourceRegistry) path =

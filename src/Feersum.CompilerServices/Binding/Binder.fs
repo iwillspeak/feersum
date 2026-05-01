@@ -1062,7 +1062,8 @@ module Binder =
 
         let toBind =
             units
-            |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry unit.DocId ctx.Diagnostics))
+            |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry DocId.Synthetic // FIXME : Remove once we reove docId
+                                                                ctx.Diagnostics))
 
         bindStx ctx stxEnv scope (List.ofSeq toBind)
 
@@ -1083,7 +1084,8 @@ module Binder =
 
         let toBind =
             script.Body
-            |> Option.map (Stx.ofExpr sourceRegistry script.DocId ctx.Diagnostics)
+            |> Option.map (Stx.ofExpr sourceRegistry DocId.Synthetic // FIXME remove once we remove docId
+                             ctx.Diagnostics)
             |> Option.toList
 
         bindStx ctx stxEnv scope toBind

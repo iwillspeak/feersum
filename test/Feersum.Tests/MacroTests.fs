@@ -4,7 +4,7 @@ open Xunit
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Stx
 open Feersum.CompilerServices.Syntax.Tree
-open Feersum.CompilerServices.Syntax.Factories.Convenience
+open Feersum.CompilerServices.Syntax.Factories
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Text
@@ -562,7 +562,8 @@ let private parseSyntaxRules (name: string) (source: string) : Macro =
     let tree =
         prog.Root.Body
         |> Seq.exactlyOne
-        |> fun expr -> Stx.ofExpr registry prog.Root.DocId DiagnosticBag.Empty expr
+        |> fun expr -> Stx.ofExpr registry DocId.Synthetic // FIXME proper call once docId is gone
+                         DiagnosticBag.Empty expr
 
     let diag = DiagnosticBag.Empty
     let env = Environments.emptyStx

@@ -1,6 +1,6 @@
 module SyntaxFactoriesTests
 
-open Feersum.CompilerServices.Syntax.Factories.Convenience
+open Feersum.CompilerServices.Syntax.Factories
 open Xunit
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Tree
