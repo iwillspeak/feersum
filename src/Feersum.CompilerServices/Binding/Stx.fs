@@ -41,7 +41,7 @@ module Ident =
 /// A self-evaluating atomic datum at the syntactic level.
 /// These are the R7RS simple datums: booleans, numbers, characters, strings,
 /// and bytevectors.  Vectors are compound (Stx.Vec); the empty list / null is
-/// Stx.List([], None, loc).
+/// Stx.List([], None, pos).
 [<RequireQualifiedAccess>]
 type StxDatum =
     | Boolean of bool
@@ -51,34 +51,53 @@ type StxDatum =
     | ByteVector of byte list
 
 
+/// A compact source position for a syntax node.
+/// Stores the document and raw Firethorn range, deferring the expensive
+/// offset→line/column conversion until a human-readable location is needed.
+[<Struct>]
+type StxPos =
+    { Doc: TextDocument
+      Range: Firethorn.TextRange }
+
+    /// Resolve to a human-readable TextLocation. Performs a binary search
+    /// over LineStarts; call only when a diagnostic or sequence point is needed.
+    member x.Location = TextDocument.rangeToLocation x.Doc x.Range
+
+module StxPos =
+    /// Sentinel value for compiler-synthesised nodes that have no source origin.
+    let missing =
+        { Doc = { Id = DocId.Synthetic; Path = "missing"; LineStarts = [] }
+          Range = Unchecked.defaultof<Firethorn.TextRange> }
+
+
 /// The intermediate hygiene-annotated syntax type.
-/// Every node carries a source location; `Closure` nodes carry the definition-site scope.
+/// Every node carries a source position; `Closure` nodes carry the definition-site scope.
 [<RequireQualifiedAccess>]
 type Stx =
     /// An identifier (raw, unresolved name).
-    | Id of name: string * loc: TextLocation
+    | Id of name: string * pos: StxPos
     /// A self-evaluating datum — number, boolean, character, string, or bytevector.
-    | Datum of value: StxDatum * loc: TextLocation
+    | Datum of value: StxDatum * pos: StxPos
     /// A list — `(e1 e2 … en)` when tail is None; `(e1 … en . t)` when tail is Some t.
-    | List of items: Stx list * tail: Stx option * loc: TextLocation
+    | List of items: Stx list * tail: Stx option * pos: StxPos
     /// A syntactic closure — expand `inner` in `env` rather than the ambient scope.
     | Closure of inner: Stx * env: StxEnvironment
     /// A vector literal — `#(e1 e2 … en)`.
-    | Vec of items: Stx list * loc: TextLocation
+    | Vec of items: Stx list * pos: StxPos
     /// A reader-level error node — produced by `Stx.ofExpr` when the CST
     /// contains malformed syntax (invalid byte, missing char value, etc.).
     /// The expander treats this as a silent no-op error so downstream passes
     /// don't emit duplicate diagnostics.
-    | Error of loc: TextLocation
+    | Error of pos: StxPos
 
-    member x.Loc =
+    member x.Pos =
         match x with
-        | Id(_, l)
-        | Datum(_, l)
-        | List(_, _, l)
-        | Vec(_, l)
-        | Error l -> l
-        | Closure(inner, _) -> inner.Loc
+        | Id(_, p)
+        | Datum(_, p)
+        | List(_, _, p)
+        | Vec(_, p)
+        | Error p -> p
+        | Closure(inner, _) -> inner.Pos
 
 
 /// A Single Binding in the Syntax Environment
@@ -145,11 +164,11 @@ module Stx =
         let shape, envOpt = peel stx
 
         match shape with
-        | Stx.Id(name, loc) -> StxId(name, loc, envOpt)
-        | Stx.Datum(value, loc) -> StxDatum(value, loc)
-        | Stx.List(items, tail, loc) -> StxList(items, tail, loc, envOpt)
-        | Stx.Vec(items, loc) -> StxVec(items, loc, envOpt)
-        | Stx.Error loc -> StxError loc
+        | Stx.Id(name, pos) -> StxId(name, pos, envOpt)
+        | Stx.Datum(value, pos) -> StxDatum(value, pos)
+        | Stx.List(items, tail, pos) -> StxList(items, tail, pos, envOpt)
+        | Stx.Vec(items, pos) -> StxVec(items, pos, envOpt)
+        | Stx.Error pos -> StxError pos
         | Stx.Closure _ -> ice "peel returned a Closure (impossible)"
 
     // ── CST conversion ─────────────────────────────────────────────────────
@@ -161,53 +180,53 @@ module Stx =
     /// Emits diagnostics into `diag` for reader-level errors such as malformed
     /// byte values, missing character values, and empty dotted-pair tails.
     let rec ofExpr (doc: TextDocument) (diag: DiagnosticBag) (expr: Expression) : Stx =
-        let loc = TextDocument.rangeToLocation doc expr.SyntaxRange
+        let pos = { Doc = doc; Range = expr.SyntaxRange }
         let recurse = ofExpr doc diag
 
         match expr with
         | SymbolNode s ->
             match s.CookedValue with
-            | Ok cooked -> Stx.Id(cooked, loc)
+            | Ok cooked -> Stx.Id(cooked, pos)
             | Error msg ->
-                diag.Emit malformedDatum loc msg
-                Stx.Error loc
+                diag.Emit malformedDatum pos.Location msg
+                Stx.Error pos
         | ConstantNode c ->
             match c.Value with
-            | Some(NumVal n) -> Stx.Datum(StxDatum.Number n, loc)
-            | Some(StrVal(Ok s)) -> Stx.Datum(StxDatum.Str s, loc)
+            | Some(NumVal n) -> Stx.Datum(StxDatum.Number n, pos)
+            | Some(StrVal(Ok s)) -> Stx.Datum(StxDatum.Str s, pos)
             | Some(StrVal(Error msg)) ->
-                diag.Emit malformedDatum loc msg
-                Stx.Error loc
-            | Some(BoolVal b) -> Stx.Datum(StxDatum.Boolean b, loc)
-            | Some(CharVal(Some ch)) -> Stx.Datum(StxDatum.Character ch, loc)
+                diag.Emit malformedDatum pos.Location msg
+                Stx.Error pos
+            | Some(BoolVal b) -> Stx.Datum(StxDatum.Boolean b, pos)
+            | Some(CharVal(Some ch)) -> Stx.Datum(StxDatum.Character ch, pos)
             | Some(CharVal None) ->
-                diag.Emit malformedDatum loc "invalid character literal"
-                Stx.Error loc
+                diag.Emit malformedDatum pos.Location "invalid character literal"
+                Stx.Error pos
             | None ->
-                diag.Emit malformedDatum loc "invalid datum value"
-                Stx.Error loc
+                diag.Emit malformedDatum pos.Location "invalid datum value"
+                Stx.Error pos
         | FormNode f ->
             let body = f.Body |> Seq.map recurse |> List.ofSeq
 
             match f.DottedTail with
-            | None -> Stx.List(body, None, loc)
+            | None -> Stx.List(body, None, pos)
             | Some tail ->
                 match tail.Body with
-                | Some t -> Stx.List(body, Some(recurse t), loc)
+                | Some t -> Stx.List(body, Some(recurse t), pos)
                 | None ->
-                    diag.Emit malformedDatum loc "dotted pair must have a tail expression"
-                    Stx.List(body, None, loc)
+                    diag.Emit malformedDatum pos.Location "dotted pair must have a tail expression"
+                    Stx.List(body, None, pos)
         | QuotedNode q ->
             // `'datum` is reader sugar for `(quote datum)` — desugar here at
             // the CST boundary so Stx never carries a dedicated Quoted node.
             match q.Inner with
             | None ->
-                diag.Emit malformedDatum loc "empty quotation"
-                Stx.Error loc
-            | Some inner -> Stx.List([ Stx.Id("quote", loc); recurse inner ], None, loc)
+                diag.Emit malformedDatum pos.Location "empty quotation"
+                Stx.Error pos
+            | Some inner -> Stx.List([ Stx.Id("quote", pos); recurse inner ], None, pos)
         | VecNode v ->
             let items = v.Body |> Seq.map recurse |> List.ofSeq
-            Stx.Vec(items, loc)
+            Stx.Vec(items, pos)
         | ByteVecNode b ->
             let results = b.Body |> List.map (fun bv -> bv.Value)
 
@@ -218,8 +237,8 @@ module Stx =
                     | Ok _ -> None)
 
             if not (List.isEmpty errors) then
-                errors |> List.iter (fun msg -> diag.Emit malformedDatum loc msg)
-                Stx.Error loc
+                errors |> List.iter (fun msg -> diag.Emit malformedDatum pos.Location msg)
+                Stx.Error pos
             else
                 let bytes =
                     results
@@ -227,7 +246,7 @@ module Stx =
                         | Ok by -> Some by
                         | _ -> None)
 
-                Stx.Datum(StxDatum.ByteVector bytes, loc)
+                Stx.Datum(StxDatum.ByteVector bytes, pos)
 
     /// Map a well-known keyword name to its `SpecialFormKind`, or return `None`
     /// if the name is not a built-in special form.

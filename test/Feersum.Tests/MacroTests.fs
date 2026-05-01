@@ -14,7 +14,7 @@ open Feersum.CompilerServices.Utils
 // Test the new Stx-based Macro API
 // Helper functions for creating Stx values for testing
 
-let private dummyLoc = TextLocation.Missing
+let private dummyLoc = StxPos.missing
 
 let private stxId name = Stx.Id(name, dummyLoc)
 

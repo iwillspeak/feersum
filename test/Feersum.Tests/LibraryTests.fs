@@ -3,14 +3,13 @@ module LibraryTests
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Libraries
 open Feersum.CompilerServices
-open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax.Factories
 open Xunit
 open Feersum.CompilerServices.Utils
 
 // Test the new Stx-based Library API
 // Helper functions for creating Stx values for testing
-let private dummyLoc = TextLocation.Missing
+let private dummyLoc = StxPos.missing
 
 let private id name =
     Feersum.CompilerServices.Binding.Stx.Id(name, dummyLoc)
