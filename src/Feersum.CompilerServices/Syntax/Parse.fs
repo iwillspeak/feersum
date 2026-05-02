@@ -18,10 +18,23 @@ module private ParserDiagnostics =
     /// error is available.
     let parseError = DiagnosticKind.Create DiagnosticLevel.Error 10 "Parse error"
 
+/// Type to represent the root of a syntax tree.
+///
+/// This is the type returned by the parser. It contains the root of the syntax
+/// tree, along with the document that the syntax was parsed from.
+type public SyntaxRoot<'a> = { Item: 'a; Document: TextDocument }
+
+module SyntaxRoot =
+
+    /// Map a syntax root to a new type, preserving the document and diagnostics.
+    let public map mapper root =
+        { Item = mapper root.Item
+          Document = root.Document }
+
 /// Type to represent parse results.
 ///
 /// Parser results represent the result of a parser operation. A result
-/// always contains some syntax item `Root`, along with a list of
+/// always contains some syntax root `Root`, along with a list of
 /// `Diagnostics`.
 ///
 /// Parser results can be transformed and consumed with `ParseResult.map`,
@@ -50,15 +63,6 @@ module ParseResult =
         let state = List.fold (fun s r -> folder s r.Root) seed resultList
         let diags = List.foldBack (fun r acc -> r.Diagnostics @ acc) resultList []
         { Diagnostics = diags; Root = state }
-
-    /// Convert a parser response into a plain result type
-    ///
-    /// This drops any tree from the error, but opens up parser responses to
-    /// being processed using standard error handling
-    let public toResult response =
-        match response.Diagnostics with
-        | [] -> response.Root |> Ok
-        | errs -> errs |> Result.Error
 
 /// Parser Type
 ///
@@ -93,11 +97,7 @@ module private ParserState =
         let pos =
             match List.tryHead state.Tokens with
             | Some token -> token.Offset
-            | _ ->
-                // FIXME: If we have no tokens let the diagnostic should
-                // probably point to the beginning of the file rather than the
-                // end of it.
-                0
+            | _ -> 0u
             |> TextDocument.offsetToPoint state.Document
             |> TextLocation.Point
 
@@ -109,7 +109,9 @@ module private ParserState =
             builder.BuildRoot(rootKind |> SyntaxUtils.astToGreen) |> SyntaxNode.CreateRoot
 
         { Diagnostics = state.Diagnostics
-          Root = root }
+          Root =
+            { Item = root
+              Document = state.Document } }
 
 
 /// Type to represent different kinds of programs we can read
@@ -174,7 +176,9 @@ let private parseConstant (builder: GreenNodeBuilder) state =
                     let loc =
                         TextLocation.Span(
                             TextDocument.offsetToPoint state.Document token.Offset,
-                            TextDocument.offsetToPoint state.Document (token.Offset + token.Lexeme.Length)
+                            TextDocument.offsetToPoint
+                                state.Document
+                                (TextDocument.advance token.Offset token.Lexeme.Length)
                         )
 
                     sprintf "Unexpected token %A '%s'" k token.Lexeme
@@ -310,7 +314,7 @@ and private parseExprSeq builder endKinds state =
 /// Parse Program
 ///
 /// Read a sequence of expressions as a single program.
-let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
+let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxRoot<SyntaxNode>> =
     skipAtmosphere builder state
     |> parseExprSeq builder [ TokenKind.EndOfFile ]
     |> expect builder TokenKind.EndOfFile AstKind.EOF
@@ -319,7 +323,7 @@ let private parseProgram (builder: GreenNodeBuilder) state : ParseResult<SyntaxN
 /// Parse Expression
 ///
 /// Reads a single expression from the lexer
-let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxNode> =
+let private parseScript (builder: GreenNodeBuilder) state : ParseResult<SyntaxRoot<SyntaxNode>> =
     skipAtmosphere builder state
     |> parseExpr builder
     |> expect builder TokenKind.EndOfFile AstKind.EOF
@@ -341,29 +345,19 @@ let readRaw mode name (line: string) =
 
 /// Read a sequence of expressions as a program from the given `input`.
 /// Requires a source registry to track where the syntax came from.
-let readProgram (registry: SourceRegistry) name input =
-    let id = SourceRegistry.register registry name input
-    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
-
-/// Read a sequence of expressions as a program, updating an existing document.
-let readProgramAt (registry: SourceRegistry) (id: DocId) name input =
-    SourceRegistry.update registry id name input
-    readRaw Program name input |> ParseResult.map (fun x -> new Program(x, id))
+let readProgram name input =
+    readRaw Program name input
+    |> ParseResult.map (SyntaxRoot.map (fun x -> new Program(x)))
 
 /// Read a single expression from the named input `line`.
 /// Requires a source registry to track where the syntax came from.
-let readExpr1 (registry: SourceRegistry) name line =
-    let id = SourceRegistry.register registry name line
-    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
-
-/// Read a single expression, updating an existing document.
-let readExpr1At (registry: SourceRegistry) (id: DocId) name line =
-    SourceRegistry.update registry id name line
-    readRaw Script name line |> ParseResult.map (fun x -> new ScriptProgram(x, id))
+let readExpr1 name line =
+    readRaw Script name line
+    |> ParseResult.map (SyntaxRoot.map (fun x -> new ScriptProgram(x)))
 
 /// Read an expression from source code on disk into the provided registry.
-let parseFile (registry: SourceRegistry) path =
+let parseFile path =
     async {
         let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
-        return readProgram registry path text
+        return readProgram path text
     }

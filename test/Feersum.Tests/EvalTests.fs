@@ -7,22 +7,27 @@ open Feersum.CompilerServices.Utils
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Compile
 open Feersum.CompilerServices.Text
-open Feersum.CompilerServices.Syntax.Factories.Convenience
+open Feersum.CompilerServices.Syntax.Factories
 open Feersum.CompilerServices.Syntax.Tree
 open Serehfa
 
 let private feeri = eval >> Result.unwrap >> cilExternalRepr
 
+let private dummyDoc = TextDocument.fromParts "dummy.scm" ""
+
 let private interpProg (prog: Program) =
-    CompileInput.Program(SourceRegistry.empty (), [ prog ]) |> feeri
+    CompileInput.Program [ { Item = prog; Document = dummyDoc } ] |> feeri
 
 let private interpScr (scr: ScriptProgram) =
-    CompileInput.Script(SourceRegistry.empty (), scr) |> feeri
+    CompileInput.Script { Item = scr; Document = dummyDoc } |> feeri
 
 let private tryReadSingle expr =
-    let registry = SourceRegistry.empty ()
-    let script = readExpr1 registry "repl" expr |> ParseResult.toResult |> Result.unwrap
-    CompileInput.Script(registry, script)
+    let script = readExpr1 "repl" expr
+
+    if ParseResult.hasErrors script then
+        failwithf "Failed to parse expression: %A" script.Diagnostics
+
+    CompileInput.Script script.Root
 
 [<Fact>]
 let ``evaluate atoms`` () =

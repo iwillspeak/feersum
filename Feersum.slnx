@@ -5,17 +5,17 @@
     <Project Path="src/Feersum.CompilerServices/Feersum.CompilerServices.fsproj" />
     <Project Path="src/Feersum.Stage1/Feersum.Stage1.fsproj" />
     <Project Path="src/Serehfa/Serehfa.csproj" />
-    <Project Path="src/Feersum.Sdk/Feersum.Sdk.proj" Type="{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}" />
-    <Project Path="src/Feersum.Templates/Feersum.Templates.proj" Type="{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}" />
-    <Project Path="src/Feersum.Core/Feersum.Core.scmproj" Type="{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}" />
+    <Project Path="src/Feersum.Sdk/Feersum.Sdk.proj" Type="b4fd8357-953d-49de-a05e-ddbfd6e9489c" />
+    <Project Path="src/Feersum.Templates/Feersum.Templates.proj" Type="b4fd8357-953d-49de-a05e-ddbfd6e9489c" />
+    <Project Path="src/Feersum.Core/Feersum.Core.scmproj" Type="b4fd8357-953d-49de-a05e-ddbfd6e9489c" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/Feersum.Tests/Feersum.Tests.fsproj" />
     <Project Path="test/Feersum.LanguageServer.Tests/Feersum.LanguageServer.Tests.fsproj" />
   </Folder>
   <Folder Name="/examples/">
-    <Project Path="examples/HelloWorld/HelloWorld.scmproj" Type="{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}" />
-    <Project Path="examples/MultiFile/MultiFile.scmproj" Type="{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}" />
-    <Project Path="examples/MultiProject/MultiProject.scmproj" Type="{B4FD8357-953D-49DE-A05E-DDBFD6E9489C}" />
+    <Project Path="examples/HelloWorld/HelloWorld.scmproj" Type="b4fd8357-953d-49de-a05e-ddbfd6e9489c" />
+    <Project Path="examples/MultiFile/MultiFile.scmproj" Type="b4fd8357-953d-49de-a05e-ddbfd6e9489c" />
+    <Project Path="examples/MultiProject/MultiProject.scmproj" Type="b4fd8357-953d-49de-a05e-ddbfd6e9489c" />
   </Folder>
 </Solution>

@@ -5,6 +5,7 @@ open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Syntax
+open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Ice
 
@@ -56,7 +57,6 @@ module private BinderDiagnostics =
 type private BinderCtx =
     { Diagnostics: DiagnosticBag
       mutable Libraries: LibrarySignature<StorageRef> list
-      SourceRegistry: SourceRegistry
       mutable Macros: Map<Ident, SyntaxTransformer> }
 
 module private Binderctx =
@@ -64,9 +64,8 @@ module private Binderctx =
     /// Create a new BinderCtx with the given scope and name
     ///
     /// Seeds the scope from the given `scope`.
-    let create sourceRegistry libs macros =
-        { SourceRegistry = sourceRegistry
-          Libraries = libs
+    let create libs macros =
+        { Libraries = libs
           Diagnostics = DiagnosticBag.Empty
           Macros = macros }
 
@@ -255,10 +254,7 @@ module private Impl =
 
     // Get the Syntax Location for a Given Syntax Node
     let private getSyntaxLocation (_ctx: BinderCtx) (stx: Stx) : TextLocation =
-        // FIXME: We _should_ have to look the stx up in the source registry
-        //        so we can `rangeToLocation` the span. But the current slop
-        //        means the locations are actually just denormalised on each stx
-        stx.Loc
+        stx.Pos.Location
 
 
     /// Parse a Formals List Pattern
@@ -331,9 +327,9 @@ module private Impl =
             []
 
     /// Emit a diagnostic for an ill-formed special form
-    let private illFormedInCtx (ctx: FrameCtx) (loc: TextLocation) (formName: string) =
+    let private illFormedInCtx (ctx: FrameCtx) (loc: StxPos) (formName: string) =
         $"Ill-formed '{formName}' special form"
-        |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.illFormedSpecialForm loc
+        |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.illFormedSpecialForm loc.Location
 
         BoundExpr.Error, Map.empty
 
@@ -447,7 +443,7 @@ module private Impl =
         | Ok library -> importLibraryExports ctx stxEnv library
 
         | Result.Error msg ->
-            ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.invalidImport stx.Loc msg
+            ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.invalidImport stx.Pos.Location msg
             stxEnv
 
     let registerMacro (ctx: FrameCtx) (id: Ident) (mac: SyntaxTransformer) =
@@ -508,11 +504,11 @@ module private Impl =
                     match expanded with
                     | Ok newForm -> bindInContext ctx stxEnv newForm
                     | Result.Error err ->
-                        err |> ctx.BinderCtx.Diagnostics.Emit MacroDiagnostics.macroExpansionError loc
+                        err |> ctx.BinderCtx.Diagnostics.Emit MacroDiagnostics.macroExpansionError loc.Location
                         BoundExpr.Error, stxEnv
                 | None ->
                     $"Macro '{name}' is not defined in the current context"
-                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc.Location
 
                     BoundExpr.Error, stxEnv
 
@@ -520,7 +516,7 @@ module private Impl =
                 BoundExpr.Load(storage) |> fun x -> bindApplication ctx stxEnv x args tail
             | NameResolution.Unbound ->
                 $"Macro or procedure '{name}' is not bound in the current context"
-                |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+                |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc.Location
 
                 BoundExpr.Error, stxEnv
         | head :: args ->
@@ -536,14 +532,14 @@ module private Impl =
 
             | None ->
                 $"Did you mean `'()`?"
-                |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.unquotedNull loc
+                |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.unquotedNull loc.Location
 
                 BoundExpr.Literal BoundLiteral.Null, stxEnv
 
     and bindLibrary
         (ctx: FrameCtx)
         (stxEnv: StxEnvironment)
-        loc
+        (loc: StxPos)
         (library: LibraryDefinition)
         : BoundExpr * StxEnvironment =
 
@@ -564,7 +560,7 @@ module private Impl =
                                 match Libraries.resolveImport ctx.BinderCtx.Libraries lib with
                                 | Ok resolved -> importLibraryExports libCtx stxEnv resolved
                                 | Result.Error err ->
-                                    emit BinderDiagnostics.invalidImport loc err
+                                    emit BinderDiagnostics.invalidImport loc.Location err
                                     stxEnv)
                             stxEnv
                     | _ -> stxEnv)
@@ -589,12 +585,12 @@ module private Impl =
             | NameResolution.SpecialForm _
             | NameResolution.Macro _ ->
                 $"Invalid export of syntax item '{id}'"
-                |> emit BinderDiagnostics.invalidExport loc
+                |> emit BinderDiagnostics.invalidExport loc.Location
 
                 None
             | _ ->
                 $"Could not find exported item '{id}'"
-                |> emit BinderDiagnostics.missingExport loc
+                |> emit BinderDiagnostics.missingExport loc.Location
 
                 None
 
@@ -680,14 +676,14 @@ module private Impl =
                 |> Option.map (fun d -> BoundExpr.Quoted d, stxEnv)
                 |> Option.defaultWith (fun () ->
                     $"Malformed datum in quote form"
-                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedDatum loc
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.malformedDatum loc.Location
 
                     BoundExpr.Error, stxEnv)
             | _ -> illFormed "quote"
 
         | SpecialFormKind.SetBang ->
             match args with
-            | [ StxId(name, loc, nameEnv); value ] ->
+            | [ StxId(name, idLoc, nameEnv); value ] ->
                 let nameEnv = nameEnv |> Option.defaultValue stxEnv
 
                 match resolveName ctx nameEnv name with
@@ -697,12 +693,12 @@ module private Impl =
                 | NameResolution.SpecialForm _
                 | NameResolution.Macro _ ->
                     $"Invalid use of syntax item '{name}' in set! form"
-                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol idLoc.Location
 
                     BoundExpr.Error, stxEnv
                 | NameResolution.Unbound ->
                     $"The symbol '{name}' is not defined in the current context and cannot be assigned to"
-                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol loc
+                    |> ctx.BinderCtx.Diagnostics.Emit BinderDiagnostics.undefinedSymbol idLoc.Location
 
                     BoundExpr.Error, stxEnv
             | _ -> illFormed "set!"
@@ -1051,18 +1047,17 @@ module Binder =
     /// Takes a list of dcocument and expression pairs and binds them in the
     /// given scope.
     let bindProgram
-        (sourceRegistry: SourceRegistry)
         (stxEnv: StxEnvironment)
         (scope: Map<Ident, StorageRef>)
         (libs: seq<LibrarySignature<StorageRef>>)
         (macros: Map<Ident, SyntaxTransformer>)
-        (units: Tree.Program list)
+        (units: SyntaxRoot<Program> list)
         : BoundSyntaxTree =
-        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs) macros
+        let ctx = Binderctx.create (List.ofSeq libs) macros
 
         let toBind =
             units
-            |> Seq.collect (fun unit -> unit.Body |> Seq.map (Stx.ofExpr sourceRegistry unit.DocId ctx.Diagnostics))
+            |> Seq.collect (fun unit -> unit.Item.Body |> Seq.map (Stx.ofExpr unit.Document ctx.Diagnostics))
 
         bindStx ctx stxEnv scope (List.ofSeq toBind)
 
@@ -1072,18 +1067,17 @@ module Binder =
     /// used for the REPL and for single-file scripts, where we don't have a
     /// sequence of compilation units but just a single script body to bind.
     let bindScript
-        (sourceRegistry: SourceRegistry)
         (stxEnv: StxEnvironment)
         (scope: Map<Ident, StorageRef>)
         (libs: seq<LibrarySignature<StorageRef>>)
         (macros: Map<Ident, SyntaxTransformer>)
-        (script: Tree.ScriptProgram)
+        (script: SyntaxRoot<ScriptProgram>)
         : BoundSyntaxTree =
-        let ctx = Binderctx.create sourceRegistry (List.ofSeq libs) macros
+        let ctx = Binderctx.create (List.ofSeq libs) macros
 
         let toBind =
-            script.Body
-            |> Option.map (Stx.ofExpr sourceRegistry script.DocId ctx.Diagnostics)
+            script.Item.Body
+            |> Option.map (Stx.ofExpr script.Document ctx.Diagnostics) // FIXME remove once we remove docId
             |> Option.toList
 
         bindStx ctx stxEnv scope toBind

@@ -74,12 +74,11 @@ module private CompilationManager =
                     | DocumentChanged _
                     | RecompileAll ->
                         let! documents = workspace.PostAndAsyncReply(fun reply -> GetAllDocuments reply)
-                        let sourceRegistry = SourceRegistry.empty ()
 
                         eprintfn "Recompiling %d documents..." (documents |> Map.count)
 
                         for path, docState in documents |> Map.toSeq do
-                            let result = Parse.readProgram sourceRegistry path docState.Text
+                            let result = readProgram path docState.Text
                             let p = toPublishParams path docState.Version result.Diagnostics
                             do! client.TextDocumentPublishDiagnostics(p)
 

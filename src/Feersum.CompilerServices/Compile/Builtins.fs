@@ -207,17 +207,16 @@ module private BuiltinMacros =
         macros
         |> List.fold
             (fun (macros, stxEnv) (name, src) ->
-                let registry = SourceRegistry.empty ()
-                let result = Parse.readExpr1 registry (sprintf "builtin-new-%s" name) src
+                let result = Parse.readExpr1 (sprintf "builtin-new-%s" name) src
 
                 if hasErrors result.Diagnostics then
                     icef "Error parsing new-format builtin macro '%s': %A" name result.Diagnostics
 
-                match result.Root.Body with
+                match result.Root.Item.Body with
                 | None -> icef "no body in new-format builtin macro '%s'" name
                 | Some expr ->
                     let diags = DiagnosticBag.Empty
-                    let stx = Stx.ofExpr registry result.Root.DocId diags expr
+                    let stx = Stx.ofExpr result.Root.Document diags expr
 
                     let id, stxEnv' = Stx.reserveMacro stxEnv name
 

@@ -6,11 +6,11 @@ open Mono.Cecil
 
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
-open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Targets
 open Feersum.CompilerServices.Syntax.Tree
+open Feersum.CompilerServices.Syntax.Parse
 
 type CompileResult =
     { Diagnostics: Diagnostic list
@@ -18,8 +18,8 @@ type CompileResult =
 
 [<RequireQualifiedAccess>]
 type CompileInput =
-    | Program of SourceRegistry * Program list
-    | Script of SourceRegistry * ScriptProgram
+    | Program of SyntaxRoot<Program> list
+    | Script of SyntaxRoot<ScriptProgram>
 
 module Compilation =
     open Feersum.CompilerServices.Syntax.Parse
@@ -63,8 +63,8 @@ module Compilation =
                     let macros, stxEnv = Builtins.loadBuiltinMacroEnv stxEnv
 
                     match input with
-                    | CompileInput.Program(reg, progs) -> Binder.bindProgram reg stxEnv refEnv allLibs macros progs
-                    | CompileInput.Script(reg, script) -> Binder.bindScript reg stxEnv refEnv allLibs macros script)
+                    | CompileInput.Program progs -> Binder.bindProgram stxEnv refEnv allLibs macros progs
+                    | CompileInput.Script script -> Binder.bindScript stxEnv refEnv allLibs macros script)
                 ()
 
         let assmName =
@@ -119,13 +119,11 @@ module Compilation =
             else
                 output
 
-        let registry = SourceRegistry.empty ()
-
         let result =
             sources
             |> Seq.map (fun path ->
                 let contents = File.ReadAllText(path)
-                Parse.readProgram registry path contents)
+                Parse.readProgram path contents)
             |> ParseResult.fold (fun progs p -> List.append progs [ p ]) []
 
         if Diagnostics.hasErrors result.Diagnostics then
@@ -148,7 +146,7 @@ module Compilation =
                     outputStream
                     (Path.GetFileName output)
                     (symbols |> Option.ofObj)
-                    (CompileInput.Program(registry, result.Root))
+                    (CompileInput.Program(result.Root))
 
             if (hasErrors result.Diagnostics |> not) && options.OutputType = OutputType.Exe then
                 match result.EmittedAssemblyName with

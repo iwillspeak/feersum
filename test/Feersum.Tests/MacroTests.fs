@@ -4,7 +4,7 @@ open Xunit
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Stx
 open Feersum.CompilerServices.Syntax.Tree
-open Feersum.CompilerServices.Syntax.Factories.Convenience
+open Feersum.CompilerServices.Syntax.Factories
 open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Syntax.Parse
 open Feersum.CompilerServices.Text
@@ -14,7 +14,7 @@ open Feersum.CompilerServices.Utils
 // Test the new Stx-based Macro API
 // Helper functions for creating Stx values for testing
 
-let private dummyLoc = TextLocation.Missing
+let private dummyLoc = StxPos.missing
 
 let private stxId name = Stx.Id(name, dummyLoc)
 
@@ -27,16 +27,18 @@ let private cv (e: Stx) =
     | StxDatum(d, _) -> d
     | _ -> failwith "Expected constant with value"
 
-let private exprToStx (expr: Expression) : Stx =
-    let reg = SourceRegistry.empty ()
-    let docId = SourceRegistry.register reg "foo.scm" expr.Text
+let private exprToStxIn (doc: TextDocument) (expr: Expression) : Stx =
     let diags = DiagnosticBag.Empty
-    let stx = Stx.ofExpr reg docId diags expr
+    let stx = Stx.ofExpr doc diags expr
 
     if hasErrors diags.Take then
         failwithf "Failed to convert expression to Stx: %A" diags
 
     stx
+
+let private exprToStx (expr: Expression) : Stx =
+    let dummyDoc = TextDocument.fromParts "dummy" ""
+    exprToStxIn dummyDoc expr
 
 let private macroMatch pattern haystack =
     Macros.matchPattern pattern haystack emptyEnv
@@ -76,26 +78,23 @@ let private ppStx (stx: Stx) : string =
 let private getBoundStx (bindings: MacroBindings) (name: string) : Stx =
     bindings.Bindings |> List.find (fun (n, _) -> n = name) |> snd |> fst
 
-/// Helper to read a single expression from string and convert to Stx
-let private readExprAsStx input : Stx =
-    let registry = SourceRegistry.empty ()
-    let result = Parse.readProgram registry "program" input
-
-    if result |> Parse.ParseResult.hasErrors then
-        failwithf "Parse error in '%s': %A" input result.Diagnostics
-
-    let expr = result.Root.Body |> Seq.exactlyOne
-    exprToStx expr
 
 /// Helper to read expression from string (not converted)
-let private readExpr input : Expression =
-    let registry = SourceRegistry.empty ()
-    let result = Parse.readProgram registry "program" input
+let private reaadScript input : SyntaxRoot<ScriptProgram> =
+    let result = Parse.readExpr1 "program" input
 
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" input result.Diagnostics
 
-    result.Root.Body |> Seq.exactlyOne
+    result.Root
+
+let private readExpr input : Expression =
+    (reaadScript input).Item.Body |> Option.unwrap
+
+/// Helper to read a single expression from string and convert to Stx
+let private readExprAsStx input =
+    let scriptRoot = reaadScript input
+    exprToStxIn scriptRoot.Document (scriptRoot.Item.Body |> Option.unwrap)
 
 /// Parse a pattern Stx node via a synthetic syntax-rules form.
 /// Returns the MacroPattern on success, or an error string on failure.
@@ -553,18 +552,18 @@ let ``form pattern with wrong length`` () =
 /// Parse a `(syntax-rules ...)` Stx node from source into the structured
 /// transformer representation (for pattern-inspection tests).
 let private parseSyntaxRules (name: string) (source: string) : Macro =
-    let registry = SourceRegistry.empty ()
-    let prog = Parse.readProgram registry "test" source
+    let prog = Parse.readProgram "test" source
 
     if ParseResult.hasErrors prog then
         failwithf "Parse error: %A" prog.Diagnostics
 
-    let tree =
-        prog.Root.Body
-        |> Seq.exactlyOne
-        |> fun expr -> Stx.ofExpr registry prog.Root.DocId DiagnosticBag.Empty expr
-
     let diag = DiagnosticBag.Empty
+
+    let tree =
+        prog.Root.Item.Body
+        |> Seq.exactlyOne
+        |> fun expr -> Stx.ofExpr prog.Root.Document diag expr
+
     let env = Environments.emptyStx
 
     match MacroParse.parseSyntaxRulesStx diag name tree env with

@@ -14,21 +14,23 @@ open Feersum.CompilerServices.Binding
 
 /// Parse a Scheme program string and run the new expander.
 /// Returns (BoundExpr list, Diagnostics).
-let private expand (source: string) =
-    let sourceRegistry = SourceRegistry.empty ()
-    let prog = Parse.readProgram sourceRegistry "test" source
+let private expandRaw throwOnParseError (source: string) =
+    let prog = Parse.readProgram "test" source
 
-    if ParseResult.hasErrors prog then
+    if throwOnParseError && ParseResult.hasErrors prog then
         failwithf "Parse error in '%s': %A" source prog.Diagnostics
 
     let coreLibs = Builtins.loadCoreSignatures TargetResolve.fromCurrentRuntime |> snd
 
     let result =
-        Binder.bindProgram sourceRegistry Environments.emptyStx Map.empty coreLibs Map.empty [ prog.Root ]
+        Binder.bindProgram Environments.emptyStx Map.empty coreLibs Map.empty [ prog.Root ]
 
     match result.Root.Body with
     | BoundExpr.Seq stmts -> stmts, result.Diagnostics
     | x -> [ x ], result.Diagnostics
+
+let private expand = expandRaw true
+let private expandMalformed = expandRaw false
 
 /// Expand and assert there are no errors; return the bound expressions.
 let private expandOk (source: string) =
@@ -512,20 +514,6 @@ let ``binder expand: define in let-syntax body does not shadow outer binding`` (
         Assert.True(n >= 0)
     | _ -> () // multiple loads are also fine (e.g. test harness adds)
 
-/// Expand source that may contain parser-level errors. Unlike `expand` this
-/// does not bail out when `ParseResult.hasErrors` is true, allowing tests to
-/// exercise the expander's own error-recovery on malformed CST nodes.
-let private expandMalformed (source: string) =
-    let registry = SourceRegistry.empty ()
-    let prog = Parse.readProgram registry "test" source
-
-    let result =
-        Binder.bindProgram registry Environments.emptyStx Map.empty [] Map.empty [ prog.Root ]
-
-    match result.Root.Body with
-    | BoundExpr.Seq stmts -> stmts, result.Diagnostics
-    | x -> [ x ], result.Diagnostics
-
 /// Expand (possibly malformed) source and assert that at least one expander
 /// diagnostic with code `code` and message containing `needle` is emitted.
 let private expandMalformedError (code: int) (needle: string) (source: string) =
@@ -575,7 +563,7 @@ let ``ofExpr: empty quotation emits malformed-datum diagnostic`` () =
 let ``ofExpr: malformed nodes produce BoundExpr.Error not stub datums`` () =
     // Verify that a bad char literal doesn't silently produce a wrong value —
     // the expander should return exactly one BoundExpr.Error.
-    let exprs, diags = expandMalformed "#\\unknown-name"
+    let exprs, diags = expand "#\\unknown-name"
     Assert.NotEmpty(diags |> List.filter (fun d -> d.Kind.Level = DiagnosticLevel.Error))
 
     let hasError =

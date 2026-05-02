@@ -89,18 +89,18 @@ module private Utils =
                 if Seq.exists isInvalidChar name then
                     diags.Emit
                         LibraryDiagnostics.improperLibraryName
-                        loc
+                        loc.Location
                         "Library names should not contain complex characters"
 
                 Ok name
             | other ->
-                diags.Emit LibraryDiagnostics.invalidLibraryName other.Loc "Invalid library name part"
+                diags.Emit LibraryDiagnostics.invalidLibraryName other.Pos.Location "Invalid library name part"
                 Result.Error()
 
         match stx with
         | StxList(parts, None, _, _) -> parts |> List.map parseElement |> Result.collect
         | other ->
-            diags.Emit LibraryDiagnostics.invalidLibraryName other.Loc "Expected library name"
+            diags.Emit LibraryDiagnostics.invalidLibraryName other.Pos.Location "Expected library name"
             Result.Error()
 
     let private tryParseRename (stx: Stx list) =
@@ -115,10 +115,10 @@ module private Utils =
             match tryParseRename rename with
             | Some renamed -> Some(ExportSet.Renamed renamed)
             | None ->
-                diags.Emit LibraryDiagnostics.malformedLibraryDecl export.Loc "Invalid rename"
+                diags.Emit LibraryDiagnostics.malformedLibraryDecl export.Pos.Location "Invalid rename"
                 None
         | other ->
-            diags.Emit LibraryDiagnostics.malformedLibraryDecl other.Loc "Invalid export element"
+            diags.Emit LibraryDiagnostics.malformedLibraryDecl other.Pos.Location "Invalid export element"
             None
 
     let rec parseImportSet (diags: DiagnosticBag) (stx: Stx) : ImportSet =
@@ -142,10 +142,10 @@ module private Utils =
                         match tryParseRename x with
                         | Some rename -> Some rename
                         | None ->
-                            diags.Emit LibraryDiagnostics.malformedLibraryDecl node.Loc "Invalid rename"
+                            diags.Emit LibraryDiagnostics.malformedLibraryDecl node.Pos.Location "Invalid rename"
                             None
                     | _ ->
-                        diags.Emit LibraryDiagnostics.malformedLibraryDecl node.Loc "Invalid rename"
+                        diags.Emit LibraryDiagnostics.malformedLibraryDecl node.Pos.Location "Invalid rename"
                         None
 
                 renames |> List.choose parseRename
@@ -168,11 +168,11 @@ module private Utils =
             imports |> List.map (parseImportSet diags) |> LibraryDeclaration.Import
         | StxList(Stx.Id("begin", _) :: body, _, _, _) -> LibraryDeclaration.Begin body
         | StxList(Stx.Id(kw, _) :: _, _, loc, _) ->
-            diags.Emit LibraryDiagnostics.malformedLibraryDecl loc (sprintf "Unrecognised library declaration %s" kw)
+            diags.Emit LibraryDiagnostics.malformedLibraryDecl loc.Location (sprintf "Unrecognised library declaration %s" kw)
 
             LibraryDeclaration.Error
         | other ->
-            diags.Emit LibraryDiagnostics.malformedLibraryDecl other.Loc "Expected library declaration"
+            diags.Emit LibraryDiagnostics.malformedLibraryDecl other.Pos.Location "Expected library declaration"
 
             LibraryDeclaration.Error
 
@@ -238,7 +238,7 @@ module Libraries =
                 if start = "scheme" || start = "srfi" then
                     start
                     |> sprintf "The name prefix %s is reserved"
-                    |> Diagnostic.Create LibraryDiagnostics.improperLibraryName name.Loc
+                    |> Diagnostic.Create LibraryDiagnostics.improperLibraryName name.Pos.Location
                     |> diags.Add
 
                 start :: rest

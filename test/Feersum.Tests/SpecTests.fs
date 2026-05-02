@@ -207,6 +207,7 @@ let ``spec tests parse result`` s =
 
     let root =
         Parse.readRaw Parse.Program sourcePath (File.ReadAllText(sourcePath))
+        |> ParseResult.map _.Item
         |> ParseResult.map (SyntaxUtils.prettyPrint >> (fun x -> x.ReplaceLineEndings("\n")))
         |> (fun r ->
             { r with

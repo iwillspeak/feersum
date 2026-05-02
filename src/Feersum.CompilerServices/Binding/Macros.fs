@@ -1,6 +1,5 @@
 namespace Feersum.CompilerServices.Binding
 
-open Feersum.CompilerServices.Text
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
 open Feersum.CompilerServices.Binding.Stx
@@ -44,11 +43,11 @@ type MacroTemplate =
     /// Substitute the sub-form captured by a pattern variable.
     | Subst of name: string
     /// Produce a proper list.
-    | Form of loc: TextLocation * elements: MacroTemplateElement list
+    | Form of loc: StxPos * elements: MacroTemplateElement list
     /// Produce an improper list.
-    | DottedForm of loc: TextLocation * elements: MacroTemplateElement list * tail: MacroTemplate
+    | DottedForm of loc: StxPos * elements: MacroTemplateElement list * tail: MacroTemplate
     /// Produce a vector literal.
-    | Vec of loc: TextLocation * elements: MacroTemplateElement list
+    | Vec of loc: StxPos * elements: MacroTemplateElement list
 
 /// A macro template element — either a single sub-template or a repeated one.
 and [<RequireQualifiedAccess>] MacroTemplateElement =
@@ -103,7 +102,7 @@ type MacroRule = MacroPattern * MacroTemplate
 type Macro =
     { Rules: MacroRule list
       DefScope: StxEnvironment
-      DefLoc: TextLocation }
+      DefLoc: StxPos }
 
 // -- Diagnostics --------------------------------------------------------------
 
@@ -161,13 +160,13 @@ module MacroParse =
                 let activeEnv = envOpt |> Option.defaultValue defScope
                 Some(name, Map.tryFind name activeEnv)
             | _ ->
-                diags.Emit MacroDiagnostics.invalidLiteralList s.Loc "literal list must contain identifiers"
+                diags.Emit MacroDiagnostics.invalidLiteralList s.Pos.Location "literal list must contain identifiers"
                 None
 
         match stx with
         | StxList(items, _, _, _) -> items |> List.choose unwrapId
         | _ ->
-            diags.Emit MacroDiagnostics.invalidLiteralList stx.Loc "Expected list of literals"
+            diags.Emit MacroDiagnostics.invalidLiteralList stx.Pos.Location "Expected list of literals"
             []
 
     /// Parse a single pattern element. This is used to recrusively build up the `MacroPattern` item that appears on
@@ -216,7 +215,7 @@ module MacroParse =
             let patterns, scope = parsePatternList ctx depth scope ambientEnv items
             MacroPattern.Vec patterns, scope
         | StxError _ ->
-            ctx.Diags.Emit MacroDiagnostics.invalidMacro stx.Loc "malformed syntax node in pattern"
+            ctx.Diags.Emit MacroDiagnostics.invalidMacro stx.Pos.Location "malformed syntax node in pattern"
             MacroPattern.Underscore, scope
 
     /// Recognise a list of patterns. This is slightly more complex than a simple map / fold over the list because we
@@ -263,7 +262,7 @@ module MacroParse =
             | _ ->
                 ctx.Diags.Emit
                     MacroDiagnostics.invalidPatternHead
-                    head.Loc
+                    head.Pos.Location
                     "syntax-rules pattern should start with an identifier"
 
             let ambientEnv = envOpt |> Option.defaultValue ambientEnv
@@ -275,7 +274,7 @@ module MacroParse =
                 MacroPattern.DottedForm(MacroPattern.Underscore :: patterns, tailPat), scope
             | None -> MacroPattern.Form(MacroPattern.Underscore :: patterns), scope
         | _ ->
-            ctx.Diags.Emit MacroDiagnostics.invalidMacro stx.Loc "syntax-rules pattern must be a (_ ....) form"
+            ctx.Diags.Emit MacroDiagnostics.invalidMacro stx.Pos.Location "syntax-rules pattern must be a (_ ....) form"
             MacroPattern.Underscore, Map.empty
 
     let rec private parseTemplate
@@ -300,7 +299,7 @@ module MacroParse =
                 if boundDepth <> depth then
                     ctx.Diags.Emit
                         MacroDiagnostics.invalidMacro
-                        stx.Loc
+                        stx.Pos.Location
                         $"template variable '{name}' is not in scope at this ellipsis level"
                     // We quote the variable here to suppress any expander errors about the same name error
                     MacroTemplate.Quoted stx
@@ -320,7 +319,7 @@ module MacroParse =
                 | _ ->
                     ctx.Diags.Emit
                         MacroDiagnostics.malformedEllipsisEscape
-                        loc
+                        loc.Location
                         "ellipsis escape requires exactly one sub-template: (... <template>)"
 
                     MacroTemplate.Quoted stx
@@ -373,7 +372,7 @@ module MacroParse =
             let template = parseTemplate patternCtx patternScope 0 defScope tmpl
             (pattern, template)
         | _ ->
-            diags.Emit MacroDiagnostics.invalidMacro stx.Loc "each syntax-rules rule must be (pattern template)"
+            diags.Emit MacroDiagnostics.invalidMacro stx.Pos.Location "each syntax-rules rule must be (pattern template)"
             (MacroPattern.Underscore, MacroTemplate.Quoted stx)
 
     /// Parse a list of `(pattern template)` rules from the body of a `syntax-rules` form.
@@ -401,7 +400,7 @@ module MacroParse =
 
             { Rules = rules
               DefScope = defScope
-              DefLoc = syntaxRulesSyn.Loc }
+              DefLoc = syntaxRulesSyn.Pos }
 
         match syntaxRulesSyn with
         | StxList(StxId("syntax-rules", _, _) :: StxId(ellipsis, _, _) :: lits :: rules, _, _, maybeDefEnv) ->
@@ -409,7 +408,7 @@ module MacroParse =
         | StxList(StxId("syntax-rules", _, _) :: lits :: rules, _, _, maybeDefEnv) ->
             parseBody "..." lits rules maybeDefEnv |> Some
         | _ ->
-            diags.Emit MacroDiagnostics.invalidMacro syntaxRulesSyn.Loc "expected (syntax-rules (literals...) rules...)"
+            diags.Emit MacroDiagnostics.invalidMacro syntaxRulesSyn.Pos.Location "expected (syntax-rules (literals...) rules...)"
             None
 
 /// Parse `(syntax-rules ...)` forms into `SyntaxTransformer` values.
@@ -482,7 +481,7 @@ module Macros =
                     // No explicit tail in input — the remaining items form the tail list.
                     // Always construct a list, even for a single remaining item: the tail
                     // of `(_ a b . c)` matching `(m 1 2 3)` is `(3)`, not `3`.
-                    matchPattern tp (Stx.List(body, None, TextLocation.Missing)) scope
+                    matchPattern tp (Stx.List(body, None, StxPos.missing)) scope
             | None ->
                 if List.isEmpty body && tailItem.IsNone then
                     Some MacroBindings.Empty

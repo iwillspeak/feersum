@@ -82,7 +82,7 @@ module public TextDocument =
     /// Turn a character offset into a document into a human line column value.
     /// That is a 0-based character offset into the file becomes a 1-based pair
     /// of line and column.
-    let private offsetToLineCol lines offset =
+    let private offsetToLineCol lines (offset: int) =
         let lineIdx, colIdx =
             match List.tryFindIndexBack (fun x -> x < offset) lines with
             | Some idx ->
@@ -96,55 +96,17 @@ module public TextDocument =
 
         lineIdx + 1, colIdx + 1
 
-    let public offsetToPoint document offset =
-        let line, col = offsetToLineCol document.LineStarts offset
+    /// Advance a text offset by a character count.
+    ///
+    /// Centralises the int → Firethorn.TextLength (uint32) widening conversion
+    /// so that callers (the lexer, parser, …) can stay free of raw casts.
+    let public advance (offset: Firethorn.TextLength) (count: int) : Firethorn.TextLength = offset + uint32 count
+
+    let public offsetToPoint document (offset: Firethorn.TextLength) =
+        let line, col = offsetToLineCol document.LineStarts (int offset)
         TextPoint.FromParts(document.Path, line, col)
 
     let public rangeToLocation document (range: Firethorn.TextRange) =
         let s = range.Start
         let e = range.End
         Span(s |> offsetToPoint document, e |> offsetToPoint document)
-
-/// Registry of source documents — owns source identity.
-///
-/// Documents are registered before parsing, and assigned a stable `DocId`.
-/// The registry is the single source of truth for resolving a `DocId` back to
-/// a `TextDocument` for offset resolution and error reporting.
-type public SourceRegistry =
-    { mutable Files: Generic.List<TextDocument> }
-
-module public SourceRegistry =
-
-    /// Create an empty source registry.
-    let public empty () : SourceRegistry =
-        { Files = new Generic.List<TextDocument>() }
-
-    /// Register source text and return a stable DocId.
-    let public register (registry: SourceRegistry) (path: string) (body: string) : DocId =
-        let id = DocId.Doc registry.Files.Count
-        let doc = TextDocument.fromPartsWithId id path body
-        registry.Files.Add(doc)
-        id
-
-    /// Replace the source text for an existing document ID.
-    let public update (registry: SourceRegistry) (id: DocId) (path: string) (body: string) : unit =
-        match id with
-        | DocId.Synthetic -> ()
-        | DocId.Doc i when i >= 0 && i < registry.Files.Count ->
-            let doc = TextDocument.fromPartsWithId id path body
-            registry.Files[i] <- doc
-        | _ -> ()
-
-    /// Look up a document by DocId. Returns None for synthetic IDs.
-    let public tryLookup (registry: SourceRegistry) (id: DocId) : TextDocument option =
-        match id with
-        | DocId.Synthetic -> None
-        | DocId.Doc i when i >= 0 && i < registry.Files.Count -> Some registry.Files[i]
-        | _ -> None
-
-    /// Resolve a DocId and TextRange to a TextLocation for diagnostics.
-    /// Returns TextLocation.Missing for synthetic nodes or unknown IDs.
-    let public resolveLocation (registry: SourceRegistry) (id: DocId) (range: Firethorn.TextRange) : TextLocation =
-        match tryLookup registry id with
-        | Some doc -> TextDocument.rangeToLocation doc range
-        | None -> TextLocation.Missing
