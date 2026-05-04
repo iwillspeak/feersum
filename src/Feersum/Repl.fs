@@ -54,19 +54,14 @@ let runRepl () =
     ReadLine.HistoryEnabled <- true
     printVersion ()
 
-    let options =
-        { defaultScriptOptions with
-            References = coreReferences }
-
-    let mutable state: Compilation option = None
+    use ctx =
+        EvalContext.create
+            { defaultScriptOptions with
+                References = coreReferences }
 
     let rec loop () =
         try
-            let input = read ()
-            let result, next = evalWithPrev state options input
-            state <- next
-
-            match result with
+            match evalInContext ctx (read ()) with
             | Ok value -> print value
             | Error diags -> dumpDiagnostics diags
         with ex ->

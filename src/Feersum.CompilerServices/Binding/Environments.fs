@@ -13,7 +13,8 @@ type Scope =
     { StxEnv: StxEnvironment
       Bindings: Map<Ident, StorageRef>
       Libs: LibrarySignature<StorageRef> list
-      Macros: Map<Ident, SyntaxTransformer> }
+      Macros: Map<Ident, SyntaxTransformer>
+      ProgramName: string }
 
 module Scope =
 
@@ -22,7 +23,8 @@ module Scope =
         { StxEnv = Map.empty
           Bindings = Map.empty
           Libs = []
-          Macros = Map.empty }
+          Macros = Map.empty
+          ProgramName = "LispProgram" }
 
     /// Build a scope from a sequence of library signatures.
     ///
@@ -42,7 +44,8 @@ module Scope =
         { StxEnv = stxEnv
           Bindings = bindings
           Libs = List.ofSeq libs
-          Macros = Map.empty }
+          Macros = Map.empty
+          ProgramName = "LispProgram" }
 
 /// Creates initial binding environments for the expander.
 module Environments =

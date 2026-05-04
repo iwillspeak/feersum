@@ -37,6 +37,26 @@ type Compilation =
         RefTypes: TypeDefinition list
     }
 
+/// The result of emitting a `Compilation`. Carries everything `createDerived`
+/// needs to chain the next REPL step: the output scope, accumulated extern
+/// types (prior steps included), and step index for unique type naming.
+[<NoComparison; NoEquality>]
+type CompilationOutput =
+    {
+        Diagnostics: Diagnostic list
+        EmittedAssemblyName: AssemblyNameDefinition option
+        OutputScope: Scope
+        Options: CompilationOptions
+        Target: TargetInfo
+        /// Accumulated extern TypeDefinitions: original references plus every
+        /// type emitted by prior REPL steps. Passed as `externTys` to Emit.emit
+        /// in the next step so previous globals are reachable as extern fields.
+        RefTypes: TypeDefinition list
+        /// Monotonically increasing step counter. Incremented by `createDerived`
+        /// to produce a unique `ProgramName` for each REPL compilation.
+        StepIndex: int
+    }
+
 module Compilation =
 
     // -- Helpers --------------------------------------------------------------
@@ -99,14 +119,17 @@ module Compilation =
           Target = target
           RefTypes = refTys }
 
-    /// Bind and lower, deriving the scope from a previous compilation.
+    /// Bind and lower, deriving the scope from a previous emit output.
     ///
     /// Inherits `Target`, `RefTypes`, and `Options` from `previous` (reference
-    /// loading is skipped). Uses `previous.OutputScope` as the input scope so
-    /// all top-level definitions from prior steps remain visible — the correct
-    /// entry point for REPL chaining.
-    let createDerived previous input =
-        let lowered, outputScope = bindAndLower previous.OutputScope input
+    /// loading is skipped). Uses `previous.OutputScope` as the input scope,
+    /// with an incremented `ProgramName` so each REPL step emits a unique type.
+    let createDerived (previous: CompilationOutput) input =
+        let nextScope =
+            { previous.OutputScope with
+                ProgramName = sprintf "LispProgram_%d" (previous.StepIndex + 1) }
+
+        let lowered, outputScope = bindAndLower nextScope input
 
         { BoundTree = lowered
           OutputScope = outputScope
@@ -117,23 +140,26 @@ module Compilation =
     /// Emit a lowered compilation as a .NET assembly.
     ///
     /// When the bound tree contains errors, emission is skipped and only the
-    /// diagnostics are returned.
+    /// diagnostics are returned. Returns `CompilationOutput` so the caller can
+    /// pass it to `createDerived` for REPL chaining.
     let emit compilation outputStream outputName symbolStream =
-        let assmName =
+        let assmName, newRefTypes =
             if not (hasErrors compilation.BoundTree.Diagnostics) then
-                compilation.BoundTree
-                |> Instrumentation.withPhase "emit" (fun lowered ->
-                    Emit.emit
-                        compilation.Options
-                        compilation.Target
-                        outputStream
-                        outputName
-                        symbolStream
-                        compilation.RefTypes
-                        lowered)
-                |> Some
+                let assmName, emittedTypes =
+                    compilation.BoundTree
+                    |> Instrumentation.withPhase "emit" (fun lowered ->
+                        Emit.emit
+                            compilation.Options
+                            compilation.Target
+                            outputStream
+                            outputName
+                            symbolStream
+                            compilation.RefTypes
+                            lowered)
+
+                Some assmName, List.append compilation.RefTypes emittedTypes
             else
-                None
+                None, compilation.RefTypes
 
         Instrumentation.compilationCount.Add 1L
 
@@ -143,14 +169,23 @@ module Compilation =
         )
 
         { Diagnostics = compilation.BoundTree.Diagnostics
-          EmittedAssemblyName = assmName }
+          EmittedAssemblyName = assmName
+          OutputScope = compilation.OutputScope
+          Options = compilation.Options
+          Target = compilation.Target
+          RefTypes = newRefTypes
+          StepIndex = 0 }
 
     /// Bind, lower, and emit in a single call.
     ///
     /// Sugar over `create` + `emit`. Preserves the existing call-site signature
     /// for callers that don't need scope chaining.
     let compile options outputStream outputName symbolStream input =
-        create options input |> fun c -> emit c outputStream outputName symbolStream
+        let output =
+            create options input |> fun c -> emit c outputStream outputName symbolStream
+
+        { Diagnostics = output.Diagnostics
+          EmittedAssemblyName = output.EmittedAssemblyName }
 
     // -- File-level entry points ----------------------------------------------
 

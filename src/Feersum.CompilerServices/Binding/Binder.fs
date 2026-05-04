@@ -1035,7 +1035,7 @@ module Binder =
     /// definitions introduced during binding. The output scope is the correct
     /// input for the next compilation step (e.g. the next REPL line).
     let private bindStx (inputScope: Scope) (ctx: BinderCtx) (stx: Stx list) : BoundSyntaxTree * Scope =
-        let name = "LispProgram"
+        let name = inputScope.ProgramName
         let rootFrame = FrameCtx.createGlobal ctx name inputScope.Bindings
 
         let bound, outputStxEnv = bindProgramRoot rootFrame inputScope.StxEnv stx

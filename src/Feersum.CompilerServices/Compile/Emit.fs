@@ -141,7 +141,7 @@ module private Utils =
             |> Seq.tryFind (fun f -> f.Name = id)
             |> Option.defaultWith (fun () ->
                 let newField =
-                    FieldDefinition(id, FieldAttributes.Static, ctx.Assm.MainModule.TypeSystem.Object)
+                    FieldDefinition(id, FieldAttributes.Static ||| FieldAttributes.Public, ctx.Assm.MainModule.TypeSystem.Object)
 
                 if ctx.ProgramTy <> ty then
                     icef "Type %A does not match %A being modified for field %s" ctx.ProgramTy ty id
@@ -1028,10 +1028,20 @@ module Emit =
         (bound: BoundSyntaxTree)
         =
 
-        /// Collect external types so we can look up their fields later
+        // Collect external types so we can look up their fields later.
+        // Index by both FullName (for library types referenced via ty.FullName
+        // in StorageRef, e.g. "Serehfa.Write") and by Name (for REPL-chained
+        // program types referenced by MangledName, e.g. "LispProgram_0").
+        // When both keys are the same (no-namespace type) the entry is deduped.
         let externs =
             externTys
-            |> Seq.map (fun (ty: TypeDefinition) -> (ty.FullName, ty))
+            |> Seq.collect (fun (ty: TypeDefinition) ->
+                seq {
+                    yield ty.FullName, ty
+
+                    if ty.Name <> ty.FullName then
+                        yield ty.Name, ty
+                })
             |> Map.ofSeq
 
         // Create an assembly with a nominal version to hold our code
@@ -1121,4 +1131,10 @@ module Emit =
         | None -> ()
 
         assm.Write(outputStream, writerParams)
-        name
+        // Collect all non-nested types emitted into this assembly. These are
+        // captured before any GC could collect the AssemblyDefinition; the
+        // TypeDefinitions hold a back-reference to their module keeping it alive.
+        let emittedTypes =
+            assm.MainModule.Types |> Seq.filter (fun t -> not t.IsNested) |> Seq.toList
+
+        name, emittedTypes
