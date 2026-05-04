@@ -54,19 +54,25 @@ let runRepl () =
     ReadLine.HistoryEnabled <- true
     printVersion ()
 
-    use ctx =
+    use initCtx =
         EvalContext.create
             { defaultScriptOptions with
                 References = coreReferences }
 
-    let rec loop () =
-        try
-            match evalInContext ctx (read ()) with
-            | Ok value -> print value
-            | Error diags -> dumpDiagnostics diags
-        with ex ->
-            eprintfn "Exception: %A" ex
+    let rec loop ctx =
+        let nextCtx =
+            try
+                let result, next = evalInContext ctx (read ())
 
-        loop ()
+                match result with
+                | Ok value -> print value
+                | Error diags -> dumpDiagnostics diags
 
-    loop ()
+                next
+            with ex ->
+                eprintfn "Exception: %A" ex
+                ctx
+
+        loop nextCtx
+
+    loop initCtx

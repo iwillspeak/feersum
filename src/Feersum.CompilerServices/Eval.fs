@@ -22,8 +22,9 @@ let cilExternalRepr (object: Object) = Write.GetExternalRepresentation(object)
 
 /// An AssemblyLoadContext that retains every assembly loaded into it by name,
 /// so that cross-step references in a REPL session resolve correctly.
+/// Collectible so the entire session can be unloaded when disposed.
 type ReplLoadContext() =
-    inherit AssemblyLoadContext(isCollectible = false)
+    inherit AssemblyLoadContext(isCollectible = true)
     let loaded = Dictionary<string, Assembly>()
 
     member this.LoadBytes(bytes: byte[]) =
@@ -37,27 +38,29 @@ type ReplLoadContext() =
         | true, a -> a
         | _ -> null
 
-/// A session-scoped evaluation context. Holds compilation options, the
-/// shared assembly load context for REPL cross-step references, and the
-/// accumulated `CompilationOutput` from prior steps.
+/// A session-scoped evaluation context. Immutable value: `evalInContext`
+/// returns a new context rather than mutating the existing one.
 ///
-/// Dispose when the session ends to release the load context.
+/// The `LoadContext` is a shared reference type across all derived contexts.
+/// Call `Dispose` on the original context when the session ends to unload it.
 [<NoComparison; NoEquality>]
 type EvalContext =
     { Options: CompilationOptions
       LoadContext: ReplLoadContext
-      mutable State: CompilationOutput option }
+      State: CompilationOutput option
+      StepIndex: int }
 
     interface IDisposable with
-        member _.Dispose() = ()
+        member ctx.Dispose() = ctx.LoadContext.Unload()
 
 module EvalContext =
     let create options =
         { Options = options
           LoadContext = ReplLoadContext()
-          State = None }
+          State = None
+          StepIndex = 0 }
 
-/// Invoke a successfully-emitted assembly's script body via the given load context.
+/// Invoke the script body of an emitted assembly via the session load context.
 let private invokeAssembly (ctx: EvalContext) (bytes: byte[]) (typeName: string) =
     let assm = ctx.LoadContext.LoadBytes bytes
     let progTy = assm.GetType typeName
@@ -70,36 +73,44 @@ let private invokeAssembly (ctx: EvalContext) (bytes: byte[]) (typeName: string)
         Error []
 
 /// Evaluate a script inside a given `EvalContext`, chaining scope from any
-/// previous step stored in `ctx.State`. Updates `ctx.State` on success.
+/// previous step stored in `ctx.State`.
+///
+/// Returns the result and a new `EvalContext` with updated state. On bind
+/// errors the original context is returned unchanged so the caller's
+/// accumulated scope is preserved.
 let evalInContext (ctx: EvalContext) input =
-    let nextIndex = ctx.State |> Option.map (fun s -> s.StepIndex + 1) |> Option.defaultValue 0
-
     let compilation =
         match ctx.State with
         | None -> Compilation.create ctx.Options input
-        | Some prev -> Compilation.createDerived prev input
+        | Some prev ->
+            let programName = sprintf "LispProgram_%d" ctx.StepIndex
+            Compilation.createChained prev programName input
 
     if not compilation.BoundTree.Diagnostics.IsEmpty then
-        Error compilation.BoundTree.Diagnostics
+        Error compilation.BoundTree.Diagnostics, ctx
     else
         use memStream = new MemoryStream()
         // Each step gets a unique assembly name so the load context can hold
         // all steps simultaneously without name collisions.
-        let assmStem = sprintf "evalCtx_%d" nextIndex
+        let assmStem = sprintf "evalCtx_%d" ctx.StepIndex
         let output = Compilation.emit compilation memStream (assmStem + ".dll") None
         let typeName = sprintf "%s.%s" assmStem compilation.BoundTree.MangledName
         let bytes = memStream.ToArray()
 
         match invokeAssembly ctx bytes typeName with
         | Ok value ->
-            ctx.State <- Some { output with StepIndex = nextIndex }
-            Ok value
-        | Error diags -> Error diags
+            let nextCtx =
+                { ctx with
+                    State = Some output
+                    StepIndex = ctx.StepIndex + 1 }
+
+            Ok value, nextCtx
+        | Error diags -> Error diags, ctx
 
 /// Evaluate using the given options without retaining any session state.
 let evalWith (options: CompilationOptions) input =
     use ctx = EvalContext.create options
-    evalInContext ctx input
+    evalInContext ctx input |> fst
 
 /// Evaluate using the default script options.
 let eval = evalWith defaultScriptOptions

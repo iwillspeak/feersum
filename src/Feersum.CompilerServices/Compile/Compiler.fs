@@ -37,9 +37,9 @@ type Compilation =
         RefTypes: TypeDefinition list
     }
 
-/// The result of emitting a `Compilation`. Carries everything `createDerived`
-/// needs to chain the next REPL step: the output scope, accumulated extern
-/// types (prior steps included), and step index for unique type naming.
+/// The result of emitting a `Compilation`. Carries everything `createChained`
+/// needs to chain the next REPL step: the output scope and accumulated extern
+/// types (original references plus every type emitted by prior REPL steps).
 [<NoComparison; NoEquality>]
 type CompilationOutput =
     {
@@ -52,9 +52,6 @@ type CompilationOutput =
         /// type emitted by prior REPL steps. Passed as `externTys` to Emit.emit
         /// in the next step so previous globals are reachable as extern fields.
         RefTypes: TypeDefinition list
-        /// Monotonically increasing step counter. Incremented by `createDerived`
-        /// to produce a unique `ProgramName` for each REPL compilation.
-        StepIndex: int
     }
 
 module Compilation =
@@ -119,15 +116,16 @@ module Compilation =
           Target = target
           RefTypes = refTys }
 
-    /// Bind and lower, deriving the scope from a previous emit output.
+    /// Bind and lower, chaining scope from a previous emit output.
     ///
     /// Inherits `Target`, `RefTypes`, and `Options` from `previous` (reference
-    /// loading is skipped). Uses `previous.OutputScope` as the input scope,
-    /// with an incremented `ProgramName` so each REPL step emits a unique type.
-    let createDerived (previous: CompilationOutput) input =
+    /// loading is skipped). Uses `previous.OutputScope` as the input scope so
+    /// all prior top-level definitions remain visible. The caller supplies
+    /// `programName` to give each REPL step a distinct type name.
+    let createChained (previous: CompilationOutput) (programName: string) input =
         let nextScope =
             { previous.OutputScope with
-                ProgramName = sprintf "LispProgram_%d" (previous.StepIndex + 1) }
+                ProgramName = programName }
 
         let lowered, outputScope = bindAndLower nextScope input
 
@@ -141,7 +139,7 @@ module Compilation =
     ///
     /// When the bound tree contains errors, emission is skipped and only the
     /// diagnostics are returned. Returns `CompilationOutput` so the caller can
-    /// pass it to `createDerived` for REPL chaining.
+    /// pass it to `createChained` for REPL chaining.
     let emit compilation outputStream outputName symbolStream =
         let assmName, newRefTypes =
             if not (hasErrors compilation.BoundTree.Diagnostics) then
@@ -173,8 +171,7 @@ module Compilation =
           OutputScope = compilation.OutputScope
           Options = compilation.Options
           Target = compilation.Target
-          RefTypes = newRefTypes
-          StepIndex = 0 }
+          RefTypes = newRefTypes }
 
     /// Bind, lower, and emit in a single call.
     ///

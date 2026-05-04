@@ -141,7 +141,11 @@ module private Utils =
             |> Seq.tryFind (fun f -> f.Name = id)
             |> Option.defaultWith (fun () ->
                 let newField =
-                    FieldDefinition(id, FieldAttributes.Static ||| FieldAttributes.Public, ctx.Assm.MainModule.TypeSystem.Object)
+                    FieldDefinition(
+                        id,
+                        FieldAttributes.Static ||| FieldAttributes.Public,
+                        ctx.Assm.MainModule.TypeSystem.Object
+                    )
 
                 if ctx.ProgramTy <> ty then
                     icef "Type %A does not match %A being modified for field %s" ctx.ProgramTy ty id
@@ -1029,10 +1033,10 @@ module Emit =
         =
 
         // Collect external types so we can look up their fields later.
-        // Index by both FullName (for library types referenced via ty.FullName
-        // in StorageRef, e.g. "Serehfa.Write") and by Name (for REPL-chained
-        // program types referenced by MangledName, e.g. "LispProgram_0").
-        // When both keys are the same (no-namespace type) the entry is deduped.
+        // Library types (e.g. "Serehfa.Write") are keyed by FullName, which is
+        // what Builtins stores in StorageRef.Global. Emitted REPL types are also
+        // indexed by their short Name so the binder's MangledName-keyed
+        // StorageRef.Global entries resolve correctly across REPL steps.
         let externs =
             externTys
             |> Seq.collect (fun (ty: TypeDefinition) ->
