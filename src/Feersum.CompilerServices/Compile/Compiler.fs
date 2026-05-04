@@ -7,7 +7,6 @@ open Mono.Cecil
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
-open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Targets
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
@@ -49,22 +48,26 @@ module Compilation =
             |> Seq.append (Seq.singleton <| coreLibs)
             |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> (List.append tys aTys, List.append sigs aSigs)) ([], [])
 
-        let preloaded =
+        let baseScope =
             if options.OutputType = OutputType.Script then
-                Environments.fromLibraries allLibs
+                Scope.ofLibraries allLibs
             else
-                Environments.empty
+                { Scope.empty with Libs = allLibs }
 
-        let bound =
+        let macros, stxEnv = Builtins.loadBuiltinMacroEnv baseScope.StxEnv
+
+        let inputScope =
+            { baseScope with
+                StxEnv = stxEnv
+                Macros = macros }
+
+        let bound, _ =
             Instrumentation.withPhase
                 "bind"
                 (fun () ->
-                    let stxEnv, refEnv = Environments.intoParts preloaded
-                    let macros, stxEnv = Builtins.loadBuiltinMacroEnv stxEnv
-
                     match input with
-                    | CompileInput.Program progs -> Binder.bindProgram stxEnv refEnv allLibs macros progs
-                    | CompileInput.Script script -> Binder.bindScript stxEnv refEnv allLibs macros script)
+                    | CompileInput.Program progs -> Binder.bindProgram inputScope progs
+                    | CompileInput.Script script -> Binder.bindScript inputScope script)
                 ()
 
         let assmName =
@@ -119,12 +122,7 @@ module Compilation =
             else
                 output
 
-        let result =
-            sources
-            |> Seq.map (fun path ->
-                let contents = File.ReadAllText(path)
-                Parse.readProgram path contents)
-            |> ParseResult.fold (fun progs p -> List.append progs [ p ]) []
+        let result = FileCollection.ofPaths sources
 
         if Diagnostics.hasErrors result.Diagnostics then
             result.Diagnostics

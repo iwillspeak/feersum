@@ -21,9 +21,9 @@ let private expandRaw throwOnParseError (source: string) =
         failwithf "Parse error in '%s': %A" source prog.Diagnostics
 
     let coreLibs = Builtins.loadCoreSignatures TargetResolve.fromCurrentRuntime |> snd
+    let scope = Scope.ofLibraries coreLibs
 
-    let result =
-        Binder.bindProgram Environments.emptyStx Map.empty coreLibs Map.empty [ prog.Root ]
+    let result, _ = Binder.bindProgram scope [ prog.Root ]
 
     match result.Root.Body with
     | BoundExpr.Seq stmts -> stmts, result.Diagnostics

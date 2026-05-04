@@ -168,7 +168,10 @@ module private Utils =
             imports |> List.map (parseImportSet diags) |> LibraryDeclaration.Import
         | StxList(Stx.Id("begin", _) :: body, _, _, _) -> LibraryDeclaration.Begin body
         | StxList(Stx.Id(kw, _) :: _, _, loc, _) ->
-            diags.Emit LibraryDiagnostics.malformedLibraryDecl loc.Location (sprintf "Unrecognised library declaration %s" kw)
+            diags.Emit
+                LibraryDiagnostics.malformedLibraryDecl
+                loc.Location
+                (sprintf "Unrecognised library declaration %s" kw)
 
             LibraryDeclaration.Error
         | other ->

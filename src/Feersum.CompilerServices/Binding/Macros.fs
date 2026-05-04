@@ -372,7 +372,11 @@ module MacroParse =
             let template = parseTemplate patternCtx patternScope 0 defScope tmpl
             (pattern, template)
         | _ ->
-            diags.Emit MacroDiagnostics.invalidMacro stx.Pos.Location "each syntax-rules rule must be (pattern template)"
+            diags.Emit
+                MacroDiagnostics.invalidMacro
+                stx.Pos.Location
+                "each syntax-rules rule must be (pattern template)"
+
             (MacroPattern.Underscore, MacroTemplate.Quoted stx)
 
     /// Parse a list of `(pattern template)` rules from the body of a `syntax-rules` form.
@@ -408,7 +412,11 @@ module MacroParse =
         | StxList(StxId("syntax-rules", _, _) :: lits :: rules, _, _, maybeDefEnv) ->
             parseBody "..." lits rules maybeDefEnv |> Some
         | _ ->
-            diags.Emit MacroDiagnostics.invalidMacro syntaxRulesSyn.Pos.Location "expected (syntax-rules (literals...) rules...)"
+            diags.Emit
+                MacroDiagnostics.invalidMacro
+                syntaxRulesSyn.Pos.Location
+                "expected (syntax-rules (literals...) rules...)"
+
             None
 
 /// Parse `(syntax-rules ...)` forms into `SyntaxTransformer` values.

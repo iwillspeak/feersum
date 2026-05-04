@@ -109,6 +109,11 @@ module private ResolutionEnv =
         | active :: tail -> S(Map.add ident var active :: tail)
         | _ -> ice "ResolutionEnvironment has no active scope"
 
+    /// Extract the outermost (global) scope as a flat map.
+    /// After binding a program root all balanced push/pop pairs have cancelled
+    /// out, leaving a single scope containing only the top-level definitions.
+    let globalScope (S scopes) : Map<Ident, StorageRef> = List.last scopes
+
 /// Binder Frame Context
 ///
 /// A frame context represents the state of the binder as it processes a
@@ -253,8 +258,7 @@ module private Impl =
         name |> Seq.map mangleNamePart |> String.concat "::"
 
     // Get the Syntax Location for a Given Syntax Node
-    let private getSyntaxLocation (_ctx: BinderCtx) (stx: Stx) : TextLocation =
-        stx.Pos.Location
+    let private getSyntaxLocation (_ctx: BinderCtx) (stx: Stx) : TextLocation = stx.Pos.Location
 
 
     /// Parse a Formals List Pattern
@@ -504,7 +508,9 @@ module private Impl =
                     match expanded with
                     | Ok newForm -> bindInContext ctx stxEnv newForm
                     | Result.Error err ->
-                        err |> ctx.BinderCtx.Diagnostics.Emit MacroDiagnostics.macroExpansionError loc.Location
+                        err
+                        |> ctx.BinderCtx.Diagnostics.Emit MacroDiagnostics.macroExpansionError loc.Location
+
                         BoundExpr.Error, stxEnv
                 | None ->
                     $"Macro '{name}' is not defined in the current context"
@@ -1000,16 +1006,19 @@ module private Impl =
 
     /// Bind a Program Root
     ///
-    /// Walks the list of items and binds each one as a top level item
-    let bindProgramRoot (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : BoundBody =
+    /// Walks the list of items and binds each one as a top level item.
+    /// Returns the bound body and the final syntax environment so the caller
+    /// can reconstruct the output `Scope`.
+    let bindProgramRoot (ctx: FrameCtx) (stxEnv: StxEnvironment) (stxs: Stx list) : BoundBody * StxEnvironment =
         let stxs, stxEnv = bindImports ctx stxEnv stxs
 
-        let body = bindSeq ctx stxEnv stxs |> fst
+        let body, stxEnv = bindSeq ctx stxEnv stxs
 
         { Body = body
           Locals = ctx.LocalCount
           Captures = []
-          EnvMappings = None }
+          EnvMappings = None },
+        stxEnv
 
 
 /// Public Binder API
@@ -1020,64 +1029,52 @@ module private Impl =
 /// `Lower` and `Emit`.
 module Binder =
 
-    /// Bind a List of Syntax Nodes in a Given Scope
+    /// Bind a list of syntax nodes using the given scope.
     ///
-    /// This is the main entry point for the binder. It takes a list of syntax
-    /// nodes representing the program to be bound, along with a source registry
-    /// and a scope for name resolution, and produces a `BoundSyntaxTree` which
-    /// contains the bound syntax tree along with diagnostics and a mangled name.
-    let private bindStx
-        (ctx: BinderCtx)
-        (stxEnv: StxEnvironment)
-        (scope: Map<Ident, StorageRef>)
-        (stx: Stx list)
-        : BoundSyntaxTree =
+    /// Returns the bound tree and an output scope that reflects all top-level
+    /// definitions introduced during binding. The output scope is the correct
+    /// input for the next compilation step (e.g. the next REPL line).
+    let private bindStx (inputScope: Scope) (ctx: BinderCtx) (stx: Stx list) : BoundSyntaxTree * Scope =
         let name = "LispProgram"
-        let rootFrame = FrameCtx.createGlobal ctx name scope
+        let rootFrame = FrameCtx.createGlobal ctx name inputScope.Bindings
 
-        let bound = bindProgramRoot rootFrame stxEnv stx
+        let bound, outputStxEnv = bindProgramRoot rootFrame inputScope.StxEnv stx
+
+        let outputScope =
+            { inputScope with
+                StxEnv = outputStxEnv
+                Bindings = ResolutionEnv.globalScope rootFrame.Env
+                Macros = ctx.Macros }
 
         { Root = bound
           MangledName = name
-          Diagnostics = ctx.Diagnostics.Take }
+          Diagnostics = ctx.Diagnostics.Take },
+        outputScope
 
 
-    /// Bind a List of Compilation Units in a Given Scope
+    /// Bind a collection of program files in the given scope.
     ///
-    /// Takes a list of dcocument and expression pairs and binds them in the
-    /// given scope.
-    let bindProgram
-        (stxEnv: StxEnvironment)
-        (scope: Map<Ident, StorageRef>)
-        (libs: seq<LibrarySignature<StorageRef>>)
-        (macros: Map<Ident, SyntaxTransformer>)
-        (units: SyntaxRoot<Program> list)
-        : BoundSyntaxTree =
-        let ctx = Binderctx.create (List.ofSeq libs) macros
+    /// Returns the bound tree and the output scope containing all top-level
+    /// definitions introduced across all files.
+    let bindProgram (scope: Scope) (units: SyntaxRoot<Program> list) : BoundSyntaxTree * Scope =
+        let ctx = Binderctx.create scope.Libs scope.Macros
 
         let toBind =
             units
             |> Seq.collect (fun unit -> unit.Item.Body |> Seq.map (Stx.ofExpr unit.Document ctx.Diagnostics))
 
-        bindStx ctx stxEnv scope (List.ofSeq toBind)
+        bindStx scope ctx (List.ofSeq toBind)
 
-    /// Bind a Single Script in a Given Scope
+    /// Bind a single script in the given scope.
     ///
-    /// Takes a single script program and binds it in the given scope. This is
-    /// used for the REPL and for single-file scripts, where we don't have a
-    /// sequence of compilation units but just a single script body to bind.
-    let bindScript
-        (stxEnv: StxEnvironment)
-        (scope: Map<Ident, StorageRef>)
-        (libs: seq<LibrarySignature<StorageRef>>)
-        (macros: Map<Ident, SyntaxTransformer>)
-        (script: SyntaxRoot<ScriptProgram>)
-        : BoundSyntaxTree =
-        let ctx = Binderctx.create (List.ofSeq libs) macros
+    /// Returns the bound tree and the output scope. The output scope is the
+    /// correct input for the next REPL step.
+    let bindScript (scope: Scope) (script: SyntaxRoot<ScriptProgram>) : BoundSyntaxTree * Scope =
+        let ctx = Binderctx.create scope.Libs scope.Macros
 
         let toBind =
             script.Item.Body
-            |> Option.map (Stx.ofExpr script.Document ctx.Diagnostics) // FIXME remove once we remove docId
+            |> Option.map (Stx.ofExpr script.Document ctx.Diagnostics)
             |> Option.toList
 
-        bindStx ctx stxEnv scope toBind
+        bindStx scope ctx toBind

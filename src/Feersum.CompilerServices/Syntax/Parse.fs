@@ -361,3 +361,24 @@ let parseFile path =
         let! text = File.ReadAllTextAsync(path) |> Async.AwaitTask
         return readProgram path text
     }
+
+// -- File Collections ---------------------------------------------------------
+
+/// A parsed collection of program files, ready for the binder.
+type FileCollection = SyntaxRoot<Program> list
+
+module FileCollection =
+
+    /// Build a collection directly from already-parsed roots.
+    let ofRoots (roots: SyntaxRoot<Program> list) : FileCollection = roots
+
+    /// Parse each path on disk, accumulating diagnostics.
+    ///
+    /// Returns a `ParseResult` whose `Root` is the list of successfully-parsed
+    /// roots.  Any parse diagnostics from individual files are merged together.
+    let ofPaths (paths: string list) : ParseResult<FileCollection> =
+        paths
+        |> Seq.map (fun path ->
+            let contents = File.ReadAllText path
+            readProgram path contents)
+        |> ParseResult.fold (fun acc r -> acc @ [ r ]) []
