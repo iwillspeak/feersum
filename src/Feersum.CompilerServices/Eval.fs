@@ -18,36 +18,44 @@ let defaultScriptOptions = CompilationOptions.Create Debug Script
 /// Returns the external representation for a CIL type.
 let cilExternalRepr (object: Object) = Write.GetExternalRepresentation(object)
 
-/// Take a syntax tree and evaluate it in-process
-///
-/// This first compiles the tree to an in-memory assembly and then calls the
-/// main method on that.
-///
-/// The script is compiled using `options`
-let evalWith options input =
-    use memStream = new MemoryStream()
+/// Invoke a successfully-emitted assembly's script body.
+let private invokeAssembly (memStream: MemoryStream) =
+    let assm = Assembly.Load(memStream.ToArray())
+    let progTy = assm.GetType "evalCtx.LispProgram"
+    let mainMethod = progTy.GetMethod "$ScriptBody"
 
-    let result = Compilation.compile options memStream "evalCtx" None input
+    try
+        Ok(mainMethod.Invoke(null, Array.empty<obj>))
+    with :? TargetInvocationException as ex ->
+        // Unwrap target invocation exceptions to give the REPL a nicer experience.
+        ExceptionDispatchInfo.Capture(ex.InnerException).Throw()
+        Error []
 
-    if not result.Diagnostics.IsEmpty then
-        Error(result.Diagnostics)
+/// Evaluate a script, deriving scope from a previous compilation when given.
+///
+/// Returns the runtime result paired with the compilation to pass to the next
+/// step. On a bind error the `previous` compilation is returned unchanged so
+/// the caller's accumulated scope is preserved.
+let evalWithPrev (previous: Compilation option) options input =
+    let c =
+        match previous with
+        | None -> Compilation.create options input
+        | Some prev -> Compilation.createDerived prev input
+
+    if not c.BoundTree.Diagnostics.IsEmpty then
+        Error c.BoundTree.Diagnostics, previous
     else
-        let assm = Assembly.Load(memStream.ToArray())
-        let progTy = assm.GetType("evalCtx.LispProgram")
-        let mainMethod = progTy.GetMethod("$ScriptBody")
+        use memStream = new MemoryStream()
+        Compilation.emit c memStream "evalCtx" None |> ignore
+        invokeAssembly memStream |> Result.mapError (fun _ -> []), Some c
 
-        try
-            Ok(mainMethod.Invoke(null, Array.empty<obj>))
-        with :? TargetInvocationException as ex ->
-            // Unwrap target invocation exceptions a little to make the REPL a
-            // bit of a nicer experience
-            ExceptionDispatchInfo.Capture(ex.InnerException).Throw()
-
-            Error([])
-
-/// Take a syntax tree and evaluate it in-process
+/// Take a syntax tree and evaluate it in-process.
 ///
-/// This first compiles the tree to an in-memory assembly and then calls the
-/// main method on that. This is the same os calling `evalWith` using the
-/// `defaultScriptoptions`.
+/// Compiles to an in-memory assembly and invokes the script body. Uses
+/// `options` for compilation settings. Does not chain scope between calls;
+/// use `evalWithPrev` for REPL state accumulation.
+let evalWith options input =
+    evalWithPrev None options input |> fst
+
+/// Evaluate using the default script options.
 let eval = evalWith defaultScriptOptions

@@ -44,32 +44,31 @@ let rec private read () : CompileInput =
 let private print value =
     value |> cilExternalRepr |> printfn "}= %s"
 
-/// Read, Execute, Print Loop
+let coreReferences = [ typeof<LispProgram>.Assembly.Location ]
+
+/// Run the REPL, using the reflection-based evaluator.
 ///
-/// Repeatedly reads input and prints output
-let rec private repl evaluator =
+/// Each input is compiled as a script derived from the previous step so that
+/// top-level definitions and imports accumulate across lines.
+let runRepl () =
+    ReadLine.HistoryEnabled <- true
+    printVersion ()
+
+    let options = { defaultScriptOptions with References = coreReferences }
+    let mutable state: Compilation option = None
 
     let rec loop () =
         try
-            match read () |> evaluator with
-            | Result.Ok _ -> ()
-            | Result.Error diags -> dumpDiagnostics diags
+            let input = read ()
+            let result, next = evalWithPrev state options input
+            state <- next
+
+            match result with
+            | Ok value -> print value
+            | Error diags -> dumpDiagnostics diags
         with ex ->
             eprintfn "Exception: %A" ex
 
         loop ()
 
     loop ()
-
-let coreReferences = [ typeof<LispProgram>.Assembly.Location ]
-
-/// Run the REPL, using the reflection-based evaluator.
-let runRepl () =
-    ReadLine.HistoryEnabled <- true
-    printVersion ()
-
-    let options =
-        { defaultScriptOptions with
-            References = coreReferences }
-
-    evalWith options >> Result.map print |> repl
