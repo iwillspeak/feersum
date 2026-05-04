@@ -23,17 +23,19 @@ type CompileInput =
 /// A bound and lowered program unit, ready for optional emission.
 [<NoComparison; NoEquality>]
 type Compilation =
-    { /// Lowered bound tree. Binding diagnostics live here.
-      BoundTree: BoundSyntaxTree
-      /// All top-level definitions introduced by this unit.
-      /// Pass to `Compilation.createDerived` for REPL chaining.
-      OutputScope: Scope
-      /// Retained for `Compilation.emit`.
-      Options: CompilationOptions
-      /// Retained for `Compilation.emit`.
-      Target: TargetInfo
-      /// External type references from referenced assemblies, retained for `Compilation.emit`.
-      RefTypes: TypeDefinition list }
+    {
+        /// Lowered bound tree. Binding diagnostics live here.
+        BoundTree: BoundSyntaxTree
+        /// All top-level definitions introduced by this unit.
+        /// Pass to `Compilation.createDerived` for REPL chaining.
+        OutputScope: Scope
+        /// Retained for `Compilation.emit`.
+        Options: CompilationOptions
+        /// Retained for `Compilation.emit`.
+        Target: TargetInfo
+        /// External type references from referenced assemblies, retained for `Compilation.emit`.
+        RefTypes: TypeDefinition list
+    }
 
 module Compilation =
 
@@ -50,9 +52,7 @@ module Compilation =
         options.References
         |> Seq.map Builtins.loadReferencedSignatures
         |> Seq.append (Seq.singleton coreLibs)
-        |> Seq.fold
-            (fun (tys, sigs) (aTys, aSigs) -> List.append tys aTys, List.append sigs aSigs)
-            ([], [])
+        |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> List.append tys aTys, List.append sigs aSigs) ([], [])
 
     let private buildScope options allLibs =
         let baseScope =
@@ -62,7 +62,10 @@ module Compilation =
                 { Scope.empty with Libs = allLibs }
 
         let macros, stxEnv = Builtins.loadBuiltinMacroEnv baseScope.StxEnv
-        { baseScope with StxEnv = stxEnv; Macros = macros }
+
+        { baseScope with
+            StxEnv = stxEnv
+            Macros = macros }
 
     let private bindAndLower inputScope input =
         let bound, outputScope =
@@ -136,7 +139,8 @@ module Compilation =
 
         Instrumentation.compilationErrors.Add(
             compilation.BoundTree.Diagnostics
-            |> Seq.sumBy (fun d -> if isError d then 1L else 0L))
+            |> Seq.sumBy (fun d -> if isError d then 1L else 0L)
+        )
 
         { Diagnostics = compilation.BoundTree.Diagnostics
           EmittedAssemblyName = assmName }

@@ -54,8 +54,7 @@ let evalWithPrev (previous: Compilation option) options input =
 /// Compiles to an in-memory assembly and invokes the script body. Uses
 /// `options` for compilation settings. Does not chain scope between calls;
 /// use `evalWithPrev` for REPL state accumulation.
-let evalWith options input =
-    evalWithPrev None options input |> fst
+let evalWith options input = evalWithPrev None options input |> fst
 
 /// Evaluate using the default script options.
 let eval = evalWith defaultScriptOptions

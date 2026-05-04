@@ -44,9 +44,7 @@ type public TextLocation =
         | Missing -> TextPoint.FromParts("missing", 0, 0)
 
 /// A document — owns path and line-start offsets for offset → line/col resolution.
-type public TextDocument =
-    { Path: string
-      LineStarts: int list }
+type public TextDocument = { Path: string; LineStarts: int list }
 
 module public TextDocument =
 

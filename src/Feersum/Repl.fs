@@ -54,7 +54,10 @@ let runRepl () =
     ReadLine.HistoryEnabled <- true
     printVersion ()
 
-    let options = { defaultScriptOptions with References = coreReferences }
+    let options =
+        { defaultScriptOptions with
+            References = coreReferences }
+
     let mutable state: Compilation option = None
 
     let rec loop () =
