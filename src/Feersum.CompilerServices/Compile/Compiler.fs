@@ -17,11 +17,10 @@ type CompileResult =
 
 [<RequireQualifiedAccess>]
 type CompileInput =
-    | Program of SyntaxRoot<Program> list
+    | Program of FileCollection
     | Script of SyntaxRoot<ScriptProgram>
 
 module Compilation =
-    open Feersum.CompilerServices.Syntax.Parse
 
     /// Compile a single AST node into an assembly
     ///
