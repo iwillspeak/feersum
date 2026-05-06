@@ -79,22 +79,26 @@ let private invokeAssembly (ctx: EvalContext) (bytes: byte[]) (typeName: string)
 /// errors the original context is returned unchanged so the caller's
 /// accumulated scope is preserved.
 let evalInContext (ctx: EvalContext) input =
-    let compilation =
+    // Derive the program type name before compiling so we can look it up by
+    // reflection after loading — CompilationOutput doesn't carry BoundTree.
+    let programName, context =
         match ctx.State with
-        | None -> Compilation.create ctx.Options input
+        | None -> "LispProgram", CompileContext.Fresh ctx.Options
         | Some prev ->
-            let programName = sprintf "LispProgram_%d" ctx.StepIndex
-            Compilation.createChained prev programName input
+            let name = sprintf "LispProgram_%d" ctx.StepIndex
+            name, CompileContext.Chained(prev, name)
 
-    if not compilation.BoundTree.Diagnostics.IsEmpty then
-        Error compilation.BoundTree.Diagnostics, ctx
-    else
-        use memStream = new MemoryStream()
-        // Each step gets a unique assembly name so the load context can hold
-        // all steps simultaneously without name collisions.
-        let assmStem = sprintf "evalCtx_%d" ctx.StepIndex
-        let output = Compilation.emit compilation memStream (assmStem + ".dll") None
-        let typeName = sprintf "%s.%s" assmStem compilation.BoundTree.MangledName
+    use memStream = new MemoryStream()
+    // Each step gets a unique assembly name so the load context can hold
+    // all steps simultaneously without name collisions.
+    let assmStem = sprintf "evalCtx_%d" ctx.StepIndex
+    let output = Compilation.compile context input memStream (assmStem + ".dll") None
+
+    // emitBound skips emission and returns None when there are bind errors.
+    match output.EmittedAssemblyName with
+    | None -> Error output.Diagnostics, ctx
+    | Some _ ->
+        let typeName = sprintf "%s.%s" assmStem programName
         let bytes = memStream.ToArray()
 
         match invokeAssembly ctx bytes typeName with

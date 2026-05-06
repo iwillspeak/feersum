@@ -11,35 +11,28 @@ open Feersum.CompilerServices.Targets
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
 
-type CompileResult =
-    { Diagnostics: Diagnostic list
-      EmittedAssemblyName: AssemblyNameDefinition option }
-
 [<RequireQualifiedAccess>]
 type CompileInput =
     | Program of FileCollection
     | Script of SyntaxRoot<ScriptProgram>
 
 /// A bound and lowered program unit, ready for optional emission.
+/// Returned by `Compilation.bind`; can be passed to tooling (e.g. LSP) that
+/// needs the bound tree without producing an assembly.
 [<NoComparison; NoEquality>]
-type Compilation =
+type BindResult =
     {
         /// Lowered bound tree. Binding diagnostics live here.
         BoundTree: BoundSyntaxTree
         /// All top-level definitions introduced by this unit.
-        /// Pass to `Compilation.createDerived` for REPL chaining.
         OutputScope: Scope
-        /// Retained for `Compilation.emit`.
         Options: CompilationOptions
-        /// Retained for `Compilation.emit`.
         Target: TargetInfo
-        /// External type references from referenced assemblies, retained for `Compilation.emit`.
         RefTypes: TypeDefinition list
     }
 
-/// The result of emitting a `Compilation`. Carries everything `createChained`
-/// needs to chain the next REPL step: the output scope and accumulated extern
-/// types (original references plus every type emitted by prior REPL steps).
+/// The result of a full compilation (bind + emit). Carries everything needed
+/// to chain the next REPL step via `CompileContext.Chained`.
 [<NoComparison; NoEquality>]
 type CompilationOutput =
     {
@@ -53,6 +46,15 @@ type CompilationOutput =
         /// in the next step so previous globals are reachable as extern fields.
         RefTypes: TypeDefinition list
     }
+
+/// The starting point for `Compilation.compile`: either a fresh set of options
+/// or the output of a prior compilation to chain from (REPL use).
+[<RequireQualifiedAccess>]
+type CompileContext =
+    | Fresh of CompilationOptions
+    /// Chain from a previous emit output. `programName` sets the type name for
+    /// globals in this step so each REPL step uses a unique, non-colliding name.
+    | Chained of previous: CompilationOutput * programName: string
 
 module Compilation =
 
@@ -97,14 +99,46 @@ module Compilation =
         let lowered = Instrumentation.withPhase "lower" Lower.lower bound
         lowered, outputScope
 
+    let private emitBound (bound: BindResult) outputStream outputName symbolStream =
+        let assmName, newRefTypes =
+            if not (hasErrors bound.BoundTree.Diagnostics) then
+                let assmName, emittedTypes =
+                    bound.BoundTree
+                    |> Instrumentation.withPhase "emit" (fun lowered ->
+                        Emit.emit
+                            bound.Options
+                            bound.Target
+                            outputStream
+                            outputName
+                            symbolStream
+                            bound.RefTypes
+                            lowered)
+
+                Some assmName, List.append bound.RefTypes emittedTypes
+            else
+                None, bound.RefTypes
+
+        Instrumentation.compilationCount.Add 1L
+
+        Instrumentation.compilationErrors.Add(
+            bound.BoundTree.Diagnostics |> Seq.sumBy (fun d -> if isError d then 1L else 0L)
+        )
+
+        { Diagnostics = bound.BoundTree.Diagnostics
+          EmittedAssemblyName = assmName
+          OutputScope = bound.OutputScope
+          Options = bound.Options
+          Target = bound.Target
+          RefTypes = newRefTypes }
+
     // -- Public API -----------------------------------------------------------
 
-    /// Bind and lower a program or script.
+    /// Bind and lower a program or script without emitting an assembly.
     ///
-    /// Resolves references and builds the initial scope from `options`. The
-    /// returned `Compilation` can be passed to `emit` to write an assembly, or
-    /// inspected directly for diagnostics and the bound tree without emitting.
-    let create options input =
+    /// Use this when only the bound tree is needed (e.g. LSP diagnostics,
+    /// hover, go-to-definition). Pass the returned `BindResult` to
+    /// `Compilation.compile` to emit when required.
+    let bind options input =
         let target = resolveTarget options
         let refTys, allLibs = loadReferences options target
         let inputScope = buildScope options allLibs
@@ -116,73 +150,29 @@ module Compilation =
           Target = target
           RefTypes = refTys }
 
-    /// Bind and lower, chaining scope from a previous emit output.
+    /// Bind and emit a program or script in one step.
     ///
-    /// Inherits `Target`, `RefTypes`, and `Options` from `previous` (reference
-    /// loading is skipped). Uses `previous.OutputScope` as the input scope so
-    /// all prior top-level definitions remain visible. The caller supplies
-    /// `programName` to give each REPL step a distinct type name.
-    let createChained (previous: CompilationOutput) (programName: string) input =
-        let nextScope =
-            { previous.OutputScope with
-                ProgramName = programName }
+    /// Supply `CompileContext.Fresh options` for a standalone compilation or
+    /// `CompileContext.Chained(previous, programName)` to inherit scope and
+    /// references from a prior REPL step.
+    let compile (context: CompileContext) input outputStream outputName symbolStream =
+        let bound =
+            match context with
+            | CompileContext.Fresh options -> bind options input
+            | CompileContext.Chained(previous, programName) ->
+                let nextScope =
+                    { previous.OutputScope with
+                        ProgramName = programName }
 
-        let lowered, outputScope = bindAndLower nextScope input
+                let lowered, outputScope = bindAndLower nextScope input
 
-        { BoundTree = lowered
-          OutputScope = outputScope
-          Options = previous.Options
-          Target = previous.Target
-          RefTypes = previous.RefTypes }
+                { BoundTree = lowered
+                  OutputScope = outputScope
+                  Options = previous.Options
+                  Target = previous.Target
+                  RefTypes = previous.RefTypes }
 
-    /// Emit a lowered compilation as a .NET assembly.
-    ///
-    /// When the bound tree contains errors, emission is skipped and only the
-    /// diagnostics are returned. Returns `CompilationOutput` so the caller can
-    /// pass it to `createChained` for REPL chaining.
-    let emit compilation outputStream outputName symbolStream =
-        let assmName, newRefTypes =
-            if not (hasErrors compilation.BoundTree.Diagnostics) then
-                let assmName, emittedTypes =
-                    compilation.BoundTree
-                    |> Instrumentation.withPhase "emit" (fun lowered ->
-                        Emit.emit
-                            compilation.Options
-                            compilation.Target
-                            outputStream
-                            outputName
-                            symbolStream
-                            compilation.RefTypes
-                            lowered)
-
-                Some assmName, List.append compilation.RefTypes emittedTypes
-            else
-                None, compilation.RefTypes
-
-        Instrumentation.compilationCount.Add 1L
-
-        Instrumentation.compilationErrors.Add(
-            compilation.BoundTree.Diagnostics
-            |> Seq.sumBy (fun d -> if isError d then 1L else 0L)
-        )
-
-        { Diagnostics = compilation.BoundTree.Diagnostics
-          EmittedAssemblyName = assmName
-          OutputScope = compilation.OutputScope
-          Options = compilation.Options
-          Target = compilation.Target
-          RefTypes = newRefTypes }
-
-    /// Bind, lower, and emit in a single call.
-    ///
-    /// Sugar over `create` + `emit`. Preserves the existing call-site signature
-    /// for callers that don't need scope chaining.
-    let compile options outputStream outputName symbolStream input =
-        let output =
-            create options input |> fun c -> emit c outputStream outputName symbolStream
-
-        { Diagnostics = output.Diagnostics
-          EmittedAssemblyName = output.EmittedAssemblyName }
+        emitBound bound outputStream outputName symbolStream
 
     // -- File-level entry points ----------------------------------------------
 
@@ -229,11 +219,11 @@ module Compilation =
 
             let result =
                 compile
-                    options
+                    (CompileContext.Fresh options)
+                    (CompileInput.Program result.Root)
                     outputStream
                     (Path.GetFileName output)
                     (symbols |> Option.ofObj)
-                    (CompileInput.Program result.Root)
 
             if not (hasErrors result.Diagnostics) && options.OutputType = Exe then
                 match result.EmittedAssemblyName with
