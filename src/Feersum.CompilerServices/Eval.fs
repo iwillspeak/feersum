@@ -1,16 +1,18 @@
 module Feersum.CompilerServices.Eval
 
+open System.Collections.Generic
 open System.IO
 open System.Reflection
 open System
 open System.Runtime.ExceptionServices
+open System.Runtime.Loader
 
 open Serehfa
 
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Compile
 
-/// The default set of otpions for scripting
+/// The default set of options for scripting
 let defaultScriptOptions = CompilationOptions.Create Debug Script
 
 /// Raw External Representation
@@ -18,36 +20,101 @@ let defaultScriptOptions = CompilationOptions.Create Debug Script
 /// Returns the external representation for a CIL type.
 let cilExternalRepr (object: Object) = Write.GetExternalRepresentation(object)
 
-/// Take a syntax tree and evaluate it in-process
+/// An AssemblyLoadContext that retains every assembly loaded into it by name,
+/// so that cross-step references in a REPL session resolve correctly.
+/// Collectible so the entire session can be unloaded when disposed.
+type ReplLoadContext() =
+    inherit AssemblyLoadContext(isCollectible = true)
+    let loaded = Dictionary<string, Assembly>()
+
+    member this.LoadBytes(bytes: byte[]) =
+        use ms = new MemoryStream(bytes)
+        let assm = this.LoadFromStream ms
+        loaded.[assm.GetName().Name] <- assm
+        assm
+
+    override _.Load name =
+        match loaded.TryGetValue name.Name with
+        | true, a -> a
+        | _ -> null
+
+/// A session-scoped evaluation context. Immutable value: `evalInContext`
+/// returns a new context rather than mutating the existing one.
 ///
-/// This first compiles the tree to an in-memory assembly and then calls the
-/// main method on that.
+/// The `LoadContext` is a shared reference type across all derived contexts.
+/// Call `Dispose` on the original context when the session ends to unload it.
+[<NoComparison; NoEquality>]
+type EvalContext =
+    { Options: CompilationOptions
+      LoadContext: ReplLoadContext
+      State: CompilationOutput option
+      StepIndex: int }
+
+    interface IDisposable with
+        member ctx.Dispose() = ctx.LoadContext.Unload()
+
+module EvalContext =
+    let create options =
+        { Options = options
+          LoadContext = ReplLoadContext()
+          State = None
+          StepIndex = 0 }
+
+/// Invoke the script body of an emitted assembly via the session load context.
+let private invokeAssembly (ctx: EvalContext) (bytes: byte[]) (typeName: string) =
+    let assm = ctx.LoadContext.LoadBytes bytes
+    let progTy = assm.GetType typeName
+    let mainMethod = progTy.GetMethod "$ScriptBody"
+
+    try
+        Ok(mainMethod.Invoke(null, Array.empty<obj>))
+    with :? TargetInvocationException as ex ->
+        ExceptionDispatchInfo.Capture(ex.InnerException).Throw()
+        Error []
+
+/// Evaluate a script inside a given `EvalContext`, chaining scope from any
+/// previous step stored in `ctx.State`.
 ///
-/// The script is compiled using `options`
-let evalWith options input =
+/// Returns the result and a new `EvalContext` with updated state. On bind
+/// errors the original context is returned unchanged so the caller's
+/// accumulated scope is preserved.
+let evalInContext (ctx: EvalContext) input =
+    // Derive the program type name before compiling so we can look it up by
+    // reflection after loading — CompilationOutput doesn't carry BoundTree.
+    let programName, context =
+        match ctx.State with
+        | None -> "LispProgram", CompileContext.Fresh ctx.Options
+        | Some prev ->
+            let name = sprintf "LispProgram_%d" ctx.StepIndex
+            name, CompileContext.Chained(prev, name)
+
     use memStream = new MemoryStream()
+    // Each step gets a unique assembly name so the load context can hold
+    // all steps simultaneously without name collisions.
+    let assmStem = sprintf "evalCtx_%d" ctx.StepIndex
+    let output = Compilation.compile context input memStream (assmStem + ".dll") None
 
-    let result = Compilation.compile options memStream "evalCtx" None input
+    // emitBound skips emission and returns None when there are bind errors.
+    match output.EmittedAssemblyName with
+    | None -> Error output.Diagnostics, ctx
+    | Some _ ->
+        let typeName = sprintf "%s.%s" assmStem programName
+        let bytes = memStream.ToArray()
 
-    if not result.Diagnostics.IsEmpty then
-        Error(result.Diagnostics)
-    else
-        let assm = Assembly.Load(memStream.ToArray())
-        let progTy = assm.GetType("evalCtx.LispProgram")
-        let mainMethod = progTy.GetMethod("$ScriptBody")
+        match invokeAssembly ctx bytes typeName with
+        | Ok value ->
+            let nextCtx =
+                { ctx with
+                    State = Some output
+                    StepIndex = ctx.StepIndex + 1 }
 
-        try
-            Ok(mainMethod.Invoke(null, Array.empty<obj>))
-        with :? TargetInvocationException as ex ->
-            // Unwrap target invocation exceptions a little to make the REPL a
-            // bit of a nicer experience
-            ExceptionDispatchInfo.Capture(ex.InnerException).Throw()
+            Ok value, nextCtx
+        | Error diags -> Error diags, ctx
 
-            Error([])
+/// Evaluate using the given options without retaining any session state.
+let evalWith (options: CompilationOptions) input =
+    use ctx = EvalContext.create options
+    evalInContext ctx input |> fst
 
-/// Take a syntax tree and evaluate it in-process
-///
-/// This first compiles the tree to an in-memory assembly and then calls the
-/// main method on that. This is the same os calling `evalWith` using the
-/// `defaultScriptoptions`.
+/// Evaluate using the default script options.
 let eval = evalWith defaultScriptOptions

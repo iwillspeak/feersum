@@ -66,7 +66,7 @@ type StxPos =
 module StxPos =
     /// Sentinel value for compiler-synthesised nodes that have no source origin.
     let missing =
-        { Doc = { Id = DocId.Synthetic; Path = "missing"; LineStarts = [] }
+        { Doc = { Path = "missing"; LineStarts = [] }
           Range = Unchecked.defaultof<Firethorn.TextRange> }
 
 

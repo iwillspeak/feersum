@@ -15,10 +15,7 @@ let private lowerScheme source =
     if result |> Parse.ParseResult.hasErrors then
         failwithf "Parse error in '%s': %A" source result.Diagnostics
 
-    let env = Environments.empty
-    let initialScope, preloaded = Environments.intoParts env
-
-    let bound = Binder.bindProgram initialScope preloaded [] Map.empty [ result.Root ]
+    let bound, _ = Binder.bindProgram Scope.empty [ result.Root ]
     // if hasErrors bound.Diagnostics then
     //     failwithf "Bind error in '%s': %A" source bound.Diagnostics
 

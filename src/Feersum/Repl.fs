@@ -14,7 +14,7 @@ open Feersum.CompilerServices.Syntax.Parse
 /// Read a single line of user input and parse it into a
 /// syntax tree. If the input can't be parsed then read
 /// again.
-let rec private read () : CompileInput =
+let rec private read stepIndex : CompileInput =
     let rec readWithState prompt previous =
         let line = ReadLine.Read prompt
 
@@ -29,47 +29,50 @@ let rec private read () : CompileInput =
             if line = "" && source.EndsWith("\n\n") then
                 Error parsed.Diagnostics
             else
-                readWithState "+> " (Some source)
+                readWithState $"+ {stepIndex}> " (Some source)
         else
             CompileInput.Script parsed.Root |> Ok
 
-    match readWithState "§> " None with
+    match readWithState $"§ {stepIndex}> " None with
     | Ok input -> input
     | Error diagnostics ->
         diagnostics |> dumpDiagnostics
-        read ()
+        read stepIndex
 
 /// Print an object out to the console. Used to serialise the external
 /// representation form an eval
 let private print value =
     value |> cilExternalRepr |> printfn "}= %s"
 
-/// Read, Execute, Print Loop
-///
-/// Repeatedly reads input and prints output
-let rec private repl evaluator =
-
-    let rec loop () =
-        try
-            match read () |> evaluator with
-            | Result.Ok _ -> ()
-            | Result.Error diags -> dumpDiagnostics diags
-        with ex ->
-            eprintfn "Exception: %A" ex
-
-        loop ()
-
-    loop ()
-
 let coreReferences = [ typeof<LispProgram>.Assembly.Location ]
 
 /// Run the REPL, using the reflection-based evaluator.
+///
+/// Each input is compiled as a script derived from the previous step so that
+/// top-level definitions and imports accumulate across lines.
 let runRepl () =
     ReadLine.HistoryEnabled <- true
     printVersion ()
 
-    let options =
-        { defaultScriptOptions with
-            References = coreReferences }
+    use initCtx =
+        EvalContext.create
+            { defaultScriptOptions with
+                References = coreReferences }
 
-    evalWith options >> Result.map print |> repl
+    let rec loop ctx =
+        let nextCtx =
+            try
+                let result, next = evalInContext ctx (read ctx.StepIndex)
+
+                match result with
+                | Ok value -> print value
+                | Error diags -> dumpDiagnostics diags
+
+                next
+            with ex ->
+                eprintfn "Exception: %A" ex
+                ctx
+
+        loop nextCtx
+
+    loop initCtx

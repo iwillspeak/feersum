@@ -43,20 +43,8 @@ type public TextLocation =
         | Point p -> p
         | Missing -> TextPoint.FromParts("missing", 0, 0)
 
-/// Opaque identifier for a source document.
-///
-/// `Doc i` indexes into the `SourceRegistry` that issued the ID.
-/// `Synthetic` marks compiler-generated nodes that have no source origin.
-[<RequireQualifiedAccess>]
-type public DocId =
-    | Doc of int
-    | Synthetic
-
 /// A document — owns path and line-start offsets for offset → line/col resolution.
-type public TextDocument =
-    { Id: DocId
-      Path: string
-      LineStarts: int list }
+type public TextDocument = { Path: string; LineStarts: int list }
 
 module public TextDocument =
 
@@ -69,14 +57,7 @@ module public TextDocument =
     /// Create a document with a synthetic (no source) ID.
     /// Suitable for tests and compiler-generated syntax.
     let public fromParts path body =
-        { Id = DocId.Synthetic
-          Path = path
-          LineStarts = lineStarts body }
-
-    /// Internal: create a document with a specific DocId (used by SourceRegistry).
-    let internal fromPartsWithId id path body =
-        { Id = id
-          Path = path
+        { Path = path
           LineStarts = lineStarts body }
 
     /// Turn a character offset into a document into a human line column value.

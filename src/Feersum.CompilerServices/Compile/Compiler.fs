@@ -7,87 +7,176 @@ open Mono.Cecil
 open Feersum.CompilerServices
 open Feersum.CompilerServices.Diagnostics
 open Feersum.CompilerServices.Binding
-open Feersum.CompilerServices.Syntax
 open Feersum.CompilerServices.Targets
 open Feersum.CompilerServices.Syntax.Tree
 open Feersum.CompilerServices.Syntax.Parse
 
-type CompileResult =
-    { Diagnostics: Diagnostic list
-      EmittedAssemblyName: AssemblyNameDefinition option }
-
 [<RequireQualifiedAccess>]
 type CompileInput =
-    | Program of SyntaxRoot<Program> list
+    | Program of FileCollection
     | Script of SyntaxRoot<ScriptProgram>
 
+/// A bound and lowered program unit, ready for optional emission.
+/// Returned by `Compilation.bind`; can be passed to tooling (e.g. LSP) that
+/// needs the bound tree without producing an assembly.
+[<NoComparison; NoEquality>]
+type BindResult =
+    {
+        /// Lowered bound tree. Binding diagnostics live here.
+        BoundTree: BoundSyntaxTree
+        /// All top-level definitions introduced by this unit.
+        OutputScope: Scope
+        Options: CompilationOptions
+        Target: TargetInfo
+        RefTypes: TypeDefinition list
+    }
+
+/// The result of a full compilation (bind + emit). Carries everything needed
+/// to chain the next REPL step via `CompileContext.Chained`.
+[<NoComparison; NoEquality>]
+type CompilationOutput =
+    {
+        Diagnostics: Diagnostic list
+        EmittedAssemblyName: AssemblyNameDefinition option
+        OutputScope: Scope
+        Options: CompilationOptions
+        Target: TargetInfo
+        /// Accumulated extern TypeDefinitions: original references plus every
+        /// type emitted by prior REPL steps. Passed as `externTys` to Emit.emit
+        /// in the next step so previous globals are reachable as extern fields.
+        RefTypes: TypeDefinition list
+    }
+
+/// The starting point for `Compilation.compile`: either a fresh set of options
+/// or the output of a prior compilation to chain from (REPL use).
+[<RequireQualifiedAccess>]
+type CompileContext =
+    | Fresh of CompilationOptions
+    /// Chain from a previous emit output. `programName` sets the type name for
+    /// globals in this step so each REPL step uses a unique, non-colliding name.
+    | Chained of previous: CompilationOutput * programName: string
+
 module Compilation =
-    open Feersum.CompilerServices.Syntax.Parse
 
-    /// Compile a single AST node into an assembly
-    ///
-    /// The plan for this is we make multiple passes over the syntax tree. First
-    /// pass will be to `bind` theh tree. Resulting in a `BoundExpr`. This will
-    /// attach any type information that _can_ be computed to each node, and
-    /// resolve variable references to the symbols that they refer to.
-    ///
-    /// Once the expression is bound we will then `emit` the expression this walks
-    /// the expression and writes out the corresponding .NET IL to an `Assembly`
-    /// at `outputStream`. The `outputName` controls the root namespace and assembly
-    /// name of the output.
-    let compile options outputStream outputName symbolStream (input: CompileInput) =
-        let target =
-            match options.FrameworkAssmPaths with
-            | [] -> TargetResolve.fromCurrentRuntime
-            | paths -> TargetResolve.fromFrameworkPaths paths
+    // -- Helpers --------------------------------------------------------------
 
+    let private resolveTarget options =
+        match options.FrameworkAssmPaths with
+        | [] -> TargetResolve.fromCurrentRuntime
+        | paths -> TargetResolve.fromFrameworkPaths paths
+
+    let private loadReferences options target =
         let coreLibs = Builtins.loadCoreSignatures target
 
-        let refTys, allLibs =
-            options.References
-            |> Seq.map (Builtins.loadReferencedSignatures)
-            |> Seq.append (Seq.singleton <| coreLibs)
-            |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> (List.append tys aTys, List.append sigs aSigs)) ([], [])
+        options.References
+        |> Seq.map Builtins.loadReferencedSignatures
+        |> Seq.append (Seq.singleton coreLibs)
+        |> Seq.fold (fun (tys, sigs) (aTys, aSigs) -> List.append tys aTys, List.append sigs aSigs) ([], [])
 
-        let preloaded =
+    let private buildScope options allLibs =
+        let baseScope =
             if options.OutputType = OutputType.Script then
-                Environments.fromLibraries allLibs
+                Scope.ofLibraries allLibs
             else
-                Environments.empty
+                { Scope.empty with Libs = allLibs }
 
-        let bound =
+        let macros, stxEnv = Builtins.loadBuiltinMacroEnv baseScope.StxEnv
+
+        { baseScope with
+            StxEnv = stxEnv
+            Macros = macros }
+
+    let private bindAndLower inputScope input =
+        let bound, outputScope =
             Instrumentation.withPhase
                 "bind"
                 (fun () ->
-                    let stxEnv, refEnv = Environments.intoParts preloaded
-                    let macros, stxEnv = Builtins.loadBuiltinMacroEnv stxEnv
-
                     match input with
-                    | CompileInput.Program progs -> Binder.bindProgram stxEnv refEnv allLibs macros progs
-                    | CompileInput.Script script -> Binder.bindScript stxEnv refEnv allLibs macros script)
+                    | CompileInput.Program progs -> Binder.bindProgram inputScope progs
+                    | CompileInput.Script script -> Binder.bindScript inputScope script)
                 ()
 
-        let assmName =
-            if hasErrors bound.Diagnostics |> not then
-                bound
-                |> Instrumentation.withPhase "lower" Lower.lower
-                |> Instrumentation.withPhase "emit" (fun lowered ->
-                    Emit.emit options target outputStream outputName symbolStream refTys lowered)
-                |> Some
+        let lowered = Instrumentation.withPhase "lower" Lower.lower bound
+        lowered, outputScope
+
+    let private emitBound (bound: BindResult) outputStream outputName symbolStream =
+        let assmName, newRefTypes =
+            if not (hasErrors bound.BoundTree.Diagnostics) then
+                let assmName, emittedTypes =
+                    bound.BoundTree
+                    |> Instrumentation.withPhase "emit" (fun lowered ->
+                        Emit.emit
+                            bound.Options
+                            bound.Target
+                            outputStream
+                            outputName
+                            symbolStream
+                            bound.RefTypes
+                            lowered)
+
+                Some assmName, List.append bound.RefTypes emittedTypes
             else
-                None
+                None, bound.RefTypes
 
-        Instrumentation.compilationCount.Add(1L)
+        Instrumentation.compilationCount.Add 1L
 
-        Instrumentation.compilationErrors.Add(bound.Diagnostics |> Seq.sumBy (fun d -> if isError d then 1L else 0L))
+        Instrumentation.compilationErrors.Add(
+            bound.BoundTree.Diagnostics |> Seq.sumBy (fun d -> if isError d then 1L else 0L)
+        )
 
-        { Diagnostics = bound.Diagnostics
-          EmittedAssemblyName = assmName }
+        { Diagnostics = bound.BoundTree.Diagnostics
+          EmittedAssemblyName = assmName
+          OutputScope = bound.OutputScope
+          Options = bound.Options
+          Target = bound.Target
+          RefTypes = newRefTypes }
 
-    /// Read a collection of Files and Compile
+    // -- Public API -----------------------------------------------------------
+
+    /// Bind and lower a program or script without emitting an assembly.
     ///
-    /// Takes the `sources` to an input to read and compile. Compilation results
-    /// are written to `output`.
+    /// Use this when only the bound tree is needed (e.g. LSP diagnostics,
+    /// hover, go-to-definition). Pass the returned `BindResult` to
+    /// `Compilation.compile` to emit when required.
+    let bind options input =
+        let target = resolveTarget options
+        let refTys, allLibs = loadReferences options target
+        let inputScope = buildScope options allLibs
+        let lowered, outputScope = bindAndLower inputScope input
+
+        { BoundTree = lowered
+          OutputScope = outputScope
+          Options = options
+          Target = target
+          RefTypes = refTys }
+
+    /// Bind and emit a program or script in one step.
+    ///
+    /// Supply `CompileContext.Fresh options` for a standalone compilation or
+    /// `CompileContext.Chained(previous, programName)` to inherit scope and
+    /// references from a prior REPL step.
+    let compile (context: CompileContext) input outputStream outputName symbolStream =
+        let bound =
+            match context with
+            | CompileContext.Fresh options -> bind options input
+            | CompileContext.Chained(previous, programName) ->
+                let nextScope =
+                    { previous.OutputScope with
+                        ProgramName = programName }
+
+                let lowered, outputScope = bindAndLower nextScope input
+
+                { BoundTree = lowered
+                  OutputScope = outputScope
+                  Options = previous.Options
+                  Target = previous.Target
+                  RefTypes = previous.RefTypes }
+
+        emitBound bound outputStream outputName symbolStream
+
+    // -- File-level entry points ----------------------------------------------
+
+    /// Read a collection of files and compile them to an assembly at `output`.
     let compileFiles (options: CompilationOptions) (output: string) (sources: string list) =
 
         // Handle the case that the user has specified a path to a directory but
@@ -99,17 +188,14 @@ module Compilation =
                 else
                     output, sprintf "%s%c" output Path.DirectorySeparatorChar
             else
-                // Ensure the output path exists
                 let dir = Path.GetDirectoryName(output)
 
                 if not (String.IsNullOrWhiteSpace dir) then
-                    // ensure the output directory exists, no need to check it is missing first
                     Directory.CreateDirectory(dir) |> ignore
 
                 dir, output
 
-        // Normalise the stem and output path. This ensures the output is a file
-        // not a directory.
+        // Normalise the stem and output path.
         let output =
             if String.IsNullOrWhiteSpace(Path.GetFileName(output)) then
                 Path.ChangeExtension(
@@ -119,44 +205,32 @@ module Compilation =
             else
                 output
 
-        let result =
-            sources
-            |> Seq.map (fun path ->
-                let contents = File.ReadAllText(path)
-                Parse.readProgram path contents)
-            |> ParseResult.fold (fun progs p -> List.append progs [ p ]) []
+        let result = FileCollection.ofPaths sources
 
-        if Diagnostics.hasErrors result.Diagnostics then
+        if hasErrors result.Diagnostics then
             result.Diagnostics
         else
-
-            // Open the output streams. We don't use an `Option` directly here for
-            // the symbols stream so we can drop it with `use`.
             use outputStream = File.OpenWrite output
 
             use symbols =
                 match options.Configuration with
-                // make a symbol file
                 | BuildConfiguration.Debug -> File.OpenWrite(Path.ChangeExtension(output, "pdb")) :> Stream
                 | BuildConfiguration.Release -> null
 
             let result =
                 compile
-                    options
+                    (CompileContext.Fresh options)
+                    (CompileInput.Program result.Root)
                     outputStream
                     (Path.GetFileName output)
                     (symbols |> Option.ofObj)
-                    (CompileInput.Program(result.Root))
 
-            if (hasErrors result.Diagnostics |> not) && options.OutputType = OutputType.Exe then
+            if not (hasErrors result.Diagnostics) && options.OutputType = Exe then
                 match result.EmittedAssemblyName with
                 | Some assemblyName -> Runtime.writeRuntimeConfig options output assemblyName outDir
                 | None -> ()
 
             result.Diagnostics
 
-    /// Read a File and Compile
-    ///
-    /// Takes the `source` to an input to read and compile. Compilation results
-    /// are written to `output`.
+    /// Read a single file and compile it to an assembly at `output`.
     let compileFile options output source = compileFiles options output [ source ]
